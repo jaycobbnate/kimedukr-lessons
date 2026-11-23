@@ -81,6 +81,7 @@ https://jaycobbnate.github.io/kimedukr-lessons/<과정 폴더>/<차시>/
 - [yangcheon-chatgpt-image/01](yangcheon-chatgpt-image/01/) — 😊 수업 > [양천]챗GPT 이미지 200% 활용 > 1. 그림 주문 기본기와 내 캐릭터 기획
 - [yangcheon-chatgpt-image/02](yangcheon-chatgpt-image/02/) — 😊 수업 > [양천]챗GPT 이미지 200% 활용 > 2.챗GPT 이미지 200% 활용 · 내 캐릭터 만들고 움직이기
 - [yangcheon-chatgpt-image/03](yangcheon-chatgpt-image/03/) — 😊 수업 > [양천]챗GPT 이미지 200% 활용 > 3. 내 캐릭터 제품화
+- [yangcheon-chatgpt-image/04](yangcheon-chatgpt-image/04/) — 😊 수업 > [양천]챗GPT 이미지 200% 활용 > 4. 굿즈 마무리 · 카드뉴스(정보형·가게 홍보) · 카드뉴스 스킬
 
 ### yangcheon-capcut
 - [yangcheon-capcut/01](yangcheon-capcut/01/) — 😊 수업 > [양천]캡컷 프로(CapCut Pro) 200% 활용 > 1차시 프로 첫날

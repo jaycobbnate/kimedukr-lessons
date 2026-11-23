@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>챗GPT 이미지 200% 활용 · 4차시 — 내 캐릭터, 굿즈와 카드뉴스가 되다</title>
+<style>
+:root{
+  --bg:#FAFAF7; --card:#FFFFFF; --line:#E6E3DC; --ink:#1F2A30; --sub:#5C676D;
+  --point:#0F6E66; --point-d:#0A4F49; --point-l:#E3F1EE;
+  --set:#EAF3F1; --set-b:#BFDCD5;
+  --warn:#FBEEEA; --warn-b:#EFC7BB; --warn-t:#8A3A22;
+  --ext:#EFF0FA; --ext-b:#CCCFEE; --ext-t:#3C3F8A;
+  --tip:#F3F6EC; --tip-b:#D3DFBF; --tip-t:#3B5A12;
+  --fs:20px;
+}
+*{box-sizing:border-box}
+html{font-size:var(--fs)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;line-height:1.7;word-break:keep-all}
+a{color:var(--point)}
+img{max-width:100%;height:auto;display:block}
+/* 상단바 */
+.top{position:sticky;top:0;z-index:20;background:rgba(250,250,247,.97);border-bottom:1px solid var(--line)}
+.top-in{max-width:1280px;margin:0 auto;padding:.5rem 1rem;display:flex;gap:.8rem;align-items:center}
+.brand{font-weight:700;font-size:.85rem;color:var(--point);white-space:nowrap}
+.tabs{display:flex;gap:.35rem;overflow-x:auto;flex:1;scrollbar-width:thin}
+.tabs button{flex:0 0 auto;border:1px solid var(--line);background:#fff;color:var(--sub);border-radius:999px;padding:.3rem .8rem;font-size:.78rem;cursor:pointer;font-family:inherit}
+.tabs button.on{background:var(--point);border-color:var(--point);color:#fff}
+.fsz{display:flex;gap:.25rem}
+.fsz button{border:1px solid var(--line);background:#fff;border-radius:8px;padding:.15rem .5rem;font-size:.75rem;cursor:pointer;font-family:inherit;color:var(--sub)}
+/* 본문 */
+.wrap{max-width:1280px;margin:0 auto;padding:1.2rem 1rem 0;display:grid;grid-template-columns:minmax(0,1fr) 250px;gap:1.4rem;align-items:start}
+.side{position:sticky;top:4.2rem;background:#fff;border:1px solid var(--line);border-radius:14px;padding:.8rem;font-size:.75rem}
+.side b{display:block;color:var(--point);margin-bottom:.4rem;font-size:.78rem}
+.side a{display:block;padding:.3rem .45rem;border-radius:8px;color:var(--sub);text-decoration:none;line-height:1.4}
+.side a:hover{background:var(--point-l);color:var(--point-d)}
+.side .kind{font-size:.62rem;font-weight:700;padding:.05rem .35rem;border-radius:6px;margin-right:.25rem}
+.k-ex{background:var(--point-l);color:var(--point-d)}.k-do{background:#FFF1D9;color:#7A4B00}
+.step{display:none}.step.on{display:block}
+.stephead{background:#fff;border:1px solid var(--line);border-radius:16px;padding:1.1rem 1.3rem;margin-bottom:1rem}
+.stephead .no{font-size:.75rem;font-weight:700;color:var(--point);letter-spacing:.04em}
+.stephead h1{margin:.1rem 0 .3rem;font-size:1.45rem;line-height:1.35}
+.stephead p{margin:0;color:var(--sub)}
+.zone{margin:1.2rem 0 .6rem;display:flex;align-items:center;gap:.6rem;font-weight:700;font-size:.85rem}
+.zone span{padding:.15rem .7rem;border-radius:999px}
+.zone.ex span{background:var(--point-l);color:var(--point-d)}
+.zone.do span{background:#FFF1D9;color:#7A4B00}
+.zone:after{content:"";flex:1;height:1px;background:var(--line)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:1rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:1rem 1.15rem;scroll-margin-top:5rem}
+.card.full{grid-column:1/-1}
+.card h2{font-size:1.05rem;margin:0 0 .5rem;line-height:1.45}
+.card h3{font-size:.92rem;margin:.9rem 0 .3rem;color:var(--point-d)}
+.card p{margin:.35rem 0}
+.card ul,.card ol{margin:.3rem 0;padding-left:1.3rem}
+.card li{margin:.2rem 0}
+.box{border-radius:12px;padding:.7rem .9rem;margin:.6rem 0;border:1px solid}
+.box .t{font-weight:700;font-size:.82rem;margin-bottom:.2rem}
+.set{background:var(--set);border-color:var(--set-b)}.set .t{color:var(--point-d)}
+.warn{background:var(--warn);border-color:var(--warn-b)}.warn .t{color:var(--warn-t)}
+.ext{background:var(--ext);border-color:var(--ext-b)}.ext .t{color:var(--ext-t)}
+.tip{background:var(--tip);border-color:var(--tip-b)}.tip .t{color:var(--tip-t)}
+.prompt{border:1px solid var(--set-b);border-radius:12px;margin:.7rem 0;overflow:hidden;background:#fff}
+.prompt .ph{display:flex;align-items:center;justify-content:space-between;background:var(--set);padding:.35rem .7rem;font-size:.75rem;font-weight:700;color:var(--point-d)}
+.prompt.x{border-color:var(--ext-b)}.prompt.x .ph{background:var(--ext);color:var(--ext-t)}
+.prompt pre{margin:0;padding:.75rem .9rem;white-space:pre-wrap;font-family:inherit;font-size:.86rem;line-height:1.65}
+.prompt button{border:1px solid currentColor;background:#fff;color:inherit;border-radius:8px;padding:.1rem .6rem;font-size:.72rem;cursor:pointer;font-family:inherit}
+.steps{counter-reset:s;list-style:none;padding:0!important}
+.steps>li{counter-increment:s;position:relative;padding-left:2.1rem;margin:.55rem 0!important}
+.steps>li:before{content:counter(s);position:absolute;left:0;top:.1rem;width:1.55rem;height:1.55rem;border-radius:50%;background:var(--point);color:#fff;font-size:.72rem;font-weight:700;display:flex;align-items:center;justify-content:center}
+.kbd{display:inline-block;border:1px solid var(--line);border-bottom-width:2px;border-radius:6px;padding:0 .35rem;font-size:.8em;background:#fff}
+.menu{display:inline-block;background:var(--point-l);color:var(--point-d);border-radius:6px;padding:0 .35rem;font-weight:600;font-size:.9em}
+table{border-collapse:collapse;width:100%;font-size:.82rem;margin:.5rem 0}
+th,td{border-bottom:1px solid var(--line);padding:.45rem .5rem;text-align:left;vertical-align:top}
+th{background:#F4F3EF;font-weight:700}
+.shot{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#fff;margin:.5rem 0}
+.shot figcaption{font-size:.72rem;color:var(--sub);padding:.35rem .6rem;border-top:1px solid var(--line)}
+.shots{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:.6rem}
+.dl{display:inline-flex;align-items:center;gap:.4rem;background:var(--point);color:#fff;text-decoration:none;font-weight:700;padding:.55rem 1rem;border-radius:10px;margin:.4rem 0}.dl:hover{opacity:.9}
+.shots2{grid-template-columns:repeat(2,1fr)}@media(max-width:600px){.shots2{grid-template-columns:1fr}}
+.card-sub{margin:.8rem 0 .3rem;font-size:.95em}
+.shots3{grid-template-columns:repeat(3,1fr)}@media(max-width:600px){.shots3{grid-template-columns:repeat(2,1fr)}}
+.ok{color:var(--point-d);font-weight:700}.no{color:var(--warn-t);font-weight:700}
+.chips{display:flex;flex-wrap:wrap;gap:.35rem;margin:.3rem 0}
+.chip{font-size:.72rem;border:1px solid var(--line);border-radius:999px;padding:.05rem .6rem;background:#fff;color:var(--sub)}
+.namebar{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center;margin:.5rem 0}
+.namebar input{font-family:inherit;font-size:.85rem;padding:.3rem .55rem;border:1px solid var(--line);border-radius:8px;width:9rem}
+svg text{font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif}
+.bottom{position:sticky;bottom:0;z-index:15;background:rgba(250,250,247,.97);border-top:1px solid var(--line);margin-top:1.5rem}
+.bottom-in{max-width:1280px;margin:0 auto;padding:.5rem 1rem;display:flex;justify-content:space-between;align-items:center;font-size:.8rem}
+.bottom button{border:1px solid var(--point);background:#fff;color:var(--point);border-radius:10px;padding:.35rem 1rem;cursor:pointer;font-family:inherit;font-size:.8rem}
+.bottom button.next{background:var(--point);color:#fff}
+@media (max-width:900px){.wrap{grid-template-columns:1fr}.side{position:static;order:-1}.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="top"><div class="top-in">
+  <div class="brand">김에듀 · 챗GPT 이미지 4차시</div>
+  <nav class="tabs" id="tabs"></nav>
+  <div class="fsz"><button onclick="fs(-2)" aria-label="글자 작게">가−</button><button onclick="fs(2)" aria-label="글자 크게">가+</button></div>
+</div></header>
+
+<div class="wrap">
+<main id="main">
+
+<!-- ================= STEP 0 ================= -->
+<section class="step" id="s0" data-title="학습 목표">
+<div class="stephead"><div class="no">STEP 0</div><h1>내 캐릭터, 굿즈와 카드뉴스가 되다</h1>
+<p>하나의 캐릭터를 여러 곳에 쓰는 <b>원소스 멀티유즈</b>(하나를 만들어 여러 곳에 쓰는 방식) 두 번째 시간입니다. 1교시는 지난 시간에 하던 굿즈를 끝까지 완성하고, 2교시는 같은 캐릭터로 카드뉴스를 만듭니다.</p></div>
+
+<div class="zone ex"><span>설명</span></div>
+<div class="grid">
+<div class="card" id="s0-goal"><h2>오늘의 학습 목표</h2>
+<ol>
+<li>프로젝트 소스에 캐릭터 기준 그림을 넣고, <b>@ 없이도</b> 같은 캐릭터가 나오게 할 수 있다.</li>
+<li>굿즈마다 <b>그림이 들어갈 칸의 비율</b>이 다르다는 것을 알고, 칸에 맞는 그림을 만들 수 있다.</li>
+<li>캔바 목업스로 쿠션·머그·에코백·티셔츠·스티커 목업을 완성할 수 있다.</li>
+<li>유튜브 영상이나 기사에서 <b>근거를 모아</b>(여러 기사를 표·엑셀로 모으는 크롤링 포함) 카드뉴스를 기획하고, 남의 글·사진을 쓸 때 지킬 점을 안다.</li>
+<li>출처에 어울리는 색을 뽑아, 두 캐릭터가 나오는 카드뉴스를 9:16과 1:1로 한 장씩 만들 수 있다.</li>
+<li>가게 정보(시간·가격·분위기·대표 색)를 정확히 넣어 <b>캐릭터 활용형</b>과 <b>실사 SNS형</b> 홍보 카드를 만들고, 핀터레스트 레퍼런스에서 구성만 배워 올 수 있다.</li>
+<li>오늘 순서를 담은 <b>카드뉴스 스킬</b>을 챗GPT에 설치해, 한 줄 요청으로 카드뉴스 작업을 시작할 수 있다.</li>
+</ol></div>
+<div class="card" id="s0-ready"><h2>오늘 필요한 것</h2>
+<ul>
+<li>챗GPT 플러스 계정 (지난 시간 만든 내 캐릭터 프로젝트)</li>
+<li>지난 시간 라이브러리에 저장한 <b>앵커</b>(기준 그림)·<b>캐릭터 시트</b>·<b>표정 시트</b></li>
+<li>캔바 계정 (없으면 <span class="menu">가입 → 구글로 계속</span>, 무료)</li>
+<li>카드뉴스로 만들고 싶은 <b>유튜브 영상 주소 1개</b> 또는 <b>관심 기사 주제 1개</b></li>
+</ul>
+<div class="box set"><div class="t">내 캐릭터 이름 넣기</div>
+아래에 이름을 넣으면 이 교안의 모든 프롬프트(AI에게 보내는 요청문)가 내 캐릭터 이름으로 바뀝니다. 친구 캐릭터가 없으면 비워 두세요.
+<div class="namebar"><label>주인공 <input id="nmN" value="귀찮냥"></label><label>친구 캐릭터 <input id="nmY" value="귀찮양"></label></div></div>
+</div>
+<div class="card full" id="s0-flow"><h2>오늘의 흐름 한눈에 보기</h2>
+<svg viewBox="0 0 1000 300" width="100%" role="img" aria-label="캐릭터에서 굿즈와 카드뉴스로 이어지는 흐름">
+<defs><marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M1 1L8 5L1 9" fill="none" stroke="#0F6E66" stroke-width="1.6"/></marker></defs>
+<rect x="20" y="105" width="150" height="90" rx="16" fill="#E3F1EE" stroke="#0F6E66"/>
+<circle cx="70" cy="140" r="18" fill="#F3DDB8" stroke="#8a6a40"/><path d="M58 126l5-12 7 10z" fill="#333"/>
+<circle cx="118" cy="140" r="20" fill="#F7EEDD" stroke="#a48a60"/><circle cx="104" cy="128" r="6" fill="#B07A44"/><circle cx="132" cy="128" r="6" fill="#B07A44"/>
+<text x="95" y="182" text-anchor="middle" font-size="15" font-weight="700" fill="#0A4F49">내 캐릭터 둘</text>
+<text x="95" y="225" text-anchor="middle" font-size="12" fill="#5C676D">앵커·시트·표정</text>
+<g font-size="14" fill="#1F2A30">
+<rect x="230" y="30" width="150" height="62" rx="12" fill="#fff" stroke="#BFDCD5"/><text x="305" y="58" text-anchor="middle" font-weight="700">① 포즈 뽑기</text><text x="305" y="79" text-anchor="middle" font-size="12" fill="#5C676D">3×3 굿즈용 포즈</text>
+<rect x="430" y="30" width="170" height="62" rx="12" fill="#fff" stroke="#BFDCD5"/><text x="515" y="58" text-anchor="middle" font-weight="700">② 칸에 맞는 그림</text><text x="515" y="79" text-anchor="middle" font-size="12" fill="#5C676D">비율·화풍 맞추기</text>
+<rect x="650" y="30" width="150" height="62" rx="12" fill="#fff" stroke="#BFDCD5"/><text x="725" y="58" text-anchor="middle" font-weight="700">③ 캔바 목업</text><text x="725" y="79" text-anchor="middle" font-size="12" fill="#5C676D">머그·쿠션·티셔츠</text>
+<rect x="840" y="30" width="140" height="62" rx="12" fill="#E3F1EE" stroke="#0F6E66"/><text x="910" y="66" text-anchor="middle" font-weight="700" fill="#0A4F49">굿즈 완성</text>
+<rect x="230" y="208" width="150" height="62" rx="12" fill="#fff" stroke="#E6D3AE"/><text x="305" y="236" text-anchor="middle" font-weight="700">④ 자료 모으기</text><text x="305" y="257" text-anchor="middle" font-size="12" fill="#5C676D">유튜브·기사</text>
+<rect x="430" y="208" width="170" height="62" rx="12" fill="#fff" stroke="#E6D3AE"/><text x="515" y="236" text-anchor="middle" font-weight="700">⑤ 질문·기획·색</text><text x="515" y="257" text-anchor="middle" font-size="12" fill="#5C676D">한 문장 질문, 장별 표</text>
+<rect x="650" y="208" width="150" height="62" rx="12" fill="#fff" stroke="#E6D3AE"/><text x="725" y="236" text-anchor="middle" font-weight="700">⑥ 한 장씩 생성</text><text x="725" y="257" text-anchor="middle" font-size="12" fill="#5C676D">9:16 · 1:1</text>
+<rect x="840" y="208" width="140" height="62" rx="12" fill="#FFF1D9" stroke="#E6D3AE"/><text x="910" y="244" text-anchor="middle" font-weight="700" fill="#7A4B00">카드뉴스 완성</text>
+</g>
+<g stroke="#0F6E66" stroke-width="1.6" fill="none" marker-end="url(#ar)">
+<path d="M170 135 C200 100 205 65 228 62"/><path d="M380 61h48"/><path d="M600 61h48"/><path d="M800 61h38"/>
+<path d="M170 165 C200 200 205 235 228 239"/><path d="M380 239h48"/><path d="M600 239h48"/><path d="M800 239h38"/>
+</g>
+<text x="500" y="160" text-anchor="middle" font-size="13" fill="#5C676D">1교시 ↑ 굿즈 &nbsp;&nbsp;·&nbsp;&nbsp; 2교시 ↓ 카드뉴스</text>
+</svg></div>
+<div class="card full" id="s0-chars"><h2>오늘의 예시 캐릭터: 귀찮냥과 귀찮양</h2>
+<p>선생님 캐릭터 하나로도 충분히 따라 할 수 있습니다. 예시에서는 두 캐릭터가 함께 나와 <b>역할을 나누는</b> 장면까지 보여 드립니다. 친구 캐릭터가 있으면 같은 방법으로 넣어 보세요.</p>
+<div class="shots">
+<figure class="shot"><img src="img/pose_grid.png" alt="귀찮냥 포즈"><figcaption>귀찮냥 — 오늘 STEP 2에서 뽑은 포즈 9칸</figcaption></figure>
+<figure class="shot"><img src="img/yang_anchor.jpg" alt="귀찮양 앵커"><figcaption>귀찮양 앵커(기준 그림)</figcaption></figure>
+<figure class="shot"><img src="img/yang_sheet.jpg" alt="귀찮양 캐릭터 시트"><figcaption>귀찮양 캐릭터 시트 — 앞·반측면·옆·뒤, 표정 3개, 색 2개</figcaption></figure>
+<figure class="shot"><img src="img/yang_3x3.jpg" alt="귀찮양 3x3"><figcaption>귀찮양 뷰·샷·앵글 3×3</figcaption></figure>
+</div></div>
+</div>
+</section>
+
+<!-- ================= STEP 1 ================= -->
+<section class="step" id="s1" data-title="지난 시간 이어 붙이기">
+<div class="stephead"><div class="no">STEP 1</div><h1>지난 시간 이어 붙이기 — 프로젝트에 재료 넣기</h1>
+<p>지난 시간 마지막에 만든 <b>프로젝트</b>(내 캐릭터 전용 작업 폴더)에 기준 그림 세 장을 넣는 데서 시작합니다. 지난 시간에 못 한 부분이라 여기서 합니다.</p></div>
+
+<div class="zone ex"><span>설명</span></div>
+<div class="grid">
+<div class="card" id="s1-why"><h2>왜 프로젝트에 넣어야 하나요?</h2>
+<ul>
+<li><b>매번 @로 부르지 않아도</b> 됩니다. 소스(프로젝트 안 자료)에 들어간 그림은 그 프로젝트 안의 모든 채팅이 참고합니다.</li>
+<li><b>기록이 한곳에 쌓입니다.</b> 일반 채팅은 나중에 찾기 힘들고 검색도 잘 안 될 때가 있습니다.</li>
+<li><b>지침</b>(프로젝트 규칙)이 매번 적용되어 캐릭터 설명을 다시 안 해도 됩니다.</li>
+</ul>
+<svg viewBox="0 0 520 170" width="100%" role="img" aria-label="프로젝트 구조">
+<rect x="10" y="10" width="500" height="150" rx="16" fill="#F7F6F2" stroke="#E6E3DC"/>
+<text x="28" y="36" font-size="15" font-weight="700" fill="#0A4F49">📁 내 캐릭터 작업실 (프로젝트)</text>
+<rect x="28" y="50" width="140" height="95" rx="10" fill="#E3F1EE" stroke="#BFDCD5"/><text x="98" y="74" text-anchor="middle" font-size="13" font-weight="700">소스</text><text x="98" y="98" text-anchor="middle" font-size="12">앵커</text><text x="98" y="116" text-anchor="middle" font-size="12">캐릭터 시트</text><text x="98" y="134" text-anchor="middle" font-size="12">표정 시트</text>
+<rect x="190" y="50" width="140" height="95" rx="10" fill="#EFF0FA" stroke="#CCCFEE"/><text x="260" y="74" text-anchor="middle" font-size="13" font-weight="700">지침</text><text x="260" y="98" text-anchor="middle" font-size="12">생김새·색 유지</text><text x="260" y="116" text-anchor="middle" font-size="12">글자·소품 금지</text><text x="260" y="134" text-anchor="middle" font-size="12">샷·앵글 한 줄</text>
+<rect x="352" y="50" width="140" height="95" rx="10" fill="#fff" stroke="#E6E3DC"/><text x="422" y="74" text-anchor="middle" font-size="13" font-weight="700">채팅들</text><text x="422" y="98" text-anchor="middle" font-size="12">포즈 뽑기</text><text x="422" y="116" text-anchor="middle" font-size="12">굿즈 그림</text><text x="422" y="134" text-anchor="middle" font-size="12">카드뉴스</text>
+</svg></div>
+<div class="card" id="s1-rule"><h2>지난 시간 정리: 저장과 호출</h2>
+<p>참고 이미지 저장은 <b>단일 캐릭터 그림만</b> 됩니다. 캐릭터 시트·표정 시트처럼 여러 모습이 한 장에 있는 그림은 채팅에서 "저장해 줘"라고 하면 거절됩니다. 그럴 땐 아래처럼 직접 넣었습니다.</p>
+<ol class="steps">
+<li>그림 위 <span class="menu">공유</span> → <span class="menu">원본으로 내려받기</span></li>
+<li>왼쪽 <span class="menu">라이브러리</span> → <span class="menu">이미지</span> → <span class="menu">추가</span> → 파일 올리기</li>
+<li>종류에서 <span class="menu">기타</span>를 누르면 이름 칸이 나옵니다 → 이름(예: 귀찮냥 표정 시트) → <span class="menu">저장</span></li>
+<li>새 채팅에서 <span class="kbd">@</span>를 누르고 이름 앞 글자만 쳐도 불러와집니다.</li>
+</ol>
+<div class="box warn"><div class="t">헷갈리기 쉬운 점</div>"저장했어요"라고 답해도, 라이브러리에 있던 그림을 <b>불러오기만</b> 한 경우가 있습니다. 라이브러리의 <b>참고 이미지</b> 목록에 이름이 보여야 진짜 @ 호출이 됩니다.</div></div>
+</div>
+
+<div class="zone do"><span>실행</span></div>
+<div class="grid">
+<div class="card" id="s1-do"><h2>① 기준 그림 세 장을 프로젝트 소스에 넣기</h2>
+<ol class="steps">
+<li>왼쪽 <span class="menu">라이브러리</span>에서 <b>앵커·캐릭터 시트·표정 시트</b>를 하나씩 열고 <span class="menu">내려받기</span>(원본)</li>
+<li>왼쪽 <span class="menu">프로젝트</span>에서 내 작업실(예: 귀찮냥 작업실)을 누릅니다.</li>
+<li>프로젝트 화면의 <span class="menu">소스</span> 탭 → <span class="menu">+ 소스 추가</span> → 세 파일을 올립니다.</li>
+<li>친구 캐릭터가 있으면 그 앵커·시트도 같이 올립니다.</li>
+</ol>
+<figure class="shot"><img src="img/gpt_sources.png" alt="프로젝트 소스 화면"><figcaption>프로젝트 → 소스 탭. 앵커와 시트가 들어간 모습</figcaption></figure></div>
+<div class="card" id="s1-rules"><h2>② 지침 확인하기 (없으면 넣기)</h2>
+<p>지난 시간 만든 지침이 있으면 그대로 둡니다. 없는 분은 프로젝트 오른쪽 위 <span class="menu">⋯</span> → <span class="menu">프로젝트 설정</span> → <span class="menu">지침</span>에 아래를 붙여 넣고 저장합니다.</p>
+<div class="prompt"><div class="ph">공용 프롬프트 · 프로젝트 지침<button onclick="cp(this)">복사</button></div><pre>이 프로젝트는 내 캐릭터 {N}의 작업실이다.
+- 캐릭터: (생김새·성격을 두 줄로 적기. 예: 만사가 귀찮고 아무 생각이 없는 찹쌀떡 몸의 고양이)
+- 규칙 1: 항상 소스의 앵커·캐릭터 시트를 참고해 생김새, 색, 화풍을 유지한다.
+- 규칙 2: 내가 따로 말하지 않으면 손에 물건을 쥐지 않는다.
+- 규칙 3: 그림 안에 글자를 넣지 않는다.
+- 규칙 4: 그림 아래에 어떤 샷·앵글·조명을 썼는지 한 줄로 적는다.
+- 친구 캐릭터 {Y}가 함께 나오면 두 캐릭터의 생김새를 각자 기준 그대로 지키고, 같은 장면에서 역할(시선·자세)을 나눈다.</pre></div>
+<div class="box warn"><div class="t">메모리 설정은 한 번만 정할 수 있어요</div>프로젝트를 만들 때 고른 <b>기본 메모리 / 프로젝트 전용 메모리</b>는 나중에 바꿀 수 없습니다. 프로젝트 전용은 다른 채팅의 기억에 영향을 받지 않는 대신, 바깥 채팅과 기억을 나누지 않습니다.</div></div>
+<div class="card" id="s1-check"><h2>③ 제대로 들어갔는지 확인</h2>
+<p>프로젝트 안에서 <b>새 채팅</b>을 열고(@ 없이) 보냅니다. 같은 캐릭터가 나오면 성공입니다.</p>
+<div class="prompt"><div class="ph">공용 프롬프트 · 확인용<button onclick="cp(this)">복사</button></div><pre>소스의 {N}가 햇빛 드는 창가에 기대어 밖을 보는 장면을 한 장. 반측면, 미디엄 샷, 눈높이, 창문으로 들어오는 따뜻한 자연광. 정사각형.</pre></div>
+<div class="box tip"><div class="t">이번만 규칙을 풀고 싶을 때</div>지침에 "글자 금지"가 있어도, 요청 끝에 <b>(이번 요청은 지침 예외: 글자 허용)</b>처럼 한 줄을 붙이면 그 요청에서만 풀립니다. 오늘 카드뉴스와 포즈 번호에서 계속 씁니다.</div>
+<div class="box warn"><div class="t">막힐 때</div>
+<ul><li><b>다른 캐릭터가 나온다</b> → 소스 탭에 파일이 보이는지 확인 → 그래도 다르면 요청 앞에 <b>@{N}</b>를 붙여 보냅니다.</li>
+<li><b>소스 추가 버튼이 없다</b> → 프로젝트 안이 아니라 일반 채팅에 있는 것입니다. 왼쪽 프로젝트 이름을 먼저 누르세요.</li></ul></div></div>
+</div>
+</section>
+
+<!-- ================= STEP 2 ================= -->
+<section class="step" id="s2" data-title="포즈 뽑기">
+<div class="stephead"><div class="no">STEP 2</div><h1>굿즈용 포즈 뽑기</h1>
+<p>굿즈는 "예쁜 그림"보다 "<b>칸에 잘 들어가는 실루엣</b>"(겉모양 윤곽)이 중요합니다. 3×3 그리드(바둑판 9칸)로 한 번에 여러 포즈를 뽑아 놓고 고릅니다.</p></div>
+
+<div class="zone ex"><span>설명</span></div>
+<div class="grid">
+<div class="card" id="s2-pick"><h2>굿즈에 좋은 포즈 고르는 기준</h2>
+<ul>
+<li><b>실루엣이 단순</b>할 것 — 스티커 칼선(오리는 선)이 깔끔해집니다.</li>
+<li><b>귀·꼬리·뿔이 잘리지 않을 것</b> — 잘리면 인쇄할 때 고칠 수 없습니다.</li>
+<li><b>정면이나 반측면</b>일 것 — 뒷모습은 캐릭터인지 알아보기 어렵습니다.</li>
+</ul>
+<table><tr><th>굿즈</th><th>잘 맞는 포즈</th></tr>
+<tr><td>스티커</td><td>표정이 크게 보이는 상반신·얼굴</td></tr>
+<tr><td>키링</td><td>작고 동그랗게 뭉친 전신, 점프</td></tr>
+<tr><td>머그(돌려 보는 영상)</td><td>옆으로 길게 눕기 — 가로로 긴 칸</td></tr>
+<tr><td>티셔츠·에코백</td><td>단독으로 크게, 손 흔들기·인사</td></tr></table></div>
+<div class="card" id="s2-result"><h2>실제로 돌려 본 결과</h2>
+<figure class="shot"><img src="img/pose_grid.png" alt="귀찮냥 포즈 9칸"><figcaption>아래 공용 프롬프트 결과 (1254×1254 정사각형)</figcaption></figure>
+<p class="ok">✔ 9칸 모두 같은 캐릭터, 번호도 지시대로 작게 들어갔습니다.</p>
+<p class="no">✘ ⑦ 뒤돌아보기는 거의 정면처럼 나왔습니다. → 아래 확장 프롬프트로 그 칸만 다시 뽑습니다.</p></div>
+</div>
+
+<div class="zone do"><span>실행</span></div>
+<div class="grid">
+<div class="card full" id="s2-do"><h2>① 3×3 포즈 뽑기</h2>
+<p>프로젝트 안 새 채팅에 그대로 붙여 넣습니다.</p>
+<div class="prompt"><div class="ph">공용 프롬프트 · 포즈 9칸<button onclick="cp(this)">복사</button></div><pre>소스의 {N}(앵커·캐릭터 시트)로 굿즈용 포즈 9개를 3×3 그리드 한 장(정사각형)으로 그려 줘. 흰 배경, 칸마다 같은 크기, 귀·꼬리까지 칸 안에 다 들어오게.
+포즈: ① 정면 앉기 ② 한 손 흔들기 ③ 엎드려 졸기 ④ 기지개 ⑤ 점프 ⑥ 옆으로 길게 눕기 ⑦ 뒤돌아보기 ⑧ 얼굴 클로즈업 ⑨ 두 손 모아 인사.
+생김새·색·질감은 소스 그대로. (이번 요청은 지침 예외: 칸 왼쪽 위에 작은 번호만 허용)</pre></div>
+<div class="prompt x"><div class="ph">확장 프롬프트 · 한 칸만 다시<button onclick="cp(this)">복사</button></div><pre>⑦번 칸만 다시 그려 줘. 등이 화면을 향하고 고개만 살짝 돌려 어깨 너머로 보는 모습. 나머지 8칸은 그대로 두고, 같은 3×3 한 장으로.</pre></div>
+<div class="prompt x"><div class="ph">확장 프롬프트 · 친구 캐릭터도 9칸<button onclick="cp(this)">복사</button></div><pre>같은 방법으로 소스의 {Y}도 굿즈용 포즈 9칸(3×3, 흰 배경, 정사각형)을 그려 줘. 포즈 번호와 순서는 위와 같게, 생김새·색·질감은 {Y} 기준 그대로.</pre></div>
+<div class="box warn"><div class="t">막힐 때</div>
+<ul><li><b>칸마다 캐릭터가 조금씩 다르다</b> → "9칸 모두 같은 캐릭터, 눈·코·귀 위치와 색을 소스와 똑같이"를 덧붙여 다시.</li>
+<li><b>칸 크기가 제각각</b> → "칸 사이에 얇은 흰 선, 칸 크기 모두 같게".</li>
+<li><b>번호 대신 긴 글자가 들어간다</b> → "번호 숫자 하나만, 다른 글자 없음".</li></ul></div></div>
+</div>
+</section>
+
+<!-- ================= STEP 3 ================= -->
+<section class="step" id="s3" data-title="칸에 맞는 그림">
+<div class="stephead"><div class="no">STEP 3</div><h1>목업 칸에 맞는 그림 만들기 — 비율과 화풍</h1>
+<p>지난 시간 8초 머그 영상에 캐릭터를 넣었더니 얼굴이 사라졌죠? 그 이유는 <b>그림 칸의 모양</b>이 달랐기 때문입니다. 캔바는 목업마다 "최적 크기"를 알려 줍니다. 그 비율대로 그림을 만들면 잘리지 않습니다.</p></div>
+
+<div class="zone ex"><span>설명</span></div>
+<div class="grid">
+<div class="card full" id="s3-ratio"><h2>캔바 목업스가 알려 주는 "최적 크기" (직접 확인한 값)</h2>
+<p>목업을 하나 누르면 왼쪽에 <b>"이미지를 목업 템플릿으로 끌어다 놓으면 됩니다 · 최적 크기: ○○ × ○○ px 또는 이와 동일한 비율"</b>이라고 나옵니다. 숫자보다 <b>비율</b>이 중요합니다.</p>
+<svg viewBox="0 0 1000 230" width="100%" role="img" aria-label="목업별 그림 칸 비율">
+<g font-size="13" text-anchor="middle" fill="#1F2A30">
+<rect x="20" y="40" width="110" height="105" rx="6" fill="#E3F1EE" stroke="#0F6E66"/><text x="75" y="170" font-weight="700">머그(사진)</text><text x="75" y="190" fill="#5C676D">≈ 1:1</text>
+<rect x="160" y="65" width="240" height="110" rx="6" fill="#FFF1D9" stroke="#C98A20"/><text x="280" y="125" font-weight="700" fill="#7A4B00">가로로 긴 칸!</text><text x="280" y="200" font-weight="700">머그 8초 영상</text><text x="280" y="220" fill="#5C676D">가로 2:1</text>
+<rect x="430" y="40" width="105" height="105" rx="6" fill="#E3F1EE" stroke="#0F6E66"/><text x="482" y="170" font-weight="700">쿠션·에코백</text><text x="482" y="190" fill="#5C676D">정사각 1:1</text>
+<circle cx="615" cy="92" r="52" fill="#E3F1EE" stroke="#0F6E66"/><text x="615" y="170" font-weight="700">원형 스티커</text><text x="615" y="190" fill="#5C676D">1:1 원으로 잘림</text>
+<rect x="700" y="30" width="95" height="122" rx="6" fill="#EFF0FA" stroke="#3C3F8A"/><text x="747" y="170" font-weight="700">티셔츠</text><text x="747" y="190" fill="#5C676D">세로 3:4</text>
+<rect x="840" y="12" width="68" height="148" rx="12" fill="#EFF0FA" stroke="#3C3F8A"/><text x="874" y="180" font-weight="700">스마트폰</text><text x="874" y="200" fill="#5C676D">9:19.5</text>
+</g></svg>
+<table><tr><th>목업 (캔바 목업스)</th><th>최적 크기</th><th>그림 비율로 만들기</th><th>그림 만들 때 주의</th></tr>
+<tr><td>머그컵 (사진, 홈 & 리빙)</td><td>1235 × 1181</td><td>정사각형 1:1</td><td>캐릭터를 가운데, 위아래 여백</td></tr>
+<tr><td><b>머그컵 8초 영상</b></td><td>1920 × 884</td><td><b>가로 2:1</b></td><td>컵이 돌아가며 보이므로 양 끝은 배경만</td></tr>
+<tr><td>쿠션</td><td>2000 × 2000</td><td>정사각형 1:1</td><td>가장자리가 접혀 보임 → 캐릭터는 안쪽 80% 안에</td></tr>
+<tr><td>에코백 8초 영상</td><td>1920 × 1920</td><td>정사각형 1:1</td><td>선 그림·단색이 잘 어울림</td></tr>
+<tr><td>종이컵</td><td>1535 × 1581</td><td>거의 1:1</td><td>컵 곡면 때문에 가운데만 또렷함</td></tr>
+<tr><td>원형 스티커 (인쇄)</td><td>1000 × 1000</td><td>1:1, <b>원으로 잘림</b></td><td>네 모서리는 잘리니 캐릭터를 원 안에</td></tr>
+<tr><td>흰 티셔츠 (의상)</td><td>1344 × 1728</td><td><b>세로 3:4</b></td><td>배경 투명 PNG면 옷 색이 그대로 보임</td></tr>
+<tr><td>스마트폰 (카드뉴스 확인용)</td><td>1320 × 2868</td><td>9:16 카드 넣으면 위아래 조금 잘림</td><td>STEP 10에서 사용</td></tr>
+<tr><td>키링</td><td colspan="3"><span class="no">캔바 목업스에 없음</span> → 챗GPT로 "실물 사진 목업"을 바로 만듭니다(아래 실행 ④).</td></tr></table>
+<p style="font-size:.75rem;color:#5C676D">2026년 11월 24일 캔바 목업스 앱에서 각 목업을 직접 눌러 확인한 값입니다. 목업마다 다르니, 다른 목업을 쓸 땐 왼쪽에 뜨는 최적 크기를 꼭 확인하세요.</p></div>
+<div class="card" id="s3-shots"><h2>캔바에서 본 칸 모양</h2>
+<div class="shots">
+<figure class="shot"><img src="img/mock_mug_video_c.jpg" alt=""><figcaption>머그 8초 — 가로로 긴 칸</figcaption></figure>
+<figure class="shot"><img src="img/mock_sticker_c.jpg" alt=""><figcaption>원형 스티커</figcaption></figure>
+<figure class="shot"><img src="img/mock_tshirt_c.jpg" alt=""><figcaption>티셔츠 — 세로 칸</figcaption></figure>
+<figure class="shot"><img src="img/mock_cushion_c.jpg" alt=""><figcaption>쿠션 — 정사각형</figcaption></figure>
+</div>
+<p>하늘과 풀밭 그림이 들어간 자리가 <b>내 그림이 들어갈 칸</b>입니다.</p></div>
+<div class="card" id="s3-style"><h2>제품에 따라 화풍 바꾸기</h2>
+<p>캐릭터의 <b>선과 생김새</b>만 지키면, 화풍(그림 느낌)은 제품에 맞게 바꿔도 됩니다.</p>
+<table><tr><th>제품</th><th>어울리는 화풍</th></tr>
+<tr><td>머그·쿠션</td><td>지금의 매트 클레이(점토) 그대로</td></tr>
+<tr><td>티셔츠</td><td>배경 없는 투명 PNG, 그림자 없이</td></tr>
+<tr><td>에코백</td><td>검은 선 한 가지 색의 단순한 선 그림(1도 인쇄)</td></tr>
+<tr><td>스티커</td><td>흰 테두리 다이컷(모양대로 오리기), 변칙으로 8비트 픽셀</td></tr>
+<tr><td>아크릴 키링</td><td>두꺼운 흰 테두리 + 투명 아크릴 광택</td></tr></table></div>
+</div>
+
+<div class="zone do"><span>실행</span></div>
+<div class="grid">
+<div class="card" id="s3-do1"><h2>① 머그 8초 영상용 — 가로 2:1 (두 캐릭터)</h2>
+<div class="prompt"><div class="ph">공용 프롬프트 · 가로 2:1<button onclick="cp(this)">복사</button></div><pre>캔바 8초 머그컵 영상 목업에 넣을 가로 2:1 그림 한 장을 만들어 줘. 컵을 돌리면 이야기가 이어지도록: 왼쪽에는 {N}가 옆으로 길게 누워 있고, 오른쪽에는 {Y}가 앉아서 {N} 쪽을 겨우 쳐다본다. 두 캐릭터 사이는 조금 떨어뜨리고 양쪽 끝 15%는 배경만. 배경은 연한 크림색 단색, 두 캐릭터 생김새·색·질감은 각자 기준 그대로, 글자 없음.</pre></div>
+<figure class="shot"><img src="img/mug_duo.png" alt="두 캐릭터 머그 가로 그림"><figcaption>실제 결과 — 가로 2:1로 정확히 나옴</figcaption></figure>
+<div class="prompt x"><div class="ph">확장 · 캐릭터 하나만<button onclick="cp(this)">복사</button></div><pre>위 9칸 그림에서 ⑥번(옆으로 길게 눕기) 포즈만 골라, 캔바 8초 머그컵 영상 목업에 넣을 가로로 긴 그림 한 장을 만들어 줘. 비율은 가로 2 : 세로 1. 배경은 연한 하늘색 단색, {N}는 가운데에 그림 높이의 60% 크기로, 좌우는 배경만 넓게 비워 줘(컵이 돌아갈 때 보이는 부분). 글자 없음.</pre></div>
+<figure class="shot"><img src="img/mug_wide.png" alt="한 캐릭터 머그 가로 그림"><figcaption>결과: 1774×887(2:1). 캐릭터 크기는 지시보다 크게 나옴 → 캔바에서 조절</figcaption></figure>
+<div class="box ext"><div class="t">친구 캐릭터가 소스에 없을 때</div>입력창 왼쪽 <span class="menu">+</span>로 친구 캐릭터 앵커를 첨부하고, 프롬프트 맨 앞에 "첨부한 그림은 {N}의 친구 {Y}야."를 붙이세요.</div></div>
+<div class="card" id="s3-do2"><h2>② 티셔츠용 — 세로 3:4 투명 배경</h2>
+<div class="prompt"><div class="ph">공용 프롬프트 · 티셔츠 인쇄용<button onclick="cp(this)">복사</button></div><pre>위 9칸 그림의 ②번(한 손 흔들기) 포즈로 티셔츠 가슴 인쇄용 그림 한 장을 만들어 줘. 세로 3:4, 배경은 투명(투명 PNG), {N}만 가운데에 크게, 바닥 그림자·소품 없이. 생김새·색·질감은 소스 그대로, 글자 없음.</pre></div>
+<figure class="shot"><img src="img/tshirt_print.jpg" alt="티셔츠 인쇄용 그림"><figcaption>결과: 1086×1448(3:4), 배경이 실제로 투명한 PNG</figcaption></figure>
+<div class="box tip"><div class="t">투명인지 확인하는 법</div>화면에선 흰 바탕처럼 보입니다. 내려받아 캔바에 올렸을 때 <b>체크무늬</b>나 아래 색이 비치면 투명입니다.</div></div>
+<div class="card" id="s3-do3"><h2>③ 스티커용 — 원형 1:1 / 에코백용 — 선 그림</h2>
+<div class="prompt"><div class="ph">공용 프롬프트 · 원형 스티커<button onclick="cp(this)">복사</button></div><pre>위 9칸 그림의 ⑧번(얼굴 클로즈업)으로 원형 스티커용 그림 한 장. 정사각형 1:1, 연한 민트색 원형 배경이 그림 가득, {N} 얼굴은 원 안쪽 70% 안에 들어오게(네 모서리는 잘림). 생김새·색은 소스 그대로, 글자 없음.</pre></div>
+<figure class="shot"><img src="img/sticker_round.png" alt="원형 스티커 그림"><figcaption>결과: 원 밖 모서리는 흰색이라 원형 스티커 칸에 그대로 맞습니다. 얼굴은 지시(70%)보다 크게, 입 모양은 살짝 바뀌어 나왔습니다 → 마음에 안 들면 "표정은 소스와 같게, 입은 다물게"를 붙여 다시.</figcaption></figure>
+<div class="prompt"><div class="ph">공용 프롬프트 · 에코백 선 그림<button onclick="cp(this)">복사</button></div><pre>이번에는 같은 {N}를 에코백에 인쇄할 검은 선 한 가지 색의 단순한 선 그림(라인 드로잉)으로 바꿔 줘. ①번(정면 앉기) 포즈, 정사각형, 흰 배경, 색 채우기 없이 선만, 선 굵기 일정하게. 생김새의 선은 소스 그대로.</pre></div>
+<div class="box warn"><div class="t">막힐 때</div>
+<ul><li><b>비율이 다르게 나온다</b> → 첫 문장에 비율을 다시 적기: "가로 2:1(가로가 세로의 두 배)".</li>
+<li><b>선 그림에 색이 들어간다</b> → "회색 그림자·음영도 없이 검은 선만".</li></ul></div></div>
+<div class="card" id="s3-do4"><h2>④ 캔바에 없는 굿즈 — 키링 실물 목업을 챗GPT로</h2>
+<div class="prompt"><div class="ph">공용 프롬프트 · 아크릴 키링 사진<button onclick="cp(this)">복사</button></div><pre>⑤번(점프) 포즈로 아크릴 키링 실물 사진 목업 한 장을 만들어 줘. 투명 아크릴 판에 {N}가 인쇄되고 바깥에 두꺼운 흰 테두리(칼선)가 있으며, 위쪽 구멍에 은색 금속 고리. 밝은 나무 책상 위, 부드러운 자연광, 정사각형. {N} 생김새·색은 소스 그대로, 글자 없음.</pre></div>
+<div class="shots">
+<figure class="shot"><img src="img/keyring_wrong.png" alt=""><figcaption class="no">✘ 1번 안: 엉뚱한 고양이</figcaption></figure>
+<figure class="shot"><img src="img/keyring_right.png" alt=""><figcaption class="ok">✔ 2번 안: 소스를 참고한 귀찮냥</figcaption></figure>
+</div>
+<div class="box warn"><div class="t">실제로 겪은 일</div>"실물 사진"을 요청하면 그림 두 장을 보여 주며 고르게 할 때가 있습니다. 이번 시험에서 <b>1번 안은 전혀 다른 고양이</b>였습니다. 그림 <b>왼쪽 아래에 소스 그림이 작게 표시된 쪽</b>이 내 캐릭터를 참고한 결과입니다. 그쪽을 고르세요. 둘 다 다르면 요청 앞에 <b>@{N}</b>를 붙여 다시 보냅니다.</div></div>
+</div>
+</section>
+
+<!-- ================= STEP 4 ================= -->
+<section class="step" id="s4" data-title="캔바 목업스">
+<div class="stephead"><div class="no">STEP 4</div><h1>캔바 목업스로 굿즈 완성하기</h1>
+<p>목업(Mockup)은 "내 그림이 실제 제품에 들어가면 이렇게 보인다"를 미리 보여 주는 합성 사진입니다. 캔바의 목업스 앱은 <b>무료</b>이고, 일부는 <b>움직이는 영상</b>으로도 나옵니다.</p></div>
+
+<div class="zone ex"><span>설명</span></div>
+<div class="grid">
+<div class="card" id="s4-what"><h2>목업스 화면 구성</h2>
+<div class="shots"><figure class="shot"><img src="img/mockups_panel_c.jpg" alt="목업스 카테고리"><figcaption>카테고리: 동영상 목업 · 프레임 · 스마트폰 · 인쇄 · 의상 · 컴퓨터 · 홈 & 리빙 · 포장 · 야외 · 그래픽 · 태블릿 및 TV</figcaption></figure>
+<figure class="shot"><img src="img/mockups_home_c.jpg" alt="홈 앤 리빙"><figcaption>홈 & 리빙 모두 보기 — 왼쪽 아래 "8.0초"가 붙은 건 영상 목업</figcaption></figure></div>
+<div class="box tip"><div class="t">검색도 돼요</div>목업 검색창에 <b>스티커</b>처럼 한글로 치면 관련 목업이 모여 나옵니다. 단, <b>키링</b>은 검색해도 없습니다(STEP 3의 ④로 대신).</div></div>
+<div class="card" id="s4-flow"><h2>목업에 넣는 두 가지 방법</h2>
+<svg viewBox="0 0 520 220" width="100%" role="img" aria-label="목업에 그림 넣는 방법">
+<g font-size="13" fill="#1F2A30">
+<rect x="10" y="15" width="150" height="56" rx="10" fill="#E3F1EE" stroke="#BFDCD5"/><text x="85" y="40" text-anchor="middle" font-weight="700">목업 클릭</text><text x="85" y="58" text-anchor="middle" font-size="11">페이지에 들어감</text>
+<rect x="185" y="15" width="150" height="56" rx="10" fill="#fff" stroke="#E6E3DC"/><text x="260" y="40" text-anchor="middle" font-weight="700">업로드 항목</text><text x="260" y="58" text-anchor="middle" font-size="11">내 그림 올리기</text>
+<rect x="360" y="15" width="150" height="56" rx="10" fill="#FFF1D9" stroke="#E6D3AE"/><text x="435" y="40" text-anchor="middle" font-weight="700">그림을 끌어다</text><text x="435" y="58" text-anchor="middle" font-size="11">목업 위에 놓기</text>
+<rect x="10" y="130" width="150" height="56" rx="10" fill="#E3F1EE" stroke="#BFDCD5"/><text x="85" y="155" text-anchor="middle" font-weight="700">업로드 항목</text><text x="85" y="173" text-anchor="middle" font-size="11">내 그림 클릭</text>
+<rect x="185" y="130" width="150" height="56" rx="10" fill="#fff" stroke="#E6E3DC"/><text x="260" y="155" text-anchor="middle" font-weight="700">목업스 앱</text><text x="260" y="173" text-anchor="middle" font-size="11">원하는 목업 클릭</text>
+<rect x="360" y="130" width="150" height="56" rx="10" fill="#FFF1D9" stroke="#E6D3AE"/><text x="435" y="155" text-anchor="middle" font-weight="700">더블클릭 → 맞춤</text><text x="435" y="173" text-anchor="middle" font-size="11">잘린 부분 조정</text>
+<text x="10" y="112" font-size="12" fill="#5C676D">방법 B (지난 시간 방식)</text><text x="10" y="10" font-size="12" fill="#5C676D">방법 A</text>
+</g>
+<g stroke="#0F6E66" stroke-width="1.5" fill="none" marker-end="url(#ar)"><path d="M160 43h23"/><path d="M335 43h23"/><path d="M160 158h23"/><path d="M335 158h23"/></g>
+</svg>
+<p>어느 쪽이든 마지막엔 <b>더블클릭 → 맞춤</b>으로 얼굴이 칸 안에 오게 맞춥니다.</p></div>
+</div>
+
+<div class="zone do"><span>실행</span></div>
+<div class="grid">
+<div class="card full" id="s4-do"><h2>① 머그 영상·쿠션·티셔츠 목업 만들기</h2>
+<ol class="steps">
+<li>STEP 3에서 만든 그림들을 챗GPT에서 <span class="menu">내려받기</span>합니다(머그 2:1, 티셔츠 3:4, 정사각형 하나).</li>
+<li>캔바에서 <span class="menu">프레젠테이션</span>을 만듭니다.</li>
+<li>왼쪽 <span class="menu">앱</span> → 아래로 내려 <span class="menu">Mockups(목업스)</span>를 누릅니다.</li>
+<li><span class="menu">홈 & 리빙</span> <span class="menu">모두 보기</span> → <b>머그컵 8초</b>를 누릅니다. 왼쪽에 <b>최적 크기 1920×884</b>가 뜨는지 확인하세요.</li>
+<li>왼쪽 <span class="menu">업로드 항목</span> → <span class="menu">파일 업로드</span> → 머그용 2:1 그림을 올립니다.</li>
+<li>올린 그림을 <b>머그 위로 끌어다 놓습니다.</b> 잘려 보이면 <b>더블클릭 → 맞춤</b> → <span class="menu">적용</span>.</li>
+<li>같은 방법으로 <b>쿠션</b>(정사각형 그림)과 <span class="menu">의상</span>의 <b>흰 티셔츠</b>(3:4 투명 그림)도 만듭니다.</li>
+<li>오른쪽 위 <span class="menu">프레젠테이션</span>으로 재생하면 영상 목업이 움직이는 걸 볼 수 있습니다. 저장은 <span class="menu">공유 → 다운로드</span>에서 영상은 MP4, 사진은 PNG.</li>
+</ol>
+<div class="box warn"><div class="t">막힐 때</div>
+<ul><li><b>앱 목록에 Mockups가 안 보인다</b> → 앱 검색창에 <b>Mockups</b>를 칩니다.</li>
+<li><b>얼굴이 사라졌다</b> → 그림 비율이 칸과 다른 것입니다. 더블클릭 → 맞춤, 그래도 안 되면 STEP 3 표의 비율로 다시 만듭니다.</li>
+<li><b>티셔츠에 흰 네모가 보인다</b> → 투명 PNG가 아닙니다. "배경 투명 PNG로 다시"를 보냅니다.</li></ul></div>
+<div class="box ext"><div class="t">한 걸음 더</div>
+<ul><li><span class="menu">인쇄</span>의 원형 스티커, <span class="menu">포장</span>의 쇼핑백도 같은 방법으로 해 보세요.</li>
+<li>목업 세 장을 한 페이지에 모으면 <b>"내 굿즈 라인업"</b> 소개 이미지가 됩니다. 8차시 상품 등록 때 대표 이미지로 씁니다.</li></ul></div></div>
+</div>
+</section>
+
+<!-- ================= STEP 5 ================= -->
+<section class="step" id="s5" data-title="카드뉴스 기획">
+<div class="stephead"><div class="no">STEP 5</div><h1>카드뉴스는 "질문 한 문장"에서 시작한다</h1>
+<p>카드뉴스는 가게 홍보만 있는 게 아닙니다. <b>유튜브 영상이나 기사를 내 캐릭터가 대신 설명해 주는 정보 카드</b>로 만들면, 매주 새 소식으로 꾸준히 올릴 수 있습니다.</p></div>
+
+<div class="zone ex"><span>설명</span></div>
+<div class="grid">
+<div class="card full" id="s5-5steps"><h2>카드뉴스 만드는 5단계</h2>
+<svg viewBox="0 0 1000 170" width="100%" role="img" aria-label="질문 근거 기획 제작 검수 5단계">
+<g font-size="14" text-anchor="middle" fill="#1F2A30">
+<rect x="10" y="20" width="170" height="90" rx="14" fill="#E3F1EE" stroke="#0F6E66"/><text x="95" y="52" font-weight="700" fill="#0A4F49">① 질문</text><text x="95" y="76" font-size="12">독자가 오늘 궁금한 것</text><text x="95" y="94" font-size="12">한 문장</text>
+<rect x="210" y="20" width="170" height="90" rx="14" fill="#fff" stroke="#BFDCD5"/><text x="295" y="52" font-weight="700">② 근거</text><text x="295" y="76" font-size="12">기사·영상 어디에</text><text x="295" y="94" font-size="12">나온 말인지</text>
+<rect x="410" y="20" width="170" height="90" rx="14" fill="#fff" stroke="#BFDCD5"/><text x="495" y="52" font-weight="700">③ 기획</text><text x="495" y="76" font-size="12">장마다 질문·답·장면</text><text x="495" y="94" font-size="12">·출처를 한 줄로</text>
+<rect x="610" y="20" width="170" height="90" rx="14" fill="#fff" stroke="#BFDCD5"/><text x="695" y="52" font-weight="700">④ 제작</text><text x="695" y="76" font-size="12">한 번에 한 장만</text><text x="695" y="94" font-size="12">생성</text>
+<rect x="810" y="20" width="170" height="90" rx="14" fill="#FFF1D9" stroke="#E6D3AE"/><text x="895" y="52" font-weight="700" fill="#7A4B00">⑤ 검수</text><text x="895" y="76" font-size="12">글자·숫자·출처를</text><text x="895" y="94" font-size="12">이미지에서 직접 읽기</text>
+</g>
+<g stroke="#0F6E66" stroke-width="1.6" fill="none" marker-end="url(#ar)"><path d="M180 65h28"/><path d="M380 65h28"/><path d="M580 65h28"/><path d="M780 65h28"/></g>
+<text x="500" y="150" text-anchor="middle" font-size="13" fill="#5C676D">표지에서 던진 질문에 마지막 장이 답하면, 제목만 넘겨 봐도 이야기가 이어집니다.</text>
+</svg></div>
+<div class="card" id="s5-q"><h2>① 질문 한 문장이 왜 먼저일까?</h2>
+<p>"이 카드를 본 사람이 <b>무엇을 이해하거나 결정할 수 있어야 하나?</b>"를 먼저 정해야 표지 문구와 마지막 장이 이어집니다.</p>
+<table><tr><th>흐린 질문 ✘</th><th>또렷한 질문 ✔</th></tr>
+<tr><td>릴리스AI 소식</td><td>요약해 주던 릴리스AI가 리드레이로 바뀌었다는데, 무엇이 달라졌을까?</td></tr>
+<tr><td>새 AI가 더 좋다</td><td>같은 작업에서 답을 더 빨리 받았나? 그 답도 정확했나?</td></tr></table>
+<div class="box tip"><div class="t">비교 주제일 때</div>"더 좋다"는 비교 대상과 기준이 없는 말입니다. 질문을 <b>속도</b>와 <b>정확도</b>처럼 둘로 나누면, 근거가 있는 쪽만 정확히 답할 수 있습니다.</div></div>
+<div class="card" id="s5-channel"><h2>같은 자료, 두 가지 읽는 속도</h2>
+<table><tr><th></th><th>세로 9:16 요약판</th><th>정사각 1:1 심화판</th></tr>
+<tr><td>어디에</td><td>카톡방·인스타 스토리·릴스</td><td>인스타 피드·유튜브 게시판·블로그</td></tr>
+<tr><td>장수</td><td>단순하면 3장, 보통 5장</td><td>5~8장, 많으면 10장</td></tr>
+<tr><td>첫 장</td><td>무엇을 할 수 있는지 한 문장 + 결과 장면</td><td>같은 질문 + 근거·비교 범위 예고</td></tr>
+<tr><td>중간</td><td>결과 → 따라 할 한 단계 → 조건·주의</td><td>입력과 결과 → 실제 화면 → 비교 기준 → 한계</td></tr>
+<tr><td>마지막</td><td>오늘 해 볼 행동</td><td>확인한 결론 + 다시 찾을 출처</td></tr></table></div>
+<div class="card" id="s5-count"><h2>몇 장으로 만들까?</h2>
+<ul><li>질문 하나, 행동이 단순 → <b>후킹(눈길 끌기) → 핵심 근거 → 행동</b>의 3장</li>
+<li>헷갈리기 쉬운 조건(무료 범위, 권한 등)이 있으면 <b>조건 하나당 한 장</b></li>
+<li>여러 강의·상품을 소개할 땐 빠진 것부터 찾고 주제별로 묶기</li></ul>
+<div class="box set"><div class="t">마지막 장 공식 (배움형)</div><b>Learning</b>(배운 점) → <b>Unlearning</b>(버릴 습관) → <b>Relearning</b>(다음 행동)을 한 줄씩. 홍보·모집이면 신청·마감으로, 실습이면 마지막 확인 행동으로 닫습니다.</div></div>
+<div class="card" id="s5-samples"><h2>완성 예시 — 이렇게까지 만들어 봅니다</h2>
+<div class="shots">
+<figure class="shot"><img src="img/sample_rea_01.jpg" alt=""><figcaption>9:16 표지: 질문 + 짧은 답 + 결과 장면</figcaption></figure>
+<figure class="shot"><img src="img/sample_rea_05.jpg" alt=""><figcaption>9:16 중간: 새로 알게 될 점 하나</figcaption></figure>
+<figure class="shot"><img src="img/sample_nb_01.jpg" alt=""><figcaption>1:1 표지: 두 캐릭터가 역할을 나눔</figcaption></figure>
+<figure class="shot"><img src="img/sample_nb_10.jpg" alt=""><figcaption>1:1 마지막: Learning · Unlearning · Relearning</figcaption></figure>
+</div></div>
+</div>
+
+<div class="zone do"><span>실행</span></div>
+<div class="grid">
+<div class="card full" id="s5-do"><h2>① 내 카드뉴스 질문 정하기</h2>
+<p>아래 빈칸을 채워 메모장에 적어 두세요. 다음 STEP에서 자료를 모은 뒤 기획 프롬프트에 그대로 넣습니다.</p>
+<div class="prompt"><div class="ph">빈칸 틀 · 질문 한 문장<button onclick="cp(this)">복사</button></div><pre>독자: (예: AI 도구를 막 쓰기 시작한 50~60대 / 우리 가게 단골 / 같은 취미 모임)
+게시처: (예: 카톡방 → 9:16 / 인스타 피드 → 1:1)
+독자가 오늘 궁금해할 질문: (예: ○○가 바뀌었다는데 나는 뭘 하면 될까?)
+내 캐릭터 역할: {N}는 (예: 귀찮아하며 궁금해하는 쪽), {Y}는 (예: 짚어 주고 확인해 주는 쪽)</pre></div></div>
+</div>
+</section>
+
+<!-- ================= STEP 6 ================= -->
+<section class="step" id="s6" data-title="자료 모으기">
+<div class="stephead"><div class="no">STEP 6</div><h1>자료 모으기 — 유튜브 영상과 기사</h1>
+<p>정보 카드뉴스의 힘은 <b>근거</b>입니다. "어디에 그렇게 나왔는지"를 붙여 두면, 카드에 쓸 말과 쓰면 안 되는 말이 저절로 갈립니다.</p></div>
+
+<div class="zone ex"><span>설명</span></div>
+<div class="grid">
+<div class="card" id="s6-yt"><h2>유튜브 영상 내용 가져오는 방법</h2>
+<table><tr><th>방법</th><th>특징</th></tr>
+<tr><td><b>① 유튜브 스크립트 복사 → 챗GPT</b><br><span class="chip">가장 확실 · 무료</span></td><td>영상 아래 <span class="menu">더보기</span> → <span class="menu">스크립트 표시</span> → 오른쪽에 뜬 글을 전부 끌어 복사 → 챗GPT에 붙여 넣기. 실제로 한 말이 근거가 됩니다.</td></tr>
+<tr><td><b>② 라이브위키 (livewiki.com)</b></td><td>유튜브·PDF 요약 도구. 크롬 확장 프로그램을 깔면 영상 옆 <b>Summarize Video</b> 버튼으로 핵심 요약·아티클·타임라인을 보여 줍니다. 저장하려면 로그인.</td></tr>
+<tr><td><b>③ 리드레이 (구 릴리스AI)</b></td><td>2026년 10월 26일 <b>릴리스AI에서 리드레이(Readray)로 이름이 바뀌었습니다.</b> 영상·PDF·웹 요약과 질문하기. 이름이 바뀌면서 크레딧(사용량) 방식 요금제가 함께 안내되었으니, 무료로 어디까지 되는지는 쓰기 전에 확인하세요.</td></tr>
+<tr><td><b>④ 챗GPT에 링크만 넣기</b><br><span class="chip">비추천</span></td><td>아래 시험처럼 <b>영상을 열지 못하는 경우</b>가 있습니다.</td></tr></table></div>
+<div class="card" id="s6-ytfail"><h2>직접 시험: 링크만 넣으면?</h2>
+<p>챗GPT에 유튜브 주소만 주고 "실제로 확인했는지 솔직하게 밝혀 줘"라고 했더니 이렇게 답했습니다.</p>
+<div class="box warn"><div class="t">챗GPT의 답 (요약)</div>영상 페이지를 불러오지 못했고, 제목·설명도 확인하지 못했다. 추측해서 요약하지 않겠다. <b>스크립트(자막)를 복사하거나 SRT 파일을 첨부하면</b> 실제 발언을 근거로 요약하겠다.</div>
+<p>그래서 오늘은 <b>방법 ①(스크립트 복사)</b>을 기본으로 합니다. 질문 끝에 <b>"확인했는지 밝혀 줘"</b>를 붙이는 습관도 들여 두세요. 지어낸 요약을 걸러 줍니다.</p></div>
+<div class="card" id="s6-news"><h2>기사 모으기 — 챗GPT 검색</h2>
+<p>챗GPT는 웹 검색으로 기사를 찾아 <b>매체·날짜·링크</b>를 붙여 줍니다. 여러 기사를 <b>비교</b>시키면 기사마다 다른 숫자까지 찾아냅니다.</p>
+<figure class="shot"><img src="img/gpt_news.png" alt="챗GPT 기사 비교표"><figcaption>아래 공용 프롬프트 실제 결과 — 기사 3건 + 공식 발표를 비교</figcaption></figure>
+<div class="box tip"><div class="t">시험에서 찾아낸 것</div>베타 테스트 인원이 기사마다 1,000명 / 2,000명으로 달랐고, 공식 발표는 "수백 명"이었습니다. 이런 <b>확인 안 된 숫자는 카드에 쓰지 않습니다.</b></div></div>
+<div class="card" id="s6-level"><h2>근거마다 쓸 수 있는 말이 다르다</h2>
+<table><tr><th>근거</th><th>카드에 쓸 수 있는 표현</th></tr>
+<tr><td>공식 공지·도움말</td><td>"공지는 ○○부터 제공한다고 안내합니다."</td></tr>
+<tr><td>기사</td><td>"○○신문(날짜)에 따르면…"</td></tr>
+<tr><td>영상·자막</td><td>"시연에서는 이 입력 뒤에 이 결과가 나왔습니다."</td></tr>
+<tr><td>내 캡처·실습</td><td>"제 계정에서 이렇게 열어 보니 보였습니다."</td></tr>
+<tr><td>후기·커뮤니티</td><td>"이 사용자는 이 작업에서 더 빨랐다고 했습니다."</td></tr>
+<tr><td>확인 못 함</td><td>"무료로 하루 몇 번인지는 확인하지 못했습니다." — 숫자를 지어내지 않기</td></tr></table></div>
+<div class="card" id="s6-crawl"><h2>크롤링 — 챗GPT에게 "모아서 표로" 시키기</h2>
+<p>크롤링(웹에서 정보를 자동으로 모아 오는 것)은 이제 프로그램을 짜지 않아도 됩니다. 챗GPT에 <b>주제·기간·개수·표 칸</b>을 말하면 웹을 검색해 기사 목록을 표로 만들고, <b>엑셀에서 여는 CSV 파일</b>까지 만들어 줍니다.</p>
+<svg viewBox="0 0 640 120" width="100%" role="img" aria-label="주제 기간 개수 → 검색 → 표 → CSV">
+<g font-size="13" text-anchor="middle" fill="#1F2A30">
+<rect x="5" y="20" width="140" height="70" rx="12" fill="#E3F1EE" stroke="#0F6E66"/><text x="75" y="48" font-weight="700" fill="#0A4F49">주제·기간·개수</text><text x="75" y="70" font-size="11">"최근 2주, 8개"</text>
+<rect x="170" y="20" width="140" height="70" rx="12" fill="#fff" stroke="#BFDCD5"/><text x="240" y="48" font-weight="700">웹 검색</text><text x="240" y="70" font-size="11">챗GPT가 알아서</text>
+<rect x="335" y="20" width="140" height="70" rx="12" fill="#fff" stroke="#BFDCD5"/><text x="405" y="48" font-weight="700">표</text><text x="405" y="70" font-size="11">매체·날짜·제목·링크·요약</text>
+<rect x="500" y="20" width="135" height="70" rx="12" fill="#FFF1D9" stroke="#E6D3AE"/><text x="567" y="48" font-weight="700" fill="#7A4B00">CSV 파일</text><text x="567" y="70" font-size="11">엑셀로 열기</text></g>
+<g stroke="#0F6E66" stroke-width="1.6" fill="none" marker-end="url(#ar)"><path d="M145 55h23"/><path d="M310 55h23"/><path d="M475 55h23"/></g></svg>
+<figure class="shot"><img src="img/gpt_collect_csv.jpg" alt=""><figcaption>직접 시험: 일반 Chat 모드, 기본 모델로 기사 8개 → 표 → CSV. 같은 행사를 여러 매체가 쓴 기사라는 것까지 스스로 표시했습니다.</figcaption></figure>
+<div class="box ext"><div class="t">한 걸음 더</div>꾸준히 소식을 받고 싶으면 구글 알리미(google.com/alerts)에 키워드를 등록해 메일로 받고, 고른 기사만 챗GPT에 넘겨 정리하세요.</div></div>
+<div class="card full" id="s6-mode"><h2>Chat과 Work — 같은 일을 시켜 보면</h2>
+<p>챗GPT 화면 맨 위의 <span class="menu">Chat</span> | <span class="menu">Work</span> 스위치로 고릅니다. 공식 안내 기준으로 <b>Chat은 질문·설명·아이디어·짧은 초안</b>, <b>Work는 여러 단계를 거쳐 완성 결과물(문서·표·발표 자료·보고서 등)을 만드는 일</b>에 씁니다. 프로젝트 안에서도 둘 중 하나를 골라 시작할 수 있습니다.</p>
+<div class="shots">
+<figure class="shot"><img src="img/mode_chat.jpg" alt=""><figcaption>Chat: "ChatGPT에게 물어보세요", 모델 칸은 간단</figcaption></figure>
+<figure class="shot"><img src="img/mode_work.jpg" alt=""><figcaption>Work: "ChatGPT로 Work 시작", 아래에 프로젝트 선택·파일·플러그인</figcaption></figure></div>
+<p><b>직접 시험</b> — 위 "기사 8개 모아 표·CSV" 프롬프트를 글자 하나 안 바꾸고 두 모드에 보냈습니다.</p>
+<table><tr><th></th><th>Chat</th><th>Work</th></tr>
+<tr><td>걸린 시간</td><td>약 40초</td><td>약 3분 (웹사이트 150여 곳 검색)</td></tr>
+<tr><td>고른 기사</td><td>8개 중 4개가 같은 행사 기사(스스로 표시함)</td><td>빵집 신메뉴·SNS 입소문 사례 등 서로 다른 기사 8개</td></tr>
+<tr><td>날짜 확인</td><td>모두 날짜 적음</td><td>"8건 모두 원문에서 공개일 확인"이라고 밝힘</td></tr>
+<tr><td>CSV 파일</td><td>만들어 줌 · 오른쪽 표 미리보기</td><td>만들어 줌 · 오른쪽 표 미리보기</td></tr>
+<tr><td>아쉬운 점</td><td>범위가 넓어지고 겹치는 기사</td><td>오래 걸림 · 답에 ** 같은 기호가 섞여 나옴</td></tr></table>
+<figure class="shot"><img src="img/work_collect.jpg" alt=""><figcaption>Work 결과: 같은 프롬프트, 더 꼼꼼한 기사 고르기와 CSV</figcaption></figure>
+<div class="box tip"><div class="t">언제 무엇을?</div><b>빨리 감 잡기·아이디어·짧은 글·그림 한 장</b>은 Chat. <b>여러 자료를 모아 확인하고 파일로 받아야 하는 일</b>(기사 수집표, 비교표, 발표 자료)은 Work. 오늘 카드 그림은 Chat으로, 기사 모으기는 둘 다 해 보고 비교해 보세요.</div>
+<div class="box warn"><div class="t">요금제 확인</div>웹·모바일의 Work는 대상 유료 요금제에서 쓸 수 있고, PC용 챗GPT 데스크톱 앱에서는 무료 요금제도 Chat·Work를 쓸 수 있다고 안내되어 있습니다(2026년 11월 기준). Work는 오래 일하는 만큼 사용량도 더 씁니다. 메뉴가 안 보이면 Chat으로 같은 실습을 하면 됩니다.</div></div>
+<div class="card" id="s6-copy"><h2>저작권 — 남의 기사·영상으로 카드뉴스 만들 때</h2>
+<p>자료를 <b>모으는 것</b>과 카드에 <b>옮기는 것</b>은 다릅니다. 수업·개인 공부로 모아 보는 건 괜찮지만, 카드뉴스로 <b>올리는 순간</b> 아래를 지켜야 합니다.</p>
+<table><tr><th>해도 되는 것 ✔</th><th>하면 안 되는 것 ✘</th></tr>
+<tr><td>내 말로 짧게 요약 + 출처(매체·날짜) 표시</td><td>기사 문단·영상 대사를 통째로 옮기기</td></tr>
+<tr><td>사실(날짜·이름·숫자)을 확인해 쓰기</td><td>기사 사진·인물 사진·캡처를 그대로 넣기</td></tr>
+<tr><td>브랜드 <b>색 분위기</b>만 참고하기</td><td>남의 로고·캐릭터·상표를 그려 넣기</td></tr>
+<tr><td>핵심 한 문장만 따옴표로 짧게 인용</td><td>남의 카드뉴스 디자인을 그대로 베끼기</td></tr></table>
+<div class="box warn"><div class="t">상업적으로 올릴 때는 한 번 더</div>수업 연습이나 개인 공부는 공정한 이용 범위로 보는 경우가 많지만, <b>가게·회사 홍보로 올리는 카드</b>는 기준이 엄격해집니다. 남의 사진·문장 없이 <b>내 말 + 내 그림 + 출처</b>로만 만드는 게 가장 안전합니다. (법률 자문이 아니라 수업용 안전 기준입니다.)</div></div>
+</div>
+
+<div class="zone do"><span>실행</span></div>
+<div class="grid">
+<div class="card" id="s6-do1"><h2>① 기사로 할 때</h2>
+<p>프로젝트 안 <b>새 채팅</b>에서 보냅니다. 따옴표 안만 내 주제로 바꾸세요.</p>
+<div class="prompt"><div class="ph">공용 프롬프트 · 기사 모으기<button onclick="cp(this)">복사</button></div><pre>웹에서 '릴리스AI가 리드레이(Readray)로 이름을 바꾼 소식' 기사를 2~3개 찾아 줘. 표로 정리: 매체 / 날짜 / 제목 / 링크 / 확인한 사실 한 줄. 그다음 여러 기사에서 공통으로 확인되는 사실 3가지와, 기사마다 다르게 말하는 부분이 있으면 따로 적어 줘. 기사 문장을 그대로 길게 옮기지 말고 내 말로 요약해 줘.</pre></div>
+<div class="prompt x"><div class="ph">확장 · 공식 발표까지 대조<button onclick="cp(this)">복사</button></div><pre>위 기사들의 내용을 그 회사의 공식 발표·공지와 대조해 줘. 공식 발표에 있는 것 / 기사에만 있는 것 / 어디에도 확인 안 되는 것으로 나눠 표로.</pre></div></div>
+<div class="card" id="s6-do3"><h2>② 여러 기사 한 번에 모으기 (크롤링)</h2>
+<p>프로젝트 밖 <b>일반 새 채팅</b>, 입력창 위 <span class="menu">Chat</span> 상태에서 보냅니다. 작은따옴표 안 주제만 바꾸세요.</p>
+<div class="prompt"><div class="ph">공용 프롬프트 · 기사 모아 표·CSV로<button onclick="cp(this)">복사</button></div><pre>웹에서 최근 2주 안에 나온 '동네 빵집·카페 소상공인 SNS 홍보' 관련 국내 기사를 8개 찾아 줘. 표로 정리: 번호 / 매체 / 날짜 / 제목 / 링크 / 내 말로 쓴 한 줄 요약. 날짜를 확인 못 한 기사는 '날짜 미확인'으로 적고, 기사 문장을 그대로 길게 옮기지 마. 표 아래에 여러 기사에서 공통으로 나오는 흐름 3가지를 적고, 마지막에 같은 표를 엑셀에서 열 수 있는 CSV 파일로도 만들어 줘.</pre></div>
+<div class="prompt x"><div class="ph">확장 · Work로 더 꼼꼼하게<button onclick="cp(this)">복사</button></div><pre>(맨 위 스위치를 Work로 바꾼 뒤) 위와 같은 프롬프트를 그대로 보내 보세요. Chat 결과와 나란히 놓고 ① 걸린 시간 ② 겹치는 기사 수 ③ 날짜를 원문에서 확인했는지를 비교해 적어 봅니다.</pre></div>
+<div class="prompt x"><div class="ph">확장 · 같은 소식 묶기<button onclick="cp(this)">복사</button></div><pre>위 표에서 같은 사건·행사를 다룬 기사끼리 묶어 줘. 묶음마다 가장 먼저 보도한 기사 1개와, 기사마다 다르게 쓴 숫자·날짜가 있으면 표시해 줘.</pre></div>
+<div class="box warn"><div class="t">막힐 때</div><ul><li><b>CSV를 엑셀로 열었더니 글자가 깨진다</b> → "UTF-8 BOM으로 다시 저장해 줘"라고 한 번 더 보냅니다.</li><li><b>기사가 8개보다 적게 나온다</b> → 기간을 "최근 한 달"로 늘리거나 주제 낱말을 넓힙니다.</li></ul></div></div>
+<div class="card" id="s6-do2"><h2>③ 유튜브 영상으로 할 때</h2>
+<ol class="steps"><li>영상 아래 <span class="menu">더보기</span> → <span class="menu">스크립트 표시</span></li>
+<li>오른쪽 스크립트 창 맨 위 글자부터 맨 아래까지 끌어 선택 → <span class="kbd">Ctrl</span>+<span class="kbd">C</span></li>
+<li>프로젝트 새 채팅에 아래 프롬프트를 쓰고, 그 밑에 <span class="kbd">Ctrl</span>+<span class="kbd">V</span></li></ol>
+<div class="prompt"><div class="ph">공용 프롬프트 · 영상 스크립트 정리<button onclick="cp(this)">복사</button></div><pre>아래는 유튜브 영상 「(영상 제목)」의 스크립트야. 영상에서 실제로 말한 내용만 근거로 정리해 줘.
+1) 영상이 답하는 질문 한 문장
+2) 핵심 내용 5가지 (각각 몇 분쯤 나오는지 시간 표시)
+3) 숫자·이름·날짜처럼 확인이 필요한 말은 따로 표시
+4) 영상에 없는 내용은 덧붙이지 마.
+---
+(여기에 스크립트 붙여 넣기)</pre></div>
+<div class="box warn"><div class="t">막힐 때</div>
+<ul><li><b>스크립트 표시 버튼이 없다</b> → 자막이 없는 영상입니다. 라이브위키나 리드레이로 요약하거나 다른 영상을 고르세요.</li>
+<li><b>글이 너무 길어 안 붙는다</b> → 앞쪽 절반만 먼저 보내고 "이어서 더 보낼게"라고 한 뒤 나머지를 보냅니다.</li></ul></div></div>
+</div>
+</section>
+
+<!-- ================= STEP 7 ================= -->
+<section class="step" id="s7" data-title="출처에 맞는 색">
+<div class="stephead"><div class="no">STEP 7</div><h1>출처에 어울리는 색 찾기 — 톤앤매너</h1>
+<p>톤앤매너(전체 분위기와 말투·색의 통일감)를 맞추려면 색부터 정합니다. 다루는 서비스나 기사의 <b>대표 색</b>을 뽑아 오면, 카드만 봐도 "무슨 이야기인지" 느낌이 옵니다.</p></div>
+
+<div class="zone ex"><span>설명</span></div>
+<div class="grid">
+<div class="card" id="s7-flow"><h2>색 찾는 순서</h2>
+<svg viewBox="0 0 520 150" width="100%" role="img" aria-label="색 찾는 순서">
+<g font-size="13" text-anchor="middle" fill="#1F2A30">
+<rect x="5" y="20" width="115" height="80" rx="12" fill="#fff" stroke="#E6E3DC"/><text x="62" y="52" font-weight="700">출처 화면</text><text x="62" y="74" font-size="11">로고·대표 화면</text><text x="62" y="90" font-size="11">캡처</text>
+<rect x="138" y="20" width="115" height="80" rx="12" fill="#E3F1EE" stroke="#BFDCD5"/><text x="195" y="52" font-weight="700">팔레트 추출</text><text x="195" y="74" font-size="11">캔바 색상</text><text x="195" y="90" font-size="11">팔레트 생성기</text>
+<rect x="271" y="20" width="115" height="80" rx="12" fill="#fff" stroke="#E6E3DC"/><text x="328" y="52" font-weight="700">역할 정하기</text><text x="328" y="74" font-size="11">제목·강조·바탕</text><text x="328" y="90" font-size="11">주의색</text>
+<rect x="404" y="20" width="110" height="80" rx="12" fill="#FFF1D9" stroke="#E6D3AE"/><text x="459" y="52" font-weight="700">HEX를</text><text x="459" y="74" font-size="11">프롬프트에</text><text x="459" y="90" font-size="11">넣기</text>
+</g>
+<g stroke="#0F6E66" stroke-width="1.5" fill="none" marker-end="url(#ar)"><path d="M120 60h16"/><path d="M253 60h16"/><path d="M386 60h16"/></g>
+<text x="260" y="135" text-anchor="middle" font-size="12" fill="#5C676D">HEX(헥스) = #124F5E처럼 색을 6자리로 적는 이름표</text>
+</svg>
+<h3>색 역할 4가지</h3>
+<table><tr><th>역할</th><th>예시</th></tr>
+<tr><td>바탕</td><td>흰색 #FFFFFF (글자가 잘 읽힘)</td></tr>
+<tr><td>제목</td><td>가장 진한 색 (예: 짙은 청록 #124F5E)</td></tr>
+<tr><td>강조 라벨</td><td>연한 색 (예: #DAE4D7) 위에 진한 글자</td></tr>
+<tr><td>주의</td><td>코랄·주황 계열은 "조심" 표시에만</td></tr></table></div>
+<div class="card" id="s7-tool"><h2>캔바 색상 팔레트 생성기 (로그인 없이)</h2>
+<figure class="shot"><img src="img/palette_canva_c.jpg" alt="캔바 팔레트 생성기"><figcaption>카드뉴스 한 장을 올렸더니 4가지 색과 HEX가 바로 나왔습니다.</figcaption></figure>
+<p>주소: <b>canva.com/colors/color-palette-generator</b> → <span class="menu">Upload an image</span> → 색 4개와 HEX 확인 → 쓸 색을 메모</p>
+<div class="box ext"><div class="t">어도비 컬러 (color.adobe.com)</div>색상환과 <b>조화 규칙</b>(보색·유사색 등)으로 어울리는 색을 더 고를 수 있고, 글자색과 바탕색의 <b>대비(읽기 쉬운 정도)</b>도 검사할 수 있습니다. 단, <b>이미지에서 색 뽑기</b>는 어도비 계정 로그인이 필요합니다(무료 계정 가능).</div></div>
+<div class="card" id="s7-mood"><h2>주제에 따라 어울리는 색 느낌</h2>
+<table><tr><th>주제</th><th>색 느낌</th></tr>
+<tr><td>AI·IT 소식</td><td>청록·네이비 + 흰 바탕 (차분, 믿음)</td></tr>
+<tr><td>경제·금융</td><td>네이비·남색 (신뢰)</td></tr>
+<tr><td>음식·가게</td><td>크림·주황·갈색 (따뜻함)</td></tr>
+<tr><td>건강·생활</td><td>연두·민트 (산뜻함)</td></tr>
+<tr><td>주의·경고</td><td>코랄 한 곳에만 (전체에 쓰면 불안해 보임)</td></tr></table>
+<div class="box tip"><div class="t">기억할 점</div>출처 브랜드 색을 빌리는 건 <b>분위기만</b>입니다. 로고 자체를 카드에 그려 넣지 않습니다.</div></div>
+</div>
+
+<div class="zone do"><span>실행</span></div>
+<div class="grid">
+<div class="card full" id="s7-do"><h2>① 내 카드뉴스 색 두 개 정하기</h2>
+<ol class="steps"><li>다루는 서비스의 홈페이지나 기사 대표 화면을 캡처합니다(<span class="kbd">Win</span>+<span class="kbd">Shift</span>+<span class="kbd">S</span> → 바탕화면에 저장).</li>
+<li>캔바 색상 팔레트 생성기에 올려 HEX를 확인합니다.</li>
+<li><b>제목색</b>(가장 진한 색)과 <b>라벨색</b>(가장 연한 색) 두 개를 골라 메모합니다.</li></ol>
+<div class="prompt x"><div class="ph">확장 · 챗GPT에게 색 역할 맡기기<button onclick="cp(this)">복사</button></div><pre>첨부한 화면에서 대표 색 4개를 HEX로 뽑고, 흰 바탕 카드뉴스에 쓸 때 제목색·강조 라벨색·주의색으로 각각 무엇이 좋을지 골라 줘. 글자와 바탕의 대비가 약한 조합은 빼 줘.</pre></div></div>
+</div>
+</section>
+
+<!-- ================= STEP 8 ================= -->
+<section class="step" id="s8" data-title="한 장씩 만들기">
+<div class="stephead"><div class="no">STEP 8</div><h1>기획표 만들고, 한 장씩 생성하기 — 9:16과 1:1</h1>
+<p>가장 많이 실패하는 이유는 <b>여러 장을 한 번에</b> 시키는 것입니다. 합본(여러 장이 한 그림에 붙어 나옴)이 생기거나 2장에 표지가 또 나옵니다. <b>기획은 표로 한 번에, 그림은 한 장씩</b> 만듭니다.</p></div>
+
+<div class="zone ex"><span>설명</span></div>
+<div class="grid">
+<div class="card" id="s8-layout"><h2>9:16과 1:1 배치</h2>
+<svg viewBox="0 0 520 300" width="100%" role="img" aria-label="세로와 정사각 카드 배치">
+<g font-size="12" fill="#1F2A30" text-anchor="middle">
+<rect x="40" y="10" width="150" height="267" rx="12" fill="#fff" stroke="#BFDCD5"/>
+<rect x="140" y="20" width="40" height="16" rx="8" fill="#DAE4D7"/><text x="160" y="32" font-size="9">01/03</text>
+<rect x="52" y="44" width="126" height="44" rx="4" fill="#124F5E"/><text x="115" y="71" fill="#fff" font-weight="700">큰 제목 2줄</text>
+<rect x="52" y="96" width="126" height="34" rx="8" fill="#DAE4D7"/><text x="115" y="117">한 줄 답</text>
+<rect x="52" y="138" width="126" height="112" rx="8" fill="#F7EEDD"/><text x="115" y="196">캐릭터 장면</text>
+<text x="115" y="266" font-size="10" fill="#5C676D">출처 · 날짜</text>
+<text x="115" y="294" font-weight="700">세로 9:16 — 글자 위 40%</text>
+<rect x="270" y="45" width="210" height="210" rx="12" fill="#fff" stroke="#BFDCD5"/>
+<rect x="282" y="55" width="60" height="16" rx="8" fill="#DAE4D7"/><text x="312" y="67" font-size="9">주제 라벨</text><rect x="425" y="55" width="44" height="16" rx="8" fill="#DAE4D7"/><text x="447" y="67" font-size="9">01/05</text>
+<rect x="282" y="78" width="186" height="40" rx="4" fill="#124F5E"/><text x="375" y="103" fill="#fff" font-weight="700">큰 제목</text>
+<rect x="282" y="124" width="186" height="20" rx="8" fill="#DAE4D7"/><text x="375" y="138" font-size="10">부제(질문)</text>
+<rect x="282" y="150" width="186" height="88" rx="8" fill="#F7EEDD"/><text x="375" y="198">두 캐릭터 장면</text>
+<text x="375" y="250" font-size="10" fill="#5C676D">출처</text>
+<text x="375" y="294" font-weight="700">정사각 1:1 — 글자 위 절반</text>
+</g></svg></div>
+<div class="card" id="s8-results"><h2>실제로 만든 결과</h2>
+<div class="shots">
+<figure class="shot"><img src="img/card1_916.png" alt=""><figcaption>9:16 1장 (941×1672) — 귀찮냥 단독</figcaption></figure>
+<figure class="shot"><img src="img/card2_916.png" alt=""><figcaption>9:16 2장 — 냥은 멍하니, 양은 짚어 줌</figcaption></figure>
+<figure class="shot"><img src="img/card_11.png" alt=""><figcaption>1:1 표지 — 양은 돋보기로 확인, 냥은 구경</figcaption></figure>
+</div>
+<p class="ok">✔ 한글 제목·본문·번호가 지시대로 정확히 나왔고, 2장도 1장과 같은 색·글자 크기를 지켰습니다.</p>
+<p class="no">✘ 하단 출처 줄 앞부분이 화면의 작은 버튼에 가려 보였습니다. 반드시 <b>내려받은 원본</b>에서 출처가 잘리지 않았는지 확인합니다(STEP 9).</p></div>
+<div class="card" id="s8-two"><h2>두 캐릭터가 함께 나올 때</h2>
+<ul><li>같은 장에서 <b>역할을 나눕니다</b>: 한쪽은 궁금해하거나 관찰하고, 다른 쪽은 짚어 주거나 확인합니다.</li>
+<li>장마다 <b>포즈와 장면을 바꿉니다</b>. 같은 포즈가 반복되면 넘길 이유가 사라집니다.</li>
+<li>친구 캐릭터가 소스에 없으면 그 장을 만들 때 앵커를 <b>첨부</b>하고 "첨부한 그림은 {Y}야"를 붙입니다.</li></ul></div>
+</div>
+
+<div class="zone do"><span>실행</span></div>
+<div class="grid">
+<div class="card full" id="s8-do1"><h2>① 기획표 만들기 (그림은 아직 그리지 않기)</h2>
+<p>STEP 6에서 자료를 모은 <b>같은 채팅</b>에 이어서 보냅니다.</p>
+<div class="prompt"><div class="ph">공용 프롬프트 · 기획표<button onclick="cp(this)">복사</button></div><pre>위 조사로 카드뉴스를 기획만 해 줘(아직 그림은 그리지 마). 독자: AI 도구를 막 쓰기 시작한 50~60대. 먼저 '독자가 오늘 궁금해할 질문'을 한 문장으로 정하고, 세로 9:16 요약판 3장으로 장마다 [제목(15자 이내) / 한 줄 답 / 근거(어느 기사) / {N}와 {Y}가 하는 행동과 장면 / 하단 출처]를 표로 적어 줘. 1장은 질문과 짧은 답, 마지막 장은 독자가 오늘 해 볼 행동으로 끝내. 확인 안 된 숫자는 쓰지 마.</pre></div>
+<div class="box tip"><div class="t">시험 결과</div>질문 한 문장 → 장별 표(제목·한 줄 답·근거·장면·샷/앵글/조명·출처) → "확인되지 않은 베타 인원 제외"까지 스스로 정리해 주었습니다. 표를 읽고 <b>사실과 다른 곳을 먼저 고친 뒤</b> 그림으로 넘어가세요.</div></div>
+<div class="card" id="s8-do2"><h2>② 1장 생성 — 한 장 작업지</h2>
+<div class="prompt"><div class="ph">공용 프롬프트 · 9:16 한 장<button onclick="cp(this)">복사</button></div><pre>이제 1장만 만들어 줘. (지침 예외: 이번 카드는 글자 허용) 단독 카드 1장 / 세로 9:16(1080×1920).
+제목 "릴리스AI가 바뀌었다?" / 본문 "릴리스AI가 리드레이로 이름을 바꾸고 읽기 지원 기능을 강화했어요." / 하단 출처 "출처: 벤처스퀘어(2026.10.27), Readray 공식 발표" / 오른쪽 위 "01 / 03".
+장면: {N}가 옆으로 누워 '릴리스AI → 리드레이' 이름표를 바라봄.
+색: 흰 배경, 제목 #124F5E, 강조 라벨 바탕 #DAE4D7. 큰 한글 고딕, 글자는 위쪽 40%, 그림은 아래. {N}는 소스 그대로.
+다른 장 문구·미리보기·여러 칸은 넣지 마.</pre></div>
+<p>따옴표 안 문구와 색 HEX만 내 기획표·내 색으로 바꿔 넣으면 됩니다.</p></div>
+<div class="card" id="s8-do3"><h2>③ 2장부터 — 같은 틀, 다른 장면</h2>
+<div class="prompt"><div class="ph">공용 프롬프트 · 두 캐릭터 2장<button onclick="cp(this)">복사</button></div><pre>이제 2장만 만들어 줘. {N}와 {Y}가 함께 나오되 역할을 나눠 줘: {N}는 복잡한 문서 더미 앞에서 멍하니 보고, {Y}는 정리된 화면(개념도)을 앞발로 가리키며 확인해 준다. 두 캐릭터 생김새는 각자 기준 그대로. (지침 예외: 글자 허용)
+단독 카드 1장 / 세로 9:16. 제목 "요약에서 이해까지" / 본문 "영상과 문서 요약뿐 아니라 어려운 내용과 도표의 이해도 도와줘요." / 하단 출처 "출처: 벤처스퀘어(2026.10.21·10.27)" / 오른쪽 위 "02 / 03".
+1장과 같은 색·글자 크기·여백으로, 장면과 포즈는 다르게. 다른 장 문구·미리보기·여러 칸은 넣지 마.</pre></div></div>
+<div class="card" id="s8-do4"><h2>④ 1:1 심화판 표지</h2>
+<div class="prompt"><div class="ph">공용 프롬프트 · 1:1 한 장<button onclick="cp(this)">복사</button></div><pre>이번에는 게시판용 1:1 심화판 표지 1장만 만들어 줘. (지침 예외: 글자 허용) 단독 카드 1장 / 정사각형 1:1(1080×1080).
+왼쪽 위 작은 글자 "AI 도구 소식" / 오른쪽 위 "01 / 05" / 제목 "릴리스AI, 이제 리드레이" / 부제 "요약 도구에서 읽기 도구로, 무엇이 달라졌을까?" / 하단 "출처: Readray 공식 발표(2026.10.26) · 벤처스퀘어".
+장면: {Y}가 돋보기를 들고 문서를 비춰 보고, {N}는 옆에 엎드려 그걸 구경한다.
+9:16 카드와 같은 색(제목 #124F5E, 라벨 #DAE4D7)과 글자 위계, 단 정사각형에 맞게 글자는 위 절반, 그림은 아래 절반. 다른 장 문구·여러 칸은 넣지 마.</pre></div>
+<div class="box warn"><div class="t">막힐 때 — 다시 만들 장만 고치기</div>
+<ul><li><b>2장이 또 표지처럼 나온다</b> → 요청에서 표지 문구를 빼고 "이번 장의 제목·본문·장면만"으로 다시.</li>
+<li><b>한 그림에 여러 카드가 붙어 나온다</b> → "단독 카드 1장, 여러 칸 금지"를 맨 앞에 적고 그 장만 다시.</li>
+<li><b>한글이 깨지거나 한 글자가 틀린다</b> → 본문을 더 짧게 줄여 그 장만 다시. 그래도 안 되면 글자 없는 그림만 받아 캔바에서 글자를 얹습니다.</li>
+<li><b>친구 캐릭터 생김새가 바뀐다</b> → 그 장을 만들 때 친구 앵커를 다시 첨부.</li></ul></div>
+<div class="prompt x"><div class="ph">확장 · 같은 내용 다른 비율로<button onclick="cp(this)">복사</button></div><pre>방금 만든 9:16 1장을 같은 문구·같은 색으로 1:1 정사각형 한 장으로 다시 배치해 줘. 글자는 위 절반, 캐릭터 장면은 아래 절반, 장면 속 포즈는 새로.</pre></div></div>
+</div>
+</section>
+
+<!-- ================= STEP 9 (가게 홍보) ================= -->
+<section class="step" id="s9shop" data-title="가게 홍보 카드">
+<div class="stephead"><div class="no">STEP 9</div><h1>가게 홍보 카드 — 캐릭터 활용형과 실사 SNS형</h1>
+<p>빵집·공방·커피숍 같은 가게 홍보 카드는 정보 카드와 다릅니다. <b>가게 정보가 틀리면 안 되고</b>, 실제 SNS에서 많이 쓰는 모양을 따라야 손님이 익숙하게 읽습니다. 같은 가게로 두 가지 모양을 만들어 비교합니다.</p></div>
+
+<div class="zone ex"><span>설명</span></div>
+<div class="grid">
+<div class="card full" id="s9shop-two"><h2>두 갈래 — 언제 무엇을 쓸까?</h2>
+<svg viewBox="0 0 1000 230" width="100%" role="img" aria-label="가게 정보에서 캐릭터 활용형과 실사 SNS형으로 갈라짐">
+<g font-size="14" text-anchor="middle" fill="#1F2A30">
+<rect x="20" y="70" width="210" height="90" rx="14" fill="#E3F1EE" stroke="#0F6E66"/><text x="125" y="104" font-weight="700" fill="#0A4F49">가게 정보 카드</text><text x="125" y="128" font-size="12">이름·시간·가격·위치</text><text x="125" y="146" font-size="12">분위기·대표 색·쓰지 말 것</text>
+<rect x="330" y="10" width="300" height="95" rx="14" fill="#fff" stroke="#BFDCD5"/><text x="480" y="42" font-weight="700">① 캐릭터 활용형</text><text x="480" y="66" font-size="12">캐릭터가 장면의 주인공 · 상품은 소품</text><text x="480" y="86" font-size="12">인스타 감성 · 스토리 · 단골 소통</text>
+<rect x="330" y="125" width="300" height="95" rx="14" fill="#FFF1D9" stroke="#E6D3AE"/><text x="480" y="157" font-weight="700" fill="#7A4B00">② 실사 SNS형 (가장 많이 씀)</text><text x="480" y="181" font-size="12">상품 실사 사진이 주인공 · 캐릭터는 구석 스티커</text><text x="480" y="201" font-size="12">신메뉴·시간표·가격·클래스 모집</text>
+<rect x="720" y="10" width="260" height="95" rx="14" fill="#fff" stroke="#BFDCD5"/><text x="850" y="42" font-size="12">눈길·친근함이 목적일 때</text><text x="850" y="64" font-size="12">"오늘도 구웠어요" 같은 소식</text><text x="850" y="86" font-size="12">9:16 · 1:1</text>
+<rect x="720" y="125" width="260" height="95" rx="14" fill="#fff" stroke="#E6D3AE"/><text x="850" y="157" font-size="12">사고 싶게·찾아오게 할 때</text><text x="850" y="179" font-size="12">상품·가격·시간이 한눈에</text><text x="850" y="201" font-size="12">피드 4:5 · 1:1</text></g>
+<g stroke="#0F6E66" stroke-width="1.6" fill="none" marker-end="url(#ar)"><path d="M230 105C280 105 280 58 328 58"/><path d="M230 125C280 125 280 172 328 172"/><path d="M630 58h88"/><path d="M630 172h88"/></g></svg></div>
+
+<div class="card full" id="s9shop-fail"><h2>가게 홍보에서 자주 망가지는 다섯 가지</h2>
+<table><tr><th>이렇게 시키면</th><th>이렇게 나온다</th><th>막는 칸</th></tr>
+<tr><td>분위기를 안 줌</td><td>빵집인데 남색·회색처럼 엉뚱한 색</td><td>분위기 + 대표 색 HEX</td></tr>
+<tr><td>가게 정보를 안 줌</td><td>영업시간·가격·이벤트를 지어냄</td><td>정보 칸 + "없는 건 지어내지 마"</td></tr>
+<tr><td>"우리 가게가 더 좋다"</td><td>비교 대상 없는 과장 문구</td><td>쓰지 말 것: 과장 표현</td></tr>
+<tr><td>무엇을 하라는지 빠짐</td><td>예쁘지만 찾아올 이유가 없음</td><td>하단 띠: 위치·시간·예약</td></tr>
+<tr><td>칸 그림(와이어프레임)을 그대로 줌</td><td>상자·선이 그림에 그대로 찍힘</td><td>위치는 말로 한 줄("글자는 위 40%")</td></tr></table></div>
+
+<div class="card" id="s9shop-info"><h2>가게 정보 필수 칸</h2>
+<div class="box set"><div class="t">이 일곱 칸은 빠짐없이</div>
+<ol><li><b>가게 이름·종류</b> (연습이면 "예시용 가상 가게")</li><li><b>위치</b> (동네 이름까지만)</li><li><b>영업시간·휴무</b></li><li><b>대표 상품과 가격</b></li><li><b>주 손님</b> (누구에게 말하나)</li><li><b>분위기</b> (형용사 2~3개)</li><li><b>대표 색 HEX 2~3개 + 쓰지 말 것</b></li></ol></div>
+<div class="box tip"><div class="t">물결표(~) 대신 하이픈(-)</div>채팅창에서 <b>07:00~19:00</b>처럼 물결표를 두 번 쓰면 사이 글자가 <s>취소선</s>으로 바뀌어 보일 수 있습니다. <b>07:00-19:00</b>, <b>화-금</b>처럼 하이픈으로 쓰세요.</div></div>
+
+<div class="card" id="s9shop-ref"><h2>레퍼런스(참고 자료)는 핀터레스트에서</h2>
+<p>핀터레스트(pinterest.com)에서 <b>"베이커리 홍보 인스타", "카페 홍보 카드뉴스", "공방 원데이클래스 홍보"</b>로 검색하면 실제 가게 홍보물이 모입니다.</p>
+<figure class="shot"><img src="img/pin_bakery.jpg" alt=""><figcaption>"베이커리 홍보 인스타" 검색 결과. 상품 사진이 크고, 제목이 굵고, 정보는 아래에 정리된 모양이 대부분입니다.</figcaption></figure>
+<p>볼 것은 다섯 가지입니다: <b>① 배치</b>(제목·사진·정보 자리) <b>② 글자 크기 순서</b> <b>③ 색의 역할</b>(바탕·제목·포인트) <b>④ 사진 찍는 법</b>(구도·빛) <b>⑤ 정보 보여 주는 방식</b>(시간표·가격 딱지·정보 상자).</p>
+<div class="box warn"><div class="t">구성만 배우고, 베끼지 않기</div>남의 홍보물을 그대로 첨부해 "이렇게 만들어 줘"라고 하면 그 가게 디자인을 베끼게 됩니다. <b>챗GPT에게 구성을 말로 풀게 한 뒤, 그 설명 + 내 가게 정보</b>로 새로 만듭니다.</div></div>
+
+<div class="card full" id="s9shop-refgpt"><h2>직접 시험: 레퍼런스를 "구성 설명"으로 바꾸기</h2>
+<div class="shots">
+<figure class="shot"><img src="img/gpt_ref_table.jpg" alt=""><figcaption>배치·글자 순서·색·사진·정보 방식을 표로 분석</figcaption></figure>
+<figure class="shot"><img src="img/gpt_ref_color.jpg" alt=""><figcaption>색 역할과 근사 HEX까지 뽑아 줌</figcaption></figure></div>
+<p>마지막에 원본 문구·로고 없이 <b>"내 가게에 적용할 구성 설명 5줄"</b>을 줍니다. 이 5줄을 아래 실사 SNS형 프롬프트의 [제작] 칸에 붙이면 됩니다.</p></div>
+
+<div class="card full" id="s9shop-results"><h2>같은 가게, 두 가지 결과 (직접 생성)</h2>
+<p>세 가게 모두 <b>예시용 가상 가게</b>입니다. 여섯 장 모두 준 정보의 시간·가격을 정확히 옮겼고, 없는 이벤트를 지어내지 않았습니다.</p>
+<div class="shots shots3">
+<figure class="shot"><img src="img/shop_bakery.jpg" alt=""><figcaption>① 캐릭터형 · 빵집 9:16</figcaption></figure>
+<figure class="shot"><img src="img/shop_craft.jpg" alt=""><figcaption>① 캐릭터형 · 공방 9:16</figcaption></figure>
+<figure class="shot"><img src="img/shop_cafe.jpg" alt=""><figcaption>① 캐릭터형 · 커피숍 1:1</figcaption></figure>
+<figure class="shot"><img src="img/sns_bakery.jpg" alt=""><figcaption>② 실사형 · 빵집 4:5 (출고 시간 + 가격 딱지)</figcaption></figure>
+<figure class="shot"><img src="img/sns_craft.jpg" alt=""><figcaption>② 실사형 · 공방 4:5 (클래스 정보 상자)</figcaption></figure>
+<figure class="shot"><img src="img/sns_cafe.jpg" alt=""><figcaption>② 실사형 · 커피숍 1:1 (추천 메뉴 두 칸)</figcaption></figure></div>
+<div class="box tip"><div class="t">비교해 보면</div>캐릭터형은 <b>눈길과 친근함</b>, 실사형은 <b>상품·가격·시간이 한눈에</b>. 한 주에 실사형으로 상품을 알리고, 사이사이 캐릭터형으로 가게 소식을 올리면 피드가 지루하지 않습니다.</div></div>
+</div>
+
+<div class="zone do"><span>실행</span></div>
+<div class="grid">
+<div class="card full" id="s9shop-do1"><h2>① 내 가게 정보 채우기</h2>
+<p>메모장에 복사해 채운 뒤, 아래 ②·③ 프롬프트의 [가게 정보] 자리에 통째로 바꿔 넣습니다. 가게가 없으면 예시 빵집 그대로 해 보세요.</p>
+<div class="prompt"><div class="ph">빈칸 틀 · 가게 정보<button onclick="cp(this)">복사</button></div><pre>[가게 정보] 가게: (종류) '(이름)'(예시용 가상 가게) / 위치: (동네) / 영업: (요일 시간-시간), (휴무) / 대표 상품: (상품 가격) / 주 손님: (누구) / 분위기: (형용사 2-3개) / 대표 색: (색 이름 #HEX), (색 이름 #HEX) / 쓰지 말 것: (피할 색), 과장 표현, 없는 할인·이벤트.</pre></div></div>
+
+<div class="card" id="s9shop-do2"><h2>② 캐릭터 활용형</h2>
+<p><b>{N} 프로젝트 안 새 채팅</b>에서 {Y} 앵커 그림을 첨부하고 보냅니다.</p>
+<div class="prompt"><div class="ph">공용 프롬프트 · 캐릭터형 빵집 9:16<button onclick="cp(this)">복사</button></div><pre>첨부한 그림은 {N}의 친구 {Y}야. [가게 정보] 가게: 빵집 '밀담'(예시용 가상 가게) / 위치: 서울 망원동 골목 4평 / 영업: 화-금 07:00-19:00, 토 08:00-17:00, 일·월 휴무 / 대표 상품: 12시간 숙성 통밀 깜빠뉴 6,500원, 첫 출고 아침 7시 / 주 손님: 출근길 30-40대 직장인 / 분위기: 갓 구운 빵의 따뜻한 아침, 정감 있는 동네 가게 / 대표 색: 밀 갈색 #8A5A2B, 크림 #F6EBDD / 쓰지 말 것: 남색·회색 같은 차가운 색, '최고·업계 1등' 같은 과장, 없는 할인·이벤트.
+이 정보로 카드뉴스 표지 1장만 만들어 줘. (지침 예외: 글자 허용) 단독 카드 1장 / 세로 9:16. 제목 "출근길, 7시에 첫 빵이 나와요" / 본문 "12시간 숙성 통밀 깜빠뉴 6,500원" / 하단 "밀담 · 망원동 · 화-금 07-19시 (일·월 휴무)" / 오른쪽 위 "01 / 03". 장면: {Y}가 앞치마를 두르고 갓 나온 깜빠뉴를 내밀고, {N}는 졸린 눈으로 빵 냄새를 맡는다. 글자는 위 40%, 그림은 아래. 가게 정보에 없는 내용(가격·시간·이벤트)은 지어내지 마. 다른 장 문구·여러 칸은 넣지 마.</pre></div>
+<div class="prompt x"><div class="ph">확장 · 공방 9:16<button onclick="cp(this)">복사</button></div><pre>첨부한 그림은 {N}의 친구 {Y}야. [가게 정보] 가게: 가죽 공방 '손결'(예시용 가상 가게) / 위치: 서울 연남동 2층 / 영업: 수-일 12:00-20:00, 월·화 휴무 / 대표 상품: 원데이 클래스 '카드지갑 만들기' 2시간 45,000원(재료비 포함), 예약제 한 타임 4명 / 주 손님: 주말 데이트 커플, 선물 만들려는 20-30대 / 분위기: 손때 묻은 차분함, 원목 테이블과 가죽 냄새, 조용한 작업실 / 대표 색: 올리브 #5E6B3A, 베이지 #EFE6D2 / 쓰지 말 것: 형광색·쨍한 빨강, '최고·국내 유일' 같은 과장, 없는 할인·이벤트.
+이 정보로 카드뉴스 표지 1장만 만들어 줘. (지침 예외: 글자 허용) 단독 카드 1장 / 세로 9:16. 제목 "두 시간이면, 내 손으로 만든 카드지갑" / 본문 "원데이 클래스 45,000원 · 재료비 포함" / 하단 "손결 가죽공방 · 연남동 · 수-일 12-20시 (예약제 4명)" / 오른쪽 위 "01 / 03". 장면: 원목 작업대에서 {Y}가 바늘로 가죽을 꿰매고, {N}는 옆에서 완성된 카드지갑을 들고 뿌듯해한다. 글자는 위 40%, 그림은 아래. 가게 정보에 없는 내용(가격·시간·이벤트)은 지어내지 마. 다른 장 문구·여러 칸은 넣지 마.</pre></div>
+<div class="prompt x"><div class="ph">확장 · 커피숍 1:1<button onclick="cp(this)">복사</button></div><pre>첨부한 그림은 {N}의 친구 {Y}야. [가게 정보] 가게: 커피숍 '느린오후'(예시용 가상 가게) / 위치: 서울 목동 주택가 1층 / 영업: 매일 10:00-21:00, 둘째·넷째 월요일 휴무 / 대표 상품: 직접 로스팅한 핸드드립 5,500원, 수제 바스크 치즈케이크 6,000원 / 주 손님: 아이 등원 후 들르는 동네 주민, 조용히 책 읽는 손님 / 분위기: 햇빛 드는 창가, 느긋하고 조용한 오후 / 대표 색: 커피 브라운 #6B4A3A, 세이지 #A8B89A, 오프화이트 #FAF6F0 / 쓰지 말 것: 검정 배경·네온 같은 클럽 느낌, '인생 커피·최고' 같은 과장, 없는 할인·이벤트.
+이 정보로 카드뉴스 표지 1장만 만들어 줘. (지침 예외: 글자 허용) 단독 카드 1장 / 정사각 1:1. 제목 "등원 보내고, 느린 오후 한 잔" / 본문 "핸드드립 5,500원 · 바스크 치즈케이크 6,000원" / 하단 "느린오후 · 목동 · 매일 10-21시 (둘째·넷째 월 휴무)" / 오른쪽 위 "01 / 05". 장면: 햇빛 드는 창가 자리에서 {N}가 커피잔을 두 손으로 들고 눈을 감고, {Y}는 맞은편에서 치즈케이크를 포크로 떠먹는다. 글자는 왼쪽 위, 그림은 오른쪽 아래. 가게 정보에 없는 내용(가격·시간·이벤트)은 지어내지 마. 다른 장 문구·여러 칸은 넣지 마.</pre></div></div>
+
+<div class="card" id="s9shop-do3"><h2>③ 실사 SNS형</h2>
+<p>같은 프로젝트 새 채팅, {Y} 앵커 첨부. 첫 줄 괄호가 <b>"이번만 실사 사진이 주인공"</b>이라는 예외 표시입니다.</p>
+<div class="prompt"><div class="ph">공용 프롬프트 · 실사형 빵집 4:5<button onclick="cp(this)">복사</button></div><pre>(이번 요청은 지침 예외: 글자 허용, 실사 상품 사진이 주인공) 첨부 그림은 {N}의 친구 {Y}야. [가게 정보] 빵집 '밀담'(예시용 가상 가게) / 서울 망원동 골목 4평 / 화-금 07:00-19:00, 토 08:00-17:00, 일·월 휴무 / 대표 상품: 12시간 숙성 통밀 깜빠뉴 6,500원, 첫 출고 아침 7시 / 주 손님: 출근길 30-40대 / 분위기: 갓 구운 빵의 따뜻한 아침 / 대표 색: 밀 갈색 #8A5A2B, 크림 #F6EBDD / 쓰지 말 것: 차가운 색, 과장, 없는 할인·이벤트·출고 시간. [제작] 인스타그램 피드용 홍보 카드 1장, 세로 4:5. 실제 동네 빵집 SNS 홍보물처럼: 크림 바탕 위에 갓 구운 통밀 깜빠뉴 실사 사진이 화면의 60%를 차지하고(리넨 천, 아침 햇살, 단면이 보이게), 위쪽에 큰 굵은 제목 "땡! 7시, 첫 빵 나오는 시간", 그 아래 작은 글자 "12시간 숙성 통밀 깜빠뉴". 오른쪽 아래에 가격 동그라미 딱지 "6,500원". 맨 아래 띠에 "밀담 · 망원동 · 화-금 07-19시 · 토 08-17시 · 일·월 휴무". {Y}는 왼쪽 아래 구석에 손바닥만한 스티커처럼 작게, 앞치마 두르고 엄지 척, 말풍선 "갓 나왔어". 그 밖의 글자·시간·가격은 넣지 마.</pre></div>
+<div class="prompt x"><div class="ph">확장 · 공방 클래스 모집 4:5<button onclick="cp(this)">복사</button></div><pre>(이번 요청은 지침 예외: 글자 허용, 실사 상품 사진이 주인공) 첨부 그림은 {N}의 친구 {Y}야. [가게 정보] 가죽 공방 '손결'(예시용 가상 가게) / 서울 연남동 2층 / 수-일 12:00-20:00, 월·화 휴무 / 대표 상품: 원데이 클래스 '카드지갑 만들기' 2시간 45,000원(재료비 포함), 예약제 한 타임 4명 / 주 손님: 주말 커플, 선물 만드는 20-30대 / 분위기: 손때 묻은 차분함, 원목과 가죽 / 대표 색: 올리브 #5E6B3A, 베이지 #EFE6D2 / 쓰지 말 것: 형광색, 과장, 없는 할인·이벤트·날짜. [제작] 인스타그램 피드용 홍보 카드 1장, 세로 4:5. 실제 공방 원데이클래스 모집 포스터처럼: 베이지 바탕, 위쪽 반은 원목 작업대 위 바늘·실·가죽 조각과 완성된 갈색 가죽 카드지갑 실사 사진(위에서 내려다본 구도, 창가 자연광). 사진 위 작은 영문 "ONE DAY CLASS", 그 아래 한글 큰 제목 "내 손으로 만드는 카드지갑". 아래쪽은 연한 베이지 정보 상자 하나에 줄 맞춰 4줄: "시간 | 2시간" / "비용 | 45,000원 (재료비 포함)" / "인원 | 한 타임 4명 · 예약제" / "장소 | 연남동 2층 · 수-일 12-20시". 맨 아래 올리브 띠에 "손결 가죽공방". {Y}는 오른쪽 아래 구석에 스티커처럼 작게, 바늘을 들고 말풍선 "초보도 돼". 그 밖의 글자·날짜·가격은 넣지 마.</pre></div>
+<div class="prompt x"><div class="ph">확장 · 커피숍 추천 메뉴 1:1<button onclick="cp(this)">복사</button></div><pre>(이번 요청은 지침 예외: 글자 허용, 실사 상품 사진이 주인공) [가게 정보] 커피숍 '느린오후'(예시용 가상 가게) / 서울 목동 주택가 1층 / 매일 10:00-21:00, 둘째·넷째 월요일 휴무 / 대표 상품: 직접 로스팅한 핸드드립 5,500원, 수제 바스크 치즈케이크 6,000원 / 주 손님: 등원 후 들르는 동네 주민 / 분위기: 햇빛 드는 창가, 느긋한 오후 / 대표 색: 커피 브라운 #6B4A3A, 세이지 #A8B89A, 오프화이트 #FAF6F0 / 쓰지 말 것: 검정 배경·네온, 과장, 없는 할인·이벤트·세트 가격. [제작] 인스타그램 피드용 추천 메뉴 카드 1장, 정사각 1:1. 실제 동네 카페 SNS 메뉴 소개물처럼: 오프화이트 바탕, 위쪽 중앙에 큰 제목 "오늘의 추천 메뉴", 그 아래 가로로 두 칸: 왼쪽은 핸드드립 커피 실사 사진(흰 도자기 잔, 창가 햇살), 아래에 "핸드드립 5,500원" / 오른쪽은 바스크 치즈케이크 실사 사진(탄 격자 단면), 아래에 "바스크 치즈케이크 6,000원". 사진은 둥근 모서리 사각형 또는 원형. 맨 아래 세이지 띠에 "느린오후 · 목동 · 매일 10-21시 (둘째·넷째 월 휴무)". {N}는 왼쪽 위 구석에 스티커처럼 작게, 커피잔을 들고 말풍선 "느긋하게". 그 밖의 글자·가격·메뉴는 넣지 마.</pre></div>
+<div class="box warn"><div class="t">막힐 때</div><ul><li><b>캐릭터가 크게 나온다</b> → "캐릭터는 화면의 10% 이하, 구석 스티커"를 다시 보냅니다.</li><li><b>가격·시간이 하나라도 다르다</b> → 그 글자만 적어 "이 글자를 정확히 '6,500원'으로 고쳐 줘".</li><li><b>사진이 그림처럼 나온다</b> → "실사 음식 사진, 자연광, 얕은 심도"를 덧붙입니다.</li></ul></div></div>
+
+<div class="card full" id="s9shop-do4"><h2>④ 레퍼런스로 구성 배우기</h2>
+<ol class="steps"><li>핀터레스트에서 마음에 드는 홍보물 하나를 열고 <span class="kbd">Win</span>+<span class="kbd">Shift</span>+<span class="kbd">S</span>로 그 그림만 캡처해 저장</li>
+<li>프로젝트 <b>밖</b> 일반 새 채팅에 캡처를 첨부하고 아래 프롬프트 보내기</li>
+<li>답 맨 끝의 "구성 설명 5줄"을 복사 → ③ 프롬프트의 [제작] 뒤 문장과 바꿔 넣기 (내 가게 정보는 그대로)</li></ol>
+<div class="prompt"><div class="ph">공용 프롬프트 · 레퍼런스 구성 분석<button onclick="cp(this)">복사</button></div><pre>첨부한 그림은 핀터레스트에서 찾은 다른 가게의 SNS 홍보물이야. 이 그림을 베끼려는 게 아니라 '구성'만 배우려고 해. 다음을 표로 정리해 줘: ① 화면 배치(제목·사진·정보가 각각 어디에, 몇 % 정도) ② 글자 크기 순서(가장 큰 글자부터) ③ 색 쓰는 법(바탕·제목·포인트, 대략 색 이름) ④ 사진 찍는 법(구도·조명·배경) ⑤ 정보를 보여주는 방식(시간표·가격 등). 그다음, 이 구성을 내 가게에 적용할 때 쓸 수 있게 'SNS 홍보 카드 구성 설명'을 5줄로 써 줘. 원본의 가게 이름·문구·로고·사진은 설명에 넣지 마.</pre></div>
+<div class="prompt x"><div class="ph">확장 · 레퍼런스 두 개 비교<button onclick="cp(this)">복사</button></div><pre>두 그림을 첨부했어. 둘 다 다른 가게 홍보물이야. 배치·글자 순서·색·사진·정보 방식을 표로 나란히 비교하고, 내 가게(위 [가게 정보])에는 어느 쪽 구성이 더 맞는지 이유 두 가지와 함께 골라 줘. 원본 문구·로고는 쓰지 마.</pre></div></div>
+</div>
+</section>
+
+<!-- ================= STEP 9 ================= -->
+<section class="step" id="s9" data-title="검수·마무리">
+<div class="stephead"><div class="no">STEP 9</div><h1>검수하고, 휴대폰 목업으로 확인하고, 마무리</h1>
+<p>원고가 맞아도 <b>이미지 속 한 글자, 날짜, 출처</b>에서 실수가 나옵니다. 파일을 직접 열어 읽어야 끝입니다.</p></div>
+
+<div class="zone ex"><span>설명</span></div>
+<div class="grid">
+<div class="card" id="s9-check"><h2>올리기 전 체크리스트</h2>
+<table><tr><th>볼 것</th><th>통과 기준</th></tr>
+<tr><td>내용</td><td>표지의 질문에 마지막 장이 답한다</td></tr>
+<tr><td>글자</td><td>내려받은 원본에서 제목·본문·출처를 한 글자씩 읽었다. 이름·숫자·날짜가 기획표와 같다</td></tr>
+<tr><td>출처</td><td>하단 출처 줄이 잘리지 않았다, 매체·날짜가 있다</td></tr>
+<tr><td>장수·순서</td><td>01부터 빠짐없이, 같은 그림 두 번 없음</td></tr>
+<tr><td>캐릭터</td><td>장마다 같은 생김새, 포즈는 서로 다름</td></tr>
+<tr><td>휴대폰</td><td>작게 줄여도 제목이 읽힌다</td></tr></table></div>
+<div class="card" id="s9-phone"><h2>스마트폰 목업으로 보기</h2>
+<figure class="shot"><img src="img/mock_phone_c.jpg" alt=""><figcaption>캔바 목업스 → 스마트폰. 최적 크기 1320×2868</figcaption></figure>
+<p>9:16 카드를 넣으면 위아래가 조금 잘립니다. <b>더블클릭 → 맞춤</b>으로 번호와 출처가 화면 안에 오게 맞춰 보세요. 잘리는 위치가 곧 "휴대폰에서 놓치기 쉬운 자리"입니다.</p></div>
+<div class="card" id="s9-lur"><h2>오늘 배운 것 한 줄씩</h2>
+<div class="box set"><div class="t">Learning · 배운 점</div>굿즈는 목업 칸의 비율대로, 카드뉴스는 질문 한 문장과 근거에서 시작한다.</div>
+<div class="box warn"><div class="t">Unlearning · 버릴 습관</div>여러 장을 한 번에 시키고, 화면에서 대충 보고 끝내던 습관.</div>
+<div class="box ext"><div class="t">Relearning · 다음 행동</div>한 장씩 만들고, 내려받은 원본에서 글자·숫자·출처를 직접 읽는다.</div></div>
+</div>
+
+<div class="zone do"><span>실행</span></div>
+<div class="grid">
+<div class="card full" id="s9-do"><h2>① 검수를 챗GPT에게도 시키기 + 다음 시간 준비</h2>
+<div class="prompt"><div class="ph">공용 프롬프트 · 검수<button onclick="cp(this)">복사</button></div><pre>지금까지 만든 카드 이미지를 기획표와 한 장씩 대조해 줘. 각 이미지에서 실제로 보이는 제목·본문·출처·번호를 그대로 읽어 적고, 기획표와 다른 글자, 잘린 글자, 틀린 날짜·숫자가 있으면 장 번호와 함께 표로 알려 줘. 고칠 장만 골라 줘.</pre></div>
+<div class="box tip"><div class="t">그래도 마지막은 사람 눈으로</div>챗GPT의 검수도 틀릴 수 있습니다. 표에 "문제없음"이 나와도 <b>내려받은 원본을 내 눈으로</b> 한 번 더 읽습니다.</div>
+<div class="box ext"><div class="t">한 걸음 더</div>
+<ul><li>같은 자료로 9:16 요약판 3장 + 1:1 심화판 5장을 모두 만들어 보세요.</li>
+<li>카드뉴스를 올릴 때 함께 쓸 짧은 소개 글도 부탁해 보세요: "이 카드뉴스를 카톡방에 올릴 때 붙일 소개 글 두 줄. 마크다운 기호 없이 평문으로, 마지막 줄에 출처 링크."</li></ul></div>
+<p>다음 시간(인스타툰)에도 오늘 만든 <b>두 캐릭터의 포즈 9칸</b>과 <b>프로젝트</b>를 그대로 씁니다. 지우지 말고 두세요.</p></div>
+</div>
+</section>
+<!-- ================= STEP 11 ================= -->
+<section class="step" id="s11" data-title="GPT에 스킬 넣기">
+<div class="stephead"><div class="no">STEP 11</div><h1>챗GPT에 카드뉴스 스킬 넣고 쓰기</h1>
+<p>오늘 배운 순서와 규칙을 <b>스킬 하나로 챗GPT에 넣어 두면</b>, 다음부터는 "우리 가게 홍보 카드 만들어 줘" 한 줄만으로 시작할 수 있습니다.</p></div>
+<div class="zone ex"><span>설명</span></div>
+<div class="grid">
+<div class="card full" id="s11-what"><h2>김에듀 카드뉴스 스킬 — 오늘 순서를 통째로 챗GPT에 넣기</h2>
+<p>스킬(skill)은 <b>"이 일은 이 순서로 하라"는 작업 설명서 묶음</b>입니다. 한 번 설치해 두면 매번 긴 프롬프트를 붙이지 않아도 챗GPT가 오늘 배운 순서(질문 → 근거 → 기획 → 한 장씩 → 검수)와 가게 정보 칸·저작권 기준을 따라 합니다.</p>
+<svg viewBox="0 0 1000 150" width="100%" role="img" aria-label="스킬 받기에서 사용까지 다섯 단계">
+<g font-size="13" text-anchor="middle" fill="#1F2A30">
+<rect x="5" y="25" width="175" height="80" rx="12" fill="#E3F1EE" stroke="#0F6E66"/><text x="92" y="58" font-weight="700" fill="#0A4F49">① zip 받기</text><text x="92" y="82" font-size="11">압축 풀지 않기</text>
+<rect x="210" y="25" width="175" height="80" rx="12" fill="#fff" stroke="#BFDCD5"/><text x="297" y="58" font-weight="700">② 플러그인 → 스킬</text><text x="297" y="82" font-size="11">왼쪽 세로 메뉴</text>
+<rect x="415" y="25" width="175" height="80" rx="12" fill="#fff" stroke="#BFDCD5"/><text x="502" y="58" font-weight="700">③ 추가 → 업로드</text><text x="502" y="82" font-size="11">컴퓨터에서 업로드</text>
+<rect x="620" y="25" width="175" height="80" rx="12" fill="#fff" stroke="#BFDCD5"/><text x="707" y="58" font-weight="700">④ ··· → 채팅</text><text x="707" y="82" font-size="11">스킬이 붙은 Work 창</text>
+<rect x="825" y="25" width="170" height="80" rx="12" fill="#FFF1D9" stroke="#E6D3AE"/><text x="910" y="58" font-weight="700" fill="#7A4B00">⑤ 한 줄로 요청</text><text x="910" y="82" font-size="11">스킬이 필요한 걸 물음</text></g>
+<g stroke="#0F6E66" stroke-width="1.6" fill="none" marker-end="url(#ar)"><path d="M180 65h28"/><path d="M385 65h28"/><path d="M590 65h28"/><path d="M795 65h28"/></g></svg>
+<a class="dl" href="files/card-news-kimedu.zip" download>⬇ 자료 받기 · 카드뉴스 스킬 (card-news-kimedu.zip)</a>
+<table><tr><th>들어 있는 것</th><th>하는 일</th></tr>
+<tr><td>SKILL.md</td><td>전체 순서 · 처음에 물어볼 것 · 가게 정보가 비면 멈추고 묻기</td></tr>
+<tr><td>가게 홍보 작업지</td><td>정보 일곱 칸 · 캐릭터형/실사형 틀 · 레퍼런스 분석 요청문</td></tr>
+<tr><td>기획 작업지 · 검수표</td><td>근거 고르기 · 장별 기획 · 올리기 전 대조</td></tr>
+<tr><td>저작권 작업지</td><td>해도 되는 것/안 되는 것 · 출처 표기</td></tr></table>
+
+<div class="card-sub"><b>직접 검수 ① 가게 홍보형</b> — "꽃집 '오늘꽃' 홍보 카드 만들어 줘"만 보냈을 때</div>
+<div class="shots shots2">
+<figure class="shot"><img src="img/skill_ask.jpg" alt=""><figcaption>1) 바로 그리지 않고 가게 정보 여섯 칸부터 물음</figcaption></figure>
+<figure class="shot"><img src="img/skill_color.jpg" alt=""><figcaption>2) "대표 색 추천해 줘" → 분위기에 맞는 색 3개를 HEX로 제안하고 고르게 함</figcaption></figure>
+<figure class="shot"><img src="img/skill_result.jpg" alt=""><figcaption>3) 결과: 준 정보(목동·가격 두 개·화-일 10-20시·월 휴무)만 정확히. 비워 둔 "주 손님"은 넣지 않음</figcaption></figure>
+<figure class="shot"><img src="img/skill_plan.jpg" alt=""><figcaption>직접 검수 ② 정보형: 기사 표를 주자 그림보다 <b>장별 기획표</b>부터. 매체명을 모르는 기사는 "개별 매체명 미확인"으로 표시</figcaption></figure>
+</div>
+<figure class="shot"><img src="img/skill_info3.jpg" alt=""><figcaption>직접 검수 ② 결과: 기획표를 확인하고 "3장 모두 한 장씩"이라고 하자, 합본 없이 <b>낱장 3장</b>(01/03~03/03)이 따로 나왔고 장마다 하단에 기획표대로 출처를 붙였습니다. 기사에 없는 숫자는 넣지 않았습니다.</figcaption></figure>
+<div class="box tip"><div class="t">검수해 보니</div>스킬이 있으면 <b>① 빈 정보는 묻고 ② 기획표부터 보여 주고 ③ 한 장씩 만든다</b>는 오늘의 규칙을 알아서 지킵니다. 그래도 마지막 글자·숫자 확인은 STEP 10 체크리스트로 직접 하세요. (Work 모드에서 진행되어 한 장에 1분 안팎 걸렸습니다.)</div>
+<div class="box warn"><div class="t">설치 전에</div><ul><li>스킬 메뉴는 <b>요금제·관리자 설정에 따라</b> 안 보일 수 있습니다. 안 보이면 이 교안의 프롬프트를 그대로 쓰면 됩니다.</li><li>남이 준 스킬은 설치 전에 내용을 열어 보세요. 이 스킬은 글로 된 작업 설명서(.md)와 아이콘만 들어 있고, 실행되는 프로그램은 없습니다.</li></ul></div></div>
+</div>
+<div class="zone do"><span>실행</span></div>
+<div class="grid">
+<div class="card full" id="s11-install"><h2>① 챗GPT에 스킬 넣기 (설치)</h2>
+<ol class="steps"><li>위 <b>자료 받기</b> 버튼으로 <b>card-news-kimedu.zip</b>을 받습니다. <b>압축을 풀지 마세요.</b></li>
+<li>챗GPT 왼쪽 세로 메뉴에서 <span class="menu">플러그인</span> → 위쪽 <span class="menu">스킬</span>을 누릅니다.</li>
+<li>오른쪽 위 <span class="menu">추가</span> → <span class="menu">컴퓨터에서 업로드</span> → 받은 zip을 끌어다 놓거나 눌러서 고릅니다.</li>
+<li>"스킬 업로드됨"이 뜨면 <span class="menu">완료</span>. <b>설치됨</b> 목록에 「카드뉴스 만들기 (김에듀 공개판)」이 보이면 끝입니다.</li></ol>
+<div class="shots shots2">
+<figure class="shot"><img src="img/skill_add.jpg" alt=""><figcaption>① 왼쪽 세로 메뉴 <b>플러그인</b> → <b>스킬</b> → 오른쪽 위 <b>추가 → 컴퓨터에서 업로드</b></figcaption></figure>
+<figure class="shot"><img src="img/skill_upload.jpg" alt=""><figcaption>② 받은 zip 파일을 끌어다 놓거나 눌러서 선택 (압축 풀지 않고 그대로)</figcaption></figure>
+<figure class="shot"><img src="img/skill_done.jpg" alt=""><figcaption>③ "스킬 업로드됨" → 완료. 설치됨 목록에 「카드뉴스 만들기 (김에듀 공개판)」</figcaption></figure>
+<figure class="shot"><img src="img/skill_menu.jpg" alt=""><figcaption>④ 스킬 옆 ··· → <b>채팅</b>을 누르면 스킬이 붙은 새 Work 채팅이 열림</figcaption></figure></div>
+<div class="box warn"><div class="t">막힐 때</div><ul><li><b>플러그인·스킬 메뉴가 없다</b> → 요금제나 관리자 설정 때문일 수 있습니다. 이 교안 STEP 5~9의 프롬프트를 그대로 쓰면 같은 결과를 낼 수 있습니다.</li><li><b>업로드가 안 된다</b> → 압축을 풀었다면 다시 받은 zip 파일 그대로 올립니다.</li></ul></div></div>
+<div class="card full" id="s11-use"><h2>② 스킬로 내 가게 카드 만들기 (사용)</h2>
+<p>스킬 ··· → <span class="menu">채팅</span>으로 연 창에서, 스킬 표시(연필 아이콘 이름)는 남기고 뒤의 예시 글만 지운 뒤 보냅니다.</p>
+<div class="prompt"><div class="ph">공용 프롬프트 · 스킬로 시작<button onclick="cp(this)">복사</button></div><pre>우리 가게 인스타 홍보 카드 만들어 줘. 가게 이름은 '(가게 이름)'이야.</pre></div>
+<p>스킬이 일곱 칸을 물으면 STEP 9 ①에서 채운 가게 정보를 붙여 답하면 됩니다.</p>
+<div class="prompt x"><div class="ph">확장 · 정보형으로 쓰기<button onclick="cp(this)">복사</button></div><pre>아래 자료로 카톡방용 9:16 요약판 3장과 인스타 피드용 1:1 심화판 5장을 기획해 줘. 먼저 장별 기획표만 보여 주고, 내가 확인하면 한 장씩 만들어 줘.
+---
+(여기에 기사 표나 영상 스크립트 붙여 넣기)</pre></div></div>
+</div>
+</section>
+
+
+</main>
+<aside class="side" id="side"></aside>
+</div>
+<div class="bottom"><div class="bottom-in"><button id="prev" onclick="go(cur-1)">← 이전 STEP</button><span id="pos"></span><button id="next" class="next" onclick="go(cur+1)">다음 STEP →</button></div></div>
+
+<script>
+var steps=[].slice.call(document.querySelectorAll('.step')),cur=0,tabs=document.getElementById('tabs');
+steps.forEach(function(s,i){var b=document.createElement('button');b.textContent=(i===0?'0 ':i+' ')+s.dataset.title;b.onclick=function(){go(i)};tabs.appendChild(b)});
+function side(){var s=steps[cur],h='<b>STEP '+cur+' 안의 카드</b>',mode='';
+ [].slice.call(s.children).forEach(function(el){if(el.classList.contains('zone')){mode=el.classList.contains('do')?'do':'ex'}
+  [].slice.call(el.querySelectorAll?el.querySelectorAll('.card[id]'):[]).forEach(function(c){var t=c.querySelector('h2');if(t)h+='<a href="#'+c.id+'"><span class="kind '+(mode==='do'?'k-do">실행':'k-ex">설명')+'</span>'+t.textContent+'</a>'})});
+ document.getElementById('side').innerHTML=h}
+function go(i){if(i<0||i>=steps.length)return;cur=i;steps.forEach(function(s,j){s.classList.toggle('on',j===i)});
+ [].slice.call(tabs.children).forEach(function(b,j){b.classList.toggle('on',j===i)});tabs.children[i].scrollIntoView({block:'nearest',inline:'center'});
+ document.getElementById('pos').textContent='STEP '+i+' / '+(steps.length-1);document.getElementById('prev').style.visibility=i?'visible':'hidden';document.getElementById('next').style.visibility=i<steps.length-1?'visible':'hidden';
+ side();window.scrollTo(0,0)}
+var raw=[].slice.call(document.querySelectorAll('.prompt pre')).map(function(p){return p.textContent});
+function names(){var n=document.getElementById('nmN').value.trim()||'내 캐릭터',y=document.getElementById('nmY').value.trim()||'친구 캐릭터';
+ document.querySelectorAll('.prompt pre').forEach(function(p,i){p.textContent=raw[i].replace(/\{N\}/g,n).replace(/\{Y\}/g,y)});
+ document.querySelectorAll('.card p,.card li,.box').forEach(function(el){if(el.dataset.r===undefined&&/\{[NY]\}/.test(el.innerHTML))el.dataset.r=el.innerHTML;if(el.dataset.r!==undefined)el.innerHTML=el.dataset.r.replace(/\{N\}/g,n).replace(/\{Y\}/g,y)})}
+document.getElementById('nmN').oninput=names;document.getElementById('nmY').oninput=names;
+function cp(b){var t=b.closest('.prompt').querySelector('pre').textContent;var done=function(){var o=b.textContent;b.textContent='복사됨';setTimeout(function(){b.textContent=o},1200)};
+ if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(t).then(done,function(){fb(t);done()})}else{fb(t);done()}}
+function fb(t){var a=document.createElement('textarea');a.value=t;a.style.opacity='0';document.body.appendChild(a);a.select();try{document.execCommand('copy')}catch(e){}document.body.removeChild(a)}
+var f=20;function fs(d){f=Math.max(16,Math.min(28,f+d));document.documentElement.style.setProperty('--fs',f+'px')}
+names();go(0);
+</script>
+</body></html>
