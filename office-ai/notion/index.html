@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>노션 AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root { --band:#1f6b8a; --ink:#2b2b2b; --line:#9aa5ad; --link:#2a6f8f; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: "Noto Sans KR", sans-serif; color: var(--ink); background: #fff; }
+  .band { background: var(--band); color: #fff; text-align: center; padding: 34px 16px; }
+  .band h1 { margin: 0; font-size: clamp(32px, 5vw, 52px); font-weight: 900; letter-spacing: -0.5px; }
+  .wrap { max-width: 820px; margin: 0 auto; padding: 24px 20px 40px; }
+  details { border-bottom: 1px solid var(--line); }
+  summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; align-items: center;
+            padding: 22px 6px 14px; font-size: 22px; color: var(--link); }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: "⌄"; font-size: 26px; color: #555; transition: transform .2s; }
+  details[open] summary::after { transform: rotate(180deg); }
+  .body { padding: 4px 6px 20px; font-size: 18px; line-height: 1.7; }
+  .body a { color: var(--link); word-break: break-all; }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; max-width: 1100px; margin: 36px auto 0; padding: 0 20px; }
+  .cols h2 { text-align: center; font-size: 24px; margin: 0 0 14px; }
+  .btn { display: block; text-align: center; background: var(--band); color: #fff; text-decoration: none;
+         padding: 14px 10px; border-radius: 6px; font-size: 18px; font-weight: 500; }
+  .pdf { max-width: 1100px; margin: 28px auto 48px; padding: 0 20px; }
+  .pdf iframe { width: 100%; height: 640px; border: 0; }
+  @media (max-width: 640px) { .cols { grid-template-columns: 1fr; } .pdf iframe { height: 480px; } }
+</style>
+</head>
+<body>
+  <div class="band"><h1>노션 AI</h1></div>
+
+  <div class="wrap">
+    <details><summary>목표 루틴 플래너</summary><div class="body"><a href="https://kimedukrlab.notion.site/150661996d008081a461ce5d998332a6?pvs=4" target="_blank" rel="noopener">https://kimedukrlab.notion.site/150661996d008081a461ce5d998332a6?pvs=4</a></div></details>
+    <details><summary>마이다이어리 공유</summary><div class="body"><a href="https://kimedukrlab.notion.site/142661996d00805bbebff59a66e2f063?pvs=4" target="_blank" rel="noopener">https://kimedukrlab.notion.site/142661996d00805bbebff59a66e2f063?pvs=4</a></div></details>
+    <details><summary>기초 함수 예제</summary><div class="body"><a href="https://kimedukrlab.notion.site/149661996d0080aa8e3cecb0ce2a9fcb?pvs=4" target="_blank" rel="noopener">https://kimedukrlab.notion.site/149661996d0080aa8e3cecb0ce2a9fcb?pvs=4</a></div></details>
+    <details><summary>관계형 및 롤업 예제</summary><div class="body"><a href="https://kimedukrlab.notion.site/149661996d008015b89fcd451112c66b?pvs=4" target="_blank" rel="noopener">https://kimedukrlab.notion.site/149661996d008015b89fcd451112c66b?pvs=4</a></div></details>
+    <details><summary>습관노트 예제</summary><div class="body"><a href="https://kimedukrlab.notion.site/149661996d008039a774eade575b91fc?pvs=4" target="_blank" rel="noopener">https://kimedukrlab.notion.site/149661996d008039a774eade575b91fc?pvs=4</a></div></details>
+    <details><summary>MY TASK 예제</summary><div class="body"><a href="https://kimedukrlab.notion.site/MY-TASK-142661996d008030933dd07d8e4f20d9?pvs=4" target="_blank" rel="noopener">https://kimedukrlab.notion.site/MY-TASK-142661996d008030933dd07d8e4f20d9?pvs=4</a></div></details>
+  </div>
+
+  <div class="cols">
+    <div><h2>김충효 강사 유튜브</h2><a class="btn" href="https://www.youtube.com/@김에듀" target="_blank" rel="noopener">유튜브 채널 바로 가기</a></div>
+    <div><h2>노션 핸다웃 자료</h2><a class="btn" href="https://drive.google.com/file/d/1nOqumDft8YQdYk6lQJQx9-a6lj2pEz38/view" target="_blank" rel="noopener">핸다웃 PDF 새 창으로 열기</a></div>
+  </div>
+
+  <div class="pdf"><iframe src="https://drive.google.com/file/d/1nOqumDft8YQdYk6lQJQx9-a6lj2pEz38/preview" title="노션 핸다웃 자료" allow="autoplay"></iframe></div>
+</body>
+</html>
