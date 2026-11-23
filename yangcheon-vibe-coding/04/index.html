@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>바이브 코딩 4차시 · 코드 먼저 vs 디자인 먼저, 내 홈페이지 만들기</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#fbfbf9;--card:#fff;--line:#e4e4e0;--ink:#1f2a2e;--sub:#5b6569;
+  --ac:#1f6f5c;--ac-soft:#e6f2ee;--ac-line:#b9dacd;
+  --b:#3d5a99;--b-soft:#eaf0fa;--b-line:#c3d1ec;
+  --set:#eef3fb;--set-line:#c9d8ef;--warn:#fbf1ee;--warn-line:#efcfc4;
+  --more:#f3effa;--more-line:#d9cfee;--mine:#fdf7e8;--mine-line:#eedcae;
+  --fs:20px;
+}
+*{box-sizing:border-box}
+html{font-size:var(--fs)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans KR",sans-serif;line-height:1.75;word-break:keep-all}
+img{max-width:100%;display:block;border-radius:8px;border:1px solid var(--line)}
+.top{position:sticky;top:0;z-index:20;background:var(--card);border-bottom:1px solid var(--line)}
+.top-in{max-width:1320px;margin:0 auto;padding:.5rem 1rem .25rem;display:flex;align-items:center;gap:.8rem;flex-wrap:wrap}
+.ttl{font-weight:700;font-size:.85rem;margin-right:auto;line-height:1.4}
+.ttl small{display:block;font-weight:400;color:var(--sub);font-size:.7rem}
+.biz{display:flex;gap:.25rem;align-items:center;font-size:.7rem;color:var(--sub)}
+.biz button{font:inherit;font-size:.72rem;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:.12rem .7rem;cursor:pointer;color:var(--ink)}
+.biz button[aria-pressed="true"]{background:var(--ac);border-color:var(--ac);color:#fff;font-weight:700}
+.zoom{font-size:.7rem;color:var(--sub);white-space:nowrap}
+.zoom button{font:inherit;border:1px solid var(--line);background:var(--card);border-radius:8px;padding:.1rem .55rem;cursor:pointer;color:var(--ink)}
+.tabs{max-width:1320px;margin:0 auto;padding:0 .6rem;display:flex;overflow-x:auto}
+.tab{font:inherit;font-size:.72rem;white-space:nowrap;border:none;background:none;padding:.5rem .6rem;border-bottom:3px solid transparent;cursor:pointer;color:var(--sub)}
+.tab[aria-selected="true"]{color:var(--ac);border-bottom-color:var(--ac);font-weight:700}
+.tab .ab{display:inline-block;font-size:.7rem;font-weight:700;border-radius:4px;padding:0 .3rem;margin-right:.2rem}
+.ab-a{background:var(--ac-soft);color:var(--ac)}.ab-b{background:var(--b-soft);color:var(--b)}
+.wrap{max-width:1320px;margin:0 auto;padding:1.2rem 1rem 2rem;display:grid;grid-template-columns:1fr 200px;gap:1.4rem}
+.side{position:sticky;top:7.4rem;align-self:start;border-left:1px solid var(--line);padding-left:.9rem;font-size:.72rem}
+.side b{display:block;color:var(--sub);font-weight:500;margin-bottom:.3rem}
+.side a{display:block;color:var(--ink);text-decoration:none;padding:.22rem 0;line-height:1.45}
+.side a:hover{color:var(--ac)}
+.side a.k-do::before{content:"실습 ";color:var(--ac);font-weight:700}
+.step{display:none}.step.on{display:block}
+h1{font-size:1.45rem;line-height:1.35;margin:.2rem 0 .3rem}
+.lead{color:var(--sub);margin:0 0 1.1rem}
+h2{font-size:1.05rem;margin:0 0 .5rem;line-height:1.45}
+h3{font-size:.9rem;margin:.6rem 0 .3rem}
+.explain{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:1.1rem 1.2rem;margin-bottom:1.1rem}
+.tag{display:inline-block;font-size:.7rem;font-weight:700;border-radius:999px;padding:.05rem .6rem;margin-bottom:.45rem}
+.t-ex{background:var(--ac-soft);color:var(--ac)}.t-do{background:var(--ink);color:#fff}.t-opt{background:#eceeed;color:var(--sub)}
+.row{display:grid;grid-template-columns:1fr 1fr;background:var(--card);border:1px solid var(--line);border-left:5px solid var(--ac);border-radius:14px;margin-bottom:1.1rem;overflow:hidden}
+.row.b{border-left-color:var(--b)}
+.row .ex{padding:1.1rem 1.2rem;background:#f7f8f6;border-right:1px solid var(--line)}
+.row .pr{padding:1.1rem 1.2rem}
+.cap{font-size:.72rem;color:var(--sub);margin:.4rem 0 0}
+.lbl{font-size:.72rem;font-weight:700;color:var(--sub);margin:0 0 .35rem}
+ol,ul{margin:.25rem 0;padding-left:1.25rem}li{margin:.18rem 0}
+.prompt{position:relative;background:#f3f5f3;border:1px solid var(--line);border-radius:10px;padding:.75rem 4.4rem .75rem .9rem;margin:.5rem 0;font-size:.82rem;white-space:pre-wrap;line-height:1.7}
+.copy{position:absolute;top:.45rem;right:.45rem;font:inherit;font-size:.7rem;border:1px solid var(--ac-line);background:var(--ac-soft);color:var(--ac);font-weight:700;border-radius:6px;padding:.1rem .55rem;cursor:pointer}
+.box{border-radius:10px;padding:.7rem .9rem;margin:.6rem 0;font-size:.82rem}
+.box .h{display:block;font-weight:700;margin-bottom:.15rem}
+.set{background:var(--set);border:1px solid var(--set-line)}.warn{background:var(--warn);border:1px solid var(--warn-line)}
+.more{background:var(--more);border:1px solid var(--more-line)}.mine{background:var(--mine);border:1px solid var(--mine-line)}
+.trouble{background:var(--card);border:1px solid var(--warn-line);border-radius:14px;padding:1rem 1.2rem;margin-bottom:1.1rem}
+.trouble dl{margin:0}.trouble dt{font-weight:700;font-size:.85rem;margin-top:.55rem}
+.trouble dt::before{content:"막히면 · ";color:#b4532a}.trouble dd{margin:.1rem 0 0;font-size:.82rem}
+table{width:100%;border-collapse:collapse;font-size:.8rem}
+th,td{border-bottom:1px solid var(--line);padding:.5rem .45rem;text-align:left;vertical-align:top}
+th{color:var(--sub);font-weight:500}
+.check{list-style:none;padding:0}.check li{padding-left:1.5rem;position:relative}
+.check li::before{content:"";position:absolute;left:0;top:.42rem;width:.85rem;height:.85rem;border:2px solid var(--ac);border-radius:3px}
+.slot{border:2px dashed #c9cfcc;border-radius:10px;padding:1.4rem 1rem;text-align:center;color:var(--sub);font-size:.78rem;background:#fff;margin:.3rem 0}
+.slot b{display:block;color:var(--ink)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:.7rem}
+.bizcards{display:grid;grid-template-columns:repeat(4,1fr);gap:.6rem;margin-top:.5rem}
+.bizcard{border:1px solid var(--line);border-radius:12px;padding:.7rem .8rem;font-size:.78rem;background:#fff;cursor:pointer;text-align:left;font-family:inherit;color:var(--ink);line-height:1.6}
+.bizcard b{display:block;font-size:.88rem;margin-bottom:.2rem}
+.bizcard[aria-pressed="true"]{border-color:var(--ac);box-shadow:0 0 0 2px var(--ac-soft)}
+svg text{font-family:"Noto Sans KR",sans-serif}
+kbd{font:inherit;font-size:.78em;border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:0 .35rem;background:#fff}
+.bottom{position:sticky;bottom:0;z-index:20;background:var(--card);border-top:1px solid var(--line)}
+.bottom-in{max-width:1320px;margin:0 auto;padding:.45rem 1rem;display:flex;justify-content:space-between;align-items:center;font-size:.72rem}
+.bottom button{font:inherit;border:1px solid var(--line);background:var(--card);border-radius:8px;padding:.25rem .9rem;cursor:pointer;color:var(--ink)}
+.bottom button.nx{background:var(--ac);border-color:var(--ac);color:#fff;font-weight:700}
+.bottom button:disabled{opacity:.35;cursor:default}
+.ex img,.explain img{cursor:zoom-in}
+ .zbg{position:absolute;left:0;top:0;width:100%;background:rgba(31,42,46,.55);z-index:50}
+.zpop{position:absolute;left:50%;transform:translateX(-50%);width:min(1200px,94vw);background:var(--card);border-radius:14px;padding:.8rem;box-shadow:0 10px 40px rgba(0,0,0,.25);z-index:51}
+.zpop .zb-top{display:flex;justify-content:space-between;align-items:center;font-size:.75rem;color:var(--sub);margin-bottom:.5rem}
+.zpop button{font:inherit;font-size:.75rem;border:1px solid var(--line);background:var(--card);border-radius:8px;padding:.15rem .8rem;cursor:pointer;color:var(--ink)}
+.zpop img{width:auto;max-width:100%;margin:0 auto;cursor:zoom-out}
+.imghint{font-size:.7rem;color:var(--sub);margin:.25rem 0 0}
+@media(max-width:980px){.wrap{grid-template-columns:1fr}.side{display:none}.row{grid-template-columns:1fr}.row .ex{border-right:none;border-bottom:1px solid var(--line)}.two,.bizcards{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.two,.bizcards{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-in">
+    <div class="ttl">비개발자도 도전하는 AI 바이브 코딩 · 4차시<small>코드 먼저 vs 디자인 먼저, 내 홈페이지 만들기</small></div>
+    <div class="biz" role="group" aria-label="연습할 업종">업종
+      <button data-biz="bakery">빵집</button><button data-biz="cafe">카페</button><button data-biz="acc">액세서리</button><button data-biz="mine">내 것</button>
+    </div>
+    <div class="zoom">글자 <button onclick="zoom(-1)" aria-label="글자 작게">가−</button> <button onclick="zoom(1)" aria-label="글자 크게">가+</button></div>
+  </div>
+  <nav class="tabs" role="tablist" aria-label="STEP 목록">
+    <button class="tab" role="tab" data-s="0">STEP 0 시작 준비</button>
+    <button class="tab" role="tab" data-s="1"><span class="ab ab-a">A</span>STEP 1 한 줄 만들기</button>
+    <button class="tab" role="tab" data-s="2"><span class="ab ab-a">A</span>STEP 2 스킬로 다시</button>
+    <button class="tab" role="tab" data-s="3">STEP 3 휴대폰 먼저</button>
+    <button class="tab" role="tab" data-s="4"><span class="ab ab-b">B</span>STEP 4 와이어프레임</button>
+    <button class="tab" role="tab" data-s="5"><span class="ab ab-b">B</span>STEP 5 코드로 · PC로</button>
+    <button class="tab" role="tab" data-s="6">STEP 6 비교 · 정리</button>
+  </nav>
+</header>
+
+<div class="wrap"><main>
+
+<!-- ============ STEP 0 ============ -->
+<section class="step" id="s0" data-title="시작 준비">
+  <h1>오늘은 같은 홈페이지를 두 가지 방법으로 만들어 비교합니다</h1>
+  <p class="lead"><b>방법 A</b>는 코드에서 바로 만들고 다듬습니다. <b>방법 B</b>는 디자인 도구로 배치를 먼저 그리고 코드로 옮깁니다. 마지막에 두 결과를 나란히 놓고 비교합니다.</p>
+
+  <div class="explain" id="s0-goal" data-nav="학습 목표">
+    <span class="tag t-ex">설명</span>
+    <h2>학습 목표</h2>
+    <svg viewBox="0 0 960 300" width="100%" role="img" aria-label="학습 목표 네 가지: 두 가지 방법 비교, 스킬로 AI 티 줄이기, 휴대폰 먼저 설계하고 PC로 넓히기, 코드에서 해야 하는 이유">
+      <g>
+        <rect x="10" y="10" width="225" height="280" rx="16" fill="#e6f2ee" stroke="#b9dacd"/>
+        <circle cx="42" cy="42" r="16" fill="#1f6f5c"/><text x="42" y="48" text-anchor="middle" font-size="16" font-weight="700" fill="#fff">1</text>
+        <rect x="48" y="78" width="66" height="86" rx="8" fill="#fff" stroke="#1f6f5c" stroke-width="2"/><text x="81" y="128" text-anchor="middle" font-size="24" font-weight="700" fill="#1f6f5c">A</text>
+        <rect x="132" y="78" width="66" height="86" rx="8" fill="#fff" stroke="#3d5a99" stroke-width="2"/><text x="165" y="128" text-anchor="middle" font-size="24" font-weight="700" fill="#3d5a99">B</text>
+        
+        <text x="122" y="200" text-anchor="middle" font-size="17" font-weight="700" fill="#1f2a2e">두 가지 방법</text>
+        <text x="122" y="228" text-anchor="middle" font-size="14" fill="#2e6b5b">코드 먼저와 디자인 먼저로</text>
+        <text x="122" y="250" text-anchor="middle" font-size="14" fill="#2e6b5b">만들고 차이를 말할 수 있다</text>
+      </g>
+      <g>
+        <rect x="248" y="10" width="225" height="280" rx="16" fill="#f6f7f5" stroke="#e4e4e0"/>
+        <circle cx="280" cy="42" r="16" fill="#1f6f5c"/><text x="280" y="48" text-anchor="middle" font-size="16" font-weight="700" fill="#fff">2</text>
+        <rect x="318" y="72" width="86" height="100" rx="6" fill="#fff" stroke="#8a9497"/>
+        <rect x="330" y="88" width="50" height="8" rx="4" fill="#1f6f5c"/><rect x="330" y="106" width="62" height="6" rx="3" fill="#cfd5d2"/><rect x="330" y="120" width="56" height="6" rx="3" fill="#cfd5d2"/><rect x="330" y="134" width="60" height="6" rx="3" fill="#cfd5d2"/>
+        <circle cx="398" cy="160" r="18" fill="#1f6f5c"/><path d="M389 160 l6 6 l12 -13" fill="none" stroke="#fff" stroke-width="3"/>
+        <text x="360" y="200" text-anchor="middle" font-size="17" font-weight="700" fill="#1f2a2e">스킬과 구체적 요청</text>
+        <text x="360" y="228" text-anchor="middle" font-size="14" fill="#5b6569">스킬을 설치하고 재료를 주어</text>
+        <text x="360" y="250" text-anchor="middle" font-size="14" fill="#5b6569">AI 티를 줄일 수 있다</text>
+      </g>
+      <g>
+        <rect x="486" y="10" width="225" height="280" rx="16" fill="#eaf0fa" stroke="#c3d1ec"/>
+        <circle cx="518" cy="42" r="16" fill="#3d5a99"/><text x="518" y="48" text-anchor="middle" font-size="16" font-weight="700" fill="#fff">3</text>
+        <rect x="530" y="80" width="42" height="80" rx="8" fill="#fff" stroke="#3d5a99" stroke-width="2"/>
+        <rect x="538" y="92" width="26" height="10" rx="3" fill="#3d5a99"/><rect x="538" y="108" width="26" height="22" rx="3" fill="#c3d1ec"/>
+        <path d="M580 120 h28" stroke="#3d5a99" stroke-width="2" marker-end="url(#arg)"/>
+        <defs><marker id="arg" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M2 1L8 5L2 9" fill="none" stroke="#3d5a99" stroke-width="1.6"/></marker></defs>
+        <rect x="614" y="88" width="80" height="62" rx="6" fill="#fff" stroke="#3d5a99" stroke-width="2"/>
+        <rect x="622" y="98" width="30" height="40" rx="3" fill="#c3d1ec"/><rect x="658" y="98" width="28" height="18" rx="3" fill="#dfe6f3"/>
+        <text x="598" y="200" text-anchor="middle" font-size="17" font-weight="700" fill="#1f2a2e">휴대폰 먼저 → PC</text>
+        <text x="598" y="228" text-anchor="middle" font-size="14" fill="#3d5a99">휴대폰부터 설계하고</text>
+        <text x="598" y="250" text-anchor="middle" font-size="14" fill="#3d5a99">PC로 넓힐 수 있다</text>
+      </g>
+      <g>
+        <rect x="724" y="10" width="226" height="280" rx="16" fill="#1f6f5c"/>
+        <circle cx="756" cy="42" r="16" fill="#fff"/><text x="756" y="48" text-anchor="middle" font-size="16" font-weight="700" fill="#1f6f5c">4</text>
+        <circle cx="837" cy="122" r="44" fill="none" stroke="#b9dacd" stroke-width="3" stroke-dasharray="8 6"/>
+        <text x="837" y="104" text-anchor="middle" font-size="13" fill="#d7ece5">만들기</text>
+        <text x="837" y="126" text-anchor="middle" font-size="13" fill="#d7ece5">열어 보기</text>
+        <text x="837" y="148" text-anchor="middle" font-size="13" fill="#d7ece5">고치기</text>
+        <text x="837" y="200" text-anchor="middle" font-size="17" font-weight="700" fill="#fff">왜 코드인가</text>
+        <text x="837" y="228" text-anchor="middle" font-size="14" fill="#d7ece5">코드가 스스로 검사하고</text>
+        <text x="837" y="250" text-anchor="middle" font-size="14" fill="#d7ece5">고친다는 점을 말할 수 있다</text>
+      </g>
+    </svg>
+  </div>
+
+  <div class="explain" id="s0-flow" data-nav="오늘의 흐름">
+    <span class="tag t-ex">설명</span>
+    <h2>오늘의 흐름</h2>
+    <svg viewBox="0 0 960 250" width="100%" role="img" aria-label="방법 A: 코드로 한 줄 만들기, 스킬로 다시 만들기. 가운데 휴대폰 먼저 설명. 방법 B: 와이어프레임 그리기, 코드로 옮기고 PC로 넓히기. 마지막 비교">
+      <defs><marker id="arf" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M2 1L8 5L2 9" fill="none" stroke="#8a9497" stroke-width="1.6"/></marker></defs>
+      <text x="20" y="26" font-size="15" font-weight="700" fill="#1f6f5c">방법 A · 코드 먼저</text>
+      <rect x="20" y="38" width="190" height="70" rx="12" fill="#e6f2ee" stroke="#b9dacd"/><text x="115" y="68" text-anchor="middle" font-size="16" font-weight="700" fill="#1f6f5c">1 한 줄로 만들기</text><text x="115" y="92" text-anchor="middle" font-size="13" fill="#2e6b5b">AI 티 찾기</text>
+      <line x1="215" y1="73" x2="245" y2="73" stroke="#8a9497" stroke-width="1.6" marker-end="url(#arf)"/>
+      <rect x="250" y="38" width="190" height="70" rx="12" fill="#e6f2ee" stroke="#b9dacd"/><text x="345" y="68" text-anchor="middle" font-size="16" font-weight="700" fill="#1f6f5c">2 스킬로 다시</text><text x="345" y="92" text-anchor="middle" font-size="13" fill="#2e6b5b">구체적으로 시키기</text>
+      <rect x="480" y="80" width="170" height="90" rx="12" fill="#fff" stroke="#8a9497" stroke-dasharray="6 4"/><text x="565" y="118" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2a2e">3 휴대폰 먼저</text><text x="565" y="142" text-anchor="middle" font-size="13" fill="#5b6569">설명</text>
+      <path d="M440 73 L565 73 L565 76" fill="none" stroke="#8a9497" stroke-width="1.6"/>
+      <path d="M565 170 L565 178 L115 178 L115 186" fill="none" stroke="#8a9497" stroke-width="1.6" marker-end="url(#arf)"/>
+      <text x="20" y="208" font-size="15" font-weight="700" fill="#3d5a99" opacity="0">.</text>
+      <rect x="20" y="190" width="190" height="56" rx="12" fill="#eaf0fa" stroke="#c3d1ec"/><text x="115" y="224" text-anchor="middle" font-size="16" font-weight="700" fill="#3d5a99">4 와이어프레임</text>
+      <line x1="215" y1="218" x2="245" y2="218" stroke="#8a9497" stroke-width="1.6" marker-end="url(#arf)"/>
+      <rect x="250" y="190" width="190" height="56" rx="12" fill="#eaf0fa" stroke="#c3d1ec"/><text x="345" y="224" text-anchor="middle" font-size="16" font-weight="700" fill="#3d5a99">5 코드로 · PC로</text>
+      <text x="230" y="182" font-size="15" font-weight="700" fill="#3d5a99" text-anchor="middle" opacity="0">B</text>
+      <rect x="720" y="100" width="220" height="80" rx="12" fill="#1f6f5c"/><text x="830" y="134" text-anchor="middle" font-size="17" font-weight="700" fill="#fff">6 A와 B 비교</text><text x="830" y="160" text-anchor="middle" font-size="13" fill="#d7ece5">왜 코드인가 정리</text>
+      <path d="M440 218 L690 218 L690 140 L714 140" fill="none" stroke="#8a9497" stroke-width="1.6" marker-end="url(#arf)"/>
+      <text x="460" y="240" font-size="14" font-weight="700" fill="#3d5a99">방법 B · 디자인 먼저</text>
+    </svg>
+  </div>
+
+  <div class="explain" id="s0-biz" data-nav="업종 고르기">
+    <span class="tag t-ex">설명</span>
+    <h2>연습할 업종을 고르세요</h2>
+    <p style="margin:.2rem 0">수업은 <b>빵집</b>으로 함께 진행합니다. 다른 업종으로 해 보고 싶은 분이나 집에서 다시 연습할 때는 아래에서 고르세요. 고르면 <b>모든 STEP의 프롬프트</b>가 그 업종에 맞게 바뀝니다. 맨 위 "업종" 단추로도 바꿀 수 있습니다.</p>
+    <div class="bizcards">
+      <button class="bizcard" data-biz="bakery"><b>빵집 '밀담'</b>망원동 4평 빵집 · 새벽 반죽 · 대표는 통밀 깜빠뉴</button>
+      <button class="bizcard" data-biz="cafe"><b>카페 '느린 오후'</b>연남동 2층 14석 · 직접 볶는 원두 · 작업하러 오는 손님</button>
+      <button class="bizcard" data-biz="acc"><b>공방 '은결'</b>성수동 1인 은 공방 · 한 달 20개 한정 · 온라인 주문</button>
+      <button class="bizcard" data-biz="mine"><b>내 것 만들기</b>프롬프트의 [대괄호]를 내 가게나 나에 대한 내용으로 바꿔서 씁니다</button>
+    </div>
+    <div class="box mine"><span class="h">"내 것"을 고르면</span>프롬프트에 [가게 이름], [대표 상품] 같은 빈칸이 나옵니다. 붙여 넣은 뒤 대괄호 부분을 지우고 내 내용을 쓰세요. 강사·프리랜서처럼 가게가 없으면 "가게"를 "나"로 바꿔 쓰면 됩니다.</div>
+  </div>
+
+  <div class="row" id="s0-ready" data-nav="폴더 준비" data-kind="do">
+    <div class="ex">
+      <p class="lbl">예시 · 바탕화면</p>
+      <svg viewBox="0 0 420 200" width="100%" role="img" aria-label="바탕화면에 내홈페이지 폴더를 만든 모습">
+        <rect x="0" y="0" width="420" height="200" rx="10" fill="#dfe9ef"/>
+        <g transform="translate(40,30)"><path d="M0 14 h34 l10 10 h56 v66 h-100z" fill="#f2c94c"/><rect x="0" y="24" width="100" height="66" rx="4" fill="#f5d36b"/><text x="50" y="120" text-anchor="middle" font-size="15" fill="#1f2a2e">내홈페이지</text></g>
+        <rect x="30" y="20" width="120" height="150" rx="8" fill="none" stroke="#1f6f5c" stroke-width="3"/>
+        <text x="270" y="96" text-anchor="middle" font-size="14" fill="#5b6569">오늘 만드는 파일이</text>
+        <text x="270" y="120" text-anchor="middle" font-size="14" fill="#5b6569">모두 여기에 모입니다</text>
+      </svg>
+    </div>
+    <div class="pr">
+      <span class="tag t-do">실습</span>
+      <h2>시작 전에 확인</h2>
+      <ul class="check">
+        <li>클로드 데스크톱 앱 로그인 (프로 요금제)</li>
+        <li>바탕화면에서 마우스 오른쪽 → 새로 만들기 → 폴더 → 이름 <b>내홈페이지</b></li>
+        <li>오늘 만들 파일: 방법 A는 <b>a.html</b>, <b>a2.html</b> / 방법 B는 <b>b.html</b></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="explain" id="s0-model" data-nav="모델은 소넷으로">
+    <span class="tag t-ex">설명</span>
+    <h2>오늘 모델은 소넷으로 시작합니다</h2>
+    <p style="margin:.2rem 0 .5rem">코드 탭 입력창 아래에서 모델을 <b>소넷</b>으로 고르고 시작하세요. 오퍼스는 사용량이 빨리 줄어서 수업 중간에 한도가 찰 수 있습니다.</p>
+    <div class="box warn"><span class="h">중간에 모델을 바꾸면 사용량이 한 번에 크게 줄어요</span>클로드는 같은 대화를 이어 갈 때 앞부분을 저장해 두고 싸게 다시 씁니다. 이 저장분은 모델마다 따로라서, 중간에 바꾸면 새 모델이 지금까지의 대화를 처음부터 다시 읽습니다.</div>
+    <h3>꼭 바꿔야 할 때 쓰는 방법 세 가지</h3>
+    <table>
+      <tr><th style="width:22%">방법</th><th>어떻게</th><th style="width:28%">언제 좋은가</th></tr>
+      <tr><td><b>① 줄이고 바꾸기</b></td><td>입력창에 <kbd>/compact</kbd>를 넣어 대화를 요약한 뒤 모델을 바꿉니다.</td><td>지금 세션을 이어 가고 싶을 때</td></tr>
+      <tr><td><b>② 인수인계 메모</b></td><td>메모를 남기고, 새 세션을 원하는 모델로 열어 메모를 읽힙니다.</td><td>가장 깔끔함 · 오늘 권장</td></tr>
+      <tr><td><b>③ 처음부터 나눠 쓰기</b></td><td>모델 목록에 <b>오퍼스 플랜</b>(Opus Plan)이 보이면 고릅니다. 계획은 오퍼스가, 작업은 소넷이 나눠 합니다.</td><td>앱 버전에 따라 없을 수 있음</td></tr>
+    </table>
+    <div class="two" style="margin-top:.5rem">
+      <div><p class="lbl">② 바꾸기 전 · 지금 세션에서</p><div class="prompt"><button class="copy">복사</button><span class="pt">지금까지 한 일과 남은 일을 다음 사람이 이어서 할 수 있게 인수인계.md 파일로 정리해 줘. 만든 파일 이름과 위치도 적어 줘.</span></div></div>
+      <div><p class="lbl">② 바꾼 뒤 · 새 세션에서</p><div class="prompt"><button class="copy">복사</button><span class="pt">인수인계.md를 읽고 남은 일을 이어서 해 줘.</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STEP 1 ============ -->
+<section class="step" id="s1" data-title="방법 A · 코드로 한 줄 만들기">
+  <h1>방법 A · 코드에서 한 줄로 만들어 보기</h1>
+  <p class="lead">일부러 <b>짧게</b> 시킵니다. 아무 정보 없이 시키면 AI가 어떤 홈페이지를 만드는지 먼저 보려는 것입니다.</p>
+
+  <div class="row" id="s1-ready" data-nav="코드 탭 준비" data-kind="do">
+    <div class="ex">
+      <p class="lbl">① 위쪽 코드 탭</p>
+      <div class="slot"><b>화면 캡처 자리</b>클로드 앱 위쪽의 채팅·코드 탭</div>
+      <p class="lbl" style="margin-top:.6rem">② 폴더 고르기 · ③ 신뢰</p>
+      <div class="two"><div class="slot"><b>화면 캡처 자리</b>폴더 선택 단추</div><div class="slot"><b>화면 캡처 자리</b>"신뢰합니까" 창</div></div>
+    </div>
+    <div class="pr">
+      <span class="tag t-do">실습</span>
+      <h2>코드 탭 열고 폴더 연결하기</h2>
+      <ol>
+        <li>클로드 앱 위쪽에서 <b>코드</b> 탭을 누릅니다. <b>채팅</b> 탭이 아닌지 꼭 확인하세요.</li>
+        <li>입력창 아래 폴더 선택에서 <b>내 컴퓨터</b> → 바탕화면 <b>내홈페이지</b>를 고릅니다.</li>
+        <li>"이 작업 공간을 신뢰합니까?"가 나오면 <b>신뢰</b>를 누릅니다.</li>
+        <li>모델을 <b>소넷</b>으로 고릅니다.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="row" id="s1-make" data-nav="한 줄로 만들기" data-kind="do">
+    <div class="ex">
+      <p class="lbl">예시 · 빵집으로 실제 만들어 본 결과</p>
+      <img src="img01.jpg" alt="크림색 배경, 가운데 정렬, 빵 그림이 있는 빵집 홈페이지 첫 화면">
+      <p class="cap">약 2분 걸렸습니다. 깔끔하지만 어딘가 익숙한 모습입니다.</p>
+    </div>
+    <div class="pr">
+      <span class="tag t-do">실습</span>
+      <h2>한 줄만 넣어 보기</h2>
+      <div class="prompt" data-t="t1"><button class="copy">복사</button><span class="pt"></span></div>
+      <ol>
+        <li>중간에 "허용할까요?"가 나오면 내용을 보고 <b>허용</b>을 누릅니다.</li>
+        <li>끝나면 <b>내홈페이지</b> 폴더에서 <b>a.html</b>을 더블클릭해 엽니다.</li>
+      </ol>
+      <div class="box set"><span class="h">파이썬이 실행돼도 괜찮아요</span>클로드가 다 만든 홈페이지를 직접 열어 확인하려고 파이썬을 쓰는 경우가 많습니다. 정상입니다.</div>
+    </div>
+  </div>
+
+  <div class="row" id="s1-check" data-nav="AI 티 찾기" data-kind="do">
+    <div class="ex">
+      <p class="lbl">예시 · 휴대폰으로 본 첫 화면</p>
+      <img src="img02.jpg" alt="휴대폰 화면의 빵집 홈페이지: 영어 작은 제목, 가운데 정렬, 알약 모양 버튼 두 개" style="max-width:280px;margin:0 auto">
+    </div>
+    <div class="pr">
+      <span class="tag t-do">실습</span>
+      <h2>"AI 티" 다섯 가지 찾기</h2>
+      <p style="margin:.2rem 0 .4rem">못생긴 게 아니라 <b>"우리 가게 같지 않은 것"</b>이 문제입니다. 내 결과에 보이는 것에 체크하세요.</p>
+      <ul class="check">
+        <li>크림색·베이지색 배경에 갈색 포인트</li>
+        <li>모든 것이 가운데 정렬된 첫 화면과 알약 모양 버튼 두 개</li>
+        <li>제목 위의 작은 영어 글씨 (ABOUT, MENU 같은 것)</li>
+        <li>사진 대신 이모지</li>
+        <li>제목에서 한 단어만 다른 색</li>
+      </ul>
+      <div class="box more"><span class="h">왜 이렇게 나올까</span>가게 이름, 자랑거리, 손님을 알려 주지 않으면 AI는 그 업종에서 <b>가장 흔한</b> 모습을 고릅니다. 가게 이름만 바꾸면 옆 가게 홈페이지가 되는 이유입니다.</div>
+    </div>
+  </div>
+
+  <div class="trouble" id="s1-trouble" data-nav="막히면">
+    <dl>
+      <dt>입력했는데 파일이 안 생겨요</dt><dd>지난 시간에 가장 많았던 실수입니다. <b>채팅</b> 탭에 입력한 경우예요. <b>코드</b> 탭으로 옮겨 다시 보내세요.</dd>
+      <dt>a.html이 어디 있는지 모르겠어요</dt><dd>폴더 연결이 다른 곳으로 된 경우입니다. 입력창 아래 폴더 이름이 <b>내홈페이지</b>인지 확인하세요.</dd>
+      <dt>더블클릭했더니 글자만 가득 나와요</dt><dd>메모장으로 열린 경우입니다. 마우스 오른쪽 → 연결 프로그램 → <b>Chrome</b>을 고르세요.</dd>
+    </dl>
+  </div>
+</section>
+
+<!-- ============ STEP 2 ============ -->
+<section class="step" id="s2" data-title="방법 A · 스킬로 다시 만들기">
+  <h1>방법 A · 스킬을 넣고 구체적으로 다시 시키기</h1>
+  <p class="lead">스킬은 실력을 올려 주는 설명서이고, 재료는 우리가 줘야 합니다. 둘을 함께 써야 "우리 가게다운" 홈페이지가 나옵니다.</p>
+
+  <div class="explain" id="s2-what" data-nav="스킬은 무엇인가">
+    <span class="tag t-ex">설명</span>
+    <h2>스킬 = 클로드에게 넣어 주는 전문 설명서</h2>
+    <svg viewBox="0 0 900 180" width="100%" role="img" aria-label="깃허브의 설명서를 추가하면 클로드가 읽고, 내가 준 재료와 합쳐 만든다">
+      <defs><marker id="ar2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M2 1L8 5L2 9" fill="none" stroke="#8a9497" stroke-width="1.6"/></marker></defs>
+      <rect x="20" y="25" width="240" height="130" rx="14" fill="#f6f7f5" stroke="#e4e4e0"/>
+      <text x="140" y="62" text-anchor="middle" font-size="17" font-weight="700" fill="#1f2a2e">깃허브 (공개 창고)</text>
+      <rect x="85" y="96" width="110" height="34" rx="6" fill="#fff" stroke="#cfd5d2"/><text x="140" y="118" text-anchor="middle" font-size="13" fill="#1f2a2e">SKILL.md</text>
+      <line x1="266" y1="90" x2="320" y2="90" stroke="#8a9497" stroke-width="1.6" marker-end="url(#ar2)"/><text x="293" y="78" text-anchor="middle" font-size="13" fill="#5b6569">추가</text>
+      <rect x="326" y="25" width="250" height="130" rx="14" fill="#e6f2ee" stroke="#b9dacd"/>
+      <text x="451" y="62" text-anchor="middle" font-size="17" font-weight="700" fill="#1f6f5c">클로드가 읽음</text>
+      <text x="451" y="94" text-anchor="middle" font-size="14" fill="#2e6b5b">글꼴·색·배치 원칙</text>
+      <text x="451" y="120" text-anchor="middle" font-size="14" fill="#2e6b5b">"흔한 디자인은 피하라"</text>
+      <line x1="582" y1="90" x2="636" y2="90" stroke="#8a9497" stroke-width="1.6" marker-end="url(#ar2)"/>
+      <rect x="642" y="25" width="238" height="130" rx="14" fill="#1f6f5c"/>
+      <text x="761" y="66" text-anchor="middle" font-size="17" font-weight="700" fill="#fff">+ 내가 준 재료</text>
+      <text x="761" y="96" text-anchor="middle" font-size="14" fill="#d7ece5">가게 이름 · 자랑거리</text>
+      <text x="761" y="120" text-anchor="middle" font-size="14" fill="#d7ece5">손님 · 쓰지 말 것</text>
+    </svg>
+    <p style="font-size:.82rem;margin:.3rem 0 0">오늘 쓰는 스킬은 앤트로픽(클로드를 만든 회사)이 공식으로 만든 <b>frontend-design</b>입니다. 프로그램이 아니라 <b>설명서만</b> 넣는 것이라 화면에 "Claude에 대한 지침만 추가함"이라고 나옵니다.</p>
+  </div>
+
+  <div class="explain" id="s2-plugin" data-nav="플러그인·스킬·커넥터">
+    <span class="tag t-ex">설명</span>
+    <h2>플러그인 = 스킬과 커넥터를 담는 상자</h2>
+    <p style="margin:.2rem 0 .5rem">예전에는 스킬과 커넥터를 따로 찾아서 넣었는데, 지금은 클로드 앱의 <b>플러그인</b> 화면 한 곳에서 모두 추가합니다. 플러그인 화면 위쪽의 <b>전체 · 커넥터 · Skills</b> 탭으로 종류별로 볼 수 있습니다.</p>
+    <svg viewBox="0 0 900 230" width="100%" role="img" aria-label="플러그인이라는 큰 상자 안에 스킬과 커넥터가 들어 있다. 스킬은 일하는 방법을 알려 주는 설명서, 커넥터는 내 앱과 자료를 여는 연결선">
+      <rect x="10" y="10" width="880" height="210" rx="18" fill="#f6f7f5" stroke="#cfd5d2" stroke-dasharray="7 5"/>
+      <text x="34" y="44" font-size="17" font-weight="700" fill="#1f2a2e">플러그인 (상자)</text>
+      <text x="200" y="44" font-size="14" fill="#5b6569">추가 단추 하나로 필요한 것을 한꺼번에 넣음</text>
+      <rect x="34" y="62" width="400" height="140" rx="14" fill="#e6f2ee" stroke="#b9dacd"/>
+      <rect x="58" y="84" width="58" height="74" rx="6" fill="#fff" stroke="#1f6f5c" stroke-width="2"/><rect x="68" y="98" width="38" height="6" rx="3" fill="#1f6f5c"/><rect x="68" y="112" width="34" height="5" rx="2" fill="#b9dacd"/><rect x="68" y="124" width="38" height="5" rx="2" fill="#b9dacd"/><rect x="68" y="136" width="28" height="5" rx="2" fill="#b9dacd"/>
+      <text x="136" y="98" font-size="18" font-weight="700" fill="#1f6f5c">스킬 = 설명서</text>
+      <text x="136" y="126" font-size="14" fill="#2e6b5b">"이 일은 이렇게 하라"는 방법</text>
+      <text x="136" y="150" font-size="14" fill="#2e6b5b">예: frontend-design (디자인 방법)</text>
+      <text x="136" y="174" font-size="13" fill="#5b6569">클로드의 실력이 바뀜</text>
+      <rect x="464" y="62" width="402" height="140" rx="14" fill="#eaf0fa" stroke="#c3d1ec"/>
+      <circle cx="500" cy="121" r="14" fill="#fff" stroke="#3d5a99" stroke-width="2"/><circle cx="560" cy="121" r="14" fill="#fff" stroke="#3d5a99" stroke-width="2"/><path d="M514 121 h32" stroke="#3d5a99" stroke-width="3"/>
+      <text x="590" y="98" font-size="18" font-weight="700" fill="#3d5a99">커넥터 = 연결선</text>
+      <text x="590" y="126" font-size="14" fill="#3d5a99">내 앱·자료를 열어 주는 통로</text>
+      <text x="590" y="150" font-size="14" fill="#3d5a99">예: 구글 드라이브, 지메일</text>
+      <text x="590" y="174" font-size="13" fill="#5b6569">클로드가 볼 수 있는 곳이 늘어남</text>
+    </svg>
+    <table style="margin-top:.5rem">
+      <tr><th style="width:18%"></th><th>스킬</th><th>커넥터</th></tr>
+      <tr><td>한 줄 뜻</td><td>일하는 <b>방법</b>을 알려 주는 설명서</td><td>내 <b>앱과 자료</b>에 들어가는 연결선</td></tr>
+      <tr><td>넣으면</td><td>같은 요청도 더 전문가답게 처리</td><td>드라이브·메일·캘린더 같은 내 자료를 읽고 씀</td></tr>
+      <tr><td>로그인</td><td>필요 없음</td><td>그 서비스 계정으로 연결(허락) 필요</td></tr>
+      <tr><td>오늘 쓰는 것</td><td><b>frontend-design</b></td><td>쓰지 않음</td></tr>
+    </table>
+    <img src="img03.jpg" alt="클로드 앱 플러그인 화면. 위쪽에 검색창과 전체, 커넥터, Skills 탭, 추가 단추가 있고 아래에 내 플러그인 목록이 보인다" style="margin-top:.7rem">
+    <p class="cap">플러그인 화면. 위쪽 탭으로 커넥터와 스킬을 나눠 볼 수 있습니다.</p>
+  </div>
+
+  <div class="explain" id="s2-fd" data-nav="frontend-design이 하는 일">
+    <span class="tag t-ex">설명</span>
+    <h2>frontend-design 스킬은 무엇을 시키나</h2>
+    <p style="margin:.2rem 0 .5rem">앤트로픽이 만든 공식 스킬로, 클로드에게 <b>"흔한 템플릿 말고 이 가게만의 디자인을 하라"</b>고 가르치는 설명서입니다. 프로그램이 아니라 글로 된 지침이라 추가할 때 "Claude에 대한 지침만 추가함"이라고 나옵니다.</p>
+    <table>
+      <tr><th style="width:26%">스킬이 시키는 것</th><th>뜻</th></tr>
+      <tr><td>주제에서 출발하기</td><td>빵집이면 빵집의 재료·말투·분위기에서 색과 글꼴을 고르게 함</td></tr>
+      <tr><td>흔한 AI 디자인 피하기</td><td>크림색 바탕, 제목 한 단어만 색 바꾸기, 영어 대문자 작은 제목 같은 "AI 티"를 피하게 함</td></tr>
+      <tr><td>먼저 계획, 그다음 만들기</td><td>색 4~6개, 글꼴, 배치를 먼저 정하고 "너무 뻔하지 않은가" 스스로 검토한 뒤 코드를 씀</td></tr>
+      <tr><td>힘줄 곳은 한 군데</td><td>눈에 띄는 요소는 하나만 두고 나머지는 차분하게</td></tr>
+      <tr><td>기본 품질 지키기</td><td>휴대폰에서도 보이게, 글줄은 너무 길지 않게, 키보드로도 쓸 수 있게</td></tr>
+    </table>
+    <div class="box warn"><span class="h">스킬만으로는 부족해요</span>스킬은 <b>방법</b>을 알려 줄 뿐, 우리 가게 이름·자랑거리·손님은 모릅니다. 그래서 아래 실습에서 재료를 구체적으로 함께 줍니다. 스킬만 넣고 한 줄로 시키면 여전히 비슷한 결과가 나올 수 있습니다.</div>
+  </div>
+
+  <div class="row" id="s2-install" data-nav="스킬 설치하기" data-kind="do">
+    <div class="ex">
+      <p class="lbl">① 플러그인 화면에서 검색</p><img src="img04.jpg" alt="플러그인 화면 검색 결과 맨 위의 frontend-design">
+      <p class="lbl" style="margin-top:.8rem">② 상세 화면 오른쪽 위 추가</p><img src="img05.jpg" alt="frontend-design 상세 화면과 추가 버튼">
+      <p class="lbl" style="margin-top:.8rem">③ "추가됨"으로 바뀌면 끝</p><img src="img06.jpg" alt="추가됨으로 바뀐 화면">
+    </div>
+    <div class="pr">
+      <span class="tag t-do">실습</span>
+      <h2>frontend-design 추가하기</h2>
+      <ol>
+        <li>클로드 앱에서 <b>플러그인</b> 화면을 엽니다. (웹이라면 claude.ai/plugins)</li>
+        <li>검색창에 아래 단어를 넣습니다.</li>
+      </ol>
+      <div class="prompt"><button class="copy">복사</button><span class="pt">frontend design</span></div>
+      <ol start="3">
+        <li>맨 위 <b>frontend-design</b>을 누릅니다. 출처가 <b>anthropics/claude-plugins-official</b>인지 확인하세요.</li>
+        <li>오른쪽 위 <b>추가</b>를 누르고 <b>추가됨</b>으로 바뀌면 끝입니다.</li>
+      </ol>
+      <div class="box set"><span class="h">깃허브는 어디 있나요?</span>상세 화면 오른쪽 <b>소스</b> 칸에 github.com/anthropics가 보입니다. 스킬은 깃허브라는 공개 창고에 있고, 우리는 단추로 가져온 것입니다.</div>
+    </div>
+  </div>
+
+  <div class="row" id="s2-checka" data-nav="a.html 먼저 스킬로 검사" data-kind="do">
+    <div class="ex">
+      <p class="lbl">스킬을 직접 불러오는 방법</p>
+      <svg viewBox="0 0 420 190" width="100%" role="img" aria-label="코드 입력창에 빗금을 치면 목록이 뜨고 frontend-design을 고른 뒤 요청을 이어 쓴다">
+        <rect x="10" y="120" width="400" height="56" rx="12" fill="#fff" stroke="#1f2a2e" stroke-width="2"/>
+        <text x="28" y="155" font-size="17" font-weight="700" fill="#1f6f5c">/frontend-design</text>
+        <text x="190" y="155" font-size="15" fill="#5b6569">a.html을 검사해 줘…</text>
+        <rect x="10" y="14" width="250" height="96" rx="10" fill="#fff" stroke="#cfd5d2"/>
+        <rect x="18" y="22" width="234" height="28" rx="6" fill="#e6f2ee"/>
+        <text x="30" y="42" font-size="15" font-weight="700" fill="#1f6f5c">frontend-design</text>
+        <text x="30" y="72" font-size="14" fill="#8a9497">다른 스킬·명령</text>
+        <text x="30" y="96" font-size="14" fill="#8a9497">…</text>
+        <text x="280" y="44" font-size="13" fill="#b4532a">① / 를 치면 목록</text>
+        <text x="280" y="66" font-size="13" fill="#b4532a">② frontend-design 고르기</text>
+        <text x="280" y="88" font-size="13" fill="#b4532a">③ 한 칸 띄우고 요청</text>
+      </svg>
+      <div class="box set"><span class="h">왜 / 로 불러오나요</span>그냥 시키면 클로드가 스킬을 쓸지 말지 스스로 판단합니다. <b>/frontend-design</b>으로 시작하면 이 스킬을 <b>반드시</b> 읽고 그 기준으로 일합니다. 목록에 <b>/frontend-design:frontend-design</b>처럼 길게 보이면 그것을 고르면 됩니다.</div>
+    </div>
+    <div class="pr">
+      <span class="tag t-do">실습</span>
+      <h2>새 세션에서 a.html부터 스킬로 검사받기</h2>
+      <ol>
+        <li>왼쪽 위 <b>+</b>로 <b>새 세션</b>을 엽니다. 스킬은 새 세션부터 적용됩니다. 폴더는 같은 <b>내홈페이지</b>, 모델은 <b>소넷</b>입니다.</li>
+        <li>입력창에 <kbd>/</kbd>를 치고 목록에서 <b>frontend-design</b>을 고릅니다.</li>
+        <li>한 칸 띄우고 아래 문장을 붙여 넣어 보냅니다.</li>
+      </ol>
+      <div class="prompt" data-t="t2a"><button class="copy">복사</button><span class="pt"></span></div>
+      <p style="margin:.4rem 0 .2rem">결과 표에서 확인할 것</p>
+      <ul class="check">
+        <li>점수가 낮은 항목은 어디인가? (보통 "가게다운 느낌", "AI 티")</li>
+        <li>STEP 1에서 내가 찾은 AI 티와 클로드가 짚은 것이 같은가?</li>
+        <li>이 점수표를 기억해 두세요. 아래에서 a2.html 점수와 비교합니다.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="explain" id="s2-why" data-nav="왜 새 세션 · 왜 구체적으로">
+    <span class="tag t-ex">설명</span>
+    <h2>왜 새 세션에서 검사부터 하고, 왜 구체적으로 다시 시킬까</h2>
+    <div class="two">
+      <div class="box set" style="margin:0"><span class="h">새 세션을 여는 이유</span>
+        <ol style="margin:.2rem 0 0">
+          <li><b>스킬은 새 세션부터 켜집니다.</b> 스킬을 추가하기 전에 열린 세션은 그 설명서를 모르는 상태로 계속 일합니다.</li>
+          <li><b>a.html을 만든 대화와 끊기 위해.</b> 처음 만든 세션에서 이어 시키면 a.html을 조금만 고치려는 경향이 있습니다. 새 세션에서 스킬 기준으로 a.html을 <b>남의 눈으로 검사</b>하고, 그 약점을 피해 새로 만듭니다.</li>
+          <li><b>공정한 비교.</b> "스킬 없음 + 한 줄"과 "스킬 + 구체적 요청"을 깨끗하게 나눠야 무엇이 달라졌는지 보입니다.</li>
+        </ol>
+      </div>
+      <div class="box more" style="margin:0"><span class="h">구체적으로 주는 이유</span>
+        <ol style="margin:.2rem 0 0">
+          <li><b>빈칸은 AI가 "가장 흔한 것"으로 채웁니다.</b> 가게 이름·자랑거리·손님을 안 주면 어느 빵집에나 맞는 홈페이지가 나옵니다. STEP 1의 "우리 동네 빵집", "주소는 추후 안내"가 그 예입니다.</li>
+          <li><b>재료가 디자인을 정합니다.</b> "새벽 4시 반죽", "출근하는 직장인" 같은 정보에서 첫 화면에 무엇을 크게 둘지, 어떤 분위기로 갈지가 나옵니다.</li>
+          <li><b>"쓰지 말 것"은 확인표가 됩니다.</b> 피할 것을 미리 적어 두면 클로드가 스스로 검사할 기준이 생깁니다.</li>
+        </ol>
+      </div>
+    </div>
+    <table style="margin-top:.7rem">
+      <tr><th style="width:24%">프롬프트 항목</th><th>클로드가 이걸로 정하는 것</th></tr>
+      <tr><td>어떤 곳</td><td>규모와 분위기 (작은 동네 가게답게)</td></tr>
+      <tr><td>우리 이야기</td><td>소개 문구와 첫 화면의 말투</td></tr>
+      <tr><td>대표 상품</td><td>첫 화면에서 가장 크게 보여 줄 것</td></tr>
+      <tr><td>주로 찾는 사람</td><td>글자 크기, 버튼 위치, 먼저 보여 줄 정보</td></tr>
+      <tr><td>들어갈 내용</td><td>아래로 이어질 순서</td></tr>
+      <tr><td>쓰지 말 것</td><td>피해야 할 흔한 디자인 (스스로 점검하는 기준)</td></tr>
+    </table>
+  </div>
+
+  <div class="row" id="s2-remake" data-nav="구체적으로 다시 시키기" data-kind="do">
+    <div class="ex">
+      <p class="lbl">비교 · STEP 1과 지금</p>
+      <table>
+        <tr><th style="width:28%"></th><th>STEP 1</th><th>지금</th></tr>
+        <tr><td>가게</td><td>업종만</td><td><span data-k="name"></span></td></tr>
+        <tr><td>자랑거리</td><td>없음</td><td><span data-k="hero"></span></td></tr>
+        <tr><td>손님</td><td>없음</td><td><span data-k="customer"></span></td></tr>
+        <tr><td>쓰지 말 것</td><td>없음</td><td>AI 티 다섯 가지</td></tr>
+        <tr><td>스킬</td><td>없음</td><td>frontend-design</td></tr>
+      </table>
+      <p class="lbl" style="margin-top:.8rem">예시 · 왼쪽 a.html, 오른쪽 a2.html</p><img src="img07.jpg" alt="왼쪽은 크림색 가운데 정렬의 a.html, 오른쪽은 왼쪽 정렬 제목과 깜빠뉴 그림이 있는 a2.html"><p class="cap">같은 빵집인데 가게 이야기와 대표 빵이 첫 화면에 들어왔습니다. 결과는 사람마다 다르게 나옵니다.</p>
+    </div>
+    <div class="pr">
+      <span class="tag t-do">실습</span>
+      <h2>같은 세션에서 구체적으로 다시 시키기</h2>
+      <ol>
+        <li>a.html을 검사받은 <b>그 세션에 이어서</b> 입력창에 <kbd>/</kbd> → <b>frontend-design</b>을 고릅니다.</li>
+        <li>한 칸 띄우고 아래 문장을 붙여 넣어 보냅니다. 클로드가 방금 짚은 a.html의 약점을 알고 있어서 더 잘 피합니다.</li>
+      </ol>
+      <div class="prompt" data-t="t2"><button class="copy">복사</button><span class="pt"></span></div>
+      <ol start="3"><li>끝나면 <b>a.html</b>과 <b>a2.html</b>을 둘 다 열어 나란히 보고, AI 티 다섯 가지를 다시 체크합니다.</li></ol>
+    </div>
+  </div>
+
+  <div class="row" id="s2-verify" data-nav="a2.html 검사 · 점수 비교" data-kind="do">
+    <div class="ex">
+      <p class="lbl">스킬이 쓰였는지 보는 곳</p>
+      <ul>
+        <li>/frontend-design으로 시작했다면 스킬을 쓴 것입니다.</li>
+        <li>클로드가 일하는 동안 대화창에 frontend-design을 불러왔다는 표시가 보이는지도 확인해 보세요.</li>
+      </ul>
+      <div class="slot"><b>화면 캡처 자리</b>스킬을 불러온 표시</div>
+      <div class="box more"><span class="h">한 걸음 더</span>검증 결과에서 고칠 점이 나오면 "그 고칠 점대로 a2.html을 고쳐 줘"라고 이어서 보내 보세요. 만들기 → 검사 → 고치기가 한 바퀴 돕니다.</div>
+    </div>
+    <div class="pr">
+      <span class="tag t-do">실습</span>
+      <h2>a2.html도 같은 기준으로 검사받고 점수 비교하기</h2>
+      <p style="margin:.2rem 0">같은 세션에서 입력창에 <kbd>/</kbd> → <b>frontend-design</b>을 고르고 한 칸 띄운 뒤 붙여 넣습니다. 파일은 고치지 않고 점수와 이유만 받습니다.</p>
+      <div class="prompt" data-t="t2v"><button class="copy">복사</button><span class="pt"></span></div>
+      <p style="margin:.4rem 0 .2rem">결과 표를 보고 내 생각도 체크해 보세요.</p>
+      <ul class="check">
+        <li>AI 티 다섯 가지가 a2.html에서 정말 줄었나?</li>
+        <li>클로드가 짚은 고칠 점에 나도 동의하나?</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="trouble" id="s2-trouble" data-nav="막히면">
+    <dl>
+      <dt>플러그인 화면을 못 찾겠어요</dt><dd>크롬에서 <b>claude.ai/plugins</b>로 들어가 추가해도 됩니다. 같은 계정이면 데스크톱 앱에도 적용됩니다.</dd>
+      <dt>추가했는데 결과가 그대로예요</dt><dd>추가하기 전에 열었던 세션에는 적용되지 않습니다. <b>새 세션</b>을 열고 다시 보내세요.</dd>
+      <dt>그래도 AI 티가 남아 있어요</dt><dd>남은 것을 그대로 짚어 주세요. 예: "아직 첫 화면이 가운데 정렬이야. 왼쪽 정렬로 바꾸고 대표 상품을 크게 보여 줘."</dd>
+    </dl>
+  </div>
+</section>
+
+<!-- ============ STEP 3 ============ -->
+<section class="step" id="s3" data-title="왜 휴대폰 먼저인가">
+  <h1>휴대폰에서도 보이는 것과, 휴대폰을 위해 만든 것은 다릅니다</h1>
+  <p class="lead">클로드는 기본적으로 <b>반응형</b>(화면 폭에 맞춰 알아서 줄어드는 방식)으로 만들어 줍니다. 그런데 반응형만으로는 손님이 원하는 것을 먼저 보여 주지 못합니다.</p>
+
+  <div class="explain" id="s3-story" data-nav="3초 이야기">
+    <span class="tag t-ex">설명</span>
+    <h2>손님은 길에서, 휴대폰으로, 3초 안에 찾습니다</h2>
+    <svg viewBox="0 0 900 200" width="100%" role="img" aria-label="손님이 길에서 휴대폰으로 가게를 검색하고 3초 안에 원하는 것을 찾는다">
+      <rect x="20" y="20" width="250" height="160" rx="14" fill="#f6f7f5" stroke="#e4e4e0"/>
+      <circle cx="80" cy="80" r="26" fill="#cfd5d2"/><rect x="58" y="110" width="44" height="50" rx="10" fill="#cfd5d2"/>
+      <rect x="118" y="78" width="30" height="52" rx="6" fill="#1f2a2e"/><rect x="122" y="84" width="22" height="38" rx="3" fill="#b9dacd"/>
+      <text x="210" y="96" text-anchor="middle" font-size="15" font-weight="700" fill="#1f2a2e">길에서</text>
+      <text x="210" y="122" text-anchor="middle" font-size="14" fill="#5b6569">한 손으로 검색</text>
+      <text x="320" y="108" font-size="28" fill="#8a9497">→</text>
+      <rect x="360" y="20" width="200" height="160" rx="14" fill="#fff" stroke="#e0733d" stroke-width="2"/>
+      <text x="460" y="80" text-anchor="middle" font-size="40" font-weight="700" fill="#e0733d">3초</text>
+      <text x="460" y="120" text-anchor="middle" font-size="14" fill="#5b6569">안에 못 찾으면</text>
+      <text x="460" y="144" text-anchor="middle" font-size="14" fill="#5b6569">뒤로 가기</text>
+      <text x="600" y="108" font-size="28" fill="#8a9497">→</text>
+      <rect x="640" y="20" width="240" height="160" rx="14" fill="#1f6f5c"/>
+      <text x="760" y="62" text-anchor="middle" font-size="15" font-weight="700" fill="#fff">첫 화면에 있어야 할 것</text>
+      <foreignObject x="656" y="76" width="208" height="96"><div xmlns="http://www.w3.org/1999/xhtml" style="color:#d7ece5;font-size:14px;line-height:1.5;text-align:center;font-family:'Noto Sans KR',sans-serif" data-k="need"></div></foreignObject>
+    </svg>
+  </div>
+
+  <div class="explain" id="s3-diff" data-nav="반응형과 휴대폰 먼저">
+    <span class="tag t-ex">설명</span>
+    <h2>반응형은 "줄이기", 휴대폰 먼저는 "고르기"</h2>
+    <svg viewBox="0 0 900 250" width="100%" role="img" aria-label="반응형은 컴퓨터 화면을 그대로 줄여 중요한 버튼이 아래로 밀리고, 휴대폰 먼저는 중요한 것을 위에 두고 버튼을 엄지 위치에 둔다">
+      <text x="225" y="22" text-anchor="middle" font-size="15" font-weight="700" fill="#5b6569">반응형만 쓰면 · 줄이기</text>
+      <rect x="40" y="40" width="190" height="120" rx="8" fill="#f6f7f5" stroke="#cfd5d2"/>
+      <rect x="56" y="54" width="158" height="40" rx="4" fill="#e4e4e0"/><rect x="56" y="102" width="74" height="44" rx="4" fill="#e4e4e0"/><rect x="138" y="102" width="76" height="44" rx="4" fill="#e4e4e0"/>
+      <text x="262" y="108" font-size="22" fill="#8a9497">→</text>
+      <rect x="300" y="36" width="96" height="206" rx="12" fill="#fff" stroke="#cfd5d2"/>
+      <rect x="310" y="50" width="76" height="36" rx="4" fill="#e4e4e0"/><rect x="310" y="92" width="76" height="36" rx="4" fill="#e4e4e0"/><rect x="310" y="134" width="76" height="36" rx="4" fill="#e4e4e0"/>
+      <rect x="310" y="196" width="76" height="34" rx="4" fill="#efcfc4"/><text x="348" y="218" text-anchor="middle" font-size="13" fill="#b4532a">버튼</text>
+      <text x="300" y="246" font-size="13" fill="#b4532a">중요한 것이 아래로 밀림</text>
+      <line x1="450" y1="30" x2="450" y2="240" stroke="#e4e4e0" stroke-width="2"/>
+      <text x="680" y="22" text-anchor="middle" font-size="15" font-weight="700" fill="#3d5a99">휴대폰 먼저 · 고르기</text>
+      <rect x="500" y="36" width="96" height="206" rx="12" fill="#fff" stroke="#3d5a99" stroke-width="2"/>
+      <rect x="510" y="50" width="76" height="26" rx="4" fill="#3d5a99"/><text x="548" y="68" text-anchor="middle" font-size="13" fill="#fff">가장 중요</text>
+      <rect x="510" y="82" width="76" height="70" rx="4" fill="#c3d1ec"/><text x="548" y="122" text-anchor="middle" font-size="13" fill="#3d5a99">대표 상품</text>
+      <rect x="510" y="158" width="76" height="20" rx="4" fill="#e4e4e0"/>
+      <rect x="506" y="202" width="40" height="30" rx="6" fill="#3d5a99"/><rect x="550" y="202" width="40" height="30" rx="6" fill="#fff" stroke="#3d5a99"/>
+      <text x="628" y="70" font-size="14" fill="#3d5a99">① 첫 화면에 꼭 필요한 것만</text>
+      <text x="628" y="122" font-size="14" fill="#3d5a99">② 대표 상품을 크게</text>
+      <text x="628" y="222" font-size="14" fill="#3d5a99">③ 버튼은 엄지 닿는 아래쪽</text>
+    </svg>
+    <table style="margin-top:.4rem">
+      <tr><th style="width:20%"></th><th>반응형 (기본)</th><th>휴대폰 먼저 (오늘 할 것)</th></tr>
+      <tr><td>출발점</td><td>컴퓨터 화면</td><td>휴대폰 화면</td></tr>
+      <tr><td>하는 일</td><td>폭에 맞춰 줄이고 한 줄로 쌓기</td><td>첫 화면에 무엇을 둘지 먼저 고르기</td></tr>
+      <tr><td>버튼</td><td>원래 자리 그대로, 아래로 밀릴 수 있음</td><td>엄지가 닿는 아래쪽에 고정</td></tr>
+      <tr><td>누가 정하나</td><td>AI가 알아서</td><td><b>내가</b> 프롬프트로 정해 줌</td></tr>
+    </table>
+  </div>
+
+  <div class="explain" id="s3-pc" data-nav="그다음 PC로 넓히기">
+    <span class="tag t-ex">설명</span>
+    <h2>휴대폰에서 시작해서 PC로 넓힙니다</h2>
+    <svg viewBox="0 0 900 190" width="100%" role="img" aria-label="휴대폰, 태블릿, PC 순서로 같은 내용을 넓혀 가는 흐름">
+      <defs><marker id="ar3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M2 1L8 5L2 9" fill="none" stroke="#3d5a99" stroke-width="1.6"/></marker></defs>
+      <rect x="40" y="20" width="80" height="150" rx="12" fill="#fff" stroke="#3d5a99" stroke-width="2"/>
+      <rect x="50" y="34" width="60" height="18" rx="3" fill="#3d5a99"/><rect x="50" y="58" width="60" height="44" rx="3" fill="#c3d1ec"/><rect x="50" y="108" width="60" height="14" rx="3" fill="#e4e4e0"/><rect x="50" y="140" width="28" height="20" rx="4" fill="#3d5a99"/><rect x="82" y="140" width="28" height="20" rx="4" fill="#fff" stroke="#3d5a99"/>
+      <text x="80" y="186" text-anchor="middle" font-size="14" font-weight="700" fill="#3d5a99">① 휴대폰</text>
+      <line x1="140" y1="95" x2="200" y2="95" stroke="#3d5a99" stroke-width="2" marker-end="url(#ar3)"/>
+      <rect x="220" y="30" width="170" height="130" rx="10" fill="#fff" stroke="#3d5a99" stroke-width="2"/>
+      <rect x="232" y="44" width="146" height="16" rx="3" fill="#3d5a99"/><rect x="232" y="66" width="70" height="60" rx="3" fill="#c3d1ec"/><rect x="308" y="66" width="70" height="28" rx="3" fill="#e4e4e0"/><rect x="308" y="100" width="70" height="26" rx="3" fill="#e4e4e0"/>
+      <text x="305" y="186" text-anchor="middle" font-size="14" font-weight="700" fill="#3d5a99">② 두 칸으로</text>
+      <line x1="410" y1="95" x2="470" y2="95" stroke="#3d5a99" stroke-width="2" marker-end="url(#ar3)"/>
+      <rect x="490" y="20" width="370" height="150" rx="10" fill="#fff" stroke="#3d5a99" stroke-width="2"/>
+      <rect x="504" y="32" width="342" height="18" rx="3" fill="#3d5a99"/><text x="760" y="46" font-size="13" fill="#fff">메뉴 · 버튼</text>
+      <rect x="504" y="58" width="160" height="96" rx="3" fill="#c3d1ec"/><rect x="674" y="58" width="172" height="44" rx="3" fill="#e4e4e0"/><rect x="674" y="110" width="172" height="44" rx="3" fill="#e4e4e0"/>
+      <text x="675" y="186" text-anchor="middle" font-size="14" font-weight="700" fill="#3d5a99">③ PC · 넓게 펼치고 버튼은 위 메뉴로</text>
+    </svg>
+    <p style="font-size:.82rem;margin:.3rem 0 0">휴대폰 먼저는 휴대폰만 하자는 뜻이 아닙니다. <b>무엇이 중요한지를 휴대폰에서 먼저 정하고</b>, 넓은 화면에서는 그 순서를 지키면서 나란히 펼칩니다. STEP 5 마지막에 직접 넓혀 봅니다.</p>
+  </div>
+</section>
+
+<!-- ============ STEP 4 ============ -->
+<section class="step" id="s4" data-title="방법 B · 와이어프레임 그리기">
+  <h1>방법 B · 디자인 먼저, 휴대폰 와이어프레임부터</h1>
+  <p class="lead">이번에는 순서를 바꿉니다. 코드보다 먼저 <b>와이어프레임</b>(집 설계도처럼 어디에 무엇이 들어갈지만 선과 상자로 그린 것)을 휴대폰 화면 기준으로 그립니다.</p>
+
+  <div class="explain" id="s4-what" data-nav="와이어프레임과 시안">
+    <span class="tag t-ex">설명</span>
+    <h2>와이어프레임 → 시안 → 홈페이지</h2>
+    <svg viewBox="0 0 900 200" width="100%" role="img" aria-label="와이어프레임은 선과 상자, 시안은 색과 글꼴을 입힌 것, 홈페이지는 실제로 돌아가는 파일">
+      <defs><marker id="ar4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M2 1L8 5L2 9" fill="none" stroke="#8a9497" stroke-width="1.6"/></marker></defs>
+      <rect x="70" y="16" width="100" height="150" rx="12" fill="#fff" stroke="#8a9497" stroke-dasharray="5 4"/>
+      <rect x="82" y="30" width="76" height="16" rx="2" fill="none" stroke="#8a9497"/><rect x="82" y="54" width="76" height="50" rx="2" fill="none" stroke="#8a9497"/><line x1="82" y1="54" x2="158" y2="104" stroke="#8a9497"/><line x1="158" y1="54" x2="82" y2="104" stroke="#8a9497"/><rect x="82" y="134" width="34" height="20" rx="2" fill="none" stroke="#8a9497"/><rect x="124" y="134" width="34" height="20" rx="2" fill="none" stroke="#8a9497"/>
+      <text x="120" y="190" text-anchor="middle" font-size="14" font-weight="700" fill="#1f2a2e">와이어프레임 · 배치만</text>
+      <line x1="200" y1="90" x2="300" y2="90" stroke="#8a9497" stroke-width="1.6" marker-end="url(#ar4)"/>
+      <rect x="330" y="16" width="100" height="150" rx="12" fill="#fff" stroke="#3d5a99" stroke-width="2"/>
+      <rect x="342" y="30" width="76" height="16" rx="3" fill="#3d5a99"/><rect x="342" y="54" width="76" height="50" rx="3" fill="#e9c9a8"/><rect x="342" y="112" width="60" height="8" rx="3" fill="#cfd5d2"/><rect x="342" y="134" width="34" height="20" rx="4" fill="#3d5a99"/><rect x="384" y="134" width="34" height="20" rx="4" fill="#fff" stroke="#3d5a99"/>
+      <text x="380" y="190" text-anchor="middle" font-size="14" font-weight="700" fill="#1f2a2e">시안 · 색과 글꼴</text>
+      <line x1="460" y1="90" x2="560" y2="90" stroke="#8a9497" stroke-width="1.6" marker-end="url(#ar4)"/>
+      <rect x="590" y="16" width="240" height="150" rx="12" fill="#1f6f5c"/>
+      <text x="710" y="76" text-anchor="middle" font-size="17" font-weight="700" fill="#fff">홈페이지 파일</text>
+      <text x="710" y="104" text-anchor="middle" font-size="14" fill="#d7ece5">실제로 열리고 눌리는 것</text>
+      <text x="710" y="190" text-anchor="middle" font-size="14" font-weight="700" fill="#1f2a2e">코드 + 스킬</text>
+    </svg>
+    <p style="font-size:.82rem;margin:.3rem 0 0">오늘은 <b>배치</b>는 클로드 디자인이 잡고, <b>색과 꾸밈</b>은 코드와 스킬이 맡습니다. 색이 없으니 "휴대폰 첫 화면에 무엇을 둘까"에만 집중할 수 있습니다.</p>
+  </div>
+
+  <div class="row b" id="s4-draw" data-nav="클로드 디자인으로 그리기" data-kind="do">
+    <div class="ex">
+      <p class="lbl">① 프롬프트를 넣고 모델을 Sonnet 5.5로</p>
+      <img src="img08.jpg" alt="클로드 디자인 첫 화면: 프롬프트 입력창과 오른쪽 아래 Model에서 Sonnet 5.5를 고른 모습">
+      <p class="lbl" style="margin-top:.6rem">② 결과 예시 · 휴대폰 와이어프레임 (약 30초)</p>
+      <img src="img09.jpg" alt="왼쪽에 클로드 설명, 오른쪽에 회색 상자로 된 밀담 휴대폰 와이어프레임. 위에 지금 영업 중, 가운데 빵 사진 자리, 아래에 전화하기와 길찾기 버튼">
+    </div>
+    <div class="pr">
+      <span class="tag t-do">실습</span>
+      <h2>휴대폰 와이어프레임 그리기</h2>
+      <ol>
+        <li>클로드 앱 왼쪽 메뉴에서 <b>디자인</b>을 엽니다. 안 보이면 크롬에서 <b>claude.ai/design</b>으로 들어갑니다.</li>
+        <li>입력창 오른쪽 아래 <b>Model</b>을 눌러 <b>Sonnet 5.5</b>로 바꿉니다. 처음에는 오퍼스로 되어 있어 사용량이 많이 듭니다.</li>
+        <li>아래 문장을 붙여 넣고 오른쪽 화살표로 보냅니다. 템플릿은 고르지 않아도 됩니다.</li>
+      </ol>
+      <div class="prompt" data-t="t3"><button class="copy">복사</button><span class="pt"></span></div>
+      <div class="box more"><span class="h">위에 뜨는 노란 안내는 뭔가요</span>"Claude Design is moving on December 14"는 클로드 디자인 사이트가 12월 14일에 닫히고 클로드 안으로 합쳐진다는 안내입니다. 오늘 실습에는 영향이 없으니 <b>Review and move</b>는 누르지 말고 그대로 진행하세요. 데스크톱 앱 오류가 아닙니다.</div>
+      <div class="box warn"><span class="h">한 번만 만들고 멈추세요</span>클로드 디자인은 클로드 코드와 사용량을 같이 씁니다. 배치가 크게 이상하지 않으면 수정하지 말고 STEP 5로 넘어갑니다. 기다리는 동안 STEP 3 설명을 다시 읽어 보세요.</div>
+    </div>
+  </div>
+
+  <div class="row b" id="s4-save" data-nav="와이어프레임 캡처" data-kind="do">
+    <div class="ex">
+      <p class="lbl">예시 · 그림을 붙여 넣은 입력창</p>
+      <div class="slot"><b>화면 캡처 자리</b>코드 입력창에 와이어프레임 그림을 붙여 넣은 모습</div>
+    </div>
+    <div class="pr">
+      <span class="tag t-do">실습</span>
+      <h2>와이어프레임 캡처하기</h2>
+      <p style="margin:.2rem 0"><b>오늘 쓰는 방법 · 캡처해서 붙여 넣기</b></p>
+      <ol><li>와이어프레임이 보이는 상태에서 <kbd>Windows</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd> → 휴대폰 화면 부분만 끌어서 고릅니다.</li><li>STEP 5에서 코드 입력창에 프롬프트를 붙이기 <b>전에</b> <kbd>Ctrl</kbd>+<kbd>V</kbd>로 그림을 먼저 붙여 넣습니다.</li></ol>
+      <div class="box set"><span class="h">내보내기 메뉴는 왜 안 쓰나요</span>오른쪽 위 <b>내보내기</b>에서 클로드 코드로 넘길 수도 있지만, 넘어간 곳이 <b>내홈페이지</b> 폴더가 아닐 수 있습니다. 수업에서는 폴더가 확실한 캡처 방법으로 갑니다.</div>
+      <div class="box more"><span class="h">무료로 해 보고 싶다면 · 스티치</span>구글의 무료 디자인 도구 <b>스티치</b>(stitch.withgoogle.com)로도 같은 문장을 넣어 그릴 수 있습니다. 화면 종류에서 <b>앱</b>(휴대폰)을 고르고, 결과를 똑같이 캡처해서 STEP 5 입력창에 붙여 넣으면 됩니다.</div>
+    </div>
+  </div>
+
+  <div class="trouble" id="s4-trouble" data-nav="막히면">
+    <dl>
+      <dt>디자인 메뉴가 안 보여요</dt><dd>크롬에서 <b>claude.ai/design</b>으로 들어가세요. 그래도 안 되면 스티치로 바로 바꿉니다.</dd>
+      <dt>색까지 칠한 시안이 나왔어요</dt><dd>괜찮습니다. 배치만 참고하면 됩니다. 다음부터는 "색과 사진 없이 회색 상자만"을 꼭 넣으세요.</dd>
+      <dt>사용량 경고가 떴어요</dt><dd>여기서 멈추고 선생님 화면의 와이어프레임을 캡처해서 쓰세요. STEP 5에 사용량을 남겨 두는 것이 중요합니다.</dd>
+    </dl>
+  </div>
+</section>
+
+<!-- ============ STEP 5 ============ -->
+<section class="step" id="s5" data-title="방법 B · 와이어프레임을 코드로">
+  <h1>방법 B · 와이어프레임을 코드로 옮기고 PC로 넓히기</h1>
+  <p class="lead">배치는 와이어프레임대로 지키고, 색과 꾸밈은 스킬을 켠 코드가 입힙니다. 마지막에 넓은 화면까지 맞춥니다.</p>
+
+  <div class="row b" id="s5-code" data-nav="코드로 옮기기" data-kind="do">
+    <div class="ex">
+      <p class="lbl">결과 예시 · 휴대폰 화면</p>
+      <img src="img10.jpg" alt="b.html 휴대폰 화면: 위에 영업 중 표시, 대표 빵, 아래 고정된 전화하기와 길찾기 버튼" style="max-width:300px;margin:0 auto">
+      <p class="cap">와이어프레임의 배치가 그대로 지켜졌는지 비교해 보세요.</p>
+    </div>
+    <div class="pr">
+      <span class="tag t-do">실습</span>
+      <h2>와이어프레임대로 만들기</h2>
+      <ol>
+        <li><b>새 세션</b>을 엽니다. 폴더는 <b>내홈페이지</b>, 모델은 <b>소넷</b>입니다.</li>
+        <li>입력창에 STEP 4에서 캡처한 와이어프레임을 <kbd>Ctrl</kbd>+<kbd>V</kbd>로 먼저 붙여 넣습니다. 입력창에 작은 그림이 보이면 됩니다.</li>
+        <li>그 뒤에 아래 문장을 붙여 넣고 보냅니다.</li>
+      </ol>
+      <div class="prompt" data-t="t4"><button class="copy">복사</button><span class="pt"></span></div>
+      <div class="box set"><span class="h">그림이 안 붙으면</span>캡처를 <b>내홈페이지</b> 폴더에 <b>wireframe.png</b>로 저장하고, 문장 맨 앞의 "함께 보낸 와이어프레임 그림"을 "내홈페이지 폴더의 wireframe.png"로 바꿔서 보내세요.</div>
+    </div>
+  </div>
+
+  <div class="row b" id="s5-look" data-nav="휴대폰 폭으로 확인" data-kind="do">
+    <div class="ex">
+      <p class="lbl">예시 · 크롬 창을 좁게 줄이기</p>
+      <svg viewBox="0 0 420 180" width="100%" role="img" aria-label="크롬 창 오른쪽 끝을 왼쪽으로 끌어 좁게 만드는 방법">
+        <defs><marker id="ar5" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M2 1L8 5L2 9" fill="none" stroke="#e0733d" stroke-width="1.8"/></marker></defs>
+        <rect x="10" y="14" width="380" height="150" rx="8" fill="#fff" stroke="#cfd5d2" stroke-dasharray="5 4"/>
+        <rect x="10" y="14" width="150" height="150" rx="8" fill="#fff" stroke="#1f2a2e" stroke-width="2"/><rect x="10" y="14" width="150" height="24" rx="8" fill="#f3f5f3"/>
+        <rect x="24" y="50" width="122" height="40" rx="4" fill="#e4e4e0"/><rect x="24" y="98" width="122" height="30" rx="4" fill="#e4e4e0"/>
+        <line x1="370" y1="92" x2="172" y2="92" stroke="#e0733d" stroke-width="2.5" marker-end="url(#ar5)"/>
+        <text x="270" y="80" text-anchor="middle" font-size="13" fill="#b4532a">창 오른쪽 끝을 왼쪽으로</text>
+      </svg>
+    </div>
+    <div class="pr">
+      <span class="tag t-do">실습</span>
+      <h2>휴대폰 폭으로 직접 보기</h2>
+      <ol>
+        <li>크롬으로 <b>b.html</b>을 엽니다.</li>
+        <li>창 오른쪽 위 <b>창 모드</b>(최대화 해제)를 누르고, 창 오른쪽 끝을 왼쪽으로 끌어 좁힙니다.</li>
+        <li>첫 화면에서 이것이 바로 보이는지 확인합니다: <b><span data-k="need"></span></b></li>
+      </ol>
+      <div class="box more"><span class="h">한 걸음 더 · 정확한 휴대폰 화면</span>크롬에서 <kbd>F12</kbd> → 왼쪽 위 휴대폰 모양 아이콘(또는 <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>M</kbd>)을 누르면 아이폰·갤럭시 크기로 볼 수 있습니다.</div>
+    </div>
+  </div>
+
+  <div class="row b" id="s5-pc" data-nav="PC로 넓히기" data-kind="do">
+    <div class="ex">
+      <p class="lbl">결과 예시 · PC 화면</p>
+      <img src="img11.jpg" alt="b.html 넓은 화면: 위쪽 메뉴 안에 전화하기와 길찾기, 아래 세 칸 정보"><p class="cap">아래에 있던 전화·길찾기 버튼이 위쪽 메뉴로 올라갔습니다.</p>
+    </div>
+    <div class="pr">
+      <span class="tag t-do">실습</span>
+      <h2>넓은 화면에서도 잘 보이게</h2>
+      <p style="margin:.2rem 0">같은 세션에 이어서 보냅니다.</p>
+      <div class="prompt" data-t="t5"><button class="copy">복사</button><span class="pt"></span></div>
+      <div class="box warn"><span class="h">전화번호와 주소는 가짜예요</span>클로드가 지어낸 번호와 주소가 들어갑니다. 내 가게로 쓸 때는 "전화번호는 ○○, 주소는 ○○로 바꿔 줘"라고 보내세요.</div>
+      <div class="box set"><span class="h">확인하기</span>크롬 창을 최대화했다가 다시 좁혀 봅니다. 넓을 때는 두 칸으로 펼쳐지고, 좁을 때는 휴대폰 화면 그대로면 성공입니다.</div>
+    </div>
+  </div>
+
+  <div class="trouble" id="s5-trouble" data-nav="막히면">
+    <dl>
+      <dt>와이어프레임과 배치가 달라요</dt><dd>"와이어프레임의 순서와 크기를 그대로 지켜 줘. 위에서부터 ○○, ○○ 순서야."처럼 다른 부분을 짚어 주세요.</dd>
+      <dt>휴대폰 화면이 PC 작업 뒤에 망가졌어요</dt><dd>"휴대폰 폭 390픽셀 화면은 아까 상태로 되돌려 줘"라고 보내세요.</dd>
+      <dt>고쳤다는데 화면이 그대로예요</dt><dd>크롬에서 <kbd>F5</kbd>(새로고침)를 누르세요. 그래도 같으면 탭을 닫고 파일을 다시 더블클릭합니다.</dd>
+      <dt>버튼이 넓은 화면에서도 아래에 떠 있어요</dt><dd>"넓은 화면에서는 아래 고정 버튼을 숨기고 위쪽 메뉴에 넣어 줘"라고 보내세요.</dd>
+    </dl>
+  </div>
+</section>
+
+<!-- ============ STEP 6 ============ -->
+<section class="step" id="s6" data-title="비교와 정리">
+  <h1>A와 B를 나란히 놓고, 왜 코드인지 정리하기</h1>
+  <p class="lead">같은 가게를 두 방법으로 만들었습니다. 어떤 방법이 언제 좋은지, 그리고 왜 채팅창이 아니라 코드에서 했는지 정리합니다.</p>
+
+  <div class="row" id="s6-compare" data-nav="A와 B 비교하기" data-kind="do">
+    <div class="ex">
+      <p class="lbl">두 방법 한눈에</p>
+      <table>
+        <tr><th style="width:24%"></th><th>A 코드 먼저</th><th>B 디자인 먼저</th></tr>
+        <tr><td>출발</td><td>코드에 바로 시키기</td><td>휴대폰 와이어프레임</td></tr>
+        <tr><td>잘 맞을 때</td><td>원하는 모습이 머릿속에 있을 때, 빨리 볼 때</td><td>무엇을 먼저 보여 줄지 정해야 할 때</td></tr>
+        <tr><td>좋은 점</td><td>빠름, 도구 하나</td><td>배치를 내가 정함, 휴대폰에 강함</td></tr>
+        <tr><td>아쉬운 점</td><td>배치를 AI가 정함</td><td>단계가 하나 더, 사용량이 더 듦</td></tr>
+      </table>
+    </div>
+    <div class="pr">
+      <span class="tag t-do">실습</span>
+      <h2>클로드에게 비교를 맡겨 보기</h2>
+      <p style="margin:.2rem 0">새 세션(폴더 <b>내홈페이지</b>)에 보냅니다. 코드는 직접 열어서 비교할 수 있습니다.</p>
+      <div class="prompt" data-t="t6"><button class="copy">복사</button><span class="pt"></span></div>
+      <p style="margin:.4rem 0 .2rem">결과를 보며 내 생각도 체크해 보세요.</p>
+      <ul class="check">
+        <li>첫 화면에서 손님이 원하는 것을 더 빨리 찾는 쪽은?</li>
+        <li>"우리 가게 같다"는 느낌이 더 나는 쪽은?</li>
+        <li>다음에 내 홈페이지를 만든다면 어느 방법으로?</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="explain" id="s6-why" data-nav="왜 코드인가">
+    <span class="tag t-ex">설명</span>
+    <h2>채팅창도 홈페이지는 만듭니다. 코드는 스스로 열어 보고 고칩니다</h2>
+    <svg viewBox="0 0 900 230" width="100%" role="img" aria-label="채팅창은 만들고 끝, 코드는 만들고 열어 보고 검사하고 고치는 것을 반복한다">
+      <defs><marker id="ar6" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M2 1L8 5L2 9" fill="none" stroke="#8a9497" stroke-width="1.6"/></marker><marker id="ar6g" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M2 1L8 5L2 9" fill="none" stroke="#1f6f5c" stroke-width="1.6"/></marker></defs>
+      <text x="20" y="30" font-size="16" font-weight="700" fill="#5b6569">채팅창</text>
+      <rect x="20" y="44" width="150" height="56" rx="10" fill="#f6f7f5" stroke="#e4e4e0"/><text x="95" y="78" text-anchor="middle" font-size="15" fill="#1f2a2e">만들기</text>
+      <line x1="176" y1="72" x2="216" y2="72" stroke="#8a9497" stroke-width="1.6" marker-end="url(#ar6)"/>
+      <rect x="222" y="44" width="200" height="56" rx="10" fill="#fff" stroke="#e4e4e0" stroke-dasharray="5 4"/><text x="322" y="78" text-anchor="middle" font-size="14" fill="#5b6569">확인과 수정은 내가</text>
+      <text x="20" y="142" font-size="16" font-weight="700" fill="#1f6f5c">코드</text>
+      <rect x="20" y="156" width="150" height="56" rx="10" fill="#e6f2ee" stroke="#b9dacd"/><text x="95" y="190" text-anchor="middle" font-size="15" fill="#1f6f5c">만들기</text>
+      <line x1="176" y1="184" x2="216" y2="184" stroke="#1f6f5c" stroke-width="1.6" marker-end="url(#ar6g)"/>
+      <rect x="222" y="156" width="150" height="56" rx="10" fill="#e6f2ee" stroke="#b9dacd"/><text x="297" y="190" text-anchor="middle" font-size="15" fill="#1f6f5c">직접 열어 보기</text>
+      <line x1="378" y1="184" x2="418" y2="184" stroke="#1f6f5c" stroke-width="1.6" marker-end="url(#ar6g)"/>
+      <rect x="424" y="156" width="170" height="56" rx="10" fill="#e6f2ee" stroke="#b9dacd"/><text x="509" y="182" text-anchor="middle" font-size="15" fill="#1f6f5c">휴대폰 폭 검사</text><text x="509" y="202" text-anchor="middle" font-size="13" fill="#2e6b5b">넘침 · 버튼 크기</text>
+      <line x1="600" y1="184" x2="640" y2="184" stroke="#1f6f5c" stroke-width="1.6" marker-end="url(#ar6g)"/>
+      <rect x="646" y="156" width="150" height="56" rx="10" fill="#1f6f5c"/><text x="721" y="190" text-anchor="middle" font-size="15" fill="#fff">스스로 고치기</text>
+      <path d="M721 150 L721 132 L95 132 L95 150" fill="none" stroke="#1f6f5c" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#ar6g)"/>
+      <text x="408" y="126" text-anchor="middle" font-size="13" fill="#1f6f5c">될 때까지 반복</text>
+      <rect x="610" y="36" width="270" height="72" rx="10" fill="#fdf7e8" stroke="#eedcae"/>
+      <text x="745" y="64" text-anchor="middle" font-size="14" font-weight="700" fill="#1f2a2e">파일이 내 폴더에 남아서</text>
+      <text x="745" y="88" text-anchor="middle" font-size="14" fill="#5b6569">다음 주 인터넷 주소로 바로 이어짐</text>
+    </svg>
+    <p style="font-size:.85rem;margin:.3rem 0 0">오늘 프롬프트 끝에 계속 넣은 "<b>다 만들면 휴대폰 폭으로 열어서 확인해 줘</b>"가 바로 코드에서만 되는 일입니다. 채팅창은 만들어 보여 주는 데서 끝나지만, 코드는 내 컴퓨터에서 직접 열어 보고, 검사하고, 고칩니다.</p>
+  </div>
+
+  <div class="explain" id="s6-next" data-nav="다음 시간 예고">
+    <span class="tag t-ex">설명</span>
+    <h2>다음 시간에는 진짜 인터넷 주소를 만듭니다</h2>
+    <ul>
+      <li><b>깃허브</b>(인터넷 보관 상자): 오늘 스킬을 가져온 그 창고에 내 홈페이지도 보관합니다.</li>
+      <li><b>버셀</b>(내 주소): 홈페이지에 진짜 인터넷 주소가 생기고, 고치면 자동으로 반영됩니다.</li>
+      <li><b>내홈페이지</b> 폴더를 그대로 가져오세요. 오늘 고른 a2.html 또는 b.html이 출발점입니다.</li>
+    </ul>
+  </div>
+</section>
+
+</main><aside class="side" id="side" aria-label="이 STEP 목차"></aside></div>
+
+<footer class="bottom"><div class="bottom-in">
+  <button id="prev" onclick="go(-1)">← 이전 STEP</button>
+  <span id="pos" style="color:var(--sub)"></span>
+  <button id="next" class="nx" onclick="go(1)">다음 STEP →</button>
+</div></footer>
+
+<script>
+var BIZ={
+ bakery:{short:'동네 빵집',name:"빵집 '밀담'",place:'망원동 골목에 있는 4평짜리 작은 가게',story:'사장님 혼자 새벽 4시에 반죽',hero:'12시간 숙성한 통밀 깜빠뉴',customer:'아침 출근하는 30~40대 직장인',need:'지금 영업 중인지, 오늘의 대표 빵, 전화·길찾기 버튼',sections:'소개, 대표 메뉴, 영업시간, 오시는 길',pcpair:'대표 빵 사진 자리와 가게 소개',buttons:'전화와 길찾기'},
+ cafe:{short:'동네 카페',name:"카페 '느린 오후'",place:'연남동 골목 2층에 있는 14석짜리 카페',story:'사장님이 매주 직접 원두를 볶음',hero:'핸드드립 싱글오리진 원두',customer:'노트북을 들고 작업하러 오는 20~30대',need:'지금 영업 중인지, 오늘의 원두, 콘센트 좌석과 길찾기 버튼',sections:'소개, 메뉴와 원두, 좌석 안내, 영업시간, 오시는 길',pcpair:'오늘의 원두와 좌석 안내',buttons:'전화와 길찾기'},
+ acc:{short:'액세서리 가게',name:"은 공방 '은결'",place:'성수동에 작업실을 둔 1인 공방',story:'사장님이 은을 직접 두드려 반지와 귀걸이를 만듦',hero:'한 달에 20개만 만드는 은반지',customer:'선물을 고르는 20~30대',need:'이번 주 신상품과 가격, 남은 수량, 주문·문의 버튼',sections:'소개, 신상품, 전체 상품, 주문 방법, 문의',pcpair:'신상품 사진 자리와 가격·주문 안내',buttons:'주문과 문의'},
+ mine:{short:'[무엇을 하는 곳]',name:'[가게 이름 또는 내 이름]',place:'[어디에 있는 어떤 곳]',story:'[나만의 이야기 한 줄]',hero:'[대표 상품이나 자랑거리]',customer:'[주로 찾는 사람]',need:'[손님이 첫 화면에서 바로 찾아야 할 것]',sections:'[들어갈 내용 목록]',pcpair:'[나란히 놓을 두 가지]',buttons:'[연락 방법 두 가지]'}
+};
+var NO='크림색·베이지색 배경, 모든 글이 가운데 정렬된 첫 화면, 제목 위 영어 작은 글씨, 이모지, 제목에서 한 단어만 색 바꾸기';
+var T={
+ t1:function(b){return b.short+' 소개 홈페이지를 한 장으로 만들어 줘. 파일은 a.html 하나로.'},
+ t2:function(b){return b.name+' 홈페이지를 a2.html 한 장으로 만들어 줘. 기존 a.html은 건드리지 마.\n- 어떤 곳: '+b.place+'\n- 우리 이야기: '+b.story+'\n- 대표 상품: '+b.hero+'\n- 주로 찾는 사람: '+b.customer+'\n- 들어갈 내용: '+b.sections+'\n- 쓰지 말 것: '+NO+'\n다 만들면 직접 열어서 깨진 곳이 없는지 확인해 줘.'},
+ t2a:function(b){return 'a.html을 검사해 줘. 파일은 고치지 마.\n- 직접 열어서 휴대폰 폭(390픽셀)과 컴퓨터 폭(1280픽셀)으로 봐 줘.\n- 아래 다섯 항목을 5점 만점으로 매기고 이유를 한 줄씩 표로 적어 줘: 가게다운 느낌, 흔한 AI 디자인 흔적(크림색·베이지색 배경, 모든 글이 가운데 정렬된 첫 화면, 제목 위 영어 작은 글씨, 이모지, 제목에서 한 단어만 색 바꾸기), 첫 화면에서 대표 상품이 잘 보이는지, 글자 크기와 읽기 편한 정도, 휴대폰에서 버튼 누르기 편한지\n- 마지막에 가장 큰 문제 3가지를 알려 줘.'},
+ t2v:function(b){return 'a2.html을 a.html과 같은 기준으로 검사해 줘. 파일은 고치지 마.\n- 직접 열어서 휴대폰 폭(390픽셀)과 컴퓨터 폭(1280픽셀)으로 봐 줘.\n- 같은 다섯 항목(가게다운 느낌, 흔한 AI 디자인 흔적, 첫 화면에서 '+b.hero+'이(가) 잘 보이는지, 글자 크기와 읽기 편한 정도, 휴대폰에서 버튼 누르기 편한지)을 5점 만점으로 매겨 줘.\n- 아까 매긴 a.html 점수와 나란히 놓고 비교하는 표로 만들어 줘.\n- 마지막에 a2.html에서 먼저 고칠 점 3가지를 알려 줘.'},
+ t3:function(b){return b.name+' 홈페이지의 휴대폰 화면(폭 390픽셀) 와이어프레임을 그려 줘.\n- 색과 사진 없이 회색 상자와 선, 글자로 배치만 보여 줘.\n- 첫 화면에 바로 보여야 할 것: '+b.need+'\n- 주로 찾는 사람: '+b.customer+'\n- 아래로 이어질 순서: '+b.sections+'\n- '+b.buttons+' 버튼은 화면 아래 엄지가 닿는 곳에 둬.\n- 모든 글자는 한국어로.'},
+ t4:function(b){return '함께 보낸 와이어프레임 그림의 배치를 그대로 지켜서 b.html 한 장으로 홈페이지를 만들어 줘.\n- 가게: '+b.name+' ('+b.place+')\n- 우리 이야기: '+b.story+'\n- 대표 상품: '+b.hero+'\n- 색·글꼴·꾸밈은 이 가게에 어울리게 정해 줘.\n- 쓰지 말 것: '+NO+'\n- 휴대폰 화면(폭 390픽셀)부터 만들고, 버튼은 가로세로 44픽셀 이상, 본문 글자는 16픽셀 이상.\n- 아래 고정 버튼이 맨 아래 내용을 가리지 않게 해 줘.\n다 만들면 휴대폰 폭으로 열어서 옆으로 넘치는 곳이 없는지 확인해 줘.'},
+ t5:function(b){return 'b.html을 넓은 화면(폭 1000픽셀 이상, 확인은 1280픽셀)에서도 잘 보이게 넓혀 줘. 휴대폰 화면은 지금 그대로 둬.\n- 위쪽에 메뉴를 가로로 두고, '+b.pcpair+'를 두 칸으로 나란히 배치해 줘.\n- 휴대폰의 아래 고정 버튼('+b.buttons+')은 넓은 화면에서는 위쪽 메뉴 안으로 옮겨 줘.\n- 글줄이 너무 길어지지 않게 본문 폭을 적당히 제한해 줘.\n다 만들면 1280픽셀과 390픽셀 두 폭으로 열어서 확인해 줘.'},
+ t6:function(b){return 'a2.html과 b.html을 휴대폰 폭(390픽셀)과 컴퓨터 폭(1280픽셀)으로 각각 열어 보고 비교해 줘.\n- 첫 화면에서 손님이 찾는 것('+b.need+')이 얼마나 빨리 보이는지\n- 버튼이 누르기 쉬운 위치와 크기인지\n- 어느 쪽이 '+b.name+'답게 보이는지\n표로 정리하고, 각 파일에서 하나씩 고칠 점을 알려 줘. 파일은 고치지 마.'}
+};
+var bizKey='bakery';
+function setBiz(k){
+  bizKey=k;var b=BIZ[k];
+  document.querySelectorAll('[data-biz]').forEach(function(x){x.setAttribute('aria-pressed',x.dataset.biz==k)});
+  document.querySelectorAll('.prompt[data-t]').forEach(function(p){p.querySelector('.pt').textContent=T[p.dataset.t](b)});
+  document.querySelectorAll('[data-k]').forEach(function(s){s.textContent=b[s.dataset.k]});
+  try{localStorage.setItem('v4biz',k)}catch(e){}
+}
+document.querySelectorAll('[data-biz]').forEach(function(x){x.onclick=function(){setBiz(x.dataset.biz)}});
+var cur=0,max=6;
+function show(n){
+  cur=n;
+  document.querySelectorAll('.tab').forEach(function(t){t.setAttribute('aria-selected',t.dataset.s==n)});
+  document.querySelectorAll('.step').forEach(function(s){s.classList.toggle('on',s.id=='s'+n)});
+  var step=document.getElementById('s'+n),h='<b>이 STEP에서</b>';
+  step.querySelectorAll('[data-nav]').forEach(function(el){h+='<a href="#'+el.id+'" class="'+(el.dataset.kind=='do'?'k-do':'')+'" onclick="jump(event,\''+el.id+'\')">'+el.dataset.nav+'</a>'});
+  document.getElementById('side').innerHTML=h;
+  document.getElementById('prev').disabled=n==0;document.getElementById('next').disabled=n==max;
+  document.getElementById('pos').textContent='STEP '+n+' · '+step.dataset.title;
+  window.scrollTo({top:0});
+}
+function go(d){var n=cur+d;if(n>=0&&n<=max)show(n)}
+function jump(e,id){e.preventDefault();var y=document.getElementById(id).getBoundingClientRect().top+window.pageYOffset-130;window.scrollTo({top:y,behavior:'smooth'})}
+document.querySelectorAll('.tab').forEach(function(t){t.onclick=function(){show(+t.dataset.s)}});
+var fs=20;function zoom(d){fs=Math.min(28,Math.max(16,fs+d*2));document.documentElement.style.setProperty('--fs',fs+'px')}
+function fallback(t){var a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();try{document.execCommand('copy')}catch(e){}document.body.removeChild(a)}
+document.querySelectorAll('.copy').forEach(function(b){b.onclick=function(){
+  var t=b.parentElement.querySelector('.pt').textContent;
+  function done(){b.textContent='복사됨';setTimeout(function(){b.textContent='복사'},1200)}
+  if(navigator.clipboard){navigator.clipboard.writeText(t).then(done,function(){fallback(t);done()})}else{fallback(t);done()}
+}});
+
+document.querySelectorAll('.ex img,.explain img').forEach(function(img){
+  var h=document.createElement('p');h.className='imghint';h.textContent='그림을 누르면 크게 볼 수 있습니다';img.insertAdjacentElement('afterend',h);
+  img.addEventListener('click',function(){openZoom(img)});
+});
+function openZoom(img){
+  closeZoom();
+  var bg=document.createElement('div');bg.className='zbg';bg.style.height=document.documentElement.scrollHeight+'px';
+  var p=document.createElement('div');p.className='zpop';
+  p.innerHTML='<div class="zb-top"><span>크게 보기 · 그림이나 바깥을 누르면 닫힙니다</span><button type="button">닫기</button></div>';
+  var big=document.createElement('img');big.src=img.src;big.alt=img.alt;p.appendChild(big);
+  var top=Math.max(window.pageYOffset+90,img.getBoundingClientRect().top+window.pageYOffset-60);
+  p.style.top=Math.min(top,window.pageYOffset+120)+'px';
+  bg.onclick=closeZoom;big.onclick=closeZoom;p.querySelector('button').onclick=closeZoom;
+  document.body.appendChild(bg);document.body.appendChild(p);
+}
+function closeZoom(){document.querySelectorAll('.zbg,.zpop').forEach(function(e){e.remove()})}
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeZoom()});
+var saved;try{saved=localStorage.getItem('v4biz')}catch(e){}
+setBiz(BIZ[saved]?saved:'bakery');show(0);
+</script>
+</body>
+</html>
