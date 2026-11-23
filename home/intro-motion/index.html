@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>김에듀 소개 모션</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=IBM+Plex+Sans+KR:wght@400;500;700&display=swap">
+<style>
+/* 레이아웃: 1920x1080 고정 무대(남색 3D 공간 + 금색 입자) 위에 글자·그림을 얹고, 무대 아래에 제어창을 둔다. */
+:root{
+  /* 무대(영상) 색: 강사 소개 PPT의 남색 + 금색으로 고정 */
+  --navy:#0F1838; --navy-2:#1C2B63; --gold:#CDA44C; --gold-2:#EBD08A;
+  --text:#F6F1E4; --mute:#AAB4D2; --paper:#FFFFFF; --ink:#141B36; --rule:#E4E7F0;
+  /* 페이지(무대 바깥) 색: 테마를 따름 */
+  --page-bg:#F1F3F7; --page-fg:#141B36; --page-muted:#5C657B; --page-line:#D5DAE4; --btn-bg:#FFFFFF; --btn-on:#1C2B63; --btn-on-fg:#FFFFFF;
+  --display:"Black Han Sans","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --body:"IBM Plex Sans KR","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){ --page-bg:#0C1126; --page-fg:#ECEFF6; --page-muted:#A3ABBD; --page-line:#2C3552; --btn-bg:#182040; --btn-on:#CDA44C; --btn-on-fg:#141B36; color-scheme:dark }
+}
+:root[data-theme="dark"]{ --page-bg:#0C1126; --page-fg:#ECEFF6; --page-muted:#A3ABBD; --page-line:#2C3552; --btn-bg:#182040; --btn-on:#CDA44C; --btn-on-fg:#141B36; color-scheme:dark }
+
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--page-bg);color:var(--page-fg);font-family:var(--body);padding-inline:16px}
+.page{max-width:1240px;margin-inline:auto;padding-block:24px 36px;display:flex;flex-direction:column;gap:16px}
+.head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:6px 20px}
+.head h1{font:400 30px/1.2 var(--display);margin:0;letter-spacing:.01em}
+.head p{margin:0;font-size:16px;color:var(--page-muted)}
+.frame{position:relative;width:100%;max-width:100%;aspect-ratio:16/9;overflow:hidden;border-radius:10px;outline:1px solid var(--page-line);background:var(--navy)}
+
+/* ---------- 제어창 ---------- */
+.ctl{display:flex;flex-direction:column;gap:12px;padding:14px 16px;border:1px solid var(--page-line);border-radius:10px;background:var(--btn-bg)}
+.ctl .row{display:flex;flex-wrap:wrap;align-items:center;gap:10px 12px}
+.ctl button{font:500 18px/1 var(--body);padding:13px 18px;border-radius:8px;border:1px solid var(--page-line);background:var(--btn-bg);color:var(--page-fg);cursor:pointer}
+.ctl button:hover{border-color:var(--btn-on)}
+.ctl button.pri,.ctl button[aria-pressed="true"]{background:var(--btn-on);border-color:var(--btn-on);color:var(--btn-on-fg)}
+.ctl button:focus-visible,.ctl input:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.ctl input[type=range]{flex:1 1 220px;min-width:0;height:28px;accent-color:var(--gold)}
+.ctl .clock{font:500 18px/1 var(--body);font-variant-numeric:tabular-nums;color:var(--page-muted);min-width:96px;text-align:right}
+.ctl .loop{display:flex;align-items:center;gap:8px;font:500 18px/1 var(--body);cursor:pointer}
+.ctl .loop input{width:22px;height:22px;accent-color:var(--gold)}
+.ctl .chips button{font-size:16px;padding:10px 14px}
+
+/* ---------- 무대 ---------- */
+.stage{position:absolute;left:0;top:0;width:1920px;height:1080px;transform-origin:0 0;transform:scale(var(--s,1));
+  background:radial-gradient(1300px 900px at 72% 42%,#24377A 0%,#162252 42%,#0A1130 100%);color:var(--text);font-family:var(--body);overflow:hidden;white-space:nowrap}
+#gl{position:absolute;left:0;top:0;width:1920px;height:1080px;display:block}
+.scene{position:absolute;inset:0}
+.abs{position:absolute}
+.top{position:absolute;left:120px;right:120px;top:56px;display:flex;justify-content:space-between;align-items:center}
+.brand{font:400 40px/1 var(--display);display:flex;align-items:center;gap:16px}
+.brand span{width:60px;height:60px;border-radius:50%;overflow:hidden;border:2px solid var(--gold);display:block;flex:none}
+.brand img{width:104%;height:104%;margin:-2%;display:block;max-width:none}
+.tag{font:500 30px/1 var(--body);color:var(--gold-2);padding:14px 26px;border:1px solid rgba(235,208,138,.45);border-radius:999px;background:rgba(255,255,255,.06)}
+.h{font:700 92px/1.18 var(--body);letter-spacing:-.02em;margin:0}
+.sub{font:500 46px/1.35 var(--body);color:var(--mute);margin:0}
+.g{color:var(--gold-2)}
+.prog{position:absolute;left:0;bottom:0;height:8px;width:100%;background:var(--gold);transform-origin:0 50%}
+
+/* 오프닝 */
+.eyebrow{font:500 40px/1 var(--body);color:var(--gold-2);letter-spacing:.01em}
+.name{font:400 270px/1 var(--display);margin:0;letter-spacing:.01em}
+.portrait{width:640px;height:640px;border-radius:50%;overflow:hidden;border:6px solid var(--gold);
+  background:radial-gradient(circle at 50% 35%,#3A4F9A 0%,#22336F 60%,#18244F 100%);box-shadow:0 0 90px rgba(205,164,76,.35)}
+.portrait img{width:100%;height:100%;object-fit:cover;object-position:50% 0;display:block}
+
+/* 숫자 */
+.cols{left:120px;top:340px;width:1680px;display:grid;grid-template-columns:repeat(4,1fr)}
+.col{text-align:center;padding:10px 0 20px}
+.col + .col{border-left:1px solid rgba(255,255,255,.16)}
+.big{font:400 190px/1 var(--display);color:var(--gold-2)}
+.big small{font:400 78px/1 var(--display);color:var(--text);margin-left:8px}
+.cap{font:500 36px/1.3 var(--body);margin-top:26px}
+.cap em{font-style:normal;font-size:28px;color:var(--mute);margin-left:8px}
+
+/* 다섯 가지: 제목만 크게 */
+.five{left:120px;top:318px;display:flex;flex-direction:column;gap:26px}
+.frow{display:flex;align-items:baseline;gap:30px}
+.frow b{font:400 84px/1 var(--display);color:var(--gold-2);width:64px;flex:none}
+.frow strong{font:700 88px/1.1 var(--body);letter-spacing:-.02em}
+
+/* 분야별 상세: 하나씩 */
+.dt{left:116px;top:206px;font:700 122px/1.1 var(--body);letter-spacing:-.02em;color:var(--gold-2);margin:0}
+.dl{left:120px;top:444px;width:980px;list-style:none;margin:0;padding:0}
+.dl li{font:500 60px/1 var(--body);padding:26px 0 24px;border-top:2px solid rgba(255,255,255,.2)}
+.dn{left:1311px;top:422px;width:400px;text-align:center;font:400 300px/1 var(--display);color:var(--text);text-shadow:0 0 60px rgba(10,17,48,.9)}
+
+/* 수업 흐름 */
+.flow{left:120px;top:470px;width:1680px;display:grid;grid-template-columns:repeat(4,1fr);gap:48px}
+.step{position:relative;background:var(--paper);color:var(--ink);border-radius:24px;padding:36px 36px 42px;display:flex;flex-direction:column;gap:28px;box-shadow:0 26px 60px rgba(3,7,28,.5)}
+.step b{font:400 78px/1 var(--display);color:#B88A2A}
+.step strong{font:700 52px/1.15 var(--body);letter-spacing:-.01em}
+.chev{top:582px;width:20px;height:20px;border-top:6px solid var(--gold-2);border-right:6px solid var(--gold-2);transform:rotate(45deg)}
+
+/* HITL */
+.node{top:520px;width:480px;height:210px;border-radius:24px;background:var(--paper);color:var(--ink);padding:38px 40px;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 26px 60px rgba(3,7,28,.5)}
+.node small{font:700 36px/1 var(--body);color:#8A6A1E}
+.node strong{font:700 50px/1 var(--body)}
+.node.on{background:linear-gradient(135deg,#E3C272,#CDA44C)}
+.node.on small{color:var(--ink);opacity:.75}
+.loopsvg{left:0;top:0;width:1920px;height:1080px}
+.loopsvg path{fill:none;stroke:var(--gold-2);stroke-width:5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1;stroke-dashoffset:0}
+.back{left:770px;top:856px;width:380px;text-align:center;font:500 36px/1 var(--body);color:var(--text);background:#111B45;border-radius:999px;padding:14px 0;border:1px solid rgba(235,208,138,.4)}
+.chibi{left:858px;top:318px;width:150px;height:auto;display:block;max-width:none}
+
+/* 출강 */
+.kinds{left:120px;top:560px;display:flex;align-items:center;gap:16px}
+.kind{font:700 40px/1 var(--body);padding:22px 30px;border-radius:16px;background:var(--paper);color:var(--ink)}
+.kinds b{font:500 40px/1 var(--body);color:var(--gold-2);margin-left:10px}
+.city{left:0;top:0;width:0;height:0}
+.city span{position:absolute;left:54px;top:-20px;font:700 40px/1 var(--body);color:var(--text);text-shadow:0 2px 14px rgba(5,9,30,.95)}
+.city.left span{left:auto;right:54px}
+
+/* 마무리 */
+.quote{font:700 104px/1.2 var(--body);letter-spacing:-.02em;margin:0}
+.pills{left:120px;top:800px;display:flex;gap:18px}
+.pill{font:700 38px/1 var(--body);padding:24px 34px;border-radius:999px;border:2px solid var(--gold);color:var(--text);background:rgba(15,24,56,.6)}
+.pill.fill{background:var(--gold);color:var(--ink)}
+.pwrap{left:0;top:0;width:1920px;height:1080px;perspective:1500px}
+.poster{left:1400px;top:96px;width:384px;height:480px;border-radius:18px;border:6px solid var(--text);box-shadow:0 40px 90px rgba(2,5,22,.65);display:block;max-width:none;object-fit:cover}
+
+/* 렌더링(영상 추출) 모드 */
+html.render body{padding:0;background:var(--navy)}
+html.render .page{max-width:none;padding:0;gap:0}
+html.render .head,html.render .ctl{display:none}
+html.render .frame{width:1920px;height:1080px;aspect-ratio:auto;border-radius:0;outline:0}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="head">
+    <h1>김에듀 소개 모션</h1>
+    <p>김충효 강사 소개 · 64초 반복 · 16:9</p>
+  </div>
+
+  <div class="frame" id="frame">
+    <div class="stage" id="stage">
+      <canvas id="gl" aria-hidden="true"></canvas>
+
+      <!-- 오프닝 -->
+      <section class="scene" id="s1">
+        <div class="abs portrait" style="left:1110px;top:200px"><img src="img01.webp" alt="김충효 강사 캐릭터 그림"></div>
+        <p class="abs eyebrow" id="s1e" style="left:124px;top:214px">UNLearning — 버려야, 새로 배웁니다</p>
+        <p class="abs name" style="left:112px;top:300px">김충효</p>
+        <p class="abs h" id="s1h" style="left:120px;top:606px;font-size:66px">생성형 AI · 디지털 리터러시<br><span class="g">전문 강사</span></p>
+        <p class="abs sub" id="s1s" style="left:122px;top:800px;font-size:42px">유튜브 ‘김에듀’ · kimedu.kr</p>
+      </section>
+
+      <!-- 숫자 -->
+      <section class="scene" id="s2">
+        <div class="top"><span class="brand"><span><img src="img02.webp" alt=""></span>김에듀</span><span class="tag">경력</span></div>
+        <p class="abs h" id="s2h" style="left:120px;top:176px;font-size:80px">김충효 강사, <span class="g">숫자로 보면</span></p>
+        <div class="abs cols">
+          <div class="col"><div class="big"><span id="c20">20</span><small>년+</small></div><div class="cap">직업훈련 현장 경력</div></div>
+          <div class="col"><div class="big"><span id="c3">3</span><small>종</small></div><div class="cap">공인 AI 자격<em>(KPC)</em></div></div>
+          <div class="col"><div class="big"><span id="c13">13</span><small>종</small></div><div class="cap">자격 · 인증 보유</div></div>
+          <div class="col"><div class="big"><span id="c30">30</span><small>개+</small></div><div class="cap">AI 과정 설계 · 운영</div></div>
+        </div>
+      </section>
+
+      <!-- 다섯 가지 (제목만) : 내용은 아래 스크립트의 FIELDS에서 채움 -->
+      <section class="scene" id="s3">
+        <div class="top"><span class="brand"><span><img src="img02.webp" alt=""></span>김에듀</span><span class="tag">강의 분야</span></div>
+        <p class="abs h" id="s3h" style="left:120px;top:170px;font-size:84px">제가 하는 일, <span class="g">다섯 가지</span></p>
+        <div class="abs five" id="five"></div>
+      </section>
+
+      <!-- 분야별 상세 5개는 스크립트가 여기 앞에 끼워 넣음 -->
+
+      <!-- 수업 흐름 -->
+      <section class="scene" id="s4">
+        <div class="top"><span class="brand"><span><img src="img02.webp" alt=""></span>김에듀</span><span class="tag">수업 방식</span></div>
+        <p class="abs h" id="s4h" style="left:120px;top:176px;font-size:96px">기술보다 사람, <span class="g">도구보다 활용</span></p>
+        <p class="abs sub" id="s4s" style="left:122px;top:318px">매 회차, 작은 성공을 반복합니다</p>
+        <div class="abs flow">
+          <div class="step"><b>1</b><strong>핵심 개념</strong></div>
+          <div class="step"><b>2</b><strong>따라하기 실습</strong></div>
+          <div class="step"><b>3</b><strong>개별 적용</strong></div>
+          <div class="step"><b>4</b><strong>공유 · 피드백</strong></div>
+        </div>
+        <i class="abs chev" style="left:514px"></i><i class="abs chev" style="left:946px"></i><i class="abs chev" style="left:1378px"></i>
+      </section>
+
+      <!-- HITL -->
+      <section class="scene" id="s5">
+        <div class="top"><span class="brand"><span><img src="img02.webp" alt=""></span>김에듀</span><span class="tag">HITL 검증</span></div>
+        <p class="abs h" id="s5h" style="left:120px;top:170px;font-size:88px">AI가 만들고, <span class="g">사람이 확인합니다</span></p>
+        <p class="abs sub" id="s5s" style="left:122px;top:302px;font-size:40px">Human-in-the-Loop</p>
+        <svg class="abs loopsvg" viewBox="0 0 1920 1080" aria-hidden="true">
+          <path id="s5p1" pathLength="1" d="M614 625 H704 M684 605 L708 625 L684 645"/>
+          <path id="s5p2" pathLength="1" d="M1214 625 H1304 M1284 605 L1308 625 L1284 645"/>
+          <path id="s5p3" pathLength="1" d="M1560 746 V846 Q1560 886 1520 886 H400 Q360 886 360 846 V754 M340 776 L360 750 L380 776"/>
+        </svg>
+        <div class="abs back" id="s5back">미흡하면 다시</div>
+        <div class="abs node" id="s5n1" style="left:120px"><small>AI</small><strong>초안을 만듭니다</strong></div>
+        <img class="abs chibi" id="s5c" src="img03.webp" alt="">
+        <div class="abs node on" id="s5n2" style="left:720px"><small>사람</small><strong>꼼꼼히 확인합니다</strong></div>
+        <div class="abs node" id="s5n3" style="left:1320px"><small>함께</small><strong>고쳐서 완성합니다</strong></div>
+      </section>
+
+      <!-- 출강 -->
+      <section class="scene" id="s6">
+        <div class="top"><span class="brand"><span><img src="img02.webp" alt=""></span>김에듀</span><span class="tag">출강</span></div>
+        <p class="abs h" id="s6h" style="left:120px;top:250px;font-size:100px">전국 교육 현장으로<br><span class="g">출강합니다</span></p>
+        <div class="abs kinds"><span class="kind">기업 HRD</span><span class="kind">공공</span><span class="kind">평생교육</span><span class="kind">직업훈련</span><b>등 6개 유형</b></div>
+        <p class="abs sub" id="s6s" style="left:122px;top:700px;font-size:44px">서울 · 부산 · 대구 · 전주 · 제주 · 천안 전국</p>
+        <div class="abs city" id="city0"><span>서울</span></div>
+        <div class="abs city left" id="city1"><span>천안</span></div>
+        <div class="abs city" id="city2"><span>대구</span></div>
+        <div class="abs city" id="city3"><span>전주</span></div>
+        <div class="abs city" id="city4"><span>부산</span></div>
+        <div class="abs city" id="city5"><span>제주</span></div>
+      </section>
+
+      <!-- 마무리 -->
+      <section class="scene" id="s7">
+        <p class="abs eyebrow" id="s7e" style="left:124px;top:200px">김충효 · 생성형 AI · 디지털 리터러시 전문 강사</p>
+        <p class="abs quote" id="s7q" style="left:116px;top:290px">“여러분의<br><span class="g">AI 퀀텀점프</span>에<br><span class="g">디딤돌</span>이 되겠습니다”</p>
+        <div class="abs pills"><span class="pill fill">유튜브 ‘김에듀’</span><span class="pill">kimedu.kr</span><span class="pill">kimedukr@gmail.com</span></div>
+        <div class="abs pwrap"><img class="abs poster" id="s7p" src="img04.webp" alt="AI 수업 현장을 그린 그림"></div>
+      </section>
+
+      <div class="prog" id="prog"></div>
+    </div>
+  </div>
+
+  <div class="ctl" id="ctl">
+    <div class="row">
+      <button type="button" id="btnToggle" class="pri">멈춤</button>
+      <button type="button" id="btnReplay">처음으로</button>
+      <input type="range" id="seek" min="0" max="64000" step="50" value="0" aria-label="재생 위치">
+      <span class="clock" id="clock">0:00 / 1:04</span>
+      <label class="loop" for="loopOn"><input type="checkbox" id="loopOn" checked>반복</label>
+    </div>
+    <div class="row chips" id="chips" role="group" aria-label="장면 바로가기"></div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+  /* ===== 문구를 고치려면 여기: 강의 분야 다섯 가지 ===== */
+  var FIELDS = [
+    {t:'AI, 제대로 쓰기',   chip:'AI 쓰기', items:['ChatGPT · 클로드 실무','프롬프트 잘 쓰는 법','나만의 AI 챗봇 만들기','구글 AI 스튜디오']},
+    {t:'반복 업무 자동화', chip:'자동화',  items:['챗GPT + 엑셀 자동화','노션 · 협업툴 스마트워크','클릭만으로 잇는 자동화','AI 보고서 · 행정문서']},
+    {t:'AI 영상 만들기',   chip:'영상',    items:['촬영 없이 수업 영상 제작','유튜브 쇼츠 · 릴스','AI 영화 · 움직이는 웹툰','AI 목소리 · 더빙 · 음악']},
+    {t:'내 책, 내 콘텐츠', chip:'콘텐츠',  items:['AI 동화책 · 전자책 출판','이모티콘 · 굿즈 디자인','오디오북 · 플립북 제작','스토리 창작 · 웹툰']},
+    {t:'AI 교안 만들기',   chip:'교안',    items:['미리캔버스 교안 제작','AI 활용 강의자료 개발','AI 강사 양성 · 교수법','교재 편집 · 1인 출판']}
+  ];
+  /* 장면 시작 시각(ms): 오프닝, 숫자, 다섯 가지, 상세 1~5, 수업 흐름, HITL, 출강, 마무리, 끝 */
+  var B = [0, 5000, 10500, 15500, 20100, 24700, 29300, 33900, 38500, 44500, 50500, 56500, 64000];
+  var T = B[B.length - 1], NS = B.length - 1;
+  var SHAPE = [0, 1, 2, 2, 2, 2, 2, 2, 3, 4, 5, 6];           /* 장면별 입자 모양 */
+  var tNum = B[1], tFive = B[2], tFlow = B[8], tHitl = B[9], tVisit = B[10], tEnd = B[11];
+  var NAMES = ['오프닝','숫자','다섯 가지'].concat(FIELDS.map(function(f){ return f.chip; }), ['수업 방식','HITL','출강','마무리']);
+
+  var root = document.documentElement;
+  var RENDER = location.hash === '#render';
+  if (RENDER) root.classList.add('render');
+  var frame = document.getElementById('frame'), stage = document.getElementById('stage');
+  function byId(id){ return document.getElementById(id); }
+  function el(tag, cls, text){ var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+  var dirty = true;
+
+  /* 다섯 가지 제목 줄 + 분야별 상세 장면 만들기 */
+  var avatarSrc = stage.querySelector('.brand img').getAttribute('src');
+  FIELDS.forEach(function(f, i){
+    var row = el('div', 'frow'); row.appendChild(el('b', '', String(i + 1))); row.appendChild(el('strong', '', f.t)); byId('five').appendChild(row);
+    var sec = el('section', 'scene'); sec.id = 'd' + (i + 1);
+    var top = el('div', 'top'), brand = el('span', 'brand'), av = el('span'), img = el('img'); img.src = avatarSrc; img.alt = '';
+    av.appendChild(img); brand.appendChild(av); brand.appendChild(document.createTextNode('김에듀'));
+    top.appendChild(brand); top.appendChild(el('span', 'tag', '강의 분야 ' + (i + 1) + ' / ' + FIELDS.length)); sec.appendChild(top);
+    sec.appendChild(el('p', 'abs dt', f.t));
+    var ul = el('ul', 'abs dl'); f.items.forEach(function(it){ ul.appendChild(el('li', '', it)); }); sec.appendChild(ul);
+    sec.appendChild(el('div', 'abs dn', String(i + 1)));
+    stage.insertBefore(sec, byId('s4'));
+  });
+
+  /* ================= 글자·그림 움직임 ================= */
+  var EASE = 'cubic-bezier(.16,.84,.3,1)';
+  var OUT3 = 'cubic-bezier(.33,1,.68,1)';
+  var all = [];
+  function q(sel){ return typeof sel === 'string' ? Array.prototype.slice.call(stage.querySelectorAll(sel)) : [sel]; }
+  function an(sel, kf, delay, dur, easing){
+    var last;
+    q(sel).forEach(function(e){ last = e.animate(kf, {delay: delay, duration: dur, fill: 'both', easing: easing || EASE}); all.push(last); });
+    return last;
+  }
+  function rise(sel, at, dy, dur, gap){
+    q(sel).forEach(function(e, i){
+      an(e, [{opacity:0, transform:'translateY(' + (dy == null ? 48 : dy) + 'px)'}, {opacity:1, transform:'translateY(0px)'}], at + i * (gap || 0), dur || 800);
+    });
+  }
+  /* 전체 길이에 걸친 절대 시각 키프레임 (반복 이음새를 맞출 때 사용) */
+  function tl(sel, pts){
+    q(sel).forEach(function(e){
+      var kf = pts.map(function(p){ var o = {offset: p[0] / T, easing: p[2] || 'linear'}; for (var k in p[1]) o[k] = p[1][k]; return o; });
+      all.push(e.animate(kf, {duration: T, fill: 'both', easing: 'linear'}));
+    });
+  }
+  function scene(id, start, end){
+    var d = end - start, f = 350 / d;
+    an('#' + id, [{opacity:0, offset:0},{opacity:1, offset:f},{opacity:1, offset:1 - f},{opacity:0, offset:1}], start, d, 'linear');
+  }
+  function draw(sel, at, dur){ an(sel, [{strokeDashoffset:1},{strokeDashoffset:0}], at, dur, OUT3); }
+
+  var master = an('#prog', [{transform:'scaleX(0)'},{transform:'scaleX(1)'}], 0, T, 'linear');
+
+  /* 오프닝: 이름과 그림은 처음부터 보인다. 마무리가 완전히 사라진 뒤(끝나기 0.9초 전부터) 같은 모습으로 돌아와 반복이 이어진다 */
+  tl('#s1', [[0,{opacity:1}],[tNum-350,{opacity:1}],[tNum,{opacity:0}],[T-900,{opacity:0}],[T-100,{opacity:1}],[T,{opacity:1}]]);
+  var HID = {opacity:0, transform:'translateY(44px)'}, VIS = {opacity:1, transform:'translateY(0px)'};
+  function riseS1(sel, at){ tl(sel, [[0,HID],[at,HID,EASE],[at+800,VIS],[tNum-10,VIS],[tNum,HID],[T,HID]]); }
+  riseS1('#s1e', 500); riseS1('#s1h', 1100); riseS1('#s1s', 1700);
+
+  /* 숫자 */
+  scene('s2', tNum, tFive);
+  rise('#s2h', tNum+250);
+  rise('#s2 .col', tNum+800, 50, 800, 260);
+
+  /* 다섯 가지 */
+  scene('s3', tFive, B[3]);
+  rise('#s3h', tFive+250);
+  q('#s3 .frow').forEach(function(e, i){
+    an(e, [{opacity:0, transform:'translateX(-70px)'},{opacity:1, transform:'translateX(0px)'}], tFive+800+i*260, 800);
+  });
+
+  /* 분야별 상세 */
+  FIELDS.forEach(function(f, i){
+    var s = B[3 + i], id = 'd' + (i + 1);
+    scene(id, s, B[4 + i]);
+    an('#' + id + ' .dt', [{opacity:0, transform:'translateX(-80px)'},{opacity:1, transform:'translateX(0px)'}], s+250, 800);
+    rise('#' + id + ' .dl li', s+750, 36, 650, 230);
+    an('#' + id + ' .dn', [{opacity:0, transform:'scale(.5)'},{opacity:1, transform:'scale(1)'}], s+350, 900, 'cubic-bezier(.2,1.4,.4,1)');
+  });
+
+  /* 수업 흐름 */
+  scene('s4', tFlow, tHitl);
+  rise('#s4h', tFlow+250);
+  rise('#s4s', tFlow+700, 30);
+  rise('#s4 .step', tFlow+1300, 60, 800, 420);
+  q('#s4 .chev').forEach(function(e, i){ an(e, [{opacity:0},{opacity:1}], tFlow+1300+(i+1)*420, 500); });
+
+  /* HITL */
+  scene('s5', tHitl, tVisit);
+  rise('#s5h', tHitl+250);
+  rise('#s5s', tHitl+650, 24);
+  rise('#s5n1', tHitl+1100, 40, 700);
+  draw('#s5p1', tHitl+1700, 450);
+  rise('#s5n2', tHitl+2000, 40, 700);
+  an('#s5c', [{opacity:0, transform:'translateY(120px) scale(.7)'},{opacity:1, transform:'translateY(0px) scale(1)'}], tHitl+2500, 800, 'cubic-bezier(.2,1.5,.4,1)');
+  draw('#s5p2', tHitl+2700, 450);
+  rise('#s5n3', tHitl+3000, 40, 700);
+  draw('#s5p3', tHitl+3700, 1100);
+  rise('#s5back', tHitl+4300, 0, 500);
+
+  /* 출강 */
+  scene('s6', tVisit, tEnd);
+  rise('#s6h', tVisit+250);
+  rise('#s6 .kind', tVisit+900, 36, 650, 140);
+  rise('#s6 .kinds b', tVisit+1600, 0, 500);
+  rise('#s6s', tVisit+2100);
+  q('#s6 .city span').forEach(function(e, i){ an(e, [{opacity:0},{opacity:1}], tVisit+700+i*260, 500); });
+
+  /* 마무리: 끝나기 1.5초 전에 완전히 사라진다 (오프닝과 겹치지 않게) */
+  scene('s7', tEnd, T-1500);
+  rise('#s7e', tEnd+250, 30);
+  rise('#s7q', tEnd+600);
+  rise('#s7 .pill', tEnd+1900, 30, 650, 180);
+  an('#s7p', [{opacity:0, transform:'translateX(160px) rotateY(-70deg) rotateZ(6deg)'},{opacity:1, transform:'translateX(0px) rotateY(-14deg) rotateZ(2deg)'}], tEnd+900, 1300);
+
+  /* 숫자 올라가기 */
+  var c20 = byId('c20'), c3 = byId('c3'), c13 = byId('c13'), c30 = byId('c30');
+  function ease3(x){ x = x < 0 ? 0 : x > 1 ? 1 : x; return 1 - Math.pow(1 - x, 3); }
+  function counters(ms){
+    c20.textContent = Math.round(20 * ease3((ms - tNum - 900) / 1200));
+    c3.textContent  = Math.round(3  * ease3((ms - tNum - 1160) / 900));
+    c13.textContent = Math.round(13 * ease3((ms - tNum - 1420) / 1200));
+    c30.textContent = Math.round(30 * ease3((ms - tNum - 1680) / 1200));
+  }
+
+  /* ================= 3D 배경 (three.js) ================= */
+  var TAU = Math.PI * 2;
+  function sm(x){ x = x < 0 ? 0 : x > 1 ? 1 : x; return x * x * (3 - 2 * x); }
+  function fr(x){ return x - Math.floor(x); }
+  var HW = 9.0577, HH = 5.0950;                     /* 카메라 거리 14, 화각 40도일 때 z=0 평면의 반폭·반높이 */
+  /* 서울, 천안, 대구, 전주, 부산, 제주 : 실제 경도·위도 비율 그대로 배치 */
+  var CITY = [[126.98,37.57],[127.15,36.81],[128.60,35.87],[127.15,35.82],[129.08,35.18],[126.53,33.50]].map(function(c){
+    return [4.6 + (c[0] - 127.6) * 1.7, (c[1] - 35.55) * 1.7, 0];
+  });
+  var LINKS = [[0,1],[1,2],[2,4],[1,3],[3,5]];
+  var cityEls = CITY.map(function(c, i){ return byId('city' + i); });
+  function placeCity(i, x, y){ cityEls[i].style.transform = 'translate(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px)'; }
+  CITY.forEach(function(c, i){ placeCity(i, (c[0] / HW + 1) * 960, (1 - c[1] / HH) * 540); });
+
+  var GL = null;
+  function initGL(){
+    if (!window.THREE) return null;
+    var THREE = window.THREE, renderer;
+    try { renderer = new THREE.WebGLRenderer({canvas: byId('gl'), alpha: true, antialias: true, preserveDrawingBuffer: RENDER}); }
+    catch (e) { return null; }
+    renderer.setClearColor(0x000000, 0);
+    var sc = new THREE.Scene();
+    var cam = new THREE.PerspectiveCamera(40, 16 / 9, 0.1, 100);
+
+    /* 빛 알갱이 무늬 */
+    var cv = document.createElement('canvas'); cv.width = cv.height = 64;
+    var cx = cv.getContext('2d'), gr = cx.createRadialGradient(32,32,0,32,32,32);
+    gr.addColorStop(0,'rgba(255,255,255,1)'); gr.addColorStop(.25,'rgba(255,255,255,.75)'); gr.addColorStop(1,'rgba(255,255,255,0)');
+    cx.fillStyle = gr; cx.fillRect(0,0,64,64);
+    var dot = new THREE.CanvasTexture(cv);
+
+    /* 입자 */
+    var N = 7000, seed = 20261012;
+    function rnd(){ seed |= 0; seed = seed + 0x6D2B79F5 | 0; var t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }
+    var R1 = new Float32Array(N), R2 = new Float32Array(N), R3 = new Float32Array(N), M = new Float32Array(N), DIR = new Float32Array(N);
+    var pos = new Float32Array(N * 3), col = new Float32Array(N * 3);
+    for (var j = 0; j < N; j++){
+      R1[j] = rnd(); R2[j] = rnd(); R3[j] = rnd(); M[j] = 2 + Math.floor(rnd() * 3); DIR[j] = rnd() < .5 ? -1 : 1;
+      var c = rnd(), r = c < .72 ? [.93,.76,.42] : c < .93 ? [1,.95,.82] : [.62,.72,1], br = .55 + rnd() * .45;
+      col[j*3] = r[0] * br; col[j*3+1] = r[1] * br; col[j*3+2] = r[2] * br;
+    }
+    var pg = new THREE.BufferGeometry();
+    pg.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    pg.setAttribute('color', new THREE.BufferAttribute(col, 3));
+    var pts = new THREE.Points(pg, new THREE.PointsMaterial({size: .15, map: dot, vertexColors: true, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, sizeAttenuation: true}));
+    pts.frustumCulled = false; sc.add(pts);
+
+    /* 입자 모양 7가지 */
+    var C0 = [4.44, 0.19, 0], RING = [[3.55,.35,.2],[3.95,-.5,.45],[4.4,.15,-.6]], PX = [-5.94,-1.98,1.98,5.94];
+    var F = [
+      function(j,t,o){                       /* 0 오프닝: 그림을 감싸는 세 겹 고리 (한 바퀴 단위로 돌아 끝과 처음이 같다) */
+        var r = RING[j % 3], rad = r[0] + (R2[j] - .5) * .28, a = TAU * R1[j] + DIR[j] * TAU * (M[j] + 1) * t / T;
+        var x = rad * Math.cos(a), y = rad * Math.sin(a), z = (R3[j] - .5) * .35;
+        var y1 = y * Math.cos(r[1]) - z * Math.sin(r[1]), z1 = y * Math.sin(r[1]) + z * Math.cos(r[1]);
+        o[0] = C0[0] + x * Math.cos(r[2]) + z1 * Math.sin(r[2]); o[1] = C0[1] + y1; o[2] = -x * Math.sin(r[2]) + z1 * Math.cos(r[2]);
+      },
+      function(j,t,o){                       /* 1 숫자: 네 기둥이 솟아오름 */
+        var g = sm((t - (tNum - 300)) / 1500);
+        o[0] = PX[j % 4] + (R1[j] - .5) * 2.0; o[1] = -5.4 + fr(R2[j] + M[j] * t / 13000) * 3.3 * g; o[2] = (R3[j] - .5) * 2.0;
+      },
+      function(j,t,o){                       /* 2 강의 분야: 오른쪽에서 도는 구 */
+        var u = 2 * R2[j] - 1, s = Math.sqrt(1 - u * u), a = TAU * R1[j] + TAU * t / 16000, rad = 3.0 + (R3[j] - .5) * .25;
+        var x = rad * s * Math.cos(a), y = rad * u;
+        o[0] = 5.2 + x * Math.cos(.35) - y * Math.sin(.35); o[1] = -.3 + x * Math.sin(.35) + y * Math.cos(.35); o[2] = rad * s * Math.sin(a);
+      },
+      function(j,t,o){                       /* 3 수업 흐름: 왼쪽에서 오른쪽으로 흐르는 물줄기 */
+        var x = -9.6 + fr(R1[j] + M[j] * t / 26000) * 19.2;
+        o[0] = x; o[1] = -3.35 + .5 * Math.sin(x * .7 - TAU * t / 5000) + (R2[j] - .5) * .9; o[2] = (R3[j] - .5) * 3;
+      },
+      function(j,t,o){                       /* 4 HITL: 먼 별빛 (화살표·카드와 겹치지 않게) */
+        o[0] = (R1[j] - .5) * 36; o[1] = (R2[j] - .5) * 19 + .4 * Math.sin(TAU * (t / 16000 + R3[j])); o[2] = -6 - R3[j] * 14;
+      },
+      function(j,t,o){                       /* 5 출강: 여섯 도시 주변의 빛 + 먼 별빛 */
+        if (j % 8 < 3){
+          var c = CITY[j % 6], a = TAU * (R1[j] + M[j] * t / 40000), rad = .1 + R2[j] * R2[j] * .42;
+          o[0] = c[0] + rad * Math.cos(a); o[1] = c[1] + rad * Math.sin(a); o[2] = (R3[j] - .5) * .4;
+        } else { o[0] = (R2[j] - .5) * 36; o[1] = (R1[j] - .5) * 19 + .4 * Math.sin(TAU * (t / 20000 + R3[j])); o[2] = -6 - R3[j] * 14; }
+      },
+      function(j,t,o){                       /* 6 마무리: 오른쪽 아래 디딤돌 계단 */
+        var k = j % 5, h = .52 * (k + 1), top = -4.9 + h;
+        o[0] = 2.75 + k * 1.14 + R1[j] * 1.04; o[1] = R3[j] < .4 ? top - R2[j] * .07 : -4.9 + R2[j] * h; o[2] = (fr(R3[j] * 7.13) - .5) * 1.2;
+      }
+    ];
+    function phase(t){
+      for (var k = 1; k < NS; k++){ var c = B[k]; if (t < c - 700) return [SHAPE[k-1], SHAPE[k-1], 0]; if (t < c + 700) return [SHAPE[k-1], SHAPE[k], (t - (c - 700)) / 1400]; }
+      if (t < T - 1500) return [SHAPE[NS-1], SHAPE[NS-1], 0];
+      return [SHAPE[NS-1], 0, (t - (T - 1500)) / 1500];
+    }
+
+    /* 도시 불빛과 잇는 점선 (출강) */
+    var cityS = CITY.map(function(c){
+      var s = new THREE.Sprite(new THREE.SpriteMaterial({map: dot, color: 0xFFE2A0, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending}));
+      s.position.set(c[0], c[1], c[2]); sc.add(s); return s;
+    });
+    var SEG = 40, arc = new Float32Array(LINKS.length * SEG * 3);
+    LINKS.forEach(function(l, li){
+      var a = CITY[l[0]], b = CITY[l[1]];
+      for (var s = 0; s < SEG; s++){ var u = .1 + .8 * s / (SEG - 1), o = (li * SEG + s) * 3; arc[o] = a[0] + (b[0] - a[0]) * u; arc[o+1] = a[1] + (b[1] - a[1]) * u; arc[o+2] = 0; }
+    });
+    var ag = new THREE.BufferGeometry(); ag.setAttribute('position', new THREE.BufferAttribute(arc, 3));
+    var arcs = new THREE.Points(ag, new THREE.PointsMaterial({size: .17, map: dot, color: 0xF3D58E, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending}));
+    arcs.frustumCulled = false; sc.add(arcs);
+
+    var pa = [0,0,0], pb = [0,0,0], v3 = new THREE.Vector3();
+    function size(){
+      var w = RENDER ? 1920 : Math.max(320, frame.clientWidth);
+      renderer.setPixelRatio(RENDER ? 1 : Math.min(window.devicePixelRatio || 1, 2));
+      renderer.setSize(w, Math.round(w * 9 / 16), false);
+    }
+    function render(t){
+      var ph = phase(t), fa = F[ph[0]], fb = F[ph[1]], e = ph[2], mix = e > 0;
+      for (var j = 0; j < N; j++){
+        var o = j * 3;
+        fa(j, t, pa);
+        if (mix){
+          fb(j, t, pb);
+          var ej = sm(e * 1.6 - .6 * R3[j]), burst = Math.sin(Math.PI * ej) * 2.4;
+          pos[o]   = pa[0] + (pb[0] - pa[0]) * ej + (R1[j] - .5) * burst;
+          pos[o+1] = pa[1] + (pb[1] - pa[1]) * ej + (R2[j] - .5) * burst;
+          pos[o+2] = pa[2] + (pb[2] - pa[2]) * ej + (R3[j] - .5) * burst;
+        } else { pos[o] = pa[0]; pos[o+1] = pa[1]; pos[o+2] = pa[2]; }
+      }
+      pg.attributes.position.needsUpdate = true;
+
+      /* 도시 */
+      var outN = 1 - sm((t - (tEnd - 800)) / 450);
+      for (var n = 0; n < CITY.length; n++){
+        var a = sm((t - (tVisit + 600) - n * 260) / 500) * outN;
+        cityS[n].visible = a > .001; cityS[n].scale.setScalar((.8 + .12 * Math.sin(TAU * t / 1500 + n)) * a);
+      }
+      var pr = (t - (tVisit + 1000)) / 2600; pr = pr < 0 ? 0 : pr > 1 ? 1 : pr;
+      arcs.visible = outN > .001 && pr > 0; ag.setDrawRange(0, Math.floor(pr * LINKS.length * SEG)); arcs.material.opacity = outN;
+
+      /* 카메라: 느린 흔들림 + 장면 전환 때 살짝 다가감 */
+      cam.position.set(.5 * Math.sin(TAU * 3 * t / T), .25 * Math.sin(TAU * 4 * t / T), 14 - 1.3 * Math.sin(Math.PI * sm(e)));
+      cam.lookAt(0, 0, 0); cam.updateMatrixWorld();
+      for (var m = 0; m < CITY.length; m++){ v3.set(CITY[m][0], CITY[m][1], CITY[m][2]).project(cam); placeCity(m, (v3.x + 1) * 960, (1 - v3.y) * 540); }
+      renderer.render(sc, cam);
+    }
+    size();
+    return {render: render, size: size};
+  }
+  try { GL = initGL(); } catch (e) { GL = null; }
+
+  function fit(){ stage.style.setProperty('--s', RENDER ? 1 : frame.clientWidth / 1920); if (GL) GL.size(); dirty = true; }
+  fit();
+  if (window.ResizeObserver) new ResizeObserver(fit).observe(frame); else window.addEventListener('resize', fit);
+
+  /* ================= 재생 제어 ================= */
+  var btnToggle = byId('btnToggle'), btnReplay = byId('btnReplay'), seekEl = byId('seek'), clock = byId('clock'), loopOn = byId('loopOn'), chips = byId('chips');
+  seekEl.max = T;
+  var chipBtns = NAMES.map(function(nm, i){
+    var b = document.createElement('button'); b.type = 'button'; b.id = 'chip' + i; b.textContent = nm;
+    b.addEventListener('click', function(){ jump(B[i], playing); }); chips.appendChild(b); return b;
+  });
+  var playing = true, lastT = -1, lastScene = -1, dragging = false;
+  function now(){ var t = master.currentTime; return t == null ? 0 : Math.max(0, Math.min(T, Number(t))); }
+  function jump(ms, play){ all.forEach(function(a){ a.currentTime = ms; if (play) a.play(); else a.pause(); }); dirty = true; }
+  function setPlaying(p){ playing = p; jump(now() >= T ? 0 : now(), p); btnToggle.textContent = p ? '멈춤' : '재생'; }
+  function mmss(ms){ var s = Math.floor(ms / 1000); return Math.floor(s / 60) + ':' + (s % 60 < 10 ? '0' : '') + (s % 60); }
+  function update(ms){
+    counters(ms);
+    if (GL) GL.render(ms);
+    if (RENDER) return;
+    if (!dragging) seekEl.value = Math.round(ms);
+    clock.textContent = mmss(ms) + ' / ' + mmss(T);
+    var sIdx = 0; for (var i = 0; i < NS; i++) if (ms >= B[i]) sIdx = i;
+    if (sIdx !== lastScene){ chipBtns.forEach(function(b, i){ b.setAttribute('aria-pressed', i === sIdx ? 'true' : 'false'); }); lastScene = sIdx; }
+  }
+  function loop(){
+    var t = now();
+    if (playing && t >= T - .5){
+      if (loopOn.checked) { jump(0, true); t = 0; }
+      else { playing = false; all.forEach(function(a){ a.pause(); }); btnToggle.textContent = '재생'; }
+    }
+    if (t !== lastT || dirty){ update(t); lastT = t; dirty = false; }
+    requestAnimationFrame(loop);
+  }
+  btnToggle.addEventListener('click', function(){ setPlaying(!playing); });
+  btnReplay.addEventListener('click', function(){ jump(0, playing); });
+  seekEl.addEventListener('input', function(){ jump(Number(seekEl.value), playing); });
+  seekEl.addEventListener('pointerdown', function(){ dragging = true; });
+  ['pointerup','pointercancel','change','blur'].forEach(function(n){ seekEl.addEventListener(n, function(){ dragging = false; }); });
+  document.addEventListener('keydown', function(ev){
+    var tg = ev.target && ev.target.tagName;
+    if ((ev.key === ' ' || ev.code === 'Space') && tg !== 'INPUT' && tg !== 'BUTTON' && tg !== 'TEXTAREA'){ ev.preventDefault(); setPlaying(!playing); }
+  });
+
+  window.kimeduSeek = function(ms){ jump(ms, false); update(ms); };
+  if (RENDER) { playing = false; window.kimeduSeek(0); }
+  else {
+    if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches){ playing = false; jump(0, false); btnToggle.textContent = '재생'; }
+    loop();
+  }
+})();
+</script>
+</body>
+</html>
