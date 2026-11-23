@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>바이브 코딩 첫째 날 · 왜 채팅이 아니라 코드인가</title>
+<style>
+:root{--fs:20px;--pt:#2F5FD0;--pt-d:#1E3F8F;--pt-l:#EEF3FD;--ink:#22252B;--sub:#5B616E;--line:#E3E5EA;--bg:#FAFAF8;--card:#FFFFFF;
+--set:#EEF3FD;--set-b:#C9D7F5;--warn:#FCEFF1;--warn-b:#F1C6CE;--warn-t:#8E2A3B;--ext:#ECF7F2;--ext-b:#BFE3D2;--ext-t:#1D5E45;--tip:#F4F1FB;--tip-b:#D9D0EE;--tip-t:#4A3B7A}
+*{box-sizing:border-box}
+html{font-size:var(--fs)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;line-height:1.7;font-size:1rem;word-break:keep-all}
+.top{position:sticky;top:0;z-index:20;background:rgba(250,250,248,.97);border-bottom:1px solid var(--line)}
+.bar{display:flex;align-items:center;gap:14px;padding:12px 24px 8px;max-width:1280px;margin:0 auto}
+.bar .ttl{font-weight:700;font-size:1.05rem}
+.bar .ttl small{display:block;font-weight:400;font-size:.72rem;color:var(--sub)}
+.bar .sp{flex:1}
+.fsbtn{border:1px solid var(--line);background:#fff;border-radius:8px;padding:4px 12px;font-size:.8rem;cursor:pointer;color:var(--ink)}
+.fsbtn:hover{border-color:var(--pt);color:var(--pt)}
+.tabs{display:flex;gap:6px;overflow-x:auto;padding:4px 24px 10px;max-width:1280px;margin:0 auto;scrollbar-width:thin}
+.tab{flex:none;border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 14px;font-size:.78rem;cursor:pointer;color:var(--sub);white-space:nowrap}
+.tab b{color:var(--ink);margin-right:4px}
+.tab.on{background:var(--pt);border-color:var(--pt);color:#fff}
+.tab.on b{color:#fff}
+.wrap{max-width:1280px;margin:0 auto;padding:24px;display:grid;grid-template-columns:1fr 230px;gap:28px;align-items:start}
+.side{position:sticky;top:120px;border-left:1px solid var(--line);padding-left:16px}
+.side p{margin:0 0 8px;font-size:.72rem;color:var(--sub);font-weight:700}
+.side a{display:block;font-size:.78rem;color:var(--sub);text-decoration:none;padding:5px 0;line-height:1.4}
+.side a:hover{color:var(--pt)}
+.step{display:none}
+.step.on{display:block}
+.shead{margin-bottom:18px}
+.shead .no{display:inline-block;font-size:.72rem;font-weight:700;color:var(--pt);background:var(--pt-l);border-radius:999px;padding:3px 12px}
+.shead h2{font-size:1.6rem;margin:8px 0 4px;line-height:1.35}
+.shead p{margin:0;color:var(--sub)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;scroll-margin-top:130px}
+.card.full{grid-column:1/-1}
+.card h3{margin:0 0 10px;font-size:1.12rem;line-height:1.4}
+.card h3 .k{color:var(--pt);margin-right:6px}
+.card p{margin:0 0 10px}
+.card ol,.card ul{margin:0 0 10px;padding-left:1.3em}
+.card li{margin:4px 0}
+.box{border-radius:12px;padding:14px 18px;margin:12px 0;border:1px solid}
+.box .bt{font-weight:700;font-size:.85rem;margin-bottom:4px}
+.box p,.box li{font-size:.92rem}
+.box p:last-child{margin-bottom:0}
+.set{background:var(--set);border-color:var(--set-b)}.set .bt{color:var(--pt-d)}
+.warn{background:var(--warn);border-color:var(--warn-b)}.warn .bt{color:var(--warn-t)}
+.ext{background:var(--ext);border-color:var(--ext-b)}.ext .bt{color:var(--ext-t)}
+.tip{background:var(--tip);border-color:var(--tip-b)}.tip .bt{color:var(--tip-t)}
+.prompt{position:relative;background:#F6F7F9;border:1px solid var(--line);border-left:4px solid var(--pt);border-radius:0;padding:14px 18px;padding-right:86px;margin:10px 0;font-size:.95rem;white-space:pre-wrap}
+.prompt .lb{display:block;font-size:.7rem;font-weight:700;color:var(--pt);margin-bottom:4px}
+.cp{position:absolute;top:10px;right:10px;border:1px solid var(--line);background:#fff;border-radius:8px;font-size:.72rem;padding:4px 10px;cursor:pointer;color:var(--sub)}
+.cp:hover{border-color:var(--pt);color:var(--pt)}
+.cp.ok{background:var(--pt);color:#fff;border-color:var(--pt)}
+table{width:100%;border-collapse:collapse;font-size:.9rem;margin:8px 0}
+th,td{border-bottom:1px solid var(--line);padding:9px 10px;text-align:left;vertical-align:top}
+th{background:#F4F5F8;font-weight:700}
+td.hl,th.hl{background:var(--pt-l)}
+.kbd{display:inline-block;border:1px solid #CDD1D9;border-bottom-width:2px;border-radius:6px;padding:0 7px;font-size:.82rem;background:#fff;font-family:inherit}
+.term{color:var(--sub);font-size:.88rem}
+svg{width:100%;height:auto;display:block}
+.svgw{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px;margin:8px 0}
+.big{font-size:1.25rem;font-weight:700;line-height:1.5;color:var(--pt-d);margin:4px 0 8px}
+.chk li{list-style:none;margin-left:-1.2em}
+.chk li:before{content:'☐ ';color:var(--pt)}
+.navb{position:sticky;bottom:0;z-index:15;background:rgba(250,250,248,.97);border-top:1px solid var(--line)}
+.navb .in{max-width:1280px;margin:0 auto;padding:10px 24px;display:flex;gap:10px;align-items:center}
+.navb button{border:1px solid var(--line);background:#fff;border-radius:10px;padding:8px 18px;font-size:.85rem;cursor:pointer;color:var(--ink)}
+.navb button.nx{background:var(--pt);border-color:var(--pt);color:#fff}
+.navb .pos{flex:1;text-align:center;font-size:.78rem;color:var(--sub)}
+.where{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 8px}
+.w{display:inline-flex;align-items:center;gap:4px;font-size:.72rem;font-weight:700;border-radius:999px;padding:2px 10px;border:1px solid}
+.w.web{background:#F3F4F6;border-color:#D5D9E0;color:#3D4350}
+.w.chat{background:#F4F1FB;border-color:#D9D0EE;color:#4A3B7A}
+.w.code{background:#2F5FD0;border-color:#2F5FD0;color:#fff}
+.w.tm{background:#ECF7F2;border-color:#BFE3D2;color:#1D5E45}
+.w.env,.w.fd,.w.se{background:#fff;border-color:#C9D7F5;color:#1E3F8F}
+.legend{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:8px 0}
+.legend div{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:#fff;font-size:.88rem}
+.dlbtn{border:1px solid var(--pt);background:var(--pt);color:#fff;border-radius:10px;padding:10px 20px;font-size:.95rem;font-weight:700;cursor:pointer}
+.dlbtn:hover{background:var(--pt-d)}
+.tipbtn{border:1px solid #BFE3D2;background:#ECF7F2;color:#1D5E45;border-radius:999px;padding:5px 14px;font-size:.78rem;font-weight:700;cursor:pointer}
+.tipbtn:hover{border-color:#1D5E45}
+.tipwrap{margin-top:18px;padding-top:14px;border-top:1px solid var(--line)}
+.tiplist{display:none;margin-top:10px}
+.tiplist.on{display:block}
+.tiplist .ti{background:#fff;border:1px solid #BFE3D2;border-radius:10px;padding:9px 12px;margin-bottom:8px;font-size:.76rem;line-height:1.55}
+.tiplist .ti b{display:block;color:#1D5E45;margin-bottom:2px}
+.shead .tipbtn{margin-left:8px;vertical-align:middle}
+.inltips{display:none;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0 4px}
+.inltips.on{display:grid}
+.inltips .ti{background:#ECF7F2;border:1px solid #BFE3D2;border-radius:10px;padding:10px 14px;font-size:.85rem}
+.inltips .ti b{display:block;color:#1D5E45}
+.ex{font-size:.8rem;color:var(--sub);text-align:center;margin:4px 0 0}
+@media (max-width:980px){.inltips{grid-template-columns:1fr}}
+.foot{text-align:center;color:var(--sub);font-size:.72rem;padding:20px 0 30px}
+@media (max-width:980px){.wrap{grid-template-columns:1fr}.side{display:none}.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="bar">
+    <div class="ttl">비개발자도 도전하는 AI 바이브 코딩 · 첫째 날<small>왜 채팅이 아니라 코드인가 · 클로드 코드로 일을 맡기는 법</small></div>
+    <div class="sp"></div>
+    <button class="fsbtn" onclick="fs(-2)" aria-label="글자 작게">가 −</button>
+    <button class="fsbtn" onclick="fs(2)" aria-label="글자 크게">가 +</button>
+  </div>
+  <div class="tabs" id="tabs"></div>
+</div>
+
+<div class="wrap">
+<main id="main">
+
+<!-- STEP 1 -->
+<section class="step" data-t="오늘의 질문">
+  <div class="shead"><span class="no">STEP 1</span><button class="tipbtn" onclick="tgtip()">💡 컴퓨터 도움말</button><h2>채팅으로 다 되는데, 왜 코드를 쓸까요?</h2><p>오늘 수업은 이 질문 하나에 답하는 시간이에요.</p><div class="inltips"></div></div>
+  <div class="grid">
+    <div class="card full" id="s1a">
+      <h3><span class="k">①</span>바이브 코딩이란</h3>
+      <p><b>바이브 코딩</b>(Vibe coding)은 코드를 직접 치지 않고, 만들고 싶은 것을 <b>말로 설명</b>해서 AI가 만들게 하는 방식이에요. 개발자든 아니든 이제는 말로 만드는 시대예요.</p>
+      <p class="big">코드는 '개발'과 같은 말이 아니에요.<br>코드는 채팅창과 다른, AI와 소통하는 또 하나의 공간이에요.</p>
+      <p>그럼 사람은 무엇을 할까요? <b>무엇을 만들지 정하고(설계), 일을 나눠 맡기고(지시), 결과를 확인하는 사람</b>이 돼요. 오늘부터 여러분은 AI 직원을 둔 <b>팀장</b>이에요.</p>
+      <div class="svgw">
+      <svg viewBox="0 0 900 190" role="img" aria-label="팀장의 세 가지 일">
+        <g text-anchor="middle">
+          <rect x="40" y="30" width="230" height="130" rx="16" fill="#F7F8FA" stroke="#E3E5EA"/>
+          <rect x="125" y="48" width="60" height="44" rx="4" fill="#fff" stroke="#9DB4EA" stroke-width="2"/><line x1="135" y1="62" x2="175" y2="62" stroke="#C9D7F5" stroke-width="4"/><line x1="135" y1="76" x2="165" y2="76" stroke="#C9D7F5" stroke-width="4"/>
+          <text x="155" y="120" font-size="19" font-weight="700" fill="#22252B">설계</text><text x="155" y="145" font-size="14" fill="#5B616E">무엇을 만들지 정하기</text>
+          <path d="M282 95 h46" stroke="#9DB4EA" stroke-width="3" marker-end="url(#a1)"/>
+          <rect x="335" y="30" width="230" height="130" rx="16" fill="#EEF3FD" stroke="#C9D7F5"/>
+          <circle cx="425" cy="66" r="14" fill="#2F5FD0"/><rect x="411" y="80" width="28" height="14" rx="6" fill="#2F5FD0"/><circle cx="475" cy="66" r="14" fill="#6E8FE0"/><rect x="461" y="80" width="28" height="14" rx="6" fill="#6E8FE0"/>
+          <text x="450" y="120" font-size="19" font-weight="700" fill="#1E3F8F">지시</text><text x="450" y="145" font-size="14" fill="#1E3F8F">일을 나눠 맡기기</text>
+          <path d="M577 95 h46" stroke="#9DB4EA" stroke-width="3" marker-end="url(#a1)"/>
+          <rect x="630" y="30" width="230" height="130" rx="16" fill="#F7F8FA" stroke="#E3E5EA"/>
+          <circle cx="745" cy="70" r="22" fill="none" stroke="#2F5FD0" stroke-width="3"/><path d="M734 70 l8 8 l14 -16" fill="none" stroke="#2F5FD0" stroke-width="3"/>
+          <text x="745" y="120" font-size="19" font-weight="700" fill="#22252B">확인</text><text x="745" y="145" font-size="14" fill="#5B616E">결과 보고 고치게 하기</text>
+        </g>
+        <defs><marker id="a1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M1 1L9 5L1 9" fill="none" stroke="#9DB4EA" stroke-width="2"/></marker></defs>
+      </svg>
+      </div>
+    </div>
+    <div class="card full" id="s1b">
+      <h3><span class="k">②</span>전화로 묻는 전문가 vs 사무실에 출근한 직원</h3>
+      <div class="svgw">
+      <svg viewBox="0 0 900 300" role="img" aria-label="채팅창과 코드 비교 그림">
+        <rect x="20" y="20" width="410" height="260" rx="16" fill="#F7F8FA" stroke="#E3E5EA"/>
+        <text x="225" y="56" text-anchor="middle" font-size="22" font-weight="700" fill="#22252B">채팅 = 전화로 묻는 전문가</text>
+        <rect x="60" y="90" width="90" height="140" rx="14" fill="#fff" stroke="#B9BFCB"/><rect x="75" y="108" width="60" height="80" rx="6" fill="#EEF3FD"/><circle cx="105" cy="210" r="8" fill="#B9BFCB"/>
+        <path d="M170 150 Q220 120 270 150" stroke="#9AA2B1" stroke-width="2" fill="none" stroke-dasharray="6 6"/>
+        <circle cx="320" cy="140" r="34" fill="#E8ECF4"/><rect x="280" y="180" width="80" height="50" rx="20" fill="#E8ECF4"/>
+        <text x="225" y="262" text-anchor="middle" font-size="16" fill="#5B616E">자료는 매번 보내고, 결과는 내가 받아 저장</text>
+        <rect x="470" y="20" width="410" height="260" rx="16" fill="#EEF3FD" stroke="#C9D7F5"/>
+        <text x="675" y="56" text-anchor="middle" font-size="22" font-weight="700" fill="#1E3F8F">코드 = 사무실에 출근한 직원</text>
+        <rect x="510" y="170" width="330" height="14" rx="4" fill="#C9D7F5"/>
+        <rect x="530" y="110" width="70" height="58" rx="6" fill="#fff" stroke="#9DB4EA"/><rect x="545" y="122" width="40" height="30" rx="3" fill="#F2DFA8"/>
+        <circle cx="660" cy="115" r="22" fill="#2F5FD0"/><rect x="636" y="140" width="48" height="30" rx="12" fill="#2F5FD0"/>
+        <circle cx="760" cy="115" r="22" fill="#6E8FE0"/><rect x="736" y="140" width="48" height="30" rx="12" fill="#6E8FE0"/>
+        <text x="675" y="222" text-anchor="middle" font-size="16" fill="#1E3F8F">내 폴더에서 직접 만들고, 실행하고, 고침</text>
+        <text x="675" y="250" text-anchor="middle" font-size="16" fill="#1E3F8F">직원을 여러 명 둘 수도 있음</text>
+      </svg>
+      </div>
+      <table>
+        <tr><th></th><th>웹 채팅</th><th class="hl">앱의 코드</th></tr>
+        <tr><td>결과물이 있는 곳</td><td>대화창 안 (내가 내려받아야 함)</td><td class="hl">내 폴더에 진짜 파일로 쌓임</td></tr>
+        <tr><td>실행</td><td>코드를 보여 주거나 대화창 안에서만</td><td class="hl">내 컴퓨터에서 직접 실행하고 확인하고 고침</td></tr>
+        <tr><td>이어서 일하기</td><td>다음에는 파일을 다시 올려야 함</td><td class="hl">폴더의 파일을 읽고 이어서 일함</td></tr>
+        <tr><td>동시에</td><td>창 하나에서 답을 기다림</td><td class="hl">여러 세션(작업 창)에 나눠 맡김</td></tr>
+        <tr><td>큰 일</td><td>파일 몇 개 수준</td><td class="hl">폴더 안 파일 수십·수백 개도 한 번에</td></tr>
+        <tr><td>인터넷에 올리기</td><td>안 됨</td><td class="hl">깃허브·버셀로 내 주소까지</td></tr>
+      </table>
+      <div class="box tip"><div class="bt">채팅이 필요 없어지나요?</div><p>아니에요. 묻고, 아이디어 내고, 글 다듬는 건 채팅이 더 편해요. <b>생각은 채팅, 일은 코드</b>로 나눠 쓰면 돼요.</p></div>
+    </div>
+    <div class="card full" id="s1c">
+      <h3><span class="k">③</span>8주 동안 만들 것</h3>
+      <p>매주 작품 하나를 완성해요. 4주차부터 만든 작품은 전부 내 홈페이지에 쌓여서, 마지막 날에는 <b>8주 작품이 걸린 내 홈페이지 주소</b>가 남아요.</p>
+      <div class="svgw">
+      <svg viewBox="0 0 900 230" role="img" aria-label="8주 과정 지도">
+        <line x1="70" y1="110" x2="830" y2="110" stroke="#C9D7F5" stroke-width="6" stroke-linecap="round"/>
+        <g font-size="15" text-anchor="middle" fill="#22252B">
+          <circle cx="70" cy="110" r="30" fill="#2F5FD0"/><text x="70" y="117" fill="#fff" font-weight="700" font-size="18">1</text><text x="70" y="168" font-weight="700">AI 에이전트</text><text x="70" y="190" fill="#5B616E" font-size="13">오늘</text>
+          <circle cx="179" cy="110" r="26" fill="#fff" stroke="#2F5FD0" stroke-width="3"/><text x="179" y="117" font-weight="700" font-size="17" fill="#2F5FD0">2</text><text x="179" y="168" font-weight="700">파일·엑셀</text><text x="179" y="190" fill="#5B616E" font-size="13">업무 자동화 Ⅰ</text>
+          <circle cx="287" cy="110" r="26" fill="#fff" stroke="#2F5FD0" stroke-width="3"/><text x="287" y="117" font-weight="700" font-size="17" fill="#2F5FD0">3</text><text x="287" y="168" font-weight="700">문서·AI 연결</text><text x="287" y="190" fill="#5B616E" font-size="13">업무 자동화 Ⅱ</text>
+          <circle cx="396" cy="110" r="26" fill="#fff" stroke="#2F5FD0" stroke-width="3"/><text x="396" y="117" font-weight="700" font-size="17" fill="#2F5FD0">4</text><text x="396" y="168" font-weight="700">홈페이지</text><text x="396" y="190" fill="#5B616E" font-size="13">디자인→코드</text>
+          <circle cx="504" cy="110" r="26" fill="#fff" stroke="#2F5FD0" stroke-width="3"/><text x="504" y="117" font-weight="700" font-size="17" fill="#2F5FD0">5</text><text x="504" y="168" font-weight="700">인터넷 주소</text><text x="504" y="190" fill="#5B616E" font-size="13">깃허브·버셀</text>
+          <circle cx="613" cy="110" r="26" fill="#fff" stroke="#2F5FD0" stroke-width="3"/><text x="613" y="117" font-weight="700" font-size="17" fill="#2F5FD0">6</text><text x="613" y="168" font-weight="700">3D 영상</text><text x="613" y="190" fill="#5B616E" font-size="13">입체 타이틀</text>
+          <circle cx="721" cy="110" r="26" fill="#fff" stroke="#2F5FD0" stroke-width="3"/><text x="721" y="117" font-weight="700" font-size="17" fill="#2F5FD0">7</text><text x="721" y="168" font-weight="700">쇼츠 자동화</text><text x="721" y="190" fill="#5B616E" font-size="13">표 한 줄=한 편</text>
+          <circle cx="830" cy="110" r="30" fill="#1E3F8F"/><text x="830" y="117" fill="#fff" font-weight="700" font-size="18">8</text><text x="830" y="168" font-weight="700">AI 앱</text><text x="830" y="190" fill="#5B616E" font-size="13">작품 갤러리 완성</text>
+        </g>
+        <rect x="370" y="22" width="490" height="38" rx="19" fill="#EEF3FD"/>
+        <text x="615" y="47" text-anchor="middle" font-size="15" fill="#1E3F8F" font-weight="700">4주차부터 만든 작품이 내 홈페이지에 하나씩 쌓여요</text>
+      </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STEP 2 -->
+<section class="step" data-t="작업대 준비">
+  <div class="shead"><span class="no">STEP 2</span><button class="tipbtn" onclick="tgtip()">💡 컴퓨터 도움말</button><h2>작업대 준비: 앱 설치와 화면 익히기</h2><p>AI 직원이 일할 작업대를 내 컴퓨터에 차리고, 실습자료를 받아요.</p><div class="inltips"></div></div>
+  <div class="grid">
+    <div class="card full" id="s2z">
+      <h3><span class="k">①</span>오늘 쓰는 세 곳: 위치 표시 읽는 법</h3>
+      <p>이 교안의 회색 지시문 상자 위에는 <b>어디에 보내는지</b>가 표시돼 있어요. 표시대로 그 화면에 붙여 넣으면 돼요.</p>
+      <div class="legend">
+        <div><span class="w web">웹 · claude.ai</span><p style="margin:8px 0 0">크롬 브라우저에서 claude.ai 에 접속한 화면이에요. 설치가 필요 없어요.</p></div>
+        <div><span class="w chat">앱 · 💬 채팅</span><p style="margin:8px 0 0">클로드 데스크톱 앱에서 왼쪽 위 <b>말풍선 버튼</b>을 누른 화면이에요.</p></div>
+        <div><span class="w code">앱 · &lt;/&gt; 코드</span><p style="margin:8px 0 0">클로드 데스크톱 앱에서 왼쪽 위 <b>&lt;/&gt; 버튼</b>을 누른 화면이에요. 오늘 주로 쓰는 곳이에요.</p></div>
+      </div>
+      <p>코드 화면에서는 함께 붙은 표시도 맞춰 주세요. <span class="w env">환경: 이 컴퓨터</span> <span class="w fd">폴더: 실습자료</span> <span class="w se">세션 A</span> 처럼 <b>어떤 환경, 어떤 폴더, 몇 번째 작업 창</b>인지 알려 줘요.</p>
+      <div class="box ext"><div class="bt"><span class="w tm">⏱ 약 1~2분</span> 표시는 AI가 일하는 데 걸리는 대략적인 시간이에요</div><p>코드는 채팅처럼 바로 답이 나오지 않아요. AI가 계획을 세우고, 파일을 만들고, 실행해 보고, 고치는 과정을 거치기 때문이에요. 컴퓨터 성능, 사용량, 일의 크기에 따라 더 걸릴 수 있어요. 기다리는 동안 화면에 지나가는 과정을 읽어 보세요. AI가 무엇을 하는지 보는 것도 공부예요. 오래 걸리는 일은 STEP 7처럼 다른 세션에 다음 일을 맡겨 두면 기다리는 시간이 줄어요.</p></div>
+    </div>
+    <div class="card" id="s2a">
+      <h3><span class="k">②</span>시작 전에 확인할 것</h3>
+      <ul class="chk">
+        <li>클로드 <b>프로(Pro)</b> 이상 유료 구독 (무료 플랜에는 코드가 없어요)</li>
+        <li>크롬 브라우저</li>
+        <li>윈도우 또는 맥 컴퓨터</li>
+        <li>실습자료 (바로 아래 ③에서 받아요)</li>
+      </ul>
+      <div class="box warn"><div class="bt">추가 사용량은 켜지 마세요</div><p>프로 요금제는 채팅·코드를 합쳐 일정 시간마다 쓸 수 있는 양이 정해져 있어요. 다 쓰면 기다리면 다시 채워져요. 설정에서 '추가 사용량'을 켜면 따로 돈이 나가니 수업 중에는 켜지 마세요.</p></div>
+    </div>
+    <div class="card" id="s2dl">
+      <h3><span class="k">③</span>실습자료 내려받기</h3>
+      <p>가상의 회사 「양천상사」의 연습용 파일 21개(메모, 회의록, 견적서, 매출표, 사진)가 들어 있어요. 개인정보는 없어요.</p>
+      <p><button class="dlbtn" onclick="dlzip()">⬇ 실습자료.zip 내려받기</button> <a class="dlbtn" style="display:inline-block;text-decoration:none;background:#fff;color:#2F5FD0" href="https://drive.google.com/file/d/1MWOeMOl2_0bRMksIS0o4h5CkAiCJ61dz/view?usp=sharing" target="_blank" rel="noopener">구글 드라이브에서 받기</a></p>
+      <ol>
+        <li>내려받은 <b>실습자료.zip</b>을 <b>바탕화면</b>으로 옮겨요.</li>
+        <li>파일을 마우스 오른쪽 버튼으로 누르고 <b>모두 압축 풀기</b>를 눌러요.</li>
+        <li>바탕화면에 <b>「실습자료」 폴더</b>가 생기면 준비 끝이에요.</li>
+      </ol>
+      <div class="svgw"><svg viewBox="0 0 440 210" role="img" aria-label="압축 풀기 메뉴 예시">
+<rect x="10" y="10" width="140" height="120" rx="10" fill="#EEF3FD"/><rect x="45" y="30" width="70" height="56" rx="6" fill="#F2DFA8"/><rect x="62" y="30" width="36" height="56" fill="#C9D7F5"/><text x="80" y="110" font-size="13" text-anchor="middle" fill="#1E3F8F">실습자료.zip</text>
+<path d="M120 70 l40 20" stroke="#2F5FD0" stroke-width="2"/><text x="118" y="150" font-size="12" fill="#5B616E">마우스 오른쪽 클릭</text>
+<rect x="170" y="20" width="250" height="180" rx="8" fill="#fff" stroke="#D5D9E0"/>
+<g font-size="13" fill="#22252B"><text x="188" y="48">열기</text><text x="188" y="78">공유</text>
+<rect x="176" y="92" width="238" height="30" rx="6" fill="#2F5FD0"/><text x="188" y="112" fill="#fff" font-weight="700">모두 압축 풀기...</text>
+<text x="188" y="146">복사</text><text x="188" y="176">이름 바꾸기</text></g></svg></div><p class="ex">예시: 압축 파일을 오른쪽 클릭하면 나오는 메뉴</p>
+<div class="box warn"><div class="bt">버튼을 눌러도 안 받아지면</div><p id="altlink">옆의 <b>구글 드라이브에서 받기</b>를 누르세요. 드라이브 화면이 열리면 오른쪽 위 <b>다운로드(⬇)</b> 버튼을 눌러요. 주소: <a href="https://drive.google.com/file/d/1MWOeMOl2_0bRMksIS0o4h5CkAiCJ61dz/view?usp=sharing" target="_blank" rel="noopener">구글 드라이브 실습자료</a></p></div>
+    </div>
+    <div class="card full" id="s2b">
+      <h3><span class="k">④</span>앱 설치 순서</h3>
+      <div class="svgw">
+      <svg viewBox="0 0 900 170" role="img" aria-label="설치 순서 그림">
+        <g text-anchor="middle">
+          <rect x="20" y="20" width="150" height="130" rx="14" fill="#F7F8FA" stroke="#E3E5EA"/><path d="M95 42 v38 M80 66 l15 15 l15 -15" stroke="#2F5FD0" stroke-width="4" fill="none"/><rect x="72" y="88" width="46" height="8" rx="3" fill="#2F5FD0"/><text x="95" y="122" font-size="16" font-weight="700" fill="#22252B">내려받기</text><text x="95" y="140" font-size="12" fill="#5B616E">claude.com/download</text>
+          <rect x="198" y="20" width="150" height="130" rx="14" fill="#F7F8FA" stroke="#E3E5EA"/><circle cx="273" cy="56" r="14" fill="#2F5FD0"/><rect x="255" y="72" width="36" height="20" rx="9" fill="#2F5FD0"/><text x="273" y="122" font-size="16" font-weight="700" fill="#22252B">로그인</text><text x="273" y="140" font-size="12" fill="#5B616E">프로 계정</text>
+          <rect x="376" y="20" width="150" height="130" rx="14" fill="#F7F8FA" stroke="#E3E5EA"/><rect x="420" y="44" width="62" height="48" rx="8" fill="#fff" stroke="#9DB4EA" stroke-width="2"/><text x="451" y="76" font-size="20" font-weight="700" fill="#2F5FD0">&lt;/&gt;</text><text x="451" y="122" font-size="16" font-weight="700" fill="#22252B">코드 버튼</text><text x="451" y="140" font-size="12" fill="#5B616E">왼쪽 위 &lt;/&gt;</text>
+          <rect x="554" y="20" width="150" height="130" rx="14" fill="#F7F8FA" stroke="#E3E5EA"/><circle cx="610" cy="50" r="7" fill="#2F5FD0"/><circle cx="610" cy="90" r="7" fill="#2F5FD0"/><circle cx="650" cy="62" r="7" fill="#2F5FD0"/><path d="M610 57 v26 M610 75 q0 -13 33 -13" stroke="#2F5FD0" stroke-width="3" fill="none"/><text x="629" y="122" font-size="16" font-weight="700" fill="#22252B">Git (필요할 때만)</text><text x="629" y="140" font-size="12" fill="#5B616E">설치하라고 나오면 그때</text>
+          <rect x="732" y="20" width="150" height="130" rx="14" fill="#EEF3FD" stroke="#9DB4EA" stroke-width="2"/><path d="M790 54 a22 22 0 1 0 22 -6" stroke="#2F5FD0" stroke-width="4" fill="none"/><path d="M806 40 l8 9 l-11 4" stroke="#2F5FD0" stroke-width="4" fill="none"/><text x="807" y="122" font-size="16" font-weight="700" fill="#1E3F8F">이 컴퓨터 · 폴더</text><text x="807" y="140" font-size="12" fill="#1E3F8F">고르고 시작</text>
+        </g>
+      </svg>
+      </div>
+      <ol>
+        <li>이미 앱이 있으면 지우기: 윈도우 <b>설정 → 앱 → Claude → 제거</b> <span class="term">(대화 기록은 계정에 저장돼 있어서 지워도 없어지지 않아요)</span></li>
+        <li><b>claude.com/download</b> 에서 내 컴퓨터용(윈도우/맥)을 받아 설치</li>
+        <li>앱을 열고 <b>프로 계정으로 로그인</b>. "보안을 위해 다시 로그인하세요"라는 줄이 보이면 <b>다시 로그인</b>을 눌러요.</li>
+        <li>왼쪽 위 <b>&lt;/&gt; 버튼</b>(코드)을 눌러요.</li>
+        <li><b>+ 새로 만들기</b> → 환경 <b>이 컴퓨터</b> → <b>작업할 폴더 선택</b>에서 바탕화면의 「실습자료」를 고르면 시작 준비 끝이에요.</li>
+        <li>혹시 <b>Git을 설치하라는 안내</b>가 나오면 <b>git-scm.com</b> 에서 받아 설치하고(설치 화면은 전부 '다음(Next)'), <b>클로드 앱을 완전히 껐다가 다시 켜요.</b> 요즘 앱은 대부분 이 단계 없이 바로 돼요.</li>
+      </ol>
+      <div class="svgw"><svg viewBox="0 0 900 250" role="img" aria-label="작업할 폴더 선택 창 예시">
+<rect x="10" y="10" width="880" height="230" rx="10" fill="#fff" stroke="#D5D9E0"/>
+<rect x="10" y="10" width="880" height="36" rx="10" fill="#F4F5F8"/><text x="30" y="34" font-size="14" font-weight="700" fill="#22252B">작업할 폴더 선택</text>
+<rect x="10" y="46" width="190" height="194" fill="#F8F9FB"/>
+<g font-size="14" fill="#22252B"><text x="30" y="80">⭐ 즐겨찾기</text><rect x="20" y="92" width="170" height="30" rx="6" fill="#2F5FD0"/><text x="30" y="113" fill="#fff" font-weight="700">🖥 바탕 화면</text><text x="30" y="148">⬇ 다운로드</text><text x="30" y="180">📄 문서</text></g>
+<g font-size="14" fill="#22252B"><rect x="230" y="66" width="300" height="34" rx="6" fill="#EEF3FD" stroke="#9DB4EA"/><text x="246" y="89">📁 실습자료</text><text x="246" y="128">📁 바이브코딩</text><text x="246" y="162">📄 메모.txt</text></g>
+<rect x="560" y="190" width="150" height="36" rx="8" fill="#2F5FD0"/><text x="635" y="213" font-size="14" text-anchor="middle" fill="#fff" font-weight="700">폴더 선택</text>
+<rect x="724" y="190" width="150" height="36" rx="8" fill="#fff" stroke="#D5D9E0"/><text x="799" y="213" font-size="14" text-anchor="middle" fill="#22252B">취소</text>
+<g font-size="13" fill="#2F5FD0" font-weight="700"><circle cx="205" cy="107" r="11" fill="#2F5FD0"/><text x="205" y="112" text-anchor="middle" fill="#fff">1</text><circle cx="540" cy="83" r="11" fill="#2F5FD0"/><text x="540" y="88" text-anchor="middle" fill="#fff">2</text><circle cx="548" cy="208" r="11" fill="#2F5FD0"/><text x="548" y="213" text-anchor="middle" fill="#fff">3</text></g>
+</svg></div><p class="ex">예시: ① 왼쪽에서 '바탕 화면' → ② 「실습자료」 한 번 클릭 → ③ '폴더 선택'</p>
+<div class="box set"><div class="bt">Git이 뭔가요?</div><p>파일이 바뀐 기록을 남겨 주는 무료 도구예요. 요즘 앱은 Git 없이도 코드 세션이 시작돼요. 5주차에 깃허브를 쓸 때 필요하면 그때 설치해도 돼요.</p></div>
+    </div>
+    <div class="card full" id="s2c">
+      <h3><span class="k">⑤</span>앱 화면 읽기: 채팅과 코드</h3>
+      <p>왼쪽 위의 버튼 두 개로 <b>💬 채팅</b>과 <b>&lt;/&gt; 코드</b>를 오가요.</p>
+      <div class="svgw">
+      <svg viewBox="0 0 900 400" role="img" aria-label="앱의 채팅 화면과 코드 화면">
+        <text x="215" y="22" text-anchor="middle" font-size="16" font-weight="700" fill="#4A3B7A">💬 채팅 화면</text>
+        <rect x="10" y="32" width="410" height="355" rx="12" fill="#fff" stroke="#D5D9E0"/>
+        <rect x="10" y="32" width="120" height="355" rx="12" fill="#F8F9FB"/>
+        <rect x="70" y="42" width="46" height="22" rx="6" fill="#fff" stroke="#D5D9E0"/><rect x="72" y="44" width="21" height="18" rx="4" fill="#D9D0EE"/><text x="82" y="58" font-size="11" text-anchor="middle" fill="#4A3B7A">💬</text><text x="105" y="58" font-size="10" text-anchor="middle" fill="#5B616E">&lt;/&gt;</text>
+        <g font-size="12" fill="#22252B"><text x="22" y="90">+ 새로 만들기</text><text x="22" y="112">검색</text><text x="22" y="134">프로젝트</text><text x="22" y="156">아티팩트</text><text x="22" y="178">예약됨</text><text x="22" y="200">사용자 지정</text></g>
+        <text x="275" y="150" text-anchor="middle" font-size="15" fill="#22252B">오늘은 뭘 해볼까요?</text>
+        <rect x="150" y="166" width="250" height="70" rx="10" fill="#fff" stroke="#D9D0EE" stroke-width="1.5"/>
+        <text x="162" y="188" font-size="11" fill="#9AA2B1">Skills를 보려면 /를 입력하세요</text>
+        <text x="162" y="226" font-size="14" fill="#5B616E">+</text>
+        <rect x="150" y="244" width="110" height="22" rx="11" fill="#F4F1FB"/><text x="205" y="259" font-size="11" text-anchor="middle" fill="#4A3B7A">프로젝트 또는 폴더 ⌄</text>
+        <text x="350" y="259" font-size="11" text-anchor="middle" fill="#5B616E">모델 · 자동</text>
+        <rect x="150" y="290" width="250" height="78" rx="10" fill="#F4F1FB"/>
+        <text x="275" y="315" text-anchor="middle" font-size="12" fill="#4A3B7A">묻고 답하는 대화가 기본이에요</text>
+        <text x="275" y="337" text-anchor="middle" font-size="12" fill="#4A3B7A">'프로젝트 또는 폴더'로 폴더를 연결하면</text>
+        <text x="275" y="357" text-anchor="middle" font-size="12" fill="#4A3B7A">내 파일로 업무도 맡길 수 있어요</text>
+
+        <text x="675" y="22" text-anchor="middle" font-size="16" font-weight="700" fill="#1E3F8F">&lt;/&gt; 코드 화면</text>
+        <rect x="470" y="32" width="420" height="355" rx="12" fill="#fff" stroke="#9DB4EA" stroke-width="1.5"/>
+        <rect x="470" y="32" width="120" height="355" rx="12" fill="#F8F9FB"/>
+        <rect x="530" y="42" width="46" height="22" rx="6" fill="#fff" stroke="#D5D9E0"/><rect x="553" y="44" width="21" height="18" rx="4" fill="#2F5FD0"/><text x="542" y="58" font-size="11" text-anchor="middle" fill="#5B616E">💬</text><text x="564" y="58" font-size="10" text-anchor="middle" fill="#fff">&lt;/&gt;</text>
+        <g font-size="12" fill="#22252B"><text x="482" y="90">+ 새로 만들기</text><text x="482" y="112">검색</text><text x="482" y="134">아티팩트</text><text x="482" y="156">사용자 지정</text><text x="482" y="178">… 더 보기</text></g>
+        <text x="482" y="212" font-size="11" fill="#5B616E">최근 항목 (세션 목록)</text>
+        <rect x="480" y="220" width="100" height="18" rx="4" fill="#EEF3FD"/><rect x="480" y="242" width="100" height="18" rx="4" fill="#F1F2F5"/>
+        <text x="836" y="56" font-size="13" fill="#5B616E">&gt;_</text><text x="866" y="56" font-size="13" fill="#5B616E">🌐</text>
+        <rect x="640" y="120" width="200" height="34" rx="8" fill="#fff" stroke="#D5D9E0"/><text x="740" y="142" text-anchor="middle" font-size="13" fill="#22252B">환경 선택 ⌄</text>
+        <rect x="640" y="162" width="200" height="34" rx="8" fill="#fff" stroke="#D5D9E0"/><text x="740" y="184" text-anchor="middle" font-size="13" fill="#22252B">📁 작업할 폴더 선택</text>
+        <rect x="604" y="300" width="272" height="40" rx="10" fill="#fff" stroke="#9DB4EA" stroke-width="1.5"/>
+        <text x="616" y="325" font-size="12" fill="#9AA2B1">+  작업을 설명하거나 질문하세요</text>
+        <g font-size="11" fill="#22252B"><rect x="606" y="350" width="64" height="20" rx="10" fill="#F4F5F8"/><text x="638" y="364" text-anchor="middle">이 컴퓨터</text>
+        <rect x="676" y="350" width="64" height="20" rx="10" fill="#F4F5F8"/><text x="708" y="364" text-anchor="middle">📁 선택…</text>
+        <rect x="746" y="350" width="62" height="20" rx="10" fill="#F4F5F8"/><text x="777" y="364" text-anchor="middle">모델</text>
+        <rect x="814" y="350" width="52" height="20" rx="10" fill="#F4F5F8"/><text x="840" y="364" text-anchor="middle">자동</text></g>
+        <g font-size="12" font-weight="700" text-anchor="middle" fill="#fff">
+          <circle cx="584" cy="44" r="10" fill="#2F5FD0"/><text x="584" y="48">1</text>
+          <circle cx="584" cy="86" r="10" fill="#2F5FD0"/><text x="584" y="90">2</text>
+          <circle cx="852" cy="137" r="10" fill="#2F5FD0"/><text x="852" y="141">3</text>
+          <circle cx="852" cy="179" r="10" fill="#2F5FD0"/><text x="852" y="183">4</text>
+          <circle cx="884" cy="318" r="10" fill="#2F5FD0"/><text x="884" y="322">5</text>
+          <circle cx="777" cy="382" r="10" fill="#2F5FD0"/><text x="777" y="386">6</text>
+          <circle cx="840" cy="382" r="10" fill="#2F5FD0"/><text x="840" y="386">7</text>
+          <circle cx="852" cy="72" r="10" fill="#2F5FD0"/><text x="852" y="76">8</text>
+        </g>
+      </svg>
+      </div>
+      <table>
+        <tr><th>번호</th><th>이름</th><th>하는 일</th></tr>
+        <tr><td>1</td><td>채팅·코드 전환</td><td>왼쪽 위 버튼 두 개. 말풍선은 채팅, &lt;/&gt;는 코드예요.</td></tr>
+        <tr><td>2</td><td>+ 새로 만들기</td><td>새 <b>세션</b>(AI 직원 한 명의 작업 창)을 열어요. 여러 개를 동시에 열 수 있어요. 열린 세션은 아래 '최근 항목'에 쌓여요.</td></tr>
+        <tr><td>3</td><td>환경 선택</td><td>AI가 일할 컴퓨터예요. <b>이 컴퓨터</b>를 고르세요. 구름 모양(클라우드, 인터넷 속 컴퓨터)은 나중에 배워요.</td></tr>
+        <tr><td>4</td><td>작업할 폴더 선택</td><td>이 세션이 일할 <b>작업실</b>이에요. AI는 이 폴더 안에서 일해요.</td></tr>
+        <tr><td>5</td><td>입력창</td><td>시킬 일을 적어요. 왼쪽 <b>+</b>로 파일 첨부, 스킬, 커넥터를 붙여요.</td></tr>
+        <tr><td>6</td><td>모델</td><td>AI의 <b>두뇌</b>를 고르는 곳이에요. 기본값 그대로 두면 돼요.</td></tr>
+        <tr><td>7</td><td>자동 (권한 모드)</td><td>AI에게 얼마나 맡길지 정해요. 아래 ⑥을 보세요. 같은 줄 끝의 <b>동그란 고리</b>는 남은 사용량이에요.</td></tr>
+        <tr><td>8</td><td>터미널 · 브라우저</td><td>오른쪽 위 <b>&gt;_</b>는 터미널(글자로 명령하는 창), <b>🌐</b>는 앱 안 브라우저예요. 오늘은 쓰지 않아요.</td></tr>
+      </table>
+      <div class="box set"><div class="bt">일을 시키면 이런 것도 보여요</div><ul><li><b>계획 상자</b>: 대화 맨 아래에 AI가 지금 무엇을 하려는지 순서가 보여요.</li><li><b>허락 요청</b>: 확인이 필요하면 대화 안에 버튼이 나와요.</li><li><b>오른쪽 정보 칸</b>: 환경, 연결된 서비스, 만들어진 결과물, 바뀐 파일 등이 카드로 보여요. 안 보이면 오른쪽 위의 정보 칸 보기 버튼을 누르세요.</li></ul></div>
+      <p class="term">버튼 이름과 위치는 앱 버전에 따라 조금 다를 수 있어요.</p>
+    </div>
+    <div class="card full" id="s2env"><h3><span class="k">＋</span>환경 선택 메뉴: 앱과 웹이 달라요</h3>
+<p>코드에서 <b>환경 선택</b>을 누르면 나오는 메뉴예요. 같은 메뉴인데 앱과 웹(claude.ai/code)이 다르게 보여요.</p>
+<div class="svgw"><svg viewBox="0 0 900 300" role="img" aria-label="앱과 웹의 환경 선택 메뉴 비교">
+<text x="215" y="24" text-anchor="middle" font-size="16" font-weight="700" fill="#1E3F8F">데스크톱 앱 (이 수업)</text>
+<rect x="20" y="36" width="390" height="44" rx="10" fill="#F4F5F8" stroke="#E3E5EA"/><text x="40" y="64" font-size="15" fill="#22252B">환경 선택 ⌄</text>
+<rect x="20" y="86" width="390" height="200" rx="12" fill="#fff" stroke="#D5D9E0"/>
+<text x="40" y="114" font-size="13" fill="#9AA2B1">환경 검색…</text><line x1="20" y1="126" x2="410" y2="126" stroke="#ECEEF2"/>
+<text x="40" y="148" font-size="12" fill="#5B616E">로컬</text>
+<rect x="30" y="156" width="370" height="38" rx="8" fill="#EEF3FD" stroke="#9DB4EA"/><text x="48" y="181" font-size="15" fill="#1E3F8F" font-weight="700">💻 이 컴퓨터</text><text x="380" y="181" font-size="16" fill="#2F5FD0" text-anchor="end">✓</text>
+<text x="40" y="226" font-size="15" fill="#22252B">클라우드</text><text x="390" y="226" font-size="15" fill="#5B616E" text-anchor="end">›</text>
+<line x1="30" y1="240" x2="400" y2="240" stroke="#ECEEF2"/><text x="40" y="268" font-size="15" fill="#22252B">+ 새 환경</text>
+<text x="675" y="24" text-anchor="middle" font-size="16" font-weight="700" fill="#5B616E">웹 claude.ai/code</text>
+<rect x="480" y="36" width="390" height="44" rx="10" fill="#F4F5F8" stroke="#E3E5EA"/><text x="500" y="64" font-size="15" fill="#22252B">☁ Default ✓ · 환경 선택 ⌄</text>
+<rect x="480" y="86" width="390" height="200" rx="12" fill="#fff" stroke="#D5D9E0"/>
+<text x="500" y="114" font-size="13" fill="#9AA2B1">환경 검색…</text><line x1="480" y1="126" x2="870" y2="126" stroke="#ECEEF2"/>
+<rect x="490" y="140" width="370" height="38" rx="8" fill="#FCEFF1" stroke="#F1C6CE"/><text x="508" y="165" font-size="15" fill="#8E2A3B">로컬</text>
+<rect x="640" y="148" width="66" height="22" rx="11" fill="#fff" stroke="#F1C6CE"/><text x="673" y="164" font-size="12" text-anchor="middle" fill="#8E2A3B">다운로드</text><text x="848" y="164" font-size="12" text-anchor="end" fill="#8E2A3B">데스크톱 앱 전용</text>
+<text x="500" y="214" font-size="15" fill="#22252B">클라우드</text><text x="850" y="214" font-size="15" fill="#5B616E" text-anchor="end">›</text>
+<line x1="490" y1="232" x2="860" y2="232" stroke="#ECEEF2"/><text x="500" y="262" font-size="15" fill="#22252B">+ 새 환경</text>
+</svg></div>
+<table><tr><th></th><th>데스크톱 앱</th><th>웹 claude.ai/code</th></tr>
+<tr><td>이 컴퓨터(로컬)</td><td class="hl">✓ 고를 수 있어요. <b>오늘 이걸 골라요.</b></td><td>✗ '데스크톱 앱 전용'이라 못 골라요</td></tr>
+<tr><td>클라우드</td><td>고를 수 있어요</td><td>기본값(Default)이에요</td></tr>
+<tr><td>내 바탕화면 폴더</td><td>바로 보여요</td><td>안 보여요 (깃허브 저장소를 가져와 일해요)</td></tr></table>
+<div class="box tip"><div class="bt">「+ 새 환경」은 누르지 않아도 돼요</div><p>누르면 로컬·클라우드·SSH·Remote Control, 네트워크 액세스, 환경 변수 같은 창이 나와요. 개발자가 쓰는 고급 설정이라 이 과정에서는 쓰지 않아요. 실수로 열렸으면 <b>취소</b>나 <b>X</b>를 누르면 아무것도 바뀌지 않아요.</p></div>
+<div class="box warn"><div class="bt">구름 모양 Default로 시작하지 마세요</div><p>앱에서도 예전에 클라우드를 썼다면 환경이 구름 모양으로 잡혀 있을 수 있어요. 그러면 바탕화면의 「실습자료」가 안 보여요. 항상 <b>로컬 → 이 컴퓨터</b>에 체크가 있는지 확인하세요.</p></div>
+</div>
+<div class="card" id="s2d">
+      <h3><span class="k">⑥</span>권한 모드: 얼마나 맡길까</h3>
+      <p>입력창 아래 <b>자동</b>이라고 보이는 곳이에요. 누르면 바꿀 수 있어요.</p>
+      <table>
+        <tr><th>모드</th><th>뜻</th></tr>
+        <tr><td class="hl"><b>자동</b></td><td class="hl">알아서 진행하고, 확인이 필요한 일은 멈춰서 물어봐요. <b>이 수업은 그대로 둬요.</b></td></tr>
+        <tr><td>하나하나 허락</td><td>바꿀 때마다 허락을 받아요. 천천히 지켜보고 싶을 때 좋아요.</td></tr>
+        <tr><td>계획 먼저</td><td>계획만 세워서 보여 줘요. 큰 일을 시키기 전에 좋아요.</td></tr>
+      </table>
+      <div class="svgw"><svg viewBox="0 0 440 170" role="img" aria-label="허락 요청 예시">
+<rect x="10" y="10" width="420" height="150" rx="12" fill="#fff" stroke="#9DB4EA" stroke-width="1.5"/>
+<text x="28" y="40" font-size="14" font-weight="700" fill="#1E3F8F">이 명령을 실행할까요?</text>
+<rect x="28" y="52" width="384" height="34" rx="6" fill="#F4F5F8"/><text x="40" y="74" font-size="12" fill="#3D4350">파일 21개를 종류별 폴더로 옮기기</text>
+<rect x="28" y="104" width="120" height="36" rx="8" fill="#2F5FD0"/><text x="88" y="127" font-size="13" text-anchor="middle" fill="#fff" font-weight="700">허락</text>
+<rect x="158" y="104" width="130" height="36" rx="8" fill="#fff" stroke="#D5D9E0"/><text x="223" y="127" font-size="13" text-anchor="middle" fill="#22252B">항상 허락</text>
+<rect x="298" y="104" width="114" height="36" rx="8" fill="#fff" stroke="#D5D9E0"/><text x="355" y="127" font-size="13" text-anchor="middle" fill="#22252B">거절</text>
+</svg></div><p class="ex">예시: 대화 안에 나오는 허락 요청 (문구는 상황마다 달라요)</p>
+<div class="box tip"><div class="bt">허락 창이 뜨면</div><p>무엇을 하려는지 읽고 허락하세요. <b>확인하고 허락하는 것이 팀장의 일</b>이에요.</p></div>
+    </div>
+    <div class="card" id="s2e">
+      <h3><span class="k">⑦</span>막힐 때</h3>
+      <div class="box warn"><div class="bt">Git을 설치했는데도 안내가 계속 떠요</div><ol><li>클로드 앱을 완전히 끄고 다시 켜기</li><li>그래도 안 되면 컴퓨터 다시 시작</li><li>그래도 안 되면 Git을 지우고 다시 설치</li></ol></div>
+      <div class="box warn"><div class="bt">코드 버튼을 누르면 업그레이드하라고 나와요</div><p>무료 계정이에요. 프로 구독을 결제한 계정으로 로그인했는지 확인하세요.</p></div>
+      <div class="box warn"><div class="bt">환경이 구름 모양(Default)으로 돼 있어요</div><p>환경 선택을 눌러 <b>이 컴퓨터</b>로 바꾸세요. 구름은 인터넷 속 컴퓨터라 내 바탕화면 폴더를 못 봐요.</p></div>
+      <div class="box warn"><div class="bt">공용 PC에서는</div><p>껐다 켜면 바탕화면 파일, 설치한 앱, 로그인이 사라지는 PC가 많아요. 만든 파일은 수업 끝에 USB나 내 구글 드라이브로 옮기고, 다음 시간에 앱이 없으면 STEP 2 순서대로 다시 설치하세요.</p></div>
+      <div class="box warn"><div class="bt">설치가 안 돼요 (기관 PC)</div><p>공용 PC는 설치가 막혀 있을 수 있어요. 옆 사람 화면을 같이 보고, 집에서 내 컴퓨터로 다시 해 보세요.</p></div>
+    </div>
+    <div class="card full" id="s2f">
+      <h3><span class="k">⑧</span>편하게 따라 하는 요령</h3>
+      <div class="grid">
+        <div class="box tip"><div class="bt">글자를 크게</div><p>이 페이지는 위쪽 <b>가 +</b> 버튼으로 키워요. 클로드 앱과 크롬은 <span class="kbd">Ctrl</span>+<span class="kbd">+</span>로 키우고 <span class="kbd">Ctrl</span>+<span class="kbd">−</span>로 줄여요.</p></div>
+        <div class="box tip"><div class="bt">창 두 개를 나란히</div><p>이 교안 창에서 <span class="kbd">⊞ Win</span>+<span class="kbd">←</span>, 클로드 앱에서 <span class="kbd">⊞ Win</span>+<span class="kbd">→</span>를 누르면 화면이 반씩 나뉘어 보면서 따라 하기 편해요.</p></div>
+        <div class="box tip"><div class="bt">타자는 최소로</div><p>회색 상자의 <b>복사</b> 버튼을 누르고, 클로드 입력창에서 <span class="kbd">Ctrl</span>+<span class="kbd">V</span>로 붙여 넣으면 돼요. 오타 걱정이 없어요.</p></div>
+        <div class="box tip"><div class="bt">모르는 화면이 나오면 AI에게</div><p><span class="kbd">⊞ Win</span>+<span class="kbd">Shift</span>+<span class="kbd">S</span>로 화면을 캡처하고, 클로드 입력창에 <span class="kbd">Ctrl</span>+<span class="kbd">V</span>로 붙인 뒤 "이 화면에서 뭘 눌러야 해?"라고 물어보세요.</p></div>
+        <div class="box tip"><div class="bt">한 단계씩 확인</div><p>하나 시키고, 결과를 열어 보고, 다음으로 가요. 마지막 STEP의 체크 목록으로 오늘 한 것을 확인하세요.</p></div>
+        <div class="box tip"><div class="bt">잘 된 문장은 모아 두기</div><p>잘 통한 프롬프트(AI에게 하는 지시문)는 메모장에 모아 두세요. 다음에 단어만 바꿔 다시 쓰면 돼요.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STEP 3 -->
+<section class="step" data-t="비교① 웹 vs 앱">
+  <div class="shead"><span class="no">STEP 3 · 비교 실습 ①</span><button class="tipbtn" onclick="tgtip()">💡 컴퓨터 도움말</button><h2>웹 vs 앱: AI가 내 컴퓨터를 볼 수 있나요?</h2><p>같은 질문을 웹 채팅과 앱 코드에 똑같이 해 봐요.</p><div class="inltips"></div></div>
+  <div class="grid">
+    <div class="card full" id="s3z">
+      <div class="svgw">
+      <svg viewBox="0 0 900 230" role="img" aria-label="웹과 앱의 차이 그림">
+        <rect x="20" y="15" width="410" height="200" rx="16" fill="#F7F8FA" stroke="#E3E5EA"/>
+        <text x="225" y="45" text-anchor="middle" font-size="19" font-weight="700" fill="#22252B">웹: 인터넷 속 AI</text>
+        <path d="M110 110 a30 30 0 0 1 55 -18 a26 26 0 0 1 48 12 a22 22 0 0 1 -6 44 h-90 a20 20 0 0 1 -7 -38z" fill="#E8ECF4"/>
+        <circle cx="160" cy="118" r="12" fill="#9AA2B1"/>
+        <line x1="255" y1="70" x2="255" y2="180" stroke="#D96A7E" stroke-width="3" stroke-dasharray="6 6"/>
+        <rect x="290" y="95" width="100" height="70" rx="6" fill="#fff" stroke="#B9BFCB"/><rect x="310" y="112" width="44" height="32" rx="3" fill="#F2DFA8"/>
+        <text x="340" y="190" text-anchor="middle" font-size="14" fill="#5B616E">내 컴퓨터 폴더</text>
+        <text x="160" y="190" text-anchor="middle" font-size="14" fill="#8E2A3B">못 봐요</text>
+        <rect x="470" y="15" width="410" height="200" rx="16" fill="#EEF3FD" stroke="#C9D7F5"/>
+        <text x="675" y="45" text-anchor="middle" font-size="19" font-weight="700" fill="#1E3F8F">앱 코드: 내 컴퓨터에 들어온 AI</text>
+        <rect x="540" y="70" width="270" height="120" rx="10" fill="#fff" stroke="#9DB4EA" stroke-width="2"/>
+        <rect x="560" y="90" width="80" height="60" rx="4" fill="#F2DFA8"/><rect x="560" y="84" width="34" height="10" rx="3" fill="#F2DFA8"/>
+        <circle cx="720" cy="108" r="18" fill="#2F5FD0"/><rect x="700" y="128" width="40" height="24" rx="10" fill="#2F5FD0"/>
+        <path d="M698 118 q-25 0 -50 6" stroke="#2F5FD0" stroke-width="2" fill="none"/>
+        <text x="675" y="178" text-anchor="middle" font-size="14" fill="#1E3F8F">폴더를 직접 열어 보고 일해요</text>
+      </svg>
+      </div>
+    </div>
+    <div class="card" id="s3a">
+      <h3><span class="k">①</span>웹 채팅에 묻기</h3>
+      <p>크롬에서 <b>claude.ai</b> 를 열고 보내요.</p>
+      <div class="prompt"><div class="where"><span class="w web">웹 · claude.ai</span><span class="w tm">⏱ 약 몇 초</span></div><span class="lb">이렇게 보내세요</span>바탕화면 「실습자료」 폴더에 어떤 파일들이 있는지 종류별로 알려 줘.<button class="cp">복사</button></div>
+      <p><b>결과:</b> "파일을 올려 주세요"처럼 답해요. 웹의 AI는 인터넷 속에 있어서 내 컴퓨터를 못 봐요.</p>
+      <div class="svgw"><svg viewBox="0 0 440 130" role="img" aria-label="웹 채팅 답변 예시"><rect x="10" y="14" width="420" height="100" rx="14" fill="#F7F8FA" stroke="#E3E5EA"/><text x="30" y="46" font-size="14" fill="#22252B">저는 컴퓨터의 바탕화면을 직접 볼 수 없어요.</text><text x="30" y="72" font-size="14" fill="#22252B">파일 목록을 알려 주시거나 파일을 올려 주시면</text><text x="30" y="98" font-size="14" fill="#22252B">정리를 도와드릴게요.</text></svg></div><p class="ex">예시: 웹 채팅의 답</p>
+    </div>
+    <div class="card" id="s3b">
+      <h3><span class="k">②</span>앱 코드에 묻기</h3>
+      <p>앱에서 &lt;/&gt; → <b>+ 새로 만들기</b> → 환경 <b>이 컴퓨터</b> → 폴더 <b>「실습자료」</b>를 고르고 보내요.</p>
+      <div class="prompt"><div class="where"><span class="w code">앱 · &lt;/&gt; 코드</span><span class="w env">환경: 이 컴퓨터</span><span class="w fd">폴더: 실습자료</span><span class="w se">세션 A</span><span class="w tm">⏱ 약 30초 안팎</span></div><span class="lb">이렇게 보내세요</span>바탕화면 「실습자료」 폴더에 어떤 파일들이 있는지 종류별로 알려 줘.<button class="cp">복사</button></div>
+      <p><b>결과:</b> 폴더를 직접 열어 보고 파일 목록을 종류별로 알려 줘요.</p>
+      <div class="svgw"><svg viewBox="0 0 440 150" role="img" aria-label="코드 답변 예시"><rect x="10" y="10" width="420" height="130" rx="14" fill="#EEF3FD" stroke="#C9D7F5"/><text x="28" y="36" font-size="12" fill="#5B616E">✓ 「실습자료」 폴더를 읽었어요 (21개)</text><g font-size="13" fill="#1E3F8F"><text x="28" y="62">📄 문서 9개: 회의록_1015.txt, 메모 - 복사본.txt …</text><text x="28" y="86">📊 표 5개: 10월매출.csv, 견적서 수정본.csv …</text><text x="28" y="110">🖼 사진 6개: IMG_20261003.png, 제품컷 3.png …</text><text x="28" y="132">📎 기타 1개: index (1).html</text></g></svg></div><p class="ex">예시: 코드의 답 (실제 개수·문구는 조금 다를 수 있어요)</p>
+    </div>
+    <div class="card full" id="s3c">
+      <h3><span class="k">③</span>정리</h3>
+      <p class="big">웹은 인터넷 속 AI, 앱은 내 컴퓨터에 들어온 AI</p>
+      <table>
+        <tr><th></th><th>웹 (claude.ai)</th><th>데스크톱 앱</th></tr>
+        <tr><td>설치</td><td>필요 없음, 어디서나 접속</td><td>내 컴퓨터에 설치</td></tr>
+        <tr><td>내 파일</td><td>올려 줘야 봄</td><td>고른 폴더를 직접 읽고 씀</td></tr>
+        <tr><td>화면</td><td>채팅 중심</td><td>💬 채팅 · &lt;/&gt; 코드</td></tr>
+        <tr><td>계정·사용량</td><td colspan="2">같은 계정이면 대화 기록과 사용량을 함께 써요</td></tr>
+      </table>
+      <div class="box ext"><div class="bt">한 걸음 더</div><p>웹에도 클로드 코드(claude.ai/code)가 있어요. 그런데 환경 선택을 눌러 보면 <b>로컬은 '데스크톱 앱 전용'</b>이라 고를 수 없어요(STEP 2의 환경 메뉴 그림). 웹 코드는 내 컴퓨터 대신 <b>깃허브</b>(코드 보관 창고)에 있는 작업을 가져와 인터넷 속 컴퓨터(클라우드)에서 일해요. 깃허브는 5주차에 배워요.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- STEP 4 -->
+<section class="step" data-t="비교② 채팅 vs 코드">
+  <div class="shead"><span class="no">STEP 4 · 비교 실습 ② · 오늘의 핵심</span><button class="tipbtn" onclick="tgtip()">💡 컴퓨터 도움말</button><h2>채팅 vs 코드: 알려 주나요, 직접 하나요?</h2><p>뒤죽박죽인 「실습자료」 폴더를 정리해 달라고 해 봐요.</p><div class="inltips"></div></div>
+  <div class="grid">
+    <div class="card full" id="s4z">
+      <div class="svgw">
+      <svg viewBox="0 0 900 260" role="img" aria-label="정리 전과 정리 후">
+        <text x="200" y="28" text-anchor="middle" font-size="17" font-weight="700" fill="#5B616E">정리 전: 21개가 뒤죽박죽</text>
+        <rect x="20" y="40" width="360" height="200" rx="14" fill="#F7F8FA" stroke="#E3E5EA"/>
+        <g font-size="11" fill="#3D4350">
+          <rect x="40" y="60" width="96" height="30" rx="4" fill="#fff" stroke="#D5D9E0" transform="rotate(-4 88 75)"/><text x="48" y="80" transform="rotate(-4 88 75)">회의록 최종(2)</text>
+          <rect x="150" y="56" width="100" height="30" rx="4" fill="#fff" stroke="#D5D9E0" transform="rotate(3 200 71)"/><text x="158" y="76" transform="rotate(3 200 71)">IMG_20261003</text>
+          <rect x="265" y="64" width="100" height="30" rx="4" fill="#fff" stroke="#D5D9E0" transform="rotate(-2 315 79)"/><text x="273" y="84" transform="rotate(-2 315 79)">견적서 수정본</text>
+          <rect x="50" y="110" width="100" height="30" rx="4" fill="#fff" stroke="#D5D9E0" transform="rotate(5 100 125)"/><text x="58" y="130" transform="rotate(5 100 125)">메모 - 복사본</text>
+          <rect x="165" y="112" width="96" height="30" rx="4" fill="#fff" stroke="#D5D9E0" transform="rotate(-6 213 127)"/><text x="173" y="132" transform="rotate(-6 213 127)">10월매출.csv</text>
+          <rect x="270" y="118" width="96" height="30" rx="4" fill="#fff" stroke="#D5D9E0" transform="rotate(4 318 133)"/><text x="278" y="138" transform="rotate(4 318 133)">제품컷 3.png</text>
+          <rect x="40" y="168" width="110" height="30" rx="4" fill="#fff" stroke="#D5D9E0" transform="rotate(-3 95 183)"/><text x="48" y="188" transform="rotate(-3 95 183)">보고서초안v3_수정</text>
+          <rect x="165" y="172" width="110" height="30" rx="4" fill="#fff" stroke="#D5D9E0" transform="rotate(2 220 187)"/><text x="173" y="192" transform="rotate(2 220 187)">새 텍스트 문서</text>
+          <rect x="285" y="176" width="80" height="30" rx="4" fill="#fff" stroke="#D5D9E0" transform="rotate(-5 325 191)"/><text x="293" y="196" transform="rotate(-5 325 191)">index (1)</text>
+        </g>
+        <path d="M395 140 h70" stroke="#2F5FD0" stroke-width="4" marker-end="url(#a4)"/>
+        <text x="430" y="125" text-anchor="middle" font-size="13" font-weight="700" fill="#2F5FD0">말 한마디</text>
+        <text x="690" y="28" text-anchor="middle" font-size="17" font-weight="700" fill="#1E3F8F">정리 후: 진짜 폴더가 바뀜</text>
+        <rect x="480" y="40" width="400" height="200" rx="14" fill="#EEF3FD" stroke="#C9D7F5"/>
+        <g font-size="14" text-anchor="middle" fill="#1E3F8F" font-weight="700">
+          <rect x="500" y="62" width="80" height="56" rx="5" fill="#F2DFA8"/><rect x="500" y="56" width="32" height="10" rx="3" fill="#F2DFA8"/><text x="540" y="140">문서</text>
+          <rect x="595" y="62" width="80" height="56" rx="5" fill="#F2DFA8"/><rect x="595" y="56" width="32" height="10" rx="3" fill="#F2DFA8"/><text x="635" y="140">표</text>
+          <rect x="690" y="62" width="80" height="56" rx="5" fill="#F2DFA8"/><rect x="690" y="56" width="32" height="10" rx="3" fill="#F2DFA8"/><text x="730" y="140">사진</text>
+          <rect x="785" y="62" width="80" height="56" rx="5" fill="#F2DFA8"/><rect x="785" y="56" width="32" height="10" rx="3" fill="#F2DFA8"/><text x="825" y="140">기타</text>
+          <rect x="520" y="160" width="140" height="56" rx="5" fill="#F7D3DA"/><rect x="520" y="154" width="40" height="10" rx="3" fill="#F7D3DA"/><text x="590" y="194" fill="#8E2A3B">중복 의심</text>
+          <rect x="700" y="160" width="140" height="56" rx="4" fill="#fff" stroke="#9DB4EA"/><text x="770" y="194">목록표.csv</text>
+        </g>
+        <defs><marker id="a4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M1 1L9 5L1 9" fill="none" stroke="#2F5FD0" stroke-width="2"/></marker></defs>
+      </svg>
+      </div>
+    </div>
+    <div class="card full" id="s4a">
+      <h3><span class="k">①</span>코드에 시키기</h3>
+      <p>STEP 3에서 쓰던 세션 A에 이어서 보내요. 입력창 아래 폴더가 「실습자료」인지 꼭 확인하세요.</p>
+      <div class="prompt"><div class="where"><span class="w code">앱 · &lt;/&gt; 코드</span><span class="w env">환경: 이 컴퓨터</span><span class="w fd">폴더: 실습자료</span><span class="w se">세션 A</span><span class="w tm">⏱ 약 1~3분</span></div><span class="lb">이렇게 보내세요</span>「실습자료」 폴더를 정리해 줘.
+1. 문서·표·사진·기타 폴더를 만들어 종류별로 옮겨 줘.
+2. 이름에 '복사본', '(1)', '수정', '최종'이 붙어 겹쳐 보이는 파일은 「중복 의심」 폴더에 따로 모아 줘.
+3. 파일은 지우지 마.
+4. 정리한 결과를 목록표.csv로 만들어 줘. 엑셀에서 한글이 깨지지 않게 저장해 줘.
+시작하기 전에 어떤 기준으로 나눌지 먼저 알려 주고, 내가 좋다고 하면 진행해 줘.<button class="cp">복사</button></div>
+      <ol>
+        <li>AI가 <b>나누는 기준</b>을 먼저 알려 줘요. 읽어 보고 괜찮으면 "좋아, 진행해"라고 답해요.</li><li style="list-style:none;margin-left:-1.3em"><div class="svgw"><svg viewBox="0 0 900 200" role="img" aria-label="AI가 기준을 먼저 묻는 예시"><rect x="10" y="10" width="620" height="180" rx="14" fill="#EEF3FD" stroke="#C9D7F5"/><text x="30" y="40" font-size="15" font-weight="700" fill="#1E3F8F">이렇게 나눌게요.</text><g font-size="14" fill="#1E3F8F"><text x="30" y="68">· 문서: .txt .md   · 표: .csv   · 사진: .png   · 기타: .html</text><text x="30" y="94">· 중복 의심: 이름에 복사본·(1)·수정·최종이 붙은 파일들</text><text x="30" y="120">· 참고: 이름만 보고 나눴어요. 내용이 같은지는 확인하지 않았어요.</text><text x="30" y="160" font-weight="700">이대로 진행할까요?</text></g><rect x="660" y="120" width="230" height="56" rx="14" fill="#2F5FD0"/><text x="775" y="154" font-size="16" text-anchor="middle" fill="#fff" font-weight="700">좋아, 진행해</text><text x="775" y="106" font-size="13" text-anchor="middle" fill="#5B616E">내가 보내는 답</text></svg></div><p class="ex">예시: AI가 먼저 기준과 한계를 알려 줘요</p></li>
+        <li>폴더가 만들어지고 파일이 옮겨지는 과정이 화면에 보여요.</li>
+        <li>윈도우 탐색기에서 「실습자료」를 열어 보세요. <b>진짜로 정리돼 있어요.</b></li>
+        <li>목록표.csv를 더블클릭하면 엑셀로 열려요.</li>
+      </ol>
+    </div>
+    <div class="card" id="s4b">
+      <h3><span class="k">②</span>웹 채팅에 같은 말을 하면?</h3>
+      <div class="prompt"><div class="where"><span class="w web">웹 · claude.ai</span><span class="w tm">⏱ 약 몇 초</span></div><span class="lb">비교용으로 보내 보기</span>바탕화면 「실습자료」 폴더를 문서·표·사진·기타로 정리해 줘.<button class="cp">복사</button></div>
+      <p>정리하는 <b>방법을 알려 주거나</b>, 파일을 하나씩 올려 달라고 해요. 내 폴더는 그대로예요.</p>
+      <p class="big">채팅은 방법을 알려 주고,<br>코드는 직접 해요.</p>
+    </div>
+    <div class="card" id="s4c">
+      <h3><span class="k">③</span>왜 기준을 먼저 물어보게 했을까요?</h3>
+      <p>AI는 파일 이름만 보고 판단할 수도 있어요. 예를 들어 '최종'이 붙었다고 정말 겹치는 파일인지는 내용을 봐야 알아요. <b>기준을 먼저 확인하는 습관</b>이 실수를 막아요.</p>
+      <div class="box tip"><div class="bt">팀장의 한마디</div><p>"어떤 기준으로 했어?" "내용까지 확인했어?"라고 되물어 보세요. AI가 스스로 다시 점검해요.</p></div>
+    </div>
+    <div class="card" id="s4d">
+      <h3><span class="k">④</span>막힐 때</h3>
+      <div class="box warn"><div class="bt">엉뚱한 폴더를 건드려요</div><p>입력창 아래의 폴더가 「실습자료」인지 확인하세요. 다르면 <b>+ 새로 만들기</b>로 새 세션을 열고 폴더를 다시 고르세요.</p></div>
+      <div class="box warn"><div class="bt">CSV에서 한글이 깨져요</div><p>"목록표를 엑셀에서 한글이 안 깨지게 다시 저장해 줘"라고 말하면 돼요.</p></div>
+    </div>
+    <div class="card" id="s4e">
+      <h3><span class="k">⑤</span>한 걸음 더</h3>
+      <div class="prompt"><div class="where"><span class="w code">앱 · &lt;/&gt; 코드</span><span class="w fd">폴더: 실습자료</span><span class="w se">세션 A</span><span class="w tm">⏱ 약 1~2분</span></div><span class="lb">내용까지 보고 판단시키기</span>「중복 의심」 폴더의 파일들을 열어서 내용이 정말 같은지 비교하고, 남길 파일과 지워도 될 파일을 표로 추천해 줘. 지우지는 마.<button class="cp">복사</button></div>
+    </div>
+  </div>
+</section>
+
+<!-- STEP 5 -->
+<section class="step" data-t="비교③ 채팅+폴더 vs 코드">
+  <div class="shead"><span class="no">STEP 5 · 비교 ③</span><button class="tipbtn" onclick="tgtip()">💡 컴퓨터 도움말</button><h2>앱 채팅에 폴더를 연결해도 되는데, 왜 코드일까요?</h2><p>앱의 채팅도 '프로젝트 또는 폴더'로 내 폴더를 연결할 수 있어요. 그럼 무엇이 다를까요?</p><div class="inltips"></div></div>
+  <div class="grid">
+    <div class="card full" id="s5a">
+      <h3><span class="k">①</span>세 곳 한눈에 보기</h3>
+      <div class="svgw">
+      <svg viewBox="0 0 900 230" role="img" aria-label="웹 채팅, 앱 채팅과 폴더, 코드 비교">
+        <rect x="20" y="20" width="270" height="190" rx="14" fill="#F7F8FA" stroke="#E3E5EA"/>
+        <rect x="315" y="20" width="270" height="190" rx="14" fill="#F7F5FC" stroke="#D9D0EE"/>
+        <rect x="610" y="20" width="270" height="190" rx="14" fill="#EEF3FD" stroke="#9DB4EA" stroke-width="2"/>
+        <g text-anchor="middle">
+          <rect x="95" y="42" width="120" height="74" rx="6" fill="#fff" stroke="#B9BFCB"/><rect x="95" y="42" width="120" height="14" rx="6" fill="#E6E9EF"/><rect x="110" y="68" width="60" height="22" rx="10" fill="#E8ECF4"/>
+          <text x="155" y="150" font-size="20" font-weight="700" fill="#22252B">웹 채팅</text>
+          <text x="155" y="178" font-size="14" fill="#5B616E">묻고 답하기 · 파일은 올려야</text>
+          <rect x="370" y="50" width="70" height="46" rx="14" fill="#fff" stroke="#B4A6DD"/><path d="M390 96 l-6 14 l20 -14" fill="#fff" stroke="#B4A6DD"/>
+          <rect x="460" y="56" width="66" height="48" rx="5" fill="#F2DFA8"/><rect x="460" y="50" width="28" height="10" rx="3" fill="#F2DFA8"/>
+          <text x="450" y="150" font-size="20" font-weight="700" fill="#4A3B7A">앱 채팅 + 폴더</text>
+          <text x="450" y="178" font-size="14" fill="#4A3B7A">내 파일로 문서·정리 업무</text>
+          <rect x="650" y="48" width="70" height="56" rx="6" fill="#fff" stroke="#9DB4EA"/><text x="685" y="84" font-size="18" font-weight="700" fill="#2F5FD0">&lt;/&gt;</text>
+          <rect x="730" y="54" width="56" height="44" rx="5" fill="#F2DFA8"/>
+          <circle cx="820" cy="76" r="20" fill="#2F5FD0"/><path d="M813 66 l16 10 l-16 10z" fill="#fff"/>
+          <text x="745" y="150" font-size="20" font-weight="700" fill="#1E3F8F">코드</text>
+          <text x="745" y="178" font-size="14" fill="#1E3F8F">만들고 · 실행하고 · 올리기</text>
+        </g>
+      </svg>
+      </div>
+      <table>
+        <tr><th></th><th>웹 채팅</th><th>앱 채팅 + 폴더</th><th class="hl">코드</th></tr>
+        <tr><td>잘하는 것</td><td>질문, 아이디어, 글 다듬기</td><td>내 파일로 문서·정리 같은 업무</td><td class="hl">만들고, 실행하고, 고치기</td></tr>
+        <tr><td>결과물</td><td>답변</td><td>문서, 정리된 폴더</td><td class="hl">웹페이지, 프로그램, 영상, 앱</td></tr>
+        <tr><td>바로 확인</td><td>대화창 안</td><td>파일을 열어 봄</td><td class="hl">앱 안 미리보기에서 실행해 봄</td></tr>
+        <tr><td>여러 개 동시에</td><td>창 하나씩</td><td>한 작업씩 맡기는 편</td><td class="hl">세션 여러 개에 나눠 맡김</td></tr>
+        <tr><td>인터넷에 올리기</td><td>안 됨</td><td>안 됨</td><td class="hl">깃허브·버셀로 내 주소까지</td></tr>
+      </table>
+      <div class="box tip"><div class="bt">솔직하게</div><p>앱 채팅에 폴더를 연결하면 문서 정리 정도는 충분히 해요. 이 과정에서 코드를 쓰는 이유는 <b>홈페이지·영상·앱처럼 '만들고 실행하고 인터넷에 올리는 일'</b>까지 가기 때문이에요.</p></div>
+    </div>
+    <div class="card" id="s5b">
+      <h3><span class="k">②</span>직접 확인: 만들고 바로 실행</h3>
+      <div class="prompt"><div class="where"><span class="w code">앱 · &lt;/&gt; 코드</span><span class="w env">환경: 이 컴퓨터</span><span class="w fd">폴더: 실습자료</span><span class="w se">세션 A</span><span class="w tm">⏱ 약 1~2분</span></div><span class="lb">이렇게 보내세요</span>방금 만든 목록표를 표와 막대그래프가 있는 웹페이지로 만들고, 미리보기로 열어 줘.<button class="cp">복사</button></div>
+      <p>앱 안에서 바로 웹페이지가 열려요. <b>만들고 → 실행하고 → 확인하는 것</b>까지 한자리에서 해요.</p>
+      <div class="svgw"><svg viewBox="0 0 440 230" role="img" aria-label="목록표 웹페이지 결과 예시"><rect x="10" y="10" width="420" height="210" rx="10" fill="#fff" stroke="#D5D9E0"/><rect x="10" y="10" width="420" height="26" rx="10" fill="#F4F5F8"/><circle cx="26" cy="23" r="4" fill="#E86A6A"/><circle cx="40" cy="23" r="4" fill="#F2B84B"/><circle cx="54" cy="23" r="4" fill="#5DCAA5"/><text x="30" y="62" font-size="15" font-weight="700" fill="#22252B">실습자료 정리 결과</text>
+<g fill="#2F5FD0"><rect x="40" y="110" width="44" height="80"/><rect x="104" y="140" width="44" height="50"/><rect x="168" y="125" width="44" height="65"/><rect x="232" y="175" width="44" height="15"/><rect x="296" y="150" width="44" height="40" fill="#E86A6A"/></g>
+<g font-size="11" fill="#5B616E" text-anchor="middle"><text x="62" y="206">문서</text><text x="126" y="206">표</text><text x="190" y="206">사진</text><text x="254" y="206">기타</text><text x="318" y="206">중복</text></g><line x1="30" y1="190" x2="360" y2="190" stroke="#B9BFCB"/></svg></div><p class="ex">예시: 미리보기로 열린 결과 웹페이지</p>
+    </div>
+    <div class="card" id="s5c">
+      <h3><span class="k">③</span>언제 어디를 쓸까</h3>
+      <ul>
+        <li>궁금한 걸 묻고 생각을 정리할 때 → <span class="w web">웹</span> 또는 <span class="w chat">앱 · 💬 채팅</span></li>
+        <li>내 문서를 읽고 보고서·정리를 맡길 때 → <span class="w chat">앱 · 💬 채팅</span> + 폴더 연결</li>
+        <li>웹페이지·자동화·영상·앱을 만들 때, 여러 일을 동시에 맡길 때 → <span class="w code">앱 · &lt;/&gt; 코드</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- STEP 6 -->
+<section class="step" data-t="확장① 스킬">
+  <div class="shead"><span class="no">STEP 6 · 무한 확장 ①</span><button class="tipbtn" onclick="tgtip()">💡 컴퓨터 도움말</button><h2>스킬: AI에게 업무 매뉴얼을 주기</h2><p>한 번 가르쳐 두면 매번 설명하지 않아도 돼요.</p><div class="inltips"></div></div>
+  <div class="grid">
+    <div class="card full" id="s6a">
+      <h3><span class="k">①</span>스킬이란</h3>
+      <p><b>스킬</b>(Skill)은 AI에게 주는 <b>업무 매뉴얼</b>이에요. "우리 회사 보고서는 이 순서로, 이 말투로" 같은 규칙을 파일로 적어 두면, AI가 그 일을 할 때마다 꺼내 보고 그대로 해요. 새 직원에게 업무 매뉴얼을 주는 것과 같아요.</p>
+      <div class="svgw">
+      <svg viewBox="0 0 900 170" role="img" aria-label="스킬 동작 흐름">
+        <g text-anchor="middle">
+          <rect x="30" y="40" width="200" height="90" rx="12" fill="#F7F8FA" stroke="#E3E5EA"/><text x="130" y="80" font-size="18" font-weight="700" fill="#22252B">한 번 가르치기</text><text x="130" y="106" font-size="14" fill="#5B616E">규칙을 스킬 파일로</text>
+          <path d="M240 85 h70" stroke="#9DB4EA" stroke-width="3" marker-end="url(#ar)"/>
+          <rect x="320" y="30" width="120" height="110" rx="8" fill="#fff" stroke="#9DB4EA" stroke-width="2"/><rect x="340" y="52" width="80" height="8" rx="4" fill="#C9D7F5"/><rect x="340" y="70" width="64" height="8" rx="4" fill="#C9D7F5"/><rect x="340" y="88" width="74" height="8" rx="4" fill="#C9D7F5"/><text x="380" y="126" font-size="14" font-weight="700" fill="#1E3F8F">업무 매뉴얼</text>
+          <path d="M450 85 h70" stroke="#9DB4EA" stroke-width="3" marker-end="url(#ar)"/>
+          <rect x="530" y="40" width="340" height="90" rx="12" fill="#EEF3FD" stroke="#C9D7F5"/><text x="700" y="80" font-size="18" font-weight="700" fill="#1E3F8F">"스킬로 보고서 만들어 줘"</text><text x="700" y="106" font-size="14" fill="#1E3F8F">말 한마디면 매번 같은 형식으로</text>
+        </g>
+        <defs><marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M1 1L9 5L1 9" fill="none" stroke="#9DB4EA" stroke-width="2"/></marker></defs>
+      </svg>
+      </div>
+      <div class="box set"><div class="bt">이미 들어 있는 스킬도 있어요</div><p>앱 채팅 입력창에 <b>/</b>를 치면 쓸 수 있는 스킬 목록이 나와요. 코드 입력창 왼쪽 <b>+</b>에서도 스킬을 붙일 수 있어요.</p></div>
+    </div>
+    <div class="card" id="s6b">
+      <h3><span class="k">②</span>스킬 만들기</h3>
+      <div class="prompt"><div class="where"><span class="w code">앱 · &lt;/&gt; 코드</span><span class="w env">환경: 이 컴퓨터</span><span class="w fd">폴더: 실습자료</span><span class="w se">세션 A</span><span class="w tm">⏱ 약 1분 안팎</span></div><span class="lb">이렇게 보내세요</span>이 폴더에 「양천상사 보고서」 스킬을 만들어 줘.
+- 보고서는 항상 제목 → 핵심 요약 3줄 → 표 하나 → 다음 할 일 순서로 쓴다.
+- 존댓말로, 숫자에는 단위를 붙인다.
+- 결과는 웹페이지(HTML)로 만들어 열어 준다.
+다 만들면 스킬 파일이 어디에 있는지 알려 줘.<button class="cp">복사</button></div>
+    </div>
+    <div class="card" id="s6c">
+      <h3><span class="k">③</span>새 세션에서 스킬 써 보기</h3>
+      <p><b>+ 새로 만들기</b>로 새 세션을 열고, 환경 <b>이 컴퓨터</b>, 폴더 <b>「실습자료」</b>를 다시 골라서 보내요. 새 직원도 매뉴얼을 보고 똑같이 일하는지 확인하는 거예요.</p>
+      <div class="prompt"><div class="where"><span class="w code">앱 · &lt;/&gt; 코드</span><span class="w env">환경: 이 컴퓨터</span><span class="w fd">폴더: 실습자료</span><span class="w se">세션 B (새로)</span><span class="w tm">⏱ 약 1~2분</span></div><span class="lb">이렇게 보내세요</span>「양천상사 보고서」 스킬로 10월매출.csv를 보고서로 만들어 줘.<button class="cp">복사</button></div>
+      <p>설명하지 않았는데도 정해 둔 순서와 말투로 나와요. 「실습자료」를 정리했다면 10월매출.csv는 「표」 폴더 안에 있어요. AI가 알아서 찾아요.</p>
+    </div>
+    <div class="card full" id="s6r"><h3><span class="k">＋</span>스킬로 만든 보고서는 이렇게 나와요</h3><div class="svgw"><svg viewBox="0 0 900 300" role="img" aria-label="스킬로 만든 보고서 예시">
+<rect x="150" y="10" width="600" height="280" rx="10" fill="#fff" stroke="#D5D9E0"/>
+<text x="180" y="50" font-size="20" font-weight="700" fill="#22252B">양천상사 10월 매출 보고</text>
+<rect x="180" y="64" width="540" height="2" fill="#2F5FD0"/>
+<text x="180" y="92" font-size="13" font-weight="700" fill="#2F5FD0">핵심 요약</text>
+<g font-size="13" fill="#3D4350"><text x="180" y="114">1. 10월 매출은 총 4,570,000원입니다.</text><text x="180" y="134">2. 거래처 중 목동상회가 가장 많습니다.</text><text x="180" y="154">3. 9월보다 매출이 늘었습니다.</text></g>
+<g font-size="12"><rect x="180" y="170" width="540" height="24" fill="#F4F5F8"/><text x="192" y="187" font-weight="700" fill="#22252B">거래처</text><text x="420" y="187" font-weight="700" fill="#22252B">금액</text>
+<text x="192" y="211" fill="#3D4350">목동상회</text><text x="420" y="211" fill="#3D4350">2,190,000원</text><line x1="180" y1="218" x2="720" y2="218" stroke="#E3E5EA"/>
+<text x="192" y="236" fill="#3D4350">신월마트</text><text x="420" y="236" fill="#3D4350">1,950,000원</text></g>
+<text x="180" y="270" font-size="13" font-weight="700" fill="#2F5FD0">다음 할 일</text><text x="270" y="270" font-size="13" fill="#3D4350">신정문구 재방문 일정 잡기</text>
+<g font-size="12" fill="#1D5E45" font-weight="700"><rect x="10" y="40" width="120" height="28" rx="14" fill="#ECF7F2"/><text x="70" y="59" text-anchor="middle">① 제목</text><rect x="10" y="100" width="120" height="28" rx="14" fill="#ECF7F2"/><text x="70" y="119" text-anchor="middle">② 요약 3줄</text><rect x="10" y="190" width="120" height="28" rx="14" fill="#ECF7F2"/><text x="70" y="209" text-anchor="middle">③ 표 하나</text><rect x="770" y="256" width="120" height="28" rx="14" fill="#ECF7F2"/><text x="830" y="275" text-anchor="middle">④ 다음 할 일</text></g>
+</svg></div><p class="ex">예시: 스킬에 적어 둔 순서(제목 → 요약 3줄 → 표 → 다음 할 일) 그대로 나와요. 숫자는 실습자료에 따라 달라요.</p></div>
+<div class="card" id="s6d">
+      <h3><span class="k">④</span>막힐 때</h3>
+      <div class="box warn"><div class="bt">스킬을 못 찾는다고 해요</div><p>폴더가 스킬을 만든 그 「실습자료」인지 확인하세요. 그래도 안 되면 "이 폴더의 .claude 안에 있는 양천상사 보고서 스킬을 읽고 그대로 해 줘"라고 말해 보세요.</p></div>
+    </div>
+    <div class="card" id="s6e">
+      <h3><span class="k">⑤</span>한 걸음 더</h3>
+      <div class="box ext"><div class="bt">내 업무 스킬</div><p>내 회사 보고 양식이나 자주 쓰는 메일 형식을 스킬로 만들어 보세요. 단, 실제 회사 자료나 개인정보는 넣지 말고 연습용 내용으로 해요.</p></div>
+      <div class="prompt"><div class="where"><span class="w code">앱 · &lt;/&gt; 코드</span><span class="w fd">폴더: 실습자료</span><span class="w tm">⏱ 약 1분 안팎</span></div><span class="lb">스킬 고치기</span>「양천상사 보고서」 스킬을 고쳐서, 보고서 맨 아래에 작성일이 들어가게 해 줘.<button class="cp">복사</button></div>
+    </div>
+  </div>
+</section>
+
+<!-- STEP 7 -->
+<section class="step" data-t="확장② 동시에">
+  <div class="shead"><span class="no">STEP 7 · 무한 확장 ②</span><button class="tipbtn" onclick="tgtip()">💡 컴퓨터 도움말</button><h2>나눠서 동시에 맡기기</h2><p>직원 두 명에게 일을 나눠 주면 기다리는 시간이 사라져요.</p><div class="inltips"></div></div>
+  <div class="grid">
+    <div class="card full" id="s7a">
+      <h3><span class="k">①</span>한 명에게 차례로 vs 두 명에게 동시에</h3>
+      <div class="svgw">
+      <svg viewBox="0 0 900 220" role="img" aria-label="순서대로와 동시에 비교">
+        <text x="20" y="44" font-size="16" font-weight="700" fill="#5B616E">한 명에게 차례로</text>
+        <rect x="200" y="22" width="280" height="34" rx="8" fill="#E6E9EF"/><text x="340" y="45" font-size="15" text-anchor="middle" fill="#22252B">매출 그래프</text>
+        <rect x="486" y="22" width="280" height="34" rx="8" fill="#E6E9EF"/><text x="626" y="45" font-size="15" text-anchor="middle" fill="#22252B">회의록 요약</text>
+        <text x="20" y="124" font-size="16" font-weight="700" fill="#1E3F8F">두 명에게 동시에</text>
+        <text x="150" y="114" font-size="13" fill="#1E3F8F">세션 A</text>
+        <rect x="200" y="94" width="280" height="30" rx="8" fill="#2F5FD0"/><text x="340" y="114" font-size="15" text-anchor="middle" fill="#fff">매출 그래프</text>
+        <text x="150" y="152" font-size="13" fill="#1E3F8F">세션 B</text>
+        <rect x="200" y="132" width="280" height="30" rx="8" fill="#6E8FE0"/><text x="340" y="152" font-size="15" text-anchor="middle" fill="#fff">회의록 요약</text>
+        <line x1="486" y1="86" x2="486" y2="172" stroke="#2F5FD0" stroke-width="2" stroke-dasharray="5 5"/>
+        <text x="626" y="134" font-size="16" text-anchor="middle" fill="#1E3F8F" font-weight="700">여기서 이미 끝!</text>
+        <line x1="200" y1="196" x2="770" y2="196" stroke="#B9BFCB" stroke-width="1.5" marker-end="url(#ar2)"/>
+        <text x="780" y="201" font-size="13" fill="#5B616E">시간</text>
+        <defs><marker id="ar2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M1 1L9 5L1 9" fill="none" stroke="#B9BFCB" stroke-width="2"/></marker></defs>
+      </svg>
+      </div>
+    </div>
+    <div class="card full" id="s7s"><h3><span class="k">＋</span>분할 보기로 두 세션을 나란히 보면</h3><div class="svgw"><svg viewBox="0 0 900 230" role="img" aria-label="분할 보기 예시">
+<rect x="10" y="10" width="880" height="210" rx="10" fill="#fff" stroke="#D5D9E0"/><rect x="10" y="10" width="110" height="210" rx="10" fill="#F8F9FB"/>
+<g font-size="12" fill="#22252B"><text x="22" y="40">+ 새로 만들기</text><rect x="18" y="56" width="94" height="20" rx="4" fill="#EEF3FD"/><text x="24" y="70" fill="#1E3F8F">세션 A</text><rect x="18" y="80" width="94" height="20" rx="4" fill="#F4F1FB"/><text x="24" y="94" fill="#4A3B7A">세션 B</text></g>
+<rect x="130" y="20" width="370" height="190" rx="8" fill="#EEF3FD"/><text x="146" y="44" font-size="14" font-weight="700" fill="#1E3F8F">세션 A · 매출 그래프</text>
+<g fill="#2F5FD0"><rect x="160" y="120" width="40" height="60"/><rect x="215" y="95" width="40" height="85"/></g><text x="290" y="150" font-size="13" fill="#1E3F8F">만드는 중…</text>
+<rect x="510" y="20" width="370" height="190" rx="8" fill="#F4F1FB"/><text x="526" y="44" font-size="14" font-weight="700" fill="#4A3B7A">세션 B · 회의 요약</text>
+<g fill="#D9D0EE"><rect x="530" y="70" width="300" height="10" rx="5"/><rect x="530" y="92" width="250" height="10" rx="5"/><rect x="530" y="114" width="280" height="10" rx="5"/></g><text x="530" y="160" font-size="13" fill="#4A3B7A">회의록 2개 읽는 중…</text>
+</svg></div><p class="ex">예시: 보기(View) → 분할 보기로 두 세션이 동시에 일하는 모습</p></div>
+<div class="card" id="s7b">
+      <h3><span class="k">②</span>세션 A에 보내기</h3>
+      <p>왼쪽 '최근 항목'에서 세션 A를 눌러 돌아가서 보내요.</p>
+      <div class="prompt"><div class="where"><span class="w code">앱 · &lt;/&gt; 코드</span><span class="w env">환경: 이 컴퓨터</span><span class="w fd">폴더: 실습자료</span><span class="w se">세션 A</span><span class="w tm">⏱ 약 1~2분</span></div><span class="lb">이렇게 보내세요</span>9월매출(백업).csv와 10월매출.csv를 비교하는 막대그래프 웹페이지를 만들어서 열어 줘. 파일 이름은 매출비교.html로 해 줘.<button class="cp">복사</button></div>
+    </div>
+    <div class="card" id="s7c">
+      <h3><span class="k">③</span>기다리지 말고 바로 세션 B에</h3>
+      <p>A가 일하는 동안 세션 B(STEP 6에서 연 것)를 눌러 보내요. 없으면 <b>+ 새로 만들기</b>로 열고 폴더를 「실습자료」로 골라요.</p>
+      <div class="prompt"><div class="where"><span class="w code">앱 · &lt;/&gt; 코드</span><span class="w env">환경: 이 컴퓨터</span><span class="w fd">폴더: 실습자료</span><span class="w se">세션 B</span><span class="w tm">⏱ 약 1~2분</span></div><span class="lb">이렇게 보내세요</span>회의록 파일 두 개를 읽고 결정 사항만 모아서 한 장짜리 요약 웹페이지로 만들어 줘. 파일 이름은 회의요약.html로 해 줘.<button class="cp">복사</button></div>
+    </div>
+    <div class="card" id="s7d">
+      <h3><span class="k">④</span>나눠 맡길 때 규칙 두 가지</h3>
+      <ol>
+        <li><b>세션마다 다른 파일을 맡겨요.</b> 같은 파일을 두 세션이 동시에 고치면 꼬여요. 그래서 파일 이름을 정해 줬어요.</li>
+        <li><b>동시에 최대 2개.</b> 많이 돌리면 사용량이 빨리 닳아요.</li>
+      </ol>
+      <div class="box set"><div class="bt">두 세션을 나란히 보기</div><p>앱 위쪽 메뉴의 <b>보기(View) → 분할 보기(Split View)</b>로 새 세션을 옆에 열면, 두 직원이 일하는 모습을 한 화면에서 볼 수 있어요.</p></div>
+      <div class="box tip"><div class="bt">이게 앞으로의 방식이에요</div><p>8주 내내 이렇게 일을 나눠 맡겨요. 한쪽에서 영상을 만드는 동안 다른 쪽에서 홈페이지를 고치는 식이에요.</p></div>
+    </div>
+    <div class="card" id="s7e">
+      <h3><span class="k">⑤</span>한 걸음 더: 결과 합치기</h3>
+      <div class="prompt"><div class="where"><span class="w code">앱 · &lt;/&gt; 코드</span><span class="w fd">폴더: 실습자료</span><span class="w se">둘 다 끝난 뒤 아무 세션</span><span class="w tm">⏱ 약 1~2분</span></div><span class="lb">이렇게 보내세요</span>매출비교.html과 회의요약.html을 위쪽 메뉴로 오갈 수 있는 웹페이지 하나로 묶어 줘.<button class="cp">복사</button></div>
+    </div>
+  </div>
+</section>
+
+<!-- STEP 8 -->
+<section class="step" data-t="코드의 시대">
+  <div class="shead"><span class="no">STEP 8</span><button class="tipbtn" onclick="tgtip()">💡 컴퓨터 도움말</button><h2>이제 코드의 시대: 같은 엔진, 다른 운전석</h2><p>오늘 쓴 클로드 코드는 여러 곳에서 똑같이 돌아가요.</p><div class="inltips"></div></div>
+  <div class="grid">
+    <div class="card full" id="s8a">
+      <h3><span class="k">①</span>클로드 코드를 쓸 수 있는 곳</h3>
+      <div class="svgw">
+      <svg viewBox="0 0 900 260" role="img" aria-label="같은 엔진 다른 운전석">
+        <g text-anchor="middle">
+          <circle cx="450" cy="130" r="62" fill="#2F5FD0"/><text x="450" y="124" font-size="18" font-weight="700" fill="#fff">클로드 코드</text><text x="450" y="148" font-size="14" fill="#DCE6FB">같은 엔진</text>
+          <g stroke="#C9D7F5" stroke-width="3"><line x1="388" y1="110" x2="270" y2="70"/><line x1="388" y1="150" x2="270" y2="190"/><line x1="512" y1="110" x2="630" y2="70"/><line x1="512" y1="150" x2="630" y2="190"/></g>
+          <rect x="70" y="40" width="200" height="60" rx="12" fill="#EEF3FD" stroke="#9DB4EA" stroke-width="2"/><text x="170" y="68" font-size="17" font-weight="700" fill="#1E3F8F">데스크톱 앱</text><text x="170" y="89" font-size="13" fill="#1E3F8F">이 수업 · 내 폴더</text>
+          <rect x="70" y="160" width="200" height="60" rx="12" fill="#fff" stroke="#D5D9E0"/><text x="170" y="188" font-size="17" font-weight="700" fill="#22252B">웹 claude.ai/code</text><text x="170" y="209" font-size="13" fill="#5B616E">깃허브와 함께 · 5주차</text>
+          <rect x="630" y="40" width="200" height="60" rx="12" fill="#fff" stroke="#D5D9E0"/><text x="730" y="68" font-size="17" font-weight="700" fill="#22252B">터미널 (CLI)</text><text x="730" y="89" font-size="13" fill="#5B616E">글자로만 된 명령 창</text>
+          <rect x="630" y="160" width="200" height="60" rx="12" fill="#fff" stroke="#D5D9E0"/><text x="730" y="188" font-size="17" font-weight="700" fill="#22252B">VS Code 등</text><text x="730" y="209" font-size="13" fill="#5B616E">개발자용 편집 프로그램</text>
+        </g>
+      </svg>
+      </div>
+      <p>개발자는 터미널(CLI, 마우스 없이 글자로 명령하는 창)이나 VS Code에서, 우리는 데스크톱 앱에서 써요. <b>운전석만 다르고 엔진은 같아요.</b> 앱에서 익힌 시키는 법은 어디서나 그대로 통해요. 코드 화면 오른쪽 위의 <b>&gt;_</b> 버튼이 바로 앱 안의 터미널이에요.</p>
+      <div class="box set"><div class="bt">다른 회사도 같은 방향</div><p>오픈AI는 코덱스(Codex), 구글은 제미나이 CLI와 안티그래비티(Antigravity)를 내놨어요. AI 회사들이 모두 "대화하는 AI"에서 "일을 맡기는 AI"로 가고 있어요.</p></div>
+    </div>
+    <div class="card" id="s8b">
+      <h3><span class="k">②</span>더 확장하는 방법</h3>
+      <div class="svgw">
+      <svg viewBox="0 0 440 200" role="img" aria-label="확장 도구 네 가지">
+        <g text-anchor="middle" font-size="14" font-weight="700">
+          <rect x="10" y="10" width="200" height="85" rx="10" fill="#EEF3FD"/><rect x="85" y="22" width="50" height="38" rx="4" fill="#fff" stroke="#9DB4EA"/><line x1="94" y1="34" x2="126" y2="34" stroke="#C9D7F5" stroke-width="4"/><line x1="94" y1="46" x2="118" y2="46" stroke="#C9D7F5" stroke-width="4"/><text x="110" y="82" fill="#1E3F8F">스킬 · 업무 매뉴얼</text>
+          <rect x="230" y="10" width="200" height="85" rx="10" fill="#F7F8FA"/><rect x="305" y="22" width="50" height="34" rx="6" fill="#fff" stroke="#B9BFCB"/><circle cx="330" cy="39" r="7" fill="#9AA2B1"/><text x="330" y="82" fill="#22252B">커넥터 · 출입증</text>
+          <rect x="10" y="105" width="200" height="85" rx="10" fill="#F7F8FA"/><rect x="82" y="115" width="56" height="40" rx="5" fill="#F2DFA8"/><path d="M110 125 v20 M102 137 l8 8 l8 -8" stroke="#8A6A1E" stroke-width="2.5" fill="none"/><text x="110" y="177" fill="#22252B">깃허브 · 보관 창고</text>
+          <rect x="230" y="105" width="200" height="85" rx="10" fill="#F7F8FA"/><path d="M300 150 a16 16 0 0 1 28 -10 a14 14 0 0 1 26 6 a11 11 0 0 1 -3 22 h-46 a11 11 0 0 1 -5 -18z" fill="#E8ECF4"/><text x="330" y="177" fill="#22252B">클라우드 · 인터넷 속 PC</text>
+        </g>
+      </svg>
+      </div>
+      <ul>
+        <li><b>스킬</b>: 업무 매뉴얼 (오늘 해 봤어요)</li>
+        <li><b>커넥터</b>: 구글 드라이브·지메일·깃허브 같은 서비스에 들어가는 출입증</li>
+        <li><b>깃허브</b>: 작업 보관 창고이자 인터넷으로 나가는 문 (5주차)</li>
+        <li><b>클라우드 세션</b>: 내 컴퓨터를 꺼도 인터넷 속 컴퓨터에서 계속 일해요</li>
+      </ul>
+    </div>
+    <div class="card" id="s8c">
+      <h3><span class="k">③</span>요금과 사용량</h3>
+      <ul>
+        <li>클로드 코드는 <b>프로 이상</b> 유료 구독에서만 돼요.</li>
+        <li>채팅이든 코드든, 내 컴퓨터든 클라우드든 <b>같은 사용량 주머니</b>에서 나가요. 따로 돈이 더 빠지지 않아요.</li>
+        <li>코드 작업은 채팅보다 사용량이 <b>빨리 닳아요.</b> 입력창 아래 <b>동그란 고리</b>로 남은 양을 볼 수 있어요.</li>
+        <li>다 쓰면 보낸 메시지는 기다렸다가, 몇 시간 뒤 사용량이 다시 채워지면 이어서 처리돼요.</li>
+        <li>'추가 사용량'을 켜면 그때부터는 <b>따로 돈이 나가요.</b></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- STEP 9 -->
+<section class="step" data-t="직접 만들기">
+  <div class="shead"><span class="no">STEP 9</span><button class="tipbtn" onclick="tgtip()">💡 컴퓨터 도움말</button><h2>직접 만들기: 로또 · 보고서 · 발표자료</h2><p>결과물마다 "왜 코드인가"를 하나씩 확인해요. 시간이 모자라면 다음 주에 이어서 해요.</p><div class="inltips"></div></div>
+  <div class="grid">
+    <div class="card full" id="s9a">
+      <h3><span class="k">①</span>준비: 폴더 두 개, 세션 두 개</h3>
+      <div class="svgw">
+      <svg viewBox="0 0 900 220" role="img" aria-label="세션과 결과물 흐름">
+        <g text-anchor="middle">
+          <text x="150" y="26" font-size="15" font-weight="700" fill="#1E3F8F">세션 A · 폴더 「로또」</text>
+          <rect x="30" y="40" width="240" height="150" rx="14" fill="#EEF3FD" stroke="#C9D7F5"/>
+          <circle cx="80" cy="105" r="20" fill="#F2B84B"/><circle cx="125" cy="105" r="20" fill="#5B8DEF"/><circle cx="170" cy="105" r="20" fill="#E86A6A"/><circle cx="215" cy="105" r="20" fill="#9AA2B1"/>
+          <g font-size="14" font-weight="700" fill="#fff"><text x="80" y="110">7</text><text x="125" y="110">12</text><text x="170" y="110">33</text><text x="215" y="110">41</text></g>
+          <text x="150" y="165" font-size="15" fill="#1E3F8F">로또 웹페이지 · 직접 실행</text>
+          <text x="600" y="26" font-size="15" font-weight="700" fill="#4A3B7A">세션 B · 폴더 「보고서」 (A와 동시에)</text>
+          <rect x="330" y="40" width="540" height="150" rx="14" fill="#F7F5FC" stroke="#D9D0EE"/>
+          <rect x="380" y="60" width="80" height="100" rx="4" fill="#fff" stroke="#B4A6DD"/><line x1="392" y1="80" x2="448" y2="80" stroke="#D9D0EE" stroke-width="5"/><line x1="392" y1="96" x2="440" y2="96" stroke="#D9D0EE" stroke-width="4"/><rect x="392" y="108" width="56" height="30" fill="#EEE9F8"/>
+          <text x="420" y="180" font-size="14" fill="#4A3B7A">업무 보고서</text>
+          <path d="M490 110 h90" stroke="#B4A6DD" stroke-width="3" marker-end="url(#a9)"/>
+          <text x="535" y="100" font-size="12" fill="#4A3B7A">파일 이어 받기</text>
+          <g><rect x="610" y="66" width="110" height="70" rx="4" fill="#fff" stroke="#B4A6DD"/><rect x="640" y="76" width="110" height="70" rx="4" fill="#fff" stroke="#B4A6DD"/><rect x="670" y="86" width="110" height="70" rx="4" fill="#fff" stroke="#B4A6DD"/><rect x="684" y="100" width="60" height="8" rx="3" fill="#D9D0EE"/><rect x="684" y="116" width="80" height="26" fill="#EEE9F8"/></g>
+          <text x="700" y="180" font-size="14" fill="#4A3B7A">발표자료 5장</text>
+        </g>
+        <defs><marker id="a9" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M1 1L9 5L1 9" fill="none" stroke="#B4A6DD" stroke-width="2"/></marker></defs>
+      </svg>
+      </div>
+      <p>바탕화면에 「바이브코딩」 폴더를 만들고, 그 안에 「로또」와 「보고서」 폴더를 만들어요. 세션마다 자기 폴더에서만 일하게 하려는 거예요.</p>
+    </div>
+    <div class="card" id="s9b">
+      <h3><span class="k">②</span>세션 A: 로또 웹페이지</h3>
+      <p><b>+ 새로 만들기</b> → 환경 <b>이 컴퓨터</b> → 폴더 <b>「바이브코딩」 안의 「로또」</b></p>
+      <div class="prompt"><div class="where"><span class="w code">앱 · &lt;/&gt; 코드</span><span class="w env">환경: 이 컴퓨터</span><span class="w fd">폴더: 바이브코딩/로또</span><span class="w se">세션 A</span><span class="w tm">⏱ 약 1~2분</span></div><span class="lb">이렇게 보내세요</span>로또 번호를 뽑는 웹페이지를 만들어 줘. 버튼을 누르면 1~45 중에서 겹치지 않게 6개를 뽑아 작은 수부터 보여 주고, 번호마다 색깔 있는 공 모양으로 보여 줘. lotto.html로 저장하고 열어 줘.<button class="cp">복사</button></div>
+      <p>AI가 계획 → 코드 작성 → 파일 저장 → 열기까지 해요. 「로또」 폴더를 열면 lotto.html이 진짜로 있어요.</p>
+      <div class="svgw"><svg viewBox="0 0 440 200" role="img" aria-label="로또 웹페이지 결과 예시"><rect x="10" y="10" width="420" height="180" rx="14" fill="#fff" stroke="#D5D9E0"/><text x="220" y="46" font-size="18" text-anchor="middle" font-weight="700" fill="#22252B">오늘의 로또 번호</text>
+<g font-size="15" font-weight="700" text-anchor="middle" fill="#fff"><circle cx="85" cy="96" r="24" fill="#F2B84B"/><text x="85" y="101">3</text><circle cx="139" cy="96" r="24" fill="#5B8DEF"/><text x="139" y="101">14</text><circle cx="193" cy="96" r="24" fill="#E86A6A"/><text x="193" y="101">22</text><circle cx="247" cy="96" r="24" fill="#E86A6A"/><text x="247" y="101">27</text><circle cx="301" cy="96" r="24" fill="#9AA2B1"/><text x="301" y="101">35</text><circle cx="355" cy="96" r="24" fill="#5DCAA5"/><text x="355" y="101">44</text></g>
+<rect x="150" y="136" width="140" height="38" rx="19" fill="#2F5FD0"/><text x="220" y="160" font-size="15" text-anchor="middle" fill="#fff" font-weight="700">번호 뽑기</text></svg></div><p class="ex">예시: 완성된 로또 웹페이지 (디자인은 사람마다 달라요)</p>
+      <div class="box ext"><div class="bt">한 걸음 더</div><p>"한 번에 5세트를 뽑고, 뽑은 기록이 아래에 쌓이게 바꿔 줘." · "휴대폰 화면에도 맞게 바꿔 줘."</p></div>
+    </div>
+    <div class="card" id="s9c">
+      <h3><span class="k">③</span>세션 B: 업무 보고서 (A와 동시에)</h3>
+      <p>A가 일하는 동안 <b>+ 새로 만들기</b> → 환경 <b>이 컴퓨터</b> → 폴더 <b>「바이브코딩」 안의 「보고서」</b></p>
+      <div class="prompt"><div class="where"><span class="w code">앱 · &lt;/&gt; 코드</span><span class="w env">환경: 이 컴퓨터</span><span class="w fd">폴더: 바이브코딩/보고서</span><span class="w se">세션 B</span><span class="w tm">⏱ 약 2~5분</span></div><span class="lb">이렇게 보내세요</span>가상의 회사 「양천상사」 영업팀의 11월 업무 보고서를 워드 파일(docx)로 만들어 줘. 제목, 이번 달 실적 요약, 팀원 4명의 실적 표(숫자는 지어내서), 다음 달 계획을 넣어 줘. 다 만들면 파일이 어디에 저장됐는지 알려 줘.<button class="cp">복사</button></div>
+      <div class="box warn"><div class="bt">워드 파일이 오래 걸리거나 막히면</div><p>워드·PPT 파일을 만들 때 AI가 파이썬 같은 도구를 설치하려고 할 수 있어요. 기관 PC에서는 막힐 수 있으니 이렇게 바꿔 말하세요.<br>"워드 대신 같은 내용을 인쇄하기 좋은 웹페이지 보고서로 만들어 줘."</p><p>또는 <span class="w chat">앱 · 💬 채팅</span>에서 「프로젝트 또는 폴더」로 「보고서」 폴더를 연결하고, 입력창에 <b>/docx</b>를 쳐서 워드 스킬로 만들어도 돼요. PPT는 <b>/pptx</b>예요.</p></div>
+    </div>
+    <div class="card" id="s9d">
+      <h3><span class="k">④</span>세션 B: 발표자료 5장 (이어서)</h3>
+      <div class="prompt"><div class="where"><span class="w code">앱 · &lt;/&gt; 코드</span><span class="w env">환경: 이 컴퓨터</span><span class="w fd">폴더: 바이브코딩/보고서</span><span class="w se">세션 B · 이어서</span><span class="w tm">⏱ 약 2~5분</span></div><span class="lb">이렇게 보내세요</span>방금 만든 보고서를 바탕으로 발표자료 5장을 PPT 파일(pptx)로 만들어 줘. 1장 표지, 2장 요약, 3장 실적 표, 4장 문제점, 5장 다음 달 계획.<button class="cp">복사</button></div>
+      <p>파일을 다시 올리지 않았는데 보고서를 읽고 이어서 만들어요. 앞 결과가 다음 일의 재료가 돼요.</p>
+      <div class="box warn"><div class="bt">PPT가 막히면</div><p>"PPT 대신 화살표로 넘기는 웹페이지 슬라이드 5장으로 만들어 줘."</p></div>
+    </div>
+    <div class="card" id="s9e">
+      <h3><span class="k">⑤</span>팀장의 확인</h3>
+      <ol>
+        <li>결과물을 직접 열어 봐요.</li>
+        <li>틀린 곳이나 마음에 안 드는 곳 하나를 골라 말로 고치게 해요.</li>
+      </ol>
+      <div class="prompt"><div class="where"><span class="w code">앱 · &lt;/&gt; 코드</span><span class="w fd">폴더: 바이브코딩/보고서</span><span class="w se">세션 B</span><span class="w tm">⏱ 약 1분 안팎</span></div><span class="lb">예시</span>발표자료 3장의 숫자가 보고서와 같은지 확인하고, 다르면 보고서 기준으로 맞춰 줘.<button class="cp">복사</button></div>
+      <p class="big">AI가 만든 걸 그대로 믿지 않고 확인하는 것,<br>그게 바이브 코딩에서 사람이 하는 일이에요.</p>
+    </div>
+  </div>
+</section>
+
+<!-- STEP 10 -->
+<section class="step" data-t="마무리">
+  <div class="shead"><span class="no">STEP 10</span><button class="tipbtn" onclick="tgtip()">💡 컴퓨터 도움말</button><h2>마무리와 집에서 다시 하기</h2><p>오늘 배운 것을 정리하고, 집에서 혼자 다시 해 볼 때 필요한 것을 모았어요.</p><div class="inltips"></div></div>
+  <div class="grid">
+    <div class="card full" id="s10a">
+      <h3><span class="k">①</span>오늘의 한 문장</h3>
+      <p class="big">코드는 개발자만의 것이 아니라, AI에게 일을 맡기는 또 하나의 공간이에요.<br>생각은 채팅, 일은 코드.</p>
+    </div>
+    <div class="card" id="s10b">
+      <h3><span class="k">②</span>오늘 해 본 것 체크</h3>
+      <ul class="chk">
+        <li>앱 설치, 로그인, &lt;/&gt; 코드 열기</li>
+        <li>실습자료 받아 바탕화면에 풀기</li>
+        <li>웹과 앱에 같은 질문 하기</li>
+        <li>「실습자료」 폴더 정리 시키기</li>
+        <li>스킬 만들고 새 세션에서 써 보기</li>
+        <li>세션 두 개에 동시에 맡기기</li>
+        <li>로또 · 보고서 · 발표자료 (된 데까지)</li>
+      </ul>
+    </div>
+    <div class="card" id="s10c">
+      <h3><span class="k">③</span>공용 PC라면 꼭</h3>
+      <div class="box warn"><div class="bt">나가기 전에 로그아웃</div><p>클로드 앱, 크롬의 claude.ai·구글·깃허브 모두 로그아웃하세요. 클로드 앱은 왼쪽 아래 내 이름을 누르면 로그아웃이 있어요.</p></div>
+      <p>만든 파일을 가져가려면 「바이브코딩」·「실습자료」 폴더를 USB나 내 구글 드라이브에 옮겨 두세요.</p>
+    </div>
+    <div class="card" id="s10d">
+      <h3><span class="k">④</span>집에서 다시 할 때 순서</h3>
+      <ol>
+        <li>STEP 2대로 내 컴퓨터에 앱 설치, 로그인, &lt;/&gt; 코드 열기</li>
+        <li>STEP 2의 버튼으로 실습자료 받아 바탕화면에 풀기</li>
+        <li>STEP 3부터 지시문 상자 위의 <b>위치 표시</b>를 보고, 그 화면에 <b>복사</b> 버튼으로 붙여 넣기</li>
+        <li>막히면 각 STEP의 '막힐 때' 상자 보기</li>
+      </ol>
+    </div>
+    <div class="card full" id="s10f">
+      <h3><span class="k">⑤</span>오늘 나온 말 한 장 정리</h3>
+      <table>
+        <tr><th>말</th><th>쉬운 뜻</th><th>말</th><th>쉬운 뜻</th></tr>
+        <tr><td>바이브 코딩</td><td>말로 설명해서 AI가 만들게 하는 방식</td><td>프롬프트</td><td>AI에게 하는 지시문</td></tr>
+        <tr><td>에이전트</td><td>방법만 알려 주지 않고 직접 일하는 AI</td><td>코드 (&lt;/&gt;)</td><td>클로드 앱에서 AI에게 일을 맡기는 작업실</td></tr>
+        <tr><td>세션</td><td>AI 직원 한 명의 작업 창</td><td>폴더</td><td>세션이 일하는 작업실</td></tr>
+        <tr><td>환경</td><td>AI가 일할 컴퓨터 (이 컴퓨터 / 클라우드)</td><td>권한 모드</td><td>AI에게 얼마나 맡길지 정하는 설정</td></tr>
+        <tr><td>모델</td><td>AI의 두뇌</td><td>스킬</td><td>AI에게 주는 업무 매뉴얼</td></tr>
+        <tr><td>커넥터</td><td>다른 서비스로 가는 출입증</td><td>깃허브</td><td>작업 보관 창고, 인터넷으로 나가는 문</td></tr>
+        <tr><td>Git</td><td>파일 변경 기록을 남기는 도구</td><td>HTML</td><td>웹페이지 파일 (브라우저로 열림)</td></tr>
+        <tr><td>CSV</td><td>엑셀로 열리는 간단한 표 파일</td><td>터미널 (CLI)</td><td>마우스 없이 글자로 명령하는 창</td></tr>
+      </table>
+    </div>
+    <div class="card full" id="s10e">
+      <h3><span class="k">⑥</span>다음 주 예고: 업무 자동화 Ⅰ</h3>
+      <p>사진 30장의 이름과 크기를 한 번에 바꾸고, 엑셀 3개를 합쳐 차트를 만들고, 매일 아침 자동으로 실행되게 해요. 오늘처럼 <b>나눠서 동시에</b> 맡겨요.</p>
+      <div class="box tip"><div class="bt">AI에게 잘 시키는 세 가지</div><ol><li><b>무엇을</b>: 대상 파일·폴더를 정확히</li><li><b>어떻게</b>: 순서·형식·이름을 구체적으로</li><li><b>확인</b>: "시작 전에 계획을 먼저 알려 줘", "끝나면 어디에 저장했는지 알려 줘"</li></ol></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<aside class="side" id="side"><p>이 STEP의 내용</p><div id="sidelist"></div><div class="tipwrap"><button class="tipbtn" onclick="tgtip()">💡 컴퓨터 도움말</button><div class="tiplist" id="tiplist"></div></div></aside>
+</div>
+
+<div class="navb"><div class="in">
+  <button id="pv" onclick="go(cur-1)">← 이전</button>
+  <div class="pos" id="pos"></div>
+  <button id="nx" class="nx" onclick="go(cur+1)">다음 →</button>
+</div></div>
+<div class="foot">양천구 평생학습관 · 비개발자도 도전하는 AI 바이브 코딩 · 강사 김충효</div>
+
+<script>
+var steps=[].slice.call(document.querySelectorAll('.step')),cur=0,size=20;
+var tabs=document.getElementById('tabs');
+steps.forEach(function(s,i){var b=document.createElement('button');b.className='tab';b.innerHTML='<b>'+(i+1)+'</b>'+s.getAttribute('data-t');b.onclick=function(){go(i)};tabs.appendChild(b);});
+function go(i){if(i<0||i>=steps.length)return;cur=i;
+ steps.forEach(function(s,j){s.classList.toggle('on',j===i)});
+ [].forEach.call(tabs.children,function(t,j){t.classList.toggle('on',j===i)});
+ var t=tabs.children[i];if(t.scrollIntoView)t.scrollIntoView({block:'nearest',inline:'center'});
+ var sl=document.getElementById('sidelist');sl.innerHTML='';
+ [].forEach.call(steps[i].querySelectorAll('.card'),function(c){var h=c.querySelector('h3');if(!h)return;var a=document.createElement('a');a.href='#'+c.id;a.textContent=h.textContent;a.onclick=function(e){e.preventDefault();c.scrollIntoView({behavior:'smooth',block:'start'})};sl.appendChild(a);});
+ document.getElementById('pos').textContent='STEP '+(i+1)+' / '+steps.length+' · '+steps[i].getAttribute('data-t');
+ document.getElementById('pv').disabled=(i===0);document.getElementById('nx').disabled=(i===steps.length-1);
+ window.scrollTo(0,0);}
+function fs(d){size=Math.min(30,Math.max(16,size+d));document.documentElement.style.setProperty('--fs',size+'px');}
+[].forEach.call(document.querySelectorAll('.prompt'),function(p){var b=p.querySelector('.cp');b.onclick=function(){
+ var c=p.cloneNode(true);c.querySelectorAll('.cp,.lb,.where').forEach(function(x){x.remove()});var txt=c.textContent.trim();
+ function ok(){b.textContent='복사됨';b.classList.add('ok');setTimeout(function(){b.textContent='복사';b.classList.remove('ok')},1500);}
+ if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(txt).then(ok,fb);}else fb();
+ function fb(){var ta=document.createElement('textarea');ta.value=txt;ta.style.position='absolute';ta.style.left='-9999px';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');ok();}catch(e){}document.body.removeChild(ta);}
+};});
+
+var ZIPB64="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";
+function dlzip(){try{var bin=atob(ZIPB64),n=bin.length,u=new Uint8Array(n);for(var i=0;i<n;i++)u[i]=bin.charCodeAt(i);
+var blob=new Blob([u],{type:"application/zip"});var url=URL.createObjectURL(blob);var a=document.createElement("a");a.href=url;a.download="실습자료.zip";document.body.appendChild(a);a.click();setTimeout(function(){document.body.removeChild(a);URL.revokeObjectURL(url)},1500);}catch(e){alert("내려받기가 막혔어요. 강사가 안내한 링크를 이용하세요.");}}
+
+var TIPS=[
+[["이 교안 보는 법","위쪽 STEP 버튼을 누르면 그 단계로 가요. 맨 아래 '다음 →'으로 차례로 넘겨도 돼요."],["글자가 작으면","오른쪽 위 '가 +'를 눌러요."],["오른쪽 목록","이 STEP 안의 내용으로 바로 이동해요."]],
+[["내려받은 파일 찾기","크롬에서 Ctrl+J를 누르면 다운로드 목록이 나와요. '폴더 열기'로 파일 위치를 볼 수 있어요."],["바탕화면 바로 보기","⊞ Win+D를 누르면 모든 창이 내려가고 바탕화면이 보여요. 한 번 더 누르면 돌아와요."],["압축 풀기","zip 파일을 오른쪽 클릭 → '모두 압축 풀기' → '압축 풀기'."],["앱을 완전히 끄기","창의 X만 누르면 뒤에서 계속 켜져 있을 수 있어요. 화면 오른쪽 아래 작은 아이콘(^ 안쪽)에서 Claude를 오른쪽 클릭 → 종료."],["폴더 고르는 창","왼쪽에서 '바탕 화면'을 누르고, 폴더를 한 번만 클릭한 뒤 '폴더 선택'."]],
+[["창 바꾸기","Alt+Tab을 누르면 열린 창 사이를 오가요."],["크롬 새 탭","Ctrl+T로 새 탭을 열고 주소 칸에 claude.ai 를 입력해요."],["붙여 넣기","복사 버튼을 누른 뒤 클로드 입력창을 한 번 클릭하고 Ctrl+V."]],
+[["Enter를 조심","클로드 입력창에서 Enter는 '보내기'예요. 줄을 바꾸려면 Shift+Enter."],["탐색기 열기","⊞ Win+E를 누르면 파일 탐색기가 열려요. 왼쪽에서 '바탕 화면'을 눌러요."],["파일 종류 보기","탐색기 위쪽 '보기 → 표시 → 파일 확장명'을 켜면 .csv .txt 같은 꼬리표가 보여요."],["CSV가 엑셀로 안 열리면","파일을 오른쪽 클릭 → '연결 프로그램' → Excel."]],
+[["웹페이지 파일 열기","탐색기에서 .html 파일을 더블클릭하면 크롬에서 열려요."],["미리보기 창","앱 오른쪽에 열린 미리보기는 경계선을 끌어 넓히거나 X로 닫을 수 있어요."]],
+[["숨은 폴더 보기","스킬은 「실습자료」 안 '.claude' 폴더에 생겨요. 안 보이면 탐색기 '보기 → 표시 → 숨긴 항목'을 켜요."],["새 세션 열기","코드 화면 왼쪽 위 '+ 새로 만들기'. 환경과 폴더를 다시 골라야 해요."]],
+[["세션 오가기","왼쪽 '최근 항목'에서 세션 이름을 누르면 그 작업 창으로 가요."],["세션 이름 구분","세션 이름은 첫 지시문으로 자동으로 붙어요. 헷갈리면 오른쪽 클릭으로 이름을 바꿀 수 있어요."],["분할 보기","앱 위쪽 메뉴 '보기 → 분할 보기'로 두 세션을 나란히."]],
+[["터미널을 눌렀다면","검은 글자 창이 열려도 괜찮아요. 오른쪽 위 X로 닫으면 돼요."],["사용량 확인","입력창 아래 동그란 고리가 많이 찼으면 잠시 쉬어 가요."]],
+[["새 폴더 만들기","바탕화면 빈 곳을 오른쪽 클릭 → 새로 만들기 → 폴더 → 이름 입력 후 Enter."],["폴더 안에 폴더","「바이브코딩」 폴더를 더블클릭해 들어간 뒤 같은 방법으로 「로또」, 「보고서」를 만들어요."],["워드·PPT 파일 열기","탐색기에서 더블클릭. 학습관 PC에 오피스가 없으면 '미리보기'로 확인해요."]],
+[["USB에 옮기기","USB를 꽂고 탐색기에서 폴더를 USB 쪽으로 끌어다 놓아요."],["구글 드라이브에 올리기","drive.google.com → 왼쪽 위 '+ 새로 만들기' → '폴더 업로드'."],["로그아웃","클로드 앱 왼쪽 아래 내 이름 → 로그아웃. 크롬은 오른쪽 위 내 사진 → 로그아웃."]]
+];
+function tiphtml(i){return (TIPS[i]||[]).map(function(t){return '<div class="ti"><b>'+t[0]+'</b>'+t[1]+'</div>'}).join('');}
+var tipOn=false;
+function tgtip(){tipOn=!tipOn;rtips();}
+function rtips(){var tl=document.getElementById('tiplist');tl.innerHTML=tiphtml(cur);tl.classList.toggle('on',tipOn);
+ [].forEach.call(document.querySelectorAll('.inltips'),function(x){x.innerHTML='';x.classList.remove('on')});
+ var il=steps[cur].querySelector('.inltips');if(il&&tipOn&&window.innerWidth<=980){il.innerHTML=tiphtml(cur);il.classList.add('on');}}
+var _go=go;go=function(i){_go(i);rtips();};
+go(0);
+</script>
+</body>
+</html>

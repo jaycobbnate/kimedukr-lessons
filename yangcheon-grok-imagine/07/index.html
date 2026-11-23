@@ -1,0 +1,1529 @@
+<title>컬투쇼 쇼츠 교안</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Noto+Sans+KR:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* 레이아웃: 상단 STEP 탭(sticky) + 본문 카드 그리드 + 오른쪽 카드 메뉴(sticky) + 하단 이동 줄(sticky). fixed 없음 */
+:root{
+  --bg:#FAF9FB; --paper:#FFFFFF; --ink:#24202B; --muted:#6C6675; --line:#E5E1EA;
+  --accent:#6A3D8C; --accent-ink:#FFFFFF; --accent-soft:#F1EBF7;
+  --set:#EAF2FB; --set-b:#C9DCF2; --warn:#FBEEEF; --warn-b:#F0CFD3;
+  --ext:#F1ECF8; --ext-b:#D9CCEC; --help:#EAF5EF; --help-b:#C8E3D3;
+  --code:#F6F4F9; --stage:#F4F2F7;
+  --f-display:"Do Hyeon","Noto Sans KR",system-ui,sans-serif;
+  --f-body:"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+  --f-mono:"IBM Plex Mono","Noto Sans KR",ui-monospace,monospace;
+  --fs:20px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#17151B; --paper:#1F1C24; --ink:#ECE8F1; --muted:#A8A1B2; --line:#34303B;
+  --accent:#B892DA; --accent-ink:#17151B; --accent-soft:#2B2433;
+  --set:#1C2733; --set-b:#2E4257; --warn:#33201F; --warn-b:#55363A;
+  --ext:#271F32; --ext-b:#43355A; --help:#1B2A22; --help-b:#2F4A3B;
+  --code:#25212B; --stage:#1B1920; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#17151B; --paper:#1F1C24; --ink:#ECE8F1; --muted:#A8A1B2; --line:#34303B;
+  --accent:#B892DA; --accent-ink:#17151B; --accent-soft:#2B2433;
+  --set:#1C2733; --set-b:#2E4257; --warn:#33201F; --warn-b:#55363A;
+  --ext:#271F32; --ext-b:#43355A; --help:#1B2A22; --help-b:#2F4A3B;
+  --code:#25212B; --stage:#1B1920; color-scheme:dark}
+html{font-size:var(--fs)}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:1rem;line-height:1.7;margin:0}
+*{box-sizing:border-box}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+
+/* 상단 */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--bg);border-bottom:1px solid var(--line)}
+.top-row{display:flex;align-items:center;gap:1rem;padding:.55rem 16px;max-width:1440px;margin:0 auto}
+.brand{min-width:0;flex:1}
+.brand h1{font-family:var(--f-display);font-weight:400;font-size:1.25rem;line-height:1.25;margin:0;text-wrap:balance}
+.brand p{margin:0;font-size:.7rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fsz{display:flex;gap:.3rem;flex:none}
+.fsz button{border:1px solid var(--line);background:var(--paper);border-radius:8px;padding:.15rem .6rem;cursor:pointer;font-size:.8rem}
+.tabs{display:flex;gap:.25rem;overflow-x:auto;padding:0 16px .5rem;max-width:1440px;margin:0 auto;scrollbar-width:thin}
+.tab{flex:none;display:flex;align-items:center;gap:.4rem;border:1px solid var(--line);background:var(--paper);border-radius:999px;padding:.25rem .8rem .25rem .3rem;cursor:pointer;font-size:.78rem;color:var(--muted)}
+.tab b{display:inline-grid;place-items:center;width:1.5rem;height:1.5rem;border-radius:50%;background:var(--accent-soft);color:var(--accent);font-size:.7rem}
+.tab[aria-selected="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.tab[aria-selected="true"] b{background:var(--accent-ink);color:var(--accent)}
+@media (max-height:820px){.top-row{display:none}.tabs{padding-top:.5rem}}
+
+/* 본문 */
+.wrap{max-width:1440px;margin:0 auto;padding-inline:16px;padding-block:1.2rem 1.5rem;display:grid;grid-template-columns:minmax(0,1fr) 14rem;gap:1.5rem;align-items:start}
+@media (max-width:1100px){.wrap{grid-template-columns:minmax(0,1fr)}.side{display:none}}
+.step-head{display:flex;align-items:baseline;gap:.8rem;margin-bottom:1rem}
+.step-no{margin:0;font-family:var(--f-mono);font-size:.75rem;letter-spacing:.08em;color:var(--accent)}
+.step-head h2{margin:0;font-family:var(--f-display);font-weight:400;font-size:1.9rem;line-height:1.2}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,24rem),1fr));gap:1rem;align-items:start}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:1.1rem 1.25rem;min-width:0;scroll-margin-top:9rem}
+.card.wide{grid-column:1/-1}
+.card.wide>p,.card.wide>ul,.card.wide>ol,.card.wide>.note,.card.wide>.prompt{max-width:56rem}
+.card h3{margin:0 0 .6rem;font-size:1.15rem;line-height:1.35;text-wrap:balance}
+.card p{margin:.5rem 0}
+.card ul,.card ol{padding-left:1.3rem;margin:.5rem 0}
+.card li{margin:.2rem 0}
+.card strong{color:var(--accent);font-weight:700}
+.card code{font-family:var(--f-mono);font-size:.82em;background:var(--code);border:1px solid var(--line);border-radius:5px;padding:0 .3em}
+.tbl{overflow-x:auto;margin:.6rem 0;border:1px solid var(--line);border-radius:10px}
+table{border-collapse:collapse;width:100%;font-size:.85rem;line-height:1.55}
+th,td{padding:.5rem .65rem;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{background:var(--accent-soft);font-weight:700;white-space:nowrap}
+tr:last-child td{border-bottom:0}
+td:first-child{white-space:nowrap}
+.prompt{margin:.7rem 0;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--code)}
+.prompt figcaption{display:flex;align-items:center;justify-content:space-between;gap:.6rem;padding:.35rem .6rem .35rem .85rem;border-bottom:1px solid var(--line);font-size:.75rem;font-weight:700;color:var(--muted)}
+.copy{border:1px solid var(--accent);background:var(--paper);color:var(--accent);border-radius:7px;padding:.1rem .7rem;cursor:pointer;font-size:.75rem;font-weight:700;flex:none}
+.copy.done{background:var(--accent);color:var(--accent-ink)}
+.prompt pre{margin:0;padding:.8rem .9rem;white-space:pre-wrap;word-break:break-word;font-family:var(--f-mono);font-size:.78rem;line-height:1.65}
+.note{border:1px solid;border-radius:10px;padding:.6rem .9rem;margin:.7rem 0}
+.note p,.note ul{margin:.3rem 0}
+.note-k{font-weight:700;font-size:.8rem;letter-spacing:.02em}
+.note.set{background:var(--set);border-color:var(--set-b)}
+.note.warn{background:var(--warn);border-color:var(--warn-b)}
+.note.ext{background:var(--ext);border-color:var(--ext-b)}
+.note.help{background:var(--help);border-color:var(--help-b)}
+.note.home{background:var(--paper);border:1.5px dashed var(--accent)}
+.note.home .note-k{color:var(--accent)}
+.sbadge{margin-left:auto;font-weight:500;font-size:.7rem;color:var(--muted);background:var(--accent-soft);border-radius:999px;padding:.05rem .55rem;white-space:nowrap}
+.sbadge b{color:var(--accent)}
+.prompt figcaption .plabel{min-width:0}
+.stylechip{flex:none;border:1px solid var(--accent);background:var(--accent-soft);color:var(--ink);border-radius:999px;padding:.15rem .8rem;cursor:pointer;font-size:.8rem}
+.stylechip b{color:var(--accent)}
+.stylepick{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,12rem),1fr));gap:.7rem;margin:.6rem 0}
+.sopt{display:grid;grid-template-columns:3.4rem 1fr;grid-template-rows:auto auto;column-gap:.7rem;align-items:center;text-align:left;border:1.5px solid var(--line);background:var(--paper);border-radius:12px;padding:.7rem;cursor:pointer}
+.sopt svg{grid-row:1/3;width:3.4rem;height:3.4rem}
+.sopt-t{display:flex;gap:.4rem;align-items:baseline}
+.sopt-t b{font-size:1.05rem}
+.sopt-t small{font-size:.7rem;color:var(--muted)}
+.sopt-d{font-size:.75rem;color:var(--muted);line-height:1.4}
+.sopt[aria-checked="true"]{border-color:var(--accent);background:var(--accent-soft);box-shadow:0 0 0 2px var(--accent) inset}
+.style-msg{margin:.2rem 0 0;font-weight:700;color:var(--accent);font-size:.9rem;min-height:1.4em}
+.pick{margin:.6rem 0}
+.pick-hint{margin:0 0 .35rem;font-size:.78rem;color:var(--muted)}
+.pick-chips{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.7rem}
+.pchip{display:flex;gap:.35rem;align-items:baseline;border:1px solid var(--line);background:var(--paper);border-radius:999px;padding:.3rem .85rem;cursor:pointer;font-size:.82rem}
+.pchip b{color:var(--accent)}
+.pchip[aria-selected="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.pchip[aria-selected="true"] b{color:var(--accent-ink)}
+.ppanel{display:grid;grid-template-columns:minmax(0,24rem) minmax(0,1fr);gap:1rem;align-items:start}
+.ppanel[hidden]{display:none}
+@media (max-width:900px){.ppanel{grid-template-columns:minmax(0,1fr)}}
+.ppanel .prompt{margin:0}
+.recipe-wrap{background:var(--stage);border:1px solid var(--line);border-radius:10px;padding:.6rem}
+.recipe{display:block;width:100%;max-width:36rem;height:auto;margin:.5rem 0}
+.recipe-wrap .recipe{margin:0}
+.recipe .rc-box{fill:var(--paper);stroke:var(--line);stroke-width:1.5}
+.recipe .rc-tag{stroke:none}
+.recipe .rc-tag.att{fill:var(--set-b)} .recipe .rc-tag.st{fill:var(--help-b)} .recipe .rc-tag.en{fill:var(--warn-b)} .recipe .rc-tag.ref{fill:var(--ext-b)}
+.recipe .rc-tagt{fill:var(--ink);font:700 18px var(--f-body)}
+.recipe .rc-t{fill:var(--ink);font:700 22px var(--f-body)}
+.recipe .rc-line{fill:none;stroke:var(--muted);stroke-width:1.6}
+.recipe .rc-arrow{fill:var(--muted)}
+.recipe .rc-res{fill:var(--accent)}
+.recipe .rc-rest{fill:var(--accent-ink);font:700 24px var(--f-body)}
+.chk{list-style:none;margin-left:-1.3rem}
+.chk input{width:1.05rem;height:1.05rem;accent-color:var(--accent);vertical-align:-2px}
+
+/* 입체 무대 */
+.stage{margin:.6rem 0 .2rem;border:1px solid var(--line);border-radius:12px;background:var(--stage);overflow:hidden}
+.stage-view{position:relative;aspect-ratio:16/7;max-width:100%}
+@media (max-width:700px){.stage-view{aspect-ratio:4/3}}
+.stage canvas{display:block;width:100%;height:100%}
+.stage-fallback{position:absolute;inset:auto 1rem 1rem;margin:0;font-size:.8rem;color:var(--muted)}
+.stage-steps{display:none}
+.stage.nogl .stage-view{aspect-ratio:auto;padding:1rem 1rem 2.6rem}
+.stage.nogl canvas{display:none}
+.stage.nogl .stage-steps{display:block;margin:0;padding-left:1.4rem;font-size:.9rem}
+.stage .stage-cap{margin:0;padding:.55rem 1rem;border-top:1px solid var(--line);font-weight:700;font-size:.9rem;min-height:2.6em;background:var(--paper)}
+/* 영상 속 나레이션 자막: 화면 위에 얹히므로 두 테마 모두 같은 색 */
+.stage .stage-sub{position:absolute;left:50%;bottom:7%;transform:translateX(-50%);width:max-content;max-width:88%;margin:0;padding:.3em .85em;border-radius:8px;background:rgba(18,16,22,.66);color:#FFFFFF;font-weight:700;font-size:clamp(.8rem,2.3vw,1.3rem);line-height:1.45;text-align:center;text-wrap:balance;pointer-events:none}
+.stage.nogl .stage-sub{display:none}
+.stage-ctl{display:flex;align-items:center;gap:.5rem;padding:.45rem .8rem;border-top:1px solid var(--line);background:var(--paper);flex-wrap:wrap}
+.stage-ctl button{border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:.15rem .75rem;cursor:pointer;font-size:.78rem}
+.stage-ctl .b-play{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:700;min-width:4.2rem}
+.b-seek{flex:1;min-width:8rem;accent-color:var(--accent)}
+.b-loopl{font-size:.78rem;color:var(--muted);display:flex;gap:.25rem;align-items:center}
+
+/* 오른쪽 메뉴 */
+.side{position:sticky;top:8.5rem;max-height:calc(100vh - 10rem);overflow:auto;border-left:1px solid var(--line);padding-left:1rem}
+@media (max-height:820px){.side{top:4.5rem;max-height:calc(100vh - 6rem)}}
+.side p{margin:0 0 .4rem;font-size:.7rem;font-family:var(--f-mono);letter-spacing:.08em;color:var(--accent)}
+.side h4{margin:0 0 .6rem;font-size:.95rem}
+.side ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:.15rem}
+.side a{display:block;padding:.25rem .5rem;border-radius:7px;color:var(--muted);text-decoration:none;font-size:.78rem;line-height:1.4}
+.side a:hover{background:var(--accent-soft);color:var(--ink)}
+.side a.on{background:var(--accent-soft);color:var(--accent);font-weight:700}
+
+/* 하단 이동 줄 */
+.bottom{position:sticky;bottom:env(safe-area-inset-bottom,0px);z-index:20;background:var(--bg);border-top:1px solid var(--line)}
+.bottom-in{max-width:1440px;margin:0 auto;padding:.45rem 16px;display:flex;gap:.5rem;align-items:center}
+.bottom button{border:1px solid var(--line);background:var(--paper);border-radius:8px;padding:.25rem .8rem;cursor:pointer;font-size:.8rem;flex:none}
+.bottom .next{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:700}
+.bottom select{flex:1;min-width:0;border:1px solid var(--line);background:var(--paper);border-radius:8px;padding:.25rem .4rem;font-size:.78rem}
+@media (max-width:640px){.brand p{display:none}.brand h1{font-size:1rem}.top-row{padding-block:.4rem}#pick-step{display:none}.step-head h2{font-size:1.5rem}.card{padding:.9rem 1rem}}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+</style>
+
+<div class="top">
+  <div class="top-row">
+    <div class="brand"><h1>그록 7차시 · 한 컷씩 짓는 컬투쇼 쇼츠</h1><p>1안 「택배 왔어요, 네~」 다 같이 · 2안 「도인 할아버지와 산새」 내가 만들기 · 프롬프트는 전부 완성본으로 제공 · 화풍을 고르면 아래 프롬프트가 모두 그 화풍으로 바뀜 · 단계마다 &quot;집에서 내 이야기로 도출하는 프롬프트&quot; 포함</p></div>
+    <button type="button" class="stylechip" id="stylechip" title="화풍 바꾸기">화풍 · <b id="style-now">실사</b></button>
+    <div class="fsz" role="group" aria-label="글자 크기">
+      <button type="button" data-fs="-1" aria-label="글자 작게">가−</button>
+      <button type="button" data-fs="0" aria-label="글자 기본">가</button>
+      <button type="button" data-fs="1" aria-label="글자 크게">가+</button>
+    </div>
+  </div>
+  <nav class="tabs" role="tablist" aria-label="STEP">
+<button type="button" class="tab" role="tab" data-step="s0"><b>0</b><span>시작</span></button>
+<button type="button" class="tab" role="tab" data-step="s1"><b>1</b><span>이야기</span></button>
+<button type="button" class="tab" role="tab" data-step="s2"><b>2</b><span>화풍</span></button>
+<button type="button" class="tab" role="tab" data-step="s3"><b>3</b><span>캐릭터</span></button>
+<button type="button" class="tab" role="tab" data-step="s4"><b>4</b><span>소품·배경</span></button>
+<button type="button" class="tab" role="tab" data-step="s5"><b>5</b><span>키프레임</span></button>
+<button type="button" class="tab" role="tab" data-step="s6"><b>6</b><span>영상</span></button>
+<button type="button" class="tab" role="tab" data-step="s7"><b>7</b><span>나레이션</span></button>
+<button type="button" class="tab" role="tab" data-step="s8"><b>8</b><span>캡컷</span></button>
+<button type="button" class="tab" role="tab" data-step="s9"><b>9</b><span>마무리</span></button>
+  </nav>
+</div>
+
+<div class="wrap">
+  <main id="main">
+<section class="step" id="s0" data-name="시작" hidden><header class="step-head"><p class="step-no">STEP 0</p><h2>시작</h2></header><div class="grid"><article class="card wide" id="s0-goal"><h3>오늘 만드는 것</h3><p>컬투쇼 사연 하나를 <strong>30초 안팎의 세로 쇼츠</strong>로 만듭니다. 에이전트에게 맡기지 않고, <strong>그림을 한 장씩 짓고 그 사이를 영상으로 잇는</strong> 방식입니다.</p>
+<ul>
+<li>오늘 쓰는 프롬프트는 <strong>전부 교재에 완성본으로</strong> 들어 있습니다. 「복사」 눌러 그록에 붙이면 됩니다.</li>
+<li>위쪽에서 <strong>화풍을 한 번 고르면</strong> 아래 모든 프롬프트가 그 화풍으로 바뀝니다. 수업은 <strong>실사</strong>로 합니다.</li>
+<li>단계마다 <strong>「집에서 · 이렇게 도출합니다」</strong> 상자가 있습니다. 내 이야기로 같은 프롬프트를 뽑는 방법입니다.</li>
+</ul></article><article class="card wide" id="s0-flow"><h3>전체 공정 한눈에</h3><div class="stage" data-scene="pipeline"><div class="stage-view"><canvas></canvas><p class="stage-fallback" hidden>이 기기에서는 입체 화면을 띄울 수 없어 단계 설명만 보여 드립니다.</p><ol class="stage-steps"></ol></div><p class="stage-cap" aria-live="polite"></p><div class="stage-ctl"><button type="button" class="b-play" aria-label="재생/멈춤">멈춤</button><button type="button" class="b-restart">처음으로</button><input type="range" class="b-seek" min="0" max="1000" value="0" aria-label="진행 위치"><label class="b-loopl"><input type="checkbox" class="b-loop" checked> 반복</label></div></div>
+</article><article class="card wide" id="s0-stories"><h3>오늘의 두 이야기</h3><div class="tbl"><table>
+<thead>
+<tr>
+<th></th>
+<th>1안 · 다 같이</th>
+<th>2안 · 내가</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>제목</td>
+<td>택배 왔어요, 네~</td>
+<td>도인 할아버지와 산새</td>
+</tr>
+<tr>
+<td>장소</td>
+<td>시골집 대문·돌담</td>
+<td>가을 산길</td>
+</tr>
+<tr>
+<td>등장</td>
+<td>택배 기사 · 염소</td>
+<td>할아버지 · 청년</td>
+</tr>
+<tr>
+<td>소품</td>
+<td>택배 상자</td>
+<td>산새(참새)</td>
+</tr>
+<tr>
+<td>그림 → 영상</td>
+<td>8장 → 6개</td>
+<td>7장 → 5개</td>
+</tr>
+<tr>
+<td>반전</td>
+<td>대답하던 건 염소였다</td>
+<td>새가 있는 걸 본인만 몰랐다</td>
+</tr>
+</tbody>
+</table></div>
+<aside class="note set"><p class="note-k">설정 · 준비물 확인</p><ul>
+<li>그록: SuperGrok 계정으로 로그인 (grok.com → 이매진)</li>
+<li>구글 AI 스튜디오: aistudio.google.com 에 구글 계정으로 로그인</li>
+<li>캡컷: PC 앱 실행, 로그인</li>
+<li>바탕화면에 <code>7차시_컬투쇼</code> 폴더 하나 (받는 그림·영상·소리를 전부 여기에)</li>
+</ul></aside>
+</article></div></section>
+<section class="step" id="s1" data-name="이야기" hidden><header class="step-head"><p class="step-no">STEP 1</p><h2>이야기</h2></header><div class="grid"><article class="card wide" id="s1-story1"><h3>1안 미리보기 · 택배 왔어요, 네~</h3><p>오늘 만들 영상을 먼저 봅니다. 소리는 없고, <strong>화면 속 자막이 나레이션</strong>, 영상 아래 글이 장면 설명입니다.</p>
+<div class="stage" data-scene="story1"><div class="stage-view"><canvas></canvas><p class="stage-fallback" hidden>이 기기에서는 입체 화면을 띄울 수 없어 단계 설명만 보여 드립니다.</p><ol class="stage-steps"></ol></div><p class="stage-cap" aria-live="polite"></p><div class="stage-ctl"><button type="button" class="b-play" aria-label="재생/멈춤">멈춤</button><button type="button" class="b-restart">처음으로</button><input type="range" class="b-seek" min="0" max="1000" value="0" aria-label="진행 위치"><label class="b-loopl"><input type="checkbox" class="b-loop" checked> 반복</label></div></div>
+<p><strong>줄거리</strong> 시골 배송을 간 택배 기사가 파란 대문 밖에서 "김순자 씨~ 택배요!" 하고 부릅니다. 담 너머에서 "네에~" 하고 대답이 들려 기다리는데, 아무도 안 나옵니다. 다시 "택배요~!" 해도 "네에~ 네에~" 대답만 꼬박꼬박. 이상해서 까치발로 담 너머를 보니, <strong>염소가 "메에에~" 하며 대답하고 있었습니다.</strong></p></article><article class="card wide" id="s1-story2"><h3>2안 미리보기 · 도인 할아버지와 산새</h3><div class="stage" data-scene="story2"><div class="stage-view"><canvas></canvas><p class="stage-fallback" hidden>이 기기에서는 입체 화면을 띄울 수 없어 단계 설명만 보여 드립니다.</p><ol class="stage-steps"></ol></div><p class="stage-cap" aria-live="polite"></p><div class="stage-ctl"><button type="button" class="b-play" aria-label="재생/멈춤">멈춤</button><button type="button" class="b-restart">처음으로</button><input type="range" class="b-seek" min="0" max="1000" value="0" aria-label="진행 위치"><label class="b-loopl"><input type="checkbox" class="b-loop" checked> 반복</label></div></div>
+<p><strong>줄거리</strong> 가을 산을 오르던 청년이 어깨에 새를 얹고 내려오는 할아버지를 만납니다. "어르신, 산에 다녀오시나 봐요?" "네, 그렇습니다." 목소리까지 도인 같습니다. "그런데 어르신, 어깨 위에 있는 새는 이름이 뭔가요?" 할아버지가 어깨를 돌아보더니 <strong>"아, 이게 뭐야!"</strong> 새가 앉아 있는 걸 본인만 몰랐던 겁니다.</p></article><article class="card wide" id="s1-beat"><h3>웃기는 이야기의 4박자</h3><div class="tbl"><table>
+<thead>
+<tr>
+<th>박자</th>
+<th>하는 일</th>
+<th>1안 택배</th>
+<th>2안 산새</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 상황</td>
+<td>누가, 어디서</td>
+<td>시골집에 배송 온 기사</td>
+<td>산길에서 만난 할아버지</td>
+</tr>
+<tr>
+<td>② 쌓기</td>
+<td>같은 일이 반복되며 기대가 쌓임</td>
+<td>"택배요!" "네에~" 또 "네에~"</td>
+<td>도인 같은 말투, 공손한 질문</td>
+</tr>
+<tr>
+<td>③ 반전</td>
+<td>기대가 뒤집힘</td>
+<td>담 너머엔 염소</td>
+<td>"아, 이게 뭐야!"</td>
+</tr>
+<tr>
+<td>④ 펀치</td>
+<td>웃음을 확인시키는 한 장면</td>
+<td>멍한 기사와 태연한 염소</td>
+<td>혼자 남은 청년, 가지 위의 새</td>
+</tr>
+</tbody>
+</table></div></article><article class="card wide" id="s1-sound"><h3>소리는 이렇게 갑니다</h3><div class="tbl"><table>
+<thead>
+<tr>
+<th>소리</th>
+<th>어디서 만드나</th>
+<th>캡컷에서</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>대사 ("택배요!", "네에~", "아, 이게 뭐야!")</td>
+<td>그록 영상 프롬프트에 넣음</td>
+<td>좋으면 살리고, 어색하면 끄기</td>
+</tr>
+<tr>
+<td>효과음 (발소리, 방울, 날갯짓)</td>
+<td>그록 영상 프롬프트에 넣음</td>
+<td>살리기</td>
+</tr>
+<tr>
+<td>배경음악</td>
+<td>그록 영상 프롬프트에 <strong>모든 영상 같은 문장</strong>으로</td>
+<td>끊기면 캡컷 음악으로 교체</td>
+</tr>
+<tr>
+<td>나레이션 (DJ 사연 낭독)</td>
+<td>구글 AI 스튜디오</td>
+<td>메인 소리</td>
+</tr>
+</tbody>
+</table></div>
+<p>일단 <strong>전부 만들어 두고</strong> 캡컷에서 고릅니다. 지우는 건 쉬워도, 없는 걸 다시 만드는 건 어렵기 때문입니다.</p>
+<aside class="note warn"><p class="note-k">주의 · 컬투쇼 사연은 연습용으로만</p><p>방송 사연은 수업 연습에는 써도 되지만, <strong>8차시 공모전 출품작은 내 이야기</strong>로 만들어야 합니다. 오늘 배운 공정을 그대로 내 이야기에 쓰면 됩니다.</p></aside>
+
+<aside class="note ext home"><p class="note-k">집에서 · 내 이야기를 4박자로 정리하기</p><figure class="prompt"><figcaption><span class="plabel">그록 채팅 · 내 이야기 4박자 정리</span><button type="button" class="copy" data-target="p1">복사</button></figcaption><pre id="p1" data-raw="[상황] 나는 AI 영상 수업 수강생이고, 내가 겪은 웃긴 일을 30초 세로 쇼츠로 만들려고 한다.
+[내 이야기] (여기에 겪은 일을 편하게 적기. 예: 마트에서 카트를 밀고 가는데 아무리 밀어도 안 나가서 보니 옆 사람 카트를 밀고 있었다.)
+[요청] 이 이야기를 4박자(상황 / 쌓기 / 반전 / 펀치)로 나눠 표로 정리해 줘.
+[조건]
+- 등장 캐릭터는 최대 2명(동물 포함), 장소는 최대 2곳.
+- 반전은 말이 아니라 그림 한 장면으로 보이게.
+- 표 아래에 짧은 대사 3~5줄(누가 하는 말인지 표시)과, 라디오 DJ가 사연을 읽어주는 나레이션 초안을 붙여 줘.">[상황] 나는 AI 영상 수업 수강생이고, 내가 겪은 웃긴 일을 30초 세로 쇼츠로 만들려고 한다.
+[내 이야기] (여기에 겪은 일을 편하게 적기. 예: 마트에서 카트를 밀고 가는데 아무리 밀어도 안 나가서 보니 옆 사람 카트를 밀고 있었다.)
+[요청] 이 이야기를 4박자(상황 / 쌓기 / 반전 / 펀치)로 나눠 표로 정리해 줘.
+[조건]
+- 등장 캐릭터는 최대 2명(동물 포함), 장소는 최대 2곳.
+- 반전은 말이 아니라 그림 한 장면으로 보이게.
+- 표 아래에 짧은 대사 3~5줄(누가 하는 말인지 표시)과, 라디오 DJ가 사연을 읽어주는 나레이션 초안을 붙여 줘.</pre></figure></aside>
+</article></div></section>
+<section class="step" id="s2" data-name="화풍" hidden><header class="step-head"><p class="step-no">STEP 2</p><h2>화풍</h2></header><div class="grid"><article class="card wide" id="s2-pick"><h3>화풍 고르기</h3><p>화풍을 <strong>클릭하면 아래 STEP의 모든 프롬프트</strong>(캐릭터·시트·소품·배경·키프레임·영상)가 그 화풍으로 바뀝니다. <strong>수업은 실사</strong>로 합니다. 집에서 다른 화풍으로 바꿔 한 번 더 만들어 보세요.</p>
+<div class="stylepick" role="radiogroup" aria-label="화풍"></div>
+</article><article class="card wide" id="s2-test"><h3>화풍 테스트 (한 장으로 4화풍 비교)</h3><p>고르기 전에 같은 인물이 화풍마다 어떻게 보이는지 <strong>한 장으로</strong> 확인합니다. 그록 이매진 → 이미지 → 비율 <strong>1:1</strong>.</p>
+<figure class="prompt"><figcaption><span class="plabel">화풍 테스트 · 택배 기사 4화풍</span><button type="button" class="copy" data-target="p2">복사</button></figcaption><pre id="p2" data-raw="A 2x2 grid comparing four art styles of the same character: a Korean delivery man in his 40s, slightly chubby, round friendly face, navy cap, navy short-sleeve uniform shirt, gray cargo pants, standing and smiling, plain light gray background in every panel. Top left: photorealistic cinematic photo. Top right: 2D Korean webtoon illustration with clean line art. Bottom left: stylized 3D animated film look. Bottom right: claymation stop-motion plasticine look. Same pose, same outfit, same colors in all four panels. No text, no letters, no watermark.">A 2x2 grid comparing four art styles of the same character: a Korean delivery man in his 40s, slightly chubby, round friendly face, navy cap, navy short-sleeve uniform shirt, gray cargo pants, standing and smiling, plain light gray background in every panel. Top left: photorealistic cinematic photo. Top right: 2D Korean webtoon illustration with clean line art. Bottom left: stylized 3D animated film look. Bottom right: claymation stop-motion plasticine look. Same pose, same outfit, same colors in all four panels. No text, no letters, no watermark.</pre></figure>
+
+<aside class="note help"><p class="note-k">막힐 때</p><p>네 칸이 다 비슷하게 나오면 "make the four styles clearly different from each other"를 끝에 붙입니다. 결과를 보고 마음에 드는 화풍을 위에서 클릭하면 됩니다.</p></aside>
+</article></div></section>
+<section class="step" id="s3" data-name="캐릭터" hidden><header class="step-head"><p class="step-no">STEP 3</p><h2>캐릭터</h2></header><div class="grid"><article class="card wide" id="s3-anchor"><h3>앵커 → 시트, 두 단계</h3><p><strong>앵커</strong>는 캐릭터 얼굴과 옷을 붙잡는 기준 그림 한 장입니다. <strong>시트</strong>는 앵커를 첨부해서 네 방향과 표정을 한 장에 모은 그림입니다.</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th></th>
+<th>앵커</th>
+<th>시트</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>비율</td>
+<td>2:3</td>
+<td>16:9</td>
+</tr>
+<tr>
+<td>첨부</td>
+<td>없음</td>
+<td>그 캐릭터의 앵커</td>
+</tr>
+<tr>
+<td>규칙</td>
+<td>배경 없음, 소품 없음, 전신 정면</td>
+<td>네 방향 + 표정 (사람용·동물용이 다름)</td>
+</tr>
+<tr>
+<td>쓰는 곳</td>
+<td>시트 만들 때</td>
+<td>키프레임 만들 때, 영상 참조로</td>
+</tr>
+</tbody>
+</table></div>
+<div class="stage" data-scene="turntable"><div class="stage-view"><canvas></canvas><p class="stage-fallback" hidden>이 기기에서는 입체 화면을 띄울 수 없어 단계 설명만 보여 드립니다.</p><ol class="stage-steps"></ol></div><p class="stage-cap" aria-live="polite"></p><div class="stage-ctl"><button type="button" class="b-play" aria-label="재생/멈춤">멈춤</button><button type="button" class="b-restart">처음으로</button><input type="range" class="b-seek" min="0" max="1000" value="0" aria-label="진행 위치"><label class="b-loopl"><input type="checkbox" class="b-loop" checked> 반복</label></div></div>
+</article><article class="card" id="s3-man"><h3>1안 · 택배 기사 (사람)</h3><figure class="prompt" data-tpl><figcaption><span class="plabel">① 택배 기사 앵커 · 2:3</span><span class="sbadge">화풍 · <b class="sname">실사</b></span><button type="button" class="copy" data-target="p3">복사</button></figcaption><pre id="p3" data-raw="Full-body character design of a Korean delivery man in his 40s, slightly chubby, round friendly face, short black hair under a navy cap, kind but tired eyes, navy short-sleeve uniform shirt with a plain square badge (no logo), gray cargo pants, black sneakers. Standing straight, facing the camera, arms relaxed at his sides, neutral expression. Plain light gray background and floor, no scenery, no props, nothing in his hands. Full body visible from cap to shoes, centered.
+{{STYLE}}">Full-body character design of a Korean delivery man in his 40s, slightly chubby, round friendly face, short black hair under a navy cap, kind but tired eyes, navy short-sleeve uniform shirt with a plain square badge (no logo), gray cargo pants, black sneakers. Standing straight, facing the camera, arms relaxed at his sides, neutral expression. Plain light gray background and floor, no scenery, no props, nothing in his hands. Full body visible from cap to shoes, centered.
+{{STYLE}}</pre></figure>
+
+<figure class="prompt" data-tpl><figcaption><span class="plabel">② 택배 기사 시트 (사람용) · 16:9 · 앵커 첨부</span><span class="sbadge">화풍 · <b class="sname">실사</b></span><button type="button" class="copy" data-target="p4">복사</button></figcaption><pre id="p4" data-raw="Character turnaround sheet of the attached delivery man. Top row: four full-body views at the same height and scale: front view, three-quarter view, side view, back view, standing straight with empty hands. Bottom row: four head-and-shoulder expressions of the same man: neutral, relieved smile, puzzled frown, frozen blank stare with mouth slightly open. Keep the face, body shape, navy cap, uniform and colors exactly the same as the attached image. Plain light gray background, no scenery, no props, no text labels.
+{{STYLE}}">Character turnaround sheet of the attached delivery man. Top row: four full-body views at the same height and scale: front view, three-quarter view, side view, back view, standing straight with empty hands. Bottom row: four head-and-shoulder expressions of the same man: neutral, relieved smile, puzzled frown, frozen blank stare with mouth slightly open. Keep the face, body shape, navy cap, uniform and colors exactly the same as the attached image. Plain light gray background, no scenery, no props, no text labels.
+{{STYLE}}</pre></figure>
+</article><article class="card" id="s3-goat"><h3>1안 · 염소 (동물)</h3><p>염소는 대답하고 눈을 마주치는 <strong>연기를 하니까 캐릭터</strong>입니다. 동물은 네 발로 서 있어서 <strong>동물용 시트</strong>를 따로 씁니다.</p>
+<figure class="prompt" data-tpl><figcaption><span class="plabel">① 염소 앵커 · 2:3</span><span class="sbadge">화풍 · <b class="sname">실사</b></span><button type="button" class="copy" data-target="p5">복사</button></figcaption><pre id="p5" data-raw="Full-body character design of a white Korean goat with small curved horns, a light brown patch on its left ear, a short white beard, half-closed mischievous eyes, wearing a red collar with a small brass bell. Standing on all four legs in side view, head turned toward the camera. Plain light gray background and floor, no scenery, no props. Whole body visible, centered.
+{{STYLE}}">Full-body character design of a white Korean goat with small curved horns, a light brown patch on its left ear, a short white beard, half-closed mischievous eyes, wearing a red collar with a small brass bell. Standing on all four legs in side view, head turned toward the camera. Plain light gray background and floor, no scenery, no props. Whole body visible, centered.
+{{STYLE}}</pre></figure>
+
+<figure class="prompt" data-tpl><figcaption><span class="plabel">② 염소 시트 (동물용) · 16:9 · 앵커 첨부</span><span class="sbadge">화풍 · <b class="sname">실사</b></span><button type="button" class="copy" data-target="p6">복사</button></figcaption><pre id="p6" data-raw="Animal turnaround sheet of the attached goat. Top row: four full-body views on all four legs at the same scale: side view facing left, front view, three-quarter view, rear view. Bottom row: four head close-ups of the same goat: calmly chewing hay, smug half-closed eyes, mouth wide open bleating, head poking up over a low edge with only the face visible. Keep the white fur, small curved horns, brown ear patch, red collar and brass bell exactly the same as the attached image. Plain light gray background, no scenery, no text labels.
+{{STYLE}}">Animal turnaround sheet of the attached goat. Top row: four full-body views on all four legs at the same scale: side view facing left, front view, three-quarter view, rear view. Bottom row: four head close-ups of the same goat: calmly chewing hay, smug half-closed eyes, mouth wide open bleating, head poking up over a low edge with only the face visible. Keep the white fur, small curved horns, brown ear patch, red collar and brass bell exactly the same as the attached image. Plain light gray background, no scenery, no text labels.
+{{STYLE}}</pre></figure>
+</article><article class="card" id="s3-old"><h3>2안 · 할아버지 (사람)</h3><p>할아버지 앵커에는 <strong>새를 넣지 않습니다.</strong> 새는 소품입니다.</p>
+<figure class="prompt" data-tpl><figcaption><span class="plabel">① 할아버지 앵커 · 2:3</span><span class="sbadge">화풍 · <b class="sname">실사</b></span><button type="button" class="copy" data-target="p7">복사</button></figcaption><pre id="p7" data-raw="Full-body character design of a Korean grandfather in his 70s with a long flowing white beard, white hair tied in a small topknot, calm wise eyes, wearing loose beige linen hiking clothes and straw sandals. Standing straight, facing the camera, hands clasped behind his back, serene expression. Plain light gray background and floor, no scenery, no props, no bird. Full body visible, centered.
+{{STYLE}}">Full-body character design of a Korean grandfather in his 70s with a long flowing white beard, white hair tied in a small topknot, calm wise eyes, wearing loose beige linen hiking clothes and straw sandals. Standing straight, facing the camera, hands clasped behind his back, serene expression. Plain light gray background and floor, no scenery, no props, no bird. Full body visible, centered.
+{{STYLE}}</pre></figure>
+
+<figure class="prompt" data-tpl><figcaption><span class="plabel">② 할아버지 시트 (사람용) · 16:9 · 앵커 첨부</span><span class="sbadge">화풍 · <b class="sname">실사</b></span><button type="button" class="copy" data-target="p8">복사</button></figcaption><pre id="p8" data-raw="Character turnaround sheet of the attached grandfather. Top row: four full-body views at the same height and scale: front view, three-quarter view, side view, back view, standing calmly with nothing on his shoulders. Bottom row: four head-and-shoulder expressions of the same man: serene, gentle smile while stroking his beard, calm answering with mouth slightly open, shocked scream with wide eyes and beard flying. Keep the face, white beard, topknot, beige linen clothes and colors exactly the same as the attached image. Plain light gray background, no scenery, no props, no bird, no text labels.
+{{STYLE}}">Character turnaround sheet of the attached grandfather. Top row: four full-body views at the same height and scale: front view, three-quarter view, side view, back view, standing calmly with nothing on his shoulders. Bottom row: four head-and-shoulder expressions of the same man: serene, gentle smile while stroking his beard, calm answering with mouth slightly open, shocked scream with wide eyes and beard flying. Keep the face, white beard, topknot, beige linen clothes and colors exactly the same as the attached image. Plain light gray background, no scenery, no props, no bird, no text labels.
+{{STYLE}}</pre></figure>
+</article><article class="card" id="s3-young"><h3>2안 · 청년 (사람)</h3><figure class="prompt" data-tpl><figcaption><span class="plabel">① 청년 앵커 · 2:3</span><span class="sbadge">화풍 · <b class="sname">실사</b></span><button type="button" class="copy" data-target="p9">복사</button></figcaption><pre id="p9" data-raw="Full-body character design of a Korean man in his 20s, slim, short wavy black hair, bright curious eyes, red windbreaker jacket, black hiking pants, gray hiking boots, small navy backpack. Standing straight, facing the camera, arms relaxed, neutral expression. Plain light gray background and floor, no scenery, no props. Full body visible, centered.
+{{STYLE}}">Full-body character design of a Korean man in his 20s, slim, short wavy black hair, bright curious eyes, red windbreaker jacket, black hiking pants, gray hiking boots, small navy backpack. Standing straight, facing the camera, arms relaxed, neutral expression. Plain light gray background and floor, no scenery, no props. Full body visible, centered.
+{{STYLE}}</pre></figure>
+
+<figure class="prompt" data-tpl><figcaption><span class="plabel">② 청년 시트 (사람용) · 16:9 · 앵커 첨부</span><span class="sbadge">화풍 · <b class="sname">실사</b></span><button type="button" class="copy" data-target="p10">복사</button></figcaption><pre id="p10" data-raw="Character turnaround sheet of the attached young man. Top row: four full-body views at the same height and scale: front view, three-quarter view, side view, back view, standing straight with empty hands. Bottom row: four head-and-shoulder expressions of the same man: amazed admiring eyes, polite smile while greeting, curious pointing with one finger, frozen blank stare. Keep the face, hair, red windbreaker, backpack and colors exactly the same as the attached image. Plain light gray background, no scenery, no props, no text labels.
+{{STYLE}}">Character turnaround sheet of the attached young man. Top row: four full-body views at the same height and scale: front view, three-quarter view, side view, back view, standing straight with empty hands. Bottom row: four head-and-shoulder expressions of the same man: amazed admiring eyes, polite smile while greeting, curious pointing with one finger, frozen blank stare. Keep the face, hair, red windbreaker, backpack and colors exactly the same as the attached image. Plain light gray background, no scenery, no props, no text labels.
+{{STYLE}}</pre></figure>
+</article><article class="card wide" id="s3-check"><h3>시트 확인 3가지</h3><p>시트를 받으면 앵커와 나란히 놓고 봅니다.
+- <strong>얼굴</strong>: 눈매·수염·머리 모양이 같은가
+- <strong>옷 색</strong>: 모자·조끼·목걸이 색이 같은가
+- <strong>크기</strong>: 네 방향의 키가 같은가</p>
+<p>하나라도 다르면 다시 뽑습니다. 파일 이름은 <code>1안_기사_시트.png</code> 처럼 붙여 폴더에 모아 둡니다.</p>
+<aside class="note help"><p class="note-k">막힐 때</p><p>배경이 생기면 프롬프트 맨 앞에 <code>On a plain light gray background,</code> 를 붙입니다. 손에 뭔가 들고 나오면 <code>empty hands</code> 를 추가합니다. 염소가 두 발로 서면 <code>standing on all four legs like a real goat</code> 를 추가합니다.</p></aside>
+
+<aside class="note ext home"><p class="note-k">집에서 · 내 캐릭터의 앵커·시트 프롬프트 도출하기</p><figure class="prompt" data-tpl><figcaption><span class="plabel">그록 채팅 · 캐릭터 프롬프트 만들기</span><span class="sbadge">화풍 · <b class="sname">실사</b></span><button type="button" class="copy" data-target="p11">복사</button></figcaption><pre id="p11" data-raw="[상황] 그록 이매진으로 세로 쇼츠를 만든다. 캐릭터 얼굴이 장면마다 바뀌지 않게 앵커 이미지와 캐릭터 시트를 먼저 만들 것이다.
+[내 이야기 캐릭터] (예: 50대 아주머니, 마트 직원 청년)
+[요청] 캐릭터마다 영어 프롬프트 2개씩 써 줘.
+1) 앵커: 전신 정면, 나이·체형·얼굴·머리·옷 색까지 구체적으로, 소품 없음, 연회색 단색 배경, 비율 2:3
+2) 시트: 앵커를 첨부한다고 가정. 윗줄은 정면·3/4·옆·뒤 전신 4개, 아랫줄은 이 이야기에 필요한 표정 4개. 사람이면 사람용, 동물이면 네 발로 선 동물용 시트로.
+[조건] 모든 프롬프트 맨 끝에 아래 화풍 문장을 그대로 붙일 것.
+{{STYLE}}">[상황] 그록 이매진으로 세로 쇼츠를 만든다. 캐릭터 얼굴이 장면마다 바뀌지 않게 앵커 이미지와 캐릭터 시트를 먼저 만들 것이다.
+[내 이야기 캐릭터] (예: 50대 아주머니, 마트 직원 청년)
+[요청] 캐릭터마다 영어 프롬프트 2개씩 써 줘.
+1) 앵커: 전신 정면, 나이·체형·얼굴·머리·옷 색까지 구체적으로, 소품 없음, 연회색 단색 배경, 비율 2:3
+2) 시트: 앵커를 첨부한다고 가정. 윗줄은 정면·3/4·옆·뒤 전신 4개, 아랫줄은 이 이야기에 필요한 표정 4개. 사람이면 사람용, 동물이면 네 발로 선 동물용 시트로.
+[조건] 모든 프롬프트 맨 끝에 아래 화풍 문장을 그대로 붙일 것.
+{{STYLE}}</pre></figure></aside>
+</article></div></section>
+<section class="step" id="s4" data-name="소품·배경" hidden><header class="step-head"><p class="step-no">STEP 4</p><h2>소품·배경</h2></header><div class="grid"><article class="card wide" id="s4-why"><h3>어디에 쓰이나요?</h3><div class="stage" data-scene="layers"><div class="stage-view"><canvas></canvas><p class="stage-fallback" hidden>이 기기에서는 입체 화면을 띄울 수 없어 단계 설명만 보여 드립니다.</p><ol class="stage-steps"></ol></div><p class="stage-cap" aria-live="polite"></p><div class="stage-ctl"><button type="button" class="b-play" aria-label="재생/멈춤">멈춤</button><button type="button" class="b-restart">처음으로</button><input type="range" class="b-seek" min="0" max="1000" value="0" aria-label="진행 위치"><label class="b-loopl"><input type="checkbox" class="b-loop" checked> 반복</label></div></div>
+<p>소품과 배경은 <strong>장면이 새로 시작되는 첫 그림(A1·B1·C1)에 첨부</strong>합니다. 장소가 바뀌었다가 다시 나와도 <strong>같은 대문, 같은 상자</strong>가 나오게 붙잡아 줍니다. 그래서 캐릭터와 <strong>같은 화풍</strong>으로 만듭니다.</p></article><article class="card" id="s4-p1"><h3>1안 · 택배 상자와 시골집</h3><figure class="prompt" data-tpl><figcaption><span class="plabel">택배 상자 · 1:1</span><span class="sbadge">화풍 · <b class="sname">실사</b></span><button type="button" class="copy" data-target="p12">복사</button></figcaption><pre id="p12" data-raw="A single brown cardboard delivery box, medium size, taped on top with clear tape, a blank white shipping label on the side (no writing), slightly worn corners. Centered on a plain light gray background, three-quarter view, soft shadow underneath. Nothing else in the image.
+{{STYLE}}">A single brown cardboard delivery box, medium size, taped on top with clear tape, a blank white shipping label on the side (no writing), slightly worn corners. Centered on a plain light gray background, three-quarter view, soft shadow underneath. Nothing else in the image.
+{{STYLE}}</pre></figure>
+
+<figure class="prompt" data-tpl><figcaption><span class="plabel">대문 밖 배경 · 9:16 · A체인·C체인용</span><span class="sbadge">화풍 · <b class="sname">실사</b></span><button type="button" class="copy" data-target="p13">복사</button></figcaption><pre id="p13" data-raw="Empty scene, no people, no animals. Outside an old Korean countryside house: a rough stone wall slightly taller than an adult man, a faded blue wooden gate, a persimmon tree with orange fruit leaning over the wall, a narrow dirt path in front, late autumn afternoon light. Vertical composition, eye-level view from the side of the path.
+{{STYLE}}">Empty scene, no people, no animals. Outside an old Korean countryside house: a rough stone wall slightly taller than an adult man, a faded blue wooden gate, a persimmon tree with orange fruit leaning over the wall, a narrow dirt path in front, late autumn afternoon light. Vertical composition, eye-level view from the side of the path.
+{{STYLE}}</pre></figure>
+
+<figure class="prompt" data-tpl><figcaption><span class="plabel">담 안 마당 배경 · 9:16 · B체인용</span><span class="sbadge">화풍 · <b class="sname">실사</b></span><button type="button" class="copy" data-target="p14">복사</button></figcaption><pre id="p14" data-raw="Empty scene, no people, no animals. Inside the yard of the same old Korean countryside house, close to the stone wall, looking up toward the top of the wall: packed dirt yard, a small pile of hay at the foot of the wall, clay soy sauce jars on the side, persimmon branches above the wall, late autumn afternoon light. Vertical composition.
+{{STYLE}}">Empty scene, no people, no animals. Inside the yard of the same old Korean countryside house, close to the stone wall, looking up toward the top of the wall: packed dirt yard, a small pile of hay at the foot of the wall, clay soy sauce jars on the side, persimmon branches above the wall, late autumn afternoon light. Vertical composition.
+{{STYLE}}</pre></figure>
+</article><article class="card" id="s4-p2"><h3>2안 · 산새와 가을 산길</h3><figure class="prompt" data-tpl><figcaption><span class="plabel">산새 · 1:1</span><span class="sbadge">화풍 · <b class="sname">실사</b></span><button type="button" class="copy" data-target="p15">복사</button></figcaption><pre id="p15" data-raw="A single small round Korean sparrow, brown and cream feathers with a dark cheek spot, perched calmly, side view, tiny black eyes. Centered on a plain light gray background, soft shadow underneath. Nothing else in the image.
+{{STYLE}}">A single small round Korean sparrow, brown and cream feathers with a dark cheek spot, perched calmly, side view, tiny black eyes. Centered on a plain light gray background, soft shadow underneath. Nothing else in the image.
+{{STYLE}}</pre></figure>
+
+<figure class="prompt" data-tpl><figcaption><span class="plabel">가을 산길 배경 · 9:16 · 모든 체인용</span><span class="sbadge">화풍 · <b class="sname">실사</b></span><button type="button" class="copy" data-target="p16">복사</button></figcaption><pre id="p16" data-raw="Empty scene, no people. A Korean mountain trail in autumn: worn stone steps winding uphill, red and yellow maple trees, tall pine trees, soft mist between the trees, warm morning light. Vertical composition, eye-level view.
+{{STYLE}}">Empty scene, no people. A Korean mountain trail in autumn: worn stone steps winding uphill, red and yellow maple trees, tall pine trees, soft mist between the trees, warm morning light. Vertical composition, eye-level view.
+{{STYLE}}</pre></figure>
+
+<aside class="note ext home"><p class="note-k">집에서 · 내 이야기의 소품·배경 프롬프트 도출하기</p><figure class="prompt" data-tpl><figcaption><span class="plabel">그록 채팅 · 소품·배경 프롬프트 만들기</span><span class="sbadge">화풍 · <b class="sname">실사</b></span><button type="button" class="copy" data-target="p17">복사</button></figcaption><pre id="p17" data-raw="[상황] 그록 이매진으로 세로 쇼츠를 만든다. 캐릭터 시트는 이미 만들었고, 장면마다 같은 소품과 장소가 나오게 소품·배경을 따로 만든다.
+[내 이야기] (4박자 표를 붙여 넣기)
+[요청] 이 이야기에 꼭 필요한 소품 1~2개와 장소 1~2곳의 영어 프롬프트를 써 줘.
+- 소품: 단독, 연회색 단색 배경, 글자 없음, 비율 1:1
+- 배경: 사람·동물 없는 빈 장소, 카메라 높이와 방향까지, 비율 9:16
+[조건] 모든 프롬프트 맨 끝에 아래 화풍 문장을 그대로 붙일 것.
+{{STYLE}}">[상황] 그록 이매진으로 세로 쇼츠를 만든다. 캐릭터 시트는 이미 만들었고, 장면마다 같은 소품과 장소가 나오게 소품·배경을 따로 만든다.
+[내 이야기] (4박자 표를 붙여 넣기)
+[요청] 이 이야기에 꼭 필요한 소품 1~2개와 장소 1~2곳의 영어 프롬프트를 써 줘.
+- 소품: 단독, 연회색 단색 배경, 글자 없음, 비율 1:1
+- 배경: 사람·동물 없는 빈 장소, 카메라 높이와 방향까지, 비율 9:16
+[조건] 모든 프롬프트 맨 끝에 아래 화풍 문장을 그대로 붙일 것.
+{{STYLE}}</pre></figure></aside>
+</article></div></section>
+<section class="step" id="s5" data-name="키프레임" hidden><header class="step-head"><p class="step-no">STEP 5</p><h2>키프레임</h2></header><div class="grid"><article class="card wide" id="s5-how"><h3>그림을 이어 짓는 법</h3><p>영상의 <strong>출발 그림과 도착 그림</strong>을 먼저 다 지어 둡니다. 이 그림들을 <strong>키프레임</strong>이라고 부릅니다.</p>
+<ul>
+<li><strong>장면 첫 그림(A1·B1·C1)</strong>: 캐릭터 시트 + 소품 + 배경을 첨부해서 새로 짓기</li>
+<li><strong>이어지는 그림(A2, A3…)</strong>: <strong>바로 앞 그림 한 장만</strong> 첨부하고 "이것만 바꿔"라고 하기</li>
+<li>장소나 카메라 방향이 바뀌면 새 장면(B, C)으로 시작</li>
+</ul>
+<div class="stage" data-scene="chain"><div class="stage-view"><canvas></canvas><p class="stage-fallback" hidden>이 기기에서는 입체 화면을 띄울 수 없어 단계 설명만 보여 드립니다.</p><ol class="stage-steps"></ol></div><p class="stage-cap" aria-live="polite"></p><div class="stage-ctl"><button type="button" class="b-play" aria-label="재생/멈춤">멈춤</button><button type="button" class="b-restart">처음으로</button><input type="range" class="b-seek" min="0" max="1000" value="0" aria-label="진행 위치"><label class="b-loopl"><input type="checkbox" class="b-loop" checked> 반복</label></div></div>
+<p>아래에서 <strong>장면을 클릭하면</strong> 그 그림의 첨부물과 완성 프롬프트가 나옵니다. 그록 이매진 → 이미지 → 비율 <strong>9:16</strong>.</p></article><article class="card wide" id="s5-p1"><h3>1안 키프레임 8장</h3><div class="pick" aria-label="1안 키프레임"><p class="pick-hint">장면을 클릭하세요</p><div class="pick-chips" role="tablist"><button type="button" class="pchip" role="tab" aria-selected="true" data-i="0"><b>A1</b><span>걸어옴</span></button><button type="button" class="pchip" role="tab" aria-selected="false" data-i="1"><b>A2</b><span>대문 앞</span></button><button type="button" class="pchip" role="tab" aria-selected="false" data-i="2"><b>A3</b><span>안심</span></button><button type="button" class="pchip" role="tab" aria-selected="false" data-i="3"><b>A4</b><span>갸웃</span></button><button type="button" class="pchip" role="tab" aria-selected="false" data-i="4"><b>A5</b><span>까치발</span></button><button type="button" class="pchip" role="tab" aria-selected="false" data-i="5"><b>B1</b><span>눈만 빼꼼</span></button><button type="button" class="pchip" role="tab" aria-selected="false" data-i="6"><b>B2</b><span>메에!</span></button><button type="button" class="pchip" role="tab" aria-selected="false" data-i="7"><b>C1</b><span>멍</span></button></div><div class="ppanel" data-i="0"><div class="recipe-wrap"><svg class="recipe" viewBox="0 0 620 182" role="img" aria-label="첨부=기사 시트, 택배 상자, 대문 밖 배경 → A1"><rect class="rc-box" x="2" y="12" width="330" height="46" rx="9"/><rect class="rc-tag att" x="10" y="21" width="74" height="28" rx="6"/><text class="rc-tagt" x="47" y="40.0" text-anchor="middle">첨부</text><text class="rc-t" x="98" y="41.0">기사 시트</text><path class="rc-line" d="M332 35.0 C 380 35.0, 380 91.0, 420 91.0"/><rect class="rc-box" x="2" y="68" width="330" height="46" rx="9"/><rect class="rc-tag att" x="10" y="77" width="74" height="28" rx="6"/><text class="rc-tagt" x="47" y="96.0" text-anchor="middle">첨부</text><text class="rc-t" x="98" y="97.0">택배 상자</text><path class="rc-line" d="M332 91.0 C 380 91.0, 380 91.0, 420 91.0"/><rect class="rc-box" x="2" y="124" width="330" height="46" rx="9"/><rect class="rc-tag att" x="10" y="133" width="74" height="28" rx="6"/><text class="rc-tagt" x="47" y="152.0" text-anchor="middle">첨부</text><text class="rc-t" x="98" y="153.0">대문 밖 배경</text><path class="rc-line" d="M332 147.0 C 380 147.0, 380 91.0, 420 91.0"/><path class="rc-arrow" d="M420 84.0 L432 91.0 L420 98.0 Z"/><rect class="rc-res" x="438" y="61.0" width="178" height="60" rx="11"/><text class="rc-rest" x="527" y="98.0" text-anchor="middle">A1</text></svg></div><figure class="prompt" data-tpl><figcaption><span class="plabel">A1 걸어옴</span><span class="sbadge">화풍 · <b class="sname">실사</b></span><button type="button" class="copy" data-target="p18">복사</button></figcaption><pre id="p18" data-raw="Use the attached images: the character sheet of the delivery man, the cardboard box, and the background of the countryside house. Scene: the delivery man walks along the dirt path on the left side of the frame toward the blue gate on the right, holding the box in both arms. Camera: medium wide shot from the side at eye level; this camera position stays fixed for the whole sequence. Keep his face, cap and uniform exactly as in the character sheet, and the box and the gate exactly as in the attached images. Vertical 9:16 frame.
+{{STYLE}}">Use the attached images: the character sheet of the delivery man, the cardboard box, and the background of the countryside house. Scene: the delivery man walks along the dirt path on the left side of the frame toward the blue gate on the right, holding the box in both arms. Camera: medium wide shot from the side at eye level; this camera position stays fixed for the whole sequence. Keep his face, cap and uniform exactly as in the character sheet, and the box and the gate exactly as in the attached images. Vertical 9:16 frame.
+{{STYLE}}</pre></figure></div><div class="ppanel" data-i="1" hidden><div class="recipe-wrap"><svg class="recipe" viewBox="0 0 620 70" role="img" aria-label="첨부=A1 → A2"><rect class="rc-box" x="2" y="12" width="330" height="46" rx="9"/><rect class="rc-tag att" x="10" y="21" width="74" height="28" rx="6"/><text class="rc-tagt" x="47" y="40.0" text-anchor="middle">첨부</text><text class="rc-t" x="98" y="41.0">A1</text><path class="rc-line" d="M332 35.0 C 380 35.0, 380 35.0, 420 35.0"/><path class="rc-arrow" d="M420 28.0 L432 35.0 L420 42.0 Z"/><rect class="rc-res" x="438" y="5.0" width="178" height="60" rx="11"/><text class="rc-rest" x="527" y="42.0" text-anchor="middle">A2</text></svg></div><figure class="prompt" data-tpl><figcaption><span class="plabel">A2 대문 앞</span><span class="sbadge">화풍 · <b class="sname">실사</b></span><button type="button" class="copy" data-target="p19">복사</button></figcaption><pre id="p19" data-raw="Use the attached image as the base. Keep everything the same: same place, same camera position and framing, same lighting, same face and uniform. Change only this: he now stands in front of the blue gate with the box under one arm, looking down at the shipping label. Vertical 9:16 frame.
+{{STYLE}}">Use the attached image as the base. Keep everything the same: same place, same camera position and framing, same lighting, same face and uniform. Change only this: he now stands in front of the blue gate with the box under one arm, looking down at the shipping label. Vertical 9:16 frame.
+{{STYLE}}</pre></figure></div><div class="ppanel" data-i="2" hidden><div class="recipe-wrap"><svg class="recipe" viewBox="0 0 620 70" role="img" aria-label="첨부=A2 → A3"><rect class="rc-box" x="2" y="12" width="330" height="46" rx="9"/><rect class="rc-tag att" x="10" y="21" width="74" height="28" rx="6"/><text class="rc-tagt" x="47" y="40.0" text-anchor="middle">첨부</text><text class="rc-t" x="98" y="41.0">A2</text><path class="rc-line" d="M332 35.0 C 380 35.0, 380 35.0, 420 35.0"/><path class="rc-arrow" d="M420 28.0 L432 35.0 L420 42.0 Z"/><rect class="rc-res" x="438" y="5.0" width="178" height="60" rx="11"/><text class="rc-rest" x="527" y="42.0" text-anchor="middle">A3</text></svg></div><figure class="prompt" data-tpl><figcaption><span class="plabel">A3 안심</span><span class="sbadge">화풍 · <b class="sname">실사</b></span><button type="button" class="copy" data-target="p20">복사</button></figcaption><pre id="p20" data-raw="Use the attached image as the base. Keep everything the same: same place, same camera position and framing, same lighting, same face and uniform. Change only this: he turns his face toward the stone wall with a relieved smile, the box still under his arm. Vertical 9:16 frame.
+{{STYLE}}">Use the attached image as the base. Keep everything the same: same place, same camera position and framing, same lighting, same face and uniform. Change only this: he turns his face toward the stone wall with a relieved smile, the box still under his arm. Vertical 9:16 frame.
+{{STYLE}}</pre></figure></div><div class="ppanel" data-i="3" hidden><div class="recipe-wrap"><svg class="recipe" viewBox="0 0 620 70" role="img" aria-label="첨부=A3 → A4"><rect class="rc-box" x="2" y="12" width="330" height="46" rx="9"/><rect class="rc-tag att" x="10" y="21" width="74" height="28" rx="6"/><text class="rc-tagt" x="47" y="40.0" text-anchor="middle">첨부</text><text class="rc-t" x="98" y="41.0">A3</text><path class="rc-line" d="M332 35.0 C 380 35.0, 380 35.0, 420 35.0"/><path class="rc-arrow" d="M420 28.0 L432 35.0 L420 42.0 Z"/><rect class="rc-res" x="438" y="5.0" width="178" height="60" rx="11"/><text class="rc-rest" x="527" y="42.0" text-anchor="middle">A4</text></svg></div><figure class="prompt" data-tpl><figcaption><span class="plabel">A4 갸웃</span><span class="sbadge">화풍 · <b class="sname">실사</b></span><button type="button" class="copy" data-target="p21">복사</button></figcaption><pre id="p21" data-raw="Use the attached image as the base. Keep everything the same: same place, same camera position and framing, same lighting, same face and uniform. Change only this: the box is now on the ground at his feet and he looks at his wristwatch with a puzzled frown. Vertical 9:16 frame.
+{{STYLE}}">Use the attached image as the base. Keep everything the same: same place, same camera position and framing, same lighting, same face and uniform. Change only this: the box is now on the ground at his feet and he looks at his wristwatch with a puzzled frown. Vertical 9:16 frame.
+{{STYLE}}</pre></figure></div><div class="ppanel" data-i="4" hidden><div class="recipe-wrap"><svg class="recipe" viewBox="0 0 620 70" role="img" aria-label="첨부=A4 → A5"><rect class="rc-box" x="2" y="12" width="330" height="46" rx="9"/><rect class="rc-tag att" x="10" y="21" width="74" height="28" rx="6"/><text class="rc-tagt" x="47" y="40.0" text-anchor="middle">첨부</text><text class="rc-t" x="98" y="41.0">A4</text><path class="rc-line" d="M332 35.0 C 380 35.0, 380 35.0, 420 35.0"/><path class="rc-arrow" d="M420 28.0 L432 35.0 L420 42.0 Z"/><rect class="rc-res" x="438" y="5.0" width="178" height="60" rx="11"/><text class="rc-rest" x="527" y="42.0" text-anchor="middle">A5</text></svg></div><figure class="prompt" data-tpl><figcaption><span class="plabel">A5 까치발</span><span class="sbadge">화풍 · <b class="sname">실사</b></span><button type="button" class="copy" data-target="p22">복사</button></figcaption><pre id="p22" data-raw="Use the attached image as the base. Keep everything the same: same place, same camera position and framing, same lighting, same face and uniform, the box on the ground. Change only this: he stands on tiptoe at the stone wall, both hands gripping the top of the wall, peeking over it. Vertical 9:16 frame.
+{{STYLE}}">Use the attached image as the base. Keep everything the same: same place, same camera position and framing, same lighting, same face and uniform, the box on the ground. Change only this: he stands on tiptoe at the stone wall, both hands gripping the top of the wall, peeking over it. Vertical 9:16 frame.
+{{STYLE}}</pre></figure></div><div class="ppanel" data-i="5" hidden><div class="recipe-wrap"><svg class="recipe" viewBox="0 0 620 182" role="img" aria-label="첨부=기사 시트, 염소 시트, 담 안 마당 배경 → B1"><rect class="rc-box" x="2" y="12" width="330" height="46" rx="9"/><rect class="rc-tag att" x="10" y="21" width="74" height="28" rx="6"/><text class="rc-tagt" x="47" y="40.0" text-anchor="middle">첨부</text><text class="rc-t" x="98" y="41.0">기사 시트</text><path class="rc-line" d="M332 35.0 C 380 35.0, 380 91.0, 420 91.0"/><rect class="rc-box" x="2" y="68" width="330" height="46" rx="9"/><rect class="rc-tag att" x="10" y="77" width="74" height="28" rx="6"/><text class="rc-tagt" x="47" y="96.0" text-anchor="middle">첨부</text><text class="rc-t" x="98" y="97.0">염소 시트</text><path class="rc-line" d="M332 91.0 C 380 91.0, 380 91.0, 420 91.0"/><rect class="rc-box" x="2" y="124" width="330" height="46" rx="9"/><rect class="rc-tag att" x="10" y="133" width="74" height="28" rx="6"/><text class="rc-tagt" x="47" y="152.0" text-anchor="middle">첨부</text><text class="rc-t" x="98" y="153.0">담 안 마당 배경</text><path class="rc-line" d="M332 147.0 C 380 147.0, 380 91.0, 420 91.0"/><path class="rc-arrow" d="M420 84.0 L432 91.0 L420 98.0 Z"/><rect class="rc-res" x="438" y="61.0" width="178" height="60" rx="11"/><text class="rc-rest" x="527" y="98.0" text-anchor="middle">B1</text></svg></div><figure class="prompt" data-tpl><figcaption><span class="plabel">B1 눈만 빼꼼</span><span class="sbadge">화풍 · <b class="sname">실사</b></span><button type="button" class="copy" data-target="p23">복사</button></figcaption><pre id="p23" data-raw="Use the attached images: the character sheet of the delivery man, the character sheet of the goat, and the background of the yard. Scene: seen from inside the yard, only the delivery man&#x27;s navy cap and wide eyes peek over the top of the stone wall; in the foreground the goat calmly chews hay, facing the camera, unaware of him. Camera: close-up at the top of the wall from inside the yard, fixed. Keep both characters exactly as in their sheets. Vertical 9:16 frame.
+{{STYLE}}">Use the attached images: the character sheet of the delivery man, the character sheet of the goat, and the background of the yard. Scene: seen from inside the yard, only the delivery man&#x27;s navy cap and wide eyes peek over the top of the stone wall; in the foreground the goat calmly chews hay, facing the camera, unaware of him. Camera: close-up at the top of the wall from inside the yard, fixed. Keep both characters exactly as in their sheets. Vertical 9:16 frame.
+{{STYLE}}</pre></figure></div><div class="ppanel" data-i="6" hidden><div class="recipe-wrap"><svg class="recipe" viewBox="0 0 620 70" role="img" aria-label="첨부=B1 → B2"><rect class="rc-box" x="2" y="12" width="330" height="46" rx="9"/><rect class="rc-tag att" x="10" y="21" width="74" height="28" rx="6"/><text class="rc-tagt" x="47" y="40.0" text-anchor="middle">첨부</text><text class="rc-t" x="98" y="41.0">B1</text><path class="rc-line" d="M332 35.0 C 380 35.0, 380 35.0, 420 35.0"/><path class="rc-arrow" d="M420 28.0 L432 35.0 L420 42.0 Z"/><rect class="rc-res" x="438" y="5.0" width="178" height="60" rx="11"/><text class="rc-rest" x="527" y="42.0" text-anchor="middle">B2</text></svg></div><figure class="prompt" data-tpl><figcaption><span class="plabel">B2 메에!</span><span class="sbadge">화풍 · <b class="sname">실사</b></span><button type="button" class="copy" data-target="p24">복사</button></figcaption><pre id="p24" data-raw="Use the attached image as the base. Keep everything the same: same place, same camera position and framing, same lighting, same characters. Change only this: the goat lifts its head to the top of the wall, nose to nose with the man, mouth wide open mid-bleat; the man&#x27;s eyes go wide in shock. Vertical 9:16 frame.
+{{STYLE}}">Use the attached image as the base. Keep everything the same: same place, same camera position and framing, same lighting, same characters. Change only this: the goat lifts its head to the top of the wall, nose to nose with the man, mouth wide open mid-bleat; the man&#x27;s eyes go wide in shock. Vertical 9:16 frame.
+{{STYLE}}</pre></figure></div><div class="ppanel" data-i="7" hidden><div class="recipe-wrap"><svg class="recipe" viewBox="0 0 620 238" role="img" aria-label="첨부=기사 시트, 염소 시트, 택배 상자, 대문 밖 배경 → C1"><rect class="rc-box" x="2" y="12" width="330" height="46" rx="9"/><rect class="rc-tag att" x="10" y="21" width="74" height="28" rx="6"/><text class="rc-tagt" x="47" y="40.0" text-anchor="middle">첨부</text><text class="rc-t" x="98" y="41.0">기사 시트</text><path class="rc-line" d="M332 35.0 C 380 35.0, 380 119.0, 420 119.0"/><rect class="rc-box" x="2" y="68" width="330" height="46" rx="9"/><rect class="rc-tag att" x="10" y="77" width="74" height="28" rx="6"/><text class="rc-tagt" x="47" y="96.0" text-anchor="middle">첨부</text><text class="rc-t" x="98" y="97.0">염소 시트</text><path class="rc-line" d="M332 91.0 C 380 91.0, 380 119.0, 420 119.0"/><rect class="rc-box" x="2" y="124" width="330" height="46" rx="9"/><rect class="rc-tag att" x="10" y="133" width="74" height="28" rx="6"/><text class="rc-tagt" x="47" y="152.0" text-anchor="middle">첨부</text><text class="rc-t" x="98" y="153.0">택배 상자</text><path class="rc-line" d="M332 147.0 C 380 147.0, 380 119.0, 420 119.0"/><rect class="rc-box" x="2" y="180" width="330" height="46" rx="9"/><rect class="rc-tag att" x="10" y="189" width="74" height="28" rx="6"/><text class="rc-tagt" x="47" y="208.0" text-anchor="middle">첨부</text><text class="rc-t" x="98" y="209.0">대문 밖 배경</text><path class="rc-line" d="M332 203.0 C 380 203.0, 380 119.0, 420 119.0"/><path class="rc-arrow" d="M420 112.0 L432 119.0 L420 126.0 Z"/><rect class="rc-res" x="438" y="89.0" width="178" height="60" rx="11"/><text class="rc-rest" x="527" y="126.0" text-anchor="middle">C1</text></svg></div><figure class="prompt" data-tpl><figcaption><span class="plabel">C1 멍</span><span class="sbadge">화풍 · <b class="sname">실사</b></span><button type="button" class="copy" data-target="p25">복사</button></figcaption><pre id="p25" data-raw="Use the attached images: the character sheet of the delivery man, the character sheet of the goat, the cardboard box, and the background of the countryside house. Scene: the delivery man stands frozen in front of the blue gate with a blank stare, the box at his feet; next to him the goat rests its chin on top of the stone wall, chewing hay. Camera: medium shot, front view at eye level, fixed. Keep both characters, the box and the gate exactly as in the attached images. Vertical 9:16 frame.
+{{STYLE}}">Use the attached images: the character sheet of the delivery man, the character sheet of the goat, the cardboard box, and the background of the countryside house. Scene: the delivery man stands frozen in front of the blue gate with a blank stare, the box at his feet; next to him the goat rests its chin on top of the stone wall, chewing hay. Camera: medium shot, front view at eye level, fixed. Keep both characters, the box and the gate exactly as in the attached images. Vertical 9:16 frame.
+{{STYLE}}</pre></figure></div></div>
+</article><article class="card wide" id="s5-p2"><h3>2안 키프레임 7장</h3><div class="pick" aria-label="2안 키프레임"><p class="pick-hint">장면을 클릭하세요</p><div class="pick-chips" role="tablist"><button type="button" class="pchip" role="tab" aria-selected="true" data-i="0"><b>A1</b><span>오르는 청년</span></button><button type="button" class="pchip" role="tab" aria-selected="false" data-i="1"><b>A2</b><span>할아버지 등장</span></button><button type="button" class="pchip" role="tab" aria-selected="false" data-i="2"><b>B1</b><span>인사</span></button><button type="button" class="pchip" role="tab" aria-selected="false" data-i="3"><b>B2</b><span>도인의 대답</span></button><button type="button" class="pchip" role="tab" aria-selected="false" data-i="4"><b>B3</b><span>새 이름은요?</span></button><button type="button" class="pchip" role="tab" aria-selected="false" data-i="5"><b>B4</b><span>이게 뭐야!</span></button><button type="button" class="pchip" role="tab" aria-selected="false" data-i="6"><b>C1</b><span>혼자 남은 청년</span></button></div><div class="ppanel" data-i="0"><div class="recipe-wrap"><svg class="recipe" viewBox="0 0 620 126" role="img" aria-label="첨부=청년 시트, 가을 산길 배경 → A1"><rect class="rc-box" x="2" y="12" width="330" height="46" rx="9"/><rect class="rc-tag att" x="10" y="21" width="74" height="28" rx="6"/><text class="rc-tagt" x="47" y="40.0" text-anchor="middle">첨부</text><text class="rc-t" x="98" y="41.0">청년 시트</text><path class="rc-line" d="M332 35.0 C 380 35.0, 380 63.0, 420 63.0"/><rect class="rc-box" x="2" y="68" width="330" height="46" rx="9"/><rect class="rc-tag att" x="10" y="77" width="74" height="28" rx="6"/><text class="rc-tagt" x="47" y="96.0" text-anchor="middle">첨부</text><text class="rc-t" x="98" y="97.0">가을 산길 배경</text><path class="rc-line" d="M332 91.0 C 380 91.0, 380 63.0, 420 63.0"/><path class="rc-arrow" d="M420 56.0 L432 63.0 L420 70.0 Z"/><rect class="rc-res" x="438" y="33.0" width="178" height="60" rx="11"/><text class="rc-rest" x="527" y="70.0" text-anchor="middle">A1</text></svg></div><figure class="prompt" data-tpl><figcaption><span class="plabel">A1 오르는 청년</span><span class="sbadge">화풍 · <b class="sname">실사</b></span><button type="button" class="copy" data-target="p26">복사</button></figcaption><pre id="p26" data-raw="Use the attached images: the character sheet of the young man and the background of the mountain trail. Scene: the young man climbs the stone steps among maple trees, seen from behind; the top of the steps is empty. Camera: medium wide shot from behind and slightly above, fixed. Keep his face, hair, red windbreaker and backpack exactly as in the character sheet. Vertical 9:16 frame.
+{{STYLE}}">Use the attached images: the character sheet of the young man and the background of the mountain trail. Scene: the young man climbs the stone steps among maple trees, seen from behind; the top of the steps is empty. Camera: medium wide shot from behind and slightly above, fixed. Keep his face, hair, red windbreaker and backpack exactly as in the character sheet. Vertical 9:16 frame.
+{{STYLE}}</pre></figure></div><div class="ppanel" data-i="1" hidden><div class="recipe-wrap"><svg class="recipe" viewBox="0 0 620 182" role="img" aria-label="첨부=A1, 할아버지 시트, 산새 → A2"><rect class="rc-box" x="2" y="12" width="330" height="46" rx="9"/><rect class="rc-tag att" x="10" y="21" width="74" height="28" rx="6"/><text class="rc-tagt" x="47" y="40.0" text-anchor="middle">첨부</text><text class="rc-t" x="98" y="41.0">A1</text><path class="rc-line" d="M332 35.0 C 380 35.0, 380 91.0, 420 91.0"/><rect class="rc-box" x="2" y="68" width="330" height="46" rx="9"/><rect class="rc-tag att" x="10" y="77" width="74" height="28" rx="6"/><text class="rc-tagt" x="47" y="96.0" text-anchor="middle">첨부</text><text class="rc-t" x="98" y="97.0">할아버지 시트</text><path class="rc-line" d="M332 91.0 C 380 91.0, 380 91.0, 420 91.0"/><rect class="rc-box" x="2" y="124" width="330" height="46" rx="9"/><rect class="rc-tag att" x="10" y="133" width="74" height="28" rx="6"/><text class="rc-tagt" x="47" y="152.0" text-anchor="middle">첨부</text><text class="rc-t" x="98" y="153.0">산새</text><path class="rc-line" d="M332 147.0 C 380 147.0, 380 91.0, 420 91.0"/><path class="rc-arrow" d="M420 84.0 L432 91.0 L420 98.0 Z"/><rect class="rc-res" x="438" y="61.0" width="178" height="60" rx="11"/><text class="rc-rest" x="527" y="98.0" text-anchor="middle">A2</text></svg></div><figure class="prompt" data-tpl><figcaption><span class="plabel">A2 할아버지 등장</span><span class="sbadge">화풍 · <b class="sname">실사</b></span><button type="button" class="copy" data-target="p27">복사</button></figcaption><pre id="p27" data-raw="Use the first attached image as the base. Keep everything the same: same place, same camera position and framing, same lighting, same young man. Change only this: at the top of the steps the grandfather from the attached character sheet appears, walking down with a serene face, the attached sparrow perched on his right shoulder. Vertical 9:16 frame.
+{{STYLE}}">Use the first attached image as the base. Keep everything the same: same place, same camera position and framing, same lighting, same young man. Change only this: at the top of the steps the grandfather from the attached character sheet appears, walking down with a serene face, the attached sparrow perched on his right shoulder. Vertical 9:16 frame.
+{{STYLE}}</pre></figure></div><div class="ppanel" data-i="2" hidden><div class="recipe-wrap"><svg class="recipe" viewBox="0 0 620 238" role="img" aria-label="첨부=청년 시트, 할아버지 시트, 산새, 가을 산길 배경 → B1"><rect class="rc-box" x="2" y="12" width="330" height="46" rx="9"/><rect class="rc-tag att" x="10" y="21" width="74" height="28" rx="6"/><text class="rc-tagt" x="47" y="40.0" text-anchor="middle">첨부</text><text class="rc-t" x="98" y="41.0">청년 시트</text><path class="rc-line" d="M332 35.0 C 380 35.0, 380 119.0, 420 119.0"/><rect class="rc-box" x="2" y="68" width="330" height="46" rx="9"/><rect class="rc-tag att" x="10" y="77" width="74" height="28" rx="6"/><text class="rc-tagt" x="47" y="96.0" text-anchor="middle">첨부</text><text class="rc-t" x="98" y="97.0">할아버지 시트</text><path class="rc-line" d="M332 91.0 C 380 91.0, 380 119.0, 420 119.0"/><rect class="rc-box" x="2" y="124" width="330" height="46" rx="9"/><rect class="rc-tag att" x="10" y="133" width="74" height="28" rx="6"/><text class="rc-tagt" x="47" y="152.0" text-anchor="middle">첨부</text><text class="rc-t" x="98" y="153.0">산새</text><path class="rc-line" d="M332 147.0 C 380 147.0, 380 119.0, 420 119.0"/><rect class="rc-box" x="2" y="180" width="330" height="46" rx="9"/><rect class="rc-tag att" x="10" y="189" width="74" height="28" rx="6"/><text class="rc-tagt" x="47" y="208.0" text-anchor="middle">첨부</text><text class="rc-t" x="98" y="209.0">가을 산길 배경</text><path class="rc-line" d="M332 203.0 C 380 203.0, 380 119.0, 420 119.0"/><path class="rc-arrow" d="M420 112.0 L432 119.0 L420 126.0 Z"/><rect class="rc-res" x="438" y="89.0" width="178" height="60" rx="11"/><text class="rc-rest" x="527" y="126.0" text-anchor="middle">B1</text></svg></div><figure class="prompt" data-tpl><figcaption><span class="plabel">B1 인사</span><span class="sbadge">화풍 · <b class="sname">실사</b></span><button type="button" class="copy" data-target="p28">복사</button></figcaption><pre id="p28" data-raw="Use the attached images: the character sheets of the young man and the grandfather, the sparrow, and the background of the mountain trail. Scene: the two men stand facing each other on the steps; the young man on the left smiles and greets politely with a slight bow; the grandfather on the right listens calmly, the small sparrow perched on his right shoulder. Camera: side two-shot at eye level, fixed. Keep both men and the sparrow exactly as in the attached images. Vertical 9:16 frame.
+{{STYLE}}">Use the attached images: the character sheets of the young man and the grandfather, the sparrow, and the background of the mountain trail. Scene: the two men stand facing each other on the steps; the young man on the left smiles and greets politely with a slight bow; the grandfather on the right listens calmly, the small sparrow perched on his right shoulder. Camera: side two-shot at eye level, fixed. Keep both men and the sparrow exactly as in the attached images. Vertical 9:16 frame.
+{{STYLE}}</pre></figure></div><div class="ppanel" data-i="3" hidden><div class="recipe-wrap"><svg class="recipe" viewBox="0 0 620 70" role="img" aria-label="첨부=B1 → B2"><rect class="rc-box" x="2" y="12" width="330" height="46" rx="9"/><rect class="rc-tag att" x="10" y="21" width="74" height="28" rx="6"/><text class="rc-tagt" x="47" y="40.0" text-anchor="middle">첨부</text><text class="rc-t" x="98" y="41.0">B1</text><path class="rc-line" d="M332 35.0 C 380 35.0, 380 35.0, 420 35.0"/><path class="rc-arrow" d="M420 28.0 L432 35.0 L420 42.0 Z"/><rect class="rc-res" x="438" y="5.0" width="178" height="60" rx="11"/><text class="rc-rest" x="527" y="42.0" text-anchor="middle">B2</text></svg></div><figure class="prompt" data-tpl><figcaption><span class="plabel">B2 도인의 대답</span><span class="sbadge">화풍 · <b class="sname">실사</b></span><button type="button" class="copy" data-target="p29">복사</button></figcaption><pre id="p29" data-raw="Use the attached image as the base. Keep everything the same: same place, same camera position and framing, same lighting, same characters, the sparrow still on his shoulder. Change only this: the grandfather nods with a calm, dignified smile, one hand stroking his long white beard; the young man stands straight, impressed. Vertical 9:16 frame.
+{{STYLE}}">Use the attached image as the base. Keep everything the same: same place, same camera position and framing, same lighting, same characters, the sparrow still on his shoulder. Change only this: the grandfather nods with a calm, dignified smile, one hand stroking his long white beard; the young man stands straight, impressed. Vertical 9:16 frame.
+{{STYLE}}</pre></figure></div><div class="ppanel" data-i="4" hidden><div class="recipe-wrap"><svg class="recipe" viewBox="0 0 620 70" role="img" aria-label="첨부=B2 → B3"><rect class="rc-box" x="2" y="12" width="330" height="46" rx="9"/><rect class="rc-tag att" x="10" y="21" width="74" height="28" rx="6"/><text class="rc-tagt" x="47" y="40.0" text-anchor="middle">첨부</text><text class="rc-t" x="98" y="41.0">B2</text><path class="rc-line" d="M332 35.0 C 380 35.0, 380 35.0, 420 35.0"/><path class="rc-arrow" d="M420 28.0 L432 35.0 L420 42.0 Z"/><rect class="rc-res" x="438" y="5.0" width="178" height="60" rx="11"/><text class="rc-rest" x="527" y="42.0" text-anchor="middle">B3</text></svg></div><figure class="prompt" data-tpl><figcaption><span class="plabel">B3 새 이름은요?</span><span class="sbadge">화풍 · <b class="sname">실사</b></span><button type="button" class="copy" data-target="p30">복사</button></figcaption><pre id="p30" data-raw="Use the attached image as the base. Keep everything the same: same place, same camera position and framing, same lighting, same characters. Change only this: the young man points curiously at the sparrow on the grandfather&#x27;s shoulder; the grandfather still smiles calmly, not looking at his shoulder. Vertical 9:16 frame.
+{{STYLE}}">Use the attached image as the base. Keep everything the same: same place, same camera position and framing, same lighting, same characters. Change only this: the young man points curiously at the sparrow on the grandfather&#x27;s shoulder; the grandfather still smiles calmly, not looking at his shoulder. Vertical 9:16 frame.
+{{STYLE}}</pre></figure></div><div class="ppanel" data-i="5" hidden><div class="recipe-wrap"><svg class="recipe" viewBox="0 0 620 70" role="img" aria-label="첨부=B3 → B4"><rect class="rc-box" x="2" y="12" width="330" height="46" rx="9"/><rect class="rc-tag att" x="10" y="21" width="74" height="28" rx="6"/><text class="rc-tagt" x="47" y="40.0" text-anchor="middle">첨부</text><text class="rc-t" x="98" y="41.0">B3</text><path class="rc-line" d="M332 35.0 C 380 35.0, 380 35.0, 420 35.0"/><path class="rc-arrow" d="M420 28.0 L432 35.0 L420 42.0 Z"/><rect class="rc-res" x="438" y="5.0" width="178" height="60" rx="11"/><text class="rc-rest" x="527" y="42.0" text-anchor="middle">B4</text></svg></div><figure class="prompt" data-tpl><figcaption><span class="plabel">B4 이게 뭐야!</span><span class="sbadge">화풍 · <b class="sname">실사</b></span><button type="button" class="copy" data-target="p31">복사</button></figcaption><pre id="p31" data-raw="Use the attached image as the base. Keep everything the same: same place, same camera position and framing, same lighting, same characters. Change only this: the grandfather turns his head to his own shoulder and jumps back in shock, eyes wide, mouth open, beard flying; the sparrow takes off from his shoulder; the young man freezes with his finger still pointing. Vertical 9:16 frame.
+{{STYLE}}">Use the attached image as the base. Keep everything the same: same place, same camera position and framing, same lighting, same characters. Change only this: the grandfather turns his head to his own shoulder and jumps back in shock, eyes wide, mouth open, beard flying; the sparrow takes off from his shoulder; the young man freezes with his finger still pointing. Vertical 9:16 frame.
+{{STYLE}}</pre></figure></div><div class="ppanel" data-i="6" hidden><div class="recipe-wrap"><svg class="recipe" viewBox="0 0 620 182" role="img" aria-label="첨부=청년 시트, 산새, 가을 산길 배경 → C1"><rect class="rc-box" x="2" y="12" width="330" height="46" rx="9"/><rect class="rc-tag att" x="10" y="21" width="74" height="28" rx="6"/><text class="rc-tagt" x="47" y="40.0" text-anchor="middle">첨부</text><text class="rc-t" x="98" y="41.0">청년 시트</text><path class="rc-line" d="M332 35.0 C 380 35.0, 380 91.0, 420 91.0"/><rect class="rc-box" x="2" y="68" width="330" height="46" rx="9"/><rect class="rc-tag att" x="10" y="77" width="74" height="28" rx="6"/><text class="rc-tagt" x="47" y="96.0" text-anchor="middle">첨부</text><text class="rc-t" x="98" y="97.0">산새</text><path class="rc-line" d="M332 91.0 C 380 91.0, 380 91.0, 420 91.0"/><rect class="rc-box" x="2" y="124" width="330" height="46" rx="9"/><rect class="rc-tag att" x="10" y="133" width="74" height="28" rx="6"/><text class="rc-tagt" x="47" y="152.0" text-anchor="middle">첨부</text><text class="rc-t" x="98" y="153.0">가을 산길 배경</text><path class="rc-line" d="M332 147.0 C 380 147.0, 380 91.0, 420 91.0"/><path class="rc-arrow" d="M420 84.0 L432 91.0 L420 98.0 Z"/><rect class="rc-res" x="438" y="61.0" width="178" height="60" rx="11"/><text class="rc-rest" x="527" y="98.0" text-anchor="middle">C1</text></svg></div><figure class="prompt" data-tpl><figcaption><span class="plabel">C1 혼자 남은 청년</span><span class="sbadge">화풍 · <b class="sname">실사</b></span><button type="button" class="copy" data-target="p32">복사</button></figcaption><pre id="p32" data-raw="Use the attached images: the character sheet of the young man, the sparrow, and the background of the mountain trail. Scene: the young man stands alone on the steps with a blank face, the grandfather is gone, the sparrow sits on a nearby maple branch. Camera: medium shot at eye level, fixed. Keep the young man and the sparrow exactly as in the attached images. Vertical 9:16 frame.
+{{STYLE}}">Use the attached images: the character sheet of the young man, the sparrow, and the background of the mountain trail. Scene: the young man stands alone on the steps with a blank face, the grandfather is gone, the sparrow sits on a nearby maple branch. Camera: medium shot at eye level, fixed. Keep the young man and the sparrow exactly as in the attached images. Vertical 9:16 frame.
+{{STYLE}}</pre></figure></div></div>
+
+<aside class="note warn"><p class="note-k">주의 · 첨부가 한 장만 되면</p><p>시트·소품·배경을 그림판이나 캡컷에서 <strong>한 장으로 나란히 붙여</strong> 첨부하고, 프롬프트 앞에 "left: character sheet, middle: prop, right: background" 라고 위치를 적어 줍니다.</p></aside>
+
+<aside class="note help"><p class="note-k">막힐 때</p><p>이어지는 그림에서 배경까지 바뀌면 앞 그림을 다시 첨부하고 한 번 더 뽑습니다. 그래도 바뀌면 "Change only this" 뒤 문장을 더 짧게 줄입니다.</p></aside>
+
+<aside class="note ext home"><p class="note-k">집에서 · 키프레임 리스트와 장면 프롬프트 한 번에 도출하기</p><figure class="prompt" data-tpl><figcaption><span class="plabel">그록 채팅 · 키프레임 리스트 + 장면 프롬프트</span><span class="sbadge">화풍 · <b class="sname">실사</b></span><button type="button" class="copy" data-target="p33">복사</button></figcaption><pre id="p33" data-raw="[상황] 그록 이매진으로 30초 세로(9:16) 쇼츠를 만든다. 캐릭터 시트·소품·배경은 이미 있다. 영상은 스타트 프레임과 엔드 프레임을 넣어 A1→A2, A2→A3 식으로 이어 붙인다.
+[내 이야기] (4박자 표와 대사를 붙여 넣기)
+[요청 1] 키프레임 리스트 표를 만들어 줘. 칸: 키프레임 / 장면 한 줄 / 첨부할 것.
+- 같은 장소·같은 카메라 방향이면 A1, A2, A3… 로 이어 가고, 장소나 방향이 바뀌면 B1, C1 로 새로 시작.
+- 키프레임은 8장 이내, 반전은 그림 한 장으로 보이게.
+[요청 2] 키프레임마다 영어 프롬프트를 써 줘.
+- 장면 첫 그림(A1·B1·C1): &quot;Use the attached images: (시트·소품·배경)&quot; 로 시작해 장면·카메라를 쓰고 &quot;this camera position stays fixed&quot; 포함.
+- 이어지는 그림: &quot;Use the attached image as the base. Keep everything the same … Change only this:&quot; 형식으로 바뀐 것 한 문장만.
+- 모두 &quot;Vertical 9:16 frame.&quot; 으로 끝내고, 맨 끝에 아래 화풍 문장을 그대로 붙일 것.
+{{STYLE}}">[상황] 그록 이매진으로 30초 세로(9:16) 쇼츠를 만든다. 캐릭터 시트·소품·배경은 이미 있다. 영상은 스타트 프레임과 엔드 프레임을 넣어 A1→A2, A2→A3 식으로 이어 붙인다.
+[내 이야기] (4박자 표와 대사를 붙여 넣기)
+[요청 1] 키프레임 리스트 표를 만들어 줘. 칸: 키프레임 / 장면 한 줄 / 첨부할 것.
+- 같은 장소·같은 카메라 방향이면 A1, A2, A3… 로 이어 가고, 장소나 방향이 바뀌면 B1, C1 로 새로 시작.
+- 키프레임은 8장 이내, 반전은 그림 한 장으로 보이게.
+[요청 2] 키프레임마다 영어 프롬프트를 써 줘.
+- 장면 첫 그림(A1·B1·C1): &quot;Use the attached images: (시트·소품·배경)&quot; 로 시작해 장면·카메라를 쓰고 &quot;this camera position stays fixed&quot; 포함.
+- 이어지는 그림: &quot;Use the attached image as the base. Keep everything the same … Change only this:&quot; 형식으로 바뀐 것 한 문장만.
+- 모두 &quot;Vertical 9:16 frame.&quot; 으로 끝내고, 맨 끝에 아래 화풍 문장을 그대로 붙일 것.
+{{STYLE}}</pre></figure></aside>
+</article></div></section>
+<section class="step" id="s6" data-name="영상" hidden><header class="step-head"><p class="step-no">STEP 6</p><h2>영상</h2></header><div class="grid"><article class="card wide" id="s6-slots"><h3>세 자리에 넣기</h3><p>그록 이매진 영상에서 자리 세 개를 씁니다. 아래 장면을 <strong>클릭하면</strong> 어느 자리에 무엇을 넣는지 그림과 완성 프롬프트가 나옵니다.</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>자리</th>
+<th>넣는 것</th>
+<th>하는 일</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>스타트</td>
+<td>앞 키프레임</td>
+<td>출발 장면</td>
+</tr>
+<tr>
+<td>엔드</td>
+<td>다음 키프레임</td>
+<td>도착 장면</td>
+</tr>
+<tr>
+<td>참조</td>
+<td>그 영상 주인공의 시트</td>
+<td>6초 동안 얼굴·옷 붙잡기</td>
+</tr>
+</tbody>
+</table></div>
+<p>영상 프롬프트에는 <strong>움직임 + 대사 + 효과음 + 배경음악</strong>까지 다 넣습니다. 배경음악 문장은 <strong>모든 영상에 똑같이</strong> 넣어야 영상끼리 분위기가 이어집니다. 마음에 안 드는 소리는 캡컷에서 끄면 됩니다.</p></article><article class="card wide" id="s6-p1"><h3>1안 영상 6개</h3><div class="pick" aria-label="1안 영상"><p class="pick-hint">장면을 클릭하세요</p><div class="pick-chips" role="tablist"><button type="button" class="pchip" role="tab" aria-selected="true" data-i="0"><b>①</b><span>대문까지</span></button><button type="button" class="pchip" role="tab" aria-selected="false" data-i="1"><b>②</b><span>택배요! 네에~</span></button><button type="button" class="pchip" role="tab" aria-selected="false" data-i="2"><b>③</b><span>또 네에~</span></button><button type="button" class="pchip" role="tab" aria-selected="false" data-i="3"><b>④</b><span>까치발</span></button><button type="button" class="pchip" role="tab" aria-selected="false" data-i="4"><b>⑤</b><span>메에에~</span></button><button type="button" class="pchip" role="tab" aria-selected="false" data-i="5"><b>⑥</b><span>잘 들었습니다</span></button></div><div class="ppanel" data-i="0"><div class="recipe-wrap"><svg class="recipe" viewBox="0 0 620 182" role="img" aria-label="스타트=A1; 엔드=A2; 참조=기사 시트 → 영상 ①"><rect class="rc-box" x="2" y="12" width="330" height="46" rx="9"/><rect class="rc-tag st" x="10" y="21" width="74" height="28" rx="6"/><text class="rc-tagt" x="47" y="40.0" text-anchor="middle">스타트</text><text class="rc-t" x="98" y="41.0">A1</text><path class="rc-line" d="M332 35.0 C 380 35.0, 380 91.0, 420 91.0"/><rect class="rc-box" x="2" y="68" width="330" height="46" rx="9"/><rect class="rc-tag en" x="10" y="77" width="74" height="28" rx="6"/><text class="rc-tagt" x="47" y="96.0" text-anchor="middle">엔드</text><text class="rc-t" x="98" y="97.0">A2</text><path class="rc-line" d="M332 91.0 C 380 91.0, 380 91.0, 420 91.0"/><rect class="rc-box" x="2" y="124" width="330" height="46" rx="9"/><rect class="rc-tag ref" x="10" y="133" width="74" height="28" rx="6"/><text class="rc-tagt" x="47" y="152.0" text-anchor="middle">참조</text><text class="rc-t" x="98" y="153.0">기사 시트</text><path class="rc-line" d="M332 147.0 C 380 147.0, 380 91.0, 420 91.0"/><path class="rc-arrow" d="M420 84.0 L432 91.0 L420 98.0 Z"/><rect class="rc-res" x="438" y="61.0" width="178" height="60" rx="11"/><text class="rc-rest" x="527" y="98.0" text-anchor="middle">영상 ①</text></svg></div><figure class="prompt" data-tpl><figcaption><span class="plabel">① 대문까지</span><span class="sbadge">화풍 · <b class="sname">실사</b></span><button type="button" class="copy" data-target="p34">복사</button></figcaption><pre id="p34" data-raw="The delivery man walks to the blue gate and stops, shifting the box under one arm to read the label. Camera static.
+Sound: footsteps on dirt, birds chirping.
+Background music: a light, playful acoustic countryside tune with plucked guitar and ukulele, low volume under the voices, the same tune in every clip.
+No subtitles, no on-screen text. Keep the same {{STYLE_EN}} look as the start frame.">The delivery man walks to the blue gate and stops, shifting the box under one arm to read the label. Camera static.
+Sound: footsteps on dirt, birds chirping.
+Background music: a light, playful acoustic countryside tune with plucked guitar and ukulele, low volume under the voices, the same tune in every clip.
+No subtitles, no on-screen text. Keep the same {{STYLE_EN}} look as the start frame.</pre></figure></div><div class="ppanel" data-i="1" hidden><div class="recipe-wrap"><svg class="recipe" viewBox="0 0 620 182" role="img" aria-label="스타트=A2; 엔드=A3; 참조=기사 시트 → 영상 ②"><rect class="rc-box" x="2" y="12" width="330" height="46" rx="9"/><rect class="rc-tag st" x="10" y="21" width="74" height="28" rx="6"/><text class="rc-tagt" x="47" y="40.0" text-anchor="middle">스타트</text><text class="rc-t" x="98" y="41.0">A2</text><path class="rc-line" d="M332 35.0 C 380 35.0, 380 91.0, 420 91.0"/><rect class="rc-box" x="2" y="68" width="330" height="46" rx="9"/><rect class="rc-tag en" x="10" y="77" width="74" height="28" rx="6"/><text class="rc-tagt" x="47" y="96.0" text-anchor="middle">엔드</text><text class="rc-t" x="98" y="97.0">A3</text><path class="rc-line" d="M332 91.0 C 380 91.0, 380 91.0, 420 91.0"/><rect class="rc-box" x="2" y="124" width="330" height="46" rx="9"/><rect class="rc-tag ref" x="10" y="133" width="74" height="28" rx="6"/><text class="rc-tagt" x="47" y="152.0" text-anchor="middle">참조</text><text class="rc-t" x="98" y="153.0">기사 시트</text><path class="rc-line" d="M332 147.0 C 380 147.0, 380 91.0, 420 91.0"/><path class="rc-arrow" d="M420 84.0 L432 91.0 L420 98.0 Z"/><rect class="rc-res" x="438" y="61.0" width="178" height="60" rx="11"/><text class="rc-rest" x="527" y="98.0" text-anchor="middle">영상 ②</text></svg></div><figure class="prompt" data-tpl><figcaption><span class="plabel">② 택배요! 네에~</span><span class="sbadge">화풍 · <b class="sname">실사</b></span><button type="button" class="copy" data-target="p35">복사</button></figcaption><pre id="p35" data-raw="The delivery man lifts his chin and calls toward the house, then turns to the stone wall and smiles with relief. Camera static.
+Dialogue: the delivery man (warm, slightly husky Korean man in his 40s) calls out in Korean: &quot;김순자 씨~ 택배요!&quot; From behind the wall, unseen, a long drawn-out voice answers: &quot;네에~&quot; (it sounds a little shaky and a little like a goat).
+Sound: two knocks on the wooden gate.
+Background music: a light, playful acoustic countryside tune with plucked guitar and ukulele, low volume under the voices, the same tune in every clip.
+No subtitles, no on-screen text. Keep the same {{STYLE_EN}} look as the start frame.">The delivery man lifts his chin and calls toward the house, then turns to the stone wall and smiles with relief. Camera static.
+Dialogue: the delivery man (warm, slightly husky Korean man in his 40s) calls out in Korean: &quot;김순자 씨~ 택배요!&quot; From behind the wall, unseen, a long drawn-out voice answers: &quot;네에~&quot; (it sounds a little shaky and a little like a goat).
+Sound: two knocks on the wooden gate.
+Background music: a light, playful acoustic countryside tune with plucked guitar and ukulele, low volume under the voices, the same tune in every clip.
+No subtitles, no on-screen text. Keep the same {{STYLE_EN}} look as the start frame.</pre></figure></div><div class="ppanel" data-i="2" hidden><div class="recipe-wrap"><svg class="recipe" viewBox="0 0 620 182" role="img" aria-label="스타트=A3; 엔드=A4; 참조=기사 시트 → 영상 ③"><rect class="rc-box" x="2" y="12" width="330" height="46" rx="9"/><rect class="rc-tag st" x="10" y="21" width="74" height="28" rx="6"/><text class="rc-tagt" x="47" y="40.0" text-anchor="middle">스타트</text><text class="rc-t" x="98" y="41.0">A3</text><path class="rc-line" d="M332 35.0 C 380 35.0, 380 91.0, 420 91.0"/><rect class="rc-box" x="2" y="68" width="330" height="46" rx="9"/><rect class="rc-tag en" x="10" y="77" width="74" height="28" rx="6"/><text class="rc-tagt" x="47" y="96.0" text-anchor="middle">엔드</text><text class="rc-t" x="98" y="97.0">A4</text><path class="rc-line" d="M332 91.0 C 380 91.0, 380 91.0, 420 91.0"/><rect class="rc-box" x="2" y="124" width="330" height="46" rx="9"/><rect class="rc-tag ref" x="10" y="133" width="74" height="28" rx="6"/><text class="rc-tagt" x="47" y="152.0" text-anchor="middle">참조</text><text class="rc-t" x="98" y="153.0">기사 시트</text><path class="rc-line" d="M332 147.0 C 380 147.0, 380 91.0, 420 91.0"/><path class="rc-arrow" d="M420 84.0 L432 91.0 L420 98.0 Z"/><rect class="rc-res" x="438" y="61.0" width="178" height="60" rx="11"/><text class="rc-rest" x="527" y="98.0" text-anchor="middle">영상 ③</text></svg></div><figure class="prompt" data-tpl><figcaption><span class="plabel">③ 또 네에~</span><span class="sbadge">화풍 · <b class="sname">실사</b></span><button type="button" class="copy" data-target="p36">복사</button></figcaption><pre id="p36" data-raw="The delivery man waits, sets the box down, checks his wristwatch and calls again, tapping his foot. Camera static.
+Dialogue: the delivery man (same warm, slightly husky voice) calls in Korean: &quot;택배요~!&quot; From behind the wall, unseen, the same drawn-out voice answers twice: &quot;네에~ 네에~&quot;.
+Sound: a tapping foot.
+Background music: a light, playful acoustic countryside tune with plucked guitar and ukulele, low volume under the voices, the same tune in every clip.
+No subtitles, no on-screen text. Keep the same {{STYLE_EN}} look as the start frame.">The delivery man waits, sets the box down, checks his wristwatch and calls again, tapping his foot. Camera static.
+Dialogue: the delivery man (same warm, slightly husky voice) calls in Korean: &quot;택배요~!&quot; From behind the wall, unseen, the same drawn-out voice answers twice: &quot;네에~ 네에~&quot;.
+Sound: a tapping foot.
+Background music: a light, playful acoustic countryside tune with plucked guitar and ukulele, low volume under the voices, the same tune in every clip.
+No subtitles, no on-screen text. Keep the same {{STYLE_EN}} look as the start frame.</pre></figure></div><div class="ppanel" data-i="3" hidden><div class="recipe-wrap"><svg class="recipe" viewBox="0 0 620 182" role="img" aria-label="스타트=A4; 엔드=A5; 참조=기사 시트 → 영상 ④"><rect class="rc-box" x="2" y="12" width="330" height="46" rx="9"/><rect class="rc-tag st" x="10" y="21" width="74" height="28" rx="6"/><text class="rc-tagt" x="47" y="40.0" text-anchor="middle">스타트</text><text class="rc-t" x="98" y="41.0">A4</text><path class="rc-line" d="M332 35.0 C 380 35.0, 380 91.0, 420 91.0"/><rect class="rc-box" x="2" y="68" width="330" height="46" rx="9"/><rect class="rc-tag en" x="10" y="77" width="74" height="28" rx="6"/><text class="rc-tagt" x="47" y="96.0" text-anchor="middle">엔드</text><text class="rc-t" x="98" y="97.0">A5</text><path class="rc-line" d="M332 91.0 C 380 91.0, 380 91.0, 420 91.0"/><rect class="rc-box" x="2" y="124" width="330" height="46" rx="9"/><rect class="rc-tag ref" x="10" y="133" width="74" height="28" rx="6"/><text class="rc-tagt" x="47" y="152.0" text-anchor="middle">참조</text><text class="rc-t" x="98" y="153.0">기사 시트</text><path class="rc-line" d="M332 147.0 C 380 147.0, 380 91.0, 420 91.0"/><path class="rc-arrow" d="M420 84.0 L432 91.0 L420 98.0 Z"/><rect class="rc-res" x="438" y="61.0" width="178" height="60" rx="11"/><text class="rc-rest" x="527" y="98.0" text-anchor="middle">영상 ④</text></svg></div><figure class="prompt" data-tpl><figcaption><span class="plabel">④ 까치발</span><span class="sbadge">화풍 · <b class="sname">실사</b></span><button type="button" class="copy" data-target="p37">복사</button></figcaption><pre id="p37" data-raw="The delivery man walks to the stone wall and slowly rises onto his tiptoes to peek over it. Camera static.
+No dialogue.
+Sound: a single leaf rustling, then silence.
+Background music: the same light acoustic countryside tune slowly fades out to complete silence by the end.
+No subtitles, no on-screen text. Keep the same {{STYLE_EN}} look as the start frame.">The delivery man walks to the stone wall and slowly rises onto his tiptoes to peek over it. Camera static.
+No dialogue.
+Sound: a single leaf rustling, then silence.
+Background music: the same light acoustic countryside tune slowly fades out to complete silence by the end.
+No subtitles, no on-screen text. Keep the same {{STYLE_EN}} look as the start frame.</pre></figure></div><div class="ppanel" data-i="4" hidden><div class="recipe-wrap"><svg class="recipe" viewBox="0 0 620 182" role="img" aria-label="스타트=B1; 엔드=B2; 참조=염소 시트 → 영상 ⑤"><rect class="rc-box" x="2" y="12" width="330" height="46" rx="9"/><rect class="rc-tag st" x="10" y="21" width="74" height="28" rx="6"/><text class="rc-tagt" x="47" y="40.0" text-anchor="middle">스타트</text><text class="rc-t" x="98" y="41.0">B1</text><path class="rc-line" d="M332 35.0 C 380 35.0, 380 91.0, 420 91.0"/><rect class="rc-box" x="2" y="68" width="330" height="46" rx="9"/><rect class="rc-tag en" x="10" y="77" width="74" height="28" rx="6"/><text class="rc-tagt" x="47" y="96.0" text-anchor="middle">엔드</text><text class="rc-t" x="98" y="97.0">B2</text><path class="rc-line" d="M332 91.0 C 380 91.0, 380 91.0, 420 91.0"/><rect class="rc-box" x="2" y="124" width="330" height="46" rx="9"/><rect class="rc-tag ref" x="10" y="133" width="74" height="28" rx="6"/><text class="rc-tagt" x="47" y="152.0" text-anchor="middle">참조</text><text class="rc-t" x="98" y="153.0">염소 시트</text><path class="rc-line" d="M332 147.0 C 380 147.0, 380 91.0, 420 91.0"/><path class="rc-arrow" d="M420 84.0 L432 91.0 L420 98.0 Z"/><rect class="rc-res" x="438" y="61.0" width="178" height="60" rx="11"/><text class="rc-rest" x="527" y="98.0" text-anchor="middle">영상 ⑤</text></svg></div><figure class="prompt" data-tpl><figcaption><span class="plabel">⑤ 메에에~</span><span class="sbadge">화풍 · <b class="sname">실사</b></span><button type="button" class="copy" data-target="p38">복사</button></figcaption><pre id="p38" data-raw="The goat stops chewing, lifts its head to the top of the wall and bleats right in the man&#x27;s face; the man&#x27;s eyes go wide. Camera static.
+Sound: the goat&#x27;s long bleat sounds exactly like a drawn-out &quot;네에에~&quot;, then a short comic boing sound effect.
+Background music: none, complete silence except the bleat.
+No subtitles, no on-screen text. Keep the same {{STYLE_EN}} look as the start frame.">The goat stops chewing, lifts its head to the top of the wall and bleats right in the man&#x27;s face; the man&#x27;s eyes go wide. Camera static.
+Sound: the goat&#x27;s long bleat sounds exactly like a drawn-out &quot;네에에~&quot;, then a short comic boing sound effect.
+Background music: none, complete silence except the bleat.
+No subtitles, no on-screen text. Keep the same {{STYLE_EN}} look as the start frame.</pre></figure></div><div class="ppanel" data-i="5" hidden><div class="recipe-wrap"><svg class="recipe" viewBox="0 0 620 126" role="img" aria-label="스타트=C1; 참조=기사 시트 → 영상 ⑥"><rect class="rc-box" x="2" y="12" width="330" height="46" rx="9"/><rect class="rc-tag st" x="10" y="21" width="74" height="28" rx="6"/><text class="rc-tagt" x="47" y="40.0" text-anchor="middle">스타트</text><text class="rc-t" x="98" y="41.0">C1</text><path class="rc-line" d="M332 35.0 C 380 35.0, 380 63.0, 420 63.0"/><rect class="rc-box" x="2" y="68" width="330" height="46" rx="9"/><rect class="rc-tag ref" x="10" y="77" width="74" height="28" rx="6"/><text class="rc-tagt" x="47" y="96.0" text-anchor="middle">참조</text><text class="rc-t" x="98" y="97.0">기사 시트</text><path class="rc-line" d="M332 91.0 C 380 91.0, 380 63.0, 420 63.0"/><path class="rc-arrow" d="M420 56.0 L432 63.0 L420 70.0 Z"/><rect class="rc-res" x="438" y="33.0" width="178" height="60" rx="11"/><text class="rc-rest" x="527" y="70.0" text-anchor="middle">영상 ⑥</text></svg></div><figure class="prompt" data-tpl><figcaption><span class="plabel">⑥ 잘 들었습니다</span><span class="sbadge">화풍 · <b class="sname">실사</b></span><button type="button" class="copy" data-target="p39">복사</button></figcaption><pre id="p39" data-raw="The delivery man stays frozen with a blank stare, then mutters to himself; the goat keeps chewing and its bell jingles. Camera slowly pulls back.
+Dialogue: the delivery man (same warm, slightly husky voice, flat and stunned) mutters in Korean: &quot;…네, 잘 들었습니다.&quot;
+Sound: chewing, a small bell jingle, a crow far away.
+Background music: the same light, playful acoustic countryside tune with plucked guitar and ukulele comes back in, low volume.
+No subtitles, no on-screen text. Keep the same {{STYLE_EN}} look as the start frame.">The delivery man stays frozen with a blank stare, then mutters to himself; the goat keeps chewing and its bell jingles. Camera slowly pulls back.
+Dialogue: the delivery man (same warm, slightly husky voice, flat and stunned) mutters in Korean: &quot;…네, 잘 들었습니다.&quot;
+Sound: chewing, a small bell jingle, a crow far away.
+Background music: the same light, playful acoustic countryside tune with plucked guitar and ukulele comes back in, low volume.
+No subtitles, no on-screen text. Keep the same {{STYLE_EN}} look as the start frame.</pre></figure></div></div>
+</article><article class="card wide" id="s6-p2"><h3>2안 영상 5개</h3><div class="pick" aria-label="2안 영상"><p class="pick-hint">장면을 클릭하세요</p><div class="pick-chips" role="tablist"><button type="button" class="pchip" role="tab" aria-selected="true" data-i="0"><b>①</b><span>도인 등장</span></button><button type="button" class="pchip" role="tab" aria-selected="false" data-i="1"><b>②</b><span>산에 다녀오시나 봐요?</span></button><button type="button" class="pchip" role="tab" aria-selected="false" data-i="2"><b>③</b><span>새 이름은요?</span></button><button type="button" class="pchip" role="tab" aria-selected="false" data-i="3"><b>④</b><span>아, 이게 뭐야!</span></button><button type="button" class="pchip" role="tab" aria-selected="false" data-i="4"><b>⑤</b><span>혼자 남은 청년</span></button></div><div class="ppanel" data-i="0"><div class="recipe-wrap"><svg class="recipe" viewBox="0 0 620 182" role="img" aria-label="스타트=A1; 엔드=A2; 참조=할아버지 시트 → 영상 ①"><rect class="rc-box" x="2" y="12" width="330" height="46" rx="9"/><rect class="rc-tag st" x="10" y="21" width="74" height="28" rx="6"/><text class="rc-tagt" x="47" y="40.0" text-anchor="middle">스타트</text><text class="rc-t" x="98" y="41.0">A1</text><path class="rc-line" d="M332 35.0 C 380 35.0, 380 91.0, 420 91.0"/><rect class="rc-box" x="2" y="68" width="330" height="46" rx="9"/><rect class="rc-tag en" x="10" y="77" width="74" height="28" rx="6"/><text class="rc-tagt" x="47" y="96.0" text-anchor="middle">엔드</text><text class="rc-t" x="98" y="97.0">A2</text><path class="rc-line" d="M332 91.0 C 380 91.0, 380 91.0, 420 91.0"/><rect class="rc-box" x="2" y="124" width="330" height="46" rx="9"/><rect class="rc-tag ref" x="10" y="133" width="74" height="28" rx="6"/><text class="rc-tagt" x="47" y="152.0" text-anchor="middle">참조</text><text class="rc-t" x="98" y="153.0">할아버지 시트</text><path class="rc-line" d="M332 147.0 C 380 147.0, 380 91.0, 420 91.0"/><path class="rc-arrow" d="M420 84.0 L432 91.0 L420 98.0 Z"/><rect class="rc-res" x="438" y="61.0" width="178" height="60" rx="11"/><text class="rc-rest" x="527" y="98.0" text-anchor="middle">영상 ①</text></svg></div><figure class="prompt" data-tpl><figcaption><span class="plabel">① 도인 등장</span><span class="sbadge">화풍 · <b class="sname">실사</b></span><button type="button" class="copy" data-target="p40">복사</button></figcaption><pre id="p40" data-raw="The young man keeps climbing the steps as the grandfather appears at the top and walks slowly down, the sparrow sitting still on his shoulder. Camera follows gently from behind.
+Sound: footsteps on stone, wind in the leaves, one sparrow chirp.
+Background music: calm traditional Korean mountain music with a soft daegeum flute and gentle gayageum, low volume under the voices, the same music in every clip.
+No subtitles, no on-screen text. Keep the same {{STYLE_EN}} look as the start frame.">The young man keeps climbing the steps as the grandfather appears at the top and walks slowly down, the sparrow sitting still on his shoulder. Camera follows gently from behind.
+Sound: footsteps on stone, wind in the leaves, one sparrow chirp.
+Background music: calm traditional Korean mountain music with a soft daegeum flute and gentle gayageum, low volume under the voices, the same music in every clip.
+No subtitles, no on-screen text. Keep the same {{STYLE_EN}} look as the start frame.</pre></figure></div><div class="ppanel" data-i="1" hidden><div class="recipe-wrap"><svg class="recipe" viewBox="0 0 620 182" role="img" aria-label="스타트=B1; 엔드=B2; 참조=할아버지 시트 → 영상 ②"><rect class="rc-box" x="2" y="12" width="330" height="46" rx="9"/><rect class="rc-tag st" x="10" y="21" width="74" height="28" rx="6"/><text class="rc-tagt" x="47" y="40.0" text-anchor="middle">스타트</text><text class="rc-t" x="98" y="41.0">B1</text><path class="rc-line" d="M332 35.0 C 380 35.0, 380 91.0, 420 91.0"/><rect class="rc-box" x="2" y="68" width="330" height="46" rx="9"/><rect class="rc-tag en" x="10" y="77" width="74" height="28" rx="6"/><text class="rc-tagt" x="47" y="96.0" text-anchor="middle">엔드</text><text class="rc-t" x="98" y="97.0">B2</text><path class="rc-line" d="M332 91.0 C 380 91.0, 380 91.0, 420 91.0"/><rect class="rc-box" x="2" y="124" width="330" height="46" rx="9"/><rect class="rc-tag ref" x="10" y="133" width="74" height="28" rx="6"/><text class="rc-tagt" x="47" y="152.0" text-anchor="middle">참조</text><text class="rc-t" x="98" y="153.0">할아버지 시트</text><path class="rc-line" d="M332 147.0 C 380 147.0, 380 91.0, 420 91.0"/><path class="rc-arrow" d="M420 84.0 L432 91.0 L420 98.0 Z"/><rect class="rc-res" x="438" y="61.0" width="178" height="60" rx="11"/><text class="rc-rest" x="527" y="98.0" text-anchor="middle">영상 ②</text></svg></div><figure class="prompt" data-tpl><figcaption><span class="plabel">② 산에 다녀오시나 봐요?</span><span class="sbadge">화풍 · <b class="sname">실사</b></span><button type="button" class="copy" data-target="p41">복사</button></figcaption><pre id="p41" data-raw="The young man bows politely and asks; the grandfather answers slowly, nodding and stroking his beard. Camera static.
+Dialogue: the young man (bright, polite Korean man in his 20s) says in Korean: &quot;어르신, 산에 다녀오시나 봐요?&quot; The grandfather (deep, calm, slow Korean old man) answers in Korean: &quot;네, 그렇습니다.&quot;
+Background music: calm traditional Korean mountain music with a soft daegeum flute and gentle gayageum, low volume under the voices, the same music in every clip.
+No subtitles, no on-screen text. Keep the same {{STYLE_EN}} look as the start frame.">The young man bows politely and asks; the grandfather answers slowly, nodding and stroking his beard. Camera static.
+Dialogue: the young man (bright, polite Korean man in his 20s) says in Korean: &quot;어르신, 산에 다녀오시나 봐요?&quot; The grandfather (deep, calm, slow Korean old man) answers in Korean: &quot;네, 그렇습니다.&quot;
+Background music: calm traditional Korean mountain music with a soft daegeum flute and gentle gayageum, low volume under the voices, the same music in every clip.
+No subtitles, no on-screen text. Keep the same {{STYLE_EN}} look as the start frame.</pre></figure></div><div class="ppanel" data-i="2" hidden><div class="recipe-wrap"><svg class="recipe" viewBox="0 0 620 182" role="img" aria-label="스타트=B2; 엔드=B3; 참조=청년 시트 → 영상 ③"><rect class="rc-box" x="2" y="12" width="330" height="46" rx="9"/><rect class="rc-tag st" x="10" y="21" width="74" height="28" rx="6"/><text class="rc-tagt" x="47" y="40.0" text-anchor="middle">스타트</text><text class="rc-t" x="98" y="41.0">B2</text><path class="rc-line" d="M332 35.0 C 380 35.0, 380 91.0, 420 91.0"/><rect class="rc-box" x="2" y="68" width="330" height="46" rx="9"/><rect class="rc-tag en" x="10" y="77" width="74" height="28" rx="6"/><text class="rc-tagt" x="47" y="96.0" text-anchor="middle">엔드</text><text class="rc-t" x="98" y="97.0">B3</text><path class="rc-line" d="M332 91.0 C 380 91.0, 380 91.0, 420 91.0"/><rect class="rc-box" x="2" y="124" width="330" height="46" rx="9"/><rect class="rc-tag ref" x="10" y="133" width="74" height="28" rx="6"/><text class="rc-tagt" x="47" y="152.0" text-anchor="middle">참조</text><text class="rc-t" x="98" y="153.0">청년 시트</text><path class="rc-line" d="M332 147.0 C 380 147.0, 380 91.0, 420 91.0"/><path class="rc-arrow" d="M420 84.0 L432 91.0 L420 98.0 Z"/><rect class="rc-res" x="438" y="61.0" width="178" height="60" rx="11"/><text class="rc-rest" x="527" y="98.0" text-anchor="middle">영상 ③</text></svg></div><figure class="prompt" data-tpl><figcaption><span class="plabel">③ 새 이름은요?</span><span class="sbadge">화풍 · <b class="sname">실사</b></span><button type="button" class="copy" data-target="p42">복사</button></figcaption><pre id="p42" data-raw="The young man raises his hand and points curiously at the sparrow on the grandfather&#x27;s shoulder; the grandfather keeps smiling calmly without looking. Camera static.
+Dialogue: the young man (same bright, polite voice) asks in Korean: &quot;그런데 어르신, 어깨 위에 있는 새는 이름이 뭔가요?&quot;
+Background music: calm traditional Korean mountain music with a soft daegeum flute and gentle gayageum, low volume under the voices, the same music in every clip.
+No subtitles, no on-screen text. Keep the same {{STYLE_EN}} look as the start frame.">The young man raises his hand and points curiously at the sparrow on the grandfather&#x27;s shoulder; the grandfather keeps smiling calmly without looking. Camera static.
+Dialogue: the young man (same bright, polite voice) asks in Korean: &quot;그런데 어르신, 어깨 위에 있는 새는 이름이 뭔가요?&quot;
+Background music: calm traditional Korean mountain music with a soft daegeum flute and gentle gayageum, low volume under the voices, the same music in every clip.
+No subtitles, no on-screen text. Keep the same {{STYLE_EN}} look as the start frame.</pre></figure></div><div class="ppanel" data-i="3" hidden><div class="recipe-wrap"><svg class="recipe" viewBox="0 0 620 182" role="img" aria-label="스타트=B3; 엔드=B4; 참조=할아버지 시트 → 영상 ④"><rect class="rc-box" x="2" y="12" width="330" height="46" rx="9"/><rect class="rc-tag st" x="10" y="21" width="74" height="28" rx="6"/><text class="rc-tagt" x="47" y="40.0" text-anchor="middle">스타트</text><text class="rc-t" x="98" y="41.0">B3</text><path class="rc-line" d="M332 35.0 C 380 35.0, 380 91.0, 420 91.0"/><rect class="rc-box" x="2" y="68" width="330" height="46" rx="9"/><rect class="rc-tag en" x="10" y="77" width="74" height="28" rx="6"/><text class="rc-tagt" x="47" y="96.0" text-anchor="middle">엔드</text><text class="rc-t" x="98" y="97.0">B4</text><path class="rc-line" d="M332 91.0 C 380 91.0, 380 91.0, 420 91.0"/><rect class="rc-box" x="2" y="124" width="330" height="46" rx="9"/><rect class="rc-tag ref" x="10" y="133" width="74" height="28" rx="6"/><text class="rc-tagt" x="47" y="152.0" text-anchor="middle">참조</text><text class="rc-t" x="98" y="153.0">할아버지 시트</text><path class="rc-line" d="M332 147.0 C 380 147.0, 380 91.0, 420 91.0"/><path class="rc-arrow" d="M420 84.0 L432 91.0 L420 98.0 Z"/><rect class="rc-res" x="438" y="61.0" width="178" height="60" rx="11"/><text class="rc-rest" x="527" y="98.0" text-anchor="middle">영상 ④</text></svg></div><figure class="prompt" data-tpl><figcaption><span class="plabel">④ 아, 이게 뭐야!</span><span class="sbadge">화풍 · <b class="sname">실사</b></span><button type="button" class="copy" data-target="p43">복사</button></figcaption><pre id="p43" data-raw="The grandfather slowly turns his head to his own shoulder, then jumps back in shock as the sparrow flies off; the young man freezes, still pointing. Camera static.
+Dialogue: the grandfather&#x27;s calm voice suddenly turns into a high-pitched startled shout in Korean: &quot;아, 이게 뭐야!&quot;
+Sound: wings flapping.
+Background music: the calm daegeum music stops abruptly with a record-scratch sound right at the shout.
+No subtitles, no on-screen text. Keep the same {{STYLE_EN}} look as the start frame.">The grandfather slowly turns his head to his own shoulder, then jumps back in shock as the sparrow flies off; the young man freezes, still pointing. Camera static.
+Dialogue: the grandfather&#x27;s calm voice suddenly turns into a high-pitched startled shout in Korean: &quot;아, 이게 뭐야!&quot;
+Sound: wings flapping.
+Background music: the calm daegeum music stops abruptly with a record-scratch sound right at the shout.
+No subtitles, no on-screen text. Keep the same {{STYLE_EN}} look as the start frame.</pre></figure></div><div class="ppanel" data-i="4" hidden><div class="recipe-wrap"><svg class="recipe" viewBox="0 0 620 126" role="img" aria-label="스타트=C1; 참조=청년 시트 → 영상 ⑤"><rect class="rc-box" x="2" y="12" width="330" height="46" rx="9"/><rect class="rc-tag st" x="10" y="21" width="74" height="28" rx="6"/><text class="rc-tagt" x="47" y="40.0" text-anchor="middle">스타트</text><text class="rc-t" x="98" y="41.0">C1</text><path class="rc-line" d="M332 35.0 C 380 35.0, 380 63.0, 420 63.0"/><rect class="rc-box" x="2" y="68" width="330" height="46" rx="9"/><rect class="rc-tag ref" x="10" y="77" width="74" height="28" rx="6"/><text class="rc-tagt" x="47" y="96.0" text-anchor="middle">참조</text><text class="rc-t" x="98" y="97.0">청년 시트</text><path class="rc-line" d="M332 91.0 C 380 91.0, 380 63.0, 420 63.0"/><path class="rc-arrow" d="M420 56.0 L432 63.0 L420 70.0 Z"/><rect class="rc-res" x="438" y="33.0" width="178" height="60" rx="11"/><text class="rc-rest" x="527" y="70.0" text-anchor="middle">영상 ⑤</text></svg></div><figure class="prompt" data-tpl><figcaption><span class="plabel">⑤ 혼자 남은 청년</span><span class="sbadge">화풍 · <b class="sname">실사</b></span><button type="button" class="copy" data-target="p44">복사</button></figcaption><pre id="p44" data-raw="The young man stands still and blinks slowly, alone on the steps; the sparrow chirps on the branch. Camera slowly pulls back.
+No dialogue.
+Sound: one sparrow chirp, wind in the leaves.
+Background music: the same calm traditional Korean mountain music with a soft daegeum flute and gentle gayageum comes back in, low volume.
+No subtitles, no on-screen text. Keep the same {{STYLE_EN}} look as the start frame.">The young man stands still and blinks slowly, alone on the steps; the sparrow chirps on the branch. Camera slowly pulls back.
+No dialogue.
+Sound: one sparrow chirp, wind in the leaves.
+Background music: the same calm traditional Korean mountain music with a soft daegeum flute and gentle gayageum comes back in, low volume.
+No subtitles, no on-screen text. Keep the same {{STYLE_EN}} look as the start frame.</pre></figure></div></div>
+
+<aside class="note warn"><p class="note-k">주의 · 세 자리가 다 안 열리면</p><ul>
+<li>참조가 한 장만 되면: 두 캐릭터가 나오는 영상은 <strong>시트 두 장을 한 장으로 붙여</strong> 참조에 넣습니다.</li>
+<li>참조와 프레임을 같이 못 쓰면: <strong>스타트 + 엔드만</strong> 넣습니다. 키프레임이 이미 얼굴을 붙잡고 있어서 크게 무너지지 않습니다.</li>
+<li>대사가 6초 안에 다 안 들어가면(2안 ③): 영상 길이를 <strong>10초</strong>로 바꿉니다.</li>
+</ul></aside>
+
+<aside class="note help"><p class="note-k">막힐 때</p><p>두 그림 사이가 녹아내리듯 뭉개지면 두 키프레임의 카메라 위치가 다른 것입니다. 엔드 그림을 다시 짓거나, 엔드를 빼고 스타트만으로 만듭니다. 한국어 대사가 이상하게 나오면 그 영상은 원음을 끄고 나레이션으로 갑니다.</p></aside>
+
+<aside class="note ext home"><p class="note-k">집에서 · 영상 프롬프트 도출하기</p><figure class="prompt" data-tpl><figcaption><span class="plabel">그록 채팅 · 영상 프롬프트 만들기</span><span class="sbadge">화풍 · <b class="sname">실사</b></span><button type="button" class="copy" data-target="p45">복사</button></figcaption><pre id="p45" data-raw="[상황] 그록 이매진에서 스타트 프레임·엔드 프레임·참조(캐릭터 시트)를 넣어 6초 영상을 만든다.
+[내 키프레임 리스트] (키프레임 표를 붙여 넣기)
+[내 대사] (누가 어떤 말을 하는지 붙여 넣기)
+[요청] 이어지는 키프레임 쌍마다(A1→A2, A2→A3 …) 영어 영상 프롬프트를 써 줘. 각 프롬프트 위에 스타트·엔드·참조에 무엇을 넣는지 한국어로 적어 줘.
+[조건]
+- 화면에 이미 있는 것은 다시 설명하지 말고, 그 사이의 움직임과 카메라만 쓸 것.
+- 대사는 한국어 그대로 따옴표에 넣고, 말하는 사람의 목소리(나이·성별·말투)를 매번 똑같이 적을 것.
+- 효과음 한 줄, 배경음악 한 줄. 배경음악 문장은 모든 프롬프트에 똑같이(반전 영상만 &quot;음악이 뚝 멈춤&quot;).
+- 끝에 &quot;No subtitles, no on-screen text. Keep the same {{STYLE_EN}} look as the start frame.&quot; 을 붙일 것.">[상황] 그록 이매진에서 스타트 프레임·엔드 프레임·참조(캐릭터 시트)를 넣어 6초 영상을 만든다.
+[내 키프레임 리스트] (키프레임 표를 붙여 넣기)
+[내 대사] (누가 어떤 말을 하는지 붙여 넣기)
+[요청] 이어지는 키프레임 쌍마다(A1→A2, A2→A3 …) 영어 영상 프롬프트를 써 줘. 각 프롬프트 위에 스타트·엔드·참조에 무엇을 넣는지 한국어로 적어 줘.
+[조건]
+- 화면에 이미 있는 것은 다시 설명하지 말고, 그 사이의 움직임과 카메라만 쓸 것.
+- 대사는 한국어 그대로 따옴표에 넣고, 말하는 사람의 목소리(나이·성별·말투)를 매번 똑같이 적을 것.
+- 효과음 한 줄, 배경음악 한 줄. 배경음악 문장은 모든 프롬프트에 똑같이(반전 영상만 &quot;음악이 뚝 멈춤&quot;).
+- 끝에 &quot;No subtitles, no on-screen text. Keep the same {{STYLE_EN}} look as the start frame.&quot; 을 붙일 것.</pre></figure></aside>
+</article></div></section>
+<section class="step" id="s7" data-name="나레이션" hidden><header class="step-head"><p class="step-no">STEP 7</p><h2>나레이션</h2></header><div class="grid"><article class="card wide" id="s7-open"><h3>구글 AI 스튜디오 들어가기</h3><ol>
+<li><strong>aistudio.google.com</strong> 접속 → 구글 계정 로그인</li>
+<li>왼쪽 메뉴 <strong>Playground</strong> → 모델 칸에서 이름에 <strong>TTS</strong> 가 붙은 모델 선택</li>
+<li><strong>Speaker settings</strong> 에서 목소리 고르기 (1안·2안 같은 목소리)</li>
+<li>입력칸에 아래 대본을 <strong>통째로</strong> 붙여 넣고 실행 → <strong>WAV 다운로드</strong></li>
+</ol>
+<p>컬투쇼처럼 <strong>DJ가 사연을 읽으면서 대사도 흉내 내는</strong> 대본입니다. 한 번에 뽑아서 캡컷에서 영상에 맞춰 자릅니다.</p></article><article class="card wide" id="s7-s1"><h3>1안 나레이션 대본</h3><div class="tbl"><table>
+<thead>
+<tr>
+<th>영상</th>
+<th>나레이션</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>①</td>
+<td>자, 오늘의 사연입니다. 시골 배송 3년 차 택배 기사님, 오늘은 마을 끝 파란 대문 집이에요.</td>
+</tr>
+<tr>
+<td>②</td>
+<td>대문 앞에서 크게 부릅니다. "김순자 씨~ 택배요!" 그러자 담 너머에서… "네에~"</td>
+</tr>
+<tr>
+<td>③</td>
+<td>그런데 아무리 기다려도 아무도 안 나와요. 다시 "택배요~!" 하니까 또 "네에~ 네에~"</td>
+</tr>
+<tr>
+<td>④</td>
+<td>이상하다… 기사님, 까치발을 들고 담 너머를 슬쩍 봤는데요…</td>
+</tr>
+<tr>
+<td>⑤</td>
+<td>(쉼 · 염소 "메에에~"는 영상 원음)</td>
+</tr>
+<tr>
+<td>⑥</td>
+<td>대답하던 분은… 염소였습니다. 고객님, 대답 하나는 정말 잘하시네요!</td>
+</tr>
+</tbody>
+</table></div>
+<figure class="prompt"><figcaption><span class="plabel">1안 · 나레이션 대본 (그대로 붙여 넣기)</span><button type="button" class="copy" data-target="p46">복사</button></figcaption><pre id="p46" data-raw="라디오 DJ가 청취자 사연을 읽어주듯 능청스럽고 장난기 있게 읽어 주세요. 따옴표 안의 대사는 그 인물처럼 흉내 내서 읽고, &quot;네에~&quot;는 느릿하게 길게 늘여 주세요. 말줄임표(…)에서는 한 박자 쉬어 주세요.
+
+자, 오늘의 사연입니다. 시골 배송 3년 차 택배 기사님, 오늘은 마을 끝 파란 대문 집이에요.
+대문 앞에서 크게 부릅니다. &quot;김순자 씨~ 택배요!&quot; 그러자 담 너머에서… &quot;네에~&quot;
+그런데 아무리 기다려도 아무도 안 나와요. 다시 &quot;택배요~!&quot; 하니까 또 &quot;네에~ 네에~&quot;
+이상하다… 기사님, 까치발을 들고 담 너머를 슬쩍 봤는데요…
+대답하던 분은… 염소였습니다. 고객님, 대답 하나는 정말 잘하시네요!">라디오 DJ가 청취자 사연을 읽어주듯 능청스럽고 장난기 있게 읽어 주세요. 따옴표 안의 대사는 그 인물처럼 흉내 내서 읽고, &quot;네에~&quot;는 느릿하게 길게 늘여 주세요. 말줄임표(…)에서는 한 박자 쉬어 주세요.
+
+자, 오늘의 사연입니다. 시골 배송 3년 차 택배 기사님, 오늘은 마을 끝 파란 대문 집이에요.
+대문 앞에서 크게 부릅니다. &quot;김순자 씨~ 택배요!&quot; 그러자 담 너머에서… &quot;네에~&quot;
+그런데 아무리 기다려도 아무도 안 나와요. 다시 &quot;택배요~!&quot; 하니까 또 &quot;네에~ 네에~&quot;
+이상하다… 기사님, 까치발을 들고 담 너머를 슬쩍 봤는데요…
+대답하던 분은… 염소였습니다. 고객님, 대답 하나는 정말 잘하시네요!</pre></figure>
+</article><article class="card wide" id="s7-s2"><h3>2안 나레이션 대본</h3><div class="tbl"><table>
+<thead>
+<tr>
+<th>영상</th>
+<th>나레이션</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>①</td>
+<td>이번 사연은 가을 산에서 생긴 일입니다. 산을 오르던 청년 앞에, 어깨에 새를 얹은 할아버지가 내려오시는 거예요.</td>
+</tr>
+<tr>
+<td>②</td>
+<td>와, TV에서만 보던 도인이다! "어르신, 산에 다녀오시나 봐요?" "네, 그렇습니다."</td>
+</tr>
+<tr>
+<td>③</td>
+<td>목소리마저 도인이에요. 용기 내서 하나 더 여쭤봅니다. "그런데 어르신, 어깨 위에 있는 새는 이름이 뭔가요?"</td>
+</tr>
+<tr>
+<td>④</td>
+<td>할아버지가 천천히 어깨를 돌아보시더니… "아, 이게 뭐야!!"</td>
+</tr>
+<tr>
+<td>⑤</td>
+<td>새가 앉아 있는 걸, 할아버지만 모르셨던 겁니다.</td>
+</tr>
+</tbody>
+</table></div>
+<figure class="prompt"><figcaption><span class="plabel">2안 · 나레이션 대본 (그대로 붙여 넣기)</span><button type="button" class="copy" data-target="p47">복사</button></figcaption><pre id="p47" data-raw="라디오 DJ가 청취자 사연을 읽어주듯 능청스럽고 장난기 있게 읽어 주세요. 청년 대사는 밝고 공손하게, 할아버지 대사는 처음엔 낮고 느린 도인 말투로, 마지막 &quot;아, 이게 뭐야!!&quot;만 화들짝 놀라 높은 목소리로 읽어 주세요. 말줄임표(…)에서는 한 박자 쉬어 주세요.
+
+이번 사연은 가을 산에서 생긴 일입니다. 산을 오르던 청년 앞에, 어깨에 새를 얹은 할아버지가 내려오시는 거예요.
+와, TV에서만 보던 도인이다! &quot;어르신, 산에 다녀오시나 봐요?&quot; &quot;네, 그렇습니다.&quot;
+목소리마저 도인이에요. 용기 내서 하나 더 여쭤봅니다. &quot;그런데 어르신, 어깨 위에 있는 새는 이름이 뭔가요?&quot;
+할아버지가 천천히 어깨를 돌아보시더니… &quot;아, 이게 뭐야!!&quot;
+새가 앉아 있는 걸, 할아버지만 모르셨던 겁니다.">라디오 DJ가 청취자 사연을 읽어주듯 능청스럽고 장난기 있게 읽어 주세요. 청년 대사는 밝고 공손하게, 할아버지 대사는 처음엔 낮고 느린 도인 말투로, 마지막 &quot;아, 이게 뭐야!!&quot;만 화들짝 놀라 높은 목소리로 읽어 주세요. 말줄임표(…)에서는 한 박자 쉬어 주세요.
+
+이번 사연은 가을 산에서 생긴 일입니다. 산을 오르던 청년 앞에, 어깨에 새를 얹은 할아버지가 내려오시는 거예요.
+와, TV에서만 보던 도인이다! &quot;어르신, 산에 다녀오시나 봐요?&quot; &quot;네, 그렇습니다.&quot;
+목소리마저 도인이에요. 용기 내서 하나 더 여쭤봅니다. &quot;그런데 어르신, 어깨 위에 있는 새는 이름이 뭔가요?&quot;
+할아버지가 천천히 어깨를 돌아보시더니… &quot;아, 이게 뭐야!!&quot;
+새가 앉아 있는 걸, 할아버지만 모르셨던 겁니다.</pre></figure>
+
+<aside class="note set"><p class="note-k">설정 · 영상 대사와 겹칠 때</p><p>그록 영상에도 대사가 들어 있으니 두 소리가 겹칩니다. 캡컷에서 <strong>둘 중 좋은 쪽 하나만</strong> 남깁니다.
+- 영상 대사가 자연스러우면: 영상 원음 대사를 살리고, 나레이션의 그 따옴표 부분만 잘라 냅니다.
+- 영상 대사가 어색하면: 영상 원음을 끄고(효과음·음악만 남기기 어려우면 통째로 끄고) 나레이션을 씁니다.</p></aside>
+
+<aside class="note ext"><p class="note-k">한 걸음 더 · 한 걸음 더 · 화자 두 명으로</p><p>Speaker settings 에서 <strong>화자 두 명</strong>(나레이터 + 인물)을 설정하고 대본 앞에 <code>Narrator:</code> <code>Grandpa:</code> 처럼 이름을 붙이면 대사를 다른 목소리로 나눠 읽습니다.</p></aside>
+
+<aside class="note ext home"><p class="note-k">집에서 · 나레이션 대본 도출하기</p><figure class="prompt"><figcaption><span class="plabel">그록 채팅 · 나레이션 대본 만들기</span><button type="button" class="copy" data-target="p48">복사</button></figcaption><pre id="p48" data-raw="[상황] 30초 세로 쇼츠의 나레이션을 구글 AI 스튜디오 TTS로 만든다. 라디오 컬투쇼처럼 DJ가 사연을 읽으면서 대사도 흉내 낸다.
+[내 이야기] (4박자 표와 대사를 붙여 넣기)
+[내 영상 순서] (영상 ①~⑥ 장면 한 줄씩)
+[요청] 영상마다 한 줄씩 나레이션 대본을 써 줘. 표로 먼저 보여 주고, 아래에 TTS에 그대로 붙일 대본을 따로 써 줘.
+[조건]
+- 영상 하나에 한국어 40자 안팎. 대사는 따옴표로 넣기.
+- 반전 영상은 나레이션 없이 비워 둘 것.
+- 대본 맨 위에 읽는 방식 지시 2~3줄(말투, 대사 흉내, 쉼 위치)을 넣을 것.">[상황] 30초 세로 쇼츠의 나레이션을 구글 AI 스튜디오 TTS로 만든다. 라디오 컬투쇼처럼 DJ가 사연을 읽으면서 대사도 흉내 낸다.
+[내 이야기] (4박자 표와 대사를 붙여 넣기)
+[내 영상 순서] (영상 ①~⑥ 장면 한 줄씩)
+[요청] 영상마다 한 줄씩 나레이션 대본을 써 줘. 표로 먼저 보여 주고, 아래에 TTS에 그대로 붙일 대본을 따로 써 줘.
+[조건]
+- 영상 하나에 한국어 40자 안팎. 대사는 따옴표로 넣기.
+- 반전 영상은 나레이션 없이 비워 둘 것.
+- 대본 맨 위에 읽는 방식 지시 2~3줄(말투, 대사 흉내, 쉼 위치)을 넣을 것.</pre></figure></aside>
+</article></div></section>
+<section class="step" id="s8" data-name="캡컷" hidden><header class="step-head"><p class="step-no">STEP 8</p><h2>캡컷</h2></header><div class="grid"><article class="card wide" id="s8-track"><h3>트랙 네 줄</h3><div class="stage" data-scene="timeline"><div class="stage-view"><canvas></canvas><p class="stage-fallback" hidden>이 기기에서는 입체 화면을 띄울 수 없어 단계 설명만 보여 드립니다.</p><ol class="stage-steps"></ol></div><p class="stage-cap" aria-live="polite"></p><div class="stage-ctl"><button type="button" class="b-play" aria-label="재생/멈춤">멈춤</button><button type="button" class="b-restart">처음으로</button><input type="range" class="b-seek" min="0" max="1000" value="0" aria-label="진행 위치"><label class="b-loopl"><input type="checkbox" class="b-loop" checked> 반복</label></div></div>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>트랙</th>
+<th>넣는 것</th>
+<th>볼륨</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>영상</td>
+<td>영상 ①~⑥ 순서대로</td>
+<td>원음 30~100% (대사를 살리면 100%)</td>
+</tr>
+<tr>
+<td>나레이션</td>
+<td>AI 스튜디오 WAV</td>
+<td>100%</td>
+</tr>
+<tr>
+<td>효과음</td>
+<td>영상에서 부족한 소리만</td>
+<td>80~100%</td>
+</tr>
+<tr>
+<td>자막</td>
+<td>나레이션 문장</td>
+<td>—</td>
+</tr>
+</tbody>
+</table></div></article><article class="card" id="s8-step"><h3>조립 순서</h3><ol>
+<li>새 프로젝트 → 비율 <strong>9:16</strong></li>
+<li>영상 6개를 순서대로 넣기. 같은 장면(A①~④)은 끝 그림과 첫 그림이 같아서 <strong>붙이기만 하면</strong> 이어집니다</li>
+<li>장면이 바뀌는 곳(④→⑤, ⑤→⑥)은 전환 효과 없이 <strong>딱 끊어</strong> 붙입니다</li>
+<li>나레이션 WAV를 넣고 <strong>문장 단위로 잘라</strong> 영상 위치에 맞추기</li>
+<li>대사가 겹치는 곳은 <strong>영상 원음과 나레이션 중 하나만</strong> 남기기</li>
+<li><strong>④ 끝에 0.5~1초 정적</strong>: "봤는데요…" 뒤에 바로 넘기지 말고 한 박자 쉽니다</li>
+<li>자막: 텍스트 → 자동 자막(또는 직접 입력)</li>
+<li>내보내기: <strong>1080×1920, 30fps</strong></li>
+</ol></article><article class="card" id="s8-timing"><h3>웃음 타이밍 3원칙</h3><ul>
+<li><strong>쌓기는 느리게</strong>: ②·③은 6초를 다 씁니다. "네에~"가 반복될 시간이 필요합니다.</li>
+<li><strong>반전 직전은 비우기</strong>: ④ 끝 정적이 가장 중요합니다.</li>
+<li><strong>반전은 짧게</strong>: ⑤는 3~4초로 잘라 "메에에~" 끝나면 바로 ⑥으로.</li>
+</ul>
+<aside class="note help"><p class="note-k">막힐 때</p><p>나레이션이 영상보다 길면 그 영상 마지막 장면을 <strong>정지 화면으로 늘리거나</strong>(우클릭 → 정지 화면) 속도를 0.8배로 낮춥니다. 배경음악이 영상마다 달라 끊기면, 영상 원음 음악을 끄고 캡컷 음악 한 곡을 처음부터 끝까지 깝니다.</p></aside>
+</article></div></section>
+<section class="step" id="s9" data-name="마무리" hidden><header class="step-head"><p class="step-no">STEP 9</p><h2>마무리</h2></header><div class="grid"><article class="card" id="s9-check"><h3>2안 내가 만들기 체크리스트</h3><ul>
+<li class="chk"><label><input type="checkbox"> <span>할아버지·청년 앵커와 시트</span></label></li>
+<li class="chk"><label><input type="checkbox"> <span>산새, 가을 산길 배경</span></label></li>
+<li class="chk"><label><input type="checkbox"> <span>키프레임 7장 (A1·A2 / B1·B2·B3·B4 / C1)</span></label></li>
+<li class="chk"><label><input type="checkbox"> <span>영상 5개</span></label></li>
+<li class="chk"><label><input type="checkbox"> <span>나레이션 WAV</span></label></li>
+<li class="chk"><label><input type="checkbox"> <span>캡컷 조립, 내보내기</span></label></li>
+</ul>
+<p>오늘 다 못 끝내도 괜찮습니다. <strong>시트와 장면 첫 그림까지만</strong> 만들어 두면 다음 시간에 바로 이어집니다.</p></article><article class="card" id="s9-next"><h3>다음 시간 예고</h3><p>8차시는 <strong>내 이야기로 만드는 공모전 출품작 + 시사회</strong>입니다.
+- 단계마다 있던 <strong>「집에서 · 이렇게 도출합니다」</strong> 프롬프트를 순서대로 쓰면 내 이야기 프롬프트가 다 나옵니다.
+- 내 이야기를 4박자로 미리 정리해 오세요.
+- 오늘 고른 나레이션 목소리 이름과, 집에서 바꿔 본 화풍 결과도 챙겨 오세요.</p></article><article class="card wide" id="s9-faq"><h3>막힘 사전</h3><div class="tbl"><table>
+<thead>
+<tr>
+<th>화면·문제</th>
+<th>원인</th>
+<th>이렇게</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>「복사」를 눌러도 붙여 넣기가 안 됨</td>
+<td>브라우저가 복사를 막음</td>
+<td>프롬프트가 파랗게 선택되면 Ctrl+C 를 한 번 더</td>
+</tr>
+<tr>
+<td>앵커에 배경이 생김</td>
+<td>배경 금지 문장이 약함</td>
+<td>맨 앞에 <code>On a plain light gray background,</code> 추가</td>
+</tr>
+<tr>
+<td>이어지는 그림에서 배경이 바뀜</td>
+<td>바꿀 문장이 김</td>
+<td>앞 그림 다시 첨부, 바꿀 문장 짧게</td>
+</tr>
+<tr>
+<td>첨부가 한 장만 됨</td>
+<td>첨부 개수 제한</td>
+<td>시트·소품·배경을 한 장으로 붙여 첨부</td>
+</tr>
+<tr>
+<td>두 그림 사이가 녹아내림</td>
+<td>두 키프레임의 카메라 위치가 다름</td>
+<td>엔드 그림 다시 짓기, 또는 스타트만</td>
+</tr>
+<tr>
+<td>영상 중간에 얼굴이 변함</td>
+<td>참조 자리가 비어 있음</td>
+<td>참조에 주인공 시트 넣기</td>
+</tr>
+<tr>
+<td>대사가 6초에 안 들어감</td>
+<td>대사가 김</td>
+<td>영상 길이 10초</td>
+</tr>
+<tr>
+<td>한국어 대사가 이상함</td>
+<td>그록 음성의 한계</td>
+<td>원음 끄고 나레이션으로</td>
+</tr>
+<tr>
+<td>영상에 이상한 글자가 나옴</td>
+<td>그록이 자막을 지어냄</td>
+<td><code>No subtitles</code> 확인, 캡컷에서 잘라내기</td>
+</tr>
+<tr>
+<td>하루 생성 한도 알림</td>
+<td>SuperGrok 일 사용량</td>
+<td>시트·키프레임 먼저, 영상은 순서대로</td>
+</tr>
+</tbody>
+</table></div></article></div></section>
+  </main>
+  <aside class="side" aria-label="이 STEP의 카드">
+    <p id="side-no">STEP</p><h4 id="side-name"></h4><ol id="side-list"></ol>
+  </aside>
+</div>
+
+<div class="bottom">
+  <div class="bottom-in">
+    <button type="button" class="prev" id="prev">이전</button>
+    <select id="pick-step" aria-label="STEP 고르기"></select>
+    <select id="pick-card" aria-label="카드 고르기"></select>
+    <button type="button" class="next" id="next">다음</button>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+var MENU = [{"id": "s0", "num": 0, "name": "시작", "cards": [{"id": "s0-goal", "title": "오늘 만드는 것"}, {"id": "s0-flow", "title": "전체 공정 한눈에"}, {"id": "s0-stories", "title": "오늘의 두 이야기"}]}, {"id": "s1", "num": 1, "name": "이야기", "cards": [{"id": "s1-story1", "title": "1안 미리보기 · 택배 왔어요, 네~"}, {"id": "s1-story2", "title": "2안 미리보기 · 도인 할아버지와 산새"}, {"id": "s1-beat", "title": "웃기는 이야기의 4박자"}, {"id": "s1-sound", "title": "소리는 이렇게 갑니다"}]}, {"id": "s2", "num": 2, "name": "화풍", "cards": [{"id": "s2-pick", "title": "화풍 고르기"}, {"id": "s2-test", "title": "화풍 테스트 (한 장으로 4화풍 비교)"}]}, {"id": "s3", "num": 3, "name": "캐릭터", "cards": [{"id": "s3-anchor", "title": "앵커 → 시트, 두 단계"}, {"id": "s3-man", "title": "1안 · 택배 기사 (사람)"}, {"id": "s3-goat", "title": "1안 · 염소 (동물)"}, {"id": "s3-old", "title": "2안 · 할아버지 (사람)"}, {"id": "s3-young", "title": "2안 · 청년 (사람)"}, {"id": "s3-check", "title": "시트 확인 3가지"}]}, {"id": "s4", "num": 4, "name": "소품·배경", "cards": [{"id": "s4-why", "title": "어디에 쓰이나요?"}, {"id": "s4-p1", "title": "1안 · 택배 상자와 시골집"}, {"id": "s4-p2", "title": "2안 · 산새와 가을 산길"}]}, {"id": "s5", "num": 5, "name": "키프레임", "cards": [{"id": "s5-how", "title": "그림을 이어 짓는 법"}, {"id": "s5-p1", "title": "1안 키프레임 8장"}, {"id": "s5-p2", "title": "2안 키프레임 7장"}]}, {"id": "s6", "num": 6, "name": "영상", "cards": [{"id": "s6-slots", "title": "세 자리에 넣기"}, {"id": "s6-p1", "title": "1안 영상 6개"}, {"id": "s6-p2", "title": "2안 영상 5개"}]}, {"id": "s7", "num": 7, "name": "나레이션", "cards": [{"id": "s7-open", "title": "구글 AI 스튜디오 들어가기"}, {"id": "s7-s1", "title": "1안 나레이션 대본"}, {"id": "s7-s2", "title": "2안 나레이션 대본"}]}, {"id": "s8", "num": 8, "name": "캡컷", "cards": [{"id": "s8-track", "title": "트랙 네 줄"}, {"id": "s8-step", "title": "조립 순서"}, {"id": "s8-timing", "title": "웃음 타이밍 3원칙"}]}, {"id": "s9", "num": 9, "name": "마무리", "cards": [{"id": "s9-check", "title": "2안 내가 만들기 체크리스트"}, {"id": "s9-next", "title": "다음 시간 예고"}, {"id": "s9-faq", "title": "막힘 사전"}]}];
+var $ = function(s, r){ return (r || document).querySelector(s); };
+var $$ = function(s, r){ return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+function store(k, v){ try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch(e){ return null; } }
+
+/* 글자 크기 */
+var FS = [17,18,20,22,24,26], fsI = 2;
+var saved = parseInt(store('g7-fs'), 10); if (saved >= 0 && saved < FS.length) fsI = saved;
+function applyFs(){ document.documentElement.style.setProperty('--fs', FS[fsI] + 'px'); store('g7-fs', String(fsI)); }
+applyFs();
+$$('.fsz button').forEach(function(b){ b.addEventListener('click', function(){
+  var d = +b.dataset.fs; fsI = d === 0 ? 2 : Math.max(0, Math.min(FS.length - 1, fsI + d)); applyFs(); }); });
+
+/* 복사: 구글 사이트 임베드(iframe)에서도 되도록 execCommand 먼저, 그다음 클립보드 API */
+function copyText(t){
+  var ok = false;
+  try {
+    var ta = document.createElement('textarea'); ta.value = t; ta.setAttribute('readonly', '');
+    ta.style.position = 'absolute'; ta.style.left = '-9999px'; ta.style.top = (window.pageYOffset || 0) + 'px'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.focus(); ta.select(); ta.setSelectionRange(0, t.length);
+    ok = document.execCommand('copy'); document.body.removeChild(ta);
+  } catch(e){ ok = false; }
+  if (ok) return Promise.resolve();
+  if (navigator.clipboard && navigator.clipboard.writeText) return navigator.clipboard.writeText(t);
+  return Promise.reject();
+}
+document.addEventListener('click', function(e){
+  var b = e.target.closest ? e.target.closest('.copy') : null; if (!b) return;
+  var pre = document.getElementById(b.dataset.target), t = pre.textContent;
+  copyText(t).then(function(){ b.textContent = '복사됨'; b.classList.add('done'); setTimeout(function(){ b.textContent = '복사'; b.classList.remove('done'); }, 1600); },
+    function(){ var r = document.createRange(); r.selectNodeContents(pre); var sl = getSelection(); sl.removeAllRanges(); sl.addRange(r); b.textContent = 'Ctrl+C 누르기'; setTimeout(function(){ b.textContent = '복사'; }, 2600); });
+});
+
+/* 화풍: 고르면 {{STYLE}} 이 들어간 모든 프롬프트가 바뀜 */
+var STYLES = [
+  {id:'real', name:'실사', en:'photorealistic', desc:'진짜 사람·진짜 염소, 영화 한 장면', tip:'수업 기본', text:'Style: photorealistic cinematic photo, natural skin and fur texture, real fabric detail, 35mm lens, soft natural daylight, Korean countryside autumn tones, no text, no letters, no watermark.'},
+  {id:'toon', name:'만화', en:'2D webtoon illustration', desc:'웹툰처럼 선과 단색, 과장된 표정', tip:'집에서', text:'Style: 2D Korean webtoon illustration, clean confident line art, flat cel shading, bright soft colors, expressive faces, no text, no letters, no watermark.'},
+  {id:'3d', name:'3D', en:'3D animated film', desc:'애니메이션 영화, 둥글고 따뜻한 느낌', tip:'집에서', text:'Style: stylized 3D animated film look, soft rounded shapes, warm natural lighting, clean readable silhouettes, Korean countryside autumn color palette, no text, no letters, no watermark.'},
+  {id:'clay', name:'클레이', en:'claymation', desc:'손으로 빚은 점토 인형, 느릿한 능청', tip:'집에서', text:'Style: claymation stop-motion look, handmade plasticine characters with visible fingerprints and soft clay texture, miniature handmade set, warm studio lighting, no text, no letters, no watermark.'}
+];
+var curStyle = STYLES[0]; (function(){ var sv = store('g7-style'); STYLES.forEach(function(x){ if (x.id === sv) curStyle = x; }); })();
+function applyStyle(){
+  $$('pre[data-raw]').forEach(function(pre){ var raw = pre.getAttribute('data-raw');
+    if (raw.indexOf('{{STYLE') < 0) return;
+    pre.textContent = raw.split('{{STYLE}}').join(curStyle.text).split('{{STYLE_EN}}').join(curStyle.en); });
+  $$('.sname').forEach(function(n){ n.textContent = curStyle.name; });
+  $$('.stylepick .sopt').forEach(function(o){ o.setAttribute('aria-checked', o.dataset.id === curStyle.id ? 'true' : 'false'); });
+  var tc = $('#style-now'); if (tc) tc.textContent = curStyle.name;
+  store('g7-style', curStyle.id);
+}
+var SWATCH = {
+  real:'<rect x="0" y="0" width="64" height="64" rx="10" fill="#C9D6DE"/><circle cx="32" cy="26" r="11" fill="#D8A787"/><path d="M14 64c2-14 9-21 18-21s16 7 18 21z" fill="#2E3D66"/><rect x="0" y="0" width="64" height="64" rx="10" fill="url(#gr)" opacity=".35"/>',
+  toon:'<rect x="0" y="0" width="64" height="64" rx="10" fill="#FFF4D6"/><circle cx="32" cy="26" r="12" fill="#FFE0C2" stroke="#222" stroke-width="2.5"/><path d="M13 64c2-14 9-21 19-21s17 7 19 21z" fill="#5B7BD8" stroke="#222" stroke-width="2.5"/><circle cx="28" cy="25" r="1.8" fill="#222"/><circle cx="36" cy="25" r="1.8" fill="#222"/>',
+  '3d':'<rect x="0" y="0" width="64" height="64" rx="10" fill="#E7E1F2"/><circle cx="32" cy="27" r="13" fill="#F0BE98"/><circle cx="28" cy="23" r="4" fill="#FFF" opacity=".55"/><path d="M12 64c2-14 10-20 20-20s18 6 20 20z" fill="#6A4FB0"/>',
+  clay:'<rect x="0" y="0" width="64" height="64" rx="10" fill="#EBDCC8"/><ellipse cx="32" cy="27" rx="13" ry="12" fill="#E3A47A"/><path d="M12 64c3-15 10-21 20-21s17 6 20 21z" fill="#B5553A"/><circle cx="27" cy="29" r="1.2" fill="#8C5A3C"/><circle cx="37" cy="24" r="1.1" fill="#8C5A3C"/><circle cx="22" cy="55" r="1.4" fill="#8C3E28"/>'
+};
+$$('.stylepick').forEach(function(box){
+  STYLES.forEach(function(x){
+    var b = document.createElement('button'); b.type = 'button'; b.className = 'sopt'; b.dataset.id = x.id; b.setAttribute('role', 'radio');
+    b.innerHTML = '<svg viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="gr" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#000"/></linearGradient></defs>' + SWATCH[x.id] + '</svg>'
+      + '<span class="sopt-t"><b>' + x.name + '</b><small>' + x.tip + '</small></span><span class="sopt-d">' + x.desc + '</span>';
+    b.addEventListener('click', function(){ curStyle = x; applyStyle(); var m = $('#style-msg'); if (m){ m.textContent = '화풍이 「' + x.name + '」(으)로 바뀌었습니다. 아래 STEP의 프롬프트가 모두 ' + x.name + ' 화풍입니다.'; } });
+    box.appendChild(b);
+  });
+  var msg = document.createElement('p'); msg.id = 'style-msg'; msg.className = 'style-msg'; msg.setAttribute('aria-live', 'polite'); box.after(msg);
+});
+applyStyle();
+
+/* 장면 선택(칩) */
+$$('.pick').forEach(function(pk){
+  var chips = $$('.pchip', pk), panels = $$('.ppanel', pk);
+  chips.forEach(function(c){ c.addEventListener('click', function(){
+    chips.forEach(function(x){ x.setAttribute('aria-selected', x === c ? 'true' : 'false'); });
+    panels.forEach(function(p){ p.hidden = p.dataset.i !== c.dataset.i; });
+  }); });
+});
+
+/* STEP 전환 */
+var stepIds = MENU.map(function(m){ return m.id; }), curStep = null;
+var pickStep = $('#pick-step'), pickCard = $('#pick-card');
+MENU.forEach(function(m){ var o = document.createElement('option'); o.value = m.id; o.textContent = 'STEP ' + m.num + ' · ' + m.name; pickStep.appendChild(o); });
+function showStep(id, cardId, noScroll){
+  if (stepIds.indexOf(id) < 0) id = stepIds[0];
+  curStep = id;
+  $$('.step').forEach(function(s){ s.hidden = s.id !== id; });
+  $$('.tab').forEach(function(t){ t.setAttribute('aria-selected', t.dataset.step === id ? 'true' : 'false'); });
+  var tab = $('.tab[data-step="' + id + '"]'); if (tab && tab.scrollIntoView) tab.scrollIntoView({block:'nearest', inline:'nearest'});
+  var m = MENU[stepIds.indexOf(id)];
+  $('#side-no').textContent = 'STEP ' + m.num; $('#side-name').textContent = m.name;
+  var list = $('#side-list'); list.innerHTML = ''; pickCard.innerHTML = '';
+  m.cards.forEach(function(c, i){
+    var li = document.createElement('li'), a = document.createElement('a');
+    a.href = '#' + c.id; a.textContent = (i + 1) + '. ' + c.title; a.dataset.card = c.id;
+    a.addEventListener('click', function(e){ e.preventDefault(); goCard(c.id); });
+    li.appendChild(a); list.appendChild(li);
+    var o = document.createElement('option'); o.value = c.id; o.textContent = (i + 1) + '. ' + c.title; pickCard.appendChild(o);
+  });
+  pickStep.value = id;
+  $('#prev').disabled = stepIds.indexOf(id) === 0;
+  $('#next').textContent = stepIds.indexOf(id) === stepIds.length - 1 ? '처음으로' : '다음 STEP';
+  store('g7-step', id);
+  watchCards();
+  if (cardId) goCard(cardId); else if (!noScroll) window.scrollTo({top:0, behavior:'smooth'});
+  Scenes.refresh();
+}
+function goCard(cid){ var el = document.getElementById(cid); if (!el) return; el.scrollIntoView({behavior:'smooth', block:'start'}); mark(cid); }
+function mark(cid){ $$('#side-list a').forEach(function(a){ a.classList.toggle('on', a.dataset.card === cid); }); if (pickCard.value !== cid) pickCard.value = cid; }
+var cardObs = null;
+function watchCards(){
+  if (cardObs) cardObs.disconnect();
+  if (!('IntersectionObserver' in window)) return;
+  cardObs = new IntersectionObserver(function(es){
+    es.forEach(function(e){ if (e.isIntersecting) mark(e.target.id); });
+  }, {rootMargin:'-30% 0px -60% 0px'});
+  $$('#' + curStep + ' .card').forEach(function(c){ cardObs.observe(c); });
+}
+$$('.tab').forEach(function(t){ t.addEventListener('click', function(){ showStep(t.dataset.step); }); });
+pickStep.addEventListener('change', function(){ showStep(pickStep.value); });
+pickCard.addEventListener('change', function(){ goCard(pickCard.value); });
+$('#prev').addEventListener('click', function(){ var i = stepIds.indexOf(curStep); if (i > 0) showStep(stepIds[i - 1]); });
+$('#next').addEventListener('click', function(){ var i = stepIds.indexOf(curStep); showStep(stepIds[(i + 1) % stepIds.length]); });
+
+$('#stylechip').addEventListener('click', function(){ showStep('s2', 's2-pick'); });
+/* 체크리스트 기억 */
+$$('.chk input').forEach(function(c, i){ if (store('g7-chk' + i) === '1') c.checked = true;
+  c.addEventListener('change', function(){ store('g7-chk' + i, c.checked ? '1' : '0'); }); });
+
+/* ================= 입체 무대 (three.js) ================= */
+var Scenes = (function(){
+  var list = [];
+  var hasGL = !!window.THREE && (function(){ try { var c = document.createElement('canvas'); return !!(c.getContext('webgl') || c.getContext('experimental-webgl')); } catch(e){ return false; } })();
+  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function pal(){ var cs = getComputedStyle(document.documentElement);
+    function g(n){ return cs.getPropertyValue(n).trim() || '#888'; }
+    return {ink:g('--ink'), muted:g('--muted'), line:g('--line'), accent:g('--accent'), soft:g('--accent-soft'), paper:g('--paper'), stage:g('--stage'),
+            set:g('--set-b'), help:g('--help-b'), warn:g('--warn-b'), ext:g('--ext-b')}; }
+
+  function labelTex(text, color, opt){
+    opt = opt || {};
+    var size = opt.size || 44, pad = 18, c = document.createElement('canvas'), x = c.getContext('2d');
+    var font = (opt.bold ? '700 ' : '500 ') + size + 'px "Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif';
+    x.font = font; var w = Math.ceil(x.measureText(text).width) + pad * 2, h = size + pad * 1.6;
+    c.width = w; c.height = h; x.font = font; x.textBaseline = 'middle';
+    if (opt.bg){ x.fillStyle = opt.bg; var r = h / 2; x.beginPath(); x.moveTo(r,0); x.lineTo(w-r,0); x.arc(w-r,r,r,-Math.PI/2,Math.PI/2); x.lineTo(r,h); x.arc(r,r,r,Math.PI/2,Math.PI*1.5); x.fill(); }
+    x.fillStyle = color; x.fillText(text, pad, h / 2 + 2);
+    var t = new THREE.CanvasTexture(c); t.minFilter = THREE.LinearFilter; return {tex:t, aspect:w / h};
+  }
+  function makeLabel(ctx, text, role, scale, opt){
+    var mat = new THREE.SpriteMaterial({transparent:true, depthTest:false}), sp = new THREE.Sprite(mat);
+    sp.renderOrder = 10; sp.userData.lbl = {text:text, role:role, scale:scale || .5, opt:opt || {}};
+    ctx.labels.push(sp); paintLabel(ctx, sp); return sp;
+  }
+  function paintLabel(ctx, sp){
+    var L = sp.userData.lbl, o = Object.assign({}, L.opt);
+    if (o.bgRole) o.bg = ctx.p[o.bgRole];
+    var r = labelTex(L.text, ctx.p[L.role], o);
+    if (sp.material.map) sp.material.map.dispose();
+    sp.material.map = r.tex; sp.material.needsUpdate = true; sp.scale.set(L.scale * r.aspect, L.scale, 1);
+  }
+  function mat(ctx, role, extra){ var m = new THREE.MeshStandardMaterial(Object.assign({roughness:.6, metalness:0}, extra || {})); m.userData.role = role; ctx.mats.push(m); m.color.set(ctx.p[role]); return m; }
+  function recolor(ctx){ ctx.p = pal(); ctx.mats.forEach(function(m){ if (m.userData.role) m.color.set(ctx.p[m.userData.role]); }); ctx.labels.forEach(function(s){ paintLabel(ctx, s); }); }
+  function ease(x){ x = Math.max(0, Math.min(1, x)); return x * x * (3 - 2 * x); }
+  function seg(t, a, b){ return ease((t - a) / (b - a)); }
+
+  /* ---------- 장면 정의 ---------- */
+  var DEFS = {};
+
+  /* 1. 전체 공정 */
+  DEFS.pipeline = {
+    dur: 18,
+    caps: [[0,'① 이야기: 사연을 4박자로 나누고 대사를 정합니다'],[2,'② 화풍: 실사·만화·3D·클레이 중 하나를 고르면 모든 프롬프트가 바뀝니다'],[4,'③ 캐릭터: 배경·소품 없는 앵커 → 사람용·동물용 시트'],[6,'④ 소품·배경: 같은 화풍으로 따로 만들어 장면 첫 그림에 첨부'],[8,'⑤ 키프레임: 첫 그림은 첨부해서 짓고, 다음 그림은 바뀐 것만'],[10,'⑥ 영상: 스타트 + 엔드 + 참조, 대사·효과음·배경음악까지'],[12,'⑦ 나레이션: 구글 AI 스튜디오에서 DJ 사연 낭독'],[14,'⑧ 캡컷: 좋은 소리만 남기고, 반전 앞에서 한 박자 쉽니다'],[16,'프롬프트는 전부 교재에 있습니다. 집에서는 도출 프롬프트로 내 이야기를']],
+    build: function(ctx){
+      var names = ['이야기','화풍','캐릭터 시트','소품·배경','키프레임','영상','나레이션','캡컷'];
+      var pts = names.map(function(n, i){ var u = i / (names.length - 1); return new THREE.Vector3(-7 + u * 14, 0, Math.sin(u * Math.PI * 2) * 1.6); });
+      ctx.curve = new THREE.CatmullRomCurve3(pts);
+      var tube = new THREE.Mesh(new THREE.TubeGeometry(ctx.curve, 200, .05, 8, false), mat(ctx, 'line'));
+      ctx.scene.add(tube);
+      ctx.nodes = names.map(function(n, i){
+        var g = new THREE.Group(), m = mat(ctx, 'paper', {emissive:0x000000});
+        var base = new THREE.Mesh(new THREE.CylinderGeometry(.62, .7, .32, 6), m); g.add(base);
+        var ring = new THREE.Mesh(new THREE.TorusGeometry(.66, .045, 8, 6), mat(ctx, 'line')); ring.rotation.x = Math.PI / 2; ring.position.y = .17; g.add(ring);
+        var lb = makeLabel(ctx, (i + 1) + ' ' + n, 'ink', .42, {bold:true}); lb.position.set(0, 1.05, 0); g.add(lb);
+        g.position.copy(pts[i]); ctx.scene.add(g); return {g:g, base:base, m:m};
+      });
+      ctx.token = new THREE.Mesh(new THREE.SphereGeometry(.24, 24, 16), mat(ctx, 'accent', {emissive:0x000000})); ctx.scene.add(ctx.token);
+      ctx.trail = new THREE.Mesh(new THREE.TubeGeometry(ctx.curve, 200, .07, 8, false), mat(ctx, 'accent'));
+      ctx.trail.geometry.setDrawRange(0, 0); ctx.scene.add(ctx.trail);
+      ctx.cam.position.set(0, 7, 12.5);
+    },
+    update: function(ctx, t){
+      var u = Math.min(1, t / 14.5), n = ctx.nodes.length;
+      ctx.token.position.copy(ctx.curve.getPointAt(u)); ctx.token.position.y = .45 + Math.sin(t * 6) * .06;
+      var idx = ctx.trail.geometry.index ? ctx.trail.geometry.index.count : 0; ctx.trail.geometry.setDrawRange(0, Math.floor(idx * u));
+      ctx.nodes.forEach(function(nd, i){
+        var on = u >= i / (n - 1) - .001, near = Math.max(0, 1 - Math.abs(u - i / (n - 1)) * 10);
+        nd.m.color.set(on ? ctx.p.accent : ctx.p.paper);
+        nd.base.scale.y = 1 + near * .9; nd.g.position.y = near * .15;
+      });
+      var a = Math.sin(t * .35) * .28; ctx.cam.position.set(Math.sin(a) * 12.5, 7, Math.cos(a) * 12.5); ctx.cam.lookAt(0, -.2, 0);
+    }
+  };
+
+  /* 2. 앵커 → 턴어라운드 시트 */
+  DEFS.turntable = {
+    dur: 13,
+    caps: [[0,'앵커: 연회색 배경, 소품 없이, 전신 정면 한 장'],[2.2,'3/4 방향: 얼굴 옆선과 몸 두께가 보입니다'],[4.2,'옆: 모자 챙, 배 나온 정도, 신발 길이'],[6.2,'뒤: 뒤통수와 옷 뒷면까지 정해 둡니다'],[8.4,'네 방향을 한 장에 모으면 캐릭터 시트'],[11,'컷 이미지를 만들 땐 이 시트를 참조로 넣습니다']],
+    build: function(ctx){
+      function figure(){
+        var g = new THREE.Group();
+        var navy = mat(ctx, 'accent'), skin = new THREE.MeshStandardMaterial({color:0xE8BE9A, roughness:.7}), gray = new THREE.MeshStandardMaterial({color:0x8A8792, roughness:.8}), dark = new THREE.MeshStandardMaterial({color:0x2B2930, roughness:.6});
+        [-.2,.2].forEach(function(x){ var l = new THREE.Mesh(new THREE.CylinderGeometry(.13,.12,1.0,14), gray); l.position.set(x,.5,0); g.add(l);
+          var s = new THREE.Mesh(new THREE.BoxGeometry(.24,.13,.42), dark); s.position.set(x,.06,.08); g.add(s); });
+        var body = new THREE.Mesh(new THREE.CylinderGeometry(.42,.5,1.05,20), navy); body.position.y = 1.5; g.add(body);
+        var belly = new THREE.Mesh(new THREE.SphereGeometry(.42,20,14), navy); belly.scale.set(1,.9,.85); belly.position.set(0,1.32,.1); g.add(belly);
+        var badge = new THREE.Mesh(new THREE.BoxGeometry(.2,.2,.04), new THREE.MeshStandardMaterial({color:0xF2F0F5})); badge.position.set(-.2,1.75,.43); g.add(badge);
+        [-.55,.55].forEach(function(x){ var a = new THREE.Mesh(new THREE.CylinderGeometry(.1,.09,.95,12), navy); a.position.set(x,1.45,0); a.rotation.z = x > 0 ? .08 : -.08; g.add(a);
+          var h = new THREE.Mesh(new THREE.SphereGeometry(.1,12,10), skin); h.position.set(x * 1.03,.95,0); g.add(h); });
+        var head = new THREE.Mesh(new THREE.SphereGeometry(.4,24,18), skin); head.position.y = 2.42; g.add(head);
+        var nose = new THREE.Mesh(new THREE.SphereGeometry(.07,10,8), skin); nose.position.set(0,2.4,.4); g.add(nose);
+        [-.14,.14].forEach(function(x){ var e = new THREE.Mesh(new THREE.SphereGeometry(.045,8,6), dark); e.position.set(x,2.5,.36); g.add(e); });
+        var cap = new THREE.Mesh(new THREE.SphereGeometry(.42,24,12,0,Math.PI*2,0,Math.PI/2), navy); cap.position.y = 2.55; g.add(cap);
+        var brim = new THREE.Mesh(new THREE.CylinderGeometry(.3,.3,.04,20,1,false,-Math.PI/2,Math.PI), navy); brim.position.set(0,2.56,.3); brim.scale.z = 1.4; g.add(brim);
+        return g;
+      }
+      ctx.backdrop = new THREE.Mesh(new THREE.PlaneGeometry(4.2, 4.2), mat(ctx, 'line', {roughness:1})); ctx.backdrop.position.set(0, 1.6, -1.4); ctx.scene.add(ctx.backdrop);
+      ctx.disc = new THREE.Mesh(new THREE.CylinderGeometry(1.2, 1.25, .12, 48), mat(ctx, 'paper')); ctx.disc.position.y = -.06; ctx.scene.add(ctx.disc);
+      ctx.fig = figure(); ctx.scene.add(ctx.fig);
+      ctx.tag = makeLabel(ctx, '앵커 · 정면', 'paper', .4, {bold:true, bgRole:'accent'});
+      ctx.tag.position.set(0, 3.45, 0); ctx.scene.add(ctx.tag);
+      ctx.sheet = new THREE.Group(); ctx.minis = [];
+      var angs = [0, Math.PI / 4, Math.PI / 2, Math.PI], nm = ['정면','3/4','옆','뒤'];
+      angs.forEach(function(a, i){ var f = figure(); f.rotation.y = a; f.scale.setScalar(.55); f.position.set(-3.3 + i * 2.2, 0, 0);
+        var lb = makeLabel(ctx, nm[i], 'ink', .3, {bold:true}); lb.position.set(-3.3 + i * 2.2, 1.85, 0);
+        ctx.sheet.add(f); ctx.sheet.add(lb); ctx.minis.push(f); });
+      var board = new THREE.Mesh(new THREE.PlaneGeometry(9.2, 2.6), mat(ctx, 'line', {roughness:1})); board.position.set(0, .9, -.6); ctx.sheet.add(board);
+      var sl = makeLabel(ctx, '캐릭터 시트', 'paper', .42, {bold:true, bgRole:'accent'}); sl.position.set(0, 2.55, 0); ctx.sheet.add(sl);
+      ctx.sheet.position.set(0, 0, -6); ctx.scene.add(ctx.sheet);
+      ctx.cam.position.set(0, 2.2, 7.2);
+    },
+    update: function(ctx, t){
+      var K = [[0,0],[1.6,0],[2.2,Math.PI/4],[3.6,Math.PI/4],[4.2,Math.PI/2],[5.6,Math.PI/2],[6.2,Math.PI],[7.6,Math.PI],[8.4,Math.PI*2]];
+      var ang = 0; for (var i = 0; i < K.length - 1; i++){ if (t >= K[i][0] && t <= K[i+1][0]){ ang = K[i][1] + (K[i+1][1] - K[i][1]) * ease((t - K[i][0]) / (K[i+1][0] - K[i][0])); break; } if (t > K[K.length-1][0]) ang = K[K.length-1][1]; }
+      ctx.fig.rotation.y = ang; ctx.disc.rotation.y = ang;
+      var nm = t < 2.2 ? '앵커 · 정면' : t < 4.2 ? '3/4' : t < 6.2 ? '옆' : t < 8.4 ? '뒤' : '앵커';
+      if (ctx.tag.userData.lbl.text !== nm){ ctx.tag.userData.lbl.text = nm; paintLabel(ctx, ctx.tag); }
+      var s = seg(t, 8.4, 10.2);
+      ctx.sheet.position.set(0, 3.1 * s - 3.1 * (1 - s) * 0, -6 + 3 * s); ctx.sheet.position.y = -2.6 + 2.6 * s + .05;
+      ctx.sheet.visible = s > .01; ctx.sheet.scale.setScalar(.7 + .3 * s);
+      ctx.minis.forEach(function(f, i){ f.position.y = Math.sin(t * 2 + i) * .03; });
+      var cs = seg(t, 8.4, 10.2);
+      ctx.cam.position.set(0, 2.2 - cs * .6, 7.2 - cs * 3.4); ctx.cam.lookAt(0, 1.5 - cs * .5, -cs * 3);
+      ctx.fig.visible = cs < .98; ctx.disc.visible = ctx.fig.visible; ctx.backdrop.visible = ctx.fig.visible; ctx.tag.visible = ctx.fig.visible;
+      var dy = -cs * 5; ctx.fig.position.y = dy; ctx.disc.position.y = -.06 + dy; ctx.backdrop.position.y = 1.6 + dy; ctx.tag.position.y = 3.45 + dy;
+    }
+  };
+
+  /* 3. 레이어 합성 */
+  function paintCanvas(w, h, fn){ var c = document.createElement('canvas'); c.width = w; c.height = h; fn(c.getContext('2d'), w, h); var t = new THREE.CanvasTexture(c); t.minFilter = THREE.LinearFilter; return t; }
+  DEFS.layers = {
+    dur: 13,
+    caps: [[0,'배경 플레이트: 사람도 동물도 없는 빈 장소'],[1.8,'캐릭터: 시트에서 가져온 택배 기사'],[3.6,'소품: 따로 만든 택배 상자'],[5.6,'세 장을 참조로 겹치면…'],[8,'체인의 첫 키프레임 A1 (9:16)'],[11,'A2부터는 이 그림을 이어받아 바뀐 것만 고칩니다']],
+    build: function(ctx){
+      var W = 512, H = 910;
+      var bgT = paintCanvas(W, H, function(x, w, h){
+        var gr = x.createLinearGradient(0,0,0,h*.6); gr.addColorStop(0,'#BFD9EE'); gr.addColorStop(1,'#F3E2C8'); x.fillStyle = gr; x.fillRect(0,0,w,h);
+        x.fillStyle = '#C79A64'; x.fillRect(0,h*.78,w,h*.22);
+        for (var r = 0; r < 7; r++) for (var c = -1; c < 7; c++){ x.fillStyle = (r + c) % 3 ? '#9C9488' : '#B1A898'; x.beginPath(); x.ellipse(c * 86 + (r % 2) * 43 + 30, h*.42 + r * 46, 40, 21, 0, 0, Math.PI * 2); x.fill(); }
+        x.fillStyle = '#3F6FA3'; x.fillRect(w*.33, h*.47, w*.34, h*.31); x.strokeStyle = '#2E5480'; x.lineWidth = 6; x.strokeRect(w*.33, h*.47, w*.34, h*.31); x.beginPath(); x.moveTo(w*.5,h*.47); x.lineTo(w*.5,h*.78); x.stroke();
+        x.fillStyle = '#5B4330'; x.fillRect(w*.8, h*.18, 18, h*.3);
+        x.fillStyle = '#5E8C4E'; x.beginPath(); x.arc(w*.8, h*.2, 110, 0, Math.PI * 2); x.fill();
+        x.fillStyle = '#E9862F'; [[-40,-20],[30,10],[60,-50],[-10,40],[-70,20],[20,-70]].forEach(function(p){ x.beginPath(); x.arc(w*.8 + p[0], h*.2 + p[1], 13, 0, Math.PI * 2); x.fill(); });
+      });
+      var chT = paintCanvas(W, H, function(x, w, h){
+        x.fillStyle = '#7E7B86'; x.fillRect(w*.38, h*.62, 34, h*.22); x.fillRect(w*.53, h*.62, 34, h*.22);
+        x.fillStyle = '#2B2930'; x.fillRect(w*.35, h*.83, 54, 22); x.fillRect(w*.52, h*.83, 54, 22);
+        x.fillStyle = '#2E3D66'; x.beginPath(); x.ellipse(w*.5, h*.52, 96, 120, 0, 0, Math.PI * 2); x.fill();
+        x.fillRect(w*.28, h*.42, 30, 150); x.fillRect(w*.66, h*.42, 30, 150);
+        x.fillStyle = '#E8BE9A'; x.beginPath(); x.arc(w*.5, h*.33, 70, 0, Math.PI * 2); x.fill();
+        x.fillStyle = '#2E3D66'; x.beginPath(); x.arc(w*.5, h*.3, 72, Math.PI, 0); x.fill(); x.fillRect(w*.5 - 10, h*.3 - 6, 100, 14);
+        x.fillStyle = '#2B2930'; x.beginPath(); x.arc(w*.45, h*.34, 7, 0, Math.PI * 2); x.arc(w*.55, h*.34, 7, 0, Math.PI * 2); x.fill();
+      });
+      var prT = paintCanvas(W, H, function(x, w, h){
+        x.fillStyle = '#B98552'; x.fillRect(w*.33, h*.5, 170, 120); x.fillStyle = '#A3713F'; x.fillRect(w*.33, h*.5, 170, 22);
+        x.fillStyle = '#F4F1EC'; x.fillRect(w*.43, h*.56, 70, 44);
+      });
+      function plane(tex, op){ var m = new THREE.MeshBasicMaterial({map:tex, transparent:true, opacity:1, side:THREE.DoubleSide}); return new THREE.Mesh(new THREE.PlaneGeometry(2.25, 4), m); }
+      ctx.pl = [plane(bgT), plane(chT), plane(prT)];
+      ctx.pl.forEach(function(p){ ctx.scene.add(p); });
+      ctx.lb = [makeLabel(ctx, '배경 플레이트', 'ink', .32, {bold:true}), makeLabel(ctx, '캐릭터 (시트)', 'ink', .32, {bold:true}), makeLabel(ctx, '소품', 'ink', .32, {bold:true})];
+      ctx.lb.forEach(function(l){ ctx.scene.add(l); });
+      var fr = new THREE.EdgesGeometry(new THREE.PlaneGeometry(2.4, 4.15)); ctx.frameM = new THREE.LineBasicMaterial({transparent:true}); ctx.frameM.userData.role = 'accent'; ctx.mats.push(ctx.frameM); ctx.frameM.color.set(ctx.p.accent);
+      ctx.frame = new THREE.LineSegments(fr, ctx.frameM); ctx.scene.add(ctx.frame);
+      ctx.flb = makeLabel(ctx, '키프레임 A1 · 9:16', 'paper', .32, {bold:true, bgRole:'accent'}); ctx.scene.add(ctx.flb);
+    },
+    update: function(ctx, t){
+      var appear = [seg(t, 0, .9), seg(t, 1.8, 2.7), seg(t, 3.6, 4.5)];
+      var m = seg(t, 5.6, 7.8);
+      var zs = [-2.4, 0, 2.2];
+      ctx.pl.forEach(function(p, i){ p.material.opacity = appear[i]; p.position.set(0, (1 - appear[i]) * -.6, zs[i] * (1 - m) + (i - 1) * .02); p.visible = appear[i] > .01; });
+      ctx.lb.forEach(function(l, i){ l.position.set(1.45, 2.25, zs[i] * (1 - m)); l.material.opacity = appear[i] * (1 - m); l.visible = l.material.opacity > .02; });
+      ctx.frameM.opacity = seg(t, 7.2, 8.2); ctx.frame.position.z = .05; ctx.flb.material.opacity = ctx.frameM.opacity; ctx.flb.position.set(0, 2.45, .1); ctx.flb.visible = ctx.frameM.opacity > .02;
+      var side = new THREE.Vector3(6.6, 2.4, 5.2), front = new THREE.Vector3(0, 0, 6.8);
+      ctx.cam.position.copy(side.clone().lerp(front, m)); ctx.cam.lookAt(0, .1 * (1 - m), 0);
+    }
+  };
+
+  /* 4. 캡컷 타임라인 */
+  DEFS.timeline = {
+    dur: 15,
+    caps: [[0,'영상 트랙: 영상 ①~⑥, 같은 체인은 붙이기만 하면 이어짐'],[2.2,'나레이션 트랙: 한 번에 뽑은 WAV를 문장 단위로 잘라 맞춤'],[4.2,'효과음 트랙: "네에~", 염소 소리, 방울'],[6,'자막 트랙: 나레이션 문장 그대로'],[7.6,'쌓기(②·③)는 6초를 다 씁니다'],[10.2,'반전 직전, ④ 끝에 한 박자 쉼'],[11.4,'반전(⑤)은 짧게, 염소 소리 끝나면 바로 ⑥'],[13.6,'1080×1920, 30fps로 내보내기']],
+    build: function(ctx){
+      var cuts = [6,6,6,6,4,5], total = 33, L = 12, x0 = -6, sc = L / total;
+      ctx.sc = sc; ctx.x0 = x0; ctx.total = total;
+      var lanes = [['영상','accent'],['나레이션','set'],['효과음','warn'],['자막','help']];
+      ctx.lanes = [];
+      lanes.forEach(function(ln, li){
+        var y = 1.35 - li * .9, g = new THREE.Group();
+        var rail = new THREE.Mesh(new THREE.BoxGeometry(L + .3, .06, .6), mat(ctx, 'line')); rail.position.set(0, y - .22, 0); g.add(rail);
+        var lb = makeLabel(ctx, ln[0], 'ink', .3, {bold:true}); lb.position.set(x0 - 1, y, 0); g.add(lb);
+        g.userData.y = y; g.userData.role = ln[1]; ctx.scene.add(g); ctx.lanes.push(g);
+      });
+      function block(li, start, len, role, h){ var m = mat(ctx, role); var b = new THREE.Mesh(new THREE.BoxGeometry(Math.max(.05, len * sc - .06), h || .34, .5), m);
+        b.position.set(x0 + (start + len / 2) * sc, ctx.lanes[li].userData.y, 0); b.userData.base = b.position.y; ctx.lanes[li].add(b); return b; }
+      ctx.blocks = [];
+      var s = 0; cuts.forEach(function(c, i){ var b = block(0, s, c, 'accent'); b.userData.lane = 0; ctx.blocks.push(b);
+        var cl = makeLabel(ctx, String(i + 1), 'paper', .22, {bold:true}); cl.position.set(b.position.x, b.position.y, .3); ctx.lanes[0].add(cl); s += c; });
+      var narr = [[.4,5.2],[6.4,5],[12.4,5.2],[18.4,4.4],[28.4,3.8]];
+      narr.forEach(function(n){ ctx.blocks.push(block(1, n[0], n[1], 'set')); });
+      [[9,2.5],[15,3],[24.6,2],[30,1.2]].forEach(function(n){ ctx.blocks.push(block(2, n[0], n[1], 'warn', .26)); });
+      narr.forEach(function(n){ ctx.blocks.push(block(3, n[0], n[1], 'help', .2)); });
+      ctx.gapM = mat(ctx, 'accent', {transparent:true, opacity:.25});
+      ctx.gap = new THREE.Mesh(new THREE.BoxGeometry(1.2 * sc, 3.4, .7), ctx.gapM); ctx.gap.position.set(x0 + 23.4 * sc, .0, 0); ctx.scene.add(ctx.gap);
+      ctx.gapL = makeLabel(ctx, '한 박자 쉼', 'paper', .28, {bold:true, bgRole:'accent'}); ctx.gapL.position.set(x0 + 23.4 * sc, 2.15, .2); ctx.scene.add(ctx.gapL);
+      ctx.head = new THREE.Mesh(new THREE.BoxGeometry(.05, 3.8, .05), mat(ctx, 'ink')); ctx.scene.add(ctx.head);
+      ctx.cam.position.set(-.8, 3.4, 10.4);
+    },
+    update: function(ctx, t){
+      var build = [seg(t, 0, 1.6), seg(t, 2.2, 3.6), seg(t, 4.2, 5.4), seg(t, 6, 7.2)];
+      ctx.lanes.forEach(function(g, i){ g.position.z = (1 - build[i]) * -4; g.visible = build[i] > .01; g.children.forEach(function(c){ if (c.material && 'opacity' in c.material){ c.material.transparent = true; c.material.opacity = build[i]; } }); });
+      var pt = t < 7.6 ? 0 : Math.min(1, (t - 7.6) / 6) * ctx.total;
+      ctx.head.position.set(ctx.x0 + pt * ctx.sc, .2, .35); ctx.head.visible = t >= 7.6;
+      var g = t > 9.4 && t < 11.2; ctx.gapM.opacity = g ? .35 + Math.sin(t * 10) * .15 : .12; ctx.gap.visible = t > 9.4; ctx.gapL.visible = g;
+      ctx.blocks.forEach(function(b){ var bx = b.position.x, on = t >= 7.6 && Math.abs(bx - ctx.head.position.x) < b.geometry.parameters.width / 2; b.position.y = b.userData.base + (on ? .12 : 0); });
+      var a = Math.sin(t * .3) * .08; ctx.cam.position.set(-.8 + Math.sin(a) * 3, 3.4, 10.4); ctx.cam.lookAt(-.8, .15, 0);
+    }
+  };
+
+  /* ---------- 이야기 미리보기 공통: 사람 · 말풍선 ---------- */
+  function M(c, r){ return new THREE.MeshStandardMaterial({color:c, roughness:r == null ? .7 : r}); }
+  function person(o){
+    var g = new THREE.Group(), skin = M(o.skin || 0xE2B48F), shirt = M(o.shirt), pants = M(o.pants), shoe = M(0x2B2930, .5);
+    function leg(x){ var hip = new THREE.Group(); hip.position.set(x, 1.0, 0);
+      var l = new THREE.Mesh(new THREE.CylinderGeometry(.13,.12,.95,12), pants); l.position.y = -.48; hip.add(l);
+      var s = new THREE.Mesh(new THREE.BoxGeometry(.24,.13,.42), shoe); s.position.set(0,-.94,.08); hip.add(s); g.add(hip); return hip; }
+    var hipL = leg(-.2), hipR = leg(.2);
+    var up = new THREE.Group(); up.position.y = 1.0; g.add(up);
+    var torso = new THREE.Mesh(new THREE.CylinderGeometry(o.slim ? .34 : .42, o.slim ? .38 : .5, 1.0, 18), shirt); torso.position.y = .5; up.add(torso);
+    if (!o.slim){ var belly = new THREE.Mesh(new THREE.SphereGeometry(.42,18,12), shirt); belly.scale.set(1,.85,.85); belly.position.set(0,.32,.1); up.add(belly); }
+    if (o.pack){ var pk = new THREE.Mesh(new THREE.BoxGeometry(.5,.6,.25), M(o.pack)); pk.position.set(0,.6,-.42); up.add(pk); }
+    function arm(x){ var sh = new THREE.Group(); sh.position.set(x, .92, 0);
+      var a = new THREE.Mesh(new THREE.CylinderGeometry(.1,.09,.85,10), shirt); a.position.y = -.42; sh.add(a);
+      var h = new THREE.Mesh(new THREE.SphereGeometry(.1,10,8), skin); h.position.y = -.88; sh.add(h); up.add(sh); return sh; }
+    var armL = arm(o.slim ? -.46 : -.55), armR = arm(o.slim ? .46 : .55);
+    var head = new THREE.Group(); head.position.y = 1.42; up.add(head);
+    head.add(new THREE.Mesh(new THREE.SphereGeometry(.4,22,16), skin));
+    var nose = new THREE.Mesh(new THREE.SphereGeometry(.07,8,6), skin); nose.position.set(0,-.02,.4); head.add(nose);
+    var eyeM = M(0x1E1C22, .4); [-.14,.14].forEach(function(x){ var e = new THREE.Mesh(new THREE.SphereGeometry(.045,8,6), eyeM); e.position.set(x,.08,.36); head.add(e); });
+    if (o.cap != null){ var cm = M(o.cap); var cap = new THREE.Mesh(new THREE.SphereGeometry(.42,22,10,0,Math.PI*2,0,Math.PI/2), cm); cap.position.y = .12; head.add(cap);
+      var br = new THREE.Mesh(new THREE.CylinderGeometry(.3,.3,.04,18,1,false,-Math.PI/2,Math.PI), cm); br.position.set(0,.13,.3); br.scale.z = 1.4; head.add(br); }
+    if (o.hair != null){ var hr = new THREE.Mesh(new THREE.SphereGeometry(.42,22,10,0,Math.PI*2,0,Math.PI/2.3), M(o.hair, .9)); hr.position.y = .05; hr.rotation.x = -.2; head.add(hr); }
+    if (o.topknot){ var tk = new THREE.Mesh(new THREE.SphereGeometry(.13,12,10), M(0xEDEBE6, .9)); tk.position.set(0,.5,-.05); head.add(tk); }
+    if (o.beard){ var bd = new THREE.Mesh(new THREE.ConeGeometry(.24,.75,14), M(0xF2F0EC, .9)); bd.rotation.x = Math.PI; bd.position.set(0,-.48,.2); head.add(bd); }
+    return {g:g, hipL:hipL, hipR:hipR, armL:armL, armR:armR, up:up, head:head};
+  }
+  function walk(p, t, amt){ var s = Math.sin(t * 7) * (amt == null ? .5 : amt); p.hipL.rotation.x = s; p.hipR.rotation.x = -s; p.armL.rotation.x = -s * .8; p.armR.rotation.x = s * .8; }
+  function still(p){ p.hipL.rotation.x = p.hipR.rotation.x = 0; p.armL.rotation.x = p.armR.rotation.x = 0; }
+  function bubble(ctx, text, scale){ var r = labelTex(text, '#24202B', {size:46, bold:true, bg:'#FFFFFF'}); var sp = new THREE.Sprite(new THREE.SpriteMaterial({map:r.tex, transparent:true, depthTest:false})); sp.renderOrder = 12; sp.scale.set((scale || .5) * r.aspect, scale || .5, 1); sp.visible = false; ctx.scene.add(sp); return sp; }
+  function lerp(a, b, k){ return a + (b - a) * k; }
+  function camKeys(ctx, t, K){ var i = 0; while (i < K.length - 1 && t > K[i + 1][0]) i++; var a = K[i], b = K[Math.min(i + 1, K.length - 1)], k = b[0] === a[0] ? 0 : ease((t - a[0]) / (b[0] - a[0]));
+    ctx.cam.position.set(lerp(a[1],b[1],k), lerp(a[2],b[2],k), lerp(a[3],b[3],k)); ctx.cam.lookAt(lerp(a[4],b[4],k), lerp(a[5],b[5],k), lerp(a[6],b[6],k)); }
+  function sky(ctx, top, bottom){ var tex = paintCanvas(4, 256, function(x, w, h){ var g = x.createLinearGradient(0,0,0,h); g.addColorStop(0, top); g.addColorStop(1, bottom); x.fillStyle = g; x.fillRect(0,0,w,h); });
+    var m = new THREE.Mesh(new THREE.PlaneGeometry(80, 30), new THREE.MeshBasicMaterial({map:tex})); m.position.set(0, 8, -14); ctx.scene.add(m); }
+
+  /* 5. 1안 이야기 미리보기 */
+  DEFS.story1 = {
+    dur: 24,
+    caps: [[0,'택배 기사가 상자를 안고 시골집 파란 대문으로 걸어옵니다|자, 오늘의 사연입니다. 시골 배송 3년 차 택배 기사님, 오늘은 마을 끝 파란 대문 집이에요.'],[5,'대문 앞에서 수령인 이름을 크게 부릅니다|대문 앞에서 크게 부릅니다. "김순자 씨~ 택배요!"'],[7,'담 너머에서 "네에~" 하고 대답이 들립니다. 기사는 안심합니다|그러자 담 너머에서… "네에~"'],[10,'아무도 안 나옵니다. 다시 불러도 "네에~ 네에~" 대답만|그런데 아무리 기다려도 아무도 안 나와요. 다시 "택배요~!" 하니까 또 "네에~ 네에~"'],[14,'이상해서 담으로 가 까치발을 들고 넘겨다봅니다|이상하다… 기사님, 까치발을 들고 담 너머를 슬쩍 봤는데요…'],[17.2,'담 너머에서 염소가 고개를 쑥! 대답하던 건 염소였습니다|(쉼)'],[20,'멍해진 기사 옆에서 염소는 태연하게 되새김질 중|대답하던 분은… 염소였습니다. 고객님, 대답 하나는 정말 잘하시네요!']],
+    build: function(ctx){
+      sky(ctx, '#A9CBE6', '#F2DDBE');
+      var ground = new THREE.Mesh(new THREE.PlaneGeometry(60, 30), M(0xB08A5C, .95)); ground.rotation.x = -Math.PI / 2; ground.position.z = 2; ctx.scene.add(ground);
+      var stoneT = paintCanvas(512, 128, function(x, w, h){ x.fillStyle = '#8E867A'; x.fillRect(0,0,w,h); for (var r = 0; r < 4; r++) for (var c = -1; c < 10; c++){ x.fillStyle = ['#A39A8C','#B3AA9A','#978F82'][(r * 3 + c + 9) % 3]; x.beginPath(); x.ellipse(c * 56 + (r % 2) * 28 + 20, r * 32 + 16, 26, 14, 0, 0, Math.PI * 2); x.fill(); } });
+      stoneT.wrapS = THREE.RepeatWrapping; stoneT.repeat.set(4, 1);
+      var wallM = new THREE.MeshStandardMaterial({map:stoneT, roughness:.95});
+      var wall = new THREE.Mesh(new THREE.BoxGeometry(16, 2.55, .45), wallM); wall.position.set(3.5, 1.275, -.6); ctx.scene.add(wall);
+      var gate = new THREE.Mesh(new THREE.BoxGeometry(1.5, 2.2, .5), M(0x3F6FA3, .6)); gate.position.set(1.4, 1.1, -.55); ctx.scene.add(gate);
+      var gl = new THREE.Mesh(new THREE.BoxGeometry(.05, 2.2, .52), M(0x2E5480)); gl.position.set(1.4, 1.1, -.55); ctx.scene.add(gl);
+      var trunk = new THREE.Mesh(new THREE.CylinderGeometry(.14, .2, 3.2, 10), M(0x5B4330)); trunk.position.set(6.8, 1.6, -2.4); ctx.scene.add(trunk);
+      var crown = new THREE.Mesh(new THREE.SphereGeometry(1.5, 18, 14), M(0x6E8F4A, .9)); crown.position.set(6.6, 3.6, -2.2); ctx.scene.add(crown);
+      var fruitM = M(0xE9862F, .5); [[-.9,.2,1.1],[.6,.6,1.2],[.2,-.4,1.4],[1.1,-.1,.9],[-.4,.9,1.1],[-1.2,-.5,.7]].forEach(function(f){ var s = new THREE.Mesh(new THREE.SphereGeometry(.14,10,8), fruitM); s.position.set(6.6 + f[0], 3.6 + f[1], -2.2 + f[2]); ctx.scene.add(s); });
+      var hay = new THREE.Mesh(new THREE.SphereGeometry(.9, 14, 10), M(0xD8B85C, 1)); hay.scale.y = .5; hay.position.set(6.15, .3, -1.7); ctx.scene.add(hay);
+      ctx.man = person({shirt:0x2E3D66, pants:0x7E7B86, cap:0x2E3D66}); ctx.scene.add(ctx.man.g);
+      ctx.box = new THREE.Mesh(new THREE.BoxGeometry(.7, .5, .5), M(0xB98552, .8)); var lab = new THREE.Mesh(new THREE.BoxGeometry(.3,.2,.02), M(0xF4F1EC)); lab.position.set(0,0,.26); ctx.box.add(lab); ctx.scene.add(ctx.box);
+      var goat = new THREE.Group(), wht = M(0xF1EEE8, .9), dk = M(0x1E1C22, .4);
+      var body = new THREE.Mesh(new THREE.CylinderGeometry(.42, .42, 1.2, 16), wht); body.rotation.x = Math.PI / 2; body.position.set(0, 1.05, -.5); goat.add(body);
+      [[-.22,-.05],[.22,-.05],[-.22,-.95],[.22,-.95]].forEach(function(p){ var l = new THREE.Mesh(new THREE.CylinderGeometry(.08,.07,.9,8), wht); l.position.set(p[0], .45, p[1]); goat.add(l); });
+      var gh = new THREE.Group(); gh.position.set(0, 1.55, .15); goat.add(gh);
+      var neck = new THREE.Mesh(new THREE.CylinderGeometry(.2,.25,.6,12), wht); neck.position.set(0,-.3,-.05); gh.add(neck);
+      var hd = new THREE.Mesh(new THREE.SphereGeometry(.3, 18, 14), wht); hd.scale.set(.9, 1, 1.15); gh.add(hd);
+      var snout = new THREE.Mesh(new THREE.SphereGeometry(.2, 14, 10), wht); snout.position.set(0, -.15, .28); gh.add(snout);
+      ctx.jaw = new THREE.Mesh(new THREE.BoxGeometry(.22, .06, .2), M(0xC9B8B0)); ctx.jaw.position.set(0, -.3, .32); gh.add(ctx.jaw);
+      [-.13,.13].forEach(function(x){ var e = new THREE.Mesh(new THREE.SphereGeometry(.05,8,6), dk); e.position.set(x, .06, .26); e.scale.y = .55; gh.add(e);
+        var h = new THREE.Mesh(new THREE.ConeGeometry(.06, .4, 8), M(0x9C8E7A)); h.position.set(x, .38, -.05); h.rotation.x = -.6; h.rotation.z = x > 0 ? -.3 : .3; gh.add(h);
+        var ear = new THREE.Mesh(new THREE.BoxGeometry(.3, .08, .14), x < 0 ? M(0xB98552) : wht); ear.position.set(x * 2.6, .1, -.05); ear.rotation.z = x > 0 ? -.4 : .4; gh.add(ear); });
+      var beard = new THREE.Mesh(new THREE.ConeGeometry(.08, .3, 8), wht); beard.rotation.x = Math.PI; beard.position.set(0, -.48, .22); gh.add(beard);
+      var collar = new THREE.Mesh(new THREE.TorusGeometry(.24, .04, 8, 18), M(0xC23B3B)); collar.rotation.x = Math.PI / 2; collar.position.set(0, -.42, -.05); gh.add(collar);
+      var bell = new THREE.Mesh(new THREE.SphereGeometry(.07, 10, 8), new THREE.MeshStandardMaterial({color:0xD9A93A, metalness:.6, roughness:.3})); bell.position.set(0, -.5, .18); gh.add(bell);
+      goat.position.set(6.15, 0, -1.25); ctx.goat = goat; ctx.gh = gh; ctx.scene.add(goat);
+      ctx.b1 = bubble(ctx, '김순자 씨~ 택배요!'); ctx.b2 = bubble(ctx, '네에~'); ctx.b3 = bubble(ctx, '택배요~!'); ctx.b4 = bubble(ctx, '네에~ 네에~'); ctx.b5 = bubble(ctx, '메에에~', .7); ctx.b6 = bubble(ctx, '…네, 잘 들었습니다.', .45);
+    },
+    update: function(ctx, t){
+      var m = ctx.man, x, ry, y = 0;
+      [ctx.b1,ctx.b2,ctx.b3,ctx.b4,ctx.b5,ctx.b6].forEach(function(b){ b.visible = false; });
+      m.up.rotation.x = 0; m.head.rotation.y = 0; m.armL.rotation.z = m.armR.rotation.z = 0;
+      if (t < 4){ x = lerp(-6, 1.4, t / 4); ry = Math.PI / 2; walk(m, t); m.armL.rotation.x = m.armR.rotation.x = -1.1; }
+      else if (t < 10){ x = 1.4; ry = t < 5 ? lerp(Math.PI / 2, Math.PI, ease(t - 4)) : Math.PI; still(m); m.armR.rotation.x = -1.1;
+        if (t > 5 && t < 6.6){ m.armL.rotation.x = -2.2 + Math.sin(t * 18) * .25; ctx.b1.visible = true; ctx.b1.position.set(.6, 3.5, .3); }
+        if (t > 7 && t < 9.6){ ctx.b2.visible = true; ctx.b2.position.set(4.6, 3.1, -.8); m.head.rotation.y = -.6; } }
+      else if (t < 14){ x = 1.4; ry = Math.PI; still(m); m.hipL.rotation.x = Math.max(0, Math.sin(t * 9)) * -.3;
+        if (t > 10.6 && t < 12){ ctx.b3.visible = true; ctx.b3.position.set(.8, 3.5, .3); m.armL.rotation.x = m.armR.rotation.x = -2.6; }
+        if (t > 12 && t < 14){ ctx.b4.visible = true; ctx.b4.position.set(4.6, 3.1, -.8); m.head.rotation.y = -.6; } }
+      else if (t < 20){ var k = ease((t - 14) / 1.6); x = lerp(1.4, 5, k); ry = Math.PI; if (k < 1) walk(m, t, .4); else still(m);
+        var tip = ease((t - 15.6) / .8); y = tip * .32; m.armL.rotation.x = m.armR.rotation.x = -2.9 * tip;
+        if (t > 17.2 && t < 19.8){ ctx.b5.visible = true; ctx.b5.position.set(6.9, 3.95, -.4); m.up.rotation.x = -.15; } }
+      else { x = 5; ry = lerp(Math.PI, Math.PI * 2, ease((t - 20) / .8)); y = 0; still(m); if (t > 21 && t < 23.5){ ctx.b6.visible = true; ctx.b6.position.set(4.4, 3.6, .4); } }
+      m.g.position.set(x, y, .25); m.g.rotation.y = ry;
+      if (t < 4){ ctx.box.position.set(x + .5, 1.45, .25); ctx.box.rotation.y = 0; }
+      else if (t < 10.4){ ctx.box.position.set(x + .1, 1.45, .55); }
+      else { ctx.box.position.set(1.9, .25, .45); }
+      var rise = t < 16.8 ? 0 : t < 17.4 ? ease((t - 16.8) / .6) : 1;
+      ctx.goat.position.y = lerp(-.4, 1.25, rise); ctx.goat.position.z = -1.25 + rise * .45;
+      ctx.gh.rotation.x = t > 17.2 && t < 19 ? -.25 : 0;
+      ctx.jaw.position.y = -.3 - (t > 17.2 && t < 19.5 ? .08 : (t > 20 ? Math.max(0, Math.sin(t * 8)) * .05 : 0));
+      camKeys(ctx, t, [[0,-3.5,2.6,10,-2,1.4,0],[4,1,2.6,9.5,1.6,1.4,0],[14,2.6,2.6,9.5,3,1.5,0],[16.6,4.4,2.6,7.5,4.8,2,0],[17.4,6.6,2.8,5.2,5.7,2.65,-.6],[20,6.6,2.8,5.2,5.7,2.65,-.6],[21.5,4.2,2.6,8.5,4.6,1.7,0],[24,4.2,2.6,8.5,4.6,1.7,0]]);
+    }
+  };
+
+  /* 6. 2안 이야기 미리보기 */
+  DEFS.story2 = {
+    dur: 26,
+    caps: [[0,'청년이 단풍 든 산길을 오릅니다|이번 사연은 가을 산에서 생긴 일입니다.'],[3,'맞은편에서 어깨에 새를 얹은 할아버지가 내려옵니다|산을 오르던 청년 앞에, 어깨에 새를 얹은 할아버지가 내려오시는 거예요.'],[7,'청년이 공손히 인사하며 묻습니다|와, TV에서만 보던 도인이다! "어르신, 산에 다녀오시나 봐요?"'],[10.5,'할아버지가 수염을 쓰다듬으며 대답합니다|"네, 그렇습니다." 목소리마저 도인이에요.'],[13,'청년이 어깨 위의 새를 가리키며 묻습니다|"그런데 어르신, 어깨 위에 있는 새는 이름이 뭔가요?"'],[17,'할아버지가 어깨를 돌아보더니 기겁! 새가 날아갑니다|할아버지가 천천히 어깨를 돌아보시더니… "아, 이게 뭐야!!"'],[20.5,'할아버지는 달아나고, 새는 나뭇가지로, 청년만 멍하니 남았습니다|새가 있는 걸, 할아버지만 모르셨던 겁니다.']],
+    build: function(ctx){
+      sky(ctx, '#C9DCEB', '#F4E6D2');
+      var ground = new THREE.Mesh(new THREE.PlaneGeometry(60, 30), M(0x9C8462, .95)); ground.rotation.x = -Math.PI / 2; ground.position.z = 2; ctx.scene.add(ground);
+      var stone = M(0x8F8A82, .95);
+      for (var i = -7; i <= 7; i++){ var s = new THREE.Mesh(new THREE.BoxGeometry(.9, .08, 1.6), stone); s.position.set(i * 1, .04, .4); ctx.scene.add(s); }
+      var leafC = [0xC8442E, 0xE08A2E, 0xE9C04A, 0xB8392A, 0xD9762C];
+      [[-6,-3],[-4.2,-4.5],[-2,-3.4],[0.4,-4.8],[2.6,-3.2],[4.8,-4.4],[6.6,-3],[-7.5,-6],[7.8,-6],[3.2,-7]].forEach(function(p, i){
+        var tr = new THREE.Mesh(new THREE.CylinderGeometry(.12, .18, 2.4, 8), M(0x5B4330)); tr.position.set(p[0], 1.2, p[1]); ctx.scene.add(tr);
+        if (i % 3 === 2){ var pn = new THREE.Mesh(new THREE.ConeGeometry(1.1, 3.4, 10), M(0x3F6B45, .9)); pn.position.set(p[0], 3.2, p[1]); ctx.scene.add(pn); }
+        else { var c = new THREE.Mesh(new THREE.SphereGeometry(1.3, 14, 12), M(leafC[i % leafC.length], .9)); c.position.set(p[0], 3, p[1]); ctx.scene.add(c); } });
+      ctx.branch = new THREE.Vector3(5.5, 2.45, -2.4);
+      var br = new THREE.Mesh(new THREE.CylinderGeometry(.05, .05, 1.6, 6), M(0x5B4330)); br.rotation.z = Math.PI / 2.4; br.position.set(6.1, 2.3, -2.6); ctx.scene.add(br);
+      ctx.youth = person({shirt:0xC0392B, pants:0x2B2930, hair:0x2B2522, slim:true, pack:0x2E3D66}); ctx.scene.add(ctx.youth.g);
+      ctx.old = person({shirt:0xD8C9A8, pants:0xD8C9A8, skin:0xDDAE88, hair:0xEDEBE6, beard:true, topknot:true}); ctx.scene.add(ctx.old.g);
+      var bird = new THREE.Group(), bm = M(0x8A6A4A, .8);
+      var bb = new THREE.Mesh(new THREE.SphereGeometry(.13, 12, 10), bm); bb.scale.set(1.2, 1, 1); bird.add(bb);
+      var bh = new THREE.Mesh(new THREE.SphereGeometry(.08, 10, 8), M(0x6B4E36)); bh.position.set(.12, .08, 0); bird.add(bh);
+      var bk = new THREE.Mesh(new THREE.ConeGeometry(.025, .08, 6), M(0xE0A84A)); bk.rotation.z = -Math.PI / 2; bk.position.set(.22, .07, 0); bird.add(bk);
+      ctx.wings = [-1, 1].map(function(sd){ var w = new THREE.Mesh(new THREE.BoxGeometry(.18, .02, .12), M(0x6B4E36)); w.position.set(0, .03, sd * .1); bird.add(w); return w; });
+      bird.scale.setScalar(1.7); ctx.bird = bird; ctx.scene.add(bird);
+      ctx.q1 = bubble(ctx, '어르신, 산에 다녀오시나 봐요?', .42); ctx.a1 = bubble(ctx, '네, 그렇습니다.', .42); ctx.q2 = bubble(ctx, '그런데 어르신, 어깨 위에 있는 새는 이름이 뭔가요?', .42); ctx.scream = bubble(ctx, '아, 이게 뭐야!', .62); ctx.chirp = bubble(ctx, '짹', .4);
+    },
+    update: function(ctx, t){
+      var Y = ctx.youth, O = ctx.old;
+      [ctx.q1, ctx.a1, ctx.q2, ctx.scream, ctx.chirp].forEach(function(b){ b.visible = false; });
+      Y.up.rotation.x = 0; O.head.rotation.y = 0; O.head.rotation.x = 0; Y.head.rotation.y = 0; Y.armR.rotation.x = 0; O.armR.rotation.x = 0;
+      var yx = t < 5 ? lerp(-7, -1.1, t / 5) : -1.1; if (t < 5) walk(Y, t, .45); else still(Y);
+      Y.g.position.set(yx, 0, .4); Y.g.rotation.y = Math.PI / 2;
+      var ox, oy = 0, ory = -Math.PI / 2;
+      if (t < 3){ ox = 8; } else if (t < 7){ ox = lerp(8, 1.1, (t - 3) / 4); walk(O, t, .3); } else if (t < 17.6){ ox = 1.1; still(O); }
+      else if (t < 20.5){ var k = ease((t - 17.6) / .5); ox = 1.1 + k * .7; oy = Math.sin(Math.min(1, (t - 17.6) / .6) * Math.PI) * .6; O.head.rotation.y = -1.3; O.armL.rotation.x = O.armR.rotation.x = -2.6 * k; ctx.scream.visible = t < 20; ctx.scream.position.set(2.2, 3.95, .6); }
+      else { var k2 = ease((t - 20.5) / 1.6); ox = lerp(1.8, 9, k2); ory = Math.PI / 2; walk(O, t, .7); }
+      O.g.position.set(ox, oy, .4); O.g.rotation.y = ory;
+      if (t > 7 && t < 10.5){ Y.up.rotation.x = Math.min(1, (t - 7) / .5) * .35; ctx.q1.visible = true; ctx.q1.position.set(-1.2, 3.55, .6); }
+      if (t > 10.5 && t < 13){ ctx.a1.visible = true; ctx.a1.position.set(1.3, 3.65, .6); O.head.rotation.x = Math.max(0, Math.sin((t - 10.5) * 4)) * .25; O.armR.rotation.x = -1.9; }
+      if (t > 13 && t < 17.6){ Y.armR.rotation.x = -1.55 * Math.min(1, (t - 13) / .4); ctx.q2.visible = true; ctx.q2.position.set(-.4, 3.75, .6); }
+      if (t > 15.6 && t < 17.6){ O.head.rotation.y = -1.3 * ease((t - 15.6) / 1.6); }
+      if (t >= 17.6 && t < 20.5) Y.armR.rotation.x = -1.55;
+      /* 새: 어깨 → 날아감 → 가지 */
+      var shoulder = new THREE.Vector3(ox + .05, 2.62 + oy, .4 + .6);
+      if (t < 17.8){ ctx.bird.position.copy(shoulder); ctx.bird.position.y += (t > 7 && t < 8) ? Math.abs(Math.sin(t * 10)) * .08 : 0; ctx.wings.forEach(function(w){ w.rotation.x = 0; }); ctx.bird.rotation.y = Math.PI; }
+      else if (t < 19.4){ var f = (t - 17.8) / 1.6; ctx.bird.position.set(lerp(shoulder.x, ctx.branch.x, f), lerp(shoulder.y, ctx.branch.y, f) + Math.sin(f * Math.PI) * 1.4, lerp(shoulder.z, ctx.branch.z, f)); ctx.wings.forEach(function(w, i){ w.rotation.x = Math.sin(t * 40) * (i ? 1 : -1) * .9; }); ctx.bird.rotation.y = 0; }
+      else { ctx.bird.position.copy(ctx.branch); ctx.bird.position.y += .12; ctx.wings.forEach(function(w){ w.rotation.x = 0; }); ctx.bird.rotation.y = -Math.PI / 2;
+        if (t > 22.5 && t < 24){ ctx.chirp.visible = true; ctx.chirp.position.set(5.6, 3.2, -2.2); } }
+      camKeys(ctx, t, [[0,-5,2.6,9.5,-3,1.6,0],[5,-1.5,2.8,10,0,1.7,0],[7,-.2,2.7,9,0,1.9,0],[17.6,0,2.7,9,0,1.9,0],[20.5,0,2.8,9.4,.4,1.7,0],[26,-.4,2.6,7.8,0,1.6,0]]);
+    }
+  };
+
+  /* 7. 키프레임 체인 */
+  DEFS.chain = {
+    dur: 16,
+    caps: [[0,'1안 키프레임 8장. 같은 장소·같은 앵글끼리 한 줄(체인)로 묶습니다'],[1.6,'영상 ① 스타트 A1 → 엔드 A2, 참조 = 기사 시트'],[3.2,'영상 ② A2 → A3. 앞 영상의 끝 장면이 다음 영상의 첫 장면'],[4.8,'영상 ③ A3 → A4'],[6.4,'영상 ④ A4 → A5'],[8,'앵글이 바뀌는 곳에서 체인을 끊습니다'],[9.4,'영상 ⑤ B1 → B2, 참조 = 염소 시트. 반전이 영상 하나 안에서'],[11.2,'영상 ⑥ C1 스타트만. 마지막 장면은 엔드가 없어도 됩니다'],[13.2,'키프레임 8장 → 영상 6개. 끊긴 곳은 캡컷에서 딱 끊어 붙입니다']],
+    build: function(ctx){
+      var cards = [['A1','걸어옴','A'],['A2','대문 앞','A'],['A3','안심','A'],['A4','갸웃','A'],['A5','까치발','A'],['B1','눈만 빼꼼','B'],['B2','메에!','B'],['C1','멍','C']];
+      var bgc = {A:['#F2E3C9','#B98552'], B:['#DDE8D2','#5E8C4E'], C:['#F1DCDC','#B4545A']};
+      var x = -7.4; ctx.cards = []; ctx.cx = [];
+      cards.forEach(function(c, i){
+        if (i === 5 || i === 7) x += 1.3;
+        var tex = paintCanvas(260, 440, function(g, w, h){ g.fillStyle = bgc[c[2]][0]; g.fillRect(0,0,w,h); g.strokeStyle = bgc[c[2]][1]; g.lineWidth = 10; g.strokeRect(5,5,w-10,h-10);
+          g.fillStyle = bgc[c[2]][1]; g.font = '700 92px "Noto Sans KR",sans-serif'; g.textAlign = 'center'; g.fillText(c[0], w/2, h*.42);
+          g.fillStyle = '#24202B'; g.font = '500 44px "Noto Sans KR",sans-serif'; g.fillText(c[1], w/2, h*.66); });
+        var m = new THREE.Mesh(new THREE.PlaneGeometry(1.2, 2.04), new THREE.MeshBasicMaterial({map:tex, transparent:true}));
+        m.position.set(x, 0, 0); ctx.scene.add(m); ctx.cards.push(m); ctx.cx.push(x); x += 1.65; });
+      ctx.breaks = [];
+      [[4,5],[6,7]].forEach(function(p){ var bx = (ctx.cx[p[0]] + ctx.cx[p[1]]) / 2;
+        var bar = new THREE.Mesh(new THREE.BoxGeometry(.06, 2.8, .06), mat(ctx, 'accent')); bar.position.set(bx, 0, 0); ctx.scene.add(bar);
+        var lb = makeLabel(ctx, '체인 끊기', 'paper', .26, {bold:true, bgRole:'accent'}); lb.position.set(bx, -1.75, 0); ctx.scene.add(lb); ctx.breaks.push([bar, lb]); });
+      var pairs = [[0,1,'①','기사 시트'],[1,2,'②','기사 시트'],[2,3,'③','기사 시트'],[3,4,'④','기사 시트'],[5,6,'⑤','염소 시트'],[7,-1,'⑥','염소 시트']];
+      ctx.arcs = pairs.map(function(p){
+        var a = ctx.cx[p[0]], b = p[1] < 0 ? a + 1.1 : ctx.cx[p[1]];
+        var curve = new THREE.QuadraticBezierCurve3(new THREE.Vector3(a, 1.1, .05), new THREE.Vector3((a + b) / 2, 2.1, .05), new THREE.Vector3(b, 1.1, .05));
+        var tube = new THREE.Mesh(new THREE.TubeGeometry(curve, 40, .045, 8, false), mat(ctx, 'accent')); ctx.scene.add(tube);
+        var lb = makeLabel(ctx, '영상 ' + p[2], 'ink', .26, {bold:true}); lb.position.set((a + b) / 2, 2.35, .05); ctx.scene.add(lb);
+        var dot = new THREE.Mesh(new THREE.SphereGeometry(.11, 14, 10), mat(ctx, 'accent')); ctx.scene.add(dot);
+        return {curve:curve, tube:tube, lb:lb, dot:dot, ref:p[3], single:p[1] < 0, a:p[0], b:p[1]}; });
+      ctx.refCard = makeLabel(ctx, '참조 · 기사 시트', 'paper', .3, {bold:true, bgRole:'accent'}); ctx.scene.add(ctx.refCard);
+      ctx.sLbl = makeLabel(ctx, '스타트', 'ink', .24, {bold:true}); ctx.eLbl = makeLabel(ctx, '엔드', 'ink', .24, {bold:true}); ctx.scene.add(ctx.sLbl); ctx.scene.add(ctx.eLbl);
+      var lg = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(), new THREE.Vector3()]);
+      ctx.refLineM = new THREE.LineBasicMaterial({transparent:true, opacity:.7}); ctx.refLineM.userData.role = 'accent'; ctx.mats.push(ctx.refLineM); ctx.refLineM.color.set(ctx.p.accent);
+      ctx.refLine = new THREE.Line(lg, ctx.refLineM); ctx.scene.add(ctx.refLine);
+      ctx.cam.position.set(-.2, .6, 12.5);
+    },
+    update: function(ctx, t){
+      var starts = [1.6, 3.2, 4.8, 6.4, 9.4, 11.2], len = 1.5, active = -1;
+      ctx.arcs.forEach(function(A, i){
+        var s = starts[i], shown = t >= s, k = Math.max(0, Math.min(1, (t - s) / len));
+        A.tube.visible = shown; A.lb.visible = shown; A.tube.geometry.setDrawRange(0, Math.floor(A.tube.geometry.index.count * k));
+        A.dot.visible = shown && k < 1; if (A.dot.visible) A.dot.position.copy(A.curve.getPointAt(k));
+        if (t >= s && t < s + len + .1) active = i; });
+      ctx.breaks.forEach(function(b){ var v = t >= 8; b[0].visible = v; b[1].visible = v; b[1].material.opacity = Math.min(1, (t - 8) * 2); });
+      ctx.cards.forEach(function(c, i){ c.position.y = 0; c.scale.setScalar(1); });
+      var show = active >= 0 && t < 13.2;
+      ctx.refCard.visible = show; ctx.sLbl.visible = show; ctx.eLbl.visible = show && active >= 0 && !ctx.arcs[active].single; ctx.refLine.visible = show;
+      if (show){ var A = ctx.arcs[active], mid = A.curve.getPointAt(.5);
+        if (ctx.refCard.userData.lbl.text !== '참조 · ' + A.ref){ ctx.refCard.userData.lbl.text = '참조 · ' + A.ref; paintLabel(ctx, ctx.refCard); }
+        ctx.refCard.position.set(mid.x, 3.25, .05);
+        var pts = ctx.refLine.geometry.attributes.position; pts.setXYZ(0, mid.x, 3.05, .05); pts.setXYZ(1, mid.x, mid.y + .12, .05); pts.needsUpdate = true;
+        ctx.sLbl.position.set(ctx.cx[A.a], -1.35, .05); ctx.cards[A.a].position.y = .12;
+        if (!A.single){ ctx.eLbl.position.set(ctx.cx[A.b], -1.35, .05); ctx.cards[A.b].position.y = .12; } }
+      var sway = Math.sin(t * .35) * .5; ctx.cam.position.set(-.2 + sway, .6, 12.5); ctx.cam.lookAt(-.2, .55, 0);
+    }
+  };
+
+  /* ---------- 공통 실행기 ---------- */
+  function setup(stage){
+    var name = stage.dataset.scene, def = DEFS[name]; if (!def) return null;
+    var ol = $('.stage-steps', stage); def.caps.forEach(function(c){ var li = document.createElement('li'), pr = c[1].split('|'); li.textContent = pr[0] + (pr[1] ? ' (나레이션: ' + pr[1] + ')' : ''); ol.appendChild(li); });
+    var sub = document.createElement('p'); sub.className = 'stage-sub'; sub.hidden = true; $('.stage-view', stage).appendChild(sub);
+    var cap = $('.stage-cap', stage), bPlay = $('.b-play', stage), bRe = $('.b-restart', stage), seek = $('.b-seek', stage), loop = $('.b-loop', stage);
+    var S = {stage:stage, def:def, t:0, playing:!reduce, visible:false, ready:false, last:0};
+    var capNow = null;
+    function capAt(t){ var txt = def.caps[0][1]; def.caps.forEach(function(c){ if (t >= c[0]) txt = c[1]; }); if (capNow === txt) return; capNow = txt;
+      var pr = txt.split('|'); cap.textContent = pr[0];
+      if (pr.length > 1){ var narr = pr[1].charAt(0) === '(' ? '' : pr[1]; sub.textContent = narr; sub.hidden = !narr; } }
+    capAt(0);
+    if (!hasGL){ stage.classList.add('nogl'); $('.stage-fallback', stage).hidden = false; $('.stage-ctl', stage).hidden = true; cap.hidden = true; return null; }
+    var canvas = $('canvas', stage), renderer;
+    try { renderer = new THREE.WebGLRenderer({canvas:canvas, antialias:true, alpha:true}); } catch(e){ stage.classList.add('nogl'); $('.stage-fallback', stage).hidden = false; $('.stage-ctl', stage).hidden = true; cap.hidden = true; return null; }
+    renderer.setPixelRatio(Math.min(2, window.devicePixelRatio || 1)); renderer.setClearColor(0x000000, 0);
+    var ctx = {scene:new THREE.Scene(), cam:new THREE.PerspectiveCamera(36, 16 / 7, .1, 100), mats:[], labels:[], p:pal()};
+    ctx.scene.add(new THREE.HemisphereLight(0xffffff, 0x8a8494, .95));
+    var dl = new THREE.DirectionalLight(0xffffff, .75); dl.position.set(4, 8, 6); ctx.scene.add(dl);
+    def.build(ctx); S.ctx = ctx; S.renderer = renderer;
+    function size(){ var r = canvas.getBoundingClientRect(); if (!r.width) return; renderer.setSize(r.width, r.height, false); ctx.cam.aspect = r.width / r.height; ctx.cam.updateProjectionMatrix(); S.frame(); }
+    S.frame = function(){ def.update(ctx, S.t); renderer.render(ctx.scene, ctx.cam); capAt(S.t); seek.value = Math.round(S.t / def.dur * 1000); };
+    S.size = size;
+    function setPlay(p){ S.playing = p; bPlay.textContent = p ? '멈춤' : '재생'; S.last = performance.now(); }
+    setPlay(S.playing);
+    bPlay.addEventListener('click', function(){ if (!S.playing && S.t >= def.dur) S.t = 0; setPlay(!S.playing); });
+    bRe.addEventListener('click', function(){ S.t = 0; setPlay(true); S.frame(); });
+    seek.addEventListener('input', function(){ S.t = seek.value / 1000 * def.dur; setPlay(false); S.frame(); });
+    stage.addEventListener('keydown', function(e){ if (e.code === 'Space' && e.target.tagName !== 'INPUT'){ e.preventDefault(); bPlay.click(); } });
+    S.tick = function(now){
+      var dt = Math.min(.1, (now - S.last) / 1000); S.last = now;
+      if (S.playing){ S.t += dt; if (S.t >= def.dur){ if (loop.checked) S.t = 0; else { S.t = def.dur; setPlay(false); } } }
+      S.frame();
+    };
+    if ('ResizeObserver' in window) new ResizeObserver(size).observe(canvas); else window.addEventListener('resize', size);
+    S.ready = true; size(); return S;
+  }
+
+  var obs = 'IntersectionObserver' in window ? new IntersectionObserver(function(es){ es.forEach(function(e){ var S = e.target._S; if (S) S.visible = e.isIntersecting; }); }, {threshold:.15}) : null;
+  function refresh(){
+    $$('.stage').forEach(function(st){
+      if (st.closest('.step').hidden) return;
+      if (!st._S && !st._tried){ st._tried = true; st._S = setup(st); if (st._S && obs) obs.observe(st); else if (st._S) st._S.visible = true; }
+      else if (st._S) st._S.size();
+    });
+  }
+  function loopAll(now){
+    list = $$('.stage').map(function(s){ return s._S; }).filter(Boolean);
+    list.forEach(function(S){ if (S.visible && !S.stage.closest('.step').hidden) S.tick(now); else S.last = now; });
+    requestAnimationFrame(loopAll);
+  }
+  requestAnimationFrame(loopAll);
+  function retheme(){ $$('.stage').forEach(function(s){ if (s._S){ recolor(s._S.ctx); s._S.frame(); } }); }
+  if (window.matchMedia) { var mq = matchMedia('(prefers-color-scheme: dark)'); if (mq.addEventListener) mq.addEventListener('change', retheme); }
+  new MutationObserver(retheme).observe(document.documentElement, {attributes:true, attributeFilter:['data-theme']});
+  return {refresh:refresh, retheme:retheme};
+})();
+
+/* 시작 */
+var h = (location.hash || '').slice(1), startStep = store('g7-step') || stepIds[0], startCard = null;
+if (h){ if (stepIds.indexOf(h) >= 0) startStep = h; else { var el = document.getElementById(h); if (el && el.closest('.step')){ startStep = el.closest('.step').id; startCard = h; } } }
+showStep(startStep, startCard, true);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(function(){ Scenes.retheme(); });
+})();
+</script>

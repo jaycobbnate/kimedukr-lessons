@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI로 만드는 식품 광고</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+:root{
+  --fs:20px;
+  --bg:#fbfaf7; --card:#ffffff; --line:#e6e3dc; --line2:#efede8;
+  --ink:#1f2326; --sub:#5d646a; --mute:#8a9096;
+  --pt:#0f7a6c; --pt-d:#0a5d52; --pt-l:#e7f3f0; --pt-ll:#f3faf8;
+  --set:#eef4fb; --set-b:#cfdff0; --set-t:#2a5a8a;
+  --warn:#fbeff1; --warn-b:#efcfd6; --warn-t:#9a3149;
+  --more:#f3f0fa; --more-b:#ddd5ef; --more-t:#5b4596;
+  --tip:#eef8f3; --tip-b:#cde8da; --tip-t:#1f6b48;
+  --vid:#0f7a6c; --img:#e9dcc6; --img-d:#b89a6a;
+  --hdr:170px;
+}
+*{box-sizing:border-box}
+html{font-size:var(--fs)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Pretendard,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;line-height:1.7;word-break:keep-all;-webkit-font-smoothing:antialiased}
+a{color:var(--pt-d)}
+b,strong{font-weight:700}
+
+/* ===== top bar (sticky) ===== */
+.top{position:sticky;top:0;z-index:20;background:rgba(251,250,247,.97);backdrop-filter:blur(6px);border-bottom:1px solid var(--line)}
+.top-in{max-width:1480px;margin:0 auto;padding:.7rem 1.4rem .5rem}
+.trow{display:flex;align-items:flex-start;gap:1rem;flex-wrap:wrap}
+.ttl{flex:1;min-width:260px}
+.ttl h1{margin:0;font-size:1.15rem;line-height:1.35}
+.ttl p{margin:.1rem 0 0;font-size:.78rem;color:var(--sub)}
+.ctl{display:flex;align-items:center;gap:.4rem;flex-wrap:wrap}
+.ctl label{font-size:.75rem;color:var(--sub)}
+.ctl select,.ctl button{font:inherit;font-size:.8rem;border:1px solid var(--line);background:#fff;border-radius:10px;padding:.3rem .7rem;color:var(--ink);cursor:pointer}
+.ctl select{font-weight:600}
+.ctl .how{border-color:var(--pt);color:var(--pt)}
+.tabs{display:flex;gap:.45rem;overflow-x:auto;padding:.6rem 0 .5rem;scrollbar-width:thin}
+.tab{flex:0 0 auto;font:inherit;font-size:.8rem;font-weight:600;border:1px solid var(--line);background:#fff;color:var(--pt-d);border-radius:999px;padding:.45rem 1rem;cursor:pointer;white-space:nowrap}
+.tab .n{margin-right:.35rem}
+.tab.on{background:var(--pt);border-color:var(--pt);color:#fff}
+
+/* ===== layout ===== */
+.wrap{max-width:1480px;margin:0 auto;padding:1.4rem 1.4rem 2rem;display:grid;grid-template-columns:minmax(0,1fr) 250px;gap:2rem}
+.side{position:sticky;top:calc(var(--hdr) + 16px);align-self:start;border-left:1px solid var(--line);padding-left:1.1rem}
+.side h4{margin:0 0 .5rem;font-size:.72rem;color:var(--mute);font-weight:600}
+.side a{display:block;font-size:.78rem;color:var(--ink);text-decoration:none;padding:.35rem .5rem;border-radius:8px;line-height:1.45}
+.side a:hover{background:var(--pt-l)}
+@media (max-width:1100px){.wrap{grid-template-columns:1fr}.side{display:none}}
+
+.step{display:none}
+.step.on{display:block}
+.shead .no{font-size:.82rem;font-weight:800;color:var(--pt);letter-spacing:.04em}
+.shead h2{margin:.1rem 0 .3rem;font-size:1.6rem;line-height:1.35}
+.shead p{margin:0 0 1.2rem;color:var(--sub)}
+
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.1rem}
+@media (max-width:900px){.grid{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:1.2rem 1.3rem;scroll-margin-top:calc(var(--hdr) + 14px);min-width:0}
+.card.wide{grid-column:1/-1}
+.card h3{margin:0 0 .6rem;font-size:1.05rem;display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;line-height:1.4}
+.card p{margin:.4rem 0}
+.tag{font-size:.65rem;font-weight:700;border-radius:999px;padding:.12rem .55rem;white-space:nowrap}
+.t-show{background:var(--pt-l);color:var(--pt-d)}
+.t-do{background:var(--pt);color:#fff}
+.t-my{background:#fff;border:1px solid var(--pt);color:var(--pt)}
+.t-more{background:var(--more);color:var(--more-t)}
+.t-first{background:var(--tip);color:var(--tip-t)}
+
+ol.num,ul.dot{margin:.3rem 0;padding-left:1.4rem}
+ol.num li,ul.dot li{margin:.28rem 0}
+.term{color:var(--sub);font-size:.85em}
+.menu{display:inline-block;background:var(--pt-ll);border:1px solid var(--line);border-radius:6px;padding:0 .35rem;font-size:.86em;font-weight:600;white-space:nowrap}
+.kbd{display:inline-block;border:1px solid #cfccc4;border-bottom-width:2px;border-radius:5px;padding:0 .35rem;font-size:.8em;background:#fff;font-family:inherit}
+.m{color:var(--pt-d);font-weight:700}
+
+.box{border:1px solid;border-radius:14px;padding:.75rem 1rem;margin:.8rem 0;font-size:.92rem}
+.box .bt{display:block;font-weight:700;margin-bottom:.2rem}
+.box.set{background:var(--set);border-color:var(--set-b)} .box.set .bt{color:var(--set-t)}
+.box.warn{background:var(--warn);border-color:var(--warn-b)} .box.warn .bt{color:var(--warn-t)}
+.box.more{background:var(--more);border-color:var(--more-b)} .box.more .bt{color:var(--more-t)}
+.box.tip{background:var(--tip);border-color:var(--tip-b)} .box.tip .bt{color:var(--tip-t)}
+
+/* tables */
+.tw{overflow-x:auto;margin:.5rem 0}
+table{border-collapse:collapse;width:100%;font-size:.86rem}
+th,td{border-bottom:1px solid var(--line2);padding:.5rem .6rem;text-align:left;vertical-align:top}
+th{background:var(--pt-ll);font-weight:700;color:var(--pt-d);white-space:nowrap}
+tr.hl td{background:#fffdf6}
+td code,code{font-family:"JetBrains Mono",Consolas,monospace;font-size:.82em;background:#f4f2ed;border-radius:5px;padding:0 .3rem}
+
+/* prompt card */
+.pc{border:1px solid var(--line);border-radius:14px;margin:.7rem 0;overflow:hidden;background:#fff}
+.pc-h{display:flex;align-items:center;justify-content:space-between;gap:.5rem;background:var(--pt-ll);padding:.45rem .8rem;border-bottom:1px solid var(--line)}
+.pc-h span{font-size:.8rem;font-weight:700;color:var(--pt-d)}
+.cp{font:inherit;font-size:.75rem;font-weight:700;border:1px solid var(--pt);color:var(--pt);background:#fff;border-radius:8px;padding:.2rem .7rem;cursor:pointer;white-space:nowrap}
+.cp.done{background:var(--pt);color:#fff}
+.pc pre{margin:0;padding:.8rem 1rem;white-space:pre-wrap;word-break:break-word;font-family:Pretendard,"Malgun Gothic",sans-serif;font-size:.86rem;line-height:1.65;color:#2a2f33}
+.pc pre .fill{background:#e1f1ec;color:var(--pt-d);font-weight:700;border-radius:4px;padding:0 .2rem}
+.pc.en pre{font-family:"JetBrains Mono",Consolas,monospace;font-size:.78rem}
+.pc .ko{padding:.35rem 1rem .6rem;font-size:.8rem;color:var(--sub);border-top:1px dashed var(--line2)}
+
+/* svg diagrams */
+.fig{width:100%;height:auto;display:block;margin:.4rem 0}
+.cap{font-size:.78rem;color:var(--sub);text-align:center;margin:.2rem 0 0}
+
+/* outline text demo */
+.demo{position:relative;border-radius:16px;overflow:hidden;aspect-ratio:9/12;max-width:300px;margin:.6rem auto;border:1px solid var(--line)}
+.demo .bgx{position:absolute;inset:0;animation:flip 3s steps(1) infinite}
+@keyframes flip{
+  0%{background:radial-gradient(circle at 40% 60%,#f2c35b 0 18%,#c9772f 30%,#6b3a1c 70%)}
+  33%{background:radial-gradient(circle at 60% 40%,#9bd16a 0 15%,#3f8a3a 40%,#1d3b1f 80%)}
+  66%{background:radial-gradient(circle at 50% 50%,#ffe39a 0 20%,#e8a23a 45%,#7a3d16 85%)}
+}
+.demo .ol{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:3.2rem;letter-spacing:.02em;color:transparent;-webkit-text-stroke:3px #fff;text-shadow:0 0 0 transparent}
+.demo .lb{position:absolute;left:.6rem;bottom:.5rem;font-size:.65rem;color:#fff;background:rgba(0,0,0,.35);border-radius:6px;padding:.05rem .4rem}
+.demo.blend{background:#111}
+.demo.blend .ol{color:transparent;-webkit-text-stroke:0;background:radial-gradient(circle at 40% 55%,#ffe39a 0 12%,#e8a23a 30%,#8a4a1c 60%,#3a1d0c 90%);-webkit-background-clip:text;background-clip:text;font-size:3.6rem}
+.demos{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center}
+.demos > div{flex:1 1 220px;max-width:300px}
+
+/* keyframe demo */
+.kfd{display:flex;gap:1rem;align-items:center;justify-content:center;flex-wrap:wrap;margin:.6rem 0}
+.kfbox{width:120px;aspect-ratio:9/16;border-radius:12px;overflow:hidden;border:1px solid var(--line);position:relative;background:#f6efe2}
+.kfbox i{position:absolute;inset:0;background:radial-gradient(circle at 50% 55%,#f2c35b 0 16%,#c9772f 30%,#6b3a1c 65%,#f6efe2 66%)}
+.kfbox.zin i{animation:zin 1s ease-in-out infinite alternate}
+.kfbox.slide i{transform:scale(1.2);animation:slide 1s ease-in-out infinite alternate}
+.kfbox.zout i{animation:zout 2s ease-out infinite}
+@keyframes zin{from{transform:scale(1)}to{transform:scale(1.2)}}
+@keyframes slide{from{transform:scale(1.2) translateX(-9%)}to{transform:scale(1.2) translateX(9%)}}
+@keyframes zout{0%{transform:scale(1.15)}75%,100%{transform:scale(1)}}
+.kfd .lbl{text-align:center;font-size:.75rem;color:var(--sub);margin-top:.3rem}
+
+/* bottom nav sticky */
+.bot{position:sticky;bottom:0;z-index:15;background:rgba(251,250,247,.97);border-top:1px solid var(--line)}
+.bot-in{max-width:1480px;margin:0 auto;padding:.6rem 1.4rem;display:flex;justify-content:space-between;align-items:center;gap:1rem}
+.nb{font:inherit;font-size:.85rem;font-weight:700;border-radius:12px;padding:.5rem 1.1rem;cursor:pointer;border:1px solid var(--line);background:#fff;color:var(--ink)}
+.nb.next{background:var(--pt);border-color:var(--pt);color:#fff}
+.nb:disabled{opacity:.35;cursor:default}
+.bot .where{font-size:.75rem;color:var(--sub);text-align:center}
+
+.legend{display:flex;gap:1rem;flex-wrap:wrap;font-size:.75rem;color:var(--sub);justify-content:center}
+.legend i{display:inline-block;width:.9rem;height:.9rem;border-radius:3px;vertical-align:-2px;margin-right:.3rem}
+.pill{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:.05rem .6rem;font-size:.78rem;background:#fff;margin:.15rem .2rem .15rem 0}
+.choice{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.8rem;margin:.6rem 0}
+@media (max-width:700px){.choice{grid-template-columns:1fr}}
+.choice button{font:inherit;text-align:left;border:1px solid var(--line);background:#fff;border-radius:14px;padding:.8rem 1rem;cursor:pointer}
+.choice button.on{border-color:var(--pt);box-shadow:0 0 0 2px var(--pt-l);background:var(--pt-ll)}
+.choice b{display:block;font-size:1rem}
+.choice small{color:var(--sub);font-size:.78rem;line-height:1.5;display:block;margin-top:.2rem}
+details.ex{border:1px dashed var(--line);border-radius:14px;padding:.4rem .9rem;margin:.6rem 0;background:#fdfcf9}
+details.ex summary{cursor:pointer;font-weight:700;color:var(--pt-d);font-size:.88rem;padding:.3rem 0}
+hr.s{border:0;border-top:1px solid var(--line2);margin:.9rem 0}
+
+/* trio: three menus side by side */
+.trio{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.9rem;margin:.6rem 0}
+@media (max-width:1250px){.trio{grid-template-columns:1fr}}
+.mb{border:1px solid var(--line);border-top:4px solid var(--pt);border-radius:14px;padding:.7rem .8rem;background:#fff;min-width:0}
+.mb > h4{margin:0 0 .4rem;font-size:.95rem}
+.mb .pc{margin:.5rem 0}
+.mb .desc{font-size:.8rem;color:var(--sub);margin:.1rem 0 .3rem}
+.mb.burger{border-top-color:#c9772f} .mb.tteok{border-top-color:#c8433a} .mb.bibim{border-top-color:#3f8a3a}
+/* builder */
+.brow{display:grid;grid-template-columns:150px 1fr;gap:.8rem;align-items:start;padding:.75rem 0;border-bottom:1px solid var(--line2)}
+.brow:last-of-type{border-bottom:0}
+@media (max-width:800px){.brow{grid-template-columns:1fr}}
+.bl{font-weight:700;font-size:.92rem}
+.bl small{display:block;font-weight:500;color:var(--sub);font-size:.72rem}
+.chips{display:flex;flex-wrap:wrap;gap:.45rem}
+.chip{font:inherit;font-size:.86rem;border:1px solid var(--line);background:#fff;border-radius:999px;padding:.4rem .95rem;cursor:pointer;color:var(--ink)}
+.chip:hover{border-color:var(--pt)}
+.chip.on{background:var(--pt);color:#fff;border-color:var(--pt)}
+.formula{display:flex;flex-wrap:wrap;align-items:center;gap:.4rem;margin:.4rem 0 .2rem;font-size:.85rem}
+.formula span{border:1px solid var(--line);border-radius:10px;padding:.25rem .7rem;background:#fff}
+.formula span.f{background:var(--pt-l);border-color:#bfe0d8;color:var(--pt-d);font-weight:700}
+.formula span.auto{background:#f4f2ed;color:var(--sub)}
+.formula b{color:var(--mute);font-weight:400}
+details.ex{border:1px dashed var(--line);border-radius:14px;padding:.4rem .9rem;margin:.6rem 0;background:#fdfcf9}
+details.ex summary{cursor:pointer;font-weight:700;color:var(--pt-d);font-size:.9rem;padding:.35rem 0}
+details.ex[open] summary{margin-bottom:.3rem}
+.menu3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.8rem;margin:.6rem 0}
+@media (max-width:800px){.menu3{grid-template-columns:1fr}}
+.menu3 > div{border:1px solid var(--line);border-radius:14px;padding:.8rem 1rem;background:#fff}
+.menu3 b{display:block;font-size:1rem}
+.menu3 small{color:var(--sub);font-size:.8rem;line-height:1.55;display:block;margin-top:.2rem}
+
+</style>
+</head>
+<body>
+
+<!-- ================= TOP ================= -->
+<div class="top" id="top">
+ <div class="top-in">
+  <div class="trow">
+   <div class="ttl">
+    <h1>AI로 만드는 식품 광고</h1>
+    <p>10초 영상 2개 + 1~2초 이미지 8컷 · 자막과 나레이션 · 세로 9:16 30초 광고</p>
+   </div>
+   <div class="ctl">
+    <button class="how" id="howBtn">보는 법</button>
+    <button data-fs="-1" aria-label="글자 작게">가−</button>
+    <button data-fs="0" aria-label="글자 보통">가</button>
+    <button data-fs="1" aria-label="글자 크게">가+</button>
+   </div>
+  </div>
+  <nav class="tabs" id="tabs"></nav>
+ </div>
+</div>
+
+<div class="wrap">
+<main id="main">
+
+<!-- ================= STEP 0 ================= -->
+<section class="step" data-title="오늘 만들 광고">
+ <div class="shead"><div class="no">STEP 0</div><h2>오늘 만들 광고</h2>
+ <p>음식이 주인공인 <b>30초 세로 광고</b>를 만듭니다. 사람은 나오지 않고, 음식만으로 군침 돌게 만드는 것이 목표입니다.</p></div>
+ <div class="grid">
+
+  <div class="card wide" id="howto" data-nav="이 교안 보는 법">
+   <h3><span class="tag t-first">처음에</span>이 교안 보는 법</h3>
+   <ul class="dot">
+    <li><b>STEP 탭</b>: 오늘 할 일이 STEP 0부터 7까지 순서대로 있습니다. 아래 <b>다음 STEP ▶</b>을 눌러도 넘어갑니다.</li>
+    <li><b>메뉴별 프롬프트</b>: 프롬프트(AI에게 주는 지시문)가 <b>🍔 수제버거 · 🌶️ 떡볶이 · 🍚 비빔밥</b> 세 칸으로 나란히 적혀 있습니다. <b>내가 고른 메뉴 칸</b>의 것을 복사해서 씁니다.</li>
+    <li><b>가− 가 가+</b>: 글자 크기를 바꿉니다.</li>
+    <li><b>오른쪽 「이 STEP의 카드」</b>: 넓은 화면에서는 지금 STEP의 카드 목록이 따라다닙니다. 누르면 그 카드로 내려갑니다. 노트북 화면이 좁으면 보이지 않으니 아래로 내려 보면 됩니다.</li>
+    <li><b>「복사」 단추</b>: 프롬프트 옆의 「복사」를 누르면 「복사됨」으로 바뀝니다. 그다음 쓸 곳에 <span class="kbd">Ctrl</span>+<span class="kbd">V</span>로 붙여 넣습니다.</li>
+    <li><span class="tag t-do">따라 하기</span> 강사와 같이 / <span class="tag t-my">내 차례</span> 내 메뉴로 직접 / <span class="tag t-more">한 걸음 더</span> 빨리 끝난 분이 더 해 보기</li>
+   </ul>
+  </div>
+
+  <div class="card wide" data-nav="30초 설계도">
+   <h3><span class="tag t-show">한눈에 보기</span>30초 설계도: 영상 20초 + 이미지 10초</h3>
+   <svg class="fig" viewBox="0 0 1000 250" role="img" aria-label="30초 타임라인">
+    <defs>
+     <pattern id="hatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="8" height="8" fill="#e9dcc6"/><line x1="0" y1="0" x2="0" y2="8" stroke="#dccaa9" stroke-width="3"/></pattern>
+    </defs>
+    <!-- scale: 30s -> 900px, x0=50 ; 1s = 30px -->
+    <g font-family="Pretendard,sans-serif">
+     <!-- outline text markers -->
+     <rect x="50" y="18" width="90" height="26" rx="6" fill="none" stroke="#0f7a6c" stroke-width="2" stroke-dasharray="4 3"/>
+     <text x="95" y="36" text-anchor="middle" font-size="14" font-weight="800" fill="#0f7a6c">JUICY</text>
+     <rect x="890" y="18" width="60" height="26" rx="6" fill="none" stroke="#0f7a6c" stroke-width="2" stroke-dasharray="4 3"/>
+     <text x="920" y="36" text-anchor="middle" font-size="12" font-weight="800" fill="#0f7a6c">가게</text>
+     <text x="500" y="36" text-anchor="middle" font-size="13" fill="#5d646a">점선 = 큰 제목 글씨와 가게 이름이 들어가는 자리</text>
+     <!-- segments -->
+     <g stroke="#fff" stroke-width="2">
+      <rect x="50"  y="60" width="30" height="70" fill="url(#hatch)"/>
+      <rect x="80"  y="60" width="30" height="70" fill="url(#hatch)"/>
+      <rect x="110" y="60" width="30" height="70" fill="url(#hatch)"/>
+      <rect x="140" y="60" width="300" height="70" fill="#0f7a6c"/>
+      <rect x="440" y="60" width="30" height="70" fill="url(#hatch)"/>
+      <rect x="470" y="60" width="30" height="70" fill="url(#hatch)"/>
+      <rect x="500" y="60" width="60" height="70" fill="url(#hatch)"/>
+      <rect x="560" y="60" width="300" height="70" fill="#0f7a6c"/>
+      <rect x="860" y="60" width="30" height="70" fill="url(#hatch)"/>
+      <rect x="890" y="60" width="60" height="70" fill="url(#hatch)"/>
+     </g>
+     <!-- video labels -->
+     <text x="290" y="92" text-anchor="middle" font-size="18" font-weight="800" fill="#fff">영상 A · 10초</text>
+     <text x="290" y="116" text-anchor="middle" font-size="13" fill="#d9f0ea">시작 프레임 → 끝 프레임</text>
+     <text x="710" y="92" text-anchor="middle" font-size="18" font-weight="800" fill="#fff">영상 B · 10초</text>
+     <text x="710" y="116" text-anchor="middle" font-size="13" fill="#d9f0ea">시작 프레임 → 끝 프레임</text>
+     <!-- img numbers -->
+     <g font-size="12" font-weight="700" fill="#7a5f33" text-anchor="middle">
+      <text x="65" y="100">1</text><text x="95" y="100">2</text><text x="125" y="100">3</text>
+      <text x="455" y="100">4</text><text x="485" y="100">5</text><text x="530" y="100">6</text>
+      <text x="875" y="100">7</text><text x="920" y="100">8</text>
+     </g>
+     <!-- ticks -->
+     <g font-size="13" fill="#5d646a" text-anchor="middle">
+      <line x1="50" y1="134" x2="50" y2="142" stroke="#8a9096"/><text x="50" y="158">0초</text>
+      <line x1="140" y1="134" x2="140" y2="142" stroke="#8a9096"/><text x="140" y="158">3</text>
+      <line x1="440" y1="134" x2="440" y2="142" stroke="#8a9096"/><text x="440" y="158">13</text>
+      <line x1="560" y1="134" x2="560" y2="142" stroke="#8a9096"/><text x="560" y="158">17</text>
+      <line x1="860" y1="134" x2="860" y2="142" stroke="#8a9096"/><text x="860" y="158">27</text>
+      <line x1="950" y1="134" x2="950" y2="142" stroke="#8a9096"/><text x="950" y="158">30초</text>
+     </g>
+     <!-- group captions -->
+     <g font-size="14" fill="#1f2326" text-anchor="middle">
+      <text x="95" y="190" font-weight="700">재료 휙휙</text><text x="95" y="210" fill="#5d646a" font-size="12">1초 × 3컷</text>
+      <text x="290" y="190" font-weight="700">만들어지는 순간</text>
+      <text x="500" y="190" font-weight="700">속·소스·곁들임</text><text x="500" y="210" fill="#5d646a" font-size="12">1·1·2초</text>
+      <text x="710" y="190" font-weight="700">완성, 다가가기</text>
+      <text x="905" y="190" font-weight="700">마무리</text><text x="905" y="210" fill="#5d646a" font-size="12">1·2초</text>
+     </g>
+    </g>
+   </svg>
+   <div class="legend"><span><i style="background:#0f7a6c"></i>영상 (10초 × 2 = 20초)</span><span><i style="background:#e9dcc6;border:1px solid #dccaa9"></i>이미지 컷 (8컷 = 10초)</span></div>
+   <p>이미지는 <b>1~2초씩 휙휙</b> 넘어가며 리듬을 만들고, 영상은 <b>10초씩 길게</b> 보여 주며 맛을 보여 줍니다.</p>
+  </div>
+
+  <div class="card wide" data-nav="오늘 만드는 순서">
+   <h3><span class="tag t-show">한눈에 보기</span>오늘 만드는 순서</h3>
+   <svg class="fig" viewBox="0 0 1000 300" role="img" aria-label="오늘 만드는 순서 도식">
+    <defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="#9fbfb8"/></marker></defs>
+    <g font-family="Pretendard,sans-serif" text-anchor="middle">
+     <!-- row1 -->
+     <g transform="translate(70,20)"><circle cx="50" cy="45" r="40" fill="#f3faf8" stroke="#0f7a6c" stroke-width="2"/><ellipse cx="50" cy="52" rx="26" ry="9" fill="none" stroke="#0f7a6c" stroke-width="2.5"/><path d="M30 50 q20 -24 40 0" fill="#e9dcc6" stroke="#b89a6a" stroke-width="2"/><text x="50" y="112" font-size="15" font-weight="700" fill="#1f2326">1 메뉴 고르기</text><text x="50" y="130" font-size="12" fill="#5d646a">🍔 🌶️ 🍚 중 하나</text></g>
+     <g transform="translate(300,20)"><circle cx="50" cy="45" r="40" fill="#f3faf8" stroke="#0f7a6c" stroke-width="2"/><g stroke="#0f7a6c" stroke-width="2.5"><line x1="30" y1="33" x2="70" y2="33"/><line x1="30" y1="45" x2="70" y2="45"/><line x1="30" y1="57" x2="70" y2="57"/></g><circle cx="42" cy="33" r="5" fill="#fff" stroke="#0f7a6c" stroke-width="2.5"/><circle cx="60" cy="45" r="5" fill="#fff" stroke="#0f7a6c" stroke-width="2.5"/><circle cx="48" cy="57" r="5" fill="#fff" stroke="#0f7a6c" stroke-width="2.5"/><text x="50" y="112" font-size="15" font-weight="700" fill="#1f2326">2 프롬프트 개조</text><text x="50" y="130" font-size="12" fill="#5d646a">버튼으로 광고처럼</text></g>
+     <g transform="translate(530,20)"><circle cx="50" cy="45" r="40" fill="#f3faf8" stroke="#0f7a6c" stroke-width="2"/><rect x="36" y="22" width="26" height="40" rx="3" fill="#e9dcc6" stroke="#b89a6a" stroke-width="2" transform="rotate(-10 49 42)"/><rect x="40" y="26" width="26" height="40" rx="3" fill="#fff" stroke="#0f7a6c" stroke-width="2.2"/><circle cx="53" cy="44" r="7" fill="#f2c35b"/><text x="50" y="112" font-size="15" font-weight="700" fill="#1f2326">3 이미지 만들기</text><text x="50" y="130" font-size="12" fill="#5d646a">크레딧 안 듦</text></g>
+     <g transform="translate(760,20)"><circle cx="50" cy="45" r="40" fill="#0f7a6c"/><rect x="30" y="31" width="40" height="28" rx="5" fill="#fff"/><path d="M45 38 l12 7 -12 7z" fill="#0f7a6c"/><text x="50" y="112" font-size="15" font-weight="700" fill="#1f2326">4 영상 2개</text><text x="50" y="130" font-size="12" fill="#5d646a">시작·끝 프레임 10초</text></g>
+     <g stroke="#b5c9c4" stroke-width="2" fill="none" marker-end="url(#ar)"><line x1="215" y1="65" x2="290" y2="65"/><line x1="445" y1="65" x2="520" y2="65"/><line x1="675" y1="65" x2="750" y2="65"/></g>
+     <path d="M915 125 q40 40 0 80" fill="none" stroke="#b5c9c4" stroke-width="2" marker-end="url(#ar)"/>
+     <!-- row2 (right to left) -->
+     <g transform="translate(0,150)">
+      <g transform="translate(760,10)"><circle cx="50" cy="45" r="40" fill="#f3faf8" stroke="#0f7a6c" stroke-width="2"/><rect x="26" y="34" width="12" height="9" fill="#e9dcc6"/><rect x="39" y="34" width="24" height="9" fill="#0f7a6c"/><rect x="64" y="34" width="10" height="9" fill="#e9dcc6"/><rect x="26" y="48" width="48" height="6" rx="3" fill="#cfdff0"/><line x1="52" y1="26" x2="52" y2="62" stroke="#9a3149" stroke-width="2"/><text x="50" y="112" font-size="15" font-weight="700" fill="#1f2326">5 캡컷 조립</text><text x="50" y="130" font-size="12" fill="#5d646a">움직임 · 자막 · 음악</text></g>
+      <g transform="translate(530,10)"><circle cx="50" cy="45" r="40" fill="#f3faf8" stroke="#0f7a6c" stroke-width="2"/><rect x="42" y="24" width="16" height="28" rx="8" fill="#fff" stroke="#0f7a6c" stroke-width="2.4"/><path d="M34 44 q0 16 16 16 q16 0 16 -16" fill="none" stroke="#0f7a6c" stroke-width="2.4"/><line x1="50" y1="60" x2="50" y2="68" stroke="#0f7a6c" stroke-width="2.4"/><text x="50" y="112" font-size="15" font-weight="700" fill="#1f2326">6 나레이션 넣기</text><text x="50" y="130" font-size="12" fill="#5d646a">AI 스튜디오 목소리</text></g>
+      <g transform="translate(300,10)"><circle cx="50" cy="45" r="40" fill="#f3faf8" stroke="#0f7a6c" stroke-width="2" stroke-dasharray="5 4"/><path d="M28 32 h44 a6 6 0 0 1 6 6 v18 a6 6 0 0 1 -6 6 h-26 l-10 9 v-9 h-8 a6 6 0 0 1 -6 -6 v-18 a6 6 0 0 1 6 -6z" fill="#fff" stroke="#0f7a6c" stroke-width="2.2"/><path d="M50 37 l3 7 7 3 -7 3 -3 7 -3 -7 -7 -3 7 -3z" fill="#0f7a6c"/><text x="50" y="112" font-size="15" font-weight="700" fill="#1f2326">7 혼자 할 때</text><text x="50" y="130" font-size="12" fill="#5d646a">제미나이에게 물어보기</text></g>
+      <g stroke="#b5c9c4" stroke-width="2" fill="none" marker-end="url(#ar)"><line x1="750" y1="55" x2="675" y2="55"/><line x1="520" y1="55" x2="445" y2="55"/></g>
+     </g>
+    </g>
+   </svg>
+  </div>
+
+  <div class="card" data-nav="오늘 나오는 말">
+   <h3><span class="tag t-show">미리 알기</span>오늘 나오는 말</h3>
+   <ul class="dot">
+    <li><b>프롬프트</b> <span class="term">(AI에게 주는 지시문)</span></li>
+    <li><b>대표 사진</b> <span class="term">(광고의 얼굴이 되는 사진 한 장, 키비주얼이라고도 함)</span></li>
+    <li><b>시작·끝 프레임</b> <span class="term">(영상의 첫 장면과 마지막 장면을 이미지로 정해 주는 방법)</span></li>
+    <li><b>클로즈업</b> <span class="term">(아주 가까이 찍기)</span> / <b>탑다운</b> <span class="term">(위에서 내려다본 구도)</span></li>
+    <li><b>키프레임</b> <span class="term">(움직임의 시작과 끝을 찍어 두는 표시)</span></li>
+    <li><b>카피</b> <span class="term">(광고 문구)</span></li>
+   </ul>
+  </div>
+
+  <div class="card" data-nav="준비물과 크레딧">
+   <h3><span class="tag t-show">준비</span>준비물과 크레딧</h3>
+   <ul class="dot">
+    <li>노트북, 구글 계정(AI Pro), 캡컷 PC <span class="term">(최신 버전으로 업데이트)</span></li>
+    <li>쓰는 도구: <span class="pill">구글 플로우</span><span class="pill">캡컷 PC</span><span class="pill">AI 스튜디오</span> <span class="term">(혼자 할 때는 제미나이도)</span></li>
+   </ul>
+   <div class="box tip"><span class="bt">크레딧 아끼는 법</span>
+    플로우에서 <b>이미지(나노바나나)는 크레딧이 들지 않습니다.</b> 이미지는 마음껏 다시 만들고, <b>영상은 오늘 2개만</b> 만듭니다. 영상은 이미지가 확실히 마음에 들 때만 돌립니다.</div>
+  </div>
+
+ </div>
+</section>
+
+<!-- ================= STEP 1 ================= -->
+<section class="step" data-title="메뉴 고르기">
+ <div class="shead"><div class="no">STEP 1</div><h2>메뉴 고르기</h2>
+ <p>세 가지 메뉴 중 하나를 고릅니다. 앞으로 나오는 프롬프트는 모두 <b>🍔 🌶️ 🍚 세 칸</b>으로 적혀 있으니, 내가 고른 메뉴 칸의 것을 복사합니다.</p></div>
+ <div class="grid">
+  <div class="card wide" data-nav="오늘의 세 메뉴">
+   <h3><span class="tag t-my">내 차례</span>오늘의 세 메뉴</h3>
+   <div class="menu3">
+    <div><b>🍔 수제버거</b><small>영상 A: 패티 위 치즈가 녹아내림<br>영상 B: 상차림 → 버거 클로즈업<br>가게 이름 예: 버거 공방</small></div>
+    <div><b>🌶️ 떡볶이</b><small>영상 A: 소스가 보글보글 끓어오름<br>영상 B: 상차림 → 치즈 녹은 떡볶이<br>가게 이름 예: 떡볶이집</small></div>
+    <div><b>🍚 비빔밥</b><small>영상 A: 돌솥이 지글지글, 김이 오름<br>영상 B: 상차림 → 노른자 클로즈업<br>가게 이름 예: 한 그릇 정성</small></div>
+   </div>
+   <p>먼저 <b>🍔 수제버거로 강사와 함께</b> 한 번 따라 한 뒤, <b>🌶️ 떡볶이나 🍚 비빔밥</b>을 골라 직접 만듭니다.</p>
+   <div class="box more"><span class="bt">한 걸음 더</span>내 가게 메뉴나 단골집 메뉴로 만들고 싶으면 <a href="#" data-go="7">STEP 7 혼자 할 때</a>에서 제미나이에게 프롬프트를 받아 씁니다.</div>
+  </div>
+  <div class="card" data-nav="비율은 세로 9:16 하나로">
+   <h3><span class="tag t-show">약속 1</span>비율은 세로 9:16 하나로</h3>
+   <p>릴스·쇼츠·틱톡에 올리는 광고라 처음부터 끝까지 <b>세로 9:16</b>으로 갑니다.</p>
+   <ul class="dot">
+    <li>플로우 이미지 비율 → <b>9:16</b></li>
+    <li>플로우 영상 비율 → <b>9:16</b></li>
+    <li>캡컷 프로젝트 비율 → <b>9:16</b></li>
+   </ul>
+   <div class="box set"><span class="bt">왜 세로인가요?</span>세로 화면은 음식이 화면을 꽉 채워서 더 먹음직스럽게 보입니다. 중간에 비율을 바꾸면 위아래나 양옆이 비어 보이니 처음부터 맞춥니다.</div>
+  </div>
+  <div class="card" data-nav="광고 안전장치">
+   <h3><span class="tag t-show">약속 2</span>광고 안전장치</h3>
+   <ul class="dot">
+    <li><b>사람·손·글자·로고는 넣지 않습니다.</b> 손은 모양이 이상해지기 쉽고, 그림 속 글자는 뭉개집니다.</li>
+    <li>광고 문구는 <b>캡컷에서 글씨로</b> 넣습니다.</li>
+    <li>가게 이름은 <b>직접 지은 이름</b>으로 씁니다. 실제 브랜드 이름은 쓰지 않습니다.</li>
+   </ul>
+   <div class="box warn"><span class="bt">AI가 어려워하는 장면은 피합니다</span>재료가 위에서 떨어져 쌓이는 장면, 칼로 자르는 장면, 음식이 한 바퀴 도는 장면은 모양이 변하기 쉽습니다.</div>
+  </div>
+ </div>
+</section>
+
+<!-- ================= STEP 2 ================= -->
+<section class="step" data-title="프롬프트 개조하기">
+ <div class="shead"><div class="no">STEP 2</div><h2>프롬프트 개조하기</h2>
+ <p>평범한 음식 사진 프롬프트에 <b>각도 · 조명 · 맛 표현</b>을 덧붙이면 광고 사진이 됩니다. 버튼만 누르면 프롬프트가 완성됩니다.</p></div>
+ <div class="grid">
+
+  <div class="card wide" data-nav="개조의 원리">
+   <h3><span class="tag t-show">한눈에 보기</span>개조의 원리</h3>
+   <div class="formula"><span>음식 설명</span><b>+</b><span class="f">각도</span><b>+</b><span class="f">조명</span><b>+</b><span class="f">맛 표현</span><b>+</b><span class="auto">끝 문장 (자동)</span><b>=</b><span style="font-weight:800;border-color:var(--pt);color:var(--pt-d)">광고 프롬프트</span></div>
+   <p>음식은 그대로 두고, <b>어디서 찍는지(각도)</b>, <b>빛을 어떻게 비추는지(조명)</b>, <b>어떤 맛이 나 보이는지(맛 표현)</b>만 바꿉니다. 끝 문장(세로 9:16, 사람·손·글자 없이)은 자동으로 붙습니다.</p>
+  </div>
+
+  <div class="card wide" id="builder" data-nav="버튼으로 개조하기">
+   <h3><span class="tag t-do">따라 하기</span>버튼으로 개조하기</h3>
+   <div class="brow"><div class="bl">① 메뉴<small>하나 고르기</small></div><div class="chips" data-g="menu"></div></div>
+   <div class="brow"><div class="bl">② 각도<small>하나 고르기</small></div><div class="chips" data-g="angle"></div></div>
+   <div class="brow"><div class="bl">③ 조명<small>하나 고르기</small></div><div class="chips" data-g="light"></div></div>
+   <div class="brow"><div class="bl">④ 맛 표현<small>여러 개 (3개까지)</small></div><div class="chips" data-g="taste"></div></div>
+   <div class="pc en" id="builtPc"><div class="pc-h"><span>개조 후 프롬프트 · 색칠된 부분이 덧붙은 말</span><button class="cp">복사</button></div><pre id="builtPre"></pre><div class="ko" id="builtKo"></div></div>
+  </div>
+
+  <div class="card" data-nav="개조 전/후 비교">
+   <h3><span class="tag t-do">따라 하기</span>개조 전/후 비교</h3>
+   <ol class="num">
+    <li>아래 <b>개조 전</b> 프롬프트(내 메뉴 칸)를 복사해 플로우에서 이미지를 한 장 만듭니다.</li>
+    <li>위 버튼으로 고른 <b>개조 후</b> 프롬프트를 복사해 한 장 더 만듭니다.</li>
+    <li>두 장을 나란히 놓고 "어느 쪽이 광고 같나?"를 봅니다.</li>
+    <li><b>개조 후 이미지를 내려받아 <code>대표</code>라는 이름으로 저장합니다.</b> 이 사진이 광고의 대표 사진이자 <b>영상 B의 끝 프레임</b>이 됩니다.</li>
+   </ol>
+   <div id="beforeList"></div>
+  </div>
+
+  <div class="card" data-nav="자동으로 붙는 끝 문장">
+   <h3><span class="tag t-show">알아 두기</span>자동으로 붙는 끝 문장</h3>
+   <p>오늘 교안의 프롬프트에는 맨 끝에 아래 문장이 이미 들어 있습니다. 사람·손·글자가 나오는 것을 막고, 세로 화면을 지킵니다. 내가 프롬프트를 새로 쓸 때도 끝에 붙이면 됩니다.</p>
+   <div class="pc en"><div class="pc-h"><span>이미지용</span><button class="cp">복사</button></div><pre>Vertical 9:16, the food fills the center of the frame, realistic food commercial photography, shallow depth of field, no people, no hands, no text, no logo.</pre></div>
+   <div class="pc en"><div class="pc-h"><span>영상용</span><button class="cp">복사</button></div><pre>The camera moves slowly and smoothly. The food keeps its exact shape. Realistic food commercial look. No people, no hands, no text.</pre></div>
+  </div>
+
+  <div class="card wide" data-nav="조명만 바꿔 보기">
+   <h3><span class="tag t-more">한 걸음 더</span>조명만 바꿔 3장 비교</h3>
+   <p>각도와 맛 표현은 그대로 두고 <b>③ 조명 버튼만</b> 「옆에서 따뜻한 빛」 → 「뒤에서 빛, 김이 반짝」 → 「어두운 배경에 조명 하나」로 바꿔 가며 복사해 3장을 만듭니다. 같은 음식이 얼마나 달라 보이는지 비교합니다. 이미지는 크레딧이 들지 않으니 마음껏 해 봅니다.</p>
+  </div>
+
+  <div class="card wide" data-nav="단어 뜻 전체 보기">
+   <h3><span class="tag t-show">참고</span>버튼 속 영어 단어</h3>
+   <details class="ex"><summary>단어 뜻 전체 보기 (영상용 움직임 단어 포함)</summary>
+   <div class="tw"><table>
+    <tr><th>칸</th><th>영어</th><th>뜻 · 효과</th></tr>
+    <tr><td rowspan="4"><b>각도</b></td><td><code>extreme close-up macro shot</code></td><td>아주 가까이 · 질감 강조</td></tr>
+    <tr><td><code>45-degree hero angle, close-up</code></td><td>45도 대표 각도 · 광고 정석</td></tr>
+    <tr><td><code>top-down flat lay</code></td><td>위에서 내려다보기 · 상차림·색감</td></tr>
+    <tr><td><code>eye-level side view</code></td><td>눈높이 옆모습 · 층·단면</td></tr>
+    <tr><td rowspan="4"><b>조명</b></td><td><code>warm side light from the left</code></td><td>옆에서 따뜻한 빛 · 입체감</td></tr>
+    <tr><td><code>soft backlight making the steam glow</code></td><td>뒤에서 빛, 김이 반짝 · 갓 만든 느낌</td></tr>
+    <tr><td><code>dark background with a single spotlight</code></td><td>어두운 배경에 조명 하나 · 고급스러움</td></tr>
+    <tr><td><code>bright natural window light</code></td><td>밝은 창가 빛 · 산뜻함</td></tr>
+    <tr><td><b>맛 표현</b></td><td><code>glossy</code> <code>juicy</code> <code>crispy</code> <code>steaming hot</code> <code>melted</code> <code>glistening sauce</code></td><td>윤기 · 촉촉 · 바삭 · 김 모락 · 녹아내리는 · 반짝이는 소스</td></tr>
+    <tr><td><b>움직임</b><br><span class="term">영상만</span></td><td><code>slow push-in</code> <code>slow pull-back</code> <code>gentle slide from left to right</code> <code>slow motion</code> <code>steam rising</code> <code>sauce slowly dripping</code></td><td>천천히 다가가기 · 천천히 멀어지기 · 옆으로 살짝 · 슬로모션 · 김 올라감 · 소스 흘러내림</td></tr>
+   </table></div>
+   </details>
+  </div>
+ </div>
+</section>
+
+<!-- ================= STEP 3 ================= -->
+<section class="step" data-title="이미지 만들기">
+ <div class="shead"><div class="no">STEP 3</div><h2>이미지 만들기 <span style="font-size:.6em;color:var(--pt)">크레딧 안 듦</span></h2>
+ <p>플로우 나노바나나로 <b>시작·끝 프레임</b>과 <b>이미지 컷 8장</b>을 만듭니다. STEP 2에서 만든 <b>대표 사진</b>을 첨부해서 쓰면 모든 장면의 조명과 색감이 맞습니다.</p></div>
+ <div class="grid">
+  <div class="card wide" data-nav="만들 이미지">
+   <h3><span class="tag t-show">한눈에 보기</span>만들 이미지</h3>
+   <div class="tw"><table>
+    <tr><th>묶음</th><th>장수</th><th>만드는 법</th></tr>
+    <tr><td>영상 A 시작·끝 프레임</td><td>2장</td><td>시작은 대표 사진을 첨부해서, 끝은 시작 이미지를 첨부해서</td></tr>
+    <tr><td>영상 B 끝 프레임</td><td>STEP 2의 대표 사진</td><td>새로 만들지 않음</td></tr>
+    <tr><td>영상 B 시작 프레임</td><td>1장</td><td>대표 사진을 첨부해서</td></tr>
+    <tr class="hl"><td>이미지 컷</td><td><b>8장</b></td><td>대표 사진을 첨부해서, 한 번 생성해 여러 장 중 고르기</td></tr>
+   </table></div>
+   <ul class="dot">
+    <li>플로우는 한 번에 여러 장을 뽑아 줍니다. <b>여러 장 중 제일 좋은 것</b>을 고릅니다.</li>
+    <li>1~2초씩 휙휙 지나가는 컷이라 <b>각도·거리가 서로 다르게</b> 되어 있습니다. 조명과 색감은 대표 사진을 첨부해서 맞춥니다.</li>
+   </ul>
+  </div>
+
+  <div class="card wide" data-nav="시작·끝 프레임 만드는 법">
+   <h3><span class="tag t-do">따라 하기</span>시작·끝 프레임 만드는 법</h3>
+   <svg class="fig" viewBox="0 0 1000 230" role="img" aria-label="시작 프레임과 끝 프레임">
+    <g font-family="Pretendard,sans-serif" text-anchor="middle">
+     <rect x="120" y="20" width="110" height="170" rx="12" fill="#f6efe2" stroke="#b89a6a" stroke-width="2"/>
+     <ellipse cx="175" cy="120" rx="38" ry="14" fill="#6b3a1c"/>
+     <rect x="150" y="96" width="50" height="16" fill="#f2c35b" stroke="#c9952e"/>
+     <text x="175" y="215" font-size="15" font-weight="700" fill="#1f2326">시작 프레임</text>
+     <path d="M260 105 H730" stroke="#0f7a6c" stroke-width="3" marker-end="url(#ar2)"/>
+     <rect x="400" y="80" width="200" height="50" rx="25" fill="#0f7a6c"/>
+     <text x="500" y="112" font-size="17" font-weight="800" fill="#fff">10초 영상</text>
+     <text x="500" y="160" font-size="13" fill="#5d646a">"같은 장소·같은 그릇·같은 조명에서, 달라지는 것만"</text>
+     <rect x="770" y="20" width="110" height="170" rx="12" fill="#f6efe2" stroke="#b89a6a" stroke-width="2"/>
+     <ellipse cx="825" cy="120" rx="38" ry="14" fill="#6b3a1c"/>
+     <path d="M795 104 q30 -14 60 0 l-4 18 q-4 -6 -6 0 q-4 10 -8 0 q-4 -8 -8 4 q-4 10 -8 0 q-4 -6 -8 0 q-6 -6 -10 -4z" fill="#f2c35b" stroke="#c9952e"/>
+     <path d="M812 86 q-6 -10 0 -18 M826 84 q-6 -10 0 -20 M840 86 q-6 -10 0 -18" stroke="#c5cfd0" stroke-width="2" fill="none"/>
+     <text x="825" y="215" font-size="15" font-weight="700" fill="#1f2326">끝 프레임</text>
+     <defs><marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="#0f7a6c"/></marker></defs>
+    </g>
+   </svg>
+   <ol class="num">
+    <li>플로우 이미지 비율을 <b>9:16</b>으로 맞춥니다.</li>
+    <li><b>영상 A</b>: 시작 프레임은 <b>대표 사진을 첨부</b>해서(조명·색감을 맞추려고) 만들고, <b>끝 프레임은 시작 프레임을 첨부해서</b> 만듭니다. 달라지는 것만 말해야 두 장면이 자연스럽게 이어집니다.</li>
+    <li><b>영상 B</b>: 반대로 합니다. <b>끝 프레임은 이미 있는 대표 사진</b>이고, 시작 프레임은 대표 사진을 첨부해 "카메라를 뒤로 빼서 상차림까지 보이게" 만듭니다.</li>
+    <li>내려받아 <code>A시작</code> <code>A끝</code> <code>B시작</code> <code>대표</code>(= B끝)로 이름을 붙여 한 폴더에 저장합니다.</li>
+   </ol>
+  </div>
+
+  <div class="card wide" data-nav="영상 A 프레임 프롬프트">
+   <h3><span class="tag t-my">내 차례</span>영상 A 프레임: 만들어지는 순간</h3>
+   <p>내 메뉴 칸의 프롬프트를 복사합니다. <b>시작 프레임은 대표 사진을</b>, <b>끝 프레임은 시작 이미지를</b> 첨부하고 붙여 넣습니다.</p>
+   <div class="trio" id="trioA"></div>
+  </div>
+
+  <div class="card wide" data-nav="영상 B 프레임 프롬프트">
+   <h3><span class="tag t-my">내 차례</span>영상 B 프레임: 완성, 다가가기</h3>
+   <p><b>B 끝 프레임 = STEP 2의 대표 사진</b>입니다. 시작 프레임만 만듭니다. <b>대표 사진을 첨부</b>하고 붙여 넣습니다.</p>
+   <div class="trio" id="trioB"></div>
+  </div>
+
+  <div class="card wide" data-nav="이미지 컷 8장">
+   <h3><span class="tag t-my">내 차례</span>이미지 컷 8장</h3>
+   <ol class="num">
+    <li>플로우에서 <b>대표 사진을 첨부</b>합니다.</li>
+    <li>아래에서 <b>내 메뉴</b>를 펼쳐 컷 1의 프롬프트를 복사해 붙여 넣습니다.</li>
+    <li>한 번 생성해서 여러 장 중 제일 좋은 것을 고릅니다. 컷 1~8을 같은 방법으로 만들고 <code>컷1</code>~<code>컷8</code>로 저장합니다.</li>
+   </ol>
+   <div id="cutsAll"></div>
+   <div class="box more"><span class="bt">한 걸음 더</span>컷 프롬프트에 STEP 2 버튼의 말(각도·맛 표현)을 하나 더 붙여 나만의 컷을 만들어 봅니다. 컷 8은 위쪽에 글씨 넣을 빈 공간이 있어야 합니다(<code>empty space at the top for a title</code>).</div>
+  </div>
+ </div>
+</section>
+
+<!-- ================= STEP 4 ================= -->
+<section class="step" data-title="영상 2개 만들기">
+ <div class="shead"><div class="no">STEP 4</div><h2>영상 2개 만들기 <span style="font-size:.6em;color:var(--warn-t)">크레딧 사용</span></h2>
+ <p>옴니 플래시로 <b>시작·끝 프레임 10초 영상</b>을 2개 만듭니다. 30초 광고 중 20초를 채웁니다.</p></div>
+ <div class="grid">
+  <div class="card wide" data-nav="영상 만드는 순서">
+   <h3><span class="tag t-do">따라 하기</span>영상 만드는 순서</h3>
+   <ol class="num">
+    <li>플로우에서 영상 만들기 → 모델 <span class="menu">옴니 플래시</span>, 비율 <b>9:16</b>, 길이 <b>10초</b>, 화질 <b>360p</b></li>
+    <li><b>시작 프레임</b> 자리에 <code>A시작</code>, <b>끝 프레임</b> 자리에 <code>A끝</code> 이미지를 넣습니다.</li>
+    <li>아래에서 내 메뉴 칸의 <b>영상 A 프롬프트</b>를 붙여 넣고 만듭니다.</li>
+    <li>같은 방법으로 <code>B시작</code> → <code>대표</code>(= B끝)로 <b>영상 B</b>를 만듭니다.</li>
+    <li>마음에 들면 내려받아 이미지와 같은 폴더에 저장합니다.</li>
+   </ol>
+   <div class="box warn"><span class="bt">다시 만들 때마다 크레딧이 듭니다</span>프레임 이미지가 확실히 마음에 들 때만 돌립니다. 이미지는 공짜이니 이미지 단계에서 충분히 고릅니다.</div>
+  </div>
+  <div class="card wide" data-nav="영상 프롬프트">
+   <h3><span class="tag t-my">내 차례</span>영상 A · 영상 B 프롬프트</h3>
+   <div class="trio" id="trioV"></div>
+  </div>
+  <div class="card wide" data-nav="잘 안 될 때">
+   <h3><span class="tag t-show">문제 해결</span>잘 안 될 때</h3>
+   <div class="tw"><table>
+    <tr><th>증상</th><th>고치는 법</th></tr>
+    <tr><td>중간에 그릇이나 음식 모양이 바뀜</td><td>시작·끝 프레임이 너무 다릅니다. 끝 프레임을 <b>시작 프레임 첨부</b>로 다시 만듭니다.</td></tr>
+    <tr><td>손이나 사람이 나타남</td><td>프롬프트 끝 문장(<code>No people, no hands</code>)이 빠졌는지 확인합니다.</td></tr>
+    <tr><td>움직임이 너무 빠름</td><td><code>very slow</code>, <code>smooth slow motion</code>을 프롬프트 앞쪽으로 옮깁니다.</td></tr>
+    <tr><td>원하지 않는 배경음악이 들어감</td><td>캡컷에서 <span class="menu">음성 분리</span> → <span class="menu">보컬 유지</span>로 빼거나 음량을 0으로 합니다.</td></tr>
+    <tr><td>음식이 잘 움직이지 않음</td><td>움직임 단어를 하나 더 넣습니다. 예: <code>steam rising</code>, <code>sauce slowly dripping</code></td></tr>
+   </table></div>
+  </div>
+  <div class="card wide" data-nav="AI가 어려워하는 동작 도전">
+   <h3><span class="tag t-more">한 걸음 더</span>AI가 어려워하는 동작 도전</h3>
+   <p>🍔 <b>아래 빵만 있는 이미지 → 완성 버거 이미지</b>를 시작·끝 프레임으로 넣고, "재료가 위에서 천천히 떨어져 쌓이는 슬로모션"을 시켜 봅니다. 잘 안 될 수 있습니다. 왜 안 되는지 보는 것도 공부입니다.</p>
+   <div class="pc en"><div class="pc-h"><span>🍔 쌓이는 슬로모션 (도전)</span><button class="cp">복사</button></div><pre>Burger ingredients fall from above one by one in smooth slow motion and stack neatly on the bottom bun: beef patty, cheddar cheese, lettuce, tomato, then the top bun with sesame. Each ingredient lands gently and keeps its shape. The camera moves slowly and smoothly. Realistic food commercial look. No people, no hands, no text.</pre></div>
+  </div>
+ </div>
+</section>
+
+<!-- ================= STEP 5 ================= -->
+<section class="step" data-title="캡컷 조립">
+ <div class="shead"><div class="no">STEP 5</div><h2>캡컷 조립: 30초 광고 완성</h2>
+ <p>영상 20초와 이미지 8컷 10초를 번갈아 놓고, 이미지는 <b>움직임</b>으로 튀게, <b>자막</b>을 넣고, <b>음악</b>으로 묶습니다.</p></div>
+ <div class="grid">
+  <div class="card wide" data-nav="30초 타임라인">
+   <h3><span class="tag t-show">한눈에 보기</span>30초 타임라인</h3>
+   <div class="tw"><table>
+    <tr><th>순서</th><th>구간</th><th>재료</th><th>움직임</th><th>글씨</th></tr>
+    <tr><td>1</td><td>0~1초</td><td>컷 1</td><td>확 다가가기</td><td rowspan="3"><b>큰 제목 글씨</b><br><span class="term">0~3초 내내 그대로</span></td></tr>
+    <tr><td>2</td><td>1~2초</td><td>컷 2</td><td>옆으로 밀기</td></tr>
+    <tr><td>3</td><td>2~3초</td><td>컷 3</td><td>확 다가가기</td></tr>
+    <tr class="hl"><td>4</td><td>3~13초</td><td><b>영상 A</b></td><td>영상 그대로</td><td>자막 ①</td></tr>
+    <tr><td>5</td><td>13~14초</td><td>컷 4</td><td>확 다가가기</td><td rowspan="3">자막 ②</td></tr>
+    <tr><td>6</td><td>14~15초</td><td>컷 5</td><td>옆으로 밀기</td></tr>
+    <tr><td>7</td><td>15~17초</td><td>컷 6</td><td>다가가기</td></tr>
+    <tr class="hl"><td>8</td><td>17~27초</td><td><b>영상 B</b></td><td>영상 그대로</td><td>자막 ③</td></tr>
+    <tr><td>9</td><td>27~28초</td><td>컷 7</td><td>확 다가가기</td><td rowspan="2">자막 ④ 가게 이름 <span class="term">(크게)</span></td></tr>
+    <tr><td>10</td><td>28~30초</td><td>컷 8</td><td>멀어지기, 마지막 0.5초 멈춤</td></tr>
+   </table></div>
+   <p>영상 10 + 10 = <b>20초</b> / 이미지 8컷 = <b>10초</b> → 합계 <b>30초</b>. 자막 ①~④는 STEP 6에서 넣을 <b>나레이션과 같은 문장</b>입니다.</p>
+  </div>
+
+  <div class="card wide" data-nav="조립 순서">
+   <h3><span class="tag t-do">따라 하기</span>조립 순서</h3>
+   <ol class="num">
+    <li>캡컷 <span class="menu">새 프로젝트</span> → 이름을 「광고_메뉴이름」(예: 광고_수제버거)으로 바꿉니다.</li>
+    <li>비율을 <b>9:16</b>으로 맞춥니다.</li>
+    <li>폴더째 가져오기 → 위 표 순서대로 메인 줄<span class="term">(트랙)</span>에 놓습니다.</li>
+    <li>이미지는 처음에 5초로 들어옵니다. 오른쪽 끝을 끌어 <b>1초 또는 2초</b>로 줄입니다.</li>
+    <li><b>이미지마다 움직임</b>을 넣습니다. 기본은 <span class="menu">애니메이션</span> 한 번 클릭입니다(아래 카드).</li>
+    <li><b>자막</b>을 넣습니다. 0~3초는 큰 제목 글씨, 나머지는 자막 ①~④(아래 「자막 넣기」 카드).</li>
+    <li>이미지 컷 사이에는 <b>전환을 넣지 않습니다.</b> 툭툭 끊어야 휙휙 튑니다. 영상 앞뒤에만 <span class="menu">혼합</span> 또는 <span class="menu">흐리게</span>를 짧게 넣습니다.</li>
+    <li><b>소리 정리 + 음악 넣기</b>(아래 「소리와 음악」 카드).</li>
+    <li>맨 위 시간을 보고 <b>딱 30초</b>인지 확인합니다. <b>아직 내보내지 않고</b> STEP 6에서 나레이션까지 넣은 뒤 한 번에 내보냅니다.</li>
+   </ol>
+  </div>
+
+  <div class="card wide" data-nav="이미지 움직임">
+   <h3><span class="tag t-do">따라 하기</span>이미지 움직임: 짧을수록 크게</h3>
+   <div class="kfd">
+    <div><div class="kfbox zin"><i></i></div><div class="lbl">확 다가가기<br>100% → 120%</div></div>
+    <div><div class="kfbox slide"><i></i></div><div class="lbl">옆으로 밀기<br>120% + 위치 이동</div></div>
+    <div><div class="kfbox zout"><i></i></div><div class="lbl">멀어지기 (마무리)<br>115% → 100%</div></div>
+   </div>
+   <div class="box tip"><span class="bt">기본: 애니메이션 한 번 클릭</span>이미지 클릭 → 오른쪽 <span class="menu">애니메이션</span> → <span class="menu">인</span>(또는 <span class="menu">조합</span>)에서 <b>확대·줌 인</b> 또는 <b>왼쪽/오른쪽으로 밀기</b> 계열을 고르고, 길이를 컷 길이(1초)에 맞춥니다. 8장 모두 이렇게 하면 빠르게 끝납니다. 이름은 캡컷 버전에 따라 조금 다를 수 있습니다.</div>
+   <p><span class="tag t-more">한 걸음 더</span> <b>키프레임으로 직접</b>: 움직임의 크기와 방향을 내 마음대로 정할 수 있습니다. 지난번 다큐 영상 때 배운 방법입니다.</p>
+   <div class="tw"><table>
+    <tr><th>컷</th><th>길이</th><th>움직임</th><th>키프레임 넣는 법</th></tr>
+    <tr><td>1, 3, 4, 7</td><td>1초</td><td>확 다가가기</td><td>맨 앞 <span class="menu">확대 100%</span> ◇ → 맨 끝 <b>120%</b> ◇</td></tr>
+    <tr><td>2, 5</td><td>1초</td><td>옆으로 밀기</td><td>확대 120%로 두고, 맨 앞 <span class="menu">위치</span> ◇ → 맨 끝에서 위치를 크게 옮겨 ◇ (2는 오른쪽, 5는 왼쪽)</td></tr>
+    <tr><td>6</td><td>2초</td><td>다가가기</td><td>맨 앞 100% ◇ → 맨 끝 112% ◇</td></tr>
+    <tr><td>8</td><td>2초</td><td>멀어지기</td><td>맨 앞 115% ◇ → 1.5초 지점 100% ◇ → 마지막 0.5초는 그대로</td></tr>
+   </table></div>
+   <div class="box set"><span class="bt">키프레임 넣는 곳</span>이미지 클릭 → 플레이헤드를 맨 앞에 → 오른쪽 <span class="menu">동영상</span> → <span class="menu">기본</span> → <span class="menu">확대</span>(또는 <span class="menu">위치</span>) 옆 <b>◇</b> → 플레이헤드를 맨 끝으로 → 값 바꾸기. 키프레임 넣은 컷을 마우스 오른쪽 <span class="menu">복사</span> → 다른 컷에 <span class="menu">속성 붙여넣기</span>로 옮길 수도 있습니다(메뉴 이름은 버전마다 조금 다름).</div>
+  </div>
+
+  <div class="card wide" data-nav="자막 넣기">
+   <h3><span class="tag t-my">내 차례</span>자막 넣기</h3>
+   <p>자막은 <b>나레이션과 같은 문장</b>을 그대로 보여 줍니다. 소리를 끄고 보는 사람도 내용을 알 수 있어 SNS에서 잘 보입니다.</p>
+   <ol class="num">
+    <li><span class="menu">텍스트</span> → <span class="menu">기본 텍스트</span>의 ＋ → 아래 내 메뉴 칸의 <b>자막 ①</b> 문장 붙여 넣기</li>
+    <li>자막 길이를 영상 A 길이(3~13초)에 맞추고, 화면 <b>아래쪽 가운데</b>에 놓기</li>
+    <li>①을 오른쪽 클릭 → 복사 → 붙여 넣기 후 문장만 바꾸면 ②~④ 글자 모양이 똑같이 맞춰집니다</li>
+    <li>④ 가게 이름은 크게, 컷 8의 빈 공간(위쪽)으로 옮깁니다</li>
+    <li><b>0~3초 큰 제목 글씨</b>: 같은 방법으로 짧은 한마디를 화면 가운데에 크게 넣습니다</li>
+   </ol>
+   <div class="trio" id="trioS"></div>
+   <div class="box more"><span class="bt">한 걸음 더 · 자동 자막</span><span class="menu">텍스트</span> → <span class="menu">자동 캡션</span>을 쓰면 나레이션 목소리를 듣고 자막을 만들어 줍니다(STEP 6에서 나레이션을 넣은 뒤). 틀린 글자는 꼭 고칩니다.</div>
+  </div>
+
+  <div class="card wide" data-nav="소리와 음악">
+   <h3><span class="tag t-do">따라 하기</span>소리와 음악: 30초를 하나로 묶기</h3>
+   <p>영상 A와 B에는 각자 다른 소리가 들어 있고, 이미지 컷에는 소리가 없습니다. 그대로 두면 소리가 툭툭 끊깁니다. <b>음악 한 곡</b>으로 30초 전체를 묶습니다.</p>
+   <ol class="num">
+    <li><b>영상 소리 정리</b>: 영상 A·B를 클릭 → 오른쪽 <span class="menu">오디오</span> → 볼륨을 맨 왼쪽까지 내려 소리를 끕니다. 지글지글·보글보글 소리가 좋으면 -15dB 정도로 작게 남겨도 됩니다. 원하지 않는 배경음악만 빼고 싶으면 <span class="menu">음성 분리</span> → <span class="menu">보컬 유지</span>.</li>
+    <li><b>음악 고르기</b>: 픽사베이(pixabay.com/music) 또는 유튜브 스튜디오 오디오 보관함에서 밝고 경쾌한 곡을 내려받습니다. 검색어 예: <code>upbeat</code> <code>food</code> <code>cooking</code> <code>happy</code></li>
+    <li>음악을 맨 아래 오디오 줄에 놓고, <b>30초 지점에서 자릅니다</b>(<span class="kbd">Ctrl</span>+<span class="kbd">B</span>).</li>
+    <li>음악을 클릭 → <span class="menu">오디오</span> → <span class="menu">볼륨</span>을 <b>-15dB 정도</b>로 내립니다 <span class="term">(dB는 소리 크기 단위, 다음 STEP의 나레이션이 또렷하게 들릴 때까지)</span>.</li>
+    <li>음악 끝에 <b>페이드 아웃</b> 2초 정도를 넣습니다.</li>
+   </ol>
+   <p class="term">나레이션은 다음 STEP 6에서 넣습니다.</p>
+   <div class="box more"><span class="bt">한 걸음 더</span>음악의 "쿵" 하는 박자 위치에 맞춰 이미지 컷을 끊어 봅니다. 휙휙 넘어가는 맛이 훨씬 살아납니다.</div>
+  </div>
+
+  <div class="card wide" data-nav="속 빈 테두리 글씨">
+   <h3><span class="tag t-more">한 걸음 더</span>속 빈 테두리 글씨: 글자 사이로 음식이 보이게</h3>
+   <p>기본 자막을 다 넣은 뒤 해 봅니다. 0~3초 <b>큰 제목 글씨</b>를 테두리만 남은 글씨로 바꾸면, 글자 사이로 사진이 휙휙 바뀌어 보입니다.</p>
+   <div class="demos">
+    <div><div class="demo"><div class="bgx"></div><div class="ol">JUICY</div><span class="lb">뒤 사진이 1초마다 바뀜</span></div><p class="cap">테두리만 남은 글씨 사이로 사진이 휙휙 바뀌어 보입니다</p></div>
+   </div>
+   <ol class="num">
+    <li>0~3초 <b>큰 제목 글씨</b>를 클릭합니다. 아래 사진 3장이 바뀌는 동안 글씨는 그대로 있습니다.</li>
+    <li><b>두껍고 굵은 글꼴</b>을 고르고 크기를 크게 키웁니다. 가는 글꼴은 속이 잘 안 보입니다.</li>
+    <li>오른쪽 글자 설정에서 <b>테두리<span class="term">(스트로크)</span></b>를 켜고, 흰색으로, 두께를 넉넉히 줍니다.</li>
+    <li><b>글자 색(채우기)</b>의 불투명도를 0으로 내립니다. → 테두리만 남고 속이 비어 그 사이로 사진이 보입니다.</li>
+    <li>재생해서 사진 3장이 글자 사이로 휙휙 바뀌는지 확인합니다.</li>
+   </ol>
+   <div class="box warn"><span class="bt">테두리까지 사라지면</span>글자 <b>전체</b> 불투명도를 내린 것입니다. 글자 <b>색(채우기)</b>만 따로 투명하게 하는 칸을 찾거나, <span class="menu">텍스트</span>의 글자 스타일 목록에서 <b>속이 빈 테두리 모양</b>을 골라 씁니다.</div>
+   <div class="box tip"><span class="bt">마무리 컷도</span>자막 ④ 가게 이름을 같은 방법으로 테두리 글씨로 바꿔 봅니다. 애니메이션 인 <span class="menu">확대</span>를 넣으면 툭 튀어나오며 끝납니다.</div>
+  </div>
+
+  <div class="card" data-nav="글자 안에만 음식 보이게">
+   <h3><span class="tag t-more">한 걸음 더</span>글자 안에만 음식 보이게 (혼합 모드)</h3>
+   <div class="demos"><div><div class="demo blend" style="aspect-ratio:9/9"><div class="ol">JUICY</div></div></div></div>
+   <ol class="num">
+    <li>맨 위 줄에 <b>검은 배경 + 흰색 굵은 글씨</b>를 만듭니다.</li>
+    <li>둘을 함께 선택 → 마우스 오른쪽 → <span class="menu">복합 클립 만들기</span></li>
+    <li>묶은 클립을 음식 사진 <b>위</b> 줄에 놓습니다.</li>
+    <li><span class="menu">동영상</span> → <span class="menu">기본</span> → <span class="menu">혼합</span> → <b>곱하기</b> → 흰 글자 안에만 음식이 보입니다.</li>
+    <li>반대로 <b>흰 배경 + 검은 글씨</b>에 <b>스크린</b>을 고르면 하얀 화면에 글자 안으로만 음식이 보입니다.</li>
+   </ol>
+   <p class="term">메뉴 이름은 캡컷 버전에 따라 조금 다를 수 있습니다.</p>
+  </div>
+
+  <div class="card wide" data-nav="더 튀게 만들기">
+   <h3><span class="tag t-more">한 걸음 더</span>더 튀게 만들기</h3>
+   <ul class="dot">
+    <li>이미지를 더 만들어 0~3초를 <b>0.5초 × 6컷</b>으로 더 빠르게 바꿔 봅니다.</li>
+    <li>영상 B 마지막 2초를 <b>속도 0.7배</b>로 늦춰 클로즈업을 더 오래 보여 줍니다. 대신 컷 8을 줄여 30초를 맞춥니다.</li>
+    <li>자막에 애니메이션 인<span class="term">(나타나기)</span>을 넣습니다.</li>
+   </ul>
+  </div>
+
+ </div>
+</section>
+
+<!-- ================= STEP 6 ================= -->
+<section class="step" data-title="광고에 나레이션 넣기">
+ <div class="shead"><div class="no">STEP 6</div><h2>광고에 나레이션 넣기 · 소리 따로 입히기</h2>
+ <p>지난 시간 다큐 영상에서 배운 <b>나레이션</b>을 오늘 만든 30초 광고에 입힙니다. 순서는 똑같습니다. <b>대본 → AI 스튜디오 목소리 → 캡컷에 맞추기</b>. 이번에는 다큐 말투 대신 <b>군침 도는 광고 말투</b>로 만듭니다.</p></div>
+ <div class="grid">
+
+  <div class="card wide" data-nav="나레이션 들어가는 자리">
+   <h3><span class="tag t-show">한눈에 보기</span>나레이션 들어가는 자리: 4문장</h3>
+   <svg class="fig" viewBox="0 0 1000 200" role="img" aria-label="30초 광고 속 나레이션 자리">
+    <g font-family="Pretendard,sans-serif">
+     <g stroke="#fff" stroke-width="2">
+      <rect x="50" y="20" width="90" height="46" fill="#e9dcc6"/>
+      <rect x="140" y="20" width="300" height="46" fill="#0f7a6c"/>
+      <rect x="440" y="20" width="120" height="46" fill="#e9dcc6"/>
+      <rect x="560" y="20" width="300" height="46" fill="#0f7a6c"/>
+      <rect x="860" y="20" width="90" height="46" fill="#e9dcc6"/>
+     </g>
+     <g font-size="13" font-weight="700" text-anchor="middle">
+      <text x="95" y="48" fill="#7a5f33">이미지</text><text x="290" y="48" fill="#fff">영상 A</text><text x="500" y="48" fill="#7a5f33">이미지</text><text x="710" y="48" fill="#fff">영상 B</text><text x="905" y="48" fill="#7a5f33">이미지</text>
+     </g>
+     <!-- narration track -->
+     <rect x="50" y="80" width="900" height="34" rx="6" fill="#f4f2ed"/>
+     <g text-anchor="middle" font-size="12" fill="#5d646a"><text x="95" y="102">음악·효과음만</text></g>
+     <g>
+      <rect x="160" y="84" width="230" height="26" rx="13" fill="#cfdff0" stroke="#2a5a8a"/><text x="275" y="102" text-anchor="middle" font-size="13" font-weight="700" fill="#2a5a8a">① 만들어지는 순간</text>
+      <rect x="450" y="84" width="95" height="26" rx="13" fill="#cfdff0" stroke="#2a5a8a"/><text x="497" y="102" text-anchor="middle" font-size="13" font-weight="700" fill="#2a5a8a">② 짧게</text>
+      <rect x="580" y="84" width="230" height="26" rx="13" fill="#cfdff0" stroke="#2a5a8a"/><text x="695" y="102" text-anchor="middle" font-size="13" font-weight="700" fill="#2a5a8a">③ 가장 맛있는 말</text>
+      <rect x="866" y="84" width="80" height="26" rx="13" fill="#cfdff0" stroke="#2a5a8a"/><text x="906" y="102" text-anchor="middle" font-size="12" font-weight="700" fill="#2a5a8a">④ 가게</text>
+     </g>
+     <!-- music -->
+     <rect x="50" y="124" width="900" height="16" rx="5" fill="#e7f3f0"/>
+     <text x="500" y="136" text-anchor="middle" font-size="11" fill="#0a5d52">음악 (나레이션이 나오는 동안은 작게)</text>
+     <g font-size="12" fill="#5d646a" text-anchor="middle">
+      <text x="50" y="165">0초</text><text x="140" y="165">3</text><text x="440" y="165">13</text><text x="560" y="165">17</text><text x="860" y="165">27</text><text x="950" y="165">30초</text>
+     </g>
+     <text x="500" y="192" text-anchor="middle" font-size="13" fill="#1f2326">위 줄은 화면, 가운데 줄은 나레이션, 아래 줄은 음악입니다</text>
+    </g>
+   </svg>
+   <div class="tw"><table>
+    <tr><th>문장</th><th>들어가는 곳</th><th>길이</th><th>내용</th></tr>
+    <tr><td>①</td><td>3~13초 영상 A</td><td>20자 안쪽</td><td>만들어지는 순간 (의성어로 시작하면 좋음)</td></tr>
+    <tr><td>②</td><td>13~17초 이미지 컷</td><td>10자 안쪽</td><td>속·재료 한마디</td></tr>
+    <tr><td>③</td><td>17~27초 영상 B</td><td>20자 안쪽</td><td>가장 맛있어 보이는 말</td></tr>
+    <tr><td>④</td><td>27~30초 마무리</td><td>10자 안쪽</td><td>가게 이름으로 끝내기</td></tr>
+   </table></div>
+   <p class="term">0~3초는 나레이션 없이 음악과 지글지글 소리로 시작합니다. 첫 화면이 휙휙 넘어갈 때 말까지 나오면 정신없습니다.</p>
+  </div>
+
+  <div class="card wide" data-nav="나레이션 대본">
+   <h3><span class="tag t-my">내 차례</span>나레이션 대본: 내 메뉴 4문장</h3>
+   <p>내 메뉴 칸의 문장을 <b>하나씩</b> 복사해 AI 스튜디오에 넣습니다. 내 말로 조금 바꿔도 좋습니다.</p>
+   <div class="trio" id="trioN"></div>
+   <div class="box tip"><span class="bt">광고 나레이션 쓰는 법</span>
+    <b>짧게</b> 씁니다(다큐보다 더 짧게). 첫 문장은 <b>지글지글, 보글보글 같은 소리 말</b>로 시작하면 군침이 돕니다. 마지막 문장은 <b>가게 이름</b>으로 끝냅니다.</div>
+  </div>
+
+  <div class="card" data-nav="AI 스튜디오 순서">
+   <h3><span class="tag t-show">같이 보기</span>AI 스튜디오 순서</h3>
+   <ol class="num">
+    <li><a href="https://aistudio.google.com" target="_blank" rel="noopener">aistudio.google.com</a> 접속 (구글 계정 로그인)</li>
+    <li>왼쪽 메뉴 <span class="menu">미디어 생성 (Generate Media)</span></li>
+    <li><span class="menu">Gemini 음성 생성 (Gemini speech generation)</span></li>
+    <li>오른쪽 설정에서 모드 <span class="menu">단일 화자 (Single speaker)</span></li>
+    <li><span class="menu">목소리 (Voice)</span> 고르기</li>
+    <li><span class="menu">스타일 지시 (Style instructions)</span> 칸에 말투 붙여 넣기</li>
+    <li>글 칸에 나레이션 <b>한 문장</b>만 넣고 <span class="menu">실행 (Run)</span></li>
+    <li>들어 보고 마음에 들면 <span class="menu">⋮</span> → <span class="menu">다운로드</span> (wav 소리 파일)</li>
+   </ol>
+   <div class="box set"><span class="bt">한 문장씩 따로 만듭니다</span>문장마다 파일이 따로 있어야 캡컷에서 구간마다 맞추기 쉽습니다. ①부터 순서대로 만들고 내려받으면 다운로드 폴더에도 순서대로 쌓입니다. 파일 이름을 <code>나레이션1</code>~<code>나레이션4</code>로 바꿔 두면 더 편합니다.</div>
+   <p class="term">메뉴 이름은 영어로 보일 수 있고, 구글이 자주 바꿉니다. 괄호 안 영어를 함께 찾아보세요. AI 스튜디오 목소리는 크레딧이 들지 않으니 여러 번 다시 만들어도 됩니다.</p>
+  </div>
+
+  <div class="card" data-nav="목소리와 말투 고르기">
+   <h3><span class="tag t-do">따라 하기</span>목소리와 말투 고르기</h3>
+   <div class="tw"><table>
+    <tr><th>목소리</th><th>느낌</th></tr>
+    <tr><td>Puck (남)</td><td>경쾌한 · <b>강사 시연</b></td></tr>
+    <tr><td>Fenrir (남)</td><td>신나는</td></tr>
+    <tr><td>Charon (남)</td><td>차분하게 설명하는</td></tr>
+    <tr><td>Zephyr (여)</td><td>밝은</td></tr>
+    <tr><td>Laomedeia (여)</td><td>경쾌한</td></tr>
+    <tr><td>Sulafat (여)</td><td>따뜻한</td></tr>
+   </table></div>
+   <p class="term">목소리 이름 옆 ▶로 미리 들어 볼 수 있습니다.</p>
+   <div class="pc"><div class="pc-h"><span>스타일 지시 · 경쾌한 광고</span><button class="cp">복사</button></div><pre>밝고 경쾌한 TV 음식 광고 성우처럼, 군침 돌게 살짝 미소 지으며 읽어 주세요. 지글지글, 보글보글 같은 소리 말은 생동감 있게, 마지막 가게 이름은 또렷하고 힘 있게.</pre></div>
+   <div class="pc"><div class="pc-h"><span>스타일 지시 · 따뜻한 광고</span><button class="cp">복사</button></div><pre>따뜻하고 정겨운 목소리로, 밥상 앞에서 말하듯이 천천히 읽어 주세요. 문장 끝은 부드럽게, 마지막 가게 이름은 또렷하게.</pre></div>
+  </div>
+
+  <div class="card wide" data-nav="캡컷에 맞추기">
+   <h3><span class="tag t-do">따라 하기</span>캡컷에 맞추기</h3>
+   <ol class="num">
+    <li>STEP 5에서 만든 광고 프로젝트에 <b>그대로 이어서</b> 합니다.</li>
+    <li>나레이션 4개를 <span class="menu">가져오기</span>로 불러옵니다.</li>
+    <li>나레이션 ①을 영상 A <b>아래</b> 오디오 줄에 놓고, 영상 A 시작보다 <b>살짝 뒤</b>(약 0.5초)에 둡니다.</li>
+    <li>②는 13초 이미지 컷 아래, ③은 영상 B 아래, ④는 마지막 컷 아래에 같은 방법으로 놓습니다.</li>
+    <li><b>음악 크기 확인</b>: 나레이션이 음악에 묻히면 음악 볼륨을 더 내립니다(-15dB → -20dB). 나레이션이 또렷하게 들리면 됩니다.</li>
+    <li>영상 A·B에 남겨 둔 지글지글 소리가 나레이션과 겹쳐 시끄러우면 영상 음량을 더 낮춥니다.</li>
+    <li>자막 ①~④와 나레이션이 같은 때에 나오는지 확인합니다. 어긋나면 자막 끝을 끌어 나레이션에 맞춥니다.</li>
+    <li>맨 위 시간이 <b>30초</b>인지 보고 <b>9:16으로 내보냅니다.</b> 완성입니다.</li>
+   </ol>
+   <div class="box warn"><span class="bt">나레이션이 구간보다 길면</span>② 문장이 4초를 넘어 다음 영상까지 넘어가면, 문장을 더 짧게 고쳐 다시 만들거나 나레이션 클립을 클릭해 <span class="menu">속도</span>를 1.1배로 올립니다. 이미지 컷 길이를 늘리면 30초가 넘으니 컷 길이는 그대로 둡니다.</div>
+   <div class="box tip"><span class="bt">0~3초 시작 소리</span>나레이션 대신 지글지글 소리로 시작하면 더 맛있게 들립니다. 영상에 소리가 없으면 캡컷 <span class="menu">오디오</span> → <span class="menu">효과음</span>에서 <code>sizzle</code>(지글지글)이나 <code>boiling</code>(보글보글)을 찾아 넣습니다.</div>
+  </div>
+
+  <div class="card" data-nav="음악 볼륨 키프레임">
+   <h3><span class="tag t-more">한 걸음 더</span>음악 볼륨 키프레임</h3>
+   <p>음악 볼륨을 <b>키프레임</b>으로 조절해 봅니다. 0~3초는 크게(0dB 근처), 나레이션이 시작되는 3초부터는 작게(-15dB)로 바꾸면 시작이 더 힘 있게 들립니다.</p>
+   <p class="term">음악 클릭 → 플레이헤드를 2.5초에 → <span class="menu">볼륨</span> 옆 ◇ → 3초로 옮겨 볼륨을 -15dB로.</p>
+  </div>
+
+  <div class="card" data-nav="두 버전 비교">
+   <h3><span class="tag t-more">한 걸음 더</span>두 버전 비교</h3>
+   <ul class="dot">
+    <li><b>나레이션 버전</b>과 <b>음악만 버전</b>을 비교합니다. 프로젝트를 <b>복제</b>해 나레이션 줄을 지우고 내보내면 음악만 버전이 됩니다.</li>
+    <li>같은 문장을 「경쾌한 광고」와 「따뜻한 광고」 두 말투로 만들어 들어 봅니다.</li>
+    <li>문장 사이에 <code>[short pause]</code>를 넣으면 잠깐 쉬어 읽습니다. 예: <code>지글지글, [short pause] 지금 막 구웠습니다.</code></li>
+   </ul>
+   <p class="term">더 자세한 방법은 <a target="_blank" rel="noopener" href="https://www.kimedu.kr/%EC%88%98%EC%97%85/%EC%9D%BC%EC%9B%90ai-%EC%98%81%EC%83%81-%EB%A7%8C%EB%93%A4%EA%B8%B0/ai%EB%A1%9C-%EB%A7%8C%EB%93%9C%EB%8A%94-%EB%8B%A4%ED%81%90-%EC%98%81%EC%83%81">지난 시간 「AI로 만드는 다큐 영상」 자료</a>의 STEP 2~4에 있습니다.</p>
+  </div>
+ </div>
+</section>
+
+<!-- ================= STEP 7 ================= -->
+<section class="step" data-title="혼자 할 때: 제미나이">
+ <div class="shead"><div class="no">STEP 7</div><h2>혼자 할 때: 제미나이에게 물어보기</h2>
+ <p>오늘은 교안에 적힌 프롬프트로 만들었습니다. <b>우리 가게 메뉴나 다른 음식</b>으로 혼자 만들 때는 제미나이에게 물어보면 오늘과 같은 모양의 프롬프트를 받을 수 있습니다.</p></div>
+ <div class="grid">
+  <div class="card wide" data-nav="이렇게 물어보기">
+   <h3><span class="tag t-my">혼자 할 때</span>이렇게 물어보기</h3>
+   <ol class="num">
+    <li>제미나이를 엽니다.</li>
+    <li>아래 프롬프트를 복사해 붙여 넣고, 색칠된 <b>[메뉴] [가게 이름] [분위기]</b> 세 칸만 내 것으로 바꿉니다. 예: [김치볶음밥] / [엄마손 식당] / [정겹고 푸짐한]</li>
+    <li>보내면 오늘 교안과 같은 순서로 프롬프트가 나옵니다. 영어 프롬프트와 한국어 설명이 함께 나옵니다.</li>
+   </ol>
+   <div class="pc" id="masterPc"><div class="pc-h"><span>제미나이에게 물어보는 프롬프트</span><button class="cp">복사</button></div><pre id="masterPre"></pre></div>
+  </div>
+  <div class="card wide" data-nav="받은 답을 어디에 쓰나">
+   <h3><span class="tag t-show">연결표</span>받은 답을 어디에 쓰나</h3>
+   <p>답이 길게 나옵니다. 오늘 수업 순서대로 하나씩 가져다 씁니다. 제미나이 창은 닫지 말고 옆에 띄워 둡니다.</p>
+   <div class="tw"><table>
+    <tr><th>제미나이 답</th><th>오늘 수업의 어디와 같나</th></tr>
+    <tr><td>대표 사진(영상 B 끝 프레임) 프롬프트</td><td>STEP 2: 버튼에 있던 각도·조명·맛 표현 말이 들어 있는지 보고, 없으면 붙여서 만듭니다</td></tr>
+    <tr><td>영상 B 시작 프레임 프롬프트</td><td>STEP 3: 대표 사진을 첨부하고</td></tr>
+    <tr><td>영상 A 시작·끝 프레임 프롬프트</td><td>STEP 3: 끝 프레임은 시작 이미지를 첨부하고</td></tr>
+    <tr><td>이미지 컷 8장 프롬프트</td><td>STEP 3: 대표 사진을 첨부하고</td></tr>
+    <tr><td>영상 A·B 프롬프트</td><td>STEP 4</td></tr>
+    <tr><td>광고 문구 3개</td><td>STEP 5: 0~3초 큰 제목 글씨</td></tr>
+    <tr><td>광고 나레이션 4문장</td><td>STEP 5 자막 ①~④ + STEP 6 AI 스튜디오 목소리</td></tr>
+   </table></div>
+  </div>
+  <div class="card" data-nav="받은 프롬프트 다듬기">
+   <h3><span class="tag t-show">요령</span>받은 프롬프트 다듬기</h3>
+   <ul class="dot">
+    <li>답에 끝 문장(<code>no people, no hands, no text</code>)이 빠져 있으면 STEP 2의 「자동으로 붙는 끝 문장」을 붙입니다.</li>
+    <li>사진이 밋밋하면 STEP 2 버튼의 말(조명·맛 표현)을 하나 더 붙입니다.</li>
+    <li>영어가 어려우면 한국어로 고치고 싶은 말을 쓴 뒤 딥엘(DeepL)로 번역해 붙여 넣습니다.</li>
+   </ul>
+  </div>
+  <div class="card" data-nav="분위기 바꿔 보기">
+   <h3><span class="tag t-more">한 걸음 더</span>분위기 바꿔 보기</h3>
+   <p>같은 메뉴로 분위기만 바꿔 다시 받아 봅니다.</p>
+   <p><span class="pill">고급스러운</span><span class="pill">시원하고 상큼한</span><span class="pill">엄마 손맛 같은</span><span class="pill">야식 느낌의</span></p>
+   <div class="pc"><div class="pc-h"><span>이어서 물어보기</span><button class="cp">복사</button></div><pre>같은 메뉴로 분위기만 [고급스러운] 느낌으로 바꿔서 프롬프트를 다시 써 줘. 구성과 초 단위 배치는 그대로 유지해.</pre></div>
+  </div>
+ </div>
+</section>
+
+</main>
+<aside class="side" id="side"><h4>이 STEP의 카드</h4><div id="sideList"></div></aside>
+</div>
+
+<div class="bot">
+ <div class="bot-in">
+  <button class="nb" id="prevBtn">◀ 이전 STEP</button>
+  <div class="where" id="where"></div>
+  <button class="nb next" id="nextBtn">다음 STEP ▶</button>
+ </div>
+</div>
+
+<script>
+(function(){
+var FIX_I = ' Vertical 9:16, the food fills the center of the frame, realistic food commercial photography, shallow depth of field, no people, no hands, no text, no logo.';
+var FIX_V = ' The camera moves slowly and smoothly. The food keeps its exact shape. Realistic food commercial look. No people, no hands, no text.';
+var REF = 'Use the attached image only as a reference for lighting, color tone and style. Create a new shot: ';
+var ORDER=['burger','tteok','bibim'];
+var M = {
+ burger:{ ico:'🍔', name:'수제버거', en:'a handmade burger',
+  base:'A handmade gourmet burger on a wooden board: toasted brioche bun with sesame, one thick juicy beef patty, melted cheddar cheese slightly dripping, fresh lettuce, tomato, red onion, light steam rising.',
+  def:{angle:1, light:0, taste:[1,4,0]},
+  aStart:'그릴 위 패티에 치즈 한 장이 막 올라간 모습', aEnd:'같은 패티, 치즈가 녹아 흘러내리고 김이 오름', bStart:'대표 사진 첨부 → 카메라를 뒤로, 버거·감자튀김 상차림',
+  aS:'A thick beef patty sizzling on a hot cast-iron grill, a fresh slice of cheddar cheese just placed on top and not melted yet, light smoke rising. Extreme close-up macro shot, 45-degree angle. Warm side light from the left, soft backlight making the smoke glow. Juicy, glossy.',
+  aE:'Same grill, same patty, same camera angle and same lighting as the attached image. Only change: the cheddar cheese has fully melted and is dripping down the sides of the patty, more steam rising and glowing in the backlight.',
+  bS:'Same burger, same wooden board and same lighting as the attached image. Only change: the camera is pulled back so we see the whole table setting: the burger with crispy french fries and a small cup of dipping sauce on a rustic wooden table, warm restaurant background softly blurred.',
+  vA:'On the hot grill, the cheddar slice on the beef patty slowly melts and drips down the sides, the patty sizzles, steam rises and glows in the backlight. The camera stays close with a very slow push-in.',
+  vB:'Slow push-in from the table setting toward the burger until it fills the frame. Melted cheese slowly drips, light steam rises, the bun glistens. Smooth slow motion.',
+  cuts:[['참깨 번 접사','Extreme close-up macro of a toasted brioche bun top covered with sesame seeds'],['물방울 맺힌 양상추','Extreme close-up macro of fresh crisp lettuce with water droplets'],['녹은 체다 치즈 결','Extreme close-up macro of melted cheddar cheese texture, slowly flowing'],['옆에서 본 버거 단면(층)','Eye-level side view of a gourmet burger showing all its layers'],['소스가 묻은 패티 접사','Extreme close-up macro of a juicy beef patty glazed with sauce'],['감자튀김 + 소스','Crispy golden french fries with a small cup of dipping sauce'],['한 입 크기 버거 속 접사','Extreme close-up of the inside of a burger: juicy patty, melted cheese and fresh vegetables'],['위쪽에 빈 공간이 있는 버거','A gourmet burger on a wooden board, empty space at the top for a title']]
+ },
+ tteok:{ ico:'🌶️', name:'떡볶이', en:'Korean tteokbokki',
+  base:'Spicy Korean tteokbokki in a wide black pan: chewy rice cakes and fish cakes coated in red gochujang sauce, covered with melted mozzarella cheese, sprinkled with sesame seeds and sliced green onion, light steam rising.',
+  def:{angle:1, light:1, taste:[0,3,5]},
+  aStart:'냄비 속 떡볶이, 소스가 막 끓기 시작', aEnd:'같은 냄비, 소스가 졸아들어 윤기 + 보글보글 + 김', bStart:'대표 사진 첨부 → 카메라를 뒤로, 떡볶이·튀김·어묵 상차림, 치즈는 아직 안 녹음',
+  aS:'Korean tteokbokki in a wide black pan: chewy rice cakes and fish cakes in red gochujang sauce that is just starting to simmer, sliced green onion on top. Close-up, 45-degree angle. Warm side light from the left, soft backlight. Glossy.',
+  aE:'Same pan, same camera angle and same lighting as the attached image. Only change: the sauce is now bubbling and thick, very glossy, steam rising and glowing in the backlight.',
+  bS:'Same pan of tteokbokki and same lighting as the attached image. Only change: the camera is pulled back so we see the whole table setting: the pan next to a plate of crispy Korean fried snacks and fish cake skewers on a wooden table, and the mozzarella is a fresh slice that has not melted yet.',
+  vA:'The red sauce in the pan starts to bubble and simmer, slowly thickening and turning glossy, rice cakes glistening, steam rising and glowing in the backlight. Very slow push-in.',
+  vB:'Slow push-in from the table setting toward the tteokbokki until it fills the frame. The mozzarella slowly melts over the rice cakes, the red sauce glistens, light steam rises.',
+  cuts:[['소스 묻은 떡 접사','Extreme close-up macro of chewy rice cakes coated in glossy red sauce with sesame seeds'],['송송 썬 대파와 깨','Extreme close-up macro of freshly sliced green onions and sesame seeds'],['반짝이는 어묵','Extreme close-up macro of glistening Korean fish cakes in red sauce'],['치즈 아래로 보이는 떡','Close-up of melted mozzarella cheese over rice cakes in red sauce'],['졸아든 소스의 윤기','Extreme close-up macro of thick glossy red gochujang sauce bubbling'],['바삭한 튀김','Crispy golden Korean fried snacks on a plate'],['치즈가 늘어진 떡 한 조각','Extreme close-up of one rice cake with stretchy melted cheese'],['위쪽에 빈 공간이 있는 떡볶이','Tteokbokki in a wide pan seen from above, empty space at the top for a title']]
+ },
+ bibim:{ ico:'🍚', name:'비빔밥', en:'Korean bibimbap',
+  base:'Korean dolsot bibimbap in a hot stone bowl: colorful vegetables arranged in sections (spinach, carrot, bean sprouts, mushrooms, zucchini), a raw egg yolk in the center glistening with sesame oil, sesame seeds, light steam rising.',
+  def:{angle:1, light:3, taste:[0,3]},
+  aStart:'돌솥에 나물이 가지런히 놓이고 노른자가 가운데', aEnd:'같은 돌솥, 가장자리가 지글지글 + 김', bStart:'대표 사진 첨부 → 카메라를 뒤로, 비빔밥·반찬·된장국 상차림',
+  aS:'Korean dolsot bibimbap in a hot black stone bowl: colorful vegetables arranged in sections (spinach, carrot, bean sprouts, mushrooms, zucchini), a raw egg yolk in the center. Close-up, 45-degree angle. Bright natural window light. Colorful, glossy.',
+  aE:'Same stone bowl, same camera angle and same lighting as the attached image. Only change: the edge of the rice is sizzling with small bubbles, thick steam rising and glowing in the window light.',
+  bS:'Same stone bowl of bibimbap and same lighting as the attached image. Only change: the camera is pulled back so we see the whole table setting: the bowl with small Korean side dishes (kimchi, seasoned vegetables) and a bowl of soybean paste soup on a wooden table.',
+  vA:'The hot stone bowl starts to sizzle, small bubbles crackle at the edge of the rice, steam rises and glows in the window light. Very slow push-in.',
+  vB:'Slow push-in from the table setting toward the bibimbap until it fills the frame. The egg yolk glistens with sesame oil, the vegetables shine, steam rises.',
+  cuts:[['노른자 접사','Extreme close-up macro of a raw egg yolk on top of bibimbap'],['시금치·고사리 접사','Extreme close-up macro of seasoned spinach and bracken'],['빨간 고추장 한 숟갈','Extreme close-up macro of a dollop of red gochujang paste on top of vegetables'],['위에서 본 알록달록 나물','Top-down view of colorful bibimbap vegetables arranged in sections'],['참기름이 반짝이는 밥알','Extreme close-up macro of rice grains glistening with sesame oil'],['된장국과 반찬','Korean side dishes and a bowl of soybean paste soup on a wooden table'],['고추장에 버무려진 나물 접사','Extreme close-up of vegetables mixed with red gochujang'],['위쪽에 빈 공간이 있는 비빔밥','Bibimbap in a stone bowl seen from above, empty space at the top for a title']]
+ }
+};
+var OPT={
+ angle:[['아주 가까이','extreme close-up macro shot'],['45도 대표 각도','45-degree hero angle, close-up'],['위에서 내려다보기','top-down flat lay'],['눈높이 옆모습','eye-level side view']],
+ light:[['옆에서 따뜻한 빛','warm side light from the left'],['뒤에서 빛, 김이 반짝','soft backlight making the steam glow'],['어두운 배경에 조명 하나','dark background with a single spotlight'],['밝은 창가 빛','bright natural window light']],
+ taste:[['윤기','glossy'],['촉촉','juicy'],['바삭','crispy'],['김 모락','steaming hot'],['녹아내리는','melted'],['반짝이는 소스','glistening sauce']]
+};
+var cutLen=['1초','1초','1초','1초','1초','2초','1초','2초'];
+var cutWhere=['0~1초','1~2초','2~3초','13~14초','14~15초','15~17초','27~28초','28~30초'];
+
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;')}
+function fill(s){return '<span class="fill">'+esc(s)+'</span>'}
+function pc(label,text,isHtml){return '<div class="pc en"><div class="pc-h"><span>'+label+'</span><button class="cp">복사</button></div><pre>'+(isHtml?text:esc(text))+'</pre></div>'}
+
+/* ---- static trios ---- */
+var hA='',hB='',hV='',hC='',hBefore='';
+ORDER.forEach(function(k){
+ var m=M[k];
+ hA+='<div class="mb '+k+'"><h4>'+m.ico+' '+m.name+'</h4><p class="desc">시작: '+esc(m.aStart)+'<br>끝: '+esc(m.aEnd)+'</p>'+pc('A 시작 프레임 (대표 사진 첨부)',REF+m.aS+FIX_I)+pc('A 끝 프레임 (A 시작 이미지 첨부)',m.aE+FIX_I)+'</div>';
+ hB+='<div class="mb '+k+'"><h4>'+m.ico+' '+m.name+'</h4><p class="desc">'+esc(m.bStart)+'</p>'+pc('B 시작 프레임 (대표 사진 첨부)',m.bS+FIX_I)+'</div>';
+ hV+='<div class="mb '+k+'"><h4>'+m.ico+' '+m.name+'</h4>'+pc('영상 A · A시작 → A끝',m.vA+FIX_V)+pc('영상 B · B시작 → 대표',m.vB+FIX_V)+'</div>';
+ var c='';
+ m.cuts.forEach(function(x,i){c+=pc('컷 '+(i+1)+' · '+cutLen[i]+' ('+cutWhere[i]+') · '+esc(x[0]),REF+x[1]+'.'+FIX_I)});
+ hC+='<details class="ex"><summary>'+m.ico+' '+m.name+' 컷 8장 프롬프트 펼치기</summary>'+c+'</details>';
+ hBefore+=pc(m.ico+' '+m.name+' · 개조 전','A photo of '+m.en+' on a table.');
+});
+document.getElementById('trioA').innerHTML=hA;
+document.getElementById('trioB').innerHTML=hB;
+document.getElementById('trioV').innerHTML=hV;
+document.getElementById('cutsAll').innerHTML=hC;
+document.getElementById('beforeList').innerHTML=hBefore;
+var NAR={burger:['지글지글, 지금 막 구운 두툼한 패티.','치즈가 사르르.','한 입 베어 물면 육즙이 가득.','오늘은 버거 공방.'],
+ tteok:['보글보글, 매콤한 소스가 끓어올라요.','쫀득한 떡 한가득.','치즈까지 사르르, 그 시절 그 맛.','오늘은 떡볶이집.'],
+ bibim:['지글지글, 뜨거운 돌솥이 깨어납니다.','알록달록 나물 가득.','노른자 톡, 고소함이 한 그릇에.','한 그릇 정성.']};
+var NWHERE=['① 3~13초 영상 A','② 13~17초 이미지','③ 17~27초 영상 B','④ 27~30초 마무리'];
+var hN='';ORDER.forEach(function(k){var m=M[k];hN+='<div class="mb '+k+'"><h4>'+m.ico+' '+m.name+'</h4>';NAR[k].forEach(function(t,i){hN+='<div class="pc"><div class="pc-h"><span>'+NWHERE[i]+'</span><button class="cp">복사</button></div><pre>'+esc(t)+'</pre></div>'});hN+='</div>'});
+document.getElementById('trioN').innerHTML=hN;
+var TITLE={burger:'JUICY',tteok:'보글보글',bibim:'지글지글'};
+var SWHERE=['자막 ① · 3~13초','자막 ② · 13~17초','자막 ③ · 17~27초','자막 ④ · 27~30초 (크게)'];
+var hS='';ORDER.forEach(function(k){var m=M[k];hS+='<div class="mb '+k+'"><h4>'+m.ico+' '+m.name+'</h4><div class="pc"><div class="pc-h"><span>0~3초 큰 제목 글씨</span><button class="cp">복사</button></div><pre>'+TITLE[k]+'</pre></div>';NAR[k].forEach(function(t,i){hS+='<div class="pc"><div class="pc-h"><span>'+SWHERE[i]+'</span><button class="cp">복사</button></div><pre>'+esc(t)+'</pre></div>'});hS+='</div>'});
+document.getElementById('trioS').innerHTML=hS;
+
+/* ---- master prompt (placeholders) ---- */
+document.getElementById('masterPre').innerHTML=
+ esc('너는 음식 광고 감독이야. ')+fill('[메뉴]')+esc('의 30초 세로(9:16) SNS 광고를 만들 거야.\n사람·손·글자·로고는 나오지 않고, 음식만 주인공이야.\n가게 이름은 ')+fill('[가게 이름]')+esc(', 광고 분위기는 ')+fill('[분위기]')+esc('야.\n\n광고 구성은 이렇게 정해져 있어.\n- 0~3초: 재료 클로즈업 이미지 3컷 (1초씩 휙휙)\n- 3~13초: 영상 A (10초) — 음식이 만들어지는 순간\n- 13~17초: 이미지 3컷 (1초, 1초, 2초) — 속이 보이는 컷, 소스·양념, 곁들이는 음식\n- 17~27초: 영상 B (10초) — 상차림에서 완성된 음식으로 천천히 다가가기\n- 27~30초: 이미지 2컷 (1초, 2초) — 한 입 크기 접사, 마무리 컷(가게 이름 글씨를 크게 넣을 빈 공간이 위쪽에 있게)\n\n아래를 만들어 줘.\n1) 대표 사진 프롬프트 (영상 B의 끝 프레임, 45도 클로즈업, 조명·질감 표현 포함)\n2) 영상 B 시작 프레임 프롬프트 (대표 사진을 첨부해서 쓰는 용도: "같은 음식, 같은 조명, 카메라만 뒤로 빼서 상차림까지")\n3) 영상 A 시작 프레임 프롬프트와 끝 프레임 프롬프트 (끝은 시작 이미지를 첨부해서 쓰는 용도: 달라지는 것만)\n4) 영상 A, 영상 B의 영상 프롬프트 (카메라는 천천히, 음식 모양은 유지)\n5) 이미지 컷 8장의 이미지 프롬프트 (대표 사진을 첨부해서 쓰는 용도, 각도와 거리를 서로 다르게)\n6) 15자 이내 광고 문구 3개\n7) 광고 나레이션 4문장 (① 3~13초 20자 안쪽, ② 13~17초 10자 안쪽, ③ 17~27초 20자 안쪽, ④ 27~30초 10자 안쪽·가게 이름으로 끝내기, 군침 도는 광고 말투)\n\n규칙\n- 프롬프트는 영어로, 하나씩 따로 코드 블록에 넣어서 복사하기 쉽게 해 줘.\n- 프롬프트마다 한국어로 장면 설명을 한 줄 붙여 줘.\n- 모든 이미지 프롬프트 끝에 "Vertical 9:16, no people, no hands, no text, no logo."를 붙여 줘.\n- 재료가 떨어져 쌓이는 장면, 칼로 자르는 장면, 한 바퀴 도는 장면은 넣지 마.');
+
+/* ---- builder ---- */
+var st={menu:'burger',angle:1,light:0,taste:[1,4,0]};
+function setMenu(k){st.menu=k;var d=M[k].def;st.angle=d.angle;st.light=d.light;st.taste=d.taste.slice();drawChips();build()}
+function drawChips(){
+ var g=document.querySelector('.chips[data-g="menu"]');
+ g.innerHTML=ORDER.map(function(k){return '<button class="chip'+(st.menu===k?' on':'')+'" data-k="'+k+'">'+M[k].ico+' '+M[k].name+'</button>'}).join('');
+ ['angle','light','taste'].forEach(function(n){
+  var el=document.querySelector('.chips[data-g="'+n+'"]');
+  el.innerHTML=OPT[n].map(function(o,i){var on=n==='taste'?st.taste.indexOf(i)>=0:st[n]===i;return '<button class="chip'+(on?' on':'')+'" data-i="'+i+'" title="'+o[1]+'">'+o[0]+'</button>'}).join('');
+ });
+}
+function build(){
+ var m=M[st.menu],a=OPT.angle[st.angle],l=OPT.light[st.light];
+ var t=st.taste.slice().sort(function(x,y){return x-y}).map(function(i){return OPT.taste[i]});
+ var h=esc(m.base)+' '+fill(a[1])+esc('. ')+fill(l[1])+esc('.');
+ if(t.length){h+=' '+fill(t.map(function(x){return x[1]}).join(', '))+esc('.');}
+ h+=esc(FIX_I);
+ document.getElementById('builtPre').innerHTML=h;
+ document.getElementById('builtKo').textContent=m.ico+' '+m.name+' · '+a[0]+' · '+l[0]+(t.length?' · '+t.map(function(x){return x[0]}).join(' · '):'')+' · (끝 문장 자동)';
+}
+document.getElementById('builder').addEventListener('click',function(e){
+ var c=e.target.closest('.chip');if(!c)return;
+ var g=c.parentNode.getAttribute('data-g');
+ if(g==='menu'){setMenu(c.getAttribute('data-k'));return;}
+ var i=+c.getAttribute('data-i');
+ if(g==='taste'){var p=st.taste.indexOf(i);if(p>=0)st.taste.splice(p,1);else{if(st.taste.length>=3)st.taste.shift();st.taste.push(i)}}
+ else st[g]=i;
+ drawChips();build();
+});
+setMenu('burger');
+
+/* ---- copy ---- */
+document.addEventListener('click',function(e){
+ var b=e.target.closest('.cp'); if(!b) return;
+ var t=b.closest('.pc').querySelector('pre').innerText;
+ function ok(){b.textContent='복사됨';b.classList.add('done');setTimeout(function(){b.textContent='복사';b.classList.remove('done')},1600)}
+ function fb(){var ta=document.createElement('textarea');ta.value=t;ta.style.position='absolute';ta.style.left='-9999px';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');ok()}catch(err){b.textContent='직접 선택해 복사'}document.body.removeChild(ta)}
+ if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(t).then(ok,fb)}else fb();
+});
+
+/* ---- steps ---- */
+var steps=[].slice.call(document.querySelectorAll('.step'));
+var tabs=document.getElementById('tabs');
+steps.forEach(function(s,i){
+ var t=document.createElement('button');t.className='tab';t.innerHTML='<span class="n">STEP '+i+'</span>'+s.getAttribute('data-title');
+ t.addEventListener('click',function(){go(i)});tabs.appendChild(t);
+});
+var idx=0;
+function go(i,keep){
+ idx=Math.max(0,Math.min(steps.length-1,i));
+ steps.forEach(function(s,j){s.classList.toggle('on',j===idx)});
+ [].forEach.call(tabs.children,function(t,j){t.classList.toggle('on',j===idx);if(j===idx){tabs.scrollLeft=t.offsetLeft-tabs.clientWidth/2+t.clientWidth/2}});
+ document.getElementById('prevBtn').disabled=idx===0;
+ document.getElementById('nextBtn').disabled=idx===steps.length-1;
+ document.getElementById('where').textContent='STEP '+idx+' / '+(steps.length-1)+' · '+steps[idx].getAttribute('data-title');
+ var sl=document.getElementById('sideList');sl.innerHTML='';
+ steps[idx].querySelectorAll('.card').forEach(function(c,k){
+  if(!c.id)c.id='c'+idx+'_'+k;
+  var a=document.createElement('a');a.href='#'+c.id;a.textContent=c.getAttribute('data-nav')||c.querySelector('h3').textContent;
+  a.addEventListener('click',function(e){e.preventDefault();c.scrollIntoView({behavior:'smooth',block:'start'})});
+  sl.appendChild(a);
+ });
+ if(!keep) window.scrollTo({top:0,behavior:'smooth'});
+}
+document.getElementById('prevBtn').onclick=function(){go(idx-1)};
+document.getElementById('nextBtn').onclick=function(){go(idx+1)};
+document.querySelectorAll('[data-go]').forEach(function(a){a.addEventListener('click',function(e){e.preventDefault();go(+a.getAttribute('data-go'))})});
+document.getElementById('howBtn').onclick=function(){go(0,true);setTimeout(function(){document.getElementById('howto').scrollIntoView({behavior:'smooth',block:'start'})},30)};
+
+/* ---- font size ---- */
+var sizes=[17,18,20,22,24],si=2;
+document.querySelectorAll('[data-fs]').forEach(function(b){b.addEventListener('click',function(){var d=+b.getAttribute('data-fs');si=d===0?2:Math.max(0,Math.min(sizes.length-1,si+d));document.documentElement.style.setProperty('--fs',sizes[si]+'px');setHdr()})});
+
+function setHdr(){document.documentElement.style.setProperty('--hdr',document.getElementById('top').offsetHeight+'px')}
+window.addEventListener('resize',setHdr);
+go(0,true);setHdr();
+})();
+</script>
+</body>
+</html>

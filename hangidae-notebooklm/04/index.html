@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NotebookLM을 활용한 NCS 기반 훈련과정 편성 실무 — 실습 교재</title>
+<style>
+:root{
+  --navy:#1F3864; --navy-d:#16294a; --blue:#2E74B5; --teal:#0E7C7B; --teal-d:#0A5958;
+  --green:#2E8540; --amber:#B45D0E; --red:#B4232C;
+  --bg:#FAFAF8; --card:#FFFFFF; --ink:#26272B; --sub:#6B6E76; --line:#E6E4DF; --hl:#FFE79E;
+  --mono:'JetBrains Mono','D2Coding',Consolas,monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{font-family:Pretendard,'Pretendard Variable',-apple-system,'Malgun Gothic','Apple SD Gothic Neo',sans-serif;
+  background:var(--bg);color:var(--ink);font-size:15px;line-height:1.7;
+  display:flex;flex-direction:column;overflow:hidden}
+
+/* top */
+#topbar{flex:0 0 auto;z-index:60;background:var(--navy);color:#fff;
+  display:flex;align-items:center;gap:12px;padding:0 16px;height:44px;font-size:13px}
+#topbar .t{font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#topbar .pct{margin-left:auto;font-family:var(--mono);font-weight:700;color:#9CC3EA;white-space:nowrap}
+#pbarwrap{flex:0 0 auto;z-index:60;height:8px;background:#CBD3E1;box-shadow:inset 0 1px 2px rgba(0,0,0,.15)}
+#pbar{height:100%;width:0%;min-width:6px;background:linear-gradient(90deg,var(--blue),var(--teal));transition:width .5s cubic-bezier(.4,1.4,.5,1)}
+
+/* tab nav */
+#tabs{flex:0 0 auto;z-index:59;background:#fff;border-bottom:1px solid var(--line);
+  display:flex;overflow-x:auto;scrollbar-width:none}
+#tabs::-webkit-scrollbar{display:none}
+#tabs button{flex:none;border:0;background:none;padding:11px 15px;font-size:13.5px;font-weight:700;color:var(--sub);
+  cursor:pointer;font-family:inherit;border-bottom:3px solid transparent;white-space:nowrap}
+#tabs button.on{color:var(--navy);border-bottom-color:var(--blue)}
+#tabs button .ok{color:var(--green)}
+
+/* subnav */
+#sub{flex:0 0 auto;z-index:58;background:var(--bg);border-bottom:1px solid var(--line);
+  display:flex;gap:6px;overflow-x:auto;padding:7px 14px;scrollbar-width:none}
+#sub::-webkit-scrollbar{display:none}
+#sub a{flex:none;font-size:11.5px;font-weight:700;color:var(--sub);text-decoration:none;
+  background:#fff;border:1px solid var(--line);border-radius:20px;padding:3px 11px}
+#sub a.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+
+main{flex:1 1 auto;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:20px 20px 90px;display:flex;flex-direction:column;align-items:center}
+.page{width:100%;max-width:1180px;margin:0 0 44px}
+.unit{scroll-margin-top:12px}
+.page{display:block}
+@keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1}}
+
+/* banner / cards (동일 문법) */
+.banner{border-radius:14px;color:#173154;padding:24px;margin:6px 0 16px;border:1px solid rgba(31,56,100,.12)}
+.banner .no{font-family:var(--mono);font-size:11.5px;opacity:.6;letter-spacing:.2em;color:#2E74B5}
+.banner h2{font-size:21px;margin-top:3px;letter-spacing:-.01em}
+.banner .aims{margin-top:9px;font-size:13px;opacity:.92}
+.banner .aims li{list-style:none;padding-left:16px;position:relative;margin-top:2px}
+.banner .aims li::before{content:'✓';position:absolute;left:0;font-weight:700}
+.b0{background:#E8F0FE}
+.b1{background:#F3EFFB}
+.b2{background:#E6F4FF}
+.b3{background:#E6F7F1}
+.b4{background:#FFF6DC}
+.b5{background:#FFEDE3}
+.b6{background:linear-gradient(135deg,#3d1f3f,#7a3d7e)}
+.b7{background:linear-gradient(135deg,var(--navy-d),#333a49)}
+.card{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--navy);
+  border-radius:10px;padding:15px 17px;margin:11px 0}
+.card h3{font-size:15.5px;margin-bottom:7px;display:flex;align-items:center;gap:8px;letter-spacing:-.01em;flex-wrap:wrap}
+.card .en{font-size:10.5px;color:var(--sub);font-weight:500;font-family:var(--mono);margin-left:auto}
+.c-step{border-left-color:var(--blue)}
+.c-check{border-left-color:var(--green)}
+.c-warn{border-left-color:var(--amber);background:#FFFBF3}
+.c-err{border-left-color:var(--red)}
+.tag{display:inline-block;font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:20px}
+.tg-c{background:#EDF1F8;color:var(--navy)}.tg-s{background:#E7F0FA;color:var(--blue)}
+.tg-v{background:#E8F4EA;color:var(--green)}.tg-w{background:#FBF0E1;color:var(--amber)}
+.tg-e{background:#F9E6E7;color:var(--red)}
+.num{font-family:var(--mono);font-size:11px;color:var(--sub);font-weight:700}
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}
+.duo>div{border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:13.5px}
+.duo .h{font-weight:700;font-size:12.5px;margin-bottom:4px}
+.duo .g .h{color:var(--teal)}.duo .b .h{color:var(--sub)}.duo .r .h{color:var(--red)}.duo .ok .h{color:var(--green)}
+.duo ul{padding-left:16px}.duo li{margin:2px 0}
+.steps{counter-reset:s;margin-top:4px}
+.steps li{list-style:none;position:relative;padding:8px 0 8px 40px;border-bottom:1px dashed var(--line)}
+.steps li:last-child{border-bottom:0}
+.steps li::before{counter-increment:s;content:counter(s);position:absolute;left:0;top:8px;
+  width:26px;height:26px;border-radius:50%;background:var(--blue);color:#fff;font-weight:700;
+  font-size:13px;display:flex;align-items:center;justify-content:center}
+.steps b{color:var(--navy)}
+.steps small{display:block;color:var(--sub);font-size:12.5px}
+.flow{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;font-size:12.5px;font-weight:700}
+.flow span{background:#EDF1F8;color:var(--navy);border-radius:6px;padding:5px 11px}
+.flow em{align-self:center;color:var(--sub);font-style:normal}
+
+/* prompt */
+.pk{background:var(--navy-d);border-radius:10px;margin:12px 0;overflow:hidden;border-left:4px solid var(--teal)}
+.pk .bar{display:flex;align-items:center;gap:8px;padding:8px 12px;background:#0f1e38;font-size:11.5px;color:#9CC3EA;flex-wrap:wrap}
+.pk .bar .chip{background:var(--teal);color:#fff;font-weight:700;border-radius:4px;padding:1px 7px;font-family:var(--mono)}
+.pk .bar button{margin-left:auto;background:var(--teal);border:0;color:#fff;font-weight:700;font-size:12px;
+  padding:5px 14px;border-radius:6px;cursor:pointer;font-family:inherit}
+.pk .bar button:hover{background:#0fa09e}.pk .bar button.ok{background:var(--green)}
+.pk pre{padding:13px 16px;color:#EAF2FB;font-family:var(--mono);font-size:12.8px;line-height:1.75;white-space:pre-wrap;word-break:break-all}
+.pk mark{background:var(--hl);color:#4d3a00;border-radius:3px;padding:0 3px;font-weight:700}
+.pk.glow{box-shadow:0 0 0 3px rgba(14,124,123,.45)}
+
+/* check / milestone */
+.ck label{display:flex;gap:10px;align-items:flex-start;padding:6px 0;cursor:pointer;font-size:14px}
+.ck input{width:18px;height:18px;margin-top:3px;accent-color:var(--green);flex:none}
+.ck input:checked+span{color:var(--sub);text-decoration:line-through}
+.mstone{display:flex;align-items:center;gap:12px;background:linear-gradient(90deg,#E8F4EA,#fff);
+  border:1px solid #BFDDC6;border-left:4px solid var(--green);border-radius:10px;padding:12px 16px;margin:12px 0;font-weight:700}
+.mstone .pct{font-family:var(--mono);font-size:21px;color:var(--green);flex:none}
+
+table{width:100%;border-collapse:collapse;font-size:13.5px;margin-top:8px}
+th{background:var(--navy);color:#fff;padding:6px 10px;text-align:left;font-size:12.5px}
+td{border:1px solid var(--line);padding:6px 10px;background:#fff}
+tr:nth-child(even) td{background:#FAFBFC}
+details{border:1px solid var(--line);border-radius:8px;margin:8px 0;background:#fff}
+summary{padding:10px 14px;font-weight:700;font-size:13.5px;cursor:pointer;color:var(--navy)}
+details>div{padding:0 14px 12px;font-size:13.5px}
+
+/* widget */
+.wg{background:#F3F6FB;border:1px solid #C9D6EA;border-radius:10px;padding:14px 16px;margin:10px 0}
+.wg .wt{font-weight:800;font-size:13.5px;color:var(--navy);margin-bottom:8px}
+.wg input[type=text],.wg input[type=number],.wg textarea{width:100%;border:1px solid #C9D6EA;border-radius:7px;
+  padding:7px 10px;font-size:13.5px;font-family:inherit;background:#fff}
+.wg textarea{font-family:var(--mono);font-size:12.5px;min-height:70px}
+.wg .row{display:flex;gap:8px;margin-bottom:6px;align-items:center}
+.wg .row input{flex:1;min-width:0}
+.wg .res{margin-top:8px;font-weight:800;font-size:14px;padding:8px 12px;border-radius:7px}
+.wg .good{background:#E8F4EA;color:var(--green)}
+.wg .bad{background:#F9E6E7;color:var(--red)}
+.wg button{background:var(--blue);border:0;color:#fff;font-weight:700;font-size:12.5px;padding:7px 14px;
+  border-radius:7px;cursor:pointer;font-family:inherit;margin-top:6px}
+.wg button:hover{background:#255f96}
+.wg label{font-size:12.5px;font-weight:700;color:var(--navy);display:block;margin:8px 0 3px}
+
+/* pager */
+.pager{display:flex;justify-content:space-between;gap:10px;margin-top:26px}
+.pager button{background:#fff;border:1px solid var(--line);border-radius:10px;padding:11px 18px;font-size:13.5px;
+  font-weight:700;color:var(--navy);cursor:pointer;font-family:inherit}
+.pager button:hover{border-color:var(--blue);color:var(--blue)}
+.pager button:disabled{opacity:.35;cursor:default}
+
+/* QA float */
+#qbtn{position:fixed;right:18px;bottom:18px;z-index:70;width:48px;height:48px;border-radius:50%;
+  background:var(--amber);color:#fff;border:0;font-size:20px;font-weight:800;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+#qov{display:none;position:fixed;inset:0;z-index:71;background:rgba(20,25,40,.55);padding:20px}
+#qov.on{display:flex;align-items:center;justify-content:center}
+#qbox{background:#fff;border-radius:14px;max-width:560px;width:100%;max-height:82vh;overflow:auto;padding:20px 22px}
+#qbox h3{color:var(--navy);margin-bottom:8px;font-size:16px}
+#qbox .x{float:right;background:none;border:0;font-size:18px;cursor:pointer;color:var(--sub)}
+
+.unit{scroll-margin-top:132px}
+.unit.flash>*:first-child{box-shadow:0 0 0 3px rgba(46,116,181,.55);transition:box-shadow .4s}
+.foot{background:var(--navy-d);color:#fff;border-radius:14px;text-align:center;padding:30px 20px;margin-top:30px}
+.foot .big{font-size:18px;font-weight:800}
+.foot .sm{font-size:12px;opacity:.75;margin-top:8px}
+.note{font-size:12.5px;color:var(--sub);margin-top:6px}
+.hier{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.hier span{background:var(--navy);color:#fff;border-radius:6px;padding:6px 12px;font-size:12.5px;font-weight:700}
+.hier span:nth-child(2){background:#2a4a80}.hier span:nth-child(3){background:var(--blue)}.hier span:nth-child(4){background:#5b93c9}
+@media(max-width:640px){.duo{grid-template-columns:1fr}main{padding-top:150px}}
+/* PC 와이드: 2단 매거진 배치 */
+@media(min-width:1100px){
+  main{max-width:1240px}
+  /* 1단 세로 흐름 고정 */
+}
+/* 축하 이벤트 */
+#toast{position:fixed;top:104px;left:50%;transform:translateX(-50%) translateY(-16px);z-index:80;
+  background:var(--navy);color:#fff;font-weight:800;font-size:14.5px;border-radius:30px;
+  padding:11px 22px;box-shadow:0 8px 24px rgba(0,0,0,.3);opacity:0;pointer-events:none;
+  transition:.35s cubic-bezier(.4,1.6,.5,1);white-space:nowrap}
+#toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+#toast.gold{background:linear-gradient(90deg,var(--teal),var(--green))}
+.pop{position:fixed;z-index:79;top:-20px;font-size:18px;pointer-events:none;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(105vh) rotate(720deg);opacity:.2}}
+#pbar.pulse{animation:pp .6s 3}
+@keyframes pp{50%{filter:brightness(1.6)}}
+@media print{#topbar,#pbarwrap,#tabs,#sub,#qbtn,.pager,.pk .bar button{display:none}
+  .page{display:block!important}main{padding-top:0}body{background:#fff}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+/* v14 추가 */
+.pgb{display:inline-block;background:#EEF2F8;color:#4a5a70;font-size:11.5px;font-weight:800;
+  border-radius:6px;padding:2px 8px;margin-left:8px;vertical-align:middle;white-space:nowrap}
+.why::before{content:"💡 "}
+.why{background:#F2FAF3;border-left:4px solid #2E8540;border-radius:8px;padding:10px 14px;margin:10px 0;font-size:13.5px}
+.why b{color:#1d6b30}
+.app::before{content:"🚀 "}
+.app{background:#F5F2FE;border-left:4px solid #7c5cd6;border-radius:8px;padding:10px 14px;margin:10px 0;font-size:13.5px}
+.app b{color:#5f42b8}
+.deep::before{content:"🧠 뎁스 "; font-weight:800; color:#8a4b00}
+.deep{background:#FFF8E8;border-left:4px solid #E08A00;border-radius:8px;padding:10px 14px;margin:10px 0;font-size:13.5px}
+.deep b{color:#8a4b00}
+.deep .who{display:inline-block;font-size:11px;background:#E08A00;color:#fff;border-radius:6px;padding:1px 7px;margin-left:6px;font-weight:700}
+.gate::before{content:"🚧 "}
+.gate{background:#FFF2F2;border:2px solid #B4232C;border-radius:10px;padding:12px 16px;margin:10px 0;font-size:14px;font-weight:700}
+.gate b{color:#B4232C}
+.extbtn{display:inline-block;background:var(--blue);color:#fff!important;text-decoration:none;font-weight:800;
+  font-size:14.5px;border-radius:10px;padding:11px 20px;margin:6px 8px 6px 0}
+.extbtn:hover{background:var(--navy)}
+.lv{display:inline-block;font-size:11.5px;font-weight:800;border-radius:6px;padding:2px 9px;margin-left:6px;vertical-align:middle}
+.lv-a{background:#E9F7EE;color:#1d6b30}
+.lv-b{background:#FFF4D6;color:#8a5a10}
+
+/* ═══ v18 리스킨: v11 룩앤필 (흰 바탕·큰 글씨·파랑 포인트) ═══ */
+body{font-size:18px;background:#ffffff;line-height:1.7}
+#topbar{background:#ffffff;color:#1a2433;border-bottom:2px solid #e2e8f0;height:50px;font-size:15px}
+#topbar .t{color:#1a2433;font-size:16px}
+#topbar .pct{color:#0f62fe}
+#pbarwrap{background:#e8eef7;height:7px;box-shadow:none}
+#pbar{background:linear-gradient(90deg,#0f62fe,#5b9dff)}
+#tabs{border-bottom:2px solid #e2e8f0;padding:8px 10px;gap:8px}
+#tabs button{background:#f4f6f9;border-radius:10px;color:#555;font-size:15.5px;padding:10px 16px;border-bottom:none;margin:0}
+#tabs button.on{background:#0f62fe;color:#fff;border-bottom-color:transparent}
+#sub{background:#fff;border-bottom:1px solid #e9edf3;padding:8px 14px}
+#sub a{font-size:13px;padding:5px 13px;border-radius:20px}
+#sub a.on{background:#0f62fe;border-color:#0f62fe}
+.banner{background:#f5f9ff!important;border:2px solid #0f62fe;color:#1a2433;padding:22px 26px}
+.banner .no{color:#0f62fe;opacity:.85}
+.banner h2{font-size:24px;color:#1a2433}
+.banner .aims{font-size:14.5px;opacity:1;color:#445}
+.banner .aims li::before{color:#0f62fe}
+.card{border-radius:16px;border:1px solid #e2e8f0;box-shadow:none;font-size:17px}
+.card h3{font-size:20px}
+.card table{font-size:15.5px}
+.pk{border-radius:12px}
+.pk pre{font-size:16.5px;line-height:1.65}
+.pk .bar button{background:#0f62fe;font-size:15px;padding:9px 20px;border-radius:9px}
+.why,.app,.gate{font-size:15px;border-radius:10px}
+.note{font-size:14px}
+.pgb{font-size:14px;background:#0f62fe;color:#fff;padding:3px 11px;border-radius:8px}
+.lv{font-size:12.5px}
+label{font-size:16.5px}
+
+/* ═══ 표지 히어로 ═══ */
+.banner.b0{
+  background:linear-gradient(135deg,#0f62fe 0%,#3b82f6 55%,#60a5fa 100%)!important;
+  border:none;color:#fff;padding:44px 36px;border-radius:20px;
+  box-shadow:0 10px 30px rgba(15,98,254,.25);position:relative;overflow:hidden}
+.banner.b0::after{content:"📘";position:absolute;right:24px;top:18px;font-size:64px;opacity:.28;transform:rotate(12deg)}
+.banner.b0 .no{color:#cfe0ff;font-size:13px;letter-spacing:.3em;opacity:1}
+.banner.b0 h2{font-size:34px;color:#fff;line-height:1.3;margin-top:8px}
+.banner.b0 .aims{margin-top:16px;color:#e8f0ff;font-size:15.5px}
+.banner.b0 .aims li::before{color:#9CC3EA}
+.hero-kicker{display:inline-block;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.4);
+  color:#fff;font-size:13.5px;font-weight:800;border-radius:999px;padding:6px 16px;margin-bottom:12px;letter-spacing:.02em}
+.fin{background:#f5f9ff;border:1.5px dashed #0f62fe;border-radius:10px;padding:11px 16px;margin-top:10px;font-size:15px;font-weight:700;color:#173154}
+.fin::before{content:"🏁 이렇게 마무리 — ";color:#0f62fe}
+.map-pg{display:inline-block;background:#0f62fe;color:#fff;font-size:13px;font-weight:800;border-radius:7px;padding:2px 10px;white-space:nowrap}
+/* 교재 지도: 조감 스트립 + 트리 */
+.strip{display:flex;gap:4px;margin:6px 0 4px}
+.strip .seg{border-radius:9px;padding:10px 6px;text-align:center;color:#173154;border:1.5px solid rgba(15,98,254,.25)}
+.strip .seg b{display:block;font-size:13.5px}
+.strip .seg small{display:block;font-size:11px;color:#567;margin-top:2px}
+.strip .s1{flex:26;background:#E6F4FF}
+.strip .s2{flex:27;background:#E6F7F1}
+.strip .s3{flex:30;background:#FFF6DC}
+.strip .s4{flex:19;background:#FFEDE3}
+.strip .s5{flex:8;background:#F3EFFB}
+.striplbl{display:flex;gap:4px;font-size:11px;color:#889;margin-bottom:14px}
+.striplbl span{text-align:center}
+.tree{font-family:inherit;background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:16px 20px;margin:10px 0;font-size:15.5px;line-height:2}
+.tree .tr-root{font-weight:800;font-size:16.5px}
+.tree .tr-b{color:#0f62fe;font-weight:800}
+.tree .tr-d{color:#556}
+/* v12 스타일 이식: 큰 탭 + 사이드 진행 위치 */
+#tabs{justify-content:center;padding:12px 10px;gap:10px}
+#tabs button{padding:14px 26px;font-size:18px;font-weight:800;border-radius:14px;line-height:1.3;min-width:118px}
+#tabs button small{display:block;font-weight:600;font-size:13px;color:#98a3b3;margin-top:3px}
+#tabs button.on small{color:#cfe0ff}
+#sidenav{display:none;position:fixed;top:150px;right:22px;z-index:90;width:180px;
+  background:#f8fafc;border:1px solid #e2e8f0;border-radius:14px;padding:14px}
+#sidenav .sn-title{font-size:13px;font-weight:800;color:#889;margin-bottom:8px;letter-spacing:.05em}
+#sidenav button{cursor:pointer;font-family:inherit;background:transparent;border:none;width:100%;text-align:left;
+  display:block;color:#556;font-size:14.5px;font-weight:700;
+  padding:7px 10px;border-radius:8px;border-left:3px solid transparent;margin-bottom:2px}
+#sidenav button em{display:block;font-style:normal;font-size:11.5px;color:#98a3b3;font-weight:600;margin-top:1px}
+#sidenav button.active{background:#e8f0ff;color:#0f62fe;border-left-color:#0f62fe;font-weight:800}
+#sidenav button.active em{color:#5b8def}
+@media (min-width:1300px){ #sidenav{display:block} }
+</style>
+</head>
+<body>
+
+<noscript><div style="background:#B4232C;color:#fff;padding:10px 16px;font-weight:700;position:fixed;top:0;left:0;right:0;z-index:99">이 문서는 자바스크립트가 필요합니다. 크롬에서 파일을 직접 열어주세요.</div></noscript>
+<div id="errbar" style="display:none;position:fixed;top:0;left:0;right:0;z-index:99;background:#B4232C;color:#fff;padding:8px 14px;font-size:12px;font-family:monospace;white-space:pre-wrap"></div>
+<div id="topbar"><span class="t">NotebookLM을 활용한 NCS 기반 훈련과정 편성 실무</span>
+  <span style="font-size:10px;opacity:.5;font-family:var(--mono)">v18</span><span class="pct"><span id="pctv">0</span>%</span></div>
+<div id="pbarwrap"><div id="pbar"></div></div>
+<nav id="tabs"></nav>
+<nav id="sub"></nav>
+<nav id="sidenav"><div class="sn-title">진행 위치</div></nav>
+
+<main id="main"></main>
+
+<button id="qbtn" title="막힘 Q&A">?</button>
+<div id="qov"><div id="qbox">
+  <button class="x" data-act="qaclose">✕</button>
+  <h3>막힘 Q&A — 어느 차시에서든</h3>
+  <details open><summary>Q1. 무료 한도를 넘었어요</summary><div>그날은 더 못 쓰고 다음 날 리셋됩니다. 예방: 채팅 설정 고정 + 묶어서 질문. 짧은 채팅 반복이 한도 소진의 주범입니다.</div></details>
+  <details><summary>Q2. 출처 인용이 안 달려요</summary><div>소스 탭에서 파일 체크 표시 확인 → 채팅 설정 제약에 출처 표기 지시 추가 → 그래도 안 되면 질의 끝에 "소스 인용을 달아줘"를 붙입니다.</div></details>
+  <details><summary>Q3. 엉뚱한 값을 뽑아요</summary><div>제약에 '소스에 없으면 확인 필요로 표시하고 추측하지 않는다' 문구가 있는지 확인하세요. 그래도 이상하면 그 항목만 따로 질의합니다.</div></details>
+  <details><summary>Q4. PDF를 인식 못 해요</summary><div>텍스트 선택이 되는 PDF가 인식률이 가장 높습니다. 스캔본(이미지 PDF)은 텍스트 파일로 변환한 뒤 소스로 추가하세요. 소스 추가 후 분석 스피너가 끝날 때까지 기다린 다음 질의합니다.</div></details>
+  <details><summary>Q5. 화면이 교재와 달라요</summary><div>2026년 7월부터 NotebookLM이 <b>제미나이 노트북</b>으로 바뀌면서 화면이 계속 업데이트됩니다. 버튼 위치만 다를 뿐 절차는 동일합니다. 못 찾겠으면 손 들어주세요.</div></details>
+</div></div>
+
+<script>
+/* ═══ 에러 리포터: 어떤 환경에서든 오류를 화면에 표시 ═══ */
+window.onerror=function(msg,src,line,col,err){
+  var b=document.getElementById('errbar');
+  if(b){b.style.display='block';b.textContent='[스크립트 오류] '+msg+' (line '+line+':'+col+')\n이 화면을 캡처해 강사에게 보내주세요.'}
+  return false;
+};
+/* ═══ 콘텐츠 정의 ═══ */
+const PAGES=[
+/* ───────── 시작 ───────── */
+{id:'p0',tab:'시작',banner:['b0','AI SPECIAL COURSE · 실습 교재','<span class="hero-kicker">🎓 한국기술교육대학교 능력개발교육원 · 2026 AI 특별교육</span><br>NotebookLM으로<br>내 훈련과정 편성서 완성하기',
+ ['스텝 1 경험하기 → 스텝 2·3 내 분야로 만들기 → 스텝 4 혼자 처음부터 → 스텝 5 내 뜻대로 제어하기','한 번은 같이, 한 번은 혼자 — 두 번 하면 내 것이 됩니다','이 반은 빠르게 갑니다. 남는 시간은 전부 스텝5(6교시)로','강사 김충효 · 에이비랩(Ai.b.l.)']],
+ units:[
+ {id:'0-1',t:'오늘의 완성작',h:`<div class="card"><h3><span class="tag tg-c">개념</span>🎯 오늘 제출할 것 <span class="pgb">📖 교재 p8–9</span></h3>
+  <table><tr><th style="width:44px;text-align:center;font-size:17px">1</th><td><b>편성서 (엑셀)</b> — 훈련목표·훈련내용·능력단위·훈련시간 4요소 + 원문 출처. 완성 후 <b>엑셀로 제출</b></td></tr>
+  <tr><th style="text-align:center;font-size:17px">2</th><td><b>검증 기록 (독스)</b> — HITL 검증 답변을 <b>메모에 저장 → 독스로 내보내기</b>. 검증했다는 증빙이 자동으로 문서가 됩니다</td></tr>
+  <tr><th style="text-align:center;font-size:17px">3</th><td><b>내 지침 (게시판)</b> — 지침의 [내 분야] 등을 내 글로 고쳐 LM 설정에 넣은 그 텍스트를 <b>[분야/성명]과 함께 게시판에 붙여넣기</b></td></tr></table>
+  <p class="note">※ 이수 기준: 출석 90% + 과제 60점. 평가는 <b>편성서·지침 중심</b>(완성도30·NCS근거30·현업적용25·재사용성15), 검증 기록은 수행 확인용입니다.</p></div>`},
+ {id:'0-2',t:'역량 지도',h:`<div class="card"><h3><span class="tag tg-c">개념</span>🧭 오늘 배우는 4가지 역량 <span class="pgb">📖 교재 p3·21</span></h3>
+  <table><tr><th>역량</th><th>어디서</th></tr>
+  <tr><td>🛡️ AI 윤리·보안</td><td>스텝1 웹 검색 거절 · 스텝2 업로드 전 3초 점검</td></tr>
+  <tr><td>✍️ 프롬프트 엔지니어링</td><td>스텝2 채팅 지침(역할·맥락·제약·형식) · 스텝4 내 지침 만들기</td></tr>
+  <tr><td>🔍 HITL 검증</td><td>스텝3 원문 대조 3동작 · 스텝4 재검증</td></tr>
+  <tr><td>📊 데이터 리터러시</td><td>스텝2 좋은 원본 고르기 · 스텝3 6시간 검산</td></tr></table></div>`},
+ {id:'0-3',t:'준비물 ✓',h:`<div class="card c-check ck"><h3><span class="tag tg-v">체크</span>✅ 준비물 점검</h3>
+  <label><input type="checkbox" data-ck="v01"><span>크롬 브라우저 + 구글 로그인 완료 (오전에 했음!)</span></label>
+  <label><input type="checkbox" data-ck="v02"><span>notebooklm.google.com 접속됨</span></label>
+  <label><input type="checkbox" data-ck="v03"><span>이 교재 화면을 옆에 띄워둠</span></label></div>`}
+]},
+
+/* ───────── 스텝 1 ───────── */
+{id:'p1',tab:'스텝1',banner:['b2','STEP 1','경험하기 — 안내서로 워밍업',
+ ['가벼운 1장짜리 소스로 채팅·출처·웹 검색 거절을 안전하게 체험','내용을 이미 아는 문서라, AI 답이 맞는지 내가 판단할 수 있습니다']],
+ units:[
+ {id:'1-1',t:'안내서 받기',h:`<div class="card"><h3><span class="tag tg-c">실습</span>📥 ① 과정 안내서 받아서 올리기 <span class="pgb">📖 교재 p24–25</span> <span class="lv lv-a">🟢 전원</span></h3>
+  <p><a class="extbtn" href="https://drive.google.com/file/d/188IPQb0cqL1oDZvZ8Jvo4njXVt6EirSb/view?usp=sharing" target="_blank" rel="noopener">📄 과정 안내서 PDF 열기 (Drive)</a></p>
+  <p>① 열리면 우측 상단 <b>다운로드(↓)</b> → ② 노트북LM에서 <b>새 노트북</b> → ③ <b>소스 추가</b>로 방금 받은 PDF 올리기 → ④ 노트북 이름을 <b>"연습장"</b>으로 바꾸기</p>
+  <div class="why"><b>왜 이 문서로 시작?</b> 방금 오전에 들은 내용 1장짜리라, AI 답이 맞는지 틀렸는지 <b>내가 심판</b>할 수 있습니다. 검증 감각은 아는 문서에서 먼저 길러야 안전합니다.</div>
+  <div class="card c-check ck" style="margin-top:10px"><label><input type="checkbox" data-ck="v11"><span>"연습장" 노트북에 안내서가 올라갔다</span></label></div></div>`},
+ {id:'1-2',t:'첫 질문 + 출처 클릭',h:`<div class="card"><h3><span class="tag tg-c">실습</span>💬 ② 물어보고, 출처 눌러보기 <span class="pgb">📖 교재 p18·27</span> <span class="lv lv-a">🟢 전원</span></h3>
+PK|k11|P0-1|오늘의 결과물 확인|이 과정에서 오늘 내가 만들게 되는 결과물이 무엇인지 알려줘.
+  <p>답이 뜨면 문장 끝의 <b>출처 번호(숫자 칩)를 클릭</b> — 원문 문장이 하이라이트됩니다. 이게 노트북LM의 심장입니다.</p>
+PK|k12|P0-2|이수 기준 확인|이 과정의 이수 기준을 알려줘.
+  <div class="why"><b>왜?</b> "출석 90% + 과제 60점"이 AI 입으로 나옵니다 — 오늘 과제 제출이 왜 중요한지 AI가 대신 알려주는 셈 🙂 그리고 <b>출처 클릭 습관</b>이 오늘 전체의 뼈대입니다.</div>
+  <div class="app"><b>응용</b> — 기준서 자리에 다른 문서를 넣으면 그대로 다른 도구가 됩니다: 학원 규정집 → 상담 안내 / 기관 운영·복무규정 → 행정 Q&A / 제조공정 매뉴얼 → 작업 표준서 / 보육 지침 → 학부모 안내문.</div>
+  <div class="card c-check ck" style="margin-top:10px"><label><input type="checkbox" data-ck="v12"><span>출처 번호를 클릭해서 원문을 봤다</span></label></div></div>`},
+ {id:'1-3',t:'웹 검색 거절 체험',h:`<div class="card"><h3><span class="tag tg-x">주의</span>🚦 ③ 소스에 없는 걸 물으면? — 웹 검색 거절 체험 <span class="pgb">📖 교재 p18–19</span> <span class="lv lv-a">🟢 전원</span></h3>
+PK|k13|P0-3|일부러 엉뚱한 질문|당산역 근처에서 점심에 갈 만한 맛집 알려줘.
+  <p>소스에 없으니 <b>"웹 검색으로 찾아드릴까요?"</b>라고 물어옵니다. 오늘은 <b>거절(무시)</b>하세요.</p>
+  <div class="why"><b>왜 거절?</b> 오늘 훈련은 <b>소스 기반 + 출처 검증</b>입니다. 웹으로 나가는 순간 출처 추적이 흐려집니다. 소스 안에서 답하는 것과 웹 검색은 완전히 다른 모드라는 것 — 이 경계를 아는 게 곧 AI 보안 감각입니다.</div>
+  <div class="app"><b>응용</b> — 반대로 최신 시장 동향 조사가 목적일 땐 웹 검색을 승인해서 쓰면 됩니다. 목적에 따라 모드를 고르는 겁니다.</div>
+  <div class="card c-check ck" style="margin-top:10px"><label><input type="checkbox" data-ck="v13"><span>웹 검색 제안을 받았고, 오늘은 안 쓰기로 했다</span></label></div></div>`},
+ {id:'1-4',t:'(여유 시) 스튜디오 훑기',h:`<div class="card"><h3><span class="tag tg-c">보너스</span>🗺️ ④ 마인드맵 하나만 눌러보기 <span class="pgb">📖 교재 p31·90–91</span> <span class="lv lv-b">🟡 +더 해보기</span></h3>
+  <p>오른쪽 <b>스튜디오</b> 패널에서 <b>마인드맵</b>만 눌러보세요. 1장짜리 문서라 금방 나옵니다. 오디오·슬라이드·퀴즈 등 나머지는 스텝 4 이후 또는 집에서!</p>
+  <p class="note">※ 슬라이드 만들 땐 지시 칸에 "배경은 흰색, 글자는 검정" — 나중에 내 자료로 수정하기 편해집니다.</p></div>`}
+]},
+
+/* ───────── 스텝 2 ───────── */
+{id:'p2',tab:'스텝2',banner:['b3','STEP 2','내 기준서로 시작하기',
+ ['ncs.go.kr에서 내 분야 기준서를 직접 내려받아 진짜 재료로 시작','채팅 지침을 고정하고 능력단위 4개를 선정합니다']],
+ units:[
+ {id:'2-1',t:'내 기준서 내려받기',h:`<div class="card"><h3><span class="tag tg-c">실습</span>🔎 ① ncs.go.kr에서 내 분야 기준서 받기 <span class="pgb">📖 교재 p29–30·37</span> <span class="lv lv-a">🟢 전원</span></h3>
+  <p><a class="extbtn" href="https://www.ncs.go.kr" target="_blank" rel="noopener">🔎 NCS 국가직무능력표준 바로가기</a></p>
+  <p>강사 시연(3분)을 먼저 보고 → 각자: <b>NCS·학습모듈 검색</b> → 분야 선택 → <b>능력단위 기준서(시안) 또는 학습모듈 PDF 다운로드</b></p>
+  <table><tr><th>내 강의 분야</th><th>이 키워드로 검색</th></tr>
+  <tr><td>보육</td><td>보육 / 사회복지·종교</td></tr>
+  <tr><td>사무·행정·회계</td><td>사무행정 / 경리·회계 / 경영·회계·사무</td></tr>
+  <tr><td>피부미용·이미용</td><td>피부미용 / 이용·숙박·여행·오락·스포츠</td></tr>
+  <tr><td>건축시공</td><td>건축시공 / 건설</td></tr>
+  <tr><td>드론·항공</td><td>무인비행장치 / 항공</td></tr>
+  <tr><td>간호·의료</td><td>보건·의료</td></tr>
+  <tr><td>직업상담·전직지원</td><td>직업상담서비스 / 사회복지·종교</td></tr>
+  <tr><td>화훼장식</td><td>화훼장식 / 농림어업</td></tr>
+  <tr><td>기계·제조</td><td>기계 / 재료 / 기계조립</td></tr></table>
+  <div class="deep"><b>소스 2종 받기</b><span class="who">경험자</span> — 같은 화면에서 <b>학습모듈</b>도 함께 받으세요. 훈련기준은 <b>규정</b>(시수·수준·수행준거), 학습모듈은 <b>교재</b>(학습내용·예제). 편성서는 기준서에서, 교안·슬라이드는 모듈에서 나옵니다. 파일명 앞에 <b>기준서_ / 모듈_</b> 접두어를 붙여두면 노트북에서 소스를 고를 때 한눈에 구분됩니다.</div>
+  <div class="why"><b>왜 원문 기준서?</b> AI 결과물의 품질은 넣은 자료의 품질을 못 넘습니다. 블로그 요약본이 아니라 <b>공식 원문</b> — 이게 데이터 리터러시의 첫 단추입니다.</div>
+  <div class="card c-check ck" style="margin-top:10px"><label><input type="checkbox" data-ck="v21"><span>내 분야(또는 예비) 기준서 PDF를 받았다</span></label></div></div>`},
+ {id:'2-2',t:'새 노트북 + 업로드',h:`<div class="card"><h3><span class="tag tg-c">실습</span>📤 ② 새 노트북 만들어 올리기 <span class="pgb">📖 교재 p22–26</span></h3>
+  <p><b>새 노트북</b> 생성 → 이름 <b>"본게임_내이름"</b> → 기준서 PDF 소스 추가. 연습장과 섞지 않습니다.</p>
+  <div class="why"><b>업로드 전 3초 점검(윤리·보안)</b> — ① 공개 자료인가? (NCS 기준서 = 공개 OK) ② 개인정보 없는가? ③ 저작권 문제없나? 오늘만이 아니라 <b>AI에 뭘 올리든 평생 습관</b>입니다.</div>
+  <div class="deep"><b>D2 · 소스 분할</b><span class="who">경험자</span> — 기준서 PDF 1개를 통째로 올리면 출처가 "기준서 p.37"로 뭉뚱그려집니다. <b>능력단위별로 쪼개서</b>(PDF 분할 또는 능력단위 페이지만 따로 저장) 소스 4~5개로 올리면 출처가 <b>"문서 작성 능력단위 p.2"</b>처럼 정밀해지고, 나중에 소스 체크박스로 능력단위를 <b>켜고 끌 수</b> 있습니다. 소스를 어떻게 나누느냐가 검증의 해상도를 정합니다.</div>
+  <div class="card c-check ck" style="margin-top:10px"><label><input type="checkbox" data-ck="v22"><span>"본게임" 노트북에 내 기준서가 올라갔다</span></label></div></div>`},
+ {id:'2-3',t:'채팅 지침 고정',h:`<div class="card"><h3><span class="tag tg-c">핵심</span>✍️ ③ 채팅 지침 붙이기 = 제출물 ②의 원형 <span class="pgb">📖 교재 3차시·p82–83</span> <span class="lv lv-a">🟢 전원</span></h3>
+  <p>채팅 <b>설정(맞춤설정)</b> 칸에 아래를 붙여넣으세요.</p>
+PK|k21|지침|재사용 채팅 지침 (원형)|[역할] 너는 NCS 기반 훈련과정 편성 전문가다.\n[맥락] 업로드된 [내 분야] NCS 기준서 문서만 근거로 답한다. 외부 지식·추측 금지.\n[제약] 문서에 없는 내용은 "원문에 없음"으로 표시한다. 모든 답에 능력단위 코드와 원문 출처를 함께 표기한다.\n[형식] 표로 정리할 수 있으면 표로 답하고, 시간 합계는 [6시간] 기준으로 맞춘다.
+  <div class="why"><b>왜 지침으로 고정?</b> ①매번 조건을 다시 안 써도 됨 ②출처 표기가 <b>모든 답에 자동 강제</b> ③이 지침 자체가 과목만 바꿔 계속 쓰는 <b>재사용 자산</b>(재사용성 15점). 역할=수준↑, 맥락=헛소리 차단, 제약=검증 가능, 형식=옮겨담기 편함.</div>
+  <div class="app"><b>응용</b> — 같은 뼈대로 [역할]만 "평가문항 출제 전문가"로 바꾸면 시험문제 검토 지침이 됩니다. 뼈대는 하나, 역할만 갈아끼우기.</div>
+  <div class="card c-check ck" style="margin-top:10px"><label><input type="checkbox" data-ck="v23"><span>지침을 설정에 붙였고, 메모장에도 복사해뒀다</span></label></div></div>`},
+ {id:'2-4',t:'능력단위 표 + 4개 선정',h:`<div class="card"><h3><span class="tag tg-c">실습</span>📋 ④ 능력단위 훑고, 4개 고르기 <span class="pgb">📖 교재 p30·2차시</span></h3>
+PK|k22|P1|구조 훑기|이 기준서의 능력단위를 코드와 함께 표로 정리해줘.
+  <div class="why"><b>왜?</b> 편성 = 능력단위를 <b>골라 시간을 나누는 일</b>. 전체 메뉴판부터 봐야 고를 수 있습니다. 코드번호는 이후 모든 검증의 열쇠.</div>
+PK|k23|P2|4개 선정|이 중에서 초급자 대상 6시간 과정에 적합한 능력단위 4개를 골라줘. 코드와 고른 이유를 한 줄씩 붙여줘.
+  <div class="why"><b>왜 AI에게 "이유"까지?</b> AI는 후보를 제시할 뿐, <b>고르는 결정은 현장을 아는 나</b>입니다. 이유가 이상하면 바꾸라고 하세요 — 그게 사람의 역할.</div>
+  <div class="app"><b>응용</b> — "신입 직원 온보딩 3시간 과정에 맞는 단위 2개" 식으로 대상·시간만 바꾸면 어떤 과정 설계에도 같은 질문이 통합니다.</div>
+  <div class="card c-check ck" style="margin-top:10px"><label><input type="checkbox" data-ck="v24"><span>내 분야 능력단위 4개(이름+코드)를 메모했다</span></label></div></div>`}
+]},
+
+/* ───────── 스텝 3 ───────── */
+{id:'p3',tab:'스텝3',banner:['b4','STEP 3','내 편성서 완성하기',
+ ['6시간 배분 → 편성서 4요소 → 원문 검증(HITL)까지','여기서 만든 것이 과제의 몸통이 됩니다']],
+ units:[
+ {id:'3-1',t:'6시간 배분',h:`<div class="card"><h3><span class="tag tg-c">실습</span>📐 ① 6시간 나누기 <span class="pgb">📖 교재 4차시·p73–74</span></h3>
+PK|k31|P3|시간 배분|고른 능력단위 4개에 총 6시간(50분×6교시)의 훈련시간을 배분한 표를 만들어줘. 능력단위 코드, 배분 시간, 배분 이유를 포함해줘.
+  <div class="deep"><b>정량 데이터표로 검산</b><span class="who">경험자</span> — 기준서 안에 규정이 세 개 숨어 있습니다: ① 직업기초능력은 전체의 <b>10% 이내</b> ② 훈련시간은 기준시수의 <b>최대 50% 조정</b> ③ 이수체계의 <b>수준(2·3·4)</b>. 스튜디오 <b>데이터 표</b>에 아래를 지시해 규정 검산표를 뽑고, 엑셀로 내려 합계를 직접 더하세요.</div>
+PK|k35|P3-D|정량 검산표|고른 능력단위로 데이터 표를 만들어줘. 열: 능력단위 | 코드 | 수준 | 기준시수(원문) | 조정 가능 범위(기준시수의 50%~150%) | 내가 배분한 시간 | 범위 내 여부. 마지막 행에 합계와, 직업기초능력 시간이 전체의 10% 이내인지 판정을 넣어줘. 원문 출처 표기.
+  <div class="why"><b>왜 배분이 핵심?</b> 시간 배분이 곧 과정의 성격을 결정합니다 — 무엇에 힘을 줄지의 의사결정. 그리고 <b>합계를 직접 더해보세요.</b> AI도 덧셈을 틀립니다(진짜로). 숫자 검산이 데이터 리터러시입니다.</div>
+  <div class="card c-check ck" style="margin-top:10px"><label><input type="checkbox" data-ck="v31"><span>배분표 합계가 6시간임을 내 눈으로 확인했다</span></label></div></div>`},
+ {id:'3-2',t:'편성서 4요소',h:`<div class="card"><h3><span class="tag tg-c">핵심</span>📄 ② 편성서 4요소 뽑기 <span class="pgb">📖 교재 p16·77–79</span> <span class="lv lv-a">🟢 전원</span></h3>
+  <p>편성서 = <b>훈련목표 / 훈련내용 / 능력단위 / 훈련시간</b>. 하나라도 빠지면 감점(완성도 30점).</p>
+PK|k32|P4|편성서 본체|지금까지 정한 내용으로 훈련과정 편성서를 작성해줘. 반드시 아래 4가지 항목으로 구성하고, 항목마다 근거 능력단위 코드와 원문 출처를 표기해줘.\n\n1. 훈련목표 (2~3줄, "~할 수 있다" 수행 중심 문장)\n2. 훈련내용 (능력단위별 주요 학습내용)\n3. 능력단위 (명칭과 코드)\n4. 훈련시간 (능력단위별 배분, 합계 6시간)
+  <div class="why"><b>왜 출처까지?</b> 이 과제의 본질은 "AI가 대신 쓴 문서"가 아니라 <b>원문 근거로 사람이 검증한 문서</b>. 출처 링크로 확인 안 되는 내용은 감점(NCS근거 30점)입니다. 스텝 2에서 지침에 출처를 박아둔 이유가 지금 발동합니다.</div>
+  <div class="deep"><b>D1 · 소스 선택 실험</b><span class="who">경험자</span> — 소스 패널의 <b>체크박스</b>가 질의 범위입니다. 위 P4를 그대로 세 번 보내되 ① 기준서만 켜고 ② 학습모듈만 켜고 ③ 둘 다 켜고 — 훈련내용 항목이 어떻게 달라지는지 비교하세요. 기준서만이면 수행준거 문장, 모듈만이면 학습활동 문장, 둘 다면 섞입니다. <b>"AI의 답"이 아니라 "이 소스 조합의 답"</b>이라는 걸 눈으로 확인하는 실험입니다. 편성서엔 ①, 교안엔 ②가 맞습니다.</div>
+  <div class="app"><b>응용</b> — 같은 요령으로 "강의계획서 양식으로", "주간 훈련일지 양식으로"라고 하면 다른 행정 서식도 원문 근거로 뽑을 수 있습니다.</div>
+  <div class="card c-check ck" style="margin-top:10px"><label><input type="checkbox" data-ck="v32"><span>4요소+출처가 있는 편성서가 나왔다</span></label></div></div>`},
+ {id:'3-2b',t:'(+더) 보고서·강의계획서',h:`<div class="card"><h3><span class="tag tg-c">보너스</span>📑 보고서로 정리 + 강의계획서 잇기 <span class="pgb">📖 교재 p77–78</span> <span class="lv lv-b">🟡 +더 해보기</span></h3>
+  <p><b>스튜디오 → 보고서</b>를 누르면 방금 편성 내용이 문서 형태로 자동 정리됩니다. 눌러만 보세요(생성엔 시간이 걸립니다 — 걸어두고 다음 진행).</p>
+PK|k34|P4+|강의계획서 잇기|방금 편성서의 1교시 내용으로 강의계획서 초안을 만들어줘. 도입(10분)-전개(30분)-정리(10분) 구조로, 각 단계의 교수 활동과 학습자 활동을 나눠서 표로 작성해줘.
+  <div class="why"><b>왜?</b> 편성서(과정 설계) 다음은 강의계획서(차시 설계) — 같은 소스, 같은 지침으로 다음 단계 문서까지 이어지는 걸 확인하면, 오늘 배운 게 편성 하나가 아니라 <b>문서 생산 라인</b>임을 알게 됩니다.</div></div>`},
+ {id:'3-3',t:'HITL 검증',h:`<div class="card"><h3><span class="tag tg-x">검증</span>🔍 ③ 원문 대조 — 사람이 마지막 확인자 <span class="pgb">📖 교재 4차시·p80</span></h3>
+PK|k33|P5|코드·시간 검증|편성서의 능력단위 명칭과 코드가 원문과 일치하는지 항목별로 확인해줘. 코드의 버전 끝자리(_22v3, _22v4 등)까지 원문 인용과 함께 보여주고, 표준훈련시간 원문 값과 내가 배분한 시간을 표로 대조해줘.
+  <p>검증 4동작: <b>① 출처 클릭</b> → <b>② 원문과 대조</b> (특히 코드 버전 끝자리!) → <b>③ 틀린 곳 고치기</b> → <b>④ 검증 답변에서 「메모에 저장」 클릭</b></p>
+  <div class="deep"><b>D4 · 근거 없는 문장을 AI에게 자백시키기</b><span class="who">🟢 전원</span> — 출처 번호가 <b>안 붙은 문장</b>이 검증의 급소입니다. 아래 한 줄로 AI가 스스로 표시하게 하세요. 표시된 문장은 ① 원문에서 직접 찾아 확인하거나 ② 편성서에서 지우거나 ③ "가상 시뮬레이션"으로 명시합니다. 이 결과가 <b>검증 기록(제출물 ②)의 핵심 재료</b>입니다.</div>
+PK|k36|P5-D|근거 없는 문장 표시|방금 작성한 편성서에서 소스 원문에 직접 근거가 없는 문장(추론·요약·일반 지식으로 쓴 문장)을 모두 골라 목록으로 만들어줘. 각 문장마다 "왜 소스에 없는지"와 "원문의 어느 부분을 근거로 고쳐 쓸 수 있는지"를 함께 적어줘.
+  <p class="note">📌 이 메모가 나중에 <b>제출물 2번(검증 기록 독스)</b>의 재료가 됩니다 — 지금 저장 버튼만 누르면 끝.</p>
+  <div class="why"><b>왜 버전 끝자리?</b> 실제로 가장 자주 틀리는 곳이 코드 버전(_22v3인지 v4인지)입니다. 여기서 잡은 오류 1~2건이 그대로 <b>성찰 메모(제출물 ③)의 재료</b>가 됩니다. AI가 만들어도 <b>최종 책임은 제출하는 나</b> — 이것이 HITL입니다.</div>
+  <div class="app"><b>응용</b> — 표현이 어색하거나 특정 성별·연령에 치우친 문장이 보이면 현업 문장으로 다듬으세요. 편향 점검도 검증의 일부입니다.</div>
+  <div class="card c-check ck" style="margin-top:10px"><label><input type="checkbox" data-ck="v33"><span>출처를 클릭해 대조했고, 고친 것을 메모했다</span></label></div></div>`}
+]},
+
+/* ───────── 스텝 4 ───────── */
+{id:'p4',tab:'스텝4',banner:['b5','STEP 4','혼자 처음부터 다시 — 오늘의 본게임',
+ ['아까 1시간 걸린 것을 이번엔 20~30분에 — 그게 오늘 배운 증거입니다','이번 라운드의 결과물로 최종 제출합니다']],
+ units:[
+ {id:'4-1',t:'관문: 내 지침 만들기',h:`<div class="card"><h3><span class="tag tg-x">관문</span>🛠️ ① 시작 전 필수 — 지침을 "내 것"으로 <span class="pgb">📖 교재 p82–83·106</span></h3>
+  <div class="gate"><b>규칙:</b> 새 노트북을 만들면 질문하기 전에 <b>지침부터</b> 붙입니다. 아래 [ ] 3칸 중 <b>2칸 이상을 반드시 내 상황으로 수정</b>해서 붙이세요. 원형 그대로 제출하면 재사용성 점수를 잃습니다.</div>
+PK|k41|내지침|내 지침 템플릿 (빈칸 채우기)|[역할] 너는 NCS 기반 훈련과정 편성 전문가다.\n[맥락] 업로드된 [내 분야명: ______] NCS 기준서 문서만 근거로 답한다. 외부 지식·추측 금지.\n[제약] 문서에 없는 내용은 "원문에 없음"으로 표시한다. 모든 답에 능력단위 코드와 원문 출처를 함께 표기한다.\n[형식] 표로 정리할 수 있으면 표로 답하고, 시간 합계는 [편성 시간: __시간] 기준으로 맞추며, [형식 요구: 예) 표 아래 요약 3줄 추가] 를 따른다.
+  <div class="why"><b>왜 고쳐 쓰나?</b> 복붙한 지침은 남의 것, 고친 지침은 <b>내 자산</b>입니다. 다음 달 다른 과정을 편성할 때 이 지침을 꺼내 과목명만 바꾸면 오늘 전체가 10분으로 압축됩니다 — 그게 재사용성 15점의 진짜 의미.</div>
+  <div class="card c-check ck" style="margin-top:10px"><label><input type="checkbox" data-ck="v41"><span>새 노트북에 "내 지침"(2칸 이상 수정)을 붙였다 → 메모장에 저장했다</span></label></div></div>`},
+ {id:'4-2',t:'풀사이클 재수행',h:`<div class="card"><h3><span class="tag tg-c">실습</span>🔁 ② 업로드부터 검증까지, 이번엔 혼자 <span class="pgb">📖 교재 p85</span> <span class="lv lv-a">🟢 전원</span></h3>
+  <p>같은 기준서를 다시 올리고, 스텝 2~3의 P1→P2→P3→P4→P5를 <b>이번엔 스스로</b> 진행합니다. 교재를 봐도 되지만, <b>복사 버튼을 누르기 전에 프롬프트를 한 번 소리 내 읽고</b> — 왜 이 질문인지 스스로 답해보세요.</p>
+  <p class="note">🟡 <b>+더 해보기</b> — 같은 기준서 대신 <b>다른 과목</b>으로 도전하거나, <b>학습모듈 PDF를 소스로 추가</b>해서 "학습모듈에서 내 능력단위의 학습내용·실습활동을 표로 정리하고 소스별 출처를 구분해줘"까지 — 훈련내용이 실제 수행 활동으로 풍성해집니다.</p>
+  <div class="card c-check ck" style="margin-top:10px">
+  <label><input type="checkbox" data-ck="v42"><span>업로드 + 내 지침 적용 완료</span></label>
+  <label><input type="checkbox" data-ck="v43"><span>선정 → 배분 → 편성서 4요소 완료</span></label>
+  <label><input type="checkbox" data-ck="v44"><span>검증(코드 버전 끝자리까지) 완료</span></label></div></div>`},
+ {id:'4-3',t:'제출',h:`<div class="card"><h3><span class="tag tg-v">제출</span>🏆 ③ 세 가지로 나눠 제출 <span class="pgb">📖 교재 p97</span></h3>
+  <table><tr><th style="width:44px;text-align:center;font-size:17px">1</th><td><b>편성서 → 엑셀</b> — 1차(스텝3)와 2차(지금) 중 <b>더 나은 결과</b>를 골라 편성서 양식(엑셀)에 옮겨 담기 → 파일명 <b>NCS편성서_과목명_성명</b></td></tr>
+  <tr><th style="text-align:center;font-size:17px">2</th><td><b>검증 기록 → 독스</b> — 스텝3에서 「메모에 저장」한 검증 메모를 열고 <b>내보내기 → Docs</b> 클릭. 그게 곧 검증 증빙 제출물</td></tr>
+  <tr><th style="text-align:center;font-size:17px">3</th><td><b>내 지침 → 게시판</b> — LM 설정에 넣은 내 지침 전문을 복사해 게시판에 <b>[분야/성명] 지침 내용</b> 형식으로 붙여넣기. ⚠️ 원형 그대로면 재사용성 감점 — [내 분야]·[시간]·[형식] 중 2칸 이상 내 글로!</td></tr></table>
+  <p class="note">※ <b>화면 캡처 제출 금지</b> — 캡처엔 워터마크가 남습니다. 엑셀·독스·게시글 텍스트로만.</p>
+  <div class="why"><b>왜 세 갈래?</b> 엑셀 = 현업 제출 형식 그대로 / 독스 내보내기 = 노트북LM 산출물을 문서로 꺼내는 기술 / 게시판 = 서로의 지침을 구경하는 공유 자산. 제출 자체가 마지막 실습입니다.</div>
+  <div class="card c-check ck" style="margin-top:10px">
+  <label><input type="checkbox" data-ck="v45"><span>1️⃣ 편성서 엑셀 제출 (4요소+출처, 합계 6시간 확인)</span></label>
+  <label><input type="checkbox" data-ck="v46"><span>2️⃣ 검증 메모 독스로 내보내 제출</span></label>
+  <label><input type="checkbox" data-ck="v47"><span>3️⃣ 내 지침(2칸 이상 수정) 게시판 등록 — 완료! 🎉</span></label></div></div>`}
+]},
+
+/* ───────── 스텝 5 ───────── */
+{id:'p5',tab:'스텝5',banner:['b5','STEP 5 · 6교시','제어하기 — 만드는 것에서, 내 뜻대로 만드는 것으로',
+ ['스텝1~4는 "만든다"였습니다. 스텝5는 "소스를 고르고, 형식을 정하고, 밀폐를 열지 말지 내가 정한다"입니다','① 소스 2종 대조·분석 → ② 슬라이드 제어 → ③ 보고서 제어 → ④ 밖으로 나가기(MD·지침·제미나이)','처음이신 분은 5-1만 해보시고, 나머지 시간은 제출물 마무리에 쓰세요','📖 교재 페이지는 "응용"입니다 — 교재에 그대로 있는 게 아니라 그 페이지의 원리를 한 단계 더 쓴 것']],
+ units:[
+ {id:'5-1',t:'소스 2종 대조·분석',h:`<div class="card"><h3><span class="tag tg-c">분석</span>📂 ① 기준서 × 학습모듈(또는 내 교안) 대조 분석 <span class="pgb">📖 교재 p22–26·30·80 응용</span> <span class="lv lv-a">🟢 전원</span></h3>
+  <p>새 노트북 <b>"분석_내이름"</b> → 소스 2개: <b>기준서_</b>(오늘 쓴 것) + <b>모듈_</b>(학습모듈) 또는 <b>내 기존 교안</b>(PPT/PDF). 둘 다 없으면 오늘 만든 편성서 엑셀을 두 번째 소스로.</p>
+PK|k51|P5-1|구조 뽑기|두 번째 소스(모듈 또는 내 교안)의 구조를 표로 정리해줘. 열: 차시(또는 장) | 학습목표 | 주요 활동 | 평가 방법. 원문에 없는 항목은 "없음"이라고 써줘.
+  <p>"없음"이 몇 개 뜨는지 세어보세요. 그게 그 문서의 빈칸입니다.</p>
+PK|k52|P5-2|대응표 + D5 충돌 검출|첫 번째 소스(기준서)의 능력단위요소·수행준거와 두 번째 소스(모듈/교안)의 학습내용을 대응표로 만들어줘. 열: 수행준거 | 대응하는 학습내용 | 일치 정도(일치/부분/없음). 그리고 아래 두 목록을 따로 뽑아줘. (가) 기준서에는 있는데 모듈/교안에 없는 수행준거 (나) 두 소스가 서로 다르게 말하는 지점(시간·수준·용어).
+  <div class="why"><b>왜 이게 고급?</b> 기능은 스텝3과 같습니다. 달라진 건 <b>소스가 2개</b>이고 "둘을 대조하라"고 시킨 것. 소스 하나면 요약, 소스 둘이면 <b>분석</b>이 됩니다. (가) 목록이 곧 교안 개정 계획서, (나) 목록이 곧 기관 편성 회의 안건입니다.</div>
+  <div class="deep"><b>정성 데이터표</b><span class="who">경험자</span> — 데이터 표는 숫자만 세는 게 아닙니다. 기준서의 <b>지식·기술·태도</b>와 <b>평가시 고려사항</b>은 글로 돼 있어서 아무도 표로 안 만듭니다. 그래서 인사이트가 거기 있습니다.</div>
+PK|k57|P5-Q|정성 분석표|기준서의 능력단위별로 데이터 표를 만들어줘. 열: 능력단위 | 수행준거 개수 | 지식 핵심 3개 | 기술 핵심 3개 | 태도 핵심 3개 | 평가시 고려사항 요약 | 이 고려사항에 맞는 평가방법 제안(과제형/실기/구술 중) | 원격훈련 가능 여부(원문 권장훈련방법 기준). 각 칸에 원문 출처 표기.
+  <div class="gate"><b>HITL</b> — (가) 목록에서 1개를 골라 모듈/교안 원문에서 직접 찾아보세요. AI가 못 찾은 게 아니라 <b>다른 표현으로 다루고 있는</b> 경우가 자주 있습니다. "태도 → 평가방법 제안"도 마찬가지 — AI의 제안은 초안이고, 태도를 어떻게 평가할지는 교수설계자의 판단입니다.</div>
+  <div class="app"><b>응용</b> — 문제은행 늘리기: 기존 문항을 세 번째 소스로 넣고 "이 문항들이 다루지 않는 수행준거에 대해 같은 형식으로 문항 3개씩 만들어줘". 기존 문항 형식을 AI가 따라갑니다.</div>
+  <div class="card c-check ck" style="margin-top:10px"><label><input type="checkbox" data-ck="v51"><span>(가) 없는 수행준거 목록을 뽑았고, 1개를 원문에서 직접 확인했다</span></label></div></div>`},
+ {id:'5-2',t:'슬라이드 제어',h:`<div class="card"><h3><span class="tag tg-c">제어</span>🎛️ ② 슬라이드 제어 — 장수·구성·디자인·로고를 MD로 지시 <span class="pgb">📖 교재 p90–91 응용</span> <span class="lv lv-b">🟡 +더 해보기</span></h3>
+  <p><b>스튜디오 → 슬라이드 자료 → 맞춤설정(지시 칸)</b>. 부록의 "배경 흰색"은 색만 제어한 것. 이번엔 <b>구성과 디자인</b>을 MD 목록으로 통째로 지시합니다. 먼저 지시 없이 한 번, 아래로 한 번 — 둘을 비교하세요.</p>
+PK|k53|P5-3|슬라이드 스펙 (MD)|# 대상
+- 훈련기관 원장·교육담당자에게 과정 편성 결과를 보고하는 자리
+# 구성 (총 8장)
+- 1장: 과정명 + 훈련목표 한 줄
+- 2장: 이수체계 — 능력단위 4개를 수준(2·3·4)별로 표
+- 3~6장: 능력단위당 1장. 왼쪽 수행준거 목록, 오른쪽 배분 시간
+- 7장: 평가 방법
+- 8장: 일정
+# 디자인
+- 배경 흰색, 본문 검정, 강조색은 #0F62FE 한 가지만
+- 장식·아이콘·그라데이션 없음, 표는 격자선
+- 모든 장에 원문 출처 번호 표기
+# 로고
+- 소스에 올린 로고 이미지를 모든 장 우상단에 배치
+  <table><tr><th>제어 항목</th><th>지시문에 넣는 말</th><th>안 넣으면</th></tr>
+  <tr><td>대상</td><td>"~에게 보고하는 자리"</td><td>불특정 청중용 일반 요약</td></tr>
+  <tr><td>장수·구성</td><td>"총 N장", "1장 ○○, 2장 ○○…"</td><td>AI 마음대로 10~20장, 소스 순서대로 나열</td></tr>
+  <tr><td>디자인</td><td>배경·본문·강조 1색·장식 없음</td><td>알록달록 템플릿, PPT에서 색이 꼬임</td></tr>
+  <tr><td>출처</td><td>"모든 장에 출처 번호"</td><td>검증 불가</td></tr></table>
+  <div class="why"><b>왜 MD로 지시?</b> 지시 칸에 줄글로 쓰면 AI가 일부를 흘립니다. <b>#와 -로 구조를 주면</b> 항목 단위로 읽어서 누락이 줄어듭니다. 스텝2의 채팅 지침(역할·맥락·제약·형식)이 슬라이드에도 똑같이 통하는 것 — 프롬프트 엔지니어링은 채팅창 밖에서도 같은 원리입니다.</div>
+  <div class="deep"><b>로고 — 한계 체험</b><span class="who">경험자</span> — 로고 PNG를 <b>소스로 업로드</b>하고 위 지시를 주세요. 슬라이드 베타가 이미지를 배치해 줄 때도 있고 <b>무시할 때도</b> 있습니다. 안 되면 그게 정답입니다: <b>PPT로 내려받아 로고를 직접 넣는 것</b>. AI는 초안, 마감은 사람 — 이 경계를 몸으로 아는 사람이 슬라이드 제작 시간을 절반으로 줄입니다. 되든 안 되든 기록해 두세요.</div>
+  <div class="card c-check ck" style="margin-top:10px"><label><input type="checkbox" data-ck="v52"><span>지시 없이 만든 것과 MD로 지시한 것을 비교했다</span></label></div></div>`},
+ {id:'5-3',t:'보고서 제어',h:`<div class="card"><h3><span class="tag tg-c">제어</span>📐 ③ 보고서 제어 — 섹션과 표를 MD로 지시 <span class="pgb">📖 교재 p77–79 응용</span> <span class="lv lv-b">🟡 +더 해보기</span></h3>
+  <p>스튜디오 <b>보고서 → 맞춤설정</b>에도 MD 구조를 붙일 수 있습니다. 기관 양식이 있다면 그 양식의 <b>제목과 열 이름을 그대로</b> 씁니다.</p>
+PK|k54|P5-4|보고서 스펙 (MD)|# 문서: 훈련과정 편성 보고서
+## 1. 과정 개요
+- 과정명, 대상, 총 시간, 수준
+## 2. 능력단위별 편성
+- 표. 열: 능력단위 | 코드 | 수준 | 기준시수 | 편성시수 | 근거 수행준거 번호
+## 3. 시수 검산
+- 합계, 직업기초능력 비율(10% 이내 여부), 50% 조정 범위 준수 여부
+## 4. 차시별 교안 (1차시만 예시)
+- 표. 행: 도입 / 전개1 / 전개2 / 정리. 열: 내용 | 시간(분) | 교수방법 | 자료 | 근거 수행준거
+## 5. 평가 계획
+- 평가시 고려사항 → 평가방법 대응
+# 규칙
+- 모든 수치는 원문 출처 번호 표기
+- 원문에 없으면 "원문에 없음"
+  <div class="why"><b>왜 행·열까지 불러주나?</b> "보고서 만들어줘"는 AI가 형식을 정합니다. 형식을 내가 정하면 AI는 <b>내용만 채우는 역할</b>로 내려옵니다. 그래야 결과를 내 양식에 그대로 붙일 수 있고, 검증도 <b>칸 단위</b>로 됩니다. 5-2 슬라이드와 같은 스펙을 쓰면 슬라이드와 보고서의 구조가 일치합니다.</div>
+  <div class="app"><b>응용</b> — ## 4의 행만 바꾸면: 강의계획서(주차별) · 평가계획서(평가항목별) · 상담일지(상담단계별). 형식이 도구입니다.</div>
+  <div class="card c-check ck" style="margin-top:10px"><label><input type="checkbox" data-ck="v53"><span>내 양식 제목·열 이름으로 보고서를 뽑았다</span></label></div></div>`},
+ {id:'5-4',t:'밖으로 나가기: MD·지침·제미나이',h:`<div class="card"><h3><span class="tag tg-c">연결</span>🔗 ④ 노트북 밖으로 — 결과물을 나르고, 규칙을 나르고, 밀폐를 연다 <span class="pgb">📖 교재 p82–83·104–107 응용</span> <span class="lv lv-b">🟡 +더 해보기</span></h3>
+  <p>세 가지를 순서대로. <b>(a) 결과물 나르기 = MD</b> → <b>(b) 규칙 나르기 = 지침.md</b> → <b>(c) 밀폐 열기 = 제미나이에 노트북 붙이기</b>.</p>
+
+  <h4 style="margin:14px 0 6px">(a) MD — 구조가 살아있는 텍스트</h4>
+  <p><b>마크다운(MD)</b>은 기호 몇 개로 문서 <b>구조</b>를 표시하는 글쓰기 방식입니다. 5-2·5-3에서 이미 썼습니다. 딱 4개만 알면 됩니다.</p>
+  <table><tr><th>기호</th><th>뜻</th><th>예</th></tr>
+  <tr><td><code>#</code> <code>##</code> <code>###</code></td><td>제목 크기 (과정 › 차시 › 항목)</td><td><code>## 1차시 직업정보 분석</code></td></tr>
+  <tr><td><code>-</code></td><td>목록</td><td><code>- 수행준거 1</code></td></tr>
+  <tr><td><code>**굵게**</code></td><td>강조</td><td><code>**평가: 과제형**</code></td></tr>
+  <tr><td><code>| 표 |</code></td><td>표 (세로선으로 칸 구분)</td><td><code>| 차시 | 내용 | 시간 |</code></td></tr></table>
+PK|k55|P5-5|MD로 출력|방금 만든 편성서를 마크다운 형식으로 다시 출력해줘. 제목은 ##, 항목은 -, 표는 마크다운 표로. 출처 번호는 각 항목 끝에 [원문 p.○] 형태로 남겨줘.
+  <p>결과 복사 → 구글 독스·옵시디언·제미나이 어디에 붙여도 제목과 표가 그대로 살아 있습니다. 메모장에 붙여 <b>"편성서.md"</b>로 저장하면 내년 편성 때 소스 하나로 다시 시작할 수 있습니다.</p>
+  <div class="why"><b>왜 MD?</b> AI는 예쁜 서식이 아니라 <b>구조</b>를 읽습니다. <code>#</code>가 곧 목차, <code>-</code>가 곧 항목. 그래서 AI에게 <b>지시할 때도</b>(5-2·5-3), AI에게서 <b>받을 때도</b> MD가 가장 안 깨집니다. 그냥 텍스트라서 어디서든 열리고, 어디든 붙습니다.</div>
+
+  <h4 style="margin:18px 0 6px">(b) 지침.md — 규칙을 매번 치지 말고 파일로</h4>
+  <p>스텝2 ③에서 설정 칸에 붙인 지침, 스텝4 ①에서 "내 것"으로 고친 지침 — 그걸 파일로 저장하는 겁니다. 아래는 오늘 기준서의 규정을 반영한 예시. 새 과제가 아니라 <b>제출물 ③(내 지침)의 파일 버전</b>입니다.</p>
+PK|k56|템플릿|지침.md (내 CLAUDE.md)|# 지침 — [분야/성명]
+## 역할
+- 너는 [내 분야] 훈련과정 편성을 돕는 보조자다
+## 항상 지킬 것
+- 답은 소스 원문 근거로만. 근거 없으면 "원문에 없음"
+- 시수는 기준시수의 50~150% 안에서만 제안
+- 직업기초능력은 전체의 10% 이내
+- 결과는 표로, 출처 번호 필수
+## 하지 말 것
+- 능력단위·코드를 지어내지 않기
+- 수준(2·3·4)을 섞지 않기 — 섞이면 표시하고 물어보기
+## 출력 형식
+- 편성서: 능력단위 | 코드 | 수준 | 시수 | 근거
+  <table><tr><th>지침이 사는 곳</th><th>어떻게</th><th>성격</th></tr>
+  <tr><td>노트북LM</td><td><b>채팅 설정 → 맞춤설정 칸</b>에 붙이기</td><td>노트북마다 붙여야 함. AI가 <b>따르는</b> 곳</td></tr>
+  <tr><td>제미나이</td><td><b>Gem 만들기 → 지침 칸</b>에 붙이기</td><td>한 번 만들면 영구. CLAUDE.md에 가장 가까움</td></tr>
+  <tr><td>내 컴퓨터</td><td><b>지침.md</b> 파일로 보관</td><td>원본. 위 두 곳에 복붙하는 출처</td></tr></table>
+  <div class="deep"><b>소스에 지침을 넣으면 왜 안 따르나</b><span class="who">🟢 전원</span> — 많이들 해봤을 겁니다. 지침.md를 소스로 올리고 "지침대로 해줘" — 될 때도, 안 될 때도 있죠. 이유: 노트북LM에서 <b>소스는 AI가 "읽는" 곳</b>이지 "따르는" 곳이 아닙니다. 소스 문장은 질문과 관련될 때만 검색돼 답에 섞이므로, 규칙이 걸리기도 안 걸리기도 합니다. <b>규칙은 항상 설정 칸에.</b> 소스에 올린 지침은 "이 편성이 지침.md 기준에 맞는지 검토해줘"처럼 <b>검토 대상으로 호출</b>할 때만 쓸모가 있습니다. 개발자들이 CLAUDE.md라는 파일 하나로 AI 규칙을 고정하는 것과 같은 자리가 노트북LM엔 <b>설정 칸</b>, 제미나이엔 <b>Gem</b>입니다.</div>
+
+  <h4 style="margin:18px 0 6px">(c) 제미나이에 노트북 붙이기 — 밀폐를 열어야 할 때</h4>
+  <p>같은 노트북을 <b>제미나이 앱의 + 버튼</b>으로 연결하면 그대로 채팅할 수 있습니다. 소스·이름·맞춤 지침이 <b>양쪽에 동기화</b>됩니다. 그런데 답이 다릅니다:</p>
+  <table><tr><th></th><th>노트북LM(Gemini Notebook)</th><th>제미나이에서 노트북 연결</th></tr>
+  <tr><td>답의 재료</td><td><b>소스만</b> — 밀폐</td><td>소스 <b>+ 웹 검색 + 기타 도구</b> — 개방</td></tr>
+  <tr><td>노트북 개수</td><td>1개</td><td>여러 노트북 <b>동시 참조</b></td></tr>
+  <tr><td>지침</td><td>맞춤설정 칸 (양쪽 공유)</td><td>+ Gem으로 영구 지침</td></tr>
+  <tr><td>산출물</td><td>스튜디오(보고서·슬라이드·퀴즈·표)</td><td>이미지 생성, 코드·앱, 딥리서치 등 확장 작업</td></tr>
+  <tr><td>검증 난도</td><td>출처 클릭 = 검증 끝</td><td>이 문장이 <b>소스에서 왔나, 웹에서 왔나</b>부터 가려야 함</td></tr></table>
+PK|k58|P5-G|제미나이에서 (개방 질문)|이 노트북의 편성서에 있는 능력단위 4개 중 최근 개정된 훈련기준이 있는지 확인해줘. 답할 때 노트북 소스에서 온 내용과 웹에서 찾은 내용을 구분해서 표시해줘.
+  <div class="why"><b>왜 붙이나 — 밀폐/개방을 내가 고르는 것.</b> 편성서를 <b>만들 때</b>는 노트북LM — 기준서 밖 얘기가 섞이면 안 되니 밀폐가 맞습니다. 만든 뒤 "개정판 나왔나", "다른 기관은 몇 시간으로 편성하나" 같은 <b>바깥 질문</b>은 제미나이 — 소스+웹. 그리고 규정·편성·교안 노트북을 <b>나눠 두면</b> 노트북LM에선 하나씩만 보지만 제미나이는 셋을 한 번에 봅니다. 노트북을 왜 하나에 다 안 넣는지의 답이 여기 있습니다.</div>
+  <div class="deep"><b>D6 · 노트북 분리 설계</b><span class="who">경험자</span><br>
+  <span style="display:inline-block;background:#fff;border:1px solid #E08A00;border-radius:8px;padding:6px 10px;margin:4px 2px">📕 규정 노트북<br><small>훈련기준·지침·법령</small></span>
+  <span style="display:inline-block;background:#fff;border:1px solid #E08A00;border-radius:8px;padding:6px 10px;margin:4px 2px">📗 편성 노트북<br><small>기준서 + 편성서.md</small></span>
+  <span style="display:inline-block;background:#fff;border:1px solid #E08A00;border-radius:8px;padding:6px 10px;margin:4px 2px">📘 교안 노트북<br><small>학습모듈 + 내 교안</small></span>
+  <br>세 노트북이 <b>같은 지침.md</b>를 설정 칸에 공유하고, 결과물은 <b>MD</b>로 오가고, 셋을 한 번에 봐야 할 때만 <b>제미나이</b>에서 묶습니다. 이게 "업무자동화"의 실제 구조입니다 — 버튼이 아니라 <b>소스를 어떻게 나누고 어디서 묶느냐</b>.</div>
+  <div class="gate"><b>HITL 2단계</b> — 제미나이 답에서 출처 없는 문장 1개를 골라 <b>소스인지 웹인지</b> 직접 확인하세요. 노트북LM에선 "출처 클릭"이 검증이었지만, 개방 모드에선 <b>출처의 출처</b>를 묻는 게 검증입니다.</div>
+  <div class="card c-check ck" style="margin-top:10px"><label><input type="checkbox" data-ck="v54"><span>편성서를 MD로 받았고, 지침.md를 저장했고, 제미나이에서 같은 노트북에 한 번 물어봤다</span></label></div></div>`},
+ {id:'5-5',t:'6교시 마무리',h:`<div class="card foot"><h3><span class="tag tg-v">정리</span>🏁 오늘 배운 것 — 세 문장 <span class="pgb">📖 교재 p97·103</span></h3>
+  <table><tr><th>1</th><td>오늘 여러분은 <b>편성서 1건</b>을 만들었습니다.</td></tr>
+  <tr><th>2</th><td>그게 믿을 만한 이유는 AI가 <b>소스 원문 안에서만</b> 답했고, 여러분이 <b>원문과 대조</b>했기 때문입니다.</td></tr>
+  <tr><th>3</th><td>규정 문서를 소스로 넣고 질의하는 것 — 그게 <b>업무 자동화의 첫 단계</b>입니다. 소스를 나누고, 형식을 정하고, 밀폐를 열지 말지 고르는 것이 그 다음 단계입니다.</td></tr></table>
+  <p class="note">※ 스텝5의 네 가지는 전부 스텝1~4와 같은 원리입니다: 소스 → 지침 → 질문 → 검증. 달라진 건 소스의 개수, 형식 지정의 정밀도, 그리고 그라운딩 범위의 선택뿐입니다.</p></div>`}
+]},
+
+/* ───────── 부록 ───────── */
+{id:'p6',tab:'부록',banner:['b1','APPENDIX','집에 가서 + 막힐 때',
+ ['오늘 절차는 이 교재만 있으면 언제든 재현됩니다']],
+ units:[
+ {id:'6-0',t:'(+더) 훈련생용 퀴즈',h:`<div class="card"><h3><span class="tag tg-c">보너스</span>❓ 내 훈련생에게 줄 퀴즈·플래시카드 <span class="pgb">📖 교재 p90–91</span> <span class="lv lv-b">🟡 +더 해보기</span></h3>
+  <p>본게임 노트북에서 <b>스튜디오 → 퀴즈</b> 또는 <b>플래시카드</b> 클릭 — 내 기준서 기반 복습 문제가 자동 생성됩니다. 2~3개 풀어보고, 쓸 만한 것을 골라두세요.</p>
+  <div class="why"><b>왜?</b> 오늘 만든 노트북이 편성 도구로 끝나지 않고 <b>훈련생 학습 지원 도구</b>가 됩니다 — 이해가 느린 학습자에겐 플래시카드, 시험 대비반엔 퀴즈, 이동이 많은 반엔 오디오. 학습자 특성에 따라 골라 쓰는 것까지가 교수설계입니다.</div></div>`},
+ {id:'6-0b',t:'(+더) 발표 슬라이드',h:`<div class="card"><h3><span class="tag tg-c">보너스</span>📊 발표 슬라이드 만들기 <span class="pgb">📖 교재 p90–91</span> <span class="lv lv-b">🟡 +더 해보기</span></h3>
+  <p><b>스튜디오 → 슬라이드 자료</b> → 지시 칸에 꼭: <b>"배경은 흰색, 글자는 검정으로 만들어줘"</b> → 생성 후 다운로드.</p>
+  <div class="why"><b>왜 흰 배경?</b> 다운받아 파워포인트에서 열었을 때 색이 안 꼬여서, 내 학원 로고·템플릿 색만 입히면 바로 수업자료가 됩니다. AI 산출물은 완성품이 아니라 <b>내가 다듬을 초안</b> — 이 관점이면 PPT 제작 시간이 절반으로 줄어듭니다.</div>
+  <p class="note">※ 장수·대상·구성까지 지정하는 <b>슬라이드 제어</b>는 스텝5-2에서 다룹니다. 표 형태가 필요하면 <b>데이터 표</b> 기능도 있습니다 — 능력단위 표를 정리된 표로 뽑아줍니다.</p></div>`},
+ {id:'6-0c',t:'현장 활용 6장면',h:`<div class="card"><h3><span class="tag tg-c">확장</span>🎬 오늘 배운 것, 현장에서 이렇게 6장면</h3>
+  <table><tr><th>장면</th><th>소스</th><th>하는 일</th></tr>
+  <tr><td>① 과정 편성</td><td>NCS 기준서</td><td>오늘 한 것 — 편성서 4요소</td></tr>
+  <tr><td>② 강의계획서</td><td>같은 노트북</td><td>차시별 도입-전개-정리 초안</td></tr>
+  <tr><td>③ 훈련생 복습</td><td>같은 노트북</td><td>퀴즈·플래시카드·오디오 배포</td></tr>
+  <tr><td>④ 설문 분석</td><td>수요조사 결과(이름 지우고)</td><td>반 수준·니즈 30초 요약</td></tr>
+  <tr><td>⑤ 행정 Q&A</td><td>기관 운영·복무규정</td><td>출처 달린 규정 답변</td></tr>
+  <tr><td>⑥ 발표 자료</td><td>완성 편성서</td><td>흰 배경 슬라이드 → 내 자료화</td></tr></table>
+  <p class="note">※ 전부 오늘의 같은 절차(소스→지침→질문→검증)입니다. 소스만 바뀔 뿐. 개인 문서(여행 계획, 검진 결과 정리)에도 똑같이 통합니다.</p></div>`},
+ {id:'6-1',t:'집에 가서',h:`<div class="card"><h3><span class="tag tg-c">확장</span>🎁 집에 가서 하면 좋은 것 <span class="pgb">📖 교재 p104–107</span></h3>
+  <table><tr><th>이것</th><th>이렇게</th></tr>
+  <tr><td>예비 기준서로 했다면</td><td>내 분야 기준서로 오늘 순서 그대로 한 번 더 (세 번째는 15분 컷)</td></tr>
+  <tr><td>스튜디오 나머지</td><td>오디오 오버뷰(출퇴근 복습) · 퀴즈/플래시카드(훈련생 배포용) · 슬라이드("배경 흰색" 지시)</td></tr>
+  <tr><td>지침 확장</td><td>[역할]만 바꿔 평가문항 검토용·상담 안내용 지침 만들기</td></tr></table>
+  <p class="note">※ 우측 하단 <b>?</b> 버튼 — 한도 초과·출처 안 달림·화면 다름 등 막힘 Q&A가 있습니다.</p></div>`}
+]},
+
+/* ───────── 교재 지도 ───────── */
+{id:'p7',tab:'📖 교재 지도',banner:['b0','TEXTBOOK MAP','교재 107장, 오늘 수업으로 읽는 법',
+ ['오늘의 4스텝이 교재 어디에 해당하는지 — 복습할 때 이 지도대로 넘기세요','페이지 → 내용 → 얻는 인사이트 → 어떻게 마무리되는지']],
+ units:[
+ {id:'7-0',t:'한눈 조감',h:`<div class="card"><h3><span class="tag tg-c">조감</span>🛰️ 교재 107장 한눈에 — 폭이 곧 분량</h3>
+  <div class="strip">
+    <div class="seg s1"><b>스텝1</b><small>경험하기</small></div>
+    <div class="seg s2"><b>스텝2</b><small>재료·지침</small></div>
+    <div class="seg s3"><b>스텝3</b><small>만들고 검증</small></div>
+    <div class="seg s4"><b>스텝4</b><small>혼자·제출</small></div>
+    <div class="seg s5"><b>+더</b><small>확장</small></div>
+  </div>
+  <div class="striplbl"><span style="flex:26">p1–28</span><span style="flex:27">p29–57</span><span style="flex:30">p58–89</span><span style="flex:19">p84–103</span><span style="flex:8">p104–107</span></div>
+  <p class="note">※ 스텝 2·3이 교재의 몸통(절반 이상) — 오늘 수업의 무게중심도 거기에 있습니다. <b>스텝5(제어하기)</b>는 p90–91·104–107의 응용으로, 교재 밖 확장입니다.</p>
+  <div class="tree">
+    <div class="tr-root">📘 교재의 뼈대 = 4단계 워크플로우</div>
+    <div>├─ <span class="tr-b">기획</span> ── 스텝 1·2 <span class="tr-d">(p1–57) : 원리·윤리 이해 → 소스 확보 → 지침 고정</span></div>
+    <div>├─ <span class="tr-b">생성</span> ── 스텝 3 전반 <span class="tr-d">(p58~) : 편성 4요소 초안 추출</span></div>
+    <div>├─ <span class="tr-b">검증</span> ── 스텝 3 후반 <span class="tr-d">(~p81) : HITL 원문 대조 · 코드 · 검산</span></div>
+    <div>└─ <span class="tr-b">완성</span> ── 스텝 4·부록 <span class="tr-d">(p82–107) : 템플릿 자산화 → 제출 → 현업 확장</span></div>
+  </div>
+  <div class="why"><b>이 구조가 곧 인사이트</b> — 교재도, 오늘 수업도, 여러분이 앞으로 할 모든 AI 문서 작업도 <b>기획→생성→검증→완성</b> 같은 네 박자입니다. 이 리듬 하나 가져가면 교재 없이도 재현됩니다.</div>
+  <p class="note">↓ 아래는 구간별 확대 지도입니다.</p></div>`},
+ {id:'7-1',t:'스텝1 ↔ p1–28',h:`<div class="card"><h3><span class="tag tg-c">지도</span>🟦 스텝 1 경험하기 ↔ <span class="map-pg">교재 p1–28</span></h3>
+  <table><tr><th style="width:90px">페이지</th><th>내용</th><th style="width:38%">💡 얻는 인사이트</th></tr>
+  <tr><td>p1–9</td><td>과정 소개 · 오늘의 완성작 · 성취 기준</td><td>목표를 알면 6시간이 흩어지지 않는다</td></tr>
+  <tr><td>p13</td><td>무료 플랜 한도 표</td><td>묶어서 질문 = 한도 절약의 기술</td></tr>
+  <tr><td>p15–21</td><td>소스 기반 응답 원리 · 3패널 구조 · 4단계 워크플로우</td><td>일반 챗봇과의 차이 = <b>출처</b>. 이게 오늘의 전부</td></tr>
+  <tr><td>p22–27</td><td>윤리 3점검(적법성·비식별화·저작권) · 첫 질문</td><td>올리기 전 3초 점검은 오늘만이 아닌 평생 습관</td></tr></table>
+  <div class="fin">일반 AI와 뭐가 다른지(출처!) 알고, 안전하게 올릴 준비가 된 상태로 끝난다</div></div>`},
+ {id:'7-2',t:'스텝2 ↔ p29–57',h:`<div class="card"><h3><span class="tag tg-c">지도</span>🟩 스텝 2 내 기준서로 시작 ↔ <span class="map-pg">교재 p29–57</span></h3>
+  <table><tr><th style="width:90px">페이지</th><th>내용</th><th style="width:38%">💡 얻는 인사이트</th></tr>
+  <tr><td>p29–30·37</td><td>좋은 소스 고르기 · NCS 능력단위 구조(코드·요소·수행준거)</td><td>AI 품질은 원본 품질을 절대 못 넘는다</td></tr>
+  <tr><td>p31–39</td><td>업로드 · 마인드맵으로 구조 시각화</td><td>수십 페이지 기준서도 한 장 그림으로 잡힌다</td></tr>
+  <tr><td>p40~57</td><td>채팅 지침 4요소(역할·맥락·제약·형식) · 설정 고정</td><td>매번 쓰지 말고 고정 — <b>지침이 곧 자산</b></td></tr></table>
+  <div class="fin">내 분야 기준서가 올라가고, 지침이 고정되고, 능력단위 4개가 골라진 상태로 끝난다</div></div>`},
+ {id:'7-3',t:'스텝3 ↔ p58–89',h:`<div class="card"><h3><span class="tag tg-c">지도</span>🟨 스텝 3 내 편성서 완성 ↔ <span class="map-pg">교재 p58–89</span></h3>
+  <table><tr><th style="width:90px">페이지</th><th>내용</th><th style="width:38%">💡 얻는 인사이트</th></tr>
+  <tr><td>p58~75</td><td>초안 추출 · HITL 원문 대조 · 코드 버전 끝자리 · 시간 검산</td><td>AI는 그럴듯하게 틀린다 — 최종 책임은 나(HITL)</td></tr>
+  <tr><td>p76–81</td><td>편성서 4요소 정리 · 보고서 기능 · 양식 점검</td><td>산출물은 완성품이 아니라 내가 다듬는 초안</td></tr>
+  <tr><td>p82–83</td><td>템플릿 저장·체계화</td><td>오늘 지침을 저장하는 순간, 다음 편성은 10분</td></tr></table>
+  <div class="fin">출처 검증까지 끝난 편성서 + 저장된 지침 — <b>제출물의 원형이 손에 있는 상태</b>로 끝난다</div></div>`},
+ {id:'7-4',t:'스텝4 ↔ p84–103',h:`<div class="card"><h3><span class="tag tg-c">지도</span>🟥 스텝 4 혼자 + 제출 ↔ <span class="map-pg">교재 p84–103</span></h3>
+  <table><tr><th style="width:90px">페이지</th><th>내용</th><th style="width:38%">💡 얻는 인사이트</th></tr>
+  <tr><td>p84–85</td><td>노트북 관리 · 지침 재사용법</td><td>과목별 노트북 분리 = 출처가 안 섞인다</td></tr>
+  <tr><td>p90–91</td><td>슬라이드·스튜디오 산출물</td><td>"배경 흰색" 지시 → 다운받아 내 자료가 된다</td></tr>
+  <tr><td>p92–103</td><td>발표 · 피드백 · 제출·백업(p97)</td><td>제출 자체가 마지막 실습 — 내보내기도 기술이다</td></tr></table>
+  <div class="fin">내 지침으로 혼자 완주하고, 엑셀·독스·게시판 3갈래 제출로 오늘이 끝난다</div></div>`},
+ {id:'7-5',t:'부록 ↔ p104–107',h:`<div class="card"><h3><span class="tag tg-c">지도</span>🎁 +더 해보기 ↔ <span class="map-pg">교재 p104–107</span></h3>
+  <table><tr><th style="width:90px">페이지</th><th>내용</th><th style="width:38%">💡 얻는 인사이트</th></tr>
+  <tr><td>p104–105</td><td>오늘의 회고 · 확장 로드맵</td><td>절차는 같고 소스만 바뀐다 — 어디든 이식 가능</td></tr>
+  <tr><td>p106</td><td>지침 템플릿 전문</td><td>까먹으면 여기 — 복사해서 과목만 바꾸기</td></tr>
+  <tr><td>p107</td><td>마무리</td><td>두 번 해봤으니 세 번째는 15분</td></tr></table>
+  <div class="fin">집에서 소스만 바꿔 반복하면, 오늘 절차가 내 업무 어디든 이식된다</div></div>`},
+ {id:'7-6',t:'상황별 찾아보기',h:`<div class="card"><h3><span class="tag tg-c">색인</span>🔖 이럴 땐 이 페이지</h3>
+  <table><tr><th>이럴 때</th><th>교재</th></tr>
+  <tr><td>지침(템플릿)을 다시 보고 싶다</td><td>p82–83 · p106</td></tr>
+  <tr><td>검증 순서가 기억 안 난다</td><td>p58~75 (스텝3 구간)</td></tr>
+  <tr><td>무료 한도가 걱정된다</td><td>p13</td></tr>
+  <tr><td>슬라이드를 내 자료로 만들고 싶다</td><td>p90–91 · 스텝5-2</td></tr>
+  <tr><td>기존 교안을 업그레이드하고 싶다</td><td>스텝5-1</td></tr>
+  <tr><td>MD가 뭔지, 왜 쓰는지</td><td>스텝5-4(a)</td></tr>
+  <tr><td>지침을 소스에 넣었는데 안 따른다</td><td>스텝5-4(b)</td></tr>
+  <tr><td>제미나이에 왜 노트북을 붙이나</td><td>스텝5-4(c)</td></tr>
+  <tr><td>학습모듈은 언제 쓰나</td><td>스텝2-1 · 스텝5-1</td></tr>
+  <tr><td>올려도 되는 자료인지 헷갈린다</td><td>p22–26</td></tr>
+  <tr><td>능력단위 구조가 헷갈린다</td><td>p30</td></tr></table>
+  <p class="note">※ 페이지 경계 일부는 근사치입니다. 교재와 1~2쪽 어긋나면 강사에게 알려주세요 — 다음 판에 반영합니다.</p></div>`}
+]}
+];
+
+/* ═══ 렌더 ═══ */
+function pkHTML(id,chip,label,body){
+  return `<div class="pk" id="${id}"><div class="bar"><span class="chip">${chip}</span><span>${label}</span>
+  <button data-cp="${id}">복사</button></div><pre>${body}</pre></div>`;
+}
+function unitHTML(u){
+  // 'PK|id|chip|label|body' 라인 프로토콜 파싱
+  let h=u.h;
+  const parts=h.split(/(?:^|\n)\s*PK\|/);
+  let out=parts[0];
+  for(let i=1;i<parts.length;i++){
+    const seg=parts[i];
+    const nl1=seg.indexOf('|'),nl2=seg.indexOf('|',nl1+1),nl3=seg.indexOf('|',nl2+1);
+    const id=seg.slice(0,nl1),chip=seg.slice(nl1+1,nl2),label=seg.slice(nl2+1,nl3);
+    let rest=seg.slice(nl3+1);
+    // body = until next double-newline+html tag? we split by a line that starts with '  <' after body end
+    const m=rest.split(/\n(?=\s*<)/);
+    const body=m.shift();
+    out+=pkHTML(id,chip,label,body)+(m.length?m.join('\n'):'');
+  }
+  return `<section class="unit" id="${u.id}">${out}</section>`;
+}
+const mainEl=document.getElementById('main');
+const tabsEl=document.getElementById('tabs');
+const sideEl=document.getElementById('sidenav');
+const SUBS={"시작": "오늘의 목표", "스텝1": "경험하기", "스텝2": "내 기준서로", "스텝3": "편성서·검증", "스텝4": "혼자·제출", "스텝5": "제어하기", "부록": "+더 해보기", "📖 교재 지도": "복습 지도"};
+PAGES.forEach((p,i)=>{
+  const b=p.banner;
+  const div=document.createElement('div');
+  div.className='page';div.id=p.id;
+  div.innerHTML=`<div class="banner ${b[0]}"><div class="no">${b[1]}</div><h2>${b[2]}</h2>
+    <ul class="aims">${b[3].map(a=>'<li>'+a+'</li>').join('')}</ul></div>
+    <div class="units">`+p.units.map(unitHTML).join('')+`</div>`
+    +`<div class="pager"><button data-go="${i-1}" ${i===0?'disabled':''}>← ${i>0?PAGES[i-1].tab:''}</button>
+      <button data-go="${i+1}" ${i===PAGES.length-1?'disabled':''}>${i<PAGES.length-1?PAGES[i+1].tab:''} →</button></div>`;
+  mainEl.appendChild(div);
+  // 마일스톤·폼·마무리 등 폭 넓은 소단원은 2단을 가로지름
+  div.querySelectorAll('.unit').forEach(u=>{
+    if(u.querySelector('.mstone,.foot,.wg textarea'))u.classList.add('wide');
+  });
+  const bt=document.createElement('button');
+  bt.innerHTML=p.tab+'<small>'+(SUBS[p.tab]||'')+'</small>';bt.onclick=()=>go(i);tabsEl.appendChild(bt);
+  const sb=document.createElement('button');
+  sb.innerHTML=p.tab+'<em>'+(SUBS[p.tab]||'')+'</em>';sb.onclick=()=>go(i);sideEl.appendChild(sb);
+});
+
+/* ═══ 탭 전환 + 서브네비 ═══ */
+let cur=0;
+function scrollMainTo(el){
+  /* main 스크롤러만 이동 — 조상/윈도우 스크롤 오염 방지(임베드 안전) */
+  const top=el.getBoundingClientRect().top - mainEl.getBoundingClientRect().top + mainEl.scrollTop - 8;
+  try{mainEl.scrollTo({top:top,behavior:'smooth'})}catch(e){mainEl.scrollTop=top}
+  document.body.scrollTop=0;document.documentElement.scrollTop=0;try{window.scrollTo(0,0)}catch(e){}
+}
+function rebuildSub(i){
+  const sub=document.getElementById('sub');
+  sub.innerHTML=PAGES[i].units.map(u=>`<a data-u="${u.id}">${u.id}&nbsp;${u.t.replace(/ [⌨✓⚠].*$/,'')}</a>`).join('');
+}
+function go(i,anchor){
+  if(i<0||i>=PAGES.length)return;
+  cur=i;
+  document.querySelectorAll('#tabs button').forEach((b,j)=>b.classList.toggle('on',j===i));
+  rebuildSub(i);
+  spyLock=Date.now()+900;
+  const target=anchor?document.getElementById(anchor):document.getElementById(PAGES[i].id);
+  if(target)scrollMainTo(target);
+  tabState();
+}
+function tabState(){
+  document.querySelectorAll('#tabs button').forEach((b,j)=>{
+    const boxes=document.querySelectorAll('#'+PAGES[j].id+' [data-ck]');
+    const done=boxes.length&&[...boxes].every(x=>x.checked);
+    b.innerHTML=PAGES[j].tab+(done?' <span class="ok">✓</span>':'')+'<small>'+(SUBS[PAGES[j].tab]||'')+'</small>';
+    b.classList.toggle('on',j===cur);
+  });
+  document.querySelectorAll('#sidenav button').forEach((b,j)=>b.classList.toggle('active',j===cur));
+}
+/* 서브네비 스파이 */
+let io=null;
+function spy(){ /* IntersectionObserver가 대신 처리 — 좌표 계산 없음 */ }
+function setupIO(){
+  if(io)io.disconnect();
+  if(!('IntersectionObserver'in window))return;
+  io=new IntersectionObserver(function(ents){
+    if(Date.now()<spyLock)return;
+    let top=null;
+    ents.forEach(function(en){ if(en.isIntersecting) top=top||en.target.id });
+    if(!top)return;
+    const pi=parseInt(top.split('-')[0]);
+    if(!isNaN(pi)&&pi!==cur&&pi>=0&&pi<PAGES.length){
+      cur=pi;
+      tabState();
+      rebuildSub(pi);
+    }
+    document.querySelectorAll('#sub a').forEach(c=>c.classList.toggle('on',c.dataset.u===top));
+  },{root:mainEl,rootMargin:'-10% 0px -60% 0px',threshold:0});
+  document.querySelectorAll('.unit').forEach(u=>io.observe(u));
+}
+
+
+/* ═══ 복사 ═══ */
+function cp(btn,id){
+  const t=document.querySelector('#'+id+' pre').innerText;
+  const done=()=>{btn.textContent='복사됨 ✓';btn.classList.add('ok');
+    document.getElementById(id).classList.add('glow');
+    setTimeout(()=>{btn.textContent='복사';btn.classList.remove('ok');
+      document.getElementById(id).classList.remove('glow')},1600)};
+  try{
+    if(navigator.clipboard&&navigator.clipboard.writeText){
+      navigator.clipboard.writeText(t).then(done).catch(()=>fb(t,done));
+    }else fb(t,done);
+  }catch(e){fb(t,done)}
+}
+function fb(t,done){const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);
+  ta.select();try{document.execCommand('copy');done()}catch(e){}document.body.removeChild(ta)}
+
+/* ═══ 진행률 ═══ */
+const KEY='ncslm_v14';let st={};
+try{st=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){st={}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(st))}catch(e){}}
+function toast(msg,gold){
+  let t=document.getElementById('toast');
+  if(!t){t=document.createElement('div');t.id='toast';document.body.appendChild(t)}
+  t.textContent=msg;t.className=gold?'gold on':'on';
+  clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('on'),2600);
+}
+function burst(n){
+  const em=['🎉','✨','🎊','⭐','💙'];
+  for(let i=0;i<(n||26);i++){
+    const s=document.createElement('span');s.className='pop';s.textContent=em[i%em.length];
+    s.style.left=(5+Math.random()*90)+'vw';
+    s.style.animationDuration=(1.4+Math.random()*1.4)+'s';
+    s.style.fontSize=(13+Math.random()*14)+'px';
+    document.body.appendChild(s);setTimeout(()=>s.remove(),3000);
+  }
+  const pb=document.getElementById('pbar');pb.classList.add('pulse');setTimeout(()=>pb.classList.remove('pulse'),2000);
+}
+let prevPct=null;const prevDone={};
+function celebrate(p){
+  if(prevPct===null){prevPct=p;PAGES.forEach((pg,j)=>{prevDone[pg.id]=pageDone(j)});return}
+  const marks=[[100,'🏆 100% — 제출까지 완료! 오늘의 완성작 3종 확보!'],[90,'🔥 90% — 본게임 막바지, 제출만 남았다'],[50,'🎉 50% — 내 분야 재료가 손에 들어왔습니다']];
+  for(const[m,msg]of marks){if(prevPct<m&&p>=m){toast(msg,true);burst(m===100?46:28);break}}
+  PAGES.forEach((pg,j)=>{
+    const d=pageDone(j);
+    if(d&&!prevDone[pg.id]&&j>0&&j<7){toast('✅ '+pg.tab+' 완료!');burst(14)}
+    prevDone[pg.id]=d;
+  });
+  prevPct=p;
+}
+function pageDone(j){
+  const boxes=document.querySelectorAll('#'+PAGES[j].id+' [data-ck]');
+  return boxes.length>0&&[...boxes].every(x=>x.checked);
+}
+function render(){
+  const boxes=[...document.querySelectorAll('[data-ck]')];
+  const n=boxes.length,d=boxes.filter(b=>b.checked).length;
+  const p=n?Math.round(d/n*100):0;
+  document.getElementById('pbar').style.width=p+'%';
+  document.getElementById('pctv').textContent=p;
+  celebrate(p);
+  tabState();
+}
+document.querySelectorAll('[data-ck]').forEach(b=>{
+  if(st[b.dataset.ck])b.checked=true;
+  b.addEventListener('change',()=>{st[b.dataset.ck]=b.checked;save();render()});
+});
+
+/* ═══ 위젯: 6H 계산기 ═══ */
+let hrN=0;
+function addHr(name,val){
+  if(!document.getElementById('hrows'))return;
+  hrN++;
+  const d=document.createElement('div');d.className='row';
+  d.innerHTML=`<input type="text" placeholder="능력단위명 ${hrN}" value="${name||''}">
+    <input type="number" step="0.5" min="0" placeholder="시간" value="${val||''}" data-act="sumhr">`;
+  document.getElementById('hrows').appendChild(d);
+}
+function sumHr(){
+  let s=0;document.querySelectorAll('#hrows input[type=number]').forEach(i=>s+=parseFloat(i.value)||0);
+  const r=document.getElementById('hres');
+  r.textContent='합계: '+s.toFixed(1)+'시간'+(Math.abs(s-6)<0.001?' — 6H 정합 ✓':(s>6?' — '+(s-6).toFixed(1)+'H 초과':' — '+(6-s).toFixed(1)+'H 부족'));
+  r.className='res '+(Math.abs(s-6)<0.001?'good':'bad');
+}
+/* ═══ 위젯: 코드 검사기 ═══ */
+function ckCode(){
+  const v=document.getElementById('codein').value.trim();
+  const r=document.getElementById('coderes');
+  if(!v){r.style.display='none';return}
+  r.style.display='block';
+  const ok=/^\d{10}_\d{2}v\d+$/.test(v);
+  if(ok){r.className='res good';r.textContent='형식 OK: '+v+' — 이제 버전 끝자리(v'+v.split('v')[1]+')를 원문과 대조하세요'}
+  else{r.className='res bad';r.textContent='형식이 다릅니다 — 예: 0202030203_22v4 (숫자10자리_연도2자리v버전)'}
+}
+/* ═══ 위젯: 편성서 폼 ═══ */
+['fN','fO','fS','fU','fG','fC','fT'].forEach(id=>{
+  const el=()=>document.getElementById(id);
+  if(st['w_'+id])setTimeout(()=>{if(el())el().value=st['w_'+id]},0);
+});
+document.addEventListener('input',e=>{
+  if(['fN','fO','fS','fU','fG','fC','fT'].includes(e.target.id)){st['w_'+e.target.id]=e.target.value;save()}
+});
+function g(id){return (document.getElementById(id).value||'').trim()}
+function expForm(){
+  const t=`[과제 제출] NotebookLM을 활용한 NCS 기반 훈련과정 편성 실무
+성명: ${g('fN')} / 소속: ${g('fO')} / 편성 과목명: ${g('fS')} / 제출일: ${new Date().toISOString().slice(0,10)}
+
+■ 능력단위 / 코드
+${g('fU')}
+
+■ 훈련목표
+${g('fG')}
+
+■ 훈련내용
+${g('fC')}
+
+■ 훈련시간
+${g('fT')}
+
+※ 각 항목의 값은 NotebookLM 원문 출처 대조(HITL)를 거쳐 확정함.`;
+  const o=document.getElementById('fOut');o.value=t;o.style.display='block';
+  document.getElementById('fCopy').style.display='inline-block';
+}
+function cpForm(btn){
+  const t=document.getElementById('fOut').value;
+  const done=()=>{btn.textContent='복사됨 ✓';setTimeout(()=>btn.textContent='제출용 텍스트 복사',1500)};
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(done).catch(()=>fb(t,done))}else fb(t,done);
+}
+/* ═══ QA ═══ */
+function qa(v){document.getElementById('qov').classList.toggle('on',!!v)}
+document.getElementById('qbtn').onclick=()=>qa(1);
+document.getElementById('qov').onclick=e=>{if(e.target.id==='qov')qa(0)};
+
+
+/* ═══ 직접 리스너 부착 (위임 실패 대비 이중화) ═══ */
+function wireAll(){
+  document.querySelectorAll('[data-cp]').forEach(function(b){
+    if(b._w)return;b._w=1;b.addEventListener('click',function(){cp(b,b.getAttribute('data-cp'))});
+  });
+  document.querySelectorAll('[data-go]').forEach(function(b){
+    if(b._w)return;b._w=1;b.addEventListener('click',function(e){e.preventDefault();go(parseInt(b.getAttribute('data-go')))});
+  });
+  document.querySelectorAll('[data-act]').forEach(function(b){
+    if(b._w)return;b._w=1;
+    var a=b.getAttribute('data-act');
+    if(a==='ckcode'||a==='sumhr'){b.addEventListener('input',function(){a==='ckcode'?ckCode():sumHr()})}
+    else b.addEventListener('click',function(){
+      if(a==='addhr'){addHr();wireAll()}else if(a==='expform')expForm();
+      else if(a==='cpform')cpForm(b);else if(a==='qaclose')qa(0);
+    });
+  });
+}
+/* ═══ 이벤트 위임 (CSP 안전) ═══ */
+document.addEventListener('click',function(e){
+  const t=e.target.closest('[data-cp],[data-go],[data-act]');
+  if(!t)return;
+  if(t.hasAttribute('data-cp')){cp(t,t.getAttribute('data-cp'));return}
+  if(t.hasAttribute('data-go')){e.preventDefault();go(parseInt(t.getAttribute('data-go')));return}
+  switch(t.getAttribute('data-act')){
+    case'addhr':addHr();break;
+    case'expform':expForm();break;
+    case'cpform':cpForm(t);break;
+    case'qaclose':qa(0);break;
+  }
+});
+document.addEventListener('input',function(e){
+  const a=e.target.getAttribute&&e.target.getAttribute('data-act');
+  if(a==='ckcode')ckCode();
+  if(a==='sumhr')sumHr();
+});
+/* 서브네비 칩: href 점프도 위임으로 */
+let spyLock=0;
+function jumpTo(uid){
+  const el=document.getElementById(uid);
+  if(!el)return;
+  spyLock=Date.now()+1200;
+  document.querySelectorAll('#sub a').forEach(c=>c.classList.toggle('on',c.dataset.u===uid));
+  scrollMainTo(el);
+  /* 폴백: main이 스크롤러가 아닌 환경(임베드·짧은 화면)에서는 scrollIntoView */
+  setTimeout(function(){
+    var off=el.getBoundingClientRect().top-mainEl.getBoundingClientRect().top;
+    if(Math.abs(off)>60){try{el.scrollIntoView({block:'start',behavior:'smooth'})}catch(e){el.scrollIntoView(true)}}
+  },350);
+  el.classList.add('flash');setTimeout(()=>el.classList.remove('flash'),1600);
+}
+(function(){
+  var sub=document.getElementById('sub'),last=0;
+  function h(e){const a=e.target.closest('a[data-u]');if(!a)return;e.preventDefault();
+    if(Date.now()-last<400)return;last=Date.now();jumpTo(a.dataset.u)}
+  sub.addEventListener('click',h);
+  sub.addEventListener('touchend',h,{passive:false});
+})();
+
+/* ═══ 초기화 + 해시 라우팅 ═══ */
+addHr('',null);addHr('',null);addHr('',null);addHr('',null);
+(function(){
+  cur=0;
+  document.querySelectorAll('#tabs button').forEach((b,j)=>b.classList.toggle('on',j===0));
+  rebuildSub(0);
+  render();wireAll();setupIO();
+})();
+</script>
+</body>
+</html>

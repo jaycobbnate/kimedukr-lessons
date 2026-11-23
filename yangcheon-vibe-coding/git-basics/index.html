@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>깃과 깃허브, 3분 정리</title>
+<style>
+:root{--fs:20px;--pt:#2F5FD0;--pt-d:#1E3F8F;--pt-l:#EEF3FD;--ink:#22252B;--sub:#5B616E;--line:#E3E5EA;--bg:#FAFAF8}
+*{box-sizing:border-box}
+html{font-size:var(--fs)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Pretendard','Noto Sans KR','Malgun Gothic',sans-serif;line-height:1.7;word-break:keep-all}
+.top{position:sticky;top:0;z-index:10;background:rgba(250,250,248,.97);border-bottom:1px solid var(--line)}
+.bar{max-width:1100px;margin:0 auto;padding:12px 24px;display:flex;align-items:center;gap:12px}
+.bar b{font-size:1.05rem}.bar small{display:block;color:var(--sub);font-size:.72rem}
+.sp{flex:1}
+.fsbtn{border:1px solid var(--line);background:#fff;border-radius:8px;padding:4px 12px;font-size:.8rem;cursor:pointer}
+.wrap{max-width:1100px;margin:0 auto;padding:24px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px 22px}
+.full{grid-column:1/-1}
+h1{font-size:1.6rem;margin:4px 0 6px}
+h2{font-size:1.12rem;margin:0 0 10px}
+h2 .k{color:var(--pt);margin-right:6px}
+p{margin:0 0 10px}
+.big{font-size:1.2rem;font-weight:700;color:var(--pt-d);line-height:1.5}
+.svgw{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px;margin:8px 0}
+svg{width:100%;height:auto;display:block}
+table{width:100%;border-collapse:collapse;font-size:.9rem;margin:8px 0}
+th,td{border-bottom:1px solid var(--line);padding:9px 10px;text-align:left;vertical-align:top}
+th{background:#F4F5F8}
+td.hl{background:var(--pt-l)}
+.box{border-radius:12px;padding:14px 18px;margin:12px 0;border:1px solid}
+.box .bt{font-weight:700;font-size:.85rem;margin-bottom:4px}
+.box p{font-size:.92rem;margin:0}
+.set{background:#EEF3FD;border-color:#C9D7F5}.set .bt{color:#1E3F8F}
+.warn{background:#FCEFF1;border-color:#F1C6CE}.warn .bt{color:#8E2A3B}
+.ext{background:#ECF7F2;border-color:#BFE3D2}.ext .bt{color:#1D5E45}
+.foot{text-align:center;color:var(--sub);font-size:.72rem;padding:20px 0 30px}
+@media (max-width:860px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="top"><div class="bar"><div><b>깃(Git)과 깃허브(GitHub), 3분 정리</b><small>이름이 비슷해서 누구나 헷갈려요. 오늘은 몰라도 괜찮아요.</small></div><div class="sp"></div><button class="fsbtn" onclick="fs(-2)">가 −</button><button class="fsbtn" onclick="fs(2)">가 +</button></div></div>
+<div class="wrap">
+<h1>"깃을 설치하라던데요?" 궁금하셨죠</h1>
+<p>클로드 코드를 검색하면 "깃부터 설치하세요"라는 글이 많이 나와요. 예전에는 맞는 말이었는데, 지금은 바뀌었어요. 차근차근 정리해 볼게요.</p>
+<div class="grid">
+
+<div class="card full">
+<h2><span class="k">①</span>깃은 수첩, 깃허브는 창고</h2>
+<div class="svgw"><svg viewBox="0 0 900 260" role="img" aria-label="깃은 내 컴퓨터의 기록 수첩, 깃허브는 인터넷 창고">
+<rect x="20" y="20" width="380" height="220" rx="16" fill="#EEF3FD" stroke="#C9D7F5"/>
+<text x="210" y="56" text-anchor="middle" font-size="22" font-weight="700" fill="#1E3F8F">깃 (Git)</text>
+<rect x="60" y="80" width="150" height="110" rx="6" fill="#fff" stroke="#9DB4EA" stroke-width="2"/>
+<line x1="60" y1="80" x2="60" y2="190" stroke="#2F5FD0" stroke-width="6"/>
+<g font-size="12" fill="#3D4350"><text x="76" y="106">10:02 보고서 작성</text><text x="76" y="130">10:15 표 추가</text><text x="76" y="154">10:31 제목 수정</text><text x="76" y="178">11:05 사진 교체</text></g>
+<text x="300" y="120" text-anchor="middle" font-size="16" fill="#1E3F8F">내 컴퓨터의</text>
+<text x="300" y="146" text-anchor="middle" font-size="16" fill="#1E3F8F" font-weight="700">기록 수첩</text>
+<text x="210" y="222" text-anchor="middle" font-size="14" fill="#1E3F8F">로그인 필요 없음 · 언제 뭘 고쳤는지 기록</text>
+<path d="M410 130 h70" stroke="#9DB4EA" stroke-width="4" marker-end="url(#ar)"/>
+<text x="445" y="118" text-anchor="middle" font-size="13" fill="#5B616E">올리기</text>
+<rect x="500" y="20" width="380" height="220" rx="16" fill="#F7F8FA" stroke="#E3E5EA"/>
+<text x="690" y="56" text-anchor="middle" font-size="22" font-weight="700" fill="#22252B">깃허브 (GitHub)</text>
+<path d="M560 110 l70 -30 l70 30 v80 h-140z" fill="#fff" stroke="#9AA2B1" stroke-width="2"/>
+<rect x="600" y="140" width="60" height="50" fill="#E8ECF4"/>
+<path d="M740 120 a24 24 0 0 1 44 -10 a20 20 0 0 1 36 10 a16 16 0 0 1 -4 32 h-70 a16 16 0 0 1 -6 -32z" fill="#E8ECF4"/>
+<text x="690" y="222" text-anchor="middle" font-size="14" fill="#5B616E">인터넷 창고 · 계정·로그인 필요</text>
+<defs><marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M1 1L9 5L1 9" fill="none" stroke="#9DB4EA" stroke-width="2"/></marker></defs>
+</svg></div>
+<p class="big">깃은 내 컴퓨터의 기록 수첩, 깃허브는 그 수첩을 올려 두는 인터넷 창고</p>
+<table>
+<tr><th></th><th>깃 (Git)</th><th>깃허브 (GitHub)</th></tr>
+<tr><td>정체</td><td>내 컴퓨터에 까는 무료 프로그램</td><td>인터넷 사이트 (github.com)</td></tr>
+<tr><td>하는 일</td><td>파일을 언제 어떻게 고쳤는지 기록해서, 잘못 고쳐도 되돌릴 수 있게 함</td><td>그 기록을 인터넷에 보관하고, 다른 서비스와 연결함</td></tr>
+<tr><td>로그인</td><td>필요 없음</td><td>계정과 로그인 필요</td></tr>
+<tr><td>비유</td><td>한글 문서의 '이전 버전 보기'를 폴더 전체에</td><td>그 기록을 올려 두는 클라우드 창고</td></tr>
+</table>
+<div class="box set"><div class="bt">이런 경험 있으시죠?</div><p>「보고서_최종」, 「보고서_진짜최종」, 「보고서_최종(2)」… 깃을 쓰면 파일은 하나만 두고, 고친 기록이 차곡차곡 쌓여요. 어제 상태로 되돌리기도 쉬워요.</p></div>
+</div>
+
+<div class="card">
+<h2><span class="k">②</span>예전에는 왜 꼭 깔아야 했나</h2>
+<p>클로드 코드는 원래 맥이나 리눅스에서 쓰는 명령 방식으로 일하도록 만들어졌어요. 윈도우의 기본 명령 창은 말투가 조금 달라요.</p>
+<div class="svgw"><svg viewBox="0 0 440 180" role="img" aria-label="깃 배시가 통역사 역할">
+<g text-anchor="middle">
+<rect x="10" y="40" width="120" height="90" rx="12" fill="#EEF3FD" stroke="#9DB4EA"/><text x="70" y="80" font-size="15" font-weight="700" fill="#1E3F8F">클로드 코드</text><text x="70" y="104" font-size="12" fill="#1E3F8F">맥 방식 명령</text>
+<rect x="160" y="40" width="120" height="90" rx="12" fill="#FCEFF1" stroke="#F1C6CE"/><text x="220" y="80" font-size="15" font-weight="700" fill="#8E2A3B">깃 배시</text><text x="220" y="104" font-size="12" fill="#8E2A3B">통역사</text>
+<rect x="310" y="40" width="120" height="90" rx="12" fill="#F7F8FA" stroke="#D5D9E0"/><text x="370" y="80" font-size="15" font-weight="700" fill="#22252B">윈도우</text><text x="370" y="104" font-size="12" fill="#5B616E">다른 말투</text>
+<path d="M132 85 h24" stroke="#9AA2B1" stroke-width="3"/><path d="M282 85 h24" stroke="#9AA2B1" stroke-width="3"/>
+<text x="220" y="160" font-size="13" fill="#5B616E">깃을 깔면 딸려 오는 '깃 배시'를 빌려 썼어요</text>
+</g></svg></div>
+<p>그래서 윈도우에서 코드를 쓰려면 <b>깃허브를 안 써도</b> 깃을 먼저 깔아야 했어요. 안 깔면 코드 화면이 아예 열리지 않았어요. 인터넷에 "깃부터 설치하세요"라는 글이 많은 이유예요.</p>
+</div>
+
+<div class="card">
+<h2><span class="k">③</span>지금은 필요 없어요</h2>
+<div class="svgw"><svg viewBox="0 0 440 180" role="img" aria-label="지금은 통역사 없이 바로">
+<g text-anchor="middle">
+<rect x="20" y="40" width="150" height="90" rx="12" fill="#EEF3FD" stroke="#9DB4EA"/><text x="95" y="80" font-size="15" font-weight="700" fill="#1E3F8F">클로드 코드</text><text x="95" y="104" font-size="12" fill="#1E3F8F">윈도우 말도 알아들음</text>
+<path d="M175 85 h80" stroke="#2F5FD0" stroke-width="4"/>
+<rect x="270" y="40" width="150" height="90" rx="12" fill="#F7F8FA" stroke="#D5D9E0"/><text x="345" y="80" font-size="15" font-weight="700" fill="#22252B">윈도우</text><text x="345" y="104" font-size="12" fill="#5B616E">평범한 폴더</text>
+<text x="220" y="160" font-size="13" fill="#1D5E45" font-weight="700">2026년 9월 업데이트부터 통역사 없이 바로</text>
+</g></svg></div>
+<p>2026년 9월 업데이트부터 클로드 앱이 윈도우에서도 깃 없이 일할 수 있게 바뀌었어요. <b>평범한 폴더만 고르면 코드가 바로 시작돼요.</b> 오늘 「실습자료」 폴더로 한 것처럼요.</p>
+<div class="box ext"><div class="bt">맥은요?</div><p>맥에는 원래 깃이 대부분 들어 있어서 따로 설치할 일이 거의 없었어요.</p></div>
+</div>
+
+<div class="card">
+<h2><span class="k">④</span>혹시 "깃을 설치하세요"가 뜨면</h2>
+<p>앱이 오래된 버전이면 안내가 뜰 수 있어요. 둘 중 하나만 하면 돼요.</p>
+<ol>
+<li><b>앱을 최신으로 업데이트</b>하기</li>
+<li>또는 <b>git-scm.com</b> 에서 깃을 받아 설치하고(설치 화면은 전부 '다음'), 클로드 앱을 완전히 껐다 켜기</li>
+</ol>
+<div class="box warn"><div class="bt">화면에 '브랜치', '워크트리'가 보이면</div><p>깃의 기록 관련 메뉴예요. 이 과정 초반에는 쓰지 않으니 그냥 두세요.</p></div>
+</div>
+
+<div class="card">
+<h2><span class="k">⑤</span>그럼 깃은 언제 다시 나오나요</h2>
+<p><b>5주차, 내 홈페이지를 인터넷에 올릴 때</b>예요.</p>
+<div class="svgw"><svg viewBox="0 0 440 150" role="img" aria-label="5주차 흐름">
+<g text-anchor="middle" font-size="13">
+<rect x="5" y="35" width="95" height="70" rx="10" fill="#EEF3FD"/><text x="52" y="66" font-weight="700" fill="#1E3F8F">내 폴더</text><text x="52" y="88" fill="#1E3F8F">홈페이지</text>
+<rect x="115" y="35" width="95" height="70" rx="10" fill="#EEF3FD"/><text x="162" y="66" font-weight="700" fill="#1E3F8F">깃</text><text x="162" y="88" fill="#1E3F8F">기록</text>
+<rect x="225" y="35" width="95" height="70" rx="10" fill="#F7F8FA" stroke="#D5D9E0"/><text x="272" y="66" font-weight="700" fill="#22252B">깃허브</text><text x="272" y="88" fill="#5B616E">창고</text>
+<rect x="335" y="35" width="100" height="70" rx="10" fill="#2F5FD0"/><text x="385" y="66" font-weight="700" fill="#fff">버셀</text><text x="385" y="88" fill="#fff">내 주소</text>
+<path d="M100 70 h12M210 70 h12M320 70 h12" stroke="#9AA2B1" stroke-width="3"/>
+<text x="220" y="135" fill="#5B616E">"고쳐 줘" 한마디면 내 홈페이지에 자동 반영</text>
+</g></svg></div>
+<p>그때 깃허브 계정이 필요해요. 그래서 강좌 안내에 "깃허브 계정은 개강 전 가입"이라고 써 둔 거예요. 로그인은 그때 해요.</p>
+</div>
+
+<div class="card full">
+<h2><span class="k">⑥</span>한 줄로 정리</h2>
+<table>
+<tr><th>질문</th><th>답</th></tr>
+<tr><td>오늘 깃을 깔아야 하나요?</td><td class="hl">아니요. 평범한 폴더만 고르면 돼요.</td></tr>
+<tr><td>예전엔 왜 깔라고 했나요?</td><td>윈도우에서 클로드 코드가 깃에 딸린 '깃 배시'를 통역사처럼 빌려 썼기 때문이에요.</td></tr>
+<tr><td>깃과 깃허브는 같은 건가요?</td><td>아니요. 깃은 내 컴퓨터의 기록 수첩, 깃허브는 인터넷 창고예요.</td></tr>
+<tr><td>깃허브 로그인은 언제 하나요?</td><td>5주차, 홈페이지를 인터넷에 올릴 때요.</td></tr>
+</table>
+<p class="big">모르셔도 괜찮아요. 개발자들도 처음엔 다 헷갈려요.</p>
+</div>
+
+</div>
+</div>
+<div class="foot">양천구 평생학습관 · 비개발자도 도전하는 AI 바이브 코딩 · 강사 김충효</div>
+<script>var size=20;function fs(d){size=Math.min(30,Math.max(16,size+d));document.documentElement.style.setProperty('--fs',size+'px');}</script>
+</body>
+</html>

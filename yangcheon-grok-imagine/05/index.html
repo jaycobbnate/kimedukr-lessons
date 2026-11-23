@@ -1,0 +1,379 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>캐릭터 한 명, 목소리 하나 — 유머·공익 편</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#FAFAF8;--paper:#fff;--line:#E6E4EC;--ink:#221E2B;--ink2:#625D6E;--ac:#4B2FA0;--t1:#F2EFFA;--set:#EEF2F7;--setl:#D5DEEA;--warn:#FBEFEE;--warnl:#EFD2CE;--ext:#EEF6F1;--extl:#CFE3D6;--fs:20px}
+*{box-sizing:border-box}
+html{scroll-padding-top:150px}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;font-size:var(--fs);line-height:1.6;word-break:keep-all}
+body.big{--fs:24px}
+.top{position:sticky;top:0;z-index:20;background:rgba(250,250,248,.97);border-bottom:1px solid var(--line)}
+.top-in{max-width:1480px;margin:0 auto;padding:8px 20px;display:flex;align-items:center;gap:14px}
+.tabs{display:flex;gap:4px;overflow-x:auto;max-width:1480px;margin:0 auto;padding:0 20px 8px;scrollbar-width:thin}
+.tab{flex:none;border:1px solid var(--line);background:#fff;color:var(--ink2);border-radius:999px;padding:6px 14px;font:inherit;font-size:.7em;font-weight:700;cursor:pointer;white-space:nowrap}
+.tab .n{color:var(--ac);margin-right:6px}
+.tab.on{background:var(--ac);border-color:var(--ac);color:#fff}.tab.on .n{color:#fff}
+.tab:focus-visible{outline:3px solid var(--ac);outline-offset:2px}
+.top h1{margin:0;font-size:.95em;font-weight:800;letter-spacing:-.02em;flex:1}
+.top h1 small{display:block;font-size:.66em;font-weight:500;color:var(--ink2)}
+.btn{border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:8px;padding:6px 12px;font:inherit;font-size:.72em;font-weight:700;cursor:pointer}
+.btn:focus-visible,.side a:focus-visible,.copy:focus-visible{outline:3px solid var(--ac);outline-offset:2px}
+#menuBtn{display:none}
+.wrap{max-width:1480px;margin:0 auto;padding:18px 20px 10px;display:flex;gap:22px;align-items:flex-start}
+.side{position:sticky;top:122px;width:270px;order:2;flex:none;max-height:calc(100vh - 190px);overflow-y:auto;background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 8px;font-size:.74em;transition:width .2s}
+.side .fold{display:flex;justify-content:space-between;align-items:center;padding:0 4px 6px;border-bottom:1px solid var(--line);margin-bottom:6px}
+.side .fold button{border:none;background:none;color:var(--ink2);font:inherit;font-size:.9em;cursor:pointer}
+.side .hd{font-weight:800;color:var(--ac);padding-left:6px}
+.side .cl{list-style:none;margin:0;padding:0 2px}
+.side .cl a{display:block;padding:7px 10px;color:var(--ink2);text-decoration:none;line-height:1.4;border-left:3px solid transparent;border-radius:0 6px 6px 0}
+.side .cl a.cur{color:var(--ac);border-left-color:var(--ac);background:var(--t1);font-weight:700}
+.side.folded{width:56px}.side.folded .hd,.side.folded .cl{display:none}
+.main{flex:1;min-width:0;order:1}
+.step{display:none}.step.on{display:block}
+.sh{display:flex;gap:18px;align-items:flex-start;margin:0 0 18px}
+.sh .no{font-size:2.6em;font-weight:900;color:var(--ac);line-height:1;letter-spacing:-.04em}
+.sh h2{margin:0;font-size:1.45em;font-weight:800;letter-spacing:-.02em;line-height:1.3}
+.sh p{margin:4px 0 0;color:var(--ink2);max-width:46em}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(420px,1fr));gap:16px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:18px 20px;scroll-margin-top:150px}
+.card.wide{grid-column:1/-1}
+.card h3{margin:0 0 10px;font-size:1.05em;font-weight:800;letter-spacing:-.01em;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.lab{font-size:.68em;font-weight:700;border-radius:6px;padding:2px 9px;background:var(--t1);color:var(--ac)}
+.card.key{background:var(--t1);border-color:#D9D0F1}.card.key .lab{background:var(--ac);color:#fff}
+.card.set{background:var(--set);border-color:var(--setl)}.card.set .lab{background:#fff;color:#3E5A7E}
+.card.warn{background:var(--warn);border-color:var(--warnl)}.card.warn .lab{background:#fff;color:#A23B2C}
+.card.ext{background:var(--ext);border-color:var(--extl)}.card.ext .lab{background:#fff;color:#2F6B45}
+.card.demo{border-left:5px solid var(--ac)}.card.demo .lab{background:var(--ac);color:#fff}
+.card.you{border-left:5px solid #9C8AD6}
+.card p{margin:6px 0}.card ol,.card ul{margin:6px 0;padding-left:1.3em}.card li{margin:4px 0}
+.muted{color:var(--ink2);font-size:.88em}
+.fig{margin:6px 0 10px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px}
+.fig svg{display:block;width:100%;height:auto;max-height:340px}
+.pr{position:relative;background:#FBFAFD;border:1px solid var(--line);border-left:4px solid var(--ac);border-radius:8px;padding:12px 90px 12px 14px;margin:10px 0}
+.pr .en{margin:0;font-weight:600;font-size:.88em;line-height:1.55;word-break:normal;white-space:pre-line}
+.pr .ko{margin:6px 0 0;color:var(--ink2);font-size:.85em}
+.pr .nt{margin:6px 0 0;color:var(--ac);font-size:.8em;font-weight:600}
+.k{background:var(--t1);color:var(--ac);border-radius:4px;padding:0 3px}
+.copy{position:absolute;top:10px;right:10px;border:1px solid #D9D0F1;background:#fff;color:var(--ac);border-radius:6px;padding:4px 10px;font:inherit;font-size:.7em;font-weight:700;cursor:pointer}
+.copy.done{background:var(--ac);color:#fff}
+.tbl{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:.86em;background:#fff;margin:6px 0}
+th,td{border-bottom:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+th{color:var(--ac);font-weight:800;border-bottom:2px solid var(--ac);white-space:nowrap}
+.bottom{position:sticky;bottom:0;z-index:20;background:rgba(250,250,248,.97);border-top:1px solid var(--line)}
+.bottom-in{max-width:1480px;margin:0 auto;padding:8px 20px;display:flex;justify-content:space-between;gap:10px}
+.bottom .btn{font-size:.74em;padding:9px 14px;max-width:46%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bottom .btn:disabled{opacity:.3;cursor:default}
+@media (max-width:900px){
+ #menuBtn{display:inline-block}
+ .wrap{flex-direction:column;padding:12px}
+ .side{order:0;position:static;width:auto;max-height:none;display:none;margin-bottom:14px;align-self:stretch}
+ .side.open{display:block}.side .fold{display:none}
+ .grid{grid-template-columns:1fr}
+ .pr{padding:40px 12px 12px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style></head><body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><marker id="ah" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="11" refY="7" orient="auto"><path d="M0,0 L14,7 L0,14 z" fill="#4B2FA0"/></marker></defs></svg>
+<header class="top"><div class="top-in"><h1>캐릭터 한 명, 목소리 하나 — 유머·공익 편<small>양천 · 그록 AI 영상 · 5주차</small></h1><button class="btn" id="menuBtn" type="button">☰ 이 단계 카드</button><button class="btn" id="fontBtn" type="button">가+</button></div><nav class="tabs" id="tabs" aria-label="단계"></nav></header>
+<div class="wrap"><main class="main">
+
+<!-- STEP 0 -->
+<section class="step" id="s0" data-i="0"><header class="sh"><span class="no">0</span><div><h2>오늘의 지도</h2><p>캐릭터 한 명과 목소리 하나를 만들어서, 유머와 공익 두 영상에 출연시킵니다.</p></div></header><div class="grid">
+<article class="card key wide" id="s0a"><h3><span class=lab>핵심</span>8주 전체에서 오늘의 자리</h3>
+<figure class="fig"><svg viewBox="0 0 720 190" xmlns="http://www.w3.org/2000/svg" font-family="Noto Sans KR, sans-serif" role="img" aria-label="8차시 흐름, 5차시 강조">
+<g font-size="12" text-anchor="middle">
+<rect x="10" y="30" width="80" height="70" rx="8" fill="#F2EFFA" stroke="#4B2FA0" stroke-width="1.5"/><text x="50" y="58" font-size="16" font-weight="800" fill="#4B2FA0">1</text><text x="50" y="82" fill="#221E2B">기능 Ⅰ</text>
+<rect x="98" y="30" width="80" height="70" rx="8" fill="#F2EFFA" stroke="#4B2FA0" stroke-width="1.5"/><text x="138" y="58" font-size="16" font-weight="800" fill="#4B2FA0">2</text><text x="138" y="82" fill="#221E2B">기능 Ⅱ</text>
+<rect x="186" y="30" width="80" height="70" rx="8" fill="#F2EFFA" stroke="#4B2FA0" stroke-width="1.5"/><text x="226" y="58" font-size="16" font-weight="800" fill="#4B2FA0">3</text><text x="226" y="82" fill="#221E2B">제품 광고</text>
+<rect x="274" y="30" width="80" height="70" rx="8" fill="#F2EFFA" stroke="#4B2FA0" stroke-width="1.5"/><text x="314" y="58" font-size="16" font-weight="800" fill="#4B2FA0">4</text><text x="314" y="82" fill="#221E2B">메뉴판·유머</text>
+<rect x="362" y="22" width="90" height="86" rx="8" fill="#4B2FA0"/><text x="407" y="56" font-size="18" font-weight="800" fill="#fff">5 오늘</text><text x="407" y="82" fill="#fff" font-weight="700">캐릭터</text><text x="407" y="98" fill="#fff" font-weight="700">유머·공익</text>
+<rect x="460" y="30" width="80" height="70" rx="8" fill="#fff" stroke="#E6E4EC" stroke-width="2"/><text x="500" y="58" font-size="16" font-weight="800" fill="#625D6E">6</text><text x="500" y="82" fill="#625D6E">미니 단편</text>
+<rect x="548" y="30" width="80" height="70" rx="8" fill="#fff" stroke="#E6E4EC" stroke-width="2"/><text x="588" y="58" font-size="16" font-weight="800" fill="#625D6E">7</text><text x="588" y="82" fill="#625D6E">공모전 기획</text>
+<rect x="636" y="30" width="76" height="70" rx="8" fill="#fff" stroke="#E6E4EC" stroke-width="2"/><text x="674" y="58" font-size="16" font-weight="800" fill="#625D6E">8</text><text x="674" y="82" fill="#625D6E">제출·시사회</text>
+</g>
+<path d="M407 112 C407 150, 500 150, 500 104" fill="none" stroke="#4B2FA0" stroke-width="2.5" stroke-dasharray="6 4" marker-end="url(#ah)"/>
+<path d="M407 112 C407 165, 588 165, 588 104" fill="none" stroke="#4B2FA0" stroke-width="2.5" stroke-dasharray="6 4" marker-end="url(#ah)"/>
+<path d="M407 112 C407 178, 674 178, 674 104" fill="none" stroke="#4B2FA0" stroke-width="2.5" stroke-dasharray="6 4" marker-end="url(#ah)"/>
+<text x="200" y="165" font-size="13" fill="#4B2FA0" font-weight="700" text-anchor="middle">오늘 만든 캐릭터가 6·7·8차시에 다시 출연합니다</text>
+</svg></figure>
+<p>지난주에는 이미지 한 장을 <b>어느 자리</b>에 꽂는지 배웠습니다. 오늘은 그 위에 <b>같은 얼굴 · 같은 목소리</b>를 얹습니다.</p></article>
+<article class="card key" id="s0b"><h3><span class=lab>핵심</span>오늘 만드는 것</h3><ol><li><b>신기능</b> — 목소리 고정 · 그리기 · 스타트와 엔드</li><li><b>까비 기획서</b> — 그록 프로젝트에서</li><li><b>캐릭터 앵커 + 턴어라운드 + 목소리</b> — 오늘의 자산</li><li><b>유머 숏폼</b> — 까비의 붕어빵 실종 사건</li><li><b>공익 숏폼</b> — 끊고 · 확인 · 신고</li></ol></article>
+<article class="card key" id="s0c"><h3><span class=lab>핵심</span>오늘의 규칙 세 줄</h3><ol><li>얼굴은 <b>참조</b>로 고정한다 — 앵커 · 시트</li><li>목소리는 <b>오디오</b>로 고정한다 — 같은 보이스</li><li>도착점은 <b>끝 프레임</b>으로 정한다 — 이어 붙일 땐 앞 컷의 끝 = 다음 컷의 시작</li></ol></article>
+<article class="card set wide" id="s0d"><h3><span class=lab>준비</span>시작 전 확인</h3><ul><li>그록 로그인 → <b>Imagine</b> · 비디오 모드</li><li>바탕화면에 <b>까비</b> 폴더 만들기 — 오늘 만든 이미지·영상을 전부 여기에</li><li>이어폰 준비 — 보이스를 들어보고 고릅니다</li><li>오늘 만드는 그림은 꼭 필요한 것만 — 대부분 <b>앵커를 편집</b>해서 만듭니다</li></ul></article>
+</div></section>
+
+<!-- STEP 1 -->
+<section class="step" id="s1" data-i="1"><header class="sh"><span class="no">1</span><div><h2>신기능 — 목소리 · 그리기 · 스타트와 엔드</h2><p>그록에 새로 생긴 두 기능을 먼저 손에 익히고, 시작만 정할 때와 끝까지 정할 때가 어떻게 다른지 비교합니다.</p></div></header><div class="grid">
+<article class="card key wide" id="s1a"><h3><span class=lab>핵심</span>1-A 목소리 고정 — 화면 순서</h3>
+<figure class="fig"><svg viewBox="0 0 720 150" xmlns="http://www.w3.org/2000/svg" font-family="Noto Sans KR, sans-serif" role="img" aria-label="보이스 고정 순서 다섯 칸">
+<g text-anchor="middle">
+<rect x="15" y="30" width="126" height="86" rx="10" fill="#F2EFFA" stroke="#4B2FA0" stroke-width="2"/><text x="78" y="64" font-size="16" fill="#4B2FA0" font-weight="800">① 비디오</text><text x="78" y="92" font-size="12" fill="#221E2B">모드 선택</text>
+<line x1="142" y1="73" x2="155" y2="73" stroke="#4B2FA0" stroke-width="3" marker-end="url(#ah)"/>
+<rect x="156" y="30" width="126" height="86" rx="10" fill="#F2EFFA" stroke="#4B2FA0" stroke-width="2"/><text x="219" y="64" font-size="16" fill="#4B2FA0" font-weight="800">② ＋</text><text x="219" y="92" font-size="12" fill="#221E2B">입력창 왼쪽</text>
+<line x1="283" y1="73" x2="296" y2="73" stroke="#4B2FA0" stroke-width="3" marker-end="url(#ah)"/>
+<rect x="297" y="30" width="126" height="86" rx="10" fill="#4B2FA0"/><text x="360" y="64" font-size="16" fill="#fff" font-weight="800">③ 오디오</text><text x="360" y="92" font-size="12" fill="#fff">메뉴 선택</text>
+<line x1="424" y1="73" x2="437" y2="73" stroke="#4B2FA0" stroke-width="3" marker-end="url(#ah)"/>
+<rect x="438" y="30" width="126" height="86" rx="10" fill="#F2EFFA" stroke="#4B2FA0" stroke-width="2"/><text x="501" y="64" font-size="16" fill="#4B2FA0" font-weight="800">④ ▶ 듣기</text><text x="501" y="92" font-size="12" fill="#221E2B">마음에 들면 선택</text>
+<line x1="565" y1="73" x2="578" y2="73" stroke="#4B2FA0" stroke-width="3" marker-end="url(#ah)"/>
+<rect x="579" y="30" width="126" height="86" rx="10" fill="#F2EFFA" stroke="#4B2FA0" stroke-width="2"/><text x="642" y="64" font-size="16" fill="#4B2FA0" font-weight="800">⑤ 대사</text><text x="642" y="92" font-size="12" fill="#221E2B">따옴표 안에</text>
+</g>
+<text x="360" y="140" font-size="13" fill="#625D6E" text-anchor="middle">보이스 이름을 적어 두면 다음 영상에서도 같은 목소리로 부를 수 있습니다</text>
+</svg></figure>
+<p>오디오 목록에는 <b>Ara · Eve · Leo · Rex · Sal · Carina …</b> 같은 이름의 목소리가 있습니다. 골라서 첨부하면 입력창에 목소리 칩이 붙어요.</p>
+<p><b>2차시 보이스 고정과 달라진 점</b> — 이제는 <b>캐릭터 이미지와 목소리를 함께</b> 넣어 여러 장면에서 같은 얼굴 · 같은 목소리를 이어갈 수 있습니다.</p></article>
+<article class="card demo" id="s1b"><h3><span class=lab>다 같이</span>① 목록에서 들어보고 고르기</h3><p>생성하지 않고 <b>▶ 버튼으로만</b> 들어 봅니다. 이어폰을 끼고 서너 개를 들은 뒤 오늘 카페 사장님 목소리 하나를 고르세요.</p>
+<div class="tbl"><table><tr><th>들어볼 것</th><th>메모</th></tr><tr><td>고른 이름</td><td></td></tr><tr><td>느낌 (밝다 · 차분하다 · 굵다)</td><td></td></tr></table></div></article>
+<article class="card demo" id="s1c"><h3><span class=lab>다 같이</span>② 한 장면 만들기</h3><p>고른 보이스를 첨부하고 생성. 비율 <b>9:16</b>. 이미지는 필요 없습니다.</p>
+<div class="pr"><button class="copy" type="button">복사</button><p class="en">Medium shot. A friendly café owner behind a wooden counter looks at the camera, smiles and says: "오늘의 커피는 따뜻한 라떼입니다." Static shot, no camera movement. Soft café ambience, no music.</p><p class="ko">나무 카운터 뒤 카페 사장님이 카메라를 보고 웃으며 말한다. 카메라 고정, 음악 없음.</p></div></article>
+<article class="card you wide" id="s1d"><h3><span class=lab>내 차례</span>③ 장소만 바꿔 목소리가 따라오는지</h3><p>같은 보이스 그대로, 장소만 바꿉니다. 같은 사람이 말하는 것처럼 들리면 성공.</p>
+<div class="pr"><button class="copy" type="button">복사</button><p class="en">Medium shot. The same café owner stands in a sunny park holding a paper coffee cup and says: "내일은 공원에서 만나요." Static shot. Birds and light wind, no music.</p><p class="ko">같은 사장님이 햇살 좋은 공원에서 종이컵을 들고 말한다.</p></div>
+<ul class="muted"><li>대사는 따옴표 안에 한 줄, 15자 안팎 · 누가 말하는지 문장에 쓰기</li><li>목소리가 안 붙은 것 같으면 입력창에서 <b>@</b>를 눌러 보이스 칩을 프롬프트 안에 넣어 보세요 (화면에 따라 첨부만으로 적용되기도 합니다)</li></ul></article>
+<article class="card key wide" id="s1e"><h3><span class=lab>핵심</span>1-B 그리기 — 대충 그리면 그록이 완성</h3>
+<figure class="fig"><svg viewBox="0 0 720 170" xmlns="http://www.w3.org/2000/svg" font-family="Noto Sans KR, sans-serif" role="img" aria-label="그리기 흐름">
+<rect x="20" y="25" width="180" height="120" rx="10" fill="#fff" stroke="#221E2B" stroke-width="1.5"/>
+<circle cx="110" cy="92" r="32" fill="none" stroke="#221E2B" stroke-width="3"/><circle cx="110" cy="50" r="18" fill="none" stroke="#221E2B" stroke-width="3"/><circle cx="104" cy="47" r="3" fill="#221E2B"/><path d="M125 50 L140 54 L125 57" fill="none" stroke="#221E2B" stroke-width="3"/><path d="M80 90 L60 100" stroke="#221E2B" stroke-width="3"/>
+<text x="110" y="162" font-size="13" fill="#625D6E" text-anchor="middle">① ＋ → 그리기 → 스케치</text>
+<line x1="210" y1="85" x2="270" y2="85" stroke="#4B2FA0" stroke-width="3" marker-end="url(#ah)"/><text x="240" y="72" font-size="12" fill="#4B2FA0" font-weight="700" text-anchor="middle">완료</text>
+<rect x="280" y="25" width="180" height="120" rx="10" fill="#F2EFFA" stroke="#4B2FA0" stroke-width="2"/>
+<text x="370" y="78" font-size="14" fill="#4B2FA0" font-weight="800" text-anchor="middle">프롬프트 한 줄</text><text x="370" y="104" font-size="12" fill="#221E2B" text-anchor="middle">"3D 캐릭터로, 구도 그대로"</text>
+<text x="370" y="162" font-size="13" fill="#625D6E" text-anchor="middle">② 스타일 지정</text>
+<line x1="470" y1="85" x2="530" y2="85" stroke="#4B2FA0" stroke-width="3" marker-end="url(#ah)"/>
+<rect x="540" y="25" width="160" height="120" rx="10" fill="#4B2FA0"/>
+<circle cx="620" cy="95" r="30" fill="#fff"/><circle cx="620" cy="55" r="17" fill="#fff"/><circle cx="614" cy="52" r="4" fill="#221E2B"/><rect x="600" y="85" width="40" height="22" rx="4" fill="#E9C84A"/>
+<text x="620" y="162" font-size="13" fill="#625D6E" text-anchor="middle">③ 완성 이미지</text>
+</svg></figure>
+<p>입력창 <b>＋ → 그리기</b>를 누르면 흰 캔버스가 열립니다. 펜 · 굵기 · 색 · 되돌리기 · 전체 지우기로 그리고 <b>완료</b>. 잘 그릴 필요 없어요 — <b>위치와 모양</b>만 알려주면 됩니다.</p></article>
+<article class="card demo" id="s1f"><h3><span class=lab>다 같이</span>동그라미 두 개로 캐릭터</h3><p>큰 동그라미(몸) · 작은 동그라미(머리) · 부리 · 날개 한 줄. 완료 후 아래 프롬프트.</p>
+<div class="pr"><button class="copy" type="button">복사</button><p class="en">Turn this sketch into a cute round 3D cartoon bird character. Keep the same pose, position and proportions as the sketch. Plain light grey background, soft even lighting.</p><p class="ko">이 스케치를 귀여운 동그란 3D 새 캐릭터로. 자세·위치·비율은 스케치 그대로.</p></div></article>
+<article class="card ext" id="s1g"><h3><span class=lab>확장</span>끝 장면 구도를 그림으로</h3><p>반전 장면처럼 <b>도착점이 정해진</b> 장면은 스케치로 배치를 잡고 이미지로 바꿔 <b>마지막 프레임</b>에 꽂으세요.</p>
+<div class="pr"><button class="copy" type="button">복사</button><p class="en">Turn this sketch into a realistic scene. Keep every object in exactly the same position as the sketch. <span class=k>[장면 설명]</span>.</p><p class="ko">스케치 속 물건 위치는 그대로, 실사 장면으로.</p></div></article>
+<article class="card key wide" id="s1h"><h3><span class=lab>핵심</span>1-C 시작만 정할까, 끝까지 정할까</h3>
+<figure class="fig"><svg viewBox="0 0 720 250" xmlns="http://www.w3.org/2000/svg" font-family="Noto Sans KR, sans-serif" role="img" aria-label="스타트만 vs 스타트와 엔드">
+<text x="15" y="42" font-size="15" font-weight="800" fill="#221E2B">A 스타트만</text>
+<rect x="140" y="18" width="90" height="46" rx="6" fill="#4B2FA0"/><text x="185" y="46" font-size="12" fill="#fff" font-weight="700" text-anchor="middle">빈 잔</text>
+<rect x="240" y="18" width="250" height="46" rx="6" fill="#fff" stroke="#E6E4EC" stroke-width="2"/><text x="365" y="46" font-size="12" fill="#625D6E" text-anchor="middle">AI가 알아서</text>
+<rect x="500" y="18" width="90" height="46" rx="6" fill="#fff" stroke="#C2412D" stroke-width="2" stroke-dasharray="4 3"/><text x="545" y="46" font-size="13" fill="#C2412D" font-weight="800" text-anchor="middle">?</text>
+<text x="600" y="46" font-size="12" fill="#C2412D" font-weight="700">끝을 모름</text>
+<text x="15" y="112" font-size="15" font-weight="800" fill="#221E2B">B 스타트+엔드</text>
+<rect x="140" y="88" width="90" height="46" rx="6" fill="#4B2FA0"/><text x="185" y="116" font-size="12" fill="#fff" font-weight="700" text-anchor="middle">빈 잔</text>
+<rect x="240" y="88" width="250" height="46" rx="6" fill="#fff" stroke="#E6E4EC" stroke-width="2"/><text x="365" y="116" font-size="12" fill="#625D6E" text-anchor="middle">AI는 가운데만</text>
+<rect x="500" y="88" width="90" height="46" rx="6" fill="#4B2FA0"/><text x="545" y="116" font-size="12" fill="#fff" font-weight="700" text-anchor="middle">라떼</text>
+<text x="600" y="116" font-size="12" fill="#4B2FA0" font-weight="700">끝을 내가 정함</text>
+<line x1="15" y1="158" x2="705" y2="158" stroke="#E6E4EC" stroke-width="1.5"/>
+<text x="15" y="188" font-size="13" font-weight="800" fill="#221E2B">이어 붙일 때</text>
+<rect x="140" y="170" width="70" height="36" rx="6" fill="#4B2FA0"/><text x="175" y="193" font-size="11" fill="#fff" text-anchor="middle">시작</text>
+<line x1="212" y1="188" x2="268" y2="188" stroke="#4B2FA0" stroke-width="2.5" marker-end="url(#ah)"/><text x="240" y="220" font-size="11" fill="#625D6E" text-anchor="middle">컷 1</text>
+<rect x="270" y="170" width="90" height="36" rx="6" fill="#4B2FA0"/><text x="315" y="193" font-size="11" fill="#fff" text-anchor="middle">끝 = 다음 시작</text>
+<line x1="362" y1="188" x2="418" y2="188" stroke="#4B2FA0" stroke-width="2.5" marker-end="url(#ah)"/><text x="390" y="220" font-size="11" fill="#625D6E" text-anchor="middle">컷 2</text>
+<rect x="420" y="170" width="70" height="36" rx="6" fill="#4B2FA0"/><text x="455" y="193" font-size="11" fill="#fff" text-anchor="middle">끝</text>
+<text x="600" y="193" font-size="12" fill="#4B2FA0" font-weight="700">이음새 매끈</text>
+<text x="360" y="244" font-size="12" fill="#625D6E" text-anchor="middle">보라색 = 내가 만든 이미지</text>
+</svg></figure>
+<p>오늘은 <b>한 컷씩</b> 두 방법을 만들어 비교합니다. B 방식에서 앞 컷의 끝 이미지를 다음 컷의 시작으로 쓰면 여러 컷도 매끈하게 이어집니다(아래 줄).</p></article>
+<article class="card demo wide" id="s1i"><h3><span class=lab>다 같이</span>재료 이미지 두 장 — 한 장 만들고 편집 한 번</h3><p>비율 <b>9:16</b>. 두 번째는 새로 만들지 말고 앞 이미지를 열어 <b>이미지 편집</b>으로. 그래야 잔과 테이블이 그대로입니다.</p>
+<div class="pr"><button class="copy" type="button">복사</button><p class="en">Top-down view, 90 degrees straight down. An empty white ceramic coffee cup on a saucer on a warm wooden café table, soft morning daylight, clean food photography.</p><p class="ko">수직 탑다운. 나무 테이블 위 빈 흰 커피잔, 부드러운 아침 빛.</p><p class="nt">① 빈 잔 — 저장: 커피_1</p></div>
+<div class="pr"><button class="copy" type="button">복사</button><p class="en">Keep the same cup, saucer, table, angle and lighting. Only change: the cup is now full of a creamy latte with a heart-shaped latte art on top.</p><p class="ko">잔·테이블·각도·빛은 그대로. 바꿀 것: 하트 라떼아트가 올라간 라떼.</p><p class="nt">② 라떼 — 저장: 커피_2</p></div></article>
+<article class="card you" id="s1j"><h3><span class=lab>내 차례</span>A — 시작만</h3><p>커피_1 첨부 → › <b>첫 번째 프레임</b> → 생성.</p>
+<div class="pr"><button class="copy" type="button">복사</button><p class="en">A barista's hand pours steamed milk into the cup. The camera stays top-down, no camera movement. Soft café sounds, no music.</p><p class="nt">어디서 끝날까요? — 끝은 AI가 정합니다</p></div></article>
+<article class="card you" id="s1k"><h3><span class=lab>내 차례</span>B — 시작+끝</h3><p>커피_1 → › <b>첫 번째</b>, 커피_2 → › <b>마지막</b> → 같은 내용 + 끝 문장.</p>
+<div class="pr"><button class="copy" type="button">복사</button><p class="en">Start on the empty cup. A barista's hand pours steamed milk and draws latte art. End exactly on the heart latte. The camera stays top-down, no camera movement. Soft café sounds, no music.</p><p class="nt">End exactly on … = 끝 이미지로 정확히</p></div></article>
+<article class="card key wide" id="s1l"><h3><span class=lab>핵심</span>두 영상을 나란히 틀어 보고</h3><div class="tbl"><table><tr><th>비교 항목</th><th>A 시작만</th><th>B 시작+끝</th></tr><tr><td>끝 장면</td><td>AI 마음대로 — 하트가 안 나올 수도</td><td><b>내가 정한 장면으로 정확히</b></td></tr><tr><td>다음 컷과 잇기</td><td>끝을 캡처해야 함 · 조금씩 달라짐</td><td>끝 이미지를 그대로 다음 시작으로</td></tr><tr><td>준비할 이미지</td><td>1장</td><td>2장</td></tr><tr><td>잘 맞는 영상</td><td>짧은 움짤 · 즉흥 실험</td><td><b>이야기 · 광고 · 공익</b> — 도착점이 정해진 영상</td></tr></table></div><p>오늘 유머·공익은 <b>B 방식</b>입니다. 반전 장면, 메시지 장면처럼 끝이 정해져 있으니까요.</p></article>
+</div></section>
+
+<!-- STEP 2 -->
+<section class="step" id="s2" data-i="2"><header class="sh"><span class="no">2</span><div><h2>그록 프로젝트로 기획하기</h2><p>프로젝트 = 내 작업실. 지침을 한 번 넣어 두면 캐릭터 설정부터 컷 목록까지 같은 형식으로 나옵니다.</p></div></header><div class="grid">
+<article class="card key wide" id="s2a"><h3><span class=lab>핵심</span>기획서 한 장이 나오는 길</h3>
+<figure class="fig"><svg viewBox="0 0 720 150" xmlns="http://www.w3.org/2000/svg" font-family="Noto Sans KR, sans-serif" role="img" aria-label="프로젝트 기획 흐름">
+<g text-anchor="middle">
+<rect x="15" y="30" width="160" height="86" rx="10" fill="#F2EFFA" stroke="#4B2FA0" stroke-width="2"/><text x="95" y="64" font-size="16" fill="#4B2FA0" font-weight="800">프로젝트 개설</text><text x="95" y="92" font-size="12" fill="#221E2B">5차시 캐릭터 작업실</text>
+<line x1="176" y1="73" x2="196" y2="73" stroke="#4B2FA0" stroke-width="3" marker-end="url(#ah)"/>
+<rect x="197" y="30" width="160" height="86" rx="10" fill="#F2EFFA" stroke="#4B2FA0" stroke-width="2"/><text x="277" y="64" font-size="16" fill="#4B2FA0" font-weight="800">지침 붙여넣기</text><text x="277" y="92" font-size="12" fill="#221E2B">출력 형식을 고정</text>
+<line x1="358" y1="73" x2="378" y2="73" stroke="#4B2FA0" stroke-width="3" marker-end="url(#ah)"/>
+<rect x="379" y="30" width="160" height="86" rx="10" fill="#F2EFFA" stroke="#4B2FA0" stroke-width="2"/><text x="459" y="64" font-size="16" fill="#4B2FA0" font-weight="800">요청 4칸</text><text x="459" y="92" font-size="12" fill="#221E2B">상황·주인공·요청·조건</text>
+<line x1="540" y1="73" x2="560" y2="73" stroke="#4B2FA0" stroke-width="3" marker-end="url(#ah)"/>
+<rect x="561" y="30" width="145" height="86" rx="10" fill="#4B2FA0"/><text x="633" y="64" font-size="16" fill="#fff" font-weight="800">기획서</text><text x="633" y="92" font-size="12" fill="#fff">설정표 + 컷 목록</text>
+</g>
+<text x="360" y="140" font-size="13" fill="#625D6E" text-anchor="middle">수업 끝에 앵커 · 시트 이미지를 이 프로젝트 파일에 올려 두면 다음 주에도 같은 캐릭터</text>
+</svg></figure></article>
+<article class="card set" id="s2b"><h3><span class=lab>준비</span>프로젝트 여는 곳</h3><ol><li>그록 <b>채팅 화면</b>으로 (이매진 아님)</li><li>왼쪽 메뉴 <b>프로젝트 → 새 프로젝트</b></li><li>이름: <b>5차시 캐릭터 작업실</b></li><li><b>지침</b> 칸에 오른쪽 지침 붙여넣기 → 저장</li></ol><p class="muted">2차시에 만든 작업실과 같은 방법입니다.</p></article>
+<article class="card demo" id="s2c"><h3><span class=lab>다 같이</span>지침 붙여넣기</h3>
+<div class="pr"><button class="copy" type="button">복사</button><p class="en">[역할] 너는 30초 이하 AI 숏폼 기획 PD다. 제작 도구는 그록 이매진이다.
+[사용자] 영상 제작 입문자. 네가 준 영어 프롬프트를 그대로 복사해 쓴다.
+[출력 순서]
+1) 캐릭터 설정표: 이름 / 한 줄 성격 / 겉모습 특징 3가지(색·소품·실루엣) / 말투 / 어울리는 목소리 느낌
+2) 캐릭터 고정 문장: 겉모습을 담은 영어 한 문장
+3) 앵커 프롬프트(영어): 정면, 전신, 연회색 단색 배경, 중립 표정, 고른 빛, 글자 없음
+4) 컷 목록 표: 컷 / 시작 이미지 / 끝 이미지 / 영상 프롬프트(영어) / 대사(한국어 15자 이내) / 자막(8자 이내) / 소리
+[규칙] 한 컷 10초, 컷마다 카메라 움직임 하나, 대사는 컷당 한 줄, 실존 인물·상표·실제 기관 표장 금지, 영상 프롬프트 끝에 no music 또는 음악 지정.
+[말투] 존댓말, 짧고 분명하게.</p><p class="nt">지침은 한 번만 — 이 방의 모든 대화에 적용됩니다</p></div></article>
+<article class="card demo wide" id="s2d"><h3><span class=lab>다 같이</span>까비 기획서 받기</h3><p>프로젝트 안에서 <b>새 대화</b> → 아래 요청. 오늘 예제 주인공은 동네 안전 지킴이 마스코트 <b>까치 「까비」</b>입니다.</p>
+<div class="pr"><button class="copy" type="button">복사</button><p class="en">[상황] 서울 양천구 주민이 보는 SNS 계정에 올릴 세로 숏폼 두 편을 만든다.
+[주인공] 동네 안전 지킴이 마스코트, 까치 캐릭터 「까비」. 동그란 3D 만화풍, 파란 날개 끝, 노란 안전조끼, 빨간 스카프.
+[요청] ① 유머 숏폼 1편: 10초 1컷, 끝 장면에 반전 — 소재 「까비의 붕어빵 실종 사건」(다큐 인터뷰처럼 비장한데 범인은 자기 자신) ② 공익 숏폼 1편: 10초 1컷, 주제 보이스피싱 예방 「끊고, 확인하고, 신고」.
+[조건] 지침의 출력 순서대로. 두 편 모두 같은 캐릭터, 같은 목소리. 컷마다 시작 이미지와 끝 이미지를 정할 것.</p></div>
+<p class="muted">기획서는 <b>오늘 영상의 흐름을 미리 보는 설계도</b>입니다. 까비 실습은 교재에 준비된 프롬프트로 진행하고, 기획서의 컷 목록과 비교해 보세요.</p></article>
+<article class="card you" id="s2e"><h3><span class=lab>내 차례</span>내 캐릭터 기획서</h3><p>같은 대화에서 [주인공]과 [요청] 소재만 바꿔 한 번 더. 이 기획서는 <b>집에서 내 캐릭터로 만들 때</b> 그대로 씁니다.</p><ul><li>우리 가게 마스코트 — 떡볶이 떡 캐릭터</li><li>우리 집 강아지</li><li>우리 단체 홍보대사 — 동네 도서관 부엉이</li></ul></article>
+<article class="card ext" id="s2f"><h3><span class=lab>확장</span>기획서를 더 단단하게</h3><div class="pr"><button class="copy" type="button">복사</button><p class="en">컷 목록의 각 컷에 대해, 시작 이미지와 끝 이미지를 만드는 이미지 프롬프트(영어)도 따로 써 줘. 두 이미지 모두 앵커 이미지를 편집하는 문장(Keep the exact same character … Only change: …)으로.</p></div></article>
+</div></section>
+
+<!-- STEP 3 -->
+<section class="step" id="s3" data-i="3"><header class="sh"><span class="no">3</span><div><h2>캐릭터 앵커 만들기</h2><p>앵커 = 모든 장면이 기준으로 삼는 캐릭터 그림 한 장. 배가 닻을 내리듯, 캐릭터를 이 한 장에 묶어 둡니다.</p></div></header><div class="grid">
+<article class="card key wide" id="s3a"><h3><span class=lab>핵심</span>좋은 앵커의 다섯 조건 + 알아볼 특징 셋</h3>
+<figure class="fig"><svg viewBox="0 0 720 260" xmlns="http://www.w3.org/2000/svg" font-family="Noto Sans KR, sans-serif" role="img" aria-label="앵커 조건">
+<rect x="250" y="15" width="220" height="230" rx="10" fill="#EEEDF1" stroke="#221E2B" stroke-width="1.5"/>
+<ellipse cx="360" cy="165" rx="52" ry="58" fill="#221E2B"/><ellipse cx="360" cy="178" rx="34" ry="38" fill="#fff"/>
+<circle cx="360" cy="90" r="34" fill="#221E2B"/><circle cx="348" cy="86" r="7" fill="#fff"/><circle cx="372" cy="86" r="7" fill="#fff"/><circle cx="349" cy="87" r="3" fill="#221E2B"/><circle cx="373" cy="87" r="3" fill="#221E2B"/><path d="M354 100 L360 110 L366 100 z" fill="#E9A23B"/>
+<path d="M330 122 Q360 134 390 122 L386 132 Q360 142 334 132 z" fill="#D2463A"/><path d="M372 132 L380 150 L368 146 z" fill="#D2463A"/>
+<path d="M322 145 L398 145 L392 200 L328 200 z" fill="#E9C84A" opacity=".95"/>
+<path d="M308 150 Q290 170 302 195" fill="none" stroke="#3E73C9" stroke-width="8" stroke-linecap="round"/><path d="M412 150 Q430 170 418 195" fill="none" stroke="#3E73C9" stroke-width="8" stroke-linecap="round"/>
+<g font-size="13" font-weight="700" fill="#221E2B">
+<text x="20" y="50">① 정면</text><text x="20" y="90">② 전신 (발끝까지)</text><text x="20" y="130">③ 단색 배경</text><text x="20" y="170">④ 중립 표정</text><text x="20" y="210">⑤ 고른 빛 · 글자 없음</text>
+<text x="500" y="110" fill="#4B2FA0">★ 빨간 스카프</text><text x="500" y="165" fill="#4B2FA0">★ 노란 안전조끼</text><text x="500" y="205" fill="#4B2FA0">★ 파란 날개 끝</text>
+</g>
+<line x1="496" y1="106" x2="392" y2="128" stroke="#4B2FA0" stroke-width="1.5" stroke-dasharray="4 3"/><line x1="496" y1="161" x2="400" y2="165" stroke="#4B2FA0" stroke-width="1.5" stroke-dasharray="4 3"/><line x1="496" y1="201" x2="424" y2="186" stroke="#4B2FA0" stroke-width="1.5" stroke-dasharray="4 3"/>
+</svg></figure>
+<p>특징 셋은 <b>색 · 소품 · 실루엣</b>에서 하나씩. 영상에서 캐릭터가 조금 달라져도 이 세 가지가 보이면 "같은 까비"로 읽힙니다.</p></article>
+<article class="card demo wide" id="s3b"><h3><span class=lab>다 같이</span>까비 앵커 만들기</h3><p>이미지 모드 · 비율 <b>1:1</b>. 나온 네 장 중 다섯 조건에 가장 맞는 한 장을 고릅니다.</p>
+<div class="pr"><button class="copy" type="button">복사</button><p class="en">Character reference image. Kkabi, a cute round 3D cartoon magpie mascot with glossy black and white feathers, blue-tinted wing tips, big round friendly eyes, wearing a small yellow safety vest and a red scarf. Standing upright, full body from head to feet, facing the camera, calm neutral expression, wings relaxed at the sides. Plain light grey background, soft even studio lighting, no text.</p><p class="ko">캐릭터 기준 그림. 동그란 3D 까치 마스코트 까비 — 파란 날개 끝, 노란 안전조끼, 빨간 스카프. 정면·전신·중립 표정, 연회색 단색 배경, 고른 조명, 글자 없음.</p><p class="nt">저장: 까비_앵커</p></div></article>
+<article class="card set" id="s3c"><h3><span class=lab>준비</span>고르는 기준</h3><ul><li>발끝까지 다 나왔나</li><li>스카프 · 조끼 · 날개 끝 셋이 다 보이나</li><li>배경에 그림자 · 무늬가 없나</li><li>표정이 너무 웃거나 찡그리지 않았나</li></ul><p class="muted">마음에 드는 게 없으면 다시 생성. 앵커는 오늘 가장 공들일 한 장입니다.</p></article>
+<article class="card demo" id="s3f"><h3><span class=lab>다 같이</span>까비 목소리 정하기</h3><p>까비_앵커를 보면서 오디오 목록을 ▶로 들어 보고 <b>까비에게 어울리는 목소리 하나</b>를 고릅니다. 1-A의 카페 사장님 목소리와는 따로 정하세요.</p>
+<div class="tbl"><table><tr><th>까비 목소리</th><th>메모</th></tr><tr><td>이름</td><td></td></tr><tr><td>느낌</td><td></td></tr></table></div><p class="muted">이 이름은 오늘 끝까지 바꾸지 않습니다.</p></article>
+<article class="card ext" id="s3d"><h3><span class=lab>확장</span>1-B 스케치 · 반려동물에서 출발하기</h3><p>그리기로 만든 캐릭터나 반려동물 사진을 첨부하고 앵커 조건을 붙이세요. 실존 인물 얼굴(연예인 · 지인)은 쓰지 않습니다.</p>
+<div class="pr"><button class="copy" type="button">복사</button><p class="en">Keep the same character design as this image. Redraw it as a character reference image: full body from head to feet, facing the camera, calm neutral expression, plain light grey background, soft even studio lighting, no text.</p><p class="nt">스케치 캐릭터용</p></div><div class="pr"><button class="copy" type="button">복사</button><p class="en">Turn the pet in this photo into a cute 3D cartoon character, keeping its fur color, markings and ear shape. Full body from head to feet, facing the camera, calm neutral expression, plain light grey background, soft even studio lighting, no text.</p><p class="nt">반려동물 사진용</p></div></article>
+</div></section>
+
+<!-- STEP 4 -->
+<section class="step" id="s4" data-i="4"><header class="sh"><span class="no">4</span><div><h2>캐릭터 시트 만들기</h2><p>앵커가 "이렇게 생겼다"라면, 시트는 "옆 · 뒤는 이렇다"입니다. 새로 만들지 말고 앵커를 편집해서 만듭니다.</p></div></header><div class="grid">
+<article class="card key wide" id="s4a"><h3><span class=lab>핵심</span>턴어라운드 한 장</h3>
+<figure class="fig"><svg viewBox="0 0 720 190" xmlns="http://www.w3.org/2000/svg" font-family="Noto Sans KR, sans-serif" role="img" aria-label="턴어라운드 시트">
+<rect x="110" y="10" width="500" height="150" rx="10" fill="#fff" stroke="#E6E4EC" stroke-width="2"/>
+<g fill="#221E2B"><ellipse cx="185" cy="105" rx="30" ry="36"/><circle cx="185" cy="55" r="20"/><ellipse cx="300" cy="105" rx="28" ry="36"/><circle cx="306" cy="55" r="20"/><ellipse cx="415" cy="105" rx="20" ry="36"/><circle cx="423" cy="55" r="19"/><ellipse cx="530" cy="105" rx="30" ry="36"/><circle cx="530" cy="55" r="20"/></g>
+<g fill="#E9C84A"><rect x="162" y="90" width="46" height="28" rx="4"/><rect x="280" y="90" width="42" height="28" rx="4"/><rect x="403" y="90" width="26" height="28" rx="4"/><rect x="507" y="90" width="46" height="28" rx="4"/></g>
+<g fill="#D2463A"><rect x="167" y="76" width="36" height="7" rx="3"/><rect x="286" y="76" width="36" height="7" rx="3"/><rect x="405" y="76" width="24" height="7" rx="3"/><rect x="512" y="76" width="36" height="7" rx="3"/></g>
+<g font-size="12" fill="#625D6E" text-anchor="middle"><text x="185" y="154">정면</text><text x="300" y="154">3/4</text><text x="415" y="154">측면</text><text x="530" y="154">뒷면</text></g>
+<text x="360" y="182" font-size="14" font-weight="800" fill="#4B2FA0" text-anchor="middle">턴어라운드 (16:9) — 몸이 돌아가는 장면의 기준</text>
+</svg></figure>
+<p>비율이 섞이는 이유: 앵커는 캐릭터만 담는 <b>1:1</b>, 시트는 네 방향을 한 줄로 놓는 <b>16:9</b>, 장면은 릴스용 <b>9:16</b>. 참조로 쓰는 그림은 비율이 달라도 괜찮습니다.</p></article>
+<article class="card demo wide" id="s4b"><h3><span class=lab>다 같이</span>턴어라운드 — 앵커 편집</h3><p>까비_앵커를 열고 <b>이미지 편집</b> · 비율 <b>16:9</b>.</p>
+<div class="pr"><button class="copy" type="button">복사</button><p class="en">Keep the exact same character: same colors, same yellow safety vest, same red scarf, same body proportions. Create a character turnaround sheet: front view, three-quarter view, side view and back view, standing in one row, same size, full body, same soft even lighting, plain light grey background, no text, no labels.</p><p class="ko">같은 캐릭터 그대로(색·조끼·스카프·비율). 정면·3/4·측면·뒷면을 한 줄로, 같은 크기, 연회색 배경, 글자 없음.</p><p class="nt">저장: 까비_턴어라운드</p></div></article>
+<article class="card warn" id="s4d"><h3><span class=lab>주의</span>칸마다 다른 캐릭터가 나오면</h3><ul><li>새로 만들기가 아니라 <b>앵커를 연 상태에서 편집</b>했는지</li><li>문장 맨 앞 <b>Keep the exact same character</b> 확인</li><li>네 칸이 어려우면 <b>정면 · 측면 두 칸</b>으로</li></ul></article>
+<article class="card ext" id="s4c"><h3><span class=lab>확장</span>표정 시트</h3><p>여유 있는 분은 같은 방법으로 표정 여섯 칸(기쁨 · 놀람 · 정색 · 당황 · 자신감 · 슬픔).</p>
+<div class="pr"><button class="copy" type="button">복사</button><p class="en">Keep the exact same character: same colors, same yellow safety vest, same red scarf. Create an expression sheet: six head-and-shoulders close-ups in a 3 by 2 grid — happy, surprised, stern, embarrassed, confident, sad. Same lighting, plain light grey background, no text, no labels.</p><p class="nt">저장: 까비_표정</p></div></article>
+</div></section>
+
+<!-- STEP 5 -->
+<section class="step" id="s5" data-i="5"><header class="sh"><span class="no">5</span><div><h2>일관성 유지하기</h2><p>얼굴 · 목소리 · 도착점, 세 군데를 동시에 묶어야 "같은 까비"가 끝까지 갑니다.</p></div></header><div class="grid">
+<article class="card key wide" id="s5a"><h3><span class=lab>핵심</span>3중 고정</h3>
+<figure class="fig"><svg viewBox="0 0 720 190" xmlns="http://www.w3.org/2000/svg" font-family="Noto Sans KR, sans-serif" role="img" aria-label="3중 고정">
+<g text-anchor="middle">
+<rect x="20" y="20" width="210" height="120" rx="10" fill="#F2EFFA" stroke="#4B2FA0" stroke-width="2"/><text x="125" y="58" font-size="18" fill="#4B2FA0" font-weight="800">얼굴</text><text x="125" y="88" font-size="13" fill="#221E2B">앵커 편집 · 참조 @</text><text x="125" y="112" font-size="12" fill="#625D6E">+ 고정 문장 한 줄</text>
+<rect x="255" y="20" width="210" height="120" rx="10" fill="#F2EFFA" stroke="#4B2FA0" stroke-width="2"/><text x="360" y="58" font-size="18" fill="#4B2FA0" font-weight="800">목소리</text><text x="360" y="88" font-size="13" fill="#221E2B">오디오 · 까비 보이스</text><text x="360" y="112" font-size="12" fill="#625D6E">이름을 바꾸지 않기</text>
+<rect x="490" y="20" width="210" height="120" rx="10" fill="#F2EFFA" stroke="#4B2FA0" stroke-width="2"/><text x="595" y="58" font-size="18" fill="#4B2FA0" font-weight="800">도착점</text><text x="595" y="88" font-size="13" fill="#221E2B">시작 + 끝 프레임</text><text x="595" y="112" font-size="12" fill="#625D6E">B 방식</text>
+</g>
+<rect x="20" y="150" width="680" height="30" rx="8" fill="#4B2FA0"/><text x="360" y="170" font-size="14" fill="#fff" font-weight="800" text-anchor="middle">셋이 모이면 → 같은 까비가 유머에도, 공익에도</text>
+</svg></figure></article>
+<article class="card key" id="s5b"><h3><span class=lab>핵심</span>캐릭터 고정 문장</h3><p>모든 프롬프트 맨 앞에 <b>똑같이</b> 복사해 넣는 한 줄. 메모장에 저장해 두세요.</p>
+<div class="pr"><button class="copy" type="button">복사</button><p class="en">Kkabi, a round 3D cartoon magpie mascot with blue-tinted wing tips, a yellow safety vest and a red scarf</p><p class="nt">단어를 바꾸지 말고 매번 그대로</p></div></article>
+<article class="card key" id="s5g"><h3><span class=lab>핵심</span>장면 그림은 앵커를 편집해서</h3><p>유머 · 공익 장면 그림은 <b>까비_앵커를 열고 이미지 편집</b>으로 장소와 동작만 바꿉니다. 새로 만들면 다른 까치가 나오기 쉽습니다.</p><p class="muted">이미지 모드에서 <b>참조</b>가 보이면 앵커를 참조로 넣고 만들어도 됩니다. 결과가 더 좋은 쪽으로.</p></article>
+<article class="card set" id="s5c"><h3><span class=lab>준비</span>영상에서 참조로 넣는 법</h3><ol><li>까비_앵커 첨부 → › <b>참조</b> (@image1)</li><li>까비_턴어라운드 첨부 → › <b>참조</b> (@image2)</li><li>프롬프트에서 <b>@image1</b>로 부르기</li><li>＋ → 오디오 → <b>까비 목소리</b></li></ol></article>
+<article class="card demo" id="s5d"><h3><span class=lab>다 같이</span>까비, 첫 인사</h3><p>참조 두 장 + 까비 목소리. 이미지를 새로 만들지 않고 바로 영상. 비율 <b>9:16</b>.</p>
+<div class="pr"><button class="copy" type="button">복사</button><p class="en">Kkabi, a round 3D cartoon magpie mascot with blue-tinted wing tips, a yellow safety vest and a red scarf, the same character as @image1 and @image2. Kkabi stands in a sunny neighborhood park, turns toward the camera and waves, saying: "안녕하세요, 까비예요." Static shot, no camera movement. Birds and light wind, no music.</p><p class="ko">@image1·@image2와 같은 까비가 공원에서 카메라 쪽으로 돌아서며 인사.</p><p class="nt">돌아서는 동작 = 턴어라운드가 일하는 순간</p></div></article>
+<article class="card you" id="s5e"><h3><span class=lab>내 차례</span>체크리스트로 점검</h3><div class="tbl"><table><tr><th>확인</th><th>결과</th></tr><tr><td>노란 조끼</td><td>□</td></tr><tr><td>빨간 스카프</td><td>□</td></tr><tr><td>파란 날개 끝</td><td>□</td></tr><tr><td>몸 비율</td><td>□</td></tr><tr><td>까비 목소리</td><td>□</td></tr></table></div><p class="muted">여유 있는 분: 장소만 바꿔 한 번 더 — <i>inside a bright community service center</i></p></article>
+<article class="card warn wide" id="s5f"><h3><span class=lab>주의</span>흔들릴 때</h3><table><tr><th>이렇게 나오면</th><th>이렇게</th></tr><tr><td>조끼 · 스카프 색이 바뀜</td><td>고정 문장을 빠뜨렸는지 확인</td></tr><tr><td>다른 까치가 나옴</td><td>앵커가 › <b>참조</b> 자리에 들어갔는지 확인</td></tr><tr><td>목소리가 바뀜</td><td>보이스 칩이 붙어 있는지 · 같은 이름인지</td></tr><tr><td>화질이 낮아짐</td><td>참조를 쓰면 화질 상한이 낮아질 수 있어요</td></tr></table></article>
+</div></section>
+
+<!-- STEP 6 -->
+<section class="step" id="s6" data-i="6"><header class="sh"><span class="no">6</span><div><h2>유머 숏폼 — 까비의 붕어빵 실종 사건</h2><p>격차(너무 진지한 다큐 × 하찮은 사건) + 끝 장면의 반전(범인은 자기 자신). 그림 두 장, 영상 한 컷.</p></div></header><div class="grid">
+<article class="card key wide" id="s6a"><h3><span class=lab>핵심</span>그림 두 장 = 시작과 도착</h3>
+<figure class="fig"><svg viewBox="0 0 720 170" xmlns="http://www.w3.org/2000/svg" font-family="Noto Sans KR, sans-serif" role="img" aria-label="유머 시작과 끝">
+<g text-anchor="middle">
+<rect x="40" y="25" width="200" height="90" rx="8" fill="#4B2FA0"/><text x="140" y="62" font-size="16" fill="#fff" font-weight="800">① 비장한 인터뷰</text><text x="140" y="90" font-size="12" fill="#fff">첫 번째 프레임</text>
+<rect x="250" y="25" width="220" height="90" rx="8" fill="#fff" stroke="#E6E4EC" stroke-width="2"/><text x="360" y="62" font-size="13" fill="#625D6E">"제 붕어빵이… 사라졌습니다"</text><text x="360" y="88" font-size="12" fill="#625D6E">AI가 가운데를 채움</text>
+<rect x="480" y="25" width="200" height="90" rx="8" fill="#4B2FA0"/><text x="580" y="62" font-size="16" fill="#fff" font-weight="800">② 조끼에 부스러기</text><text x="580" y="90" font-size="12" fill="#fff">마지막 프레임 = 반전</text>
+<text x="360" y="150" font-size="13" fill="#4B2FA0" font-weight="700">②는 ①을 편집해서 — 자리 · 빛 · 크기가 그대로라 반전이 또렷해집니다</text>
+</g></svg></figure></article>
+<article class="card demo wide" id="s6b"><h3><span class=lab>다 같이</span>그림 두 장 — 앵커 편집 한 번, 그 그림 편집 한 번</h3><p>① 까비_앵커를 열고 <b>이미지 편집</b> · <b>9:16</b>. ② ①을 열고 <b>이미지 편집</b>.</p>
+<div class="pr"><button class="copy" type="button">복사</button><p class="en">Keep the exact same character: Kkabi, a round 3D cartoon magpie mascot with blue-tinted wing tips, a yellow safety vest and a red scarf. Only change the scene: documentary interview setup, medium shot, Kkabi sits on a wooden chair facing slightly off camera, dark background, a single hard key light from the side, deadly serious expression, cinematic. Vertical 9:16.</p><p class="ko">같은 까비 그대로. 장면만 — 다큐 인터뷰, 어두운 배경, 옆에서 강한 빛 하나, 비장한 표정.</p><p class="nt">① 저장: 유머_1</p></div>
+<div class="pr"><button class="copy" type="button">복사</button><p class="en">Keep the same character, chair, framing, background and lighting. Only change: Kkabi holds an empty paper bungeoppang bag, bread crumbs are all over Kkabi's own yellow vest and beak, embarrassed expression.</p><p class="ko">나머지는 그대로. 바꿀 것: 빈 붕어빵 봉투, 자기 조끼와 부리에 빵 부스러기, 당황한 표정.</p><p class="nt">② 저장: 유머_2</p></div></article>
+<article class="card you wide" id="s6c"><h3><span class=lab>내 차례</span>영상 — 유머_1 → 유머_2</h3><p>비디오 모드 · 유머_1 › <b>첫 번째</b> · 유머_2 › <b>마지막</b> · 오디오 = <b>까비 목소리</b>.</p>
+<div class="pr"><button class="copy" type="button">복사</button><p class="en">Start on Kkabi in the serious interview. A very slow dolly in. Kkabi takes a deep breath and says in a grave, trembling voice: "제 붕어빵이… 사라졌습니다." Only at the very end, Kkabi lowers its wings, revealing the empty paper bag and bread crumbs all over its own vest. End exactly on this frame. Low tense documentary music that stops suddenly at the end, one awkward cricket chirp.</p><p class="ko">비장한 인터뷰 → 아주 천천히 다가감 → 떨리는 대사 → 마지막에만 날개를 내리며 빈 봉투와 부스러기가 드러남. 음악이 뚝, 귀뚜라미 한 번.</p><p class="nt">13 슬로우 돌리 인 · 반전은 Only at the very end · 여기선 음악이 웃음 장치</p></div></article>
+<article class="card set" id="s6d"><h3><span class=lab>준비</span>자막 넣고 싶으면</h3><p>프롬프트 끝에 <i>Caption at the bottom: "범인은…?"</i></p><p class="muted">짧게(8자 안팎), 따옴표 안에. 깨지면 다시 생성하거나 캡컷에서 넣기.</p></article>
+<article class="card ext" id="s6e"><h3><span class=lab>확장</span>한 컷 더 — 앞에 사건 설명 붙이기</h3><p>유머_1을 <b>마지막 프레임</b>에 두고 앞 장면을 글로: <i>Start on an empty park bench at night with a warm bungeoppang bag on it. The camera slowly pushes in. End exactly on this interview frame.</i> 캡컷으로 앞에 붙이면 20초 버전.</p></article>
+<article class="card ext" id="s6f"><h3><span class=lab>확장</span>지난주 포맷에 까비 넣기</h3><ul><li><b>CCTV 반전</b> — 새벽 편의점에 까비가 순찰을 왔는데 알고 보니 컵라면 사러</li><li><b>기대 vs 현실</b> — 포스터 속 늠름한 까비 → 실제로는 비둘기에게 쫓김</li></ul></article>
+</div></section>
+
+<!-- STEP 7 -->
+<section class="step" id="s7" data-i="7"><header class="sh"><span class="no">7</span><div><h2>공익·홍보 숏폼 — 끊고 · 확인 · 신고</h2><p>문제 → 해결 → 메시지. 방금 웃겼던 까비가 이번엔 믿음직한 홍보대사로. 그림 두 장, 영상 한 컷.</p></div></header><div class="grid">
+<article class="card key wide" id="s7a"><h3><span class=lab>핵심</span>공익 공식 + 신뢰감 톤</h3>
+<figure class="fig"><svg viewBox="0 0 720 150" xmlns="http://www.w3.org/2000/svg" font-family="Noto Sans KR, sans-serif" role="img" aria-label="공익 공식">
+<g text-anchor="middle">
+<rect x="20" y="25" width="215" height="90" rx="10" fill="#4B2FA0"/><text x="127" y="62" font-size="20" fill="#fff" font-weight="800">문제</text><text x="127" y="92" font-size="13" fill="#fff">① 수상한 전화 · 걱정</text>
+<rect x="255" y="25" width="215" height="90" rx="10" fill="#fff" stroke="#E6E4EC" stroke-width="2"/><text x="362" y="62" font-size="20" fill="#625D6E" font-weight="800">해결</text><text x="362" y="92" font-size="13" fill="#625D6E">단호하게 끊기 (AI가 채움)</text>
+<rect x="490" y="25" width="215" height="90" rx="10" fill="#4B2FA0"/><text x="597" y="62" font-size="20" fill="#fff" font-weight="800">메시지</text><text x="597" y="92" font-size="13" fill="#fff">② 카메라 보며 경례</text>
+<line x1="237" y1="70" x2="253" y2="70" stroke="#4B2FA0" stroke-width="3" marker-end="url(#ah)"/><line x1="472" y1="70" x2="488" y2="70" stroke="#4B2FA0" stroke-width="3" marker-end="url(#ah)"/>
+</g><text x="360" y="140" font-size="12" fill="#625D6E" text-anchor="middle">① 첫 번째 프레임 ─────────── ② 마지막 프레임</text></svg></figure>
+<div class="tbl"><table><tr><th></th><th>유머 (STEP 6)</th><th>공익 (STEP 7)</th></tr><tr><td>빛</td><td>어두운 배경 · 옆 조명</td><td><b>밝은 낮빛 · 고른 조명</b></td></tr><tr><td>목소리</td><td>비장하게 · 떨리게</td><td><b>또렷하고 따뜻하게</b> — 같은 보이스, 말투만 바꿈</td></tr><tr><td>음악</td><td>다큐 음악 → 뚝</td><td>밝고 가벼운 음악</td></tr><tr><td>자막</td><td>선택</td><td><b>핵심 한 줄</b> — 끊고 확인 신고</td></tr></table></div></article>
+<article class="card demo wide" id="s7b"><h3><span class=lab>다 같이</span>그림 두 장</h3><p>① 까비_앵커 <b>편집</b> · <b>9:16</b>. ② ①을 <b>편집</b>.</p>
+<div class="pr"><button class="copy" type="button">복사</button><p class="en">Keep the exact same character: Kkabi, a round 3D cartoon magpie mascot with blue-tinted wing tips, a yellow safety vest and a red scarf. Only change the scene: medium shot in a bright, tidy Korean living room in daylight, Kkabi holds a ringing smartphone to its ear with a worried, confused expression. Soft even lighting. Vertical 9:16.</p><p class="ko">같은 까비 그대로. 장면만 — 밝은 거실, 울리는 휴대전화를 귀에 댄 걱정스러운 표정.</p><p class="nt">① 저장: 공익_1</p></div>
+<div class="pr"><button class="copy" type="button">복사</button><p class="en">Keep the same character, room, framing and lighting. Only change: the smartphone is lowered, Kkabi faces the camera and gives a confident salute with one wing, bright friendly smile.</p><p class="ko">나머지는 그대로. 바꿀 것: 휴대전화를 내리고 카메라를 보며 자신 있게 경례.</p><p class="nt">② 저장: 공익_2</p></div></article>
+<article class="card you wide" id="s7c"><h3><span class=lab>내 차례</span>영상 — 공익_1 → 공익_2</h3><p>공익_1 › <b>첫 번째</b> · 공익_2 › <b>마지막</b> · <b>까비 목소리</b>.</p>
+<div class="pr"><button class="copy" type="button">복사</button><p class="en">Start on Kkabi listening to the phone, worried. A muffled, unintelligible voice comes from the phone. Kkabi's eyes narrow, Kkabi hangs up firmly, turns to the camera and says clearly and warmly: "끊고, 확인하고, 신고!" End exactly on the salute. Static shot, no camera movement. Caption at the bottom: "끊고 확인 신고". Light, bright background music.</p><p class="ko">걱정하며 듣던 까비 → 전화 속 알아들을 수 없는 웅얼거림 → 단호하게 끊고 카메라를 보며 또렷한 대사 → 경례로 끝. 아래 자막.</p><p class="nt">전화 속 목소리는 unintelligible — 까비 목소리로 새지 않게 · 7 스태틱</p></div></article>
+<article class="card you" id="s7d"><h3><span class=lab>내 차례</span>내 동네 · 내 단체 소재로</h3><div class="tbl"><table><tr><th>소재</th><th>① 문제 그림</th><th>② 메시지 그림</th></tr><tr><td>분리배출</td><td>뒤섞인 쓰레기봉투</td><td>헹구고 · 떼고 · 나누고</td></tr><tr><td>동네 축제</td><td>심심한 주말</td><td>축제로 오세요</td></tr><tr><td>도서관 모집</td><td>혼자 읽기 지루함</td><td>독서 모임 신청</td></tr><tr><td>폭염 안전</td><td>한낮 외출</td><td>무더위 쉼터 이용</td></tr></table></div><p class="muted">장면과 대사만 바꾸고, 고정 문장 · 앵커 · 까비 목소리는 그대로.</p></article>
+<article class="card warn" id="s7e"><h3><span class=lab>주의</span>공익 영상에서 조심할 것</h3><ul><li>실제 기관 로고 · 표장 · 제복, 실존 인물은 넣지 않기</li><li>숫자 · 전화번호는 <b>정확한지</b> 확인 — 112 신고, 1332 금융감독원 등</li><li>겁주기보다 <b>행동 하나</b>를 분명하게</li><li>자막 글자가 깨지면 캡컷에서 넣기</li></ul></article>
+<article class="card ext" id="s7f"><h3><span class=lab>확장</span>두 번째 컷 — 연장으로</h3><p>완성 영상에서 <b>연장</b> → <i>Kkabi says: "가족에게 확인하고, 112에 신고!" and waves goodbye. The camera slowly pulls back. Bright music fades out.</i> 이미지 없이 20초 캠페인이 됩니다.</p></article>
+</div></section>
+
+<!-- STEP 8 -->
+<section class="step" id="s8" data-i="8"><header class="sh"><span class="no">8</span><div><h2>감상 · 정리</h2><p>2~3명 상영, 유머부터. 그리고 오늘 만든 자산을 한 폴더에.</p></div></header><div class="grid">
+<article class="card key wide" id="s8a"><h3><span class=lab>핵심</span>오늘의 자산 폴더 — 6차시 단편의 주인공</h3><div class="tbl"><table><tr><th>파일</th><th>쓰는 곳</th></tr><tr><td><b>까비_앵커</b></td><td>모든 장면 그림의 출발점 · 참조 @</td></tr><tr><td><b>까비_턴어라운드</b></td><td>몸이 돌아가는 장면</td></tr><tr><td><b>까비 목소리 이름</b> (메모장)</td><td>모든 대사</td></tr><tr><td><b>고정 문장</b> (메모장)</td><td>모든 프롬프트 맨 앞</td></tr></table></div><p>이 네 개를 <b>그록 프로젝트 「5차시 캐릭터 작업실」 파일</b>에도 올려 두세요. 다음 주 새 대화에서도 같은 까비로 기획이 나옵니다.</p></article>
+<article class="card key" id="s8b"><h3><span class=lab>핵심</span>오늘 가져가는 것</h3><ol><li>얼굴은 <b>앵커 · 참조</b>, 목소리는 <b>오디오</b>, 도착점은 <b>끝 프레임</b></li><li>끝이 정해진 영상은 <b>스타트+엔드</b></li><li>장면 그림 · 시트는 <b>새로 말고 편집</b>으로</li><li>같은 캐릭터 · 같은 목소리로 장르만 바꾼다</li></ol></article>
+<article class="card set" id="s8c"><h3><span class=lab>준비</span>집에서</h3><ul><li>STEP 2의 내 캐릭터 기획서로 앵커 + 턴어라운드</li><li>그 캐릭터로 공익 또는 홍보 숏폼 한 편 — 내 동네 소재</li></ul></article>
+<article class="card ext wide" id="s8d"><h3><span class=lab>확장</span>다음 시간</h3><p>6차시 <b>스토리 미니 단편</b>. 까비(또는 내 캐릭터)가 주인공인 기승전결 3막 — 오늘의 3중 고정과 "끝 = 다음 시작" 잇기를 그대로 씁니다. 두 캐릭터가 대화하는 장면을 위해 <b>보이스 두 개</b> 쓰는 법도 배웁니다.</p></article>
+</div></section>
+
+<!-- 막힘 사전 -->
+<section class="step" id="s9" data-i="9"><header class="sh"><span class="no">?</span><div><h2>막힘 사전</h2><p>수업 중 자주 만나는 화면과 해결.</p></div></header><div class="grid">
+<article class="card warn" id="s9a"><h3><span class=lab>주의</span>오디오 메뉴가 안 보여요</h3><p><b>비디오 모드</b>인지 확인 → 입력창 왼쪽 <b>＋</b>. 그래도 없으면 새로고침 후 다시 로그인.</p></article>
+<article class="card warn" id="s9b"><h3><span class=lab>주의</span>목소리가 영상마다 달라요</h3><p>보이스 칩이 붙어 있는지, 이름이 같은지. 대사 앞에 <i>Kkabi says:</i>처럼 누가 말하는지 쓰기. 그래도 안 되면 @로 보이스를 프롬프트에 넣어 보세요.</p></article>
+<article class="card warn" id="s9c"><h3><span class=lab>주의</span>한국어 발음이 어색해요</h3><p>대사를 더 짧게(15자 안팎), 쉼표로 끊기. 그래도 어색하면 다른 보이스로.</p></article>
+<article class="card warn" id="s9d"><h3><span class=lab>주의</span>그리기 완료 후 어디로 가요?</h3><p>대부분 스케치가 입력창에 붙은 상태가 됩니다. 그대로 프롬프트를 쓰고 생성하세요. 화면이 다르면 강사에게 손 들어 주세요.</p></article>
+<article class="card warn" id="s9e"><h3><span class=lab>주의</span>참조와 첫 프레임이 같이 안 돼요</h3><p>그럴 수 있어요. 오늘 방식대로 — 앵커를 <b>편집해서 그림을 먼저</b> 만들고, 그 그림을 첫 · 끝 프레임에 꽂으면 됩니다.</p></article>
+<article class="card warn" id="s9m"><h3><span class=lab>주의</span>이미지 모드에 참조가 없어요</h3><p>괜찮습니다. 앵커를 열고 <b>이미지 편집</b>으로 장면만 바꾸는 것이 오늘의 기본 방법입니다.</p></article>
+<article class="card warn" id="s9f"><h3><span class=lab>주의</span>캐릭터 색 · 소품이 바뀌어요</h3><p>고정 문장을 빠뜨리지 않았는지. 새로 만들지 말고 <b>앵커 편집</b>으로.</p></article>
+<article class="card warn" id="s9g"><h3><span class=lab>주의</span>시트 칸마다 다른 캐릭터예요</h3><p>앵커를 연 상태에서 편집했는지. 칸 수를 줄여서(정면 · 측면) 다시.</p></article>
+<article class="card warn" id="s9h"><h3><span class=lab>주의</span>끝 장면으로 안 끝나요</h3><p><b>End exactly on …</b> 문장이 있는지. 끝 그림이 › <b>마지막 프레임</b> 자리에 들어갔는지.</p></article>
+<article class="card warn" id="s9i"><h3><span class=lab>주의</span>반전이 너무 일찍 나와요</h3><p>반전 부분 앞에 <b>Only at the very end,</b></p></article>
+<article class="card warn" id="s9j"><h3><span class=lab>주의</span>화질이 낮아졌어요</h3><p>참조를 쓰면 화질 상한이 낮아질 수 있어요. 공모전용은 참조 대신 편집 그림을 <b>첫 · 끝 프레임</b>으로 넣어 생성.</p></article>
+<article class="card warn" id="s9l"><h3><span class=lab>주의</span>생성이 막혀요</h3><p>한도에 걸린 경우일 수 있어요. 다음 단계를 먼저 읽어 두고, 잠시 뒤 다시 시도하세요.</p></article>
+</div></section>
+
+</main><nav class="side" id="side" aria-label="이 단계의 카드"></nav></div>
+<footer class="bottom"><div class="bottom-in"><button class="btn" id="prev" type="button">←</button><button class="btn" id="next" type="button">→</button></div></footer>
+<script>
+const secs=[...document.querySelectorAll('.step')];
+const NAV=secs.map(s=>({id:s.id,t:s.querySelector('.sh h2').textContent,c:[...s.querySelectorAll('.card')].map(c=>[c.id,c.querySelector('h3').textContent.replace(/^(핵심|준비|주의|확장|다 같이|내 차례)/,'').trim()])}));
+const side=document.getElementById('side'),tabs=document.getElementById('tabs');let cur=0;
+const num=i=>NAV[i].id==='s9'?'?':i;
+tabs.innerHTML=NAV.map((s,i)=>'<button class="tab" type="button" data-s="'+i+'"><span class="n">'+num(i)+'</span>'+s.t.split(' — ')[0]+'</button>').join('');
+tabs.addEventListener('click',e=>{const t=e.target.closest('.tab');if(t)go(+t.dataset.s);});
+function renderSide(i){const f=side.classList.contains('folded');side.innerHTML='<div class="fold"><span class="hd">'+num(i)+'. '+NAV[i].t.split(' — ')[0]+'</span><button type="button" id="foldBtn">'+(f?'◀':'접기 ▶')+'</button></div><ol class="cl">'+NAV[i].c.map(c=>'<li><a href="#'+c[0]+'" data-c="'+c[0]+'">'+c[1]+'</a></li>').join('')+'</ol>';
+ document.getElementById('foldBtn').onclick=function(){side.classList.toggle('folded');renderSide(cur);};}
+function go(i){cur=i;secs.forEach((s,j)=>s.classList.toggle('on',j===i));tabs.querySelectorAll('.tab').forEach((t,j)=>{t.classList.toggle('on',j===i);if(j===i)t.scrollIntoView({block:'nearest',inline:'center'});});renderSide(i);
+ const p=document.getElementById('prev'),n=document.getElementById('next');p.disabled=i===0;n.disabled=i===secs.length-1;
+ p.textContent=i>0?'← '+NAV[i-1].t.split(' — ')[0]:'←';n.textContent=i<secs.length-1?NAV[i+1].t.split(' — ')[0]+' →':'→';
+ window.scrollTo(0,0);if(window.innerWidth<=900)side.classList.remove('open');observe();}
+side.addEventListener('click',e=>{const a=e.target.closest('a');if(!a)return;e.preventDefault();const el=document.getElementById(a.dataset.c);el&&el.scrollIntoView({block:'start'});if(window.innerWidth<=900)side.classList.remove('open');});
+document.getElementById('menuBtn').onclick=()=>side.classList.toggle('open');
+document.getElementById('prev').onclick=()=>cur>0&&go(cur-1);document.getElementById('next').onclick=()=>cur<secs.length-1&&go(cur+1);
+document.addEventListener('keydown',e=>{if(e.target.closest('input,textarea'))return;if(e.key==='ArrowRight'&&cur<secs.length-1)go(cur+1);if(e.key==='ArrowLeft'&&cur>0)go(cur-1);});
+document.getElementById('fontBtn').onclick=function(){document.body.classList.toggle('big');this.textContent=document.body.classList.contains('big')?'가−':'가+';};
+let io;function observe(){if(io)io.disconnect();if(!('IntersectionObserver' in window))return;
+ io=new IntersectionObserver(es=>{es.forEach(en=>{if(en.isIntersecting){side.querySelectorAll('.cl a').forEach(a=>a.classList.toggle('cur',a.dataset.c===en.target.id));}})},{rootMargin:'-130px 0px -55% 0px'});
+ secs[cur].querySelectorAll('.card').forEach(c=>io.observe(c));}
+document.querySelectorAll('.copy').forEach(b=>b.onclick=()=>{const t=b.parentNode.querySelector('.en').textContent.replace(/[ \t]+/g,' ').trim();
+ const ok=()=>{b.textContent='복사됨';b.classList.add('done');setTimeout(()=>{b.textContent='복사';b.classList.remove('done')},1500)};
+ const fb=()=>{const a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();try{document.execCommand('copy')}catch(e){}a.remove();ok()};
+ navigator.clipboard?navigator.clipboard.writeText(t).then(ok,fb):fb();});
+go(0);
+</script></body></html>

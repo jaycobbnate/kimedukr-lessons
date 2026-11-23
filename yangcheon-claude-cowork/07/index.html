@@ -1,0 +1,1065 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>7회차 · 내 블로그 자동 업데이트</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@600;700;900&display=swap">
+<style>
+:root{
+  --paper:#FBF9F4; --card:#FFFFFF; --line:#E7E2D8; --line-strong:#D3CCBE;
+  --ink:#22201C; --muted:#6A655C; --accent:#1E5D57; --accent-ink:#164742; --accent-soft:#EAF3F1;
+  --serif:"Noto Serif KR","Nanum Myeongjo","Batang",serif;
+  --warn:#B4232A; --warn-soft:#FBEFEF; --more:#1E6B47; --more-soft:#EDF6F1; --set:#5B4A9E; --set-soft:#F2F0FA;
+  --fs:20px; --radius:12px;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;font-size:var(--fs);line-height:1.7;word-break:keep-all;overflow-wrap:anywhere}
+a{color:var(--accent)}
+button{font:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+code,kbd{font-family:"D2Coding",Consolas,"SF Mono",monospace;font-size:.88em;background:#F1F3F6;border:1px solid var(--line);border-radius:6px;padding:0 .3em}
+
+/* 상단 */
+.top{position:sticky;top:0;z-index:20;background:rgba(250,250,248,.96);backdrop-filter:blur(6px);border-bottom:1px solid var(--line)}
+.top-in{max-width:1240px;margin:0 auto;padding:12px 18px 0}
+.titlebar{display:flex;align-items:center;gap:12px;justify-content:space-between}
+.titlebar h1{margin:0;font-size:1.05em;font-weight:700;letter-spacing:-.01em}
+.titlebar h1 span{color:var(--muted);font-weight:500}
+.fsbtn{display:flex;gap:6px}
+.fsbtn button{white-space:nowrap;border:1px solid var(--line-strong);background:var(--card);border-radius:8px;padding:2px 12px;font-size:.8em;color:var(--ink)}
+.tabs{display:flex;gap:4px;overflow-x:auto;padding:10px 0 0;scrollbar-width:thin}
+.tabs button{flex:0 0 auto;border:1px solid transparent;border-bottom:none;background:none;color:var(--muted);padding:8px 14px;border-radius:10px 10px 0 0;font-size:.8em;font-weight:600;white-space:nowrap}
+.tabs button[aria-selected="true"]{background:var(--card);border-color:var(--line);color:var(--accent-ink);box-shadow:0 1px 0 var(--card)}
+.tabs button.next{border:1px dashed var(--line-strong);border-bottom:none;color:var(--set)}
+.progress{height:3px;background:var(--line)}
+.progress i{display:block;height:100%;width:0;background:var(--accent);transition:width .3s}
+
+/* 본문 */
+.wrap{max-width:1240px;margin:0 auto;padding:24px 18px 30px;display:grid;grid-template-columns:minmax(0,1fr) 230px;gap:28px;align-items:start}
+.step{display:block}
+.js .step{display:none}
+.js .step.on{display:block}
+.step-head{margin:0 0 18px}
+.step-head .kicker{color:var(--accent);font-weight:700;font-size:.8em}
+.step-head h2{margin:2px 0 6px;font-size:1.6em;line-height:1.3;letter-spacing:-.02em}
+.step-head p{margin:0;color:var(--muted);max-width:44em}
+.step.next-time .step-head h2::after{content:"더 해 보기";margin-left:10px;font-size:.45em;vertical-align:middle;border:1px dashed var(--set);color:var(--set);border-radius:999px;padding:2px 10px;font-weight:600}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px 22px;scroll-margin-top:150px}
+.card.wide{grid-column:1/-1}
+.card.opt{border-style:dashed}
+.card header{display:flex;align-items:flex-start;gap:10px;margin:0 0 8px}
+.card .no{flex:0 0 auto;font-weight:700;color:var(--accent);font-size:.8em;border:1px solid var(--line-strong);border-radius:8px;padding:1px 8px;margin-top:4px}
+.card h3{margin:0;font-size:1.12em;line-height:1.5;flex:1}
+.badge{display:inline-block;font-family:var(--sans,inherit);font-size:.6em;font-weight:600;line-height:1.5;border-radius:999px;padding:1px 9px;margin:4px 0 0 6px;vertical-align:middle;white-space:nowrap}
+.badge.opt{border:1px dashed var(--more);color:var(--more)}
+.badge.alt{border:1px solid var(--line-strong);color:var(--muted)}
+.done{flex:0 0 auto;display:flex;align-items:center;gap:6px;font-size:.7em;color:var(--muted);margin-top:4px;cursor:pointer;user-select:none}
+.done input{width:20px;height:20px;accent-color:var(--accent)}
+.card.checked{border-color:#B9CBE8;background:#FCFDFF}
+.easy{margin:0 0 10px;padding:10px 14px;background:var(--accent-soft);border-radius:10px}
+.easy b{color:var(--accent-ink);margin-right:6px}
+.card ol,.card ul{margin:6px 0 8px;padding-left:1.3em}
+.card li{margin:4px 0}
+.ok{margin:10px 0 0;padding-left:28px;position:relative;font-weight:600;color:var(--accent-ink)}
+.ok::before{content:"";position:absolute;left:4px;top:.45em;width:14px;height:8px;border-left:3px solid var(--accent);border-bottom:3px solid var(--accent);transform:rotate(-45deg)}
+.box{margin:12px 0 0;padding:12px 16px;border-radius:10px;font-size:.92em}
+.box b.t{display:block;margin-bottom:2px}
+.box.warn{background:var(--warn-soft);color:#5E1418;border:1px solid #F0C9CB}
+.box.warn b.t{color:var(--warn)}
+.box.more{background:var(--more-soft);color:#133F2B;border:1px solid #CDE6D8}
+.box.more b.t{color:var(--more)}
+.box.set{background:var(--set-soft);color:#2E2452;border:1px solid #DCD6F2}
+.box.set b.t{color:var(--set)}
+.box.tipx{background:var(--accent-soft);color:#123B37;border:1px solid #C9E2DD}
+.box.tipx b.t{color:var(--accent)}
+.box.tipx ul{margin:.4em 0 0 1.1em;padding:0}
+.box.tipx li{margin:.25em 0}
+.box.help{background:#F6F7F9;border:1px solid var(--line);color:var(--ink)}
+.prompt{position:relative;margin:12px 0 4px;border:1px solid var(--line-strong);border-radius:10px;background:#F7F8FA}
+.prompt .ph{display:flex;justify-content:space-between;align-items:center;padding:6px 8px 6px 14px;border-bottom:1px solid var(--line);font-size:.72em;color:var(--muted);font-weight:600}
+.prompt button{border:1px solid var(--accent);background:var(--card);color:var(--accent);border-radius:8px;padding:2px 12px;font-size:1em;font-weight:600}
+.prompt button.copied{background:var(--accent);color:#fff}
+.prompt pre{margin:0;padding:12px 14px;white-space:pre-wrap;font-family:inherit;font-size:.86em;line-height:1.65}
+table{border-collapse:collapse;width:100%;font-size:.88em;margin:8px 0}
+th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+th{background:#F5F6F8;font-weight:600}
+.tree{font-family:"D2Coding",Consolas,monospace;font-size:.82em;background:#F7F8FA;border:1px solid var(--line);border-radius:10px;padding:12px 14px;white-space:pre;overflow-x:auto;line-height:1.6}
+
+code.cp{cursor:pointer;border-color:var(--accent);background:var(--accent-soft);color:var(--accent-ink)}
+code.cp::after{content:" 📋";font-size:.8em}
+code.cp.copied{background:var(--accent);color:#fff}
+code.cp.copied::after{content:" 복사됨"}
+/* 3D 도식 */
+.scene{border:1px solid var(--line);border-radius:var(--radius);background:linear-gradient(#FFFFFF,#F4F6FA);overflow:hidden}
+.scene canvas{display:block;width:100%;height:340px}
+.scene .ctrl{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:10px 12px;border-top:1px solid var(--line);background:var(--card)}
+.scene .ctrl button{border:1px solid var(--line-strong);background:var(--card);border-radius:8px;padding:4px 12px;font-size:.78em;color:var(--ink)}
+.scene .ctrl button.on{border-color:var(--accent);color:var(--accent);font-weight:700}
+.scene .ctrl .cap{flex:1 1 100%;font-size:.82em;color:var(--muted);min-height:1.6em}
+.scene .fallback{padding:24px;color:var(--muted)}
+
+/* 오른쪽 카드 메뉴 */
+.side{position:sticky;top:150px;max-height:calc(100vh - 230px);overflow:auto;border-left:1px solid var(--line);padding:4px 0 4px 16px}
+.side h4{margin:0 0 8px;font-size:.72em;color:var(--muted);font-weight:600}
+.side a{display:block;text-decoration:none;color:var(--muted);font-size:.74em;line-height:1.45;padding:6px 8px;border-radius:8px}
+.side a:hover{background:#F1F3F6;color:var(--ink)}
+.side a.cur{color:var(--accent-ink);background:var(--accent-soft);font-weight:600}
+.side a.ck::after{content:" ✓";color:var(--accent)}
+
+/* 하단 버튼 줄 */
+.bottom{position:sticky;bottom:0;z-index:20;background:rgba(255,255,255,.97);border-top:1px solid var(--line)}
+.bottom-in{max-width:1240px;margin:0 auto;padding:8px 18px;display:flex;gap:8px;align-items:center;justify-content:space-between}
+.bottom button,.bottom select{border:1px solid var(--line-strong);background:var(--card);border-radius:10px;padding:6px 14px;font-size:.8em;color:var(--ink)}
+.bottom .mid{display:flex;gap:8px;flex:1;justify-content:center;min-width:0}
+.bottom select{max-width:44%;min-width:0}
+.bottom .help{border-color:var(--accent);color:var(--accent);font-weight:700}
+.bottom .go{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
+
+
+/* ===== 7회차 출판 테마 ===== */
+.titlebar h1{font-family:var(--serif);font-weight:900;letter-spacing:-.02em}
+.tabs{gap:2px}
+.tabs button{border:none!important;border-radius:0;padding:10px 14px 9px;border-bottom:3px solid transparent!important;background:none!important;box-shadow:none!important}
+.tabs button[aria-selected="true"]{color:var(--accent-ink);border-bottom-color:var(--accent)!important}
+.tabs button.next{color:var(--set);border-bottom:3px dotted var(--set)!important}
+.step-head{padding:6px 0 14px;border-bottom:1px solid var(--line);margin-bottom:22px}
+.step-head .kicker{letter-spacing:.08em;text-transform:uppercase}
+.step-head h2{font-family:var(--serif);font-weight:900;font-size:1.75em}
+.card{border-radius:6px;border-top:3px solid var(--accent);box-shadow:0 1px 0 rgba(0,0,0,.02)}
+.card.opt{border-top:3px dotted var(--more)}
+.card h3{font-family:var(--serif);font-weight:700}
+.card .no{border:none;background:var(--accent);color:#fff;border-radius:4px;padding:1px 8px}
+.easy{border-left:4px solid var(--accent);border-radius:0 8px 8px 0;background:var(--accent-soft)}
+.prompt{border-radius:6px;background:#FDFCF8;border-color:var(--line-strong)}
+.prompt .ph{background:#F4F1E9;gap:8px}
+.prompt .ph button{white-space:nowrap;flex-shrink:0}
+th{background:#F6F2EA}
+.scene{border-radius:6px;background:linear-gradient(#FFFDF8,#F3EEE3)}
+.side{border-left:2px solid var(--line)}
+.side a.cur{border-left:3px solid var(--accent);border-radius:0 8px 8px 0}
+.bottom .go{border-radius:6px}
+@media (max-width:980px){
+  .wrap{grid-template-columns:minmax(0,1fr)}
+  .side{display:none}
+  .grid{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:560px){
+  .titlebar h1 span{display:none}
+  .wrap{padding:18px 16px 24px}
+  .card{padding:16px}
+  .scene canvas{height:260px}
+  .bottom select{max-width:38%}
+}
+@media (max-height:820px){
+  .tabs,.progress{display:none}
+  .top-in{padding-bottom:10px}
+  .card{scroll-margin-top:70px}
+  .side{top:80px;max-height:calc(100vh - 150px)}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="top-in">
+    <div class="titlebar">
+      <h1>클로드 데스크톱 심화 7회차 <span>코워크로 내 블로그 자동 업데이트</span></h1>
+      <div class="fsbtn" role="group" aria-label="글자 크기">
+        <button type="button" data-fs="-1" aria-label="글자 작게">가−</button>
+        <button type="button" data-fs="1" aria-label="글자 크게">가+</button>
+      </div>
+    </div>
+    <nav class="tabs" role="tablist" aria-label="STEP"></nav>
+  </div>
+  <div class="progress"><i></i></div>
+</div>
+
+<div class="wrap">
+<main id="main">
+
+<!-- ================= STEP 0 ================= -->
+<section class="step" id="s0" data-tab="STEP 0 지도">
+  <div class="step-head">
+    <div class="kicker">STEP 0</div>
+    <h2>오늘의 지도 — 한 마디로 블로그가 바뀐다</h2>
+    <p>인터넷 기사를 모아 내 글로 쓰고, <b>"올리기"</b> 한 마디면 인터넷의 내 블로그 맨 위에 새 글이 뜹니다. 오늘은 그 길을 처음부터 끝까지 걸어 봅니다.</p>
+  </div>
+  <div class="grid">
+    <article class="card wide" id="c0-1" data-title="0-1 세 친구 한눈에 보기">
+      <header><span class="no">0-1</span><h3>원고 · 서고 · 서점</h3></header>
+      <div class="scene" data-scene="flow"></div>
+      <table>
+        <tr><th>비유</th><th>실제</th><th>하는 일</th></tr>
+        <tr><td><b>원고 책상</b></td><td>내 컴퓨터의 <code>newsnote</code> 폴더</td><td>기사 원본과 내 글을 보관</td></tr>
+        <tr><td><b>출판사 서고</b></td><td>깃허브 저장소 (비공개)</td><td>내 글과 블로그 틀이 쌓이고 기록이 남음</td></tr>
+        <tr><td><b>서점 진열대</b></td><td>버셀</td><td>서고에 새 책이 들어오면 <b>알아서</b> 진열대(블로그)를 다시 꾸며 보여 줌</td></tr>
+      </table>
+    </article>
+    <article class="card" id="c0-2" data-title="0-2 오늘의 두 문장">
+      <header><span class="no">0-2</span><h3>오늘 기억할 두 문장</h3></header>
+      <p class="easy"><b>하나</b>md는 원고, HTML은 책 모양(판형). 판형(블로그 틀)은 클로드가 한 번 만들고, 앞으로는 원고(md)만 넣으면 돼요.</p>
+      <p class="easy"><b>둘</b>출입증은 내가 끊고, 책은 클로드가 나른다. 로그인·권한 허락은 내가, 저장소 만들기·업로드·배포는 클로드가 해요.</p>
+      <div class="box help"><b class="t">완성 예시</b><a href="https://ainews-2026.vercel.app" target="_blank" rel="noopener">ainews-2026.vercel.app</a> — 오늘 이런 블로그가 내 이름으로 생겨요.</div>
+    </article>
+    <article class="card" id="c0-3" data-title="0-3 준비물">
+      <header><span class="no">0-3</span><h3>준비물</h3><label class="done"><input type="checkbox">다 했어요</label></header>
+      <ul>
+        <li>클로드 데스크톱 앱 로그인</li>
+        <li>크롬</li>
+        <li><b>깃허브 계정</b> — 가능하면 집에서 구글로 미리 가입 (STEP 5)</li>
+        <li><b>버셀 계정</b> — 6회차에 구글로 가입한 그 계정</li>
+        <li>휴대폰 메일 앱 로그인 (깃허브 확인 번호가 메일로 와요)</li>
+        <li>USB (끝나고 폴더 챙겨 가기)</li>
+      </ul>
+      <div class="box help"><b class="t">복사하는 법</b>회색 상자는 오른쪽 위 <b>복사</b> 버튼, 📋 표시가 붙은 파란 글씨는 <b>눌러서 복사</b>돼요. <b>○○○</b>는 붙여 넣은 뒤 내 것으로 바꿔요.</div>
+      <div class="box set"><b class="t">본 수업은 코워크 창</b>STEP 1~10은 클로드 데스크톱 앱의 <b>코워크</b> 창에서만 해요. <b>클로드 코드(코드 탭)</b>는 「부록」에서 맛보기로 해요.</div>
+    </article>
+  </div>
+</section>
+
+<!-- ================= STEP 1 ================= -->
+<section class="step" id="s1" data-tab="STEP 1 원고 책상">
+  <div class="step-head">
+    <div class="kicker">STEP 1</div>
+    <h2>원고 책상(폴더) 만들기</h2>
+    <p>지난주 폴더는 그대로 두고, 오늘은 새 폴더로 처음부터 한 번 더 해요. 두 번 해 보면 집에서 혼자 할 수 있어요.</p>
+  </div>
+  <div class="grid">
+    <article class="card wide" id="c1-1" data-title="1-1 폴더 만들기">
+      <header><span class="no">1-1</span><h3>newsnote 폴더 만들기</h3><label class="done"><input type="checkbox">다 했어요</label></header>
+      <ol>
+        <li><b>바탕화면</b> 빈 곳 마우스 오른쪽 → <b>새로 만들기 → 폴더</b></li>
+        <li>이름: <code>newsnote</code> (영어)</li>
+        <li>안으로 들어가서 폴더 두 개 더: <code>inbox</code>, <code>posts</code></li>
+      </ol>
+      <p class="ok">newsnote 안에 inbox, posts가 보이면 성공</p>
+      <div class="box warn"><b class="t">폴더 위치를 꼭 기억하세요</b>다운로드 폴더에 만들면 나중에 찾기 어려워요. 바탕화면을 권해요. 이름은 영어로(깃허브·버셀이 한글 이름을 싫어해요).</div>
+    </article>
+    <article class="card wide" id="c1-2" data-title="1-2 왜 폴더를 나눌까">
+      <header><span class="no">1-2</span><h3>왜 폴더를 나눌까 — 출판사 이야기</h3></header>
+      <div class="scene" data-scene="desk"></div>
+      <ul>
+        <li><b>inbox = 자료 상자</b>: 인터넷에서 모은 기사 스크랩. <b>원본은 그대로</b> 둬요.</li>
+        <li><b>sorted = 분야별 자료철</b>: 클로드가 "AI 동향", "교육 동향"처럼 분야별로 나눠 꽂은 <b>복사본</b></li>
+        <li><b>posts = 내 원고</b>: 자료를 보고 쓴 내 블로그 글</li>
+      </ul>
+      <div class="box help">자료 상자에 100개, 1,000개가 섞여 있으면 나도 클로드도 못 찾아요. 자료철이 나뉘어 있어야 "AI 동향 자료철에서 골라 글 써 줘"가 돼요.</div>
+    </article>
+  </div>
+</section>
+
+<!-- ================= STEP 2 ================= -->
+<section class="step" id="s2" data-tab="STEP 2 옵시디언">
+  <div class="step-head">
+    <div class="kicker">STEP 2</div>
+    <h2>옵시디언과 웹 클리퍼 (가볍게)</h2>
+    <p>옵시디언은 md 메모장, 웹 클리퍼는 기사를 자료 상자에 바로 넣어 주는 스크랩 가위예요. 이미 깔려 있으면 건너뛰어요.</p>
+  </div>
+  <div class="grid">
+    <article class="card" id="c2-1" data-title="2-1 옵시디언 열기">
+      <header><span class="no">2-1</span><h3>옵시디언으로 원고 책상 열기</h3><label class="done"><input type="checkbox">다 했어요</label></header>
+      <ol>
+        <li>윈도우 키 → <code>Obsidian</code> 실행 (없으면 <code>obsidian.md</code> → Get Obsidian for Windows → 설치)</li>
+        <li>시작 화면 <b>두 번째 「보관함 폴더 열기」</b> → <code>newsnote</code> → <b>폴더 선택</b></li>
+      </ol>
+      <p class="ok">왼쪽에 inbox, posts가 보이면 성공</p>
+      <div class="box warn"><b class="t">첫 번째 「새 보관함 생성」은 누르지 않기</b>폴더 안에 폴더가 또 생겨요. 「로그인」도 유료 동기화라 건너뛰어요.</div>
+      <div class="box help">다른 보관함이 열려 있으면: 왼쪽 아래 보관함 이름 → <b>보관함 관리</b> → 「보관함 폴더 열기」</div>
+    </article>
+    <article class="card" id="c2-2" data-title="2-2 웹 클리퍼 설치">
+      <header><span class="no">2-2</span><h3>웹 클리퍼 설치</h3><label class="done"><input type="checkbox">다 했어요</label></header>
+      <ol>
+        <li>크롬 <b>⋮ → 확장 프로그램 → Chrome 웹 스토어 방문하기</b></li>
+        <li>검색창에 영어로 <code>obsidian</code> (한글로는 안 나와요)</li>
+        <li><b>Obsidian Web Clipper → Chrome에 추가</b></li>
+        <li>크롬 로그인 권유 창은 <b>X</b></li>
+      </ol>
+      <p class="ok">퍼즐 조각 🧩 안에 보라색 옵시디언 아이콘이 보이면 성공</p>
+    </article>
+    <article class="card" id="c2-3" data-title="2-3 저장 위치를 inbox로">
+      <header><span class="no">2-3</span><h3>클리퍼 저장 위치를 inbox로</h3><label class="done"><input type="checkbox">다 했어요</label></header>
+      <ol>
+        <li>🧩 → 옵시디언 아이콘 → <b>⚙️ → 템플릿 → 노트(기본)</b></li>
+        <li><b>노트 위치</b>의 <code>Clippings</code>를 지우고 <code>inbox</code></li>
+        <li><b>보관소</b> 칸은 비우거나 <code>newsnote</code></li>
+      </ol>
+      <div class="box warn"><b class="t">Clippings 그대로 두면</b>클리퍼가 Clippings라는 폴더를 따로 만들어 버려요.</div>
+    </article>
+    <article class="card" id="c2-4" data-title="2-4 시험 클리핑">
+      <header><span class="no">2-4</span><h3>시험 클리핑 1개</h3><label class="done"><input type="checkbox">다 했어요</label></header>
+      <ol>
+        <li>뉴스 하나 열기 (예: 구글 뉴스 "인공지능")</li>
+        <li>🧩 → 옵시디언 → <b>Add to Obsidian</b> → "열기"</li>
+      </ol>
+      <p class="ok">옵시디언 inbox에 기사 파일이 생기면 성공</p>
+      <div class="box help">옵시디언 앱이 켜져 있어야 들어가요. 파일 이름에서 따옴표 안 글자가 빠져도 괜찮아요(내용은 그대로).</div>
+    </article>
+  </div>
+</section>
+
+<!-- ================= STEP 3 ================= -->
+<section class="step" id="s3" data-tab="STEP 3 업무 수칙">
+  <div class="step-head">
+    <div class="kicker">STEP 3</div>
+    <h2>코워크 프로젝트와 업무 수칙(CLAUDE.md)</h2>
+    <p>CLAUDE.md는 클로드가 출근하면 제일 먼저 읽는 업무 수칙이에요. 한 번 써 두면 <code>정리</code> <code>글쓰기</code> <code>올리기</code> 한 마디로 일해요.</p>
+  </div>
+  <div class="grid">
+    <article class="card" id="c3-1" data-title="3-1 프로젝트와 폴더 연결">
+      <header><span class="no">3-1</span><h3>프로젝트 만들고 폴더 연결</h3><label class="done"><input type="checkbox">다 했어요</label></header>
+      <ol>
+        <li>클로드 데스크톱 앱 → <b>코워크</b></li>
+        <li>왼쪽 <b>프로젝트 +</b> → 이름 <b>뉴스공책</b> → <b>생성</b> (모두 같은 이름으로 하면 나중에 창을 찾기 쉬워요)</li>
+        <li><b>만든 다음</b> 오른쪽 <b>컨텍스트 → 로컬 폴더 연결</b> → <code>newsnote</code></li>
+      </ol>
+      <div class="box warn"><b class="t">생성 화면의 「추가」는 안 돼요</b>거기서 넣으면 파일만 붙어요. 반드시 만든 다음 <b>로컬 폴더 연결</b>.</div>
+      <div class="prompt"><div class="ph">코워크에 붙여 넣기 · 연결 확인<button type="button">복사</button></div><pre>newsnote 폴더 안에 뭐가 있는지 목록으로 알려 줘.</pre></div>
+      <p class="ok">inbox, posts, .obsidian이 보이면 성공 ("허용" 물음 → 허용)</p>
+    </article>
+    <article class="card wide" id="c3-2" data-title="3-2 업무 수칙 만들기">
+      <header><span class="no">3-2</span><h3>업무 수칙 만들기 — 통째로 복사해서 붙여 넣기</h3><label class="done"><input type="checkbox">다 했어요</label></header>
+      <div class="prompt"><div class="ph">코워크에 붙여 넣기 (전체)<button type="button">복사</button></div><pre>newsnote 폴더 맨 위에 CLAUDE.md 파일을 아래 내용 그대로 만들어 줘.
+
+# 뉴스 공책 규칙
+
+## 내 정보
+- 내 깃허브 저장소 이름: ________
+- 블로그 폴더: newsnote 안의 site 폴더
+
+## 폴더
+- inbox/ : 웹클리퍼로 모은 기사 원본. 옮기거나 고치거나 지우지 않는다.
+- sorted/&lt;주제&gt;/ : 주제별로 나눈 기사 복사본. 주제 폴더 이름은 짧은 한국어(예: AI 동향, 교육 동향).
+- posts/ : 내가 쓰는 블로그 글.
+- site/ : 깃허브에 올라가는 내 블로그 폴더(블로그 틀 + 올린 글).
+
+## 정리
+- "정리"라고 하면 inbox에 있는 기사 중 sorted에 아직 없는 것만 읽고, 알맞은 sorted/&lt;주제&gt;/에 복사한다. inbox 원본은 그대로 둔다.
+- 주제 폴더는 3~6개로 유지한다. 비슷하면 합치고, 맞는 곳이 없으면 새로 만든다.
+- 기준이 애매한 기사는 어디에 넣었는지와 이유를 한 줄로 알려 준다.
+
+## 글쓰기
+- "글쓰기"라고 하면 sorted의 기사 하나를 골라(내가 지정하면 그것) posts/에 블로그 글 md 한 편을 쓴다. 이미 글로 쓴 기사는 고르지 않는다.
+- 맨 위 머리말은 반드시 이 모양으로 쓴다:
+  ---
+  title: 글 제목
+  date: YYYY-MM-DD HH:mm   (지금 날짜와 시각)
+  tags: [주제 폴더 이름]
+  summary: 한 줄 소개
+  source: 원문 주소
+  ---
+- 남의 기사 본문을 그대로 옮기지 않는다. 요약 + 내 생각 + 출처 링크. 사진은 넣지 않는다.
+- 제목이나 요약에 콜론(:)이 있으면 큰따옴표로 감싼다.
+
+## 올리기
+- "올리기"라고 하면 posts/의 새 글을 site/posts/에 복사하고, 「내 정보」의 깃허브 저장소에 올린다.
+- 올릴 때는 내장 브라우저로 github.com의 내 저장소를 열어, posts 폴더 안에서 웹 업로드(Add file → Upload files)로 새 글 파일만 넣고 Commit 한다. 이미 저장소에 있는 글은 다시 올리지 않는다.
+- site/style.css나 site/settings.md가 바뀌었으면 그것도 저장소 맨 위에 올린다.
+- 깃허브 로그인 화면이나 권한 허락 화면이 나오면 멈추고 나에게 직접 하라고 말한다. 비밀번호·토큰은 절대 받지 않는다.
+- inbox, sorted, site/public은 올리지 않는다. 올린 뒤 저장소 주소와 올린 파일 이름을 보여 준다.</pre></div>
+      <p class="ok">옵시디언 왼쪽에 CLAUDE 파일이 생기고, 눌러서 내용이 보이면 성공</p>
+      <div class="box help"><b class="t">저장소 이름 칸(____)은 비워 둬요</b>STEP 6에서 이름을 정한 뒤 채워요.</div>
+    </article>
+  </div>
+</section>
+
+<!-- ================= STEP 4 ================= -->
+<section class="step" id="s4" data-tab="STEP 4 정리·글쓰기">
+  <div class="step-head">
+    <div class="kicker">STEP 4</div>
+    <h2>기사 모으기 → 정리 → 글쓰기</h2>
+    <p>클리핑은 많이, 글은 조금만. 자료철이 채워지는 맛을 보고, 첫 원고는 1~2편만 써요.</p>
+  </div>
+  <div class="grid">
+    <article class="card" id="c4-1" data-title="4-1 클리핑은 많이">
+      <header><span class="no">4-1</span><h3>클리핑은 많이</h3><label class="done"><input type="checkbox">다 했어요</label></header>
+      <p>관심 기사 <b>5개 이상</b> Add to Obsidian → inbox에 쌓기</p>
+      <p class="ok">옵시디언 inbox에 기사가 여러 개 보이면 성공</p>
+    </article>
+    <article class="card" id="c4-2" data-title="4-2 정리">
+      <header><span class="no">4-2</span><h3>정리 — 분야별 자료철 꽂기</h3><label class="done"><input type="checkbox">다 했어요</label></header>
+      <p>코워크 입력창 아래 모델 → <b>Opus</b></p>
+      <div class="prompt"><div class="ph">코워크에 입력<button type="button">복사</button></div><pre>정리</pre></div>
+      <p class="ok">newsnote 안에 sorted 폴더 → 주제 폴더(예: AI 동향)에 기사 복사본. inbox 원본은 그대로</p>
+      <div class="box more"><b class="t">맞는 칸이 없으면</b>클로드가 새 주제 폴더를 스스로 만들어요. 어디에 넣었는지 이유도 알려 줘요.</div>
+    </article>
+    <article class="card wide" id="c4-3" data-title="4-3 글쓰기">
+      <header><span class="no">4-3</span><h3>글쓰기 — 1~2편만</h3><label class="done"><input type="checkbox">다 했어요</label></header>
+      <div class="prompt"><div class="ph">코워크에 입력<button type="button">복사</button></div><pre>글쓰기</pre></div>
+      <p class="ok">posts에 글 1편. 맨 위에 <code>date: 2026-10-26 19:30</code>처럼 날짜와 시각이 있으면 성공</p>
+      <div class="box set"><b class="t">AI가 쓴 「내 생각」은 초안이에요</b>내가 고쳐야 진짜 내 글이에요. 옵시디언에서 바로 고칠 수 있어요.</div>
+      <div class="box help"><b class="t">왜 1~2편만?</b>처음 서고에 입고할 때는 클로드가 화면을 하나하나 보며 올려서 오래 걸려요. 나머지는 STEP 8에서 한 편씩 올려요.</div>
+    </article>
+  </div>
+</section>
+
+<!-- ================= STEP 5 ================= -->
+<section class="step" id="s5" data-tab="STEP 5 깃허브 가입">
+  <div class="step-head">
+    <div class="kicker">STEP 5</div>
+    <h2>깃허브 가입 (미리 했으면 건너뛰기)</h2>
+    <p>깃허브는 인터넷 출판사 서고예요. 가입만 하고, 저장소는 직접 만들지 않아요. STEP 6에서 클로드가 만들어요.</p>
+  </div>
+  <div class="grid">
+    <article class="card" id="c5-1" data-title="5-1 가입하기">
+      <header><span class="no">5-1</span><h3>가입하기</h3><label class="done"><input type="checkbox">다 했어요</label></header>
+      <ol>
+        <li><code>github.com</code> → <b>Sign up</b> → <b>Continue with Google</b> 권장 (버셀과 같은 구글 계정)</li>
+        <li><b>아이디(Username)</b>: 영어·숫자·하이픈(-)만</li>
+        <li>퍼즐 인증 → 메일로 온 <b>숫자 코드</b> 입력</li>
+        <li>설문은 <b>Skip</b>, 요금제는 <b>Continue for free</b></li>
+      </ol>
+      <p class="ok">깃허브 첫 화면(Dashboard)이 보이면 성공</p>
+      <div class="box help">메일 숫자는 깃허브가 "본인 맞아요?" 묻는 확인이에요. 클로드와는 상관없어요.</div>
+    </article>
+    <article class="card" id="c5-2" data-title="5-2 처음 가입할 때 막히는 곳">
+      <header><span class="no">5-2</span><h3>처음 가입할 때 막히는 곳</h3></header>
+      <table>
+        <tr><th>막히는 곳</th><th>할 일</th></tr>
+        <tr><td>아이디가 이미 있음</td><td>숫자 붙이기(예: sunny-yc2026). 한글·띄어쓰기·밑줄(_) 안 됨</td></tr>
+        <tr><td>비밀번호 경고</td><td>15자 이상, 또는 8자 이상 + 숫자 + 소문자</td></tr>
+        <tr><td>메일 코드가 안 옴</td><td>스팸함·프로모션함 → 잠시 뒤 Resend</td></tr>
+        <tr><td><b>메일 인증을 안 함</b></td><td><b>저장소를 만들 수 없어요</b> → 메일 인증부터</td></tr>
+        <tr><td>카드 등록 화면</td><td>요금제를 잘못 고름 → 뒤로, <b>Free</b></td></tr>
+        <tr><td>로그인할 때마다 메일로 6자리</td><td>교실 PC는 새 기기라 정상. 메일 열어 입력</td></tr>
+        <tr><td>2단계 인증 권유</td><td>오늘은 <b>Not now</b>, 집에서 설정</td></tr>
+        <tr><td>퍼즐이 여러 번</td><td>같은 교실 인터넷이라 그럴 수 있어요. 천천히 (오디오 퍼즐도 있어요)</td></tr>
+        <tr><td>버셀은 구글, 깃허브는 다른 메일로 가입</td><td>괜찮아요. 버셀에서 깃허브를 연결할 때 허락 한 번이면 돼요</td></tr>
+      </table>
+    </article>
+  </div>
+</section>
+
+<!-- ================= STEP 6 ================= -->
+<section class="step" id="s6" data-tab="STEP 6 서고">
+  <div class="step-head">
+    <div class="kicker">STEP 6</div>
+    <h2>클로드가 판형 만들기 → 서고 만들기 → 입고</h2>
+    <p>판형(블로그 틀)을 클로드가 직접 만들고, 내 깃허브에 서고(저장소)를 만들어 넣어 줘요. 나는 로그인만 해요.</p>
+  </div>
+  <div class="box tipx"><b class="t">💡 선생님이 리허설에서 한 실수 — 나는 피하기</b><ul><li>저장소를 내가 먼저 깃허브에서 만들어야 하나 헷갈렸어요 → <b>아니요.</b> 이름만 CLAUDE.md에 적으면 클로드가 만들어요.</li><li>글을 6편이나 한꺼번에 올려서 15분 걸렸어요 → <b>처음엔 1~2편만.</b></li><li>"코워크에서는 깃허브 로그인이 막혀 있다"는 말에 놀랐어요 → <b>정상이에요.</b> 그래서 내장 브라우저로 해요.</li><li>"암호키를 열거하도록 허용?" 창 → <b>거부.</b> 거부해도 로그인돼요.</li></ul></div>
+  <div class="grid">
+    <article class="card wide" id="c6-1" data-title="6-1 블로그 틀 만들기">
+      <header><span class="no">6-1</span><h3>블로그 틀 만들기</h3><label class="done"><input type="checkbox">다 했어요</label></header>
+      <p class="easy"><b>쉽게 말하면</b>md 원고를 블로그 책 모양으로 찍어 내는 판형을 클로드가 만들어요. 클로드는 자기 작업 공간(클라우드)에서 만들고 결과만 내 폴더로 보내 줘요. 내 컴퓨터엔 아무것도 설치하지 않아요.</p>
+      <div class="prompt"><div class="ph">코워크에 붙여 넣기<button type="button">복사</button></div><pre>[요청] newsnote 안에 site 폴더를 만들고, md 글을 블로그로 바꿔 주는 틀을 직접 만들어 줘.
+- build.js: site/posts의 md 글(맨 위 --- 머리말의 title, date, tags, summary, source)을 읽어 site/public 폴더에 index.html과 글마다 html을 만든다. node만 쓰고 다른 설치는 하지 않는다.
+- 글 목록은 date가 최신인 글이 맨 위. date는 "YYYY-MM-DD HH:mm"까지 읽어 날짜와 시각을 함께 보여 준다. draft: true 글은 숨긴다.
+- 글 페이지에는 "← 글 목록" 링크와 원문 출처 링크.
+- 디자인은 style.css 한 파일로 분리. 흰 바탕, 큰 글자, 휴대폰에서도 잘 보이게.
+- settings.md(blog_title, author, intro)를 읽어 맨 위 제목과 소개에 보여 준다. 처음 값은 임시로 채워 둔다.
+- vercel.json: {"framework": null, "buildCommand": "node build.js", "outputDirectory": "public"}
+- package.json의 build는 node build.js / .gitignore에 public과 node_modules
+- newsnote/posts의 md 글을 site/posts에 복사한다.
+다 만들면 네 작업 공간에서 node build.js를 실행해 미리보기를 만들고, 만든 파일 전부(site 폴더 전체, public 포함)를 내 newsnote/site에 넣어 줘.
+[조건] inbox와 sorted 파일은 site에 넣지 마. 내 컴퓨터에는 아무것도 설치하지 마.</pre></div>
+    </article>
+    <article class="card" id="c6-2" data-title="6-2 내 PC에서 미리보기">
+      <header><span class="no">6-2</span><h3>올리기 전에 내 눈으로 미리보기</h3><label class="done"><input type="checkbox">다 했어요</label></header>
+      <p><code>newsnote → site → public → index.html</code> <b>더블클릭</b></p>
+      <p class="ok">블로그 화면이 뜨고, 글이 날짜·시각 최신순, 글을 눌렀다가 "← 글 목록"으로 돌아오면 성공</p>
+      <div class="prompt"><div class="ph">이상하면 본 대로 말하기 ① 순서<button type="button">복사</button></div><pre>최신 글이 맨 위로 안 와. 날짜의 시각까지 비교해서 고치고 미리보기 다시 만들어 줘.</pre></div>
+      <div class="prompt"><div class="ph">② 목록이 안 보일 때<button type="button">복사</button></div><pre>글 목록이 안 보여. build.js 고쳐서 미리보기 다시 만들어 줘.</pre></div>
+      <div class="box help">15명의 블로그가 조금씩 다르게 생겨요. 각자 클로드가 만든 거라 <b>다른 게 정상</b>이에요.</div>
+    </article>
+    <article class="card" id="c6-3" data-title="6-3 저장소 이름 적기">
+      <header><span class="no">6-3</span><h3>저장소 이름 정해서 수칙에 적기 <span class="badge alt">필수</span></h3><label class="done"><input type="checkbox">다 했어요</label></header>
+      <p>영어·숫자·하이픈으로 내 마음대로 (예: <code>sunny-blog</code>, <code>news-2026</code>)</p>
+      <div class="prompt"><div class="ph">코워크에 입력 · ○○○에 내 이름<button type="button">복사</button></div><pre>CLAUDE.md 「내 정보」의 저장소 이름 칸을 ○○○ 로 바꿔 줘.</pre></div>
+      <p class="ok">옵시디언에서 CLAUDE를 열어 이름이 들어가 있는지 <b>내 눈으로</b> 확인</p>
+      <div class="box set"><b class="t">왜 꼭 적어 둘까</b>여기 적어 두면 <b>어느 창에서든</b> 클로드가 어디로 올릴지 알아요. 대화로만 말하면 다른 창은 몰라요.</div>
+    </article>
+    <article class="card wide" id="c6-4" data-title="6-4 서고 만들고 입고">
+      <header><span class="no">6-4</span><h3>서고(저장소) 자동으로 만들고 입고하기</h3><label class="done"><input type="checkbox">다 했어요</label></header>
+      <div class="box warn"><b class="t">⚠️ 경고 · 경고 · 경고</b>
+        <ul>
+          <li>클로드가 <b>클로드 앱 안의 내장 브라우저</b>를 열어 <b>내 깃허브 계정에 저장소를 만들고 파일을 올려요.</b></li>
+          <li><b>로그인은 내가 직접.</b> 비밀번호·토큰은 <b>절대</b> 대화창에 쓰지 않아요.</li>
+          <li><b>공용 컴퓨터예요.</b> 끝나면 STEP 10 귀가 절차(특히 <b>내장 브라우저 로그아웃</b>)를 꼭 해요.</li>
+        </ul>
+      </div>
+      <div class="prompt"><div class="ph">코워크에 붙여 넣기<button type="button">복사</button></div><pre>[요청] 내장 브라우저로 github.com을 열어서
+1) 내 계정에 CLAUDE.md 「내 정보」의 이름으로 비공개(Private) 저장소를 만들어 줘. 같은 이름이 이미 있으면 만들지 말고 나에게 물어봐.
+2) newsnote/site 폴더의 파일을 웹 업로드로 그 저장소에 올리고 Commit 해 줘. posts 폴더 안의 글은 저장소의 posts 폴더 안에 들어가야 해.
+[조건] 깃허브 로그인 화면이 나오면 멈추고 나에게 직접 로그인하라고 말해 줘. 비밀번호나 토큰은 받지 마. site/public 폴더와 inbox·sorted 파일은 올리지 마. 다 하면 저장소 주소와 올린 파일 목록을 보여 줘.</pre></div>
+    </article>
+    <article class="card" id="c6-5" data-title="6-5 내가 할 일 로그인">
+      <header><span class="no">6-5</span><h3>내가 할 일 — 로그인만</h3><label class="done"><input type="checkbox">다 했어요</label></header>
+      <ol>
+        <li>코워크 오른쪽 <b>내장 브라우저</b>에 「Sign in to GitHub」</li>
+        <li>내 아이디·비밀번호(또는 Continue with Google) <b>직접 입력</b> → Sign in</li>
+        <li>"클로드가 <b>암호키를 열거</b>하도록 허용?" → <b>거부</b> (거부해도 로그인은 그대로 돼요. 클로드가 패스키로 해도 된다고 해도, 오늘은 아이디·비밀번호나 Google로만)</li>
+        <li>메일 확인 번호를 물으면 입력</li>
+        <li>코워크에 <code>로그인했어</code> (한/영 키 확인!)</li>
+        <li>그다음 허용 물음 → <b>허용</b></li>
+      </ol>
+      <p class="ok">클로드가 저장소 주소와 파일 목록을 보여 주고, 저장소 이름 옆에 자물쇠 🔒(비공개)가 있으면 성공</p>
+    </article>
+    <article class="card" id="c6-6" data-title="6-6 기다리는 동안 알아 둘 것">
+      <header><span class="no">6-6</span><h3>기다리는 동안 알아 둘 것</h3></header>
+      <ul>
+        <li>클로드가 사람처럼 화면을 보고 클릭해서 <b>처음엔 꽤 오래</b> 걸려요. 그동안 <b>크롬에서</b> 버셀 로그인(STEP 7 1번)을 먼저 해 두세요. 내장 브라우저는 클로드가 쓰는 중이에요.</li>
+        <li>다 올린 뒤 클로드가 "글자 수를 비교해 확인 중"이면 기다리면 돼요. 제대로 올라갔는지 스스로 검사하는 거예요.</li>
+        <li><b>왜 내장 브라우저일까?</b> 코워크 작업 공간에서는 깃허브 로그인이 보안 정책으로 막혀 있어요. 그래서 클로드가 내가 로그인한 화면을 대신 클릭해요. 명령어로 직접 하는 길(git 설치)은 어려워서 오늘은 안 해요.</li>
+        <li>빈 저장소는 업로드 화면이 안 열려서 클로드가 <code>.gitignore</code>를 먼저 만들고 올려요.</li>
+        <li>중간에 '실패' 한 줄이 보여도 클로드가 다시 시도하면 기다리면 돼요.</li>
+        <li><b>비공개 저장소여도 괜찮아요.</b> 서고는 출판사 직원(나)만 들어가고, 진열대(블로그)는 누구나 봐요.</li>
+      </ul>
+      <table>
+        <tr><th>막히면</th><th>할 일</th></tr>
+        <tr><td>암호키(패스키) 열거 허용?</td><td><b>거부</b></td></tr>
+        <tr><td>크롬엔 로그인돼 있는데 또 로그인</td><td>내장 브라우저는 크롬과 로그인이 따로(정상)</td></tr>
+        <tr><td>업로드 화면이 오래 비어 있음 (클로드가 파일을 못 넣음)</td><td><code>멈춰. 파일은 내가 끌어다 놓을게</code> → site 폴더에서 <b>public 빼고</b> 나머지와 posts 폴더째로 업로드 상자에 끌어다 놓기 → <b>Commit changes</b> → <code>올렸어. 확인해 줘</code></td></tr>
+        <tr><td>조직(Organization) 아래에 저장소가 생김</td><td>버셀 무료에서 막힐 수 있어요 → <b>내 개인 계정</b>에 만들기</td></tr>
+        <tr><td>대화창에 <code>fhrmdlsgoTdj</code> 같은 글자</td><td>한/영 키가 영어 상태. 지우고 다시</td></tr>
+        <tr><td>비밀번호·토큰을 달라고 함</td><td><b>주지 말기</b> → STEP 7 길 C</td></tr>
+        <tr><td>같은 이름 저장소가 있음</td><td>다른 이름 + 「내 정보」도 바꾸기</td></tr>
+        <tr><td>글이 저장소 바깥에 흩어짐</td><td><code>글 파일을 posts 폴더 안으로 옮겨 줘</code></td></tr>
+        <tr><td>"저장소를 만들 수 없다"</td><td>깃허브 메일 인증 확인 → 그래도 안 되면 직접 + → New repository(같은 이름, Private) → <code>만들어 뒀어. 거기에 올려 줘</code></td></tr>
+      </table>
+    </article>
+  </div>
+</section>
+
+<!-- ================= STEP 7 ================= -->
+<section class="step" id="s7" data-tab="STEP 7 서점">
+  <div class="step-head">
+    <div class="kicker">STEP 7</div>
+    <h2>버셀 서점 진열대에 걸기</h2>
+    <p>버셀 서점이 출판사 서고(깃허브)를 지켜보게 연결하면, 그다음부터는 서고에 새 책이 들어올 때마다 알아서 진열대(블로그)를 다시 꾸며요.</p>
+  </div>
+  <div class="box tipx"><b class="t">💡 선생님이 리허설에서 한 실수 — 나는 피하기</b><ul><li>두 번째 저장소를 고르고 Save를 눌렀는데 적용이 안 됐어요 → 저장소 <b>목록이 열린 채</b>였어요. 목록을 닫고(Esc) Save.</li><li>"버셀은 자동 안 돼?" → <b>처음 연결(Import)만 손으로</b>, 그다음부터는 올릴 때마다 자동이에요.</li><li>저장소 이름의 밑줄(_)은 주소에서 빠져요 (ai_news-2026 → ainews-2026). 내 주소가 이상해 보여도 정상.</li></ul></div>
+  <div class="grid">
+    <article class="card wide" id="c7-1" data-title="7-1 길 A 깃허브와 연결">
+      <header><span class="no">7-1</span><h3>길 A — 깃허브와 연결 (앞으로 자동)</h3><label class="done"><input type="checkbox">다 했어요</label></header>
+      <ol>
+        <li><code>vercel.com</code> → 오른쪽 위 <b>Log In → Continue with Google</b> (6회차 계정)</li>
+        <li><b>Add New… → Project → Import Git Repository</b></li>
+        <li>처음이면 <b>Continue with GitHub / Install</b> → 깃허브 화면 <b>Only select repositories → 자물쇠 달린 내 저장소만 → Install</b></li>
+        <li>내 저장소 옆 <b>Import</b> → 설정은 <b>그대로</b> → <b>Deploy</b></li>
+        <li>축하 화면 → <b>Continue to Dashboard → Domains</b> 주소 클릭</li>
+      </ol>
+      <p class="ok"><code>○○.vercel.app</code>에 내 블로그가 로그인 없이 열리면 성공</p>
+      <div class="box warn"><b class="t">GitHub 버튼으로 로그인하지 않기</b>「Import Git Repository」 아래 GitHub 버튼으로 들어가면 버셀 계정이 하나 더 생길 수 있어요. <b>Log In → Continue with Google</b> 먼저.</div>
+      <div class="box set"><b class="t">어느 브라우저에서?</b>손으로 할 때는 <b>크롬</b>에서 해요. 깃허브 Install 화면에서 크롬에도 깃허브 로그인(메일 6자리 확인)이 한 번 더 나올 수 있어요. 클로드에게 맡길 때는 <b>내장 브라우저</b>라서 버셀도 거기서 다시 로그인해야 해요(크롬과 로그인이 따로).</div>
+      <div class="box help">저장소 이름의 밑줄(_)은 주소에서 빠져요(예: my_news → mynews). 주소는 <b>Domains</b>에서 확인.</div>
+      <div class="prompt"><div class="ph">클로드에게 맡겨도 돼요 · 코워크에 붙여 넣기<button type="button">복사</button></div><pre>내장 브라우저로 vercel.com을 열어서 깃허브 저장소 ○○○을 Import하고 Deploy해 줘. 설정은 바꾸지 말고 그대로. 버셀 로그인 화면이나 깃허브 권한 허락 화면이 나오면 멈추고 나에게 직접 하라고 말해 줘. 다 되면 블로그 주소를 알려 줘.</pre></div>
+    </article>
+    <article class="card wide" id="c7-2" data-title="7-2 왜 이 버튼은 내가 누를까">
+      <header><span class="no">7-2</span><h3>왜 이 버튼은 클로드가 안 눌러 줘요?</h3></header>
+      <div class="scene" data-scene="keys"></div>
+      <p class="easy"><b>쉽게 말하면</b>서점이 서고의 책을 가져가려면 출판사 주인인 내가 "이 서가는 가져가도 돼" 하고 출입증을 끊어 줘야 해요. 클로드는 책을 나르는 직원이라 <b>출입증을 끊어 주는 버튼에서는 일부러 멈춰요.</b> 고장이 아니라 안전장치예요.</p>
+      <div class="box help">인터넷의 나쁜 페이지가 클로드에게 "서고를 다 열어"라고 시킬 수도 있거든요. 그래서 출입증 버튼은 언제나 사람이 눌러요.</div>
+    </article>
+    <article class="card wide" id="c7-3" data-title="7-3 내가 누르는 곳 3곳">
+      <header><span class="no">7-3</span><h3>내가 직접 누르는 곳 — 딱 3곳</h3></header>
+      <table>
+        <tr><th>언제</th><th>화면</th><th>할 일</th></tr>
+        <tr><td>깃허브 올리기 전</td><td>내장 브라우저 「Sign in to GitHub」</td><td>직접 로그인, 암호키 → 거부</td></tr>
+        <tr><td>버셀 처음</td><td>「Log In」</td><td><b>Continue with Google</b></td></tr>
+        <tr><td>서점이 서고를 볼 때</td><td>「Install Vercel」 / 「Configure → Repository access」</td><td><b>Only select repositories → 자물쇠 달린 내 저장소만 → Install / Save</b></td></tr>
+      </table>
+      <div class="box warn"><b class="t">절대 누르지 않는 곳</b><b>All repositories</b>(서고 전부 열어 주기), 맨 아래 빨간 <b>Danger zone</b>(Suspend / Uninstall)</div>
+    </article>
+    <article class="card wide" id="c7-4" data-title="7-4 버셀에서 막히면">
+      <header><span class="no">7-4</span><h3>버셀에서 막히면</h3></header>
+      <table>
+        <tr><th>증상</th><th>이유</th><th>할 일</th></tr>
+        <tr><td>클로드가 "권한 화면이라 멈췄어요"</td><td>안전장치(정상)</td><td>7-3 표대로 내가 누르고 <code>됐어</code></td></tr>
+        <tr><td>Import 목록에 내 저장소 없음 / Deploy가 안 넘어감</td><td>서점에 새 서가 출입증을 안 끊어 줌 (두 번째 저장소부터 흔함)</td><td>깃허브 Settings → Applications → <b>Vercel → Configure</b> → Select repositories → 내 저장소 → <b>Save</b></td></tr>
+        <tr><td>저장소를 골랐는데 저장 안 됨</td><td>목록이 열린 채 Save 안 누름 / 확인 코드 중단</td><td>저장소 클릭 → <b>목록 바깥 클릭 또는 Esc</b> → Save가 진한 초록일 때 클릭 → 확인 코드 끝까지</td></tr>
+        <tr><td>Save를 누르니 비밀번호·코드를 또 물음</td><td>깃허브 확인 절차(정상)</td><td>끝까지 입력해야 저장돼요</td></tr>
+        <tr><td>비슷한 저장소 이름이 여러 개</td><td>예전 저장소</td><td>오늘 만든 이름 + 자물쇠 🔒</td></tr>
+        <tr><td>Deploy 빨간색</td><td>빌드 오류</td><td>화면 캡처를 코워크에 붙이고 <code>버셀 배포가 실패했어. 고쳐서 다시 올려 줘</code></td></tr>
+        <tr><td>블로그에 로그인 화면</td><td>버셀 보호 기능</td><td>프로젝트 Settings → Deployment Protection → Vercel Authentication 끄기</td></tr>
+      </table>
+    </article>
+    <article class="card opt" id="c7-5" data-title="7-5 길 B 버셀 커넥터">
+      <header><span class="no">7-5</span><h3>길 B — 깃허브가 막혔을 때 <span class="badge opt">예비</span></h3></header>
+      <p>클로드 <b>설정 → 커넥터 → Vercel → 연결</b> → 버셀 화면에서 허락</p>
+      <div class="prompt"><div class="ph">코워크에 붙여 넣기<button type="button">복사</button></div><pre>newsnote/site 폴더를 내 버셀 계정에 production으로 배포해 줘. 프로젝트 이름은 ○○○.</pre></div>
+    </article>
+    <article class="card opt" id="c7-6" data-title="7-6 길 C 끌어다 놓기">
+      <header><span class="no">7-6</span><h3>길 C — 다 막혔을 때 끌어다 놓기 <span class="badge opt">예비</span></h3></header>
+      <div class="prompt"><div class="ph">코워크에 붙여 넣기<button type="button">복사</button></div><pre>site의 글로 블로그를 base64 한 파일 HTML(index.html)로 만들어서 newsnote/drop 폴더에 저장해 줘.</pre></div>
+      <p><code>vercel.com</code> → 프로젝트 화면에 <code>newsnote/drop/index.html</code>을 <b>끌어다 놓기</b> → Deploy (6회차에 해 본 방법)</p>
+    </article>
+  </div>
+</section>
+
+<!-- ================= STEP 8 ================= -->
+<section class="step" id="s8" data-tab="STEP 8 올리기 ⭐">
+  <div class="step-head">
+    <div class="kicker">STEP 8 · 오늘의 하이라이트</div>
+    <h2>"올리기" 한 마디로 블로그 맨 위에 새 글</h2>
+    <p>처음 한 번은 서고와 서점을 연결하느라 오래 걸렸어요. 이제부터는 네 박자면 끝나요.</p>
+  </div>
+  <div class="box tipx"><b class="t">💡 선생님이 리허설에서 한 실수 — 나는 피하기</b><ul><li>클리핑을 많이 해 놓고 글을 다 쓰려다 오래 걸렸어요 → <b>클리핑은 많이, 글은 모두 합쳐 2~3편까지.</b></li><li>올리자마자 블로그를 열어 보면 아직 옛날 화면이에요 → 버셀이 다시 짓는 동안 <b>잠깐 기다렸다 새로고침.</b></li></ul></div>
+  <div class="grid">
+    <article class="card wide" id="c8-1" data-title="8-1 네 박자">
+      <header><span class="no">8-1</span><h3>새 기사 → 정리 → 글쓰기 → 올리기</h3><label class="done"><input type="checkbox">다 했어요</label></header>
+      <ol>
+        <li>새 기사 1~2개 클리핑 (오늘 올리는 글은 <b>모두 합쳐 2~3편까지</b>)</li>
+        <li><b>올리기가 되는 창</b>(코워크: 화면 위 「뉴스공책 / …」, 오른쪽에 내장 브라우저, 오른쪽 「이 세션에서 사용됨」에 브라우저와 …/newsnote)에 한 줄씩:</li>
+      </ol>
+      <div class="prompt"><div class="ph">하나씩 차례로<button type="button">복사</button></div><pre>정리</pre></div>
+      <div class="prompt"><div class="ph">그다음 (기사 2개를 다 쓰려면 아래 대신 <code>새로 들어온 기사 2개 다 글쓰기 해 줘</code>)<button type="button">복사</button></div><pre>글쓰기</pre></div>
+      <div class="prompt"><div class="ph">마지막<button type="button">복사</button></div><pre>올리기</pre></div>
+      <ol start="3">
+        <li>클로드가 "올렸습니다" → 잠시 기다리기 — 버셀이 알아서 다시 만드는 중</li>
+        <li>블로그 새로고침 (<kbd>Ctrl</kbd> + <kbd>F5</kbd>)</li>
+      </ol>
+      <p class="ok">방금 쓴 글이 맨 위에, 오늘 날짜·시각과 함께 뜨면 성공 🎉</p>
+    </article>
+    <article class="card wide" id="c8-2" data-title="8-2 올리기에서 막히면">
+      <header><span class="no">8-2</span><h3>올리기에서 막히면</h3></header>
+      <table>
+        <tr><th>증상</th><th>할 일</th></tr>
+        <tr><td>올리기를 다른 방식(기기 번호 등)으로 하려 함</td><td><code>내장 브라우저로 ○○○ 저장소의 posts 폴더에 새 글만 웹 업로드하고 Commit 해 줘.</code></td></tr>
+        <tr><td>깃허브 로그인을 다시 하라고 함</td><td>새 대화창이거나 로그인이 풀림 → 직접 로그인 → <code>로그인했어</code> (같은 대화에선 보통 유지돼요)</td></tr>
+        <tr><td>"올리기가 뭔지 모르겠다" / 어디로 올릴지 물음</td><td>CLAUDE.md 「올리기」 규칙이 빠졌거나 저장소 이름 칸이 비어 있음 → 3-2 수칙과 6-3 이름 확인</td></tr>
+        <tr><td>"이 세션을 재개하는 중"</td><td>쉬었던 대화를 깨우는 중(정상). 기다리기</td></tr>
+        <tr><td>올렸는데 블로그가 그대로</td><td>조금 더 기다렸다 <kbd>Ctrl</kbd> + <kbd>F5</kbd></td></tr>
+        <tr><td>새 글이 맨 위가 아님</td><td>글 머리말이 <code>date: 2026-10-26 19:30</code> 형식인지</td></tr>
+        <tr><td>이미 올린 글까지 또 올림</td><td><code>이미 저장소에 있는 글은 빼고 새 글만 올려 줘</code></td></tr>
+      </table>
+    </article>
+  </div>
+</section>
+
+<!-- ================= STEP 9 ================= -->
+<section class="step" id="s9" data-tab="STEP 9 디자인">
+  <div class="step-head">
+    <div class="kicker">STEP 9</div>
+    <h2>클로드 디자인으로 블로그 표지 바꾸기</h2>
+    <p>디자인 창에서 보면서 고치고, 같은 폴더를 연결해 내 블로그의 표지·편집 디자인(style.css)만 바꿔요. 원고는 그대로예요.</p>
+  </div>
+  <div class="box tipx"><b class="t">💡 선생님이 리허설에서 한 실수 — 나는 피하기</b><ul><li>디자인 창에다 "올려 줘"를 보냈어요 → 디자인 창은 <b>올리기를 못 해요.</b> 고치는 건 디자인 창, 올리는 건 <b>코워크 창.</b></li><li>폴더 카드가 붙기 전에 보내서 "newsnote가 연결되어 있지 않다"가 나왔어요 → 폴더 추가 → <b>카드 확인</b> → 그다음 보내기.</li><li>선생님 디자인과 내 디자인이 달라요 → 계정마다 기억(취향)이 달라서예요. <b>달라도 정상.</b></li></ul></div>
+  <div class="grid">
+    <article class="card wide" id="c9-1" data-title="9-1 디자인 따로 연습">
+      <header><span class="no">9-1</span><h3>디자인 따로 연습</h3><label class="done"><input type="checkbox">다 했어요</label></header>
+      <ol>
+        <li>왼쪽 메뉴 <b>Design</b> → 「새로운 무언가 만들기」의 <b>디자인(신규)</b> (보라색 팔레트)</li>
+        <li>디자인 시스템 선택은 그대로, 채팅칸에 아래 프롬프트</li>
+        <li>PC용·휴대폰용 화면이 그려지면 말로 고치기: <code>제목을 더 굵게</code> <code>포인트 색은 남색으로</code></li>
+      </ol>
+      <div class="prompt"><div class="ph">디자인 창에 붙여 넣기 · ○○○와 [ ]는 내 것으로<button type="button">복사</button></div><pre>뉴스 요약 블로그의 첫 화면을 디자인해 줘.
+- 맨 위: 블로그 이름 「○○○」과 소개 한 줄 "○○○"
+- 아래: 글 카드 목록. 카드마다 날짜·시각, 제목, 한 줄 요약, 태그
+- 예시 글 3개: (내 블로그 글 제목 3개)
+- 분위기: [깔끔한 신문 / 따뜻한 카페 / 파스텔 / 다크 모드] 느낌, 큰 글자, 휴대폰에서도 잘 보이게</pre></div>
+      <div class="box help">클로드가 "제가 임의로 정한 부분"을 알려 줘요. <b>AI가 정한 건 사람이 확인</b>해요. 옆 사람·강사 화면과 달라도 정상이에요.</div>
+    </article>
+    <article class="card wide" id="c9-2" data-title="9-2 연동 같은 폴더 쓰기">
+      <header><span class="no">9-2</span><h3>연동 — 같은 폴더를 함께 쓰기</h3><label class="done"><input type="checkbox">다 했어요</label></header>
+      <div class="scene" data-scene="design"></div>
+      <ol>
+        <li>디자인 입력칸 아래 <b>「폴더 추가」</b> → 목록의 <b>newsnote</b></li>
+        <li>입력칸 위에 <b>「newsnote · 폴더」 카드가 붙은 걸 확인</b>하고 나서 보내기</li>
+      </ol>
+      <div class="prompt"><div class="ph">디자인 창에 붙여 넣기<button type="button">복사</button></div><pre>연결한 newsnote 폴더의 site/style.css를 이 디자인대로 고쳐 줘. build.js, posts, settings.md는 건드리지 마.</pre></div>
+      <ol start="3">
+        <li><b>코워크 창으로 이동</b> (왼쪽 메뉴 프로젝트 → 뉴스공책 대화)</li>
+      </ol>
+      <div class="prompt"><div class="ph">코워크에 붙여 넣기<button type="button">복사</button></div><pre>바뀐 site/style.css로 미리보기를 다시 만들고, 저장소 맨 위에 올려 줘.</pre></div>
+      <p class="ok">잠시 뒤 블로그 <kbd>Ctrl</kbd> + <kbd>F5</kbd> → 원고는 그대로, 표지만 바뀌면 성공 🎉</p>
+    </article>
+    <article class="card wide" id="c9-3" data-title="9-3 고치는 창 올리는 창">
+      <header><span class="no">9-3</span><h3>💡 고치는 건 디자인 창, 올리는 건 코워크 창</h3></header>
+      <table>
+        <tr><th>화면 위 제목</th><th>오른쪽</th><th>할 수 있는 일</th></tr>
+        <tr><td>디자인 제목 (예: 「뉴스 요약 블로그 첫 화면」)</td><td>디자인 캔버스</td><td><b>디자인 창</b> — 고치기만</td></tr>
+        <tr><td>「뉴스공책 / …」</td><td>내장 브라우저 · 「이 세션에서 사용됨」에 브라우저</td><td><b>코워크 창</b> — 올리기까지</td></tr>
+      </table>
+      <p class="ok">올리기 전에 화면 위 제목 확인!</p>
+      <table>
+        <tr><th>막히면</th><th>할 일</th></tr>
+        <tr><td>"newsnote가 연결되어 있지 않다"</td><td>폴더 카드가 붙기 전에 보낸 것 → 폴더 추가 → 카드 확인 → 다시</td></tr>
+        <tr><td>디자인 창에서 올려 달랬더니 "올리지 못했다"</td><td>디자인 창은 업로드를 못 해요 → <b>코워크 창</b>에서</td></tr>
+        <tr><td>색은 바뀌었는데 필터 버튼·날짜 줄은 안 생김</td><td>style.css는 표지·편집 디자인만 바꿔요. 부품은 블로그 틀(build.js)을 고쳐야 → 「더 해 보기」</td></tr>
+        <tr><td>내 PC 미리보기는 옛 디자인</td><td><code>미리보기도 새 디자인으로 다시 만들어 줘</code> (블로그엔 영향 없음)</td></tr>
+      </table>
+    </article>
+  </div>
+</section>
+
+<!-- ================= STEP 10 ================= -->
+<section class="step" id="s10" data-tab="STEP 10 귀가">
+  <div class="step-head">
+    <div class="kicker">STEP 10</div>
+    <h2>집에 가기 전 (공용 컴퓨터 — 꼭!)</h2>
+    <p>안 하면 다음 사람이 내 서고와 블로그를 건드릴 수 있어요.</p>
+  </div>
+  <div class="grid">
+    <article class="card" id="c10-1" data-title="10-1 집에 가기 전 다섯 가지">
+      <header><span class="no">10-1</span><h3>집에 가기 전 다섯 가지</h3><label class="done"><input type="checkbox">다 했어요</label></header>
+      <ol>
+        <li><b>내장 브라우저</b>(코워크 오른쪽): 깃허브·버셀 오른쪽 위 내 사진 → <b>Sign out</b></li>
+        <li><b>크롬</b>: 깃허브·버셀·구글 <b>로그아웃</b>. "비밀번호 저장?" → <b>사용 안 함</b></li>
+        <li>집에서도 자동 업데이트를 쓰려면 깃허브 Settings → Applications의 <b>Vercel은 남겨 둠</b></li>
+        <li><code>newsnote</code> 폴더 → <b>USB에 복사</b> → 컴퓨터에서 삭제</li>
+        <li>클로드 데스크톱 앱 <b>로그아웃</b></li>
+      </ol>
+    </article>
+    <article class="card" id="c10-2" data-title="10-2 오늘 남는 것">
+      <header><span class="no">10-2</span><h3>오늘 남는 진짜 재산</h3></header>
+      <p class="easy"><b>newsnote 폴더</b>예요. 집에서 같은 폴더를 옵시디언·클로드에 연결하면 그대로 이어지고, 처음 <code>올리기</code> 때 내장 브라우저에서 깃허브 로그인만 한 번 더 하면 돼요.</p>
+      <div class="box more"><b class="t">종강 한 줄</b>오늘 내가 모은 기사가 내 글이 되고, 인터넷의 내 블로그가 됐어요. 이제 "올리기" 한 마디면 계속 자라요.</div>
+    </article>
+  </div>
+</section>
+
+<!-- ================= 더 해 보기 ================= -->
+<section class="step" id="s11" data-tab="부록 · 더 해 보기" data-next="1">
+  <div class="step-head">
+    <div class="kicker">시간 남으면 · 집에서</div>
+    <h2>부록 — 한 걸음 더</h2>
+    <p>시간이 남으면 수업에서, 아니면 집에서 해 보세요. 클로드 코드 맛보기도 여기 있어요.</p>
+  </div>
+  <div class="grid">
+    <article class="card opt" id="c11-1" data-title="11-1 내 글로 모션 그래픽">
+      <header><span class="no">11-1</span><h3>내 글로 모션 그래픽 영상 <span class="badge opt">시간 남으면</span></h3><label class="done"><input type="checkbox">다 했어요</label></header>
+      <div class="prompt"><div class="ph">코워크에 붙여 넣기 · 모델 Opus<button type="button">복사</button></div><pre>posts 폴더의 가장 최신 글을 30초짜리 모션 그래픽 영상으로 만들어 줘. 글 제목 → 핵심 3줄 → 출처 순서로, 영상과 어울리는 음악도 넣어서. 다 되면 MP4로 내려받을 수 있게 해 줘.</pre></div>
+      <div class="box help">6회차처럼 설치 없이 클라우드에서 만들어요. 오늘 쓴 글이 블로그가 되고, 영상이 돼요.</div>
+    </article>
+    <article class="card opt" id="c11-2" data-title="11-2 디자인 부품까지">
+      <header><span class="no">11-2</span><h3>디자인 부품까지 똑같이 <span class="badge opt">집에서</span></h3><label class="done"><input type="checkbox">다 했어요</label></header>
+      <div class="prompt"><div class="ph">코워크에 붙여 넣기<button type="button">복사</button></div><pre>디자인 시안처럼 태그 필터 버튼과 신문식 날짜 줄도 넣어 줘. build.js도 고쳐도 돼. 미리보기를 다시 만들고, 바뀐 파일을 저장소에 올려 줘.</pre></div>
+    </article>
+    <article class="card opt" id="c11-3" data-title="11-3 블로그 이름 바꾸기">
+      <header><span class="no">11-3</span><h3>블로그 이름·소개 바꾸기 <span class="badge opt">집에서</span></h3><label class="done"><input type="checkbox">다 했어요</label></header>
+      <div class="prompt"><div class="ph">코워크에 붙여 넣기<button type="button">복사</button></div><pre>site/settings.md의 blog_title을 「○○○」, author를 별명 「○○」, intro를 「○○○」로 바꿔서 올려 줘.</pre></div>
+    </article>
+    <article class="card opt" id="c11-4" data-title="11-4 두 번째 두뇌 위키">
+      <header><span class="no">11-4</span><h3>두 번째 두뇌(세컨 브레인) 위키 <span class="badge opt">집에서</span></h3><label class="done"><input type="checkbox">다 했어요</label></header>
+      <p class="easy"><b>쉽게 말하면</b>블로그는 남에게 보여 주는 곳, 위키는 내 머릿속을 복사해 두는 곳이에요. 모은 기사가 쌓일수록 똑똑해져요.</p>
+      <div class="prompt"><div class="ph">코워크에 붙여 넣기<button type="button">복사</button></div><pre>CLAUDE.md 맨 아래에 위키 규칙을 추가해 줘.
+- "위키"라고 하면 sorted의 주제별 기사를 읽어 wiki/ 안에 「&lt;주제&gt; 개요.md」(핵심 흐름 5줄 + 기사 목록과 날짜), 「용어.md」, 「인물·회사.md」를 만들거나 갱신한다.
+- 페이지끼리는 [[파일이름]]으로 연결한다. 원본 기사는 고치지 않는다.
+- "브리핑"이라고 하면 wiki를 바탕으로 이번 주 뉴스 브리핑 한 장을 wiki/에 쓰고 관련 페이지와 연결한다.</pre></div>
+      <p>그다음 <code>위키</code> → <code>브리핑</code> → 옵시디언에서 <kbd>Ctrl</kbd> + <kbd>G</kbd> (그래프 뷰: 점과 선으로 보는 내 두뇌 지도)</p>
+    </article>
+    <article class="card wide" id="c11-5" data-title="11-5 클로드 코드란">
+      <header><span class="no">11-5</span><h3>클로드 코드 맛보기 — 코워크와 뭐가 달라요? <span class="badge opt">부록</span></h3></header>
+      <p class="easy"><b>쉽게 말하면</b>코워크는 클로드가 <b>자기 작업 공간(클라우드)</b>에서 일하고 결과만 내 폴더로 보내 줘요. 코드 탭은 클로드가 <b>내 컴퓨터에서 직접</b> 일해요. 그래서 할 수 있는 게 더 많지만, 내 컴퓨터에 프로그램이 필요할 때도 있어요.</p>
+      <table>
+        <tr><th></th><th>코워크 창</th><th>코드 탭</th></tr>
+        <tr><td>일하는 곳</td><td>클로드 작업 공간(클라우드)</td><td>내 컴퓨터</td></tr>
+        <tr><td>폴더</td><td>연결한 폴더를 읽고 써요</td><td>세션마다 폴더를 먼저 골라요</td></tr>
+        <tr><td>설치</td><td>필요 없어요</td><td>일에 따라 필요(영상 편집 등)</td></tr>
+        <tr><td>오늘 쓴 곳</td><td>STEP 1~10 전부</td><td>부록 11-6 ~ 11-8</td></tr>
+      </table>
+      <div class="box help"><b class="t">코드 탭 여는 법</b>클로드 앱 위쪽 <b>코드</b> 탭 → 새 세션 → 폴더 선택에서 <b>newsnote</b> → 아래 프롬프트</div>
+    </article>
+    <article class="card opt" id="c11-6" data-title="11-6 코드 탭 모션 그래픽">
+      <header><span class="no">11-6</span><h3>코드 탭으로 내 글 모션 그래픽 (설치 없음) <span class="badge opt">부록</span></h3><label class="done"><input type="checkbox">다 했어요</label></header>
+      <div class="prompt"><div class="ph">코드 탭에 붙여 넣기 (newsnote 폴더 선택)<button type="button">복사</button></div><pre>posts 폴더에서 가장 최신 글 1편을 읽고, 핵심 3줄을 30초짜리 모션 그래픽으로 보여 주는 HTML 한 파일(motion.html)을 만들어 줘. 설치 없이 브라우저에서 바로 재생되게, 글 제목 → 핵심 1·2·3 → 출처 순서로 장면이 넘어가게. 다 만들면 브라우저로 열어 줘.</pre></div>
+      <p class="ok">브라우저에 내 글이 영상처럼 재생되면 성공</p>
+      <div class="box help">11-1(코워크로 MP4 만들기)과 비교해 보세요. 같은 글, 다른 작업장이에요.</div>
+    </article>
+    <article class="card opt" id="c11-7" data-title="11-7 6회차 MP4로 3D 뉴스 화면">
+      <header><span class="no">11-7</span><h3>6회차에 만든 MP4로 3D 뉴스 화면 <span class="badge opt">부록</span></h3><label class="done"><input type="checkbox">다 했어요</label></header>
+      <p>6회차에 받은 MP4가 있으면 newsnote 폴더에 넣고:</p>
+      <div class="prompt"><div class="ph">코드 탭에 붙여 넣기 (newsnote 폴더 선택)<button type="button">복사</button></div><pre>newsnote 폴더의 mp4 영상과 posts 폴더의 최신 글 1편을 써서, three.js로 3D 뉴스 화면 HTML 한 파일(news3d.html)을 만들어 줘.
+- 가운데 화면에 mp4가 재생되고, 둘레에 글 제목과 핵심 3줄이 입체 카드로 차례로 나타나게.
+- 재생/멈춤 버튼과 카메라가 천천히 도는 효과.
+- 설치 없이 브라우저에서 바로 열리게. mp4가 없으면 글만으로 만들어 줘.
+다 만들면 브라우저로 열어 줘.</pre></div>
+      <div class="box warn"><b class="t">오래 걸릴 수 있어요</b>3D는 만드는 데 시간이 걸려요. MP4를 다시 MP4로 저장하는 건 내 컴퓨터에 영상 프로그램이 필요해서 여기선 HTML로 끝내요.</div>
+    </article>
+    <article class="card opt" id="c11-8" data-title="11-8 1분 쇼츠 편집">
+      <header><span class="no">11-8</span><h3>1분 쇼츠 편집 — 캡컷 없이 <span class="badge opt">부록 · 내 컴퓨터</span></h3><label class="done"><input type="checkbox">다 했어요</label></header>
+      <p>내가 찍은 1분 영상을 newsnote 폴더에 넣고:</p>
+      <div class="prompt"><div class="ph">코드 탭에 붙여 넣기 (newsnote 폴더 선택)<button type="button">복사</button></div><pre>이 폴더의 영상에서 말 없는 구간은 빼고, 말에 맞춰 자막을 넣어서 9:16 쇼츠(short.mp4)로 만들어 줘. 필요한 프로그램이 없으면 설치해도 되는지 먼저 물어봐.</pre></div>
+      <div class="box warn"><b class="t">내 컴퓨터에서 하세요</b>영상 편집 프로그램(FFmpeg)과 음성 인식 프로그램 설치가 필요할 수 있어요. 교실 공용 PC보다 <b>집 컴퓨터</b>에서 해 보세요. "설치해도 될까요?"에 예를 누르면 클로드가 알아서 깔아요.</div>
+    </article>
+    <article class="card opt" id="c11-9" data-title="11-9 구글 연결">
+      <header><span class="no">11-9</span><h3>구글 연결 — 메일·캘린더·드라이브 <span class="badge opt">부록 · 집에서</span></h3><label class="done"><input type="checkbox">다 했어요</label></header>
+      <p>클로드 <b>설정 → 커넥터</b>에서 Gmail·Google Calendar·Google Drive를 연결하면 코워크에서 이렇게 할 수 있어요.</p>
+      <div class="prompt"><div class="ph">코워크에 붙여 넣기 (예)<button type="button">복사</button></div><pre>오늘 블로그에 올린 글 제목과 주소를 정리해서, 내 메일 주소로 보낼 메일 초안을 만들어 줘. 보내기 전에 나에게 보여 줘.</pre></div>
+      <div class="box help">메일 보내기·일정 넣기는 클로드가 <b>보내기 전에 꼭 확인</b>을 받게 하세요.</div>
+    </article>
+  </div>
+</section>
+
+<!-- ================= 막힘 사전 ================= -->
+<section class="step" id="s12" data-tab="막힘 사전">
+  <div class="step-head">
+    <div class="kicker">막힘 사전</div>
+    <h2>막혔을 때 여기서 찾기</h2>
+    <p>화면에 나온 말이나 증상으로 찾아보세요.</p>
+  </div>
+  <div class="grid">
+    <article class="card wide" id="c12-1" data-title="12-1 한눈에 보기">
+      <header><span class="no">?</span><h3>한눈에 보기</h3></header>
+      <table>
+        <tr><th>증상</th><th>이유</th><th>할 일</th></tr>
+        <tr><td>클리핑이 inbox에 안 들어감</td><td>옵시디언 꺼짐 / 노트 위치가 Clippings</td><td>옵시디언 켜기 / 2-3</td></tr>
+        <tr><td>폴더 안에 폴더가 또 생김</td><td>「새 보관함 생성」을 누름</td><td>「보관함 폴더 열기」로 다시</td></tr>
+        <tr><td>클로드가 폴더를 못 봄</td><td>로컬 폴더 연결 안 함</td><td>3-1</td></tr>
+        <tr><td>원본과 복사본이 헷갈림</td><td>—</td><td>inbox = 원본(그대로), sorted = 주제별 복사본</td></tr>
+        <tr><td>클로드가 만든 블로그가 이상함</td><td>사람마다 다름(정상)</td><td>본 대로 말해 고치기 → 미리보기</td></tr>
+        <tr><td>깃허브 메일 숫자</td><td>본인 확인</td><td>메일 열어 입력</td></tr>
+        <tr><td>저장소를 못 만듦</td><td>깃허브 메일 인증 안 함</td><td>메일 인증 먼저</td></tr>
+        <tr><td>"암호키를 열거하도록 허용?"</td><td>깃허브가 패스키를 찾음</td><td><b>거부</b></td></tr>
+        <tr><td>내장 브라우저에서 또 로그인</td><td>크롬과 로그인이 따로</td><td>직접 로그인(정상)</td></tr>
+        <tr><td>대화창에 영어 자판 글자</td><td>한/영 키</td><td>지우고 다시</td></tr>
+        <tr><td>토큰·비밀번호를 달라고 함</td><td>길이 어긋남</td><td>주지 말고 7-6 길 C</td></tr>
+        <tr><td>버셀 Import 목록에 저장소 없음</td><td>서점에 출입증을 안 끊어 줌</td><td>Vercel → Configure → 저장소 추가 → Save</td></tr>
+        <tr><td>버셀 계정이 두 개가 됨</td><td>GitHub 버튼으로 로그인</td><td>Log In → Continue with Google</td></tr>
+        <tr><td>새 글이 안 보임</td><td>버셀이 만드는 중</td><td>조금 뒤 <kbd>Ctrl</kbd> + <kbd>F5</kbd></td></tr>
+        <tr><td>글 순서가 이상함</td><td>date에 시각이 없음</td><td><code>date: 2026-10-26 19:30</code></td></tr>
+        <tr><td>블로그에 로그인 화면</td><td>버셀 보호 기능</td><td>Deployment Protection 끄기</td></tr>
+        <tr><td>디자인 창에서 올리기 실패</td><td>디자인 창은 업로드 불가</td><td>코워크 창에서</td></tr>
+        <tr><td>"이 세션을 재개하는 중"</td><td>쉬었던 대화를 깨우는 중</td><td>기다리기</td></tr>
+      </table>
+    </article>
+  </div>
+</section>
+
+</main>
+<aside class="side" aria-label="이 STEP의 카드"><h4>이 STEP의 카드</h4><div id="sidelist"></div></aside>
+</div>
+
+<div class="bottom">
+  <div class="bottom-in">
+    <button type="button" id="prev">이전</button>
+    <div class="mid">
+      <select id="selStep" aria-label="STEP 고르기"></select>
+      <button type="button" class="help" id="helpBtn" aria-label="막힘 사전">?</button>
+      <select id="selCard" aria-label="카드 고르기"></select>
+    </div>
+    <button type="button" class="go" id="next">다음</button>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+  document.documentElement.classList.add('js');
+  var store={get:function(k){try{return localStorage.getItem(k)}catch(e){return null}},set:function(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+  var steps=[].slice.call(document.querySelectorAll('.step'));
+  var tabs=document.querySelector('.tabs'), selStep=document.getElementById('selStep'), selCard=document.getElementById('selCard'), side=document.getElementById('sidelist');
+  var cur=0;
+
+  steps.forEach(function(s,i){
+    var b=document.createElement('button');b.type='button';b.setAttribute('role','tab');b.textContent=s.dataset.tab;
+    if(s.dataset.next)b.classList.add('next');
+    b.onclick=function(){show(i,true)};tabs.appendChild(b);
+    var o=document.createElement('option');o.value=i;o.textContent=s.dataset.tab;selStep.appendChild(o);
+  });
+
+  // 글자 크기
+  var fs=parseInt(store.get('d7-fs')||'20',10);
+  function setFs(v){fs=Math.max(18,Math.min(28,v));document.documentElement.style.setProperty('--fs',fs+'px');store.set('d7-fs',fs)}
+  setFs(fs);
+  document.querySelectorAll('[data-fs]').forEach(function(b){b.onclick=function(){setFs(fs+2*parseInt(b.dataset.fs,10))}});
+
+  // 체크
+  document.querySelectorAll('.done input').forEach(function(cb){
+    var card=cb.closest('.card'),k='d7-ck-'+card.id;
+    cb.checked=store.get(k)==='1';card.classList.toggle('checked',cb.checked);
+    cb.onchange=function(){store.set(k,cb.checked?'1':'0');card.classList.toggle('checked',cb.checked);buildSide();progress()};
+  });
+
+  // 복사
+  document.querySelectorAll('.prompt button').forEach(function(b){
+    b.onclick=function(){
+      var t=b.closest('.prompt').querySelector('pre').innerText;
+      var done=function(){b.textContent='복사됨';b.classList.add('copied');setTimeout(function(){b.textContent='복사';b.classList.remove('copied')},1600)};
+      if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(done,function(){fallback(t);done()})}else{fallback(t);done()}
+    };
+  });
+  function fallback(t){var ta=document.createElement('textarea');ta.value=t;ta.style.position='absolute';ta.style.left='-9999px';document.body.appendChild(ta);ta.select();try{document.execCommand('copy')}catch(e){}document.body.removeChild(ta)}
+
+  // 문장형 코드(표·목록 속 프롬프트)는 눌러서 복사
+  document.querySelectorAll('.card code').forEach(function(c){
+    var t=c.textContent;
+    if(c.closest('pre'))return;
+    if(/→/.test(t)||t.length<4||!/[가-힣]|\s/.test(t))return;
+    c.classList.add('cp');c.setAttribute('role','button');c.setAttribute('tabindex','0');c.title='눌러서 복사';
+    var go=function(){var d=function(){c.classList.add('copied');setTimeout(function(){c.classList.remove('copied')},1500)};
+      if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(d,function(){fallback(t);d()})}else{fallback(t);d()}};
+    c.addEventListener('click',go);c.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();go()}});
+  });
+  function cards(){return [].slice.call(steps[cur].querySelectorAll('.card'))}
+  function buildSide(){
+    side.innerHTML='';selCard.innerHTML='';
+    cards().forEach(function(c){
+      var a=document.createElement('a');a.href='#'+c.id;a.textContent=c.dataset.title;a.dataset.id=c.id;
+      if(c.classList.contains('checked'))a.classList.add('ck');
+      a.onclick=function(e){e.preventDefault();jump(c)};side.appendChild(a);
+      var o=document.createElement('option');o.value=c.id;o.textContent=c.dataset.title;selCard.appendChild(o);
+    });
+  }
+  function jump(c){var t=document.querySelector('.top');var off=(t?t.offsetHeight:0)+16;var y=c.getBoundingClientRect().top+window.pageYOffset-off;window.scrollTo({top:Math.max(0,y),behavior:'smooth'})}
+  selCard.onchange=function(){var c=document.getElementById(selCard.value);if(c)jump(c)};
+  selStep.onchange=function(){show(parseInt(selStep.value,10),true)};
+  document.getElementById('prev').onclick=function(){if(cur>0)show(cur-1,true)};
+  document.getElementById('next').onclick=function(){if(cur<steps.length-1)show(cur+1,true)};
+  document.getElementById('helpBtn').onclick=function(){show(steps.length-1,true)};
+
+  function progress(){
+    var all=document.querySelectorAll('.done input'),n=0;all.forEach(function(x){if(x.checked)n++});
+    document.querySelector('.progress i').style.width=(all.length?n/all.length*100:0)+'%';
+  }
+  function show(i,scroll){
+    cur=i;
+    steps.forEach(function(s,j){s.classList.toggle('on',j===i)});
+    [].forEach.call(tabs.children,function(b,j){b.setAttribute('aria-selected',j===i?'true':'false')});
+    selStep.value=i;buildSide();store.set('d7-step',i);
+    document.getElementById('prev').disabled=i===0;document.getElementById('next').disabled=i===steps.length-1;
+    if(scroll){var m=document.getElementById('main');var y=m.getBoundingClientRect().top+window.pageYOffset-80;window.scrollTo({top:Math.max(0,y),behavior:'smooth'})}
+    initScenes(steps[i]);
+  }
+  // 지금 보는 카드 표시
+  var ticking=false;
+  window.addEventListener('scroll',function(){if(ticking)return;ticking=true;requestAnimationFrame(function(){ticking=false;
+    var best=null;cards().forEach(function(c){var r=c.getBoundingClientRect();if(r.top<window.innerHeight*0.45)best=c});
+    if(!best)best=cards()[0];
+    side.querySelectorAll('a').forEach(function(a){a.classList.toggle('cur',best&&a.dataset.id===best.id)});
+    if(best)selCard.value=best.id;
+  })},{passive:true});
+
+  // ===== three.js 도식 =====
+  var SCENES={
+    flow:{stations:[
+      {shape:'desk',label:'원고 책상',sub:'newsnote · 내 원고(md)',color:0x1E5D57,cap:'① 원고 책상: 기사를 모으고 "정리" "글쓰기"로 내 원고(md)를 써요.'},
+      {shape:'shelf',label:'출판사 서고',sub:'깃허브 · 비공개 저장소',color:0x3F5D8A,cap:'② 출판사 서고: "올리기" 한 마디면 클로드가 새 원고를 서고에 입고해요.'},
+      {shape:'stand',label:'서점 진열대',sub:'버셀 · 내 블로그 주소',color:0x6B4E8C,cap:'③ 서점 진열대: 버셀이 서고를 지켜보다가 알아서 새 책을 맨 앞에 진열해요.'}
+    ],item:'새 원고'},
+    desk:{stations:[
+      {shape:'crate',label:'자료 상자',sub:'inbox · 기사 원본',color:0xB4523A,cap:'자료 상자(inbox): 웹 클리퍼로 스크랩한 기사가 원본 그대로 들어와요. 원본은 건드리지 않아요.'},
+      {shape:'binders',label:'분야별 자료철',sub:'sorted · 주제별 복사본',color:0x1E5D57,cap:'분야별 자료철(sorted): "정리" 한 마디면 주제별 자료철에 복사본이 꽂혀요.'},
+      {shape:'paper',label:'내 원고',sub:'posts · 내 글',color:0x3F5D8A,cap:'내 원고(posts): "글쓰기"로 자료가 내 말로 쓴 원고가 돼요.'},
+      {shape:'stand',label:'서점 진열대',sub:'블로그 · 공개',color:0x6B4E8C,cap:'서점 진열대(블로그): "올리기"로 내 원고만 손님(인터넷) 앞에 나가요. 자료 상자는 안 나가요.'}
+    ],item:'자료'},
+    keys:{stations:[
+      {shape:'person',label:'나',sub:'로그인 · 허락',color:0xB4523A,cap:'나(출판사 주인): 로그인과 "이 서가만 가져가도 돼" 출입증은 내가 직접 끊어요.'},
+      {shape:'helper',label:'클로드',sub:'만들기 · 올리기',color:0x1E5D57,cap:'클로드(직원): 서고 만들기, 원고 입고, 서점 연결 같은 책 나르기를 해요.'},
+      {shape:'shelf',label:'서고·서점',sub:'깃허브 · 버셀',color:0x3F5D8A,cap:'서고·서점: 내가 끊어 준 출입증만큼만 열려요. 그래서 Only select repositories!'}
+    ],item:'출입증'},
+    design:{stations:[
+      {shape:'monitor',label:'디자인 창',sub:'보면서 고치기',color:0x6B4E8C,cap:'디자인 창: 표지를 보며 말로 고치고, 연결한 폴더의 style.css를 바꿔요.'},
+      {shape:'folder',label:'newsnote',sub:'같은 폴더',color:0x1E5D57,cap:'같은 폴더: 디자인 창과 코워크 창이 newsnote를 함께 써요. 이게 연동이에요.'},
+      {shape:'monitor',label:'코워크 창',sub:'올리기',color:0x3F5D8A,cap:'코워크 창: 바뀐 style.css를 서고에 입고해요. 올리기는 코워크 창에서만!'},
+      {shape:'stand',label:'서점 진열대',sub:'표지만 바뀜',color:0xB4523A,cap:'서점 진열대: 버셀이 알아서 다시 진열해요. 원고는 그대로, 표지만 바뀌어요.'}
+    ],item:'표지'}
+  };
+  function textSprite(text,sub,color){
+    var c=document.createElement('canvas');c.width=512;c.height=sub?220:140;var g=c.getContext('2d');
+    g.textAlign='center';g.fillStyle=color||'#1E2329';g.font='700 76px Pretendard, "Malgun Gothic", sans-serif';g.fillText(text,256,90);
+    if(sub){g.fillStyle='#5D6570';g.font='500 40px Pretendard, "Malgun Gothic", sans-serif';g.fillText(sub,256,170)}
+    var t=new THREE.CanvasTexture(c);t.minFilter=THREE.LinearFilter;
+    var s=new THREE.Sprite(new THREE.SpriteMaterial({map:t,transparent:true,depthTest:false}));s.scale.set(2.4,2.4*c.height/512,1);return s;
+  }
+  function initScenes(sec){
+    sec.querySelectorAll('.scene').forEach(function(el){if(el.dataset.ready)return;el.dataset.ready='1';build(el,SCENES[el.dataset.scene])});
+  }
+  function build(el,cfg){
+    var canvas=document.createElement('canvas');el.appendChild(canvas);
+    var ctrl=document.createElement('div');ctrl.className='ctrl';el.appendChild(ctrl);
+    var gl=null;try{gl=window.THREE&&(canvas.getContext('webgl')||canvas.getContext('experimental-webgl'))}catch(e){}
+    if(!gl){canvas.remove();var f=document.createElement('div');f.className='fallback';f.textContent=cfg.stations.map(function(s){return s.label}).join('  ▶  ');el.insertBefore(f,ctrl);return}
+    var renderer=new THREE.WebGLRenderer({canvas:canvas,antialias:true});renderer.setClearColor(0xFAF6EE,1);
+    renderer.setPixelRatio(Math.min(2,window.devicePixelRatio||1));
+    var scene=new THREE.Scene();
+    var cam=new THREE.PerspectiveCamera(38,1,0.1,100);
+    scene.add(new THREE.HemisphereLight(0xffffff,0xdfe5ee,0.9));
+    var dl=new THREE.DirectionalLight(0xffffff,0.7);dl.position.set(3,6,5);scene.add(dl);
+    var floor=new THREE.Mesh(new THREE.CircleGeometry(40,64),new THREE.MeshLambertMaterial({color:0xEFE8DA}));floor.rotation.x=-Math.PI/2;floor.position.y=-0.01;scene.add(floor);
+    var n=cfg.stations.length,gap=n>3?2.6:3.2,x0=-(n-1)*gap/2,boxes=[],labels=[];
+    function L(c){var m=new THREE.MeshLambertMaterial({color:c});mats.push(m);return m}
+    function B(w,h,d,c,x,y,z,g){var m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),L(c));m.position.set(x,y,z);g.add(m);return m}
+    var mats;
+    var BOOKC=[0x1E5D57,0xB4523A,0x3F5D8A,0xC9A24A,0x6B4E8C,0x2F7A5B];
+    function shape(kind,col,g){
+      if(kind==='desk'){B(1.7,0.08,1.0,0xB08A5A,0,0.62,0,g);[-0.75,0.75].forEach(function(x){[-0.4,0.4].forEach(function(z){B(0.07,0.6,0.07,0x8C6B43,x,0.3,z,g)})});
+        for(var k=0;k<5;k++){var p=B(0.6,0.03,0.78,0xF4EFE4,-0.25+k*0.01,0.69+k*0.032,0.02*k,g);p.rotation.y=0.08*k}for(var r=0;r<4;r++)B(0.4,0.01,0.03,0x8A847A,-0.2,0.86,-0.22+r*0.13,g)
+        var pen=new THREE.Mesh(new THREE.CylinderGeometry(0.025,0.025,0.6,10),L(col));pen.rotation.z=Math.PI/2;pen.rotation.y=0.5;pen.position.set(0.45,0.7,0.15);g.add(pen)}
+      else if(kind==='shelf'){B(1.6,1.6,0.08,0x8C6B43,0,0.8,-0.36,g);[-0.78,0.78].forEach(function(x){B(0.06,1.6,0.75,0x9C7A50,x,0.8,0,g)});
+        [0.02,0.55,1.08].forEach(function(y,r){B(1.6,0.05,0.75,0x9C7A50,0,y+0.02,0,g);var x=-0.68;for(var k=0;k<7;k++){var h=0.34+((k*7+r*3)%4)*0.04,w=0.12+((k+r)%3)*0.03;B(w,h,0.5,BOOKC[(k+r)%6],x+w/2,y+0.05+h/2,0,g);x+=w+0.04;if(x>0.6)break}});
+        B(1.7,0.06,0.8,0x8C6B43,0,1.62,0,g)}
+      else if(kind==='stand'){B(1.7,0.1,0.9,0xEDE4D2,0,0.05,0,g);
+        for(var k=0;k<3;k++){var bk=new THREE.Group();B(0.42,0.6,0.07,BOOKC[[0,1,2][k]],0,0,0,bk);B(0.38,0.56,0.02,0xFFFFFF,0,0,-0.045,bk);bk.position.set(-0.5+k*0.5,0.45,0.05);bk.rotation.x=-0.25;g.add(bk)}
+        B(1.7,0.26,0.1,col,0,1.02,-0.4,g);B(1.2,0.08,0.02,0xFFFFFF,0,1.02,-0.34,g);B(0.05,0.9,0.05,0x9C7A50,-0.82,0.45,-0.4,g);B(0.05,0.9,0.05,0x9C7A50,0.82,0.45,-0.4,g)}
+      else if(kind==='crate'){B(1.3,0.06,0.9,0xC9A878,0,0.03,0,g);B(1.3,0.42,0.05,0xC9A878,0,0.24,0.43,g);B(1.3,0.42,0.05,0xC9A878,0,0.24,-0.43,g);B(0.05,0.42,0.9,0xC9A878,-0.63,0.24,0,g);B(0.05,0.42,0.9,0xC9A878,0.63,0.24,0,g);
+        for(var k=0;k<6;k++){var p=B(0.5,0.62,0.015,0xFFFFFF,-0.4+k*0.16,0.4,-0.2+(k%3)*0.15,g);p.rotation.z=(k%2?0.18:-0.15)}}
+      else if(kind==='binders'){B(1.5,0.05,0.8,0xEDE4D2,0,0.025,0,g);for(var k=0;k<4;k++){B(0.26,1.0,0.7,BOOKC[k],-0.5+k*0.33,0.55,0,g);B(0.2,0.12,0.02,0xFFFFFF,-0.5+k*0.33,0.75,0.36,g)}}
+      else if(kind==='paper'){var pg=new THREE.Group();for(var k=0;k<10;k++){var p=B(1.0,0.035,1.25,0xF4EFE4,0,0.04+k*0.038,0,pg);p.rotation.y=(k%2?0.05:-0.04)}
+        for(var r=0;r<6;r++)B(0.7,0.01,0.04,0x8A847A,0,0.43,-0.35+r*0.14,pg);B(0.5,0.012,0.07,col,0,0.43,-0.5,pg);pg.rotation.x=0.35;pg.position.y=0.25;g.add(pg);
+        var pen2=new THREE.Mesh(new THREE.CylinderGeometry(0.03,0.03,0.7,10),L(col));pen2.rotation.z=Math.PI/2;pen2.rotation.y=-0.6;pen2.position.set(0.45,0.6,0.35);g.add(pen2)}
+      else if(kind==='person'){var bd=new THREE.Mesh(new THREE.CylinderGeometry(0.3,0.42,0.95,20),L(col));bd.position.y=0.5;g.add(bd);var hd=new THREE.Mesh(new THREE.SphereGeometry(0.27,20,16),L(0xE8C9A8));hd.position.y=1.25;g.add(hd);
+        var card=B(0.32,0.22,0.03,0xFFFFFF,0.0,0.75,0.4,g)}
+      else if(kind==='helper'){var bd2=new THREE.Mesh(new THREE.SphereGeometry(0.48,24,18),L(col));bd2.position.y=0.7;g.add(bd2);B(0.5,0.1,0.02,0xFFFFFF,0,0.78,0.47,g);
+        var tr=new THREE.Mesh(new THREE.BoxGeometry(0.9,0.06,0.6),L(0xC9A878));tr.position.set(0,0.22,0.2);g.add(tr);for(var k=0;k<3;k++)B(0.3,0.08,0.4,BOOKC[k],-0.28+k*0.28,0.3,0.2,g)}
+      else if(kind==='monitor'){B(1.5,0.95,0.07,0x2B2A28,0,1.0,0,g);B(1.38,0.83,0.02,0xFFFDF8,0,1.0,0.045,g);B(0.9,0.12,0.02,col,0,1.27,0.06,g);[0,1].forEach(function(r){B(0.55,0.28,0.02,0xEDE4D2,-0.33+r*0.66,0.88,0.06,g)});
+        B(0.12,0.45,0.12,0x55524C,0,0.3,0,g);B(0.6,0.05,0.4,0x55524C,0,0.05,0,g)}
+      else if(kind==='folder'){B(1.4,0.9,0.06,0xD9B56A,0,0.55,-0.08,g);B(0.5,0.12,0.06,0xD9B56A,-0.45,1.05,-0.08,g);for(var k=0;k<3;k++){var p=B(1.2,0.75,0.015,0xFFFFFF,0,0.55+k*0.03,-0.03+k*0.02,g)}B(1.4,0.8,0.04,0xE6C77E,0,0.48,0.06,g);
+        B(0.9,0.12,0.02,col,0,0.62,0.09,g)}
+    }
+    cfg.stations.forEach(function(st,i){
+      var grp=new THREE.Group();grp.position.x=x0+i*gap;mats=[];
+      var obj=new THREE.Group();shape(st.shape||'desk',st.color,obj);grp.add(obj);
+      var lab=textSprite(st.label,st.sub);lab.position.set(0,2.4,0);lab.userData.base=lab.scale.clone();labels.push(lab);grp.add(lab);
+      var no=textSprite(String(i+1),null,'#ffffff');
+      var badge=new THREE.Mesh(new THREE.CircleGeometry(0.17,24),new THREE.MeshBasicMaterial({color:st.color}));badge.position.set(-0.7,1.85,0.2);grp.add(badge);no.scale.set(0.9,0.25,1);no.position.set(-0.7,1.85,0.25);grp.add(no);
+      scene.add(grp);boxes.push({grp:grp,obj:obj,mats:mats});
+      if(i<n-1){var a=new THREE.Mesh(new THREE.CylinderGeometry(0.025,0.025,gap-1.9,8),new THREE.MeshBasicMaterial({color:0xC2B8A6}));a.rotation.z=Math.PI/2;a.position.set(x0+i*gap+gap/2,0.5,0.6);scene.add(a);
+        var cone=new THREE.Mesh(new THREE.ConeGeometry(0.08,0.2,12),new THREE.MeshBasicMaterial({color:0xC2B8A6}));cone.rotation.z=-Math.PI/2;cone.position.set(x0+i*gap+gap-0.95,0.5,0.6);scene.add(cone)}
+    });
+    var item=new THREE.Group();
+    var cover=new THREE.Mesh(new THREE.BoxGeometry(0.46,0.09,0.6),new THREE.MeshLambertMaterial({color:0x1E5D57}));item.add(cover);
+    var pages=new THREE.Mesh(new THREE.BoxGeometry(0.42,0.1,0.56),new THREE.MeshLambertMaterial({color:0xFFFFFF}));pages.position.x=0.03;item.add(pages);
+    
+    scene.add(item);
+
+    var playing=!window.matchMedia('(prefers-reduced-motion: reduce)').matches, t=0, target=null, stage=0;
+    var cap=document.createElement('div');cap.className='cap';
+    var bp=document.createElement('button');bp.type='button';
+    function setBp(){bp.textContent=playing?'멈춤':'재생';bp.setAttribute('aria-pressed',playing?'true':'false')}
+    bp.onclick=function(){playing=!playing;target=null;setBp()};setBp();ctrl.appendChild(bp);
+    var sb=[];
+    cfg.stations.forEach(function(st,i){var b=document.createElement('button');b.type='button';b.textContent=(i+1)+' '+st.label;b.onclick=function(){playing=false;setBp();target=i};ctrl.appendChild(b);sb.push(b)});
+    var br=document.createElement('button');br.type='button';br.textContent='처음부터';br.onclick=function(){t=0;target=null;playing=true;setBp()};ctrl.appendChild(br);
+    ctrl.appendChild(cap);
+
+    function size(){var w=canvas.clientWidth||600,h=canvas.clientHeight||340;renderer.setSize(w,h,false);cam.aspect=w/h;cam.updateProjectionMatrix();
+      var span=(n-1)*gap+2.6;var tv=Math.tan(cam.fov*Math.PI/360);var dist=Math.max(span/(2*tv*cam.aspect)*1.15,3.6/(2*tv)*1.3,6);
+      cam.position.set(0,dist*0.38,dist);cam.lookAt(0,1.0,0);
+      var k=cam.aspect<1.4?(n>3?1.05:1.15):1;labels.forEach(function(l){l.scale.set(l.userData.base.x*k,l.userData.base.y*k,1);l.position.y=cam.aspect<1.4?2.85:2.4})}
+    size();window.addEventListener('resize',size);
+    var per=2.2,total=n*per,last=performance.now();
+    function frame(now){
+      requestAnimationFrame(frame);
+      if(!el.offsetParent)return;
+      var dt=Math.max(0,Math.min(0.05,(now-last)/1000));last=now;
+      if(target!==null){var goal=target*per+per*0.5;t+= (goal-t)*Math.min(1,dt*4)}
+      else if(playing){t=(t+dt)%total}
+      if(!(t>=0))t=0;var pos=t/per,i=Math.max(0,Math.min(n-1,Math.floor(pos))),f=pos-i;
+      var hop=f<0.55?0:(f-0.55)/0.45; hop=hop*hop*(3-2*hop);
+      var xa=x0+i*gap,xb=i<n-1?x0+(i+1)*gap:xa;
+      item.position.x=xa+(xb-xa)*(i<n-1?hop:0);
+      item.position.y=1.85+Math.sin(hop*Math.PI)*0.35+Math.sin(now/500)*0.03;
+      item.rotation.y=Math.sin(now/1400)*0.25;
+      var active=i<n-1&&hop>0.5?i+1:i;
+      if(active!==stage){stage=active}
+      boxes.forEach(function(b,j){var on=j===stage,k=b.obj.scale.x+((on?1.12:0.94)-b.obj.scale.x)*0.15;b.obj.scale.set(k,k,k);b.mats.forEach(function(m){m.emissive.setHex(on?0x2a2418:0x000000)})});
+      sb.forEach(function(b,j){b.classList.toggle('on',j===stage)});
+      cap.textContent=cfg.stations[stage].cap;
+      scene.rotation.y=Math.sin(now/6000)*0.08;
+      renderer.render(scene,cam);
+    }
+    requestAnimationFrame(frame);
+  }
+
+  var start=parseInt(store.get('d7-step')||'0',10);if(!(start>=0&&start<steps.length))start=0;
+  show(start,false);progress();
+})();
+</script>
+</body>
+</html>

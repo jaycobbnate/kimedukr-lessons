@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="paris">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>1회차 · 노을 카페, 나의 첫 8초</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<style>
+:root{
+  --bg:#faf9f7; --card:#fff; --ink:#1c1b22; --ink2:#6b6975; --line:#e9e7ee; --fill:#f3f1f7;
+  --accent:#f0623e; --accent-soft:#fff0ea; --lilac:#7b5cff; --lilac-soft:#f1edff;
+  --green:#1f8a4c; --green-soft:#e9f7ee; --blue:#2d6cdf; --blue-soft:#eaf1fd; --amber:#b7791f; --amber-soft:#fff6e5;
+  --fs:20px; --fs-prompt:19px; --fs-h:28px; --fs-hero:34px; --r:16px; --sh:0 1px 2px rgba(20,18,30,.05),0 6px 20px rgba(20,18,30,.06);
+}
+html[data-size="big"]{ --fs:24px; --fs-prompt:22px; --fs-h:32px; --fs-hero:40px; }
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;font-size:var(--fs);line-height:1.6;color:var(--ink);background:var(--bg);-webkit-font-smoothing:antialiased;letter-spacing:-.01em}
+button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
+button:focus-visible,summary:focus-visible{outline:3px solid var(--blue);outline-offset:2px;border-radius:10px}
+
+/* 상단 */
+.top{position:sticky;top:0;z-index:20;background:rgba(250,249,247,.94);backdrop-filter:blur(14px) saturate(160%);-webkit-backdrop-filter:blur(14px) saturate(160%);border-bottom:1px solid var(--line)}
+.top .row1{max-width:1100px;margin:0 auto;padding:12px 22px 6px;display:flex;align-items:center;gap:12px}
+.brand{display:flex;align-items:center;gap:12px;flex:1;min-width:0}
+.brand .dot{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#ffb36b,#f0623e 55%,#7b5cff);flex:none}
+.brand .t{font-weight:800;font-size:.9em;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.brand .t small{display:block;font-weight:500;color:var(--ink2);font-size:.72em}
+.ctl{display:flex;gap:6px}
+.ctl button{min-height:40px;padding:0 12px;border-radius:10px;font-weight:600;font-size:.78em;color:var(--ink2);background:var(--fill)}
+.ctl button[aria-pressed="true"]{background:var(--ink);color:#fff}
+.tabs{max-width:1100px;margin:0 auto;padding:4px 22px 10px;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:none;min-height:40px;padding:0 14px;border-radius:999px;font-weight:700;font-size:.8em;color:var(--ink2);background:transparent;display:flex;align-items:center;gap:8px;white-space:nowrap}
+.tab b{font-weight:800;font-variant-numeric:tabular-nums}
+.tab:hover{background:var(--fill)}
+.tab.on{background:var(--accent);color:#fff}
+.tab.done{color:var(--ink)}
+.tab.done b::after{content:" ✓";color:var(--green)}
+.tab.on.done b::after{color:#fff}
+
+/* 본문 */
+.wrap{max-width:1100px;margin:0 auto;padding:22px 22px 60px}
+.head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin:6px 0 18px;flex-wrap:wrap}
+.head .n{font-size:.8em;font-weight:700;color:var(--accent);letter-spacing:.04em}
+.head h2{font-size:var(--fs-h);font-weight:800;letter-spacing:-.02em;line-height:1.2}
+.head .arrows{display:flex;gap:6px}
+.head .arrows button{min-height:42px;padding:0 16px;border-radius:12px;background:var(--card);border:1px solid var(--line);font-weight:600;font-size:.8em;color:var(--ink)}
+.head .arrows button.next{background:var(--ink);color:#fff;border-color:var(--ink)}
+.head .arrows button:disabled{opacity:.35;cursor:default}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:16px;align-items:start}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:20px 22px;box-shadow:var(--sh)}
+.card.wide{grid-column:1/-1}
+.card h3{font-size:1em;font-weight:800;margin-bottom:10px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;letter-spacing:-.01em}
+.pill{font-size:.66em;font-weight:700;padding:3px 10px;border-radius:999px;line-height:1.5}
+.pill.common{color:var(--green);background:var(--green-soft)}
+.pill.ext{color:var(--blue);background:var(--blue-soft)}
+.card.ext{background:linear-gradient(180deg,#fff,var(--blue-soft));border-color:#d8e4fb}
+p{margin-bottom:10px}
+ul,ol{margin:0 0 10px 1.2em}
+li{margin:5px 0}
+strong{font-weight:700}
+.big{font-size:1.08em;font-weight:800}
+.sub,.muted{color:var(--ink2);font-size:.88em}
+.tip{color:var(--ink2);font-size:.88em;padding:10px 14px;background:var(--fill);border-radius:12px;margin:10px 0 0}
+.warn{padding:10px 14px;border-radius:12px;background:var(--amber-soft);color:var(--amber);margin:10px 0;font-weight:600;font-size:.92em}
+.setting{display:flex;gap:10px;align-items:flex-start;padding:10px 14px;background:var(--lilac-soft);color:#3f2fa3;border-radius:12px;margin:8px 0 12px;font-size:.9em;font-weight:500}
+.setting .lbl{font-weight:700;white-space:nowrap}
+.setting .lbl::before{content:"⚙";margin-right:6px}
+.formula{font-weight:800;padding:12px 16px;background:var(--ink);color:#fff;border-radius:12px;margin:8px 0 12px;line-height:1.5;word-break:keep-all}
+.formula i{font-style:normal;color:#ffb36b}
+.hero{font-size:var(--fs-hero);font-weight:900;line-height:1.15;letter-spacing:-.03em;margin:0 0 10px}
+.hero .ac{background:linear-gradient(90deg,#f0623e,#ff8c5a 50%,#7b5cff);-webkit-background-clip:text;background-clip:text;color:transparent}
+
+/* 프롬프트 */
+.prompt{background:var(--fill);border-radius:14px;margin:10px 0;overflow:hidden}
+.prompt .bar{display:flex;justify-content:space-between;align-items:center;padding:10px 16px 0}
+.prompt .name{font-size:.76em;font-weight:700;color:var(--ink2)}
+.prompt .copy{background:var(--accent);color:#fff;font-weight:700;font-size:.82em;padding:6px 16px;border-radius:999px;min-height:38px;box-shadow:0 2px 6px rgba(240,98,62,.3)}
+.prompt .copy.done{background:var(--green);box-shadow:none}
+.prompt pre{font-family:inherit;font-size:var(--fs-prompt);line-height:1.75;padding:8px 16px 16px;white-space:pre-wrap;word-break:keep-all;font-weight:500}
+.prompt.ext .copy{background:var(--blue)}
+
+.rows{margin:4px 0 6px}
+.row{display:flex;gap:14px;padding:9px 0;border-bottom:1px solid var(--line);align-items:baseline}
+.row:last-child{border-bottom:none}
+.row .k{font-weight:700;flex:0 0 7.5em;line-height:1.4}
+.row .v{flex:1;color:var(--ink2);line-height:1.45;font-size:.9em}
+.row.hi{background:var(--accent-soft);margin:0 -10px;padding:9px 10px;border-radius:10px;border:none}
+.row.hi .v{color:var(--ink)}
+.row.hi .k{color:var(--accent)}
+.check{list-style:none;margin:4px 0 6px}
+.check li{display:flex;gap:12px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--line)}
+.check li:last-child{border-bottom:none}
+.check input{width:26px;height:26px;flex:none;margin-top:6px;accent-color:var(--green);cursor:pointer}
+.check label{cursor:pointer;flex:1}
+.check input:checked+label{color:var(--ink2);text-decoration:line-through}
+.words{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 10px}
+.words span{background:var(--fill);border-radius:999px;padding:4px 14px;font-weight:600;font-size:.88em}
+.words span.hi{background:var(--accent);color:#fff}
+.result{display:flex;gap:14px;padding:10px 0;border-bottom:1px solid var(--line);align-items:baseline}
+.result:last-of-type{border-bottom:none}
+.result .num{width:30px;height:30px;border-radius:50%;background:var(--accent-soft);color:var(--accent);font-weight:800;display:flex;align-items:center;justify-content:center;flex:none;font-size:.8em;align-self:center}
+
+/* 테마 */
+.theme{display:flex;gap:10px;margin:10px 0 6px}
+.theme button{flex:1;text-align:left;padding:16px 18px;border-radius:14px;background:var(--fill);font-weight:800;line-height:1.3;border:2px solid transparent}
+.theme button small{display:block;font-weight:500;color:var(--ink2);font-size:.74em;margin-top:4px}
+.theme button[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+.paris,.jeju{display:none}
+html[data-theme="paris"] .paris{display:revert}
+html[data-theme="jeju"] .jeju{display:revert}
+pre.paris,pre.jeju{display:none}
+html[data-theme="paris"] pre.paris{display:block}
+html[data-theme="jeju"] pre.jeju{display:block}
+
+/* 프레이밍 */
+.frames{display:flex;gap:10px;overflow-x:auto;padding:4px 0 10px;scroll-snap-type:x mandatory}
+.frame{flex:0 0 132px;scroll-snap-align:start;text-align:center;background:var(--fill);border-radius:12px;padding:8px}
+.frame.hi{background:var(--accent-soft);box-shadow:inset 0 0 0 2px var(--accent)}
+.frame svg{width:100%;height:auto;display:block}
+.frame .fn{font-weight:800;font-size:.88em;margin-top:6px;line-height:1.3}
+.frame .fe{font-size:.64em;color:var(--ink2);line-height:1.3}
+
+/* 하단 이동 */
+.foot{display:flex;justify-content:space-between;gap:10px;margin-top:22px}
+.foot button{min-height:52px;padding:0 20px;border-radius:14px;background:var(--card);border:1px solid var(--line);font-weight:700;font-size:.9em;flex:1;text-align:left}
+.foot button.next{background:var(--accent);color:#fff;border-color:var(--accent);text-align:right}
+.foot button:disabled{opacity:.35;cursor:default}
+html[data-ext="off"] .card.ext{display:none}
+@media (max-width:700px){.wrap{padding:16px 14px 40px}.card{padding:16px 16px}.top .row1,.tabs{padding-left:14px;padding-right:14px}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="row1">
+    <div class="brand"><div class="dot"></div><div class="t">노을 카페, 나의 첫 8초<small>SNS·유튜브를 사로잡는 AI영상제작 · 1회차</small></div></div>
+    <div class="ctl">
+      <button id="btnExt" aria-pressed="true">확장 보기</button>
+      <button id="btnSize" aria-pressed="false">가+</button>
+    </div>
+  </div>
+  <nav class="tabs" id="tabs"></nav>
+</header>
+
+<div class="wrap">
+  <div class="head">
+    <div><div class="n" id="hn">STEP 0</div><h2 id="ht"></h2></div>
+    <div class="arrows"><button id="aPrev">← 이전</button><button id="aNext" class="next">다음 →</button></div>
+  </div>
+  <div class="grid" id="grid"></div>
+  <div class="foot"><button id="fPrev"></button><button id="fNext" class="next"></button></div>
+</div>
+
+<script>
+/* ---------- 프레이밍 실루엣 SVG ---------- */
+function sil(top,bot){ // top/bot: 0~1 of body shown, crop box
+  return `<svg viewBox="0 0 100 130" aria-hidden="true">
+  <rect x="2" y="2" width="96" height="126" fill="#fff" stroke="#e3e1ea" stroke-width="2"/>
+  <g transform="translate(0,${top})">
+   <circle cx="50" cy="26" r="13" fill="#7c7a86"/>
+   <path d="M30 44 q20 -10 40 0 l6 40 h-52z" fill="#7c7a86"/>
+   <rect x="34" y="82" width="12" height="42" fill="#7c7a86"/><rect x="54" y="82" width="12" height="42" fill="#7c7a86"/>
+  </g>
+  <rect x="2" y="${bot}" width="96" height="${126-bot+2}" fill="#fff"/>
+  </svg>`;
+}
+const FR=[
+ ['눈·입만','Extreme Close-Up (ECU)',-30,60],
+ ['얼굴','Close-Up (CU)',-10,70],
+ ['가슴 위','Medium Close-Up (MCU)',0,82],
+ ['허리 위','Medium Shot (MS)',0,98],
+ ['무릎 위','Medium Long Shot (MLS)',0,112],
+ ['전신','Full Shot (FS)',0,128],
+ ['멀리','Long Shot (LS)',0,128],
+];
+function frames(){
+  return '<div class="frames">'+FR.map((f,i)=>{
+    let svg = i==6 ? `<svg viewBox="0 0 100 130" aria-hidden="true"><rect x="2" y="2" width="96" height="126" fill="#fff" stroke="#e3e1ea" stroke-width="2"/><g transform="translate(35,60) scale(.3)"><circle cx="50" cy="26" r="13" fill="#7c7a86"/><path d="M30 44 q20 -10 40 0 l6 40 h-52z" fill="#7c7a86"/><rect x="34" y="82" width="12" height="42" fill="#7c7a86"/><rect x="54" y="82" width="12" height="42" fill="#7c7a86"/></g><path d="M2 100 q30 -20 60 0 t36 0" fill="none" stroke="#e3e1ea" stroke-width="2"/></svg>` : sil(f[2],f[3]);
+    return `<div class="frame ${i==3?'hi':''}">${svg}<div class="fn">${f[0]}${i==3?' ⭐':''}</div><div class="fe">${f[1]}</div></div>`;
+  }).join('')+'</div>';
+}
+function prompt(name,text,ext){
+  const id='p'+Math.random().toString(36).slice(2,7);
+  return `<div class="prompt ${ext?'ext':''}"><div class="bar"><span class="name">${name}</span><button class="copy" data-copy="${id}">복사</button></div><pre id="${id}">${text}</pre></div>`;
+}
+function promptTheme(name,paris,jeju,ext){
+  const a='p'+Math.random().toString(36).slice(2,7), b='p'+Math.random().toString(36).slice(2,7);
+  return `<div class="prompt ${ext?'ext':''}"><div class="bar"><span class="name">${name}</span><button class="copy" data-copy-theme="${a}|${b}">복사</button></div><pre class="paris" id="${a}">${paris}</pre><pre class="jeju" id="${b}">${jeju}</pre></div>`;
+}
+const setting=(t)=>`<div class="setting"><span class="lbl">플로우 설정 버튼</span>${t}</div>`;
+const check=(items)=>'<ul class="check">'+items.map((t,i)=>{const id='c'+Math.random().toString(36).slice(2,7);return `<li><input type="checkbox" id="${id}"><label for="${id}">${t}</label></li>`}).join('')+'</ul>';
+const rows=(arr)=>'<div class="rows">'+arr.map(r=>`<div class="row ${r[2]||''}"><div class="k">${r[0]}</div><div class="v">${r[1]}</div></div>`).join('')+'</div>';
+
+/* ---------- 카드 데이터 ---------- */
+const STEPS=[
+ [0,'오늘 손에 남는 것'],[1,'준비 점검'],[2,'원리 한 장'],[3,'비율은 버튼으로'],[4,'플로우 이미지 + 모델 3종'],
+ [5,'인물 프레이밍'],[6,'효과·분위기 단어장'],[7,'딥엘로 영어 프롬프트'],[8,'실습 A · 첫 이미지'],
+ [9,'영상 모델 · 오늘은 옴니'],[10,'실습 B · 이미지→영상'],[11,'실습 C · 내 취향 + 마무리']
+];
+const C=[]; // {step, sub, badge, body}
+const add=(step,sub,badge,body)=>C.push({step,sub,badge,body});
+
+add(0,'주제 고르기',null,`
+<div class="hero">노을 카페,<br><span class="ac">나의 첫 8초</span></div>
+<p class="big">오늘 장면을 하나 고르세요.</p>
+<div class="theme">
+ <button data-theme="paris" aria-pressed="false">🇫🇷 파리<small>센 강변 카페 · 와인 · 에펠탑</small></button>
+ <button data-theme="jeju" aria-pressed="false">🇰🇷 제주<small>애월 바닷가 카페 · 커피 · 노을</small></button>
+</div>
+<p class="sub">나중에 상단 목차에서 STEP 0으로 와서 바꿀 수 있어요.</p>`);
+add(0,'오늘의 결과물',null,`
+<div class="result"><div class="num">1</div><div><strong>가로 8초 영상</strong> 1개<br><span class="sub">유튜브용 16:9</span></div></div>
+<div class="result"><div class="num">2</div><div><strong>세로 8초 영상</strong> 1개<br><span class="sub">쇼츠용 9:16, 같은 장면</span></div></div>
+<div class="result"><div class="num">3</div><div><strong>내 취향 이미지 + 영상</strong> 1개</div></div>
+<div class="tip">🟢 공통은 실습 A → B → C 세 개만 따라오면 세 가지 모두 완성됩니다.<br>🔵 확장 카드는 상단 「확장」 버튼을 켜면 나타납니다.</div>`);
+
+add(1,'4개 모두 체크되면 통과','common',`
+${check(['구글 계정 로그인','gemini.google.com → 화면에 <strong>Pro</strong> 표시','labs.google/fx/tools/flow → 프로젝트 만들기 화면','플로우 오른쪽 위 <strong>크레딧 숫자</strong> 확인','(선택) deepl.com 탭 열어두기'])}
+<div class="tip">하나라도 안 되면 옆자리 짝꿍에게 먼저, 그래도 안 되면 손 들어주세요.</div>`);
+add(1,'12주 흐름 · 휴강',null,`
+${rows([['기본 1~4회','내 첫 영상 · 주인공 · 콘티 · 카메라'],['응용 5~8회','여행 · 하루 · 말하기 · 다큐'],['완성 9~12회','식품 · 화장품 · 내 가게 · 30초 영화']])}
+<div class="warn">휴강: 9/24·25(추석) · 10/5(개천절 대체) · 10/9(한글날)</div>`);
+
+add(2,'글이 그림이 되고, 그림이 영상이 된다',null,`
+<p class="big">프롬프트 = 설명서</p>
+<p>누가 / 어디서 / 무엇을 / 어떤 분위기<br>네 칸만 채우면 됩니다.</p>
+<p class="big">이미지 → 영상</p>
+<p>첫 장면(이미지) + 움직임 한 줄 = 8초 영상</p>
+<div class="warn">비율·길이·해상도는 프롬프트가 아니라 <strong>플로우 설정 버튼</strong>으로 정합니다.</div>
+<p class="sub">이론은 여기까지. 나머지는 손으로 익힙니다.</p>`);
+
+add(3,'프롬프트에 써도 안 바뀝니다',null,`
+<div class="warn">비율은 프롬프트 창 옆 <strong>비율 버튼</strong>에서 고릅니다.</div>
+<p class="big">영상 비율 — 2종만</p>
+${rows([['16:9 가로','유튜브, TV'],['9:16 세로','쇼츠, 릴스, 틱톡']])}
+<div class="tip">🟢 오늘은 이 둘만 씁니다.</div>`);
+add(3,'이미지 비율 5종 · 인물 넣을 때',null,`
+${rows([['16:9','썸네일, 영상 첫 장면 — 인물 한쪽, 배경 보이게'],['9:16','쇼츠 첫 장면 — 상반신 이상, 머리 위 여백'],['1:1','인스타 피드 — 얼굴 중앙, 어깨까지'],['4:3','프레젠테이션 — 허리 위, 안정적'],['3:4','포스터, 세로 사진 — 전신 또는 상반신']])}`);
+add(3,'확장 · 비율 비교','ext',`
+<p>같은 인물을 <strong>1:1</strong>과 <strong>3:4</strong>로 한 장씩 더 만들어 어디가 잘리는지 비교해 보세요.</p>
+<div class="tip">비율만 바꾸고 프롬프트는 그대로.</div>`);
+
+add(4,'한 화면에서 이미지 → 영상까지',null,`
+<p>플로우 안에서 이미지도 만들고, 그 이미지로 바로 영상도 만듭니다.</p>
+<p class="big">이미지 모델 3종</p>
+${rows([['나노바나나 2','평소용 · 빠르고 품질 좋음','hi'],['나노바나나 2 라이트','초안 여러 장 빠르게'],['나노바나나 프로','글자·세부 묘사가 정확해야 할 때']])}
+<div class="tip">🟢 오늘은 <strong>나노바나나 2</strong> 하나만. 모델 이름은 프롬프트 창 설정에서 확인.</div>`);
+add(4,'확장 · 모델 비교','ext',`
+<p>같은 프롬프트를 <strong>라이트 → 프로</strong>로 뽑아 어디가 다른지 한 가지만 찾아보세요.</p>`);
+
+add(5,'얼마나 가까이 담을까',null,`
+${frames()}
+<p class="sub">← 옆으로 넘겨 보세요. ⭐ 오늘 공통값</p>
+<div class="tip">🟢 프롬프트엔 한글로 써도 됩니다: "허리 위"</div>`);
+add(5,'앵글 3 · 구도 3',null,`
+<p class="big">앵글</p>
+<div class="words"><span class="hi">눈높이 Eye Level</span><span>올려다봄 Low Angle</span><span>내려다봄 High Angle</span></div>
+<p class="big">구도</p>
+<div class="words"><span class="hi">중앙 Center</span><span>3분할 Rule of Thirds</span><span>여백 Negative Space</span></div>
+<div class="tip">🟢 오늘 공통값: <strong>허리 위 + 눈높이 + 중앙</strong></div>`);
+add(5,'확장 · 프레이밍 실험','ext',`
+<p>같은 인물로 두 장 더:</p>
+<ul><li><strong>얼굴 + 올려다봄(로우앵글)</strong></li><li><strong>멀리 + 내려다봄(하이앵글)</strong></li></ul>`);
+
+add(6,'프롬프트 마지막 칸에 넣는 말',null,`
+<p class="big">빛</p>
+<div class="words"><span>자연광</span><span class="hi">노을빛</span><span>역광</span><span>네온</span><span>촛불</span></div>
+<p class="big">분위기</p>
+<div class="words"><span>평화로운</span><span class="hi">낭만적인</span><span>설레는</span><span>쓸쓸한</span><span>신비로운</span><span>활기찬</span></div>
+<div class="tip">🟢 공통값: 빛 1개 + 분위기 1개</div>`);
+add(6,'확장 · 색감 · 렌즈 효과','ext',`
+<p class="big">색감</p>
+<div class="words"><span>따뜻한</span><span>차가운</span><span>파스텔</span><span>흑백</span><span>필름 느낌</span></div>
+<p class="big">렌즈 효과</p>
+<div class="words"><span>배경 흐림</span><span>렌즈 플레어</span><span>안개</span><span>빗방울</span></div>
+<div class="tip">빛 + 분위기 + 렌즈 효과, 3개 조합해 보세요.</div>`);
+
+add(7,'방법 A · 웹 (설치 없음)','common',`
+<ol>
+<li>새 탭에서 <strong>deepl.com</strong></li>
+<li>왼쪽 <strong>한국어</strong> / 오른쪽 <strong>영어(미국)</strong></li>
+<li>한글 프롬프트 복사 → 왼쪽 칸 붙여넣기</li>
+<li>오른쪽 결과 아래 <strong>복사 버튼</strong> → 플로우에 붙여넣기</li>
+</ol>
+<div class="tip">한글 프롬프트도 잘 됩니다. 오늘은 탭만 열어두셔도 돼요.</div>`);
+add(7,'방법 B · 앱 단축키 (제자리 교체)','ext',`
+<p class="sub">설치: deepl.com/ko/app (윈도우 스토어 / 맥 다운로드)</p>
+<ol>
+<li>플로우 창에 <strong>한글로 직접</strong> 쓰기</li>
+<li>쓴 문장 <strong>드래그 선택</strong></li>
+<li><strong>Ctrl + C + C</strong> (C 연타) → 번역 창</li>
+<li><strong>Ctrl + R</strong> → 그 자리에서 영어로 교체</li>
+</ol>
+<div class="tip">단축키는 앱 설정 → 단축키에서 확인·변경.</div>`);
+add(7,'실습 · 3분','common',`
+<p><strong>🟢 방법 A</strong> 카드 ①을 deepl.com에서 번역 → 플로우에 붙여넣기 → 이미지 1장</p>
+<p><strong>🔵 방법 B</strong> 아래 한글을 플로우에 직접 치고 → 드래그 → Ctrl+C+C → Ctrl+R</p>
+${prompt('연습용 한글 프롬프트','허리 위, 눈높이. 노을 지는 바닷가 카페에서 잔을 들고 웃는 여성. 낭만적인 분위기.')}
+<div class="tip">한글판·영어판 결과를 나란히 놓고 다른 점 하나만 찾기.</div>`);
+add(7,'번역 예시 · 그대로 써도 됨',null,`
+${promptTheme('카드 ① 영어판',
+`Medium shot, eye level, centered composition.
+A woman smiling and holding a glass of wine at a café terrace on the banks of the Seine in Paris.
+The Eiffel Tower is small in the background.
+Golden hour light, romantic mood. Photorealistic.`,
+`Medium shot, eye level, centered composition.
+A woman smiling and holding a cup of coffee at a seaside café terrace in Aewol, Jeju Island.
+The sunset sea and a palm tree are visible behind her.
+Golden hour light, romantic mood. Photorealistic.`)}
+<div class="tip">마지막 "Photorealistic"은 그대로 두세요.</div>`);
+
+add(8,'프롬프트 공식',null,`
+<div class="formula"><i>프레이밍</i> + <i>누가·어디서·무엇을</i> + <i>빛</i> + <i>분위기</i></div>
+<p class="sub">비율은 설정 버튼. 프롬프트에 안 씁니다.</p>
+${setting('이미지 만들기 → 비율 <strong>16:9</strong> → 모델 <strong>나노바나나 2</strong>')}`);
+add(8,'카드 ① · 복사해서 그대로','common',`
+${promptTheme('카드 ① 첫 이미지',
+`허리 위, 눈높이, 중앙 구도.
+파리 센 강변 카페 테라스에 앉아 와인 잔을 들고 미소 짓는 여성.
+뒤로 에펠탑이 작게 보인다.
+노을빛, 낭만적인 분위기. 사진처럼 사실적으로.`,
+`허리 위, 눈높이, 중앙 구도.
+제주 애월 바닷가 카페 테라스에 앉아 커피잔을 들고 미소 짓는 여성.
+뒤로 노을 지는 바다와 야자수가 보인다.
+노을빛, 낭만적인 분위기. 사진처럼 사실적으로.`)}
+${check(['플로우 → 새 프로젝트 → 이미지 만들기','비율 16:9 → 카드 ① 붙여넣기 → 생성','마음에 드는 1장 → <strong>에셋(재료)으로 저장</strong>'])}
+<div class="warn">저장 안 하면 다음 단계에서 못 씁니다.</div>`);
+add(8,'빈칸 버전 · 내 말로','common',`
+${prompt('카드 ① 빈칸',
+`[허리 위], [눈높이], [중앙 구도].
+[______]에 앉아 [______]를 들고 [______] 하는 [______].
+[______]빛, [______] 분위기. 사진처럼 사실적으로.`)}
+<div class="tip">빈칸만 바꾸면 내 장면이 됩니다.</div>`);
+add(8,'확장 카드 A · 세로 클로즈업','ext',`
+${setting('비율 <strong>9:16</strong>')}
+${prompt('확장 카드 A',
+`얼굴 클로즈업, 아래에서 올려다보는 로우앵글.
+같은 여성, 잔을 살짝 기울이는 순간.
+역광, 배경 흐림, 설레는 분위기.`,true)}
+<div class="tip">이 이미지는 실습 B의 세로 영상 첫 프레임으로 씁니다.</div>`);
+
+add(9,'옴니 플래시 1.1 한 장 요약',null,`
+<p class="big">"어떤 입력이든 → 영상"</p>
+<ul>
+<li>글·이미지·소리·영상을 <strong>한꺼번에</strong> 넣어 영상 생성</li>
+<li><strong>말로 수정</strong>: "배경만 저녁으로" → 그 부분만 바뀜</li>
+<li><strong>소리 동시 생성</strong>: 대사·효과음이 같이 나옴</li>
+<li>최대 10초 · 360p 미리보기 · 시작·끝 프레임</li>
+</ul>`);
+add(9,'오늘 공식 · 크레딧 아끼기','common',`
+<div class="formula">옴니 플래시 1.1 + <i>360p 고정</i></div>
+<p class="big">오늘은 720p 안 갑니다.</p>
+<ul>
+<li>한 달 1,000 크레딧을 12주 나눠 씁니다</li>
+<li>360p는 720p의 <strong>절반</strong> 크레딧</li>
+<li>마음에 드는 것만 나중에 <strong>0크레딧 업스케일</strong></li>
+<li>출력 개수 <strong>1개</strong>. 실패 생성은 과금 안 됨</li>
+</ul>
+<div class="tip">크레딧 수치는 프롬프트 창 설정에서 확인.</div>`);
+add(9,'확장 · 영상 모델 4종','ext',`
+${rows([['베오 3.1 라이트','4·6·8초 · 첫·끝 프레임 · 연장 가능 · 크레딧 최소'],['베오 3.1 패스트','4·6·8초 · 첫·끝 프레임 · 연장 X'],['베오 3.1 퀄리티','4·6·8초 · 첫·끝 프레임 · 크레딧 최대'],['옴니 플래시 1.1','4~10초 · 말로 수정 · 360p 미리보기','hi']])}
+<div class="tip">미션: 실습 B와 같은 프롬프트를 베오 패스트로 1개 뽑아 옴니와 비교.</div>`);
+
+add(10,'동작 프롬프트 공식',null,`
+<div class="formula"><i>주체</i> + <i>동작 1개</i> + <i>카메라 1개</i> + <i>속도·분위기</i></div>
+<p class="big">카메라 움직임 — 하나만</p>
+<div class="words"><span>고정 Static</span><span class="hi">천천히 다가가기 Push-in</span><span>천천히 멀어지기 Pull-out</span><span>좌우 훑기 Pan</span><span>위아래 훑기 Tilt</span></div>`);
+add(10,'카드 ② · 가로 8초','common',`
+${setting('영상 → 프레임으로 영상(첫 프레임) → 비율 <strong>16:9</strong> → 길이 <strong>8초</strong> → 모델 <strong>옴니 플래시 1.1</strong> → 해상도 <strong>360p</strong>')}
+${prompt('카드 ② 가로',
+`여성이 잔을 들어 한 모금 마시고 카메라 쪽을 보며 미소 짓는다.
+카메라는 천천히 다가간다. 느리고 낭만적으로.`)}
+${check(['실습 A에서 저장한 이미지를 첫 프레임에 넣기','카드 ② 붙여넣기 → 생성 (360p)','다운로드 (오늘은 360p 그대로)'])}`);
+add(10,'카드 ③ · 세로 8초','common',`
+${setting('비율만 <strong>9:16</strong>으로 바꾸기')}
+${prompt('카드 ③ 세로',
+`여성이 잔을 들어 한 모금 마시고 카메라 쪽을 보며 미소 짓는다.
+카메라는 고정. 느리고 낭만적으로.`)}
+<div class="tip">첫 프레임은 9:16 이미지가 있으면 그것, 없으면 텍스트만으로 생성.</div>`);
+add(10,'확장 B-1 · 시작·끝 프레임','ext',`
+<p>시작: 실습 A 이미지(허리 위)<br>끝: 확장 카드 A 이미지(얼굴)</p>
+${prompt('확장 B-1','여성이 잔을 들어 올리며 표정이 점점 밝아진다. 카메라는 천천히 다가간다.',true)}
+<p class="sub">시작·끝 프레임은 웹 플로우에서만 됩니다.</p>`);
+add(10,'확장 B-2 · 말로 수정','ext',`
+<p>생성된 영상 선택 → 편집 →</p>
+${promptTheme('확장 B-2','배경을 밤의 에펠탑 조명으로 바꿔줘. 인물과 동작은 그대로.','배경을 별이 뜬 밤바다로 바꿔줘. 인물과 동작은 그대로.',true)}
+<div class="tip">재생성이 아니라 편집입니다. 나머지는 그대로.</div>`);
+add(10,'확장 B-3 · 대사 넣기','ext',`
+${prompt('확장 B-3','여성이 카메라를 보며 "여기 노을 정말 예쁘죠"라고 한국어로 말한다. 카메라 고정.',true)}
+<div class="tip">대사는 따옴표 안에.</div>`);
+
+add(11,'취향 4갈래 · 하나 고르기','common',`
+<p class="sub">비율은 설정 버튼</p>
+${prompt('풍경 · 16:9','멀리(롱샷). 산토리니 하얀 집들 위로 지는 노을과 에게해. 자연광, 낭만적인 분위기.')}
+${prompt('반려동물 · 16:9','허리 위 정도. 가을 한강공원 벤치 옆에 앉은 골든리트리버. 따뜻한 색감, 평화로운.')}`);
+add(11,'취향 4갈래 · 계속','common',`
+${prompt('음식 · 9:16','얼굴만큼 가까이. 나무 보드 위 와인과 치즈, 무화과 플래터. 촛불빛, 배경 흐림, 설레는.')}
+${prompt('인물 · 9:16','가슴 위. 리넨 셔츠를 입고 요트 갑판에서 바다를 보며 웃는 60대 남성. 노을빛, 활기찬.')}`);
+add(11,'제미나이에게 다듬기 시키기','common',`
+${prompt('제미나이용',
+`아래 프롬프트를 AI 이미지 생성용으로 더 구체적으로 다듬어줘.
+프레이밍, 빛, 분위기는 유지하고 세부 묘사만 보강해줘. 비율은 쓰지 마.
+(내 프롬프트 붙여넣기)`)}`);
+add(11,'동작 한 줄 붙여 영상까지','common',`
+${rows([['풍경','노을이 천천히 짙어지고 카메라는 바다 쪽으로 다가간다.'],['반려동물','강아지가 고개를 돌려 카메라를 보고 꼬리를 흔든다. 카메라 고정.'],['음식','와인이 잔에 천천히 따라진다. 카메라 천천히 다가가기.'],['인물','남성이 바람에 머리카락이 날리며 손을 흔든다. 카메라 고정.']])}
+${setting('옴니 플래시 1.1 · <strong>360p</strong> · 8초')}`);
+add(11,'저장',null,`
+${check(['다운로드','구글 드라이브 「AI영상제작」 폴더','파일명: 1회차_가로 / 1회차_세로 / 1회차_취향','플로우 크레딧 숫자 다시 확인'])}`);
+add(11,'막힐 때',null,`
+${rows([['크레딧 부족','360p인지, 출력 1개인지 확인'],['생성 거부','실제 인물 이름·브랜드·폭력 표현 빼기'],['얼굴이 이상함','"허리 위"로 넓혀 재생성. 2회차에서 해결법'],['소리 안 남','옴니 모델인지 확인. 대사는 따옴표'],['버튼이 없음','모델을 옴니 1.1로 바꾸면 나타남'],['비율 안 바뀜','프롬프트 말고 비율 버튼']])}`);
+add(11,'오늘 배운 것 3줄',null,`
+<div class="result"><div class="num">1</div><div>프롬프트는 설명서 — 프레이밍·누가어디서·빛·분위기 (비율은 버튼)</div></div>
+<div class="result"><div class="num">2</div><div>이미지 먼저, 그 이미지로 영상 — 동작 1개 + 카메라 1개</div></div>
+<div class="result"><div class="num">3</div><div>오늘은 360p로 크레딧 아끼기 — 마음에 드는 것만 나중에 720p</div></div>
+<p class="sub" style="margin-top:14px">플랫폼(구글 플로우·제미나이)의 기능·요금·정책은 예고 없이 변경될 수 있으며, 변경 시 대체 자료를 제공합니다.</p>
+<p class="sub">다음 시간: [기본] 내 영상의 주인공 만들기</p>`);
+
+
+
+/* ---------- 렌더: STEP 탭 + 카드 그리드 ---------- */
+const html=document.documentElement;
+let cur=0; const visited=new Set([0]);
+const tabs=document.getElementById('tabs'), grid=document.getElementById('grid');
+tabs.innerHTML=STEPS.map(([n,t])=>`<button class="tab" data-n="${n}"><b>${n}</b>${t}</button>`).join('');
+tabs.onclick=e=>{const b=e.target.closest('.tab');if(b)show(+b.dataset.n);};
+const WIDE=/프롬프트|카드|번역|취향|동작 한 줄|프레이밍|실습|막힐 때|배운 것|결과물|비율 5종/;
+function show(n){
+  cur=n; visited.add(n);
+  const blocks=C.filter(c=>c.step===n);
+  document.getElementById('hn').textContent='STEP '+n;
+  document.getElementById('ht').textContent=STEPS[n][1];
+  grid.innerHTML=blocks.map(c=>{
+    const wide=WIDE.test(c.sub)||c.body.includes('class="prompt')||c.body.includes('class="frames')||c.body.includes('class="rows');
+    const pill=c.badge==='common'?'<span class="pill common">공통</span>':c.badge==='ext'?'<span class="pill ext">확장</span>':'';
+    return `<div class="card ${c.badge==='ext'?'ext':''} ${wide?'wide':''}"><h3>${c.sub}${pill}</h3>${c.body}</div>`;
+  }).join('');
+  // 첫 STEP 안내 문구 정리
+  grid.querySelectorAll('.tip').forEach(t=>{ if(t.textContent.includes('상단 「확장」')) t.innerHTML='공통은 실습 A → B → C만 따라오면 세 가지 모두 완성됩니다.<br>확장 항목은 파란 카드. 상단 「확장 보기」로 숨길 수 있어요.'; });
+  tabs.querySelectorAll('.tab').forEach(b=>{b.classList.toggle('on',+b.dataset.n===n);b.classList.toggle('done',visited.has(+b.dataset.n)&&+b.dataset.n!==n);});
+  const on=tabs.querySelector('.tab.on'); if(on&&on.scrollIntoView) on.scrollIntoView({inline:'center',block:'nearest',behavior:'smooth'});
+  const p=document.getElementById('fPrev'),q=document.getElementById('fNext');
+  p.disabled=n===0; q.disabled=n===STEPS.length-1;
+  p.textContent=n>0?`← ${n-1}. ${STEPS[n-1][1]}`:'← 처음';
+  q.textContent=n<STEPS.length-1?`${n+1}. ${STEPS[n+1][1]} →`:'수고하셨습니다 🎉';
+  document.getElementById('aPrev').disabled=n===0; document.getElementById('aNext').disabled=n===STEPS.length-1;
+  syncTheme(); try{window.scrollTo({top:0});}catch(e){}
+}
+const go=d=>show(Math.min(Math.max(cur+d,0),STEPS.length-1));
+document.getElementById('fPrev').onclick=()=>go(-1); document.getElementById('fNext').onclick=()=>go(1);
+document.getElementById('aPrev').onclick=()=>go(-1); document.getElementById('aNext').onclick=()=>go(1);
+document.addEventListener('keydown',e=>{if(['INPUT','TEXTAREA'].includes(e.target.tagName))return;if(e.key==='ArrowRight')go(1);if(e.key==='ArrowLeft')go(-1);});
+document.getElementById('btnExt').onclick=function(){const off=html.dataset.ext!=='off';html.dataset.ext=off?'off':'';this.setAttribute('aria-pressed',!off);this.textContent=off?'확장 숨김':'확장 보기';}
+document.getElementById('btnSize').onclick=function(){const on=html.dataset.size!=='big';html.dataset.size=on?'big':'';this.setAttribute('aria-pressed',on);}
+
+function syncTheme(){document.querySelectorAll('.theme button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.theme===html.dataset.theme));}
+document.addEventListener('click',e=>{
+  const t=e.target.closest('.theme button'); if(t){html.dataset.theme=t.dataset.theme;syncTheme();return;}
+  const cp=e.target.closest('.copy'); if(cp){
+    let id=cp.dataset.copy;
+    if(cp.dataset.copyTheme){const [a,b]=cp.dataset.copyTheme.split('|');id=html.dataset.theme==='jeju'?b:a;}
+    const txt=document.getElementById(id).textContent;
+    const done=()=>{cp.textContent='복사됨 ✓';cp.classList.add('done');setTimeout(()=>{cp.textContent='복사';cp.classList.remove('done')},1800)};
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(done).catch(()=>fb(txt,done));}else fb(txt,done);
+  }
+});
+function fb(txt,done){const ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');done()}catch(e){}document.body.removeChild(ta);}
+show(0);
+</script>
+</body>
+</html>

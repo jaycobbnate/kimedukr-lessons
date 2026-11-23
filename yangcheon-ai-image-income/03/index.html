@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>미드저니 3차시 · Attach to Prompt와 GPT 제작 도우미</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --fs:20px;
+  --bg:#FCFCFA; --paper:#FFFFFF; --ink:#2A2826; --sub:#68645F; --line:#E5E2DC; --line2:#EFEDE8;
+  --accent:#A44E3C; --accent-soft:#F7ECE8;
+  --set:#EDF2F6; --set-line:#C9D7E2;
+  --warn:#F6EEF3; --warn-line:#E0CBD7;
+  --ext:#EEF3EC; --ext-line:#CADBC5;
+  --ok:#4F7A55; --no:#A44E3C;
+}
+*{box-sizing:border-box}
+html{font-size:var(--fs)}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;line-height:1.7;word-break:keep-all}
+h1,h2,h3,h4{font-family:"Gowun Batang","Nanum Myeongjo",serif;line-height:1.35;margin:0}
+a{color:#2F5E8A}
+button,select{font:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+code{font-family:"Pretendard",monospace;background:#F3F1EC;border-radius:5px;padding:1px 6px;font-size:.88em}
+
+/* 상단 (sticky) */
+.top{position:sticky;top:0;z-index:20;background:#FCFCFA;border-bottom:1px solid var(--line)}
+.top-row{display:flex;align-items:center;gap:16px;max-width:1280px;margin:0 auto;padding:12px 24px 6px}
+.top-title{font-family:"Gowun Batang",serif;font-weight:700;font-size:1.05rem;flex:1}
+.top-title small{display:block;font-family:"Pretendard",sans-serif;font-weight:400;font-size:.7rem;color:var(--sub)}
+.zoom{display:flex;gap:6px;align-items:center}
+.zoom span{font-size:.7rem;color:var(--sub);margin-right:2px}
+.zoom button{border:1px solid var(--line);background:var(--paper);border-radius:8px;padding:2px 12px;font-size:.8rem}
+.tabs{display:flex;gap:4px;overflow-x:auto;max-width:1280px;margin:0 auto;padding:4px 24px 0;scrollbar-width:thin}
+.tab{flex:0 0 auto;border:0;background:none;padding:8px 14px 10px;font-size:.8rem;color:var(--sub);border-bottom:3px solid transparent;white-space:nowrap}
+.tab b{display:block;font-size:.62rem;font-weight:600;letter-spacing:.02em;color:#9A958F}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent);font-weight:600}
+.tab[aria-selected="true"] b{color:var(--accent)}
+
+/* 본문 + 오른쪽 sticky 카드 메뉴 */
+.wrap{max-width:1280px;margin:0 auto;padding:28px 24px 40px;display:grid;grid-template-columns:minmax(0,1fr) 240px;gap:32px;align-items:start}
+.side{position:sticky;top:132px;border-left:1px solid var(--line);padding:4px 0 4px 18px;max-height:calc(100vh - 220px);overflow:auto}
+.side p{margin:0 0 8px;font-size:.68rem;color:var(--sub)}
+.side a{display:block;color:var(--sub);text-decoration:none;font-size:.74rem;padding:6px 0 6px 10px;border-left:2px solid transparent;margin-left:-20px;line-height:1.45;cursor:pointer}
+.side a.on{color:var(--accent);border-left-color:var(--accent);font-weight:600}
+.step{display:none}
+.step.on{display:block}
+
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:22px 24px}
+.card.wide{grid-column:1 / -1}
+.card h3{font-size:1.08rem;margin-bottom:10px}
+.card p{margin:0 0 10px}
+.card p:last-child{margin-bottom:0}
+.card ul,.card ol{margin:4px 0 10px;padding-left:1.3em}
+.card li{margin:4px 0}
+.note{font-size:.8rem;color:var(--sub);margin-top:12px!important}
+
+/* 칩 */
+.chip{display:inline-block;font-family:"Pretendard",sans-serif;font-size:.62rem;font-weight:700;border-radius:99px;padding:2px 10px;margin-right:8px;vertical-align:3px}
+.c-read{background:#ECEAE5;color:var(--sub)}
+.c-all{background:var(--accent-soft);color:var(--accent)}
+.c-more{background:#EEF3EC;color:#46684A}
+.c-chk{background:#EDF2F6;color:#3D5A70}
+
+/* 박스 */
+.box{border-radius:10px;padding:14px 18px;border:1px solid;margin-top:12px}
+.box h4{font-family:"Pretendard",sans-serif;font-size:.84rem;font-weight:700;margin:0 0 4px}
+.box p,.box li{font-size:.86rem}
+.box p{margin:0 0 6px}
+.box p:last-child{margin:0}
+.box ul,.box ol{margin:2px 0 0;padding-left:1.2em}
+.box.set{background:var(--set);border-color:var(--set-line)}.box.set h4{color:#3D5A70}
+.box.warn{background:var(--warn);border-color:var(--warn-line)}.box.warn h4{color:#7D4566}
+.box.ext{background:var(--ext);border-color:var(--ext-line)}.box.ext h4{color:#46684A}
+.key{background:var(--accent-soft);border:1px solid #E8CFC6;border-left:5px solid var(--accent);border-radius:10px;padding:16px 20px;font-size:1.02rem}
+.key strong{color:var(--accent)}
+
+/* 프롬프트 */
+.prompt{position:relative;background:#F7F6F3;border:1px solid var(--line);border-radius:10px;padding:42px 18px 16px;font-size:.8rem;line-height:1.65;white-space:pre-wrap;font-family:"Pretendard",sans-serif;margin:6px 0 4px}
+.prompt .copy{position:absolute;top:10px;right:10px;border:1px solid var(--line);background:var(--paper);border-radius:8px;font-size:.66rem;padding:3px 10px}
+.prompt .copy.done{color:var(--ok);border-color:var(--ok)}
+.plabel{font-size:.72rem;color:var(--sub);margin:14px 0 4px!important;font-weight:700}
+.plabel b{color:var(--accent)}
+
+/* 표 */
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table.cmp{width:100%;border-collapse:collapse;font-size:.8rem}
+table.cmp th,table.cmp td{border-bottom:1px solid var(--line2);padding:9px 8px;text-align:left;vertical-align:top}
+table.cmp th{font-weight:600;color:var(--sub);font-size:.72rem;background:#FAF9F6}
+table.cmp td b{color:var(--accent)}
+
+/* 시작 화면 */
+.hero{padding:22px 0 30px;margin-bottom:24px;border-bottom:1px solid var(--line)}
+.hero-kicker{margin:0 0 12px;font-size:.78rem;color:var(--accent);font-weight:700}
+.hero-line{font-size:2rem;line-height:1.45;font-weight:700}
+.hero-line em{font-style:normal;color:var(--accent);border-bottom:3px solid #E8CFC6}
+.hero-sub{margin:16px 0 0;font-size:1.02rem;color:var(--sub);max-width:46em}
+.band{display:flex;gap:18px;align-items:center;background:var(--accent-soft)!important;border-color:#E8CFC6!important}
+.band-no{flex:0 0 auto;background:var(--accent);color:#fff;border-radius:10px;padding:8px 14px;font-weight:700;font-size:.9rem}
+.band h3{margin:0 0 4px!important;font-size:1.2rem!important}
+.band p{margin:0!important;color:var(--sub);font-size:.9rem}
+
+/* 흐름 도식 */
+.csflow{display:flex;align-items:stretch;gap:0;flex-wrap:nowrap}
+.csflow div{flex:1;border:1px solid var(--line);border-radius:12px;padding:12px 8px;text-align:center;background:#fff;font-size:.8rem;font-weight:600;line-height:1.4}
+.csflow div b{display:block;font-family:"Gowun Batang",serif;color:#9A958F;font-size:1.05rem}
+.csflow div small{display:block;font-weight:400;font-size:.66rem;color:var(--sub);margin-top:2px}
+.csflow div.hot{border:2px solid var(--accent);background:var(--accent-soft)}.csflow div.hot b{color:var(--accent)}
+.csflow div.done{background:#FAF9F6}
+.csflow span{flex:0 0 18px;position:relative}.csflow span:after{content:"";position:absolute;left:3px;right:3px;top:50%;height:2px;background:#C9C5BF}
+
+/* 블록 도식 */
+.blocks{display:grid;grid-template-columns:repeat(var(--n,4),1fr);gap:8px}
+.blocks span{border-radius:10px;padding:12px 8px;text-align:center;font-weight:700;font-size:.86rem}
+.blocks small{display:block;font-weight:400;font-size:.66rem;color:var(--sub)}
+.b1{background:#F7ECE8}.b2{background:#EDF2F6}.b3{background:#EEF3EC}.b4{background:#F6EEF3}.b5{background:#F3F0E8}
+
+/* 비교 두 칸 */
+.split{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.split > div{border-radius:10px;padding:14px 16px;border:1px solid var(--line)}
+.split .yes{background:#F3F7F2}
+.split .nope{background:#FAF2F0}
+.split h4{margin:0 0 6px;font-size:.88rem}
+.split p,.split li{font-size:.84rem}
+.split ul{margin:0;padding-left:1.1em}
+
+/* 단계 목록 */
+ol.steps{margin:0;padding-left:1.4em}
+ol.steps li{margin:7px 0}
+ol.steps li b{color:var(--ink)}
+.path{display:inline-block;background:#F3F1EC;border-radius:6px;padding:0 8px;font-size:.86em;font-weight:600}
+
+/* 막힘 사전 */
+.trouble{border-bottom:1px solid var(--line2);padding:12px 0}
+.trouble:last-child{border:0}
+.trouble h4{font-family:"Pretendard",sans-serif;font-size:.9rem;margin-bottom:6px}
+.trouble dl{display:grid;grid-template-columns:64px 1fr;gap:4px 10px;margin:0;font-size:.84rem}
+.trouble dt{font-weight:700;color:var(--sub);font-size:.74rem;padding-top:2px}
+.trouble dd{margin:0}
+
+/* 퀴즈 */
+.q{border-bottom:1px solid var(--line2);padding:12px 0}.q p{margin:0 0 8px!important}
+.qops{display:flex;flex-wrap:wrap;gap:8px}
+.qo{border:1px solid var(--line);background:#fff;border-radius:99px;padding:6px 14px;font-size:.82rem}
+.qo.right{background:#E2EDE2;border-color:#9EBE9F;color:#2F5A35}.qo.wrong{background:#F3E3DF;border-color:#E0B8AE;color:var(--no)}
+.qex{display:none;font-size:.8rem;color:var(--sub);margin-top:8px!important}.q.done .qex{display:block}
+
+/* 체크리스트 */
+ul.chk{list-style:none;margin:0;padding:0}ul.chk li{padding:6px 0;border-bottom:1px solid var(--line2);font-size:.88rem}ul.chk li:last-child{border:0}
+ul.chk input{width:18px;height:18px;vertical-align:-3px;margin-right:8px;accent-color:var(--accent)}
+
+/* 링크 카드 */
+.lcard{display:block;border:1px solid var(--line);border-radius:10px;background:#fff;padding:10px 14px;text-decoration:none;margin-top:8px}
+.lcard b{display:block;color:#2F5E8A;font-size:.88rem}.lcard span{display:block;color:var(--sub);font-size:.72rem;margin-top:2px}
+
+/* 대화 말풍선 */
+.chat{display:flex;flex-direction:column;gap:10px}
+.bub{max-width:82%;border-radius:14px;padding:10px 14px}
+.bub p{margin:0!important;font-size:.84rem;line-height:1.6}
+.bub .who{display:block;font-size:.64rem;font-weight:700;margin-bottom:2px}
+.bub.u{align-self:flex-end;background:#EDF2F6;border:1px solid #C9D7E2}.bub.u .who{color:#3D5A70}
+.bub.a{align-self:flex-start;background:#fff;border:1px solid var(--line)}.bub.a .who{color:var(--accent)}
+
+/* 화면 모형 */
+.mock{border:1px solid var(--line);border-radius:10px;background:#FAFAF8;padding:10px 12px;font-size:.78rem}
+.mock .bar{display:flex;gap:6px;flex-wrap:wrap}
+.mock .bar span{border:1px solid var(--line);background:#fff;border-radius:6px;padding:2px 8px}
+.mock .bar span.on{border-color:var(--accent);color:var(--accent);font-weight:700}
+.diagram svg{width:100%;height:auto;display:block}
+
+/* 하단 이동 (sticky) */
+.pager{position:sticky;bottom:0;z-index:15;background:#FCFCFA;border-top:1px solid var(--line)}
+.pager-in{max-width:1280px;margin:0 auto;padding:8px 24px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.pager button{border:1px solid var(--line);background:var(--paper);border-radius:10px;padding:7px 16px;font-size:.78rem;flex:0 0 auto}
+.pager button.next{background:var(--accent);border-color:var(--accent);color:#fff}
+.pager button:disabled{opacity:.35;cursor:default}
+.pager-mid{display:flex;gap:8px;flex:1;justify-content:center;min-width:0}
+.pager select{border:1px solid var(--line);background:#fff;border-radius:8px;padding:6px 8px;font-size:.72rem;max-width:300px;min-width:0;flex:1}
+
+@media (max-width:1000px){
+  .wrap{grid-template-columns:1fr}
+  .side{display:none}
+  .csflow{flex-wrap:wrap;gap:8px}.csflow span{display:none}.csflow div{flex:1 1 30%}
+}
+@media (max-width:720px){
+  :root{--fs:18px}
+  .grid,.split{grid-template-columns:1fr}
+  .blocks{grid-template-columns:1fr 1fr}
+  .hero-line{font-size:1.5rem}
+  .top-row,.tabs,.wrap,.pager-in{padding-left:14px;padding-right:14px}
+  .pager button{padding:7px 10px}
+  .band{flex-direction:column;align-items:flex-start}
+  .csflow div{flex:1 1 45%}
+}
+@media (max-height:700px){.top-row{display:none}.side{top:70px}}
+@media (max-width:600px){table.cmp{min-width:420px}}
+@media (max-width:720px){.top-title small{display:none}.top-title{font-size:.88rem}.zoom span{display:none}.zoom button{padding:2px 8px}}
+/* 녹화 영상 */
+.vbox{position:relative;width:100%;aspect-ratio:16/9;border-radius:10px;overflow:hidden;background:#1E1C1A;border:1px solid var(--line)}
+.vbox iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.vfoot{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:12px;flex-wrap:wrap}
+.vfoot span{font-size:.82rem;color:var(--sub)}
+.vbtn{display:inline-block;background:var(--accent);color:#fff!important;text-decoration:none;border-radius:10px;padding:8px 18px;font-size:.8rem;font-weight:600}
+.card.video{max-width:none}
+
+</style></head><body>
+<header class="top" id="top"><div class="top-row"><div class="top-title">미드저니 3차시 · Attach to Prompt와 GPT 제작 도우미<small>AI 이미지 수익화 · 모델 성격 · 참조 기능 · 첫 사진 기획</small></div>
+<div class="zoom" role="group" aria-label="글자 크기"><span>글자</span><button type="button" id="zDown" aria-label="글자 작게">가−</button><button type="button" id="zReset" aria-label="기본 크기">가</button><button type="button" id="zUp" aria-label="글자 크게">가+</button></div></div>
+<nav class="tabs" id="tabs" role="tablist" aria-label="단계 이동"><button class="tab" role="tab" type="button" data-i="0"><b>STEP 0</b><span>시작</span></button><button class="tab" role="tab" type="button" data-i="1"><b>STEP 1</b><span>사용량·버전</span></button><button class="tab" role="tab" type="button" data-i="2"><b>STEP 2</b><span>모델 성격</span></button><button class="tab" role="tab" type="button" data-i="3"><b>STEP 3</b><span>참조 기능 변화</span></button><button class="tab" role="tab" type="button" data-i="4"><b>STEP 4</b><span>Attach to Prompt</span></button><button class="tab" role="tab" type="button" data-i="5"><b>STEP 5</b><span>Animate</span></button><button class="tab" role="tab" type="button" data-i="6"><b>STEP 6</b><span>GPT 전용 프로젝트</span></button><button class="tab" role="tab" type="button" data-i="7"><b>STEP 7</b><span>사진 기획</span></button><button class="tab" role="tab" type="button" data-i="8"><b>STEP 8</b><span>프롬프트 다듬기</span></button><button class="tab" role="tab" type="button" data-i="9"><b>STEP 9</b><span>업로드 전 검사</span></button><button class="tab" role="tab" type="button" data-i="10"><b>STEP 10</b><span>막힘 사전</span></button><button class="tab" role="tab" type="button" data-i="11"><b>STEP 11</b><span>확인</span></button></nav></header>
+<div class="wrap"><main id="main">
+<section class="step" data-label="STEP 0" data-title="시작">
+<div class="hero"><p class="hero-kicker">3차시 · Attach to Prompt와 GPT 제작 도우미</p>
+<h2 class="hero-line">모델의 <em>성격</em>을 알고,<br>AI 도우미와 함께 기획합니다.</h2>
+<p class="hero-sub">미드저니 모델별 성격과 8.2의 새 참조 기능을 익히고, GPT 프로젝트로 디자인허브 전용 제작 도우미를 만들어 첫 사진을 기획해요.</p></div>
+<div class="grid">
+<div class="card wide video" id="vid"><h3><span class="chip c-read">읽기</span>3차시 녹화 영상</h3><div class="vbox"><iframe src="https://www.youtube-nocookie.com/embed/RXJRkbZ36ac?rel=0" title="3차시 녹화 영상" loading="lazy" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div><div class="vfoot"><span>[현장강의] 미드저니 8.2 신기능 Attach to Prompt · GPT 전용 프로젝트 구축법</span><a class="vbtn" href="https://youtu.be/RXJRkbZ36ac" target="_blank" rel="noopener">유튜브에서 보기 ↗</a></div><p class="note">영상이 재생되지 않으면 "유튜브에서 보기"를 눌러 주세요. 복습할 때는 교안의 STEP 순서대로 영상을 따라가면 돼요.</p></div>
+
+<div class="card wide" id="c1"><h3><span class="chip c-read">읽기</span>우리 과정 전체 지도</h3>
+<div class="csflow"><div class="done"><b>1</b>미드저니 기초<small>구독·둘러보기·설정</small></div><span></span><div class="done"><b>2</b>판매처·화풍<small>디자인허브·프로필·무드보드</small></div><span></span><div class="hot"><b>3</b>참조·AI 도우미<small>Attach to Prompt·GPT 프로젝트</small></div><span></span><div><b>4</b>첫 업로드<small>패턴 학습·규격·심사 제출</small></div><span></span><div><b>5</b>규격 보정<small>레퍼런스 묶음·16:9·배경 제거 예고</small></div><span></span><div><b>6</b>PNG 요소<small>배경 제거·스티커 화풍</small></div></div></div>
+<div class="card" id="c2"><h3><span class="chip c-read">읽기</span>오늘의 흐름</h3>
+<ol class="steps"><li><b>사용량·버전 점검</b></li><li><b>모델 성격</b> — 기본 vs 니지</li><li><b>참조 기능의 변화</b> — 옴니 → Attach to Prompt</li><li><b>Attach to Prompt 실습</b></li><li><b>Animate</b> — 5초 움직임</li><li><b>GPT 전용 프로젝트</b></li><li><b>사진 기획</b> — 레퍼런스 → 프롬프트</li><li><b>업로드 전 검사</b></li></ol></div>
+<div class="card" id="c3"><h3><span class="chip c-chk">확인</span>준비물</h3>
+<ul class="chk"><li><label><input type="checkbox">미드저니, 디자인허브 로그인</label></li><li><label><input type="checkbox">챗GPT 계정 (무료 플랜으로 진행)</label></li><li><label><input type="checkbox">내 캐릭터나 지난번 결과 이미지 1장</label></li><li><label><input type="checkbox">수업 톡방 (지침 파일 받기)</label></li></ul></div>
+</div></section>
+
+<section class="step" data-label="STEP 1" data-title="사용량·버전">
+<div class="grid">
+<div class="card band wide" id="c4"><span class="band-no">STEP 1</span><div><h3>시작 전 점검</h3><p>남은 시간, 버전, 프로필을 확인하고 시작해요.</p></div></div>
+<div class="card" id="c5"><h3><span class="chip c-all">다 같이</span>남은 사용량</h3>
+<ol class="steps"><li><span class="path">⋯ → Manage Subscription</span></li><li>내가 쓴 양과 남은 양 확인</li></ol>
+<p>Basic은 약 200장 분량이에요. 시간으로 적혀 있어도 모델·설정에 따라 줄어드는 속도가 달라요.</p>
+<div class="box set"><h4>Relax 모드</h4><p>Standard 플랜부터 있어요. 무제한이지만 다른 사람 작업이 먼저라, 요즘은 라면 하나 끓여 먹고 올 만큼 걸리기도 해요.</p></div></div>
+<div class="card" id="c6"><h3><span class="chip c-all">다 같이</span>버전과 프로필</h3>
+<ul><li>8.2와 7을 함께 쓰는 이유: <b>사용량</b>과 <b>화풍 차이</b></li><li>프로필은 <b>열어야(활성화)</b> 쓸 수 있어요. V7·V8 둘 다 열려 있는지 <span class="path">Personalize</span>에서 확인</li><li>무드보드는 따로 열지 않아도 바로 쓸 수 있어요</li><li>V6은 예전의 뭉개지는 맛을 좋아하는 분만</li></ul>
+<div class="box warn"><h4>다시 한 번</h4><p>설정에서 <b>Video Batch Size 1</b> 확인. 손가락 실수 한 번에 시간이 사라져요.</p></div></div>
+</div></section>
+
+<section class="step" data-label="STEP 2" data-title="모델 성격">
+<div class="grid">
+<div class="card band wide" id="c7"><span class="band-no">STEP 2</span><div><h3>모델마다 성격이 달라요</h3><p>같은 프롬프트를 모델만 바꿔서 보내 봐요.</p></div></div>
+<div class="card wide" id="c8"><h3><span class="chip c-all">다 같이</span>같은 문장, 세 모델</h3>
+<div class="prompt"><button class="copy" type="button">복사</button>Korean model posing</div>
+<ol class="steps"><li>설정 아무것도 안 건드리고 <b>기본 모델(8.2)</b>로 → 실사 2장, 일러스트 2장처럼 섞여 나와요 (뭘 좋아할지 몰라 다양하게 준비)</li><li>Version을 <b>Niji 7</b>로 → 같은 문장 보내기</li><li><b>Niji 6</b>으로 → 같은 문장 보내기 (조금 더 빨라요)</li></ol>
+<div class="split"><div class="yes"><h4>기본 모델</h4><p>전문 화가를 고용한 느낌. "나는 예술가요"가 들어가 있어요.</p></div><div class="nope"><h4>니지 (Niji = 무지개)</h4><p>일러스트·만화용. 프롬프트에 충실하고 실패가 적어요. 대신 일본 애니메이션 톤이 섞여요.</p></div></div></div>
+<div class="card" id="c9"><h3><span class="chip c-all">다 같이</span>고양이 테스트</h3>
+<div class="prompt"><button class="copy" type="button">복사</button>cat</div>
+<p>Niji 6으로 보내면 고양이 대신 <b>고양이 귀를 한 소녀</b>가 나오기도 해요. Niji 7은 덜해요. 모델이 무엇을 많이 배웠는지가 결과에 드러나요.</p></div>
+<div class="card" id="c10"><h3><span class="chip c-read">읽기</span>언제 무엇을</h3>
+<ul><li>일러스트·만화 요소 → <b>니지로 시작</b>하면 프롬프트에 화풍을 길게 안 써도 돼요</li><li>또는 프로필·무드보드로 — 가끔 엉뚱한 결과(삑사리)가 나와요</li><li>니지도 프로필을 만들 수 있어요 (Unlock 표시)</li></ul>
+<div class="box ext"><h4>한 걸음 더</h4><p>PNG·SVG 요소는 보통 일러스트예요. 니지 프로필을 하나 만들어 두면 6차시 이후 요소 제작이 빨라져요.</p></div></div>
+</div></section>
+
+<section class="step" data-label="STEP 3" data-title="참조 기능 변화">
+<div class="grid">
+<div class="card band wide" id="c11"><span class="band-no">STEP 3</span><div><h3>참조(레퍼런스) 기능의 변화</h3><p>입력창의 이미지 버튼 — 사진을 첨부해 따라 그리게 하는 기능이에요.</p></div></div>
+<div class="card wide" id="c12"><h3><span class="chip c-read">읽기</span>버전 7과 8의 참조 메뉴</h3>
+<div class="tw"><table class="cmp"><tr><th>버전 7</th><th>버전 8.x</th></tr>
+<tr><td>이미지 프롬프트 — 글 대신 이미지로 내용 지시</td><td>이미지 프롬프트</td></tr>
+<tr><td>스타일 레퍼런스 — 화풍·질감</td><td>스타일 레퍼런스</td></tr>
+<tr><td>옴니 레퍼런스 — 사진 속 사람·사물을 따라함</td><td><b>없어짐 → Attach to Prompt</b>가 그 역할</td></tr></table></div></div>
+<div class="card" id="c13"><h3><span class="chip c-read">읽기</span>옴니 레퍼런스 (버전 7)</h3>
+<p>인물 사진을 넣고 "사무실 의자에 앉아 일하는 직원, 정면"이라고 쓰면 그 사람의 얼굴·머리 모양을 따라해요.</p>
+<p>강도(<code>--ow</code>)를 400까지 올리면 화장·점·옷·배경의 초점 흐림까지 따라해요. 6버전은 얼굴만, 7버전부터는 사람·동물·물건 무엇이든 따라해요.</p></div>
+<div class="card" id="c14"><h3><span class="chip c-read">읽기</span>초상권 경고</h3>
+<div class="box warn"><h4>실존 인물은 연습에서만</h4><p>유명인 사진을 넣으면 초상권 주의 안내가 떠요. 판매용 요소에는 실존 인물·연예인 얼굴을 절대 쓰지 마세요. 심사에서도 걸리고 법적 문제가 됩니다.</p></div>
+<p class="note">판매용으로는 <b>내가 만든 캐릭터</b>나 <b>내가 만든 인물 이미지</b>를 참조로 써요.</p></div>
+</div></section>
+
+<section class="step" data-label="STEP 4" data-title="Attach to Prompt">
+<div class="grid">
+<div class="card band wide" id="c15"><span class="band-no">STEP 4</span><div><h3>Attach to Prompt 실습</h3><p>첨부한 대상을 유지하면서 새 장면에 자연스럽게 넣어 줘요. 시리즈물을 만들 수 있어요.</p></div></div>
+<div class="card" id="c16"><h3><span class="chip c-all">다 같이</span>따라 하기</h3>
+<ol class="steps"><li>Version <b>8.2</b> 확인</li><li>입력창 이미지 버튼 → <span class="path">Upload</span> → 내 캐릭터(또는 지난번 결과) 올리기</li><li>올린 이미지를 <b>Attach to Prompt</b> 칸으로</li><li>아래 프롬프트 보내기</li></ol>
+<div class="prompt"><button class="copy" type="button">복사</button>the character is sitting on a subway seat, gazing out the window, the subway is running above ground and scenery is passing by outside, soft daylight</div>
+<p class="note">이미지를 첨부하면 <span class="path">Edit</span> 메뉴도 생겨요.</p></div>
+<div class="card" id="c17"><h3><span class="chip c-read">읽기</span>이미지 프롬프트와 무엇이 다른가</h3>
+<div class="split"><div class="nope"><h4>이미지 프롬프트</h4><p>이미지를 분석해서 글처럼 써 넣는 방식. 강아지 캐릭터를 넣고 "사람이 뛰어간다"고 쓰면 <b>충돌</b>해서 개 사람이 나와요.</p></div><div class="yes"><h4>Attach to Prompt</h4><p>그 대상을 <b>포함한 채</b> 새 장면을 자연스럽게 만들어요. 비율까지 레퍼런스를 유지해요. GPT·나노바나나와 비슷한 방식이에요.</p></div></div></div>
+<div class="card wide" id="c18"><h3><span class="chip c-more">한 걸음 더</span>시리즈물로 늘리기</h3>
+<p>같은 캐릭터를 첨부한 채 장면만 바꿔 3장을 만들어 보세요. 판매 요소에서 "시리즈"는 같은 캐릭터·같은 화풍이 유지되는 묶음이에요.</p>
+<div class="prompt"><button class="copy" type="button">복사</button>the character is reading a book on a bench in an autumn park, warm afternoon light, full body</div>
+<div class="prompt"><button class="copy" type="button">복사</button>the character is holding a cup of coffee by a cafe window, rainy day outside, medium shot</div>
+<div class="prompt"><button class="copy" type="button">복사</button>the character is waving hello with a big smile, plain light gray background, full body</div>
+<p class="note">예전에는 미드저니에서 만든 캐릭터를 고치려면 GPT로 옮겨 가야 했어요. 이제는 미드저니 안에서도 충분히 가능해요.</p></div>
+</div></section>
+
+<section class="step" data-label="STEP 5" data-title="Animate">
+<div class="grid">
+<div class="card band wide" id="c19"><span class="band-no">STEP 5</span><div><h3>Animate — 5초 움직임</h3><p>잘 나온 이미지를 짧은 영상으로. 상품을 잠깐 보여 주는 쇼핑몰 영상에 딱 맞아요.</p></div></div>
+<div class="card" id="c20"><h3><span class="chip c-all">다 같이</span>두 가지 방법</h3>
+<ol class="steps"><li><b>마우스 올리기</b> — 이미지 위에 Animate 버튼 → 바로 생성</li><li><b>클릭 후 아래 메뉴</b> — <span class="path">Animate Image</span> 섹션에서 고르기</li></ol>
+<div class="tw"><table class="cmp"><tr><th>메뉴</th><th>뜻</th></tr>
+<tr><td>Auto</td><td>알아서 움직임</td></tr><tr><td>Manual</td><td>움직임 프롬프트를 직접 고쳐 쓰기</td></tr>
+<tr><td>Low / High motion</td><td>움직임 크기 (큰 차이는 아님)</td></tr><tr><td>Loop</td><td>첫 장면으로 다시 돌아와 계속 반복</td></tr></table></div></div>
+<div class="card" id="c21"><h3><span class="chip c-read">읽기</span>쓸 곳과 한계</h3>
+<ul><li>루프는 움직임이 크면 어지러워요 → <b>Loop + Low motion</b></li><li>손·손가락 동작은 아직 어색해요</li><li>상품 돌리기, 모델이 잠깐 들고 있는 5초 영상에 최고</li></ul>
+<div class="box warn"><h4>시간 주의</h4><p>영상은 시간을 가장 많이 써요. 꼭 필요한 이미지만, Video Batch Size 1로.</p></div></div>
+</div></section>
+
+<section class="step" data-label="STEP 6" data-title="GPT 전용 프로젝트">
+<div class="grid">
+<div class="card band wide" id="c22"><span class="band-no">STEP 6</span><div><h3>디자인허브 전용 제작 도우미</h3><p>지난 시간 제미나이 노트북은 가이드 첫 페이지만 읽고 엉뚱한 답을 했어요. 오늘은 GPT 프로젝트로 다시 만듭니다.</p></div></div>
+<div class="card" id="c23"><h3><span class="chip c-read">읽기</span>왜 바꾸나</h3>
+<ul><li>노트북에 가이드 주소만 넣으면 <b>그 한 페이지만</b> 분석해요</li><li>그래서 "사진인데 배경 없는 이미지" 같은 잘못된 프롬프트가 나왔어요</li><li>GPT 프로젝트는 <b>지침</b>에 "하부 페이지까지 근거로" 같은 규칙을 넣을 수 있어요</li></ul>
+<div class="box set"><h4>무료 플랜으로 해요</h4><p>모두 같은 조건에서 하려고 무료 플랜으로 진행해요. 생각(Thinking) 버튼을 켜면 더 똑똑해져요.</p></div></div>
+<div class="card" id="c24"><h3><span class="chip c-all">다 같이</span>프로젝트 만들기</h3>
+<ol class="steps"><li>왼쪽 <span class="path">프로젝트</span> → <span class="path">+</span></li><li>이름: <b>미리캔버스 디자인허브 요소 제작 도우미</b></li><li>메모리: <b>프로젝트 전용 메모리</b> 선택</li><li><span class="path">프로젝트 만들기</span></li><li>상단 <span class="path">⋯ → 프로젝트 설정</span> → 지침에 아래 글 붙여넣기 → 저장</li></ol>
+<div class="box warn"><h4>메모리는 처음에만 정할 수 있어요</h4><p>업무용 프로젝트는 내 일반 대화 취향이 섞이면 안 돼요. 만들 때 "프로젝트 전용"을 고르세요. 나중에 못 바꿔요.</p></div></div>
+<div class="card wide" id="c25"><h3><span class="chip c-all">다 같이</span>프로젝트 지침</h3>
+<div class="prompt"><button class="copy" type="button">복사</button>[프로젝트 목적]
+이 프로젝트는 미리캔버스 디자인허브(기여자)에 올릴 요소를 기획·제작·등록하는 업무 전용이다.
+
+[근거 원칙]
+1. 모든 답은 미리캔버스 디자인허브 공식 가이드(업로드 화면의 "가이드 자세히 보기"로 열리는 가이드 페이지와 그 하부 페이지 전체)를 최우선 근거로 한다.
+2. 가이드에 없는 규정을 임의로 만들지 않는다. 확인되지 않으면 "가이드에서 확인 필요"라고 쓴다.
+3. 규격·심사 기준을 말할 때는 근거가 된 가이드 페이지를 함께 밝힌다.
+
+[작업 범위]
+- 요소 유형(사진, 배경 제거 사진, 일러스트, PNG, SVG, GIF 등)별 규격과 주의사항 안내
+- 판매 소재 기획 (시즌·용도·대상)
+- 미드저니 프롬프트 작성 (영문, 한국인이 필요하면 Korean 명시, 글자·로고·상표 넣지 않음)
+- 제목·검색 키워드(최대 25개, 쉼표로 구분) 작성
+- 업로드 전 이미지 검토
+
+[답변 방식]
+- 개조식으로 짧게, 필요하면 표로
+- 프롬프트는 복사할 수 있게 따로 블록으로
+- 사용자가 미드저니를 쓴다고 하면 미드저니 기준으로 답한다</div>
+<p class="note">강사가 톡방에 파일로도 드려요. 파일로 받으면 지침 대신 <b>소스(지식)</b>에 넣어도 돼요. 무료 플랜은 소스 파일 5개까지예요. 가이드 페이지 주소를 지침 끝에 붙여 넣어 두면 더 정확해요.</p></div>
+<div class="card wide" id="c26"><h3><span class="chip c-all">다 같이</span>테스트 질문</h3>
+<div class="prompt"><button class="copy" type="button">복사</button>미리캔버스 디자인허브 요소 중 "사진" 유형의 제작 가이드를 알려 줘. 근거 페이지도 같이.</div>
+<p>답 아래에 가이드 페이지(슬래시페이지) 링크가 붙어 나오면 제대로 찾아본 거예요. 눌러서 원문과 대조해 보세요.</p></div>
+</div></section>
+
+<section class="step" data-label="STEP 7" data-title="사진 기획">
+<div class="grid">
+<div class="card band wide" id="c27"><span class="band-no">STEP 7</span><div><h3>무엇을 만들까 — 레퍼런스부터</h3><p>상상만으로 정하지 않아요. 파는 곳(본진)에서 무엇이 승인되고 쓰이는지 먼저 봐요.</p></div></div>
+<div class="card" id="c28"><h3><span class="chip c-all">다 같이</span>주제 추천 받기</h3>
+<div class="prompt"><button class="copy" type="button">복사</button>미드저니로 만들 거야. 11월 대한민국 행사·시즌 중에서 디자인허브 "사진" 요소로 만들기 좋은 주제를 추천해 줘. 추천 이유와 실제 수요(누가 어디에 쓰는지)도 함께.</div>
+<p class="note">수업에서는 김장, 수능, 빼빼로데이가 나왔어요. "시즌 묶음 10개" 같은 제안이 와도, 제출 대기가 20개까지라 <b>적당히</b> 넣어요.</p></div>
+<div class="card" id="c29"><h3><span class="chip c-all">다 같이</span>미리캔버스에서 레퍼런스 보기</h3>
+<ol class="steps"><li>미리캔버스 로그인 (구글 계정이면 바로) → 새 디자인</li><li>왼쪽 <span class="path">사진</span>에서 "김장", "수능", "빼빼로" 검색</li><li>마음에 드는 사진의 <span class="path">⋯ → 비슷한 사진 찾기</span></li><li>어떤 구도·인원·소품이 승인됐는지 눈으로 익히기</li></ol></div>
+<div class="card wide" id="c30"><h3><span class="chip c-read">읽기</span>레퍼런스에서 읽어 낼 것</h3>
+<ul><li><b>상표가 보이면 승인이 거의 안 나요</b> — 과자 이름, 로고 금지</li><li><b>트렌드</b>: 빼빼로를 주고받는 사진은 잘 안 팔려요. 실제로는 상자로 주니까요. 반대로 "없는 틈새"를 노릴 수도 있어요</li><li><b>수능</b>은 학원에서 많이 써요 — "수능 대박, 파이팅" 응원 장면이면 충분</li><li>머리띠 두른 수험생 같은 옛날식 표현은 요즘 학생들에게 안 통해요</li></ul>
+<div class="box set"><h4>다른 레퍼런스 사이트</h4><p><b>크라우드픽</b> — 저작권 걱정 없는 이미지, 김장·수능 검색해 보기<br><b>핀터레스트</b> — 트렌드 보기. 상업용·비상업용이 섞여 있어 <b>모티브만</b> 가져와요. 너무 비슷하게 만들면 위험해요.</p></div></div>
+</div></section>
+
+<section class="step" data-label="STEP 8" data-title="프롬프트 다듬기">
+<div class="grid">
+<div class="card band wide" id="c31"><span class="band-no">STEP 8</span><div><h3>GPT와 주고받으며 다듬기</h3><p>제일 쉬운 수능 응원부터. 한 번에 좋은 결과를 기대하지 않아요.</p></div></div>
+<div class="card" id="c32"><h3><span class="chip c-all">다 같이</span>① 기준 확인</h3>
+<div class="prompt"><button class="copy" type="button">복사</button>사진 요소는 배경이 있고 JPG니?</div>
+<p class="note">미리캔버스 사진 목록을 보면 배경 없는 것도 섞여 있어요. 그건 "사진"이 아니라 "배경 제거 사진"이에요. 사진은 <b>배경이 있는 것</b>.</p></div>
+<div class="card" id="c33"><h3><span class="chip c-all">다 같이</span>② 프롬프트 3개</h3>
+<div class="prompt"><button class="copy" type="button">복사</button>수능 관련 디자인허브 "사진" 요소용 미드저니 프롬프트 3개를 추천해 주고, 각각 추천 사유를 말해 줘.</div></div>
+<div class="card wide" id="c34"><h3><span class="chip c-read">읽기</span>뷰 · 샷 · 앵글 + 조명</h3>
+<div class="blocks" style="--n:4"><span class="b1">뷰<small>어디서 보나 (시점)</small></span><span class="b2">샷<small>얼마나 담나 (그릇)</small></span><span class="b3">앵글<small>위아래 높이</small></span><span class="b4">조명<small>자연광·스튜디오</small></span></div>
+<p>사진은 원래 작가가 찍는 거예요. 이 네 가지가 들어가야 현장감이 생기고, 없으면 납작한 사진이 돼요.</p>
+<div class="prompt"><button class="copy" type="button">복사</button>뷰·샷·앵글과 조명을 고려해서 다시 작성해 줘. 비율도 사진 용도에 맞게 제안해 줘.</div>
+<p class="note">수업 결과: 수능 전날 = 오버숄더 뷰, 수능 선물 = 탑뷰 + 자연광, 수능 당일 = 로앵글 다큐 느낌.</p></div>
+<div class="card" id="c35"><h3><span class="chip c-all">다 같이</span>③ 미드저니에서 만들기</h3>
+<ol class="steps"><li><span class="path">Create</span> → 프롬프트 붙여넣기</li><li>비율: 버튼(16:9 등) 또는 막대로</li><li>같은 프롬프트를 <b>Raw 켜고</b> 한 번 더</li></ol>
+<p class="note">사진일 때는 Raw가 덜 꾸며져서 더 나을 때가 많아요. 8.2에서는 특히요.</p></div>
+<div class="card" id="c36"><h3><span class="chip c-all">다 같이</span>④ 결과가 별로일 때</h3>
+<ol class="steps"><li><b>Win + Shift + S</b>로 결과 캡처</li><li>GPT 채팅창에 붙여넣기 (Ctrl+V) — 3장 정도</li><li>아래 문장 보내기</li></ol>
+<div class="prompt"><button class="copy" type="button">복사</button>첨부한 결과는 미리캔버스 디자인허브 요소의 톤앤매너와 전혀 어울리지 않고 상품성이 없어. 조명이 어둡고, 수능이라는 키워드가 드러나지 않아. 수능 시험장 응원이나 수능 공부 파이팅 장면으로, 밝게, 다시 고민해서 기획해 줘. 이미지는 만들지 말고 프롬프트만.</div>
+<p class="note">GPT가 답답해서 직접 이미지를 만들려고 하면 "프롬프트만"이라고 다시 말해요.</p></div>
+<div class="card wide" id="c37"><h3><span class="chip c-read">읽기</span>글자는 넣지 않아요</h3>
+<div class="box warn"><h4>미드저니 한글은 깨져요</h4><p>"수능 대박" 같은 글자를 이미지 안에 넣지 마세요. 글자가 필요한 디자인은 쓰는 사람이 미리캔버스에서 올려요. 꼭 글자 이미지가 필요하면 GPT로 옮겨서 만들어요.</p></div></div>
+</div></section>
+
+<section class="step" data-label="STEP 9" data-title="업로드 전 검사">
+<div class="grid">
+<div class="card band wide" id="c38"><span class="band-no">STEP 9</span><div><h3>올리기 전에 AI에게 검사받기</h3><p>올리는 건 쉬워요. 그 전 작업이 더 중요해요.</p></div></div>
+<div class="card" id="c39"><h3><span class="chip c-all">다 같이</span>HD로 받기</h3>
+<ol class="steps"><li>마음에 드는 이미지 클릭</li><li>가능하면 <b>HD로 만든 뒤</b> 내려받기 — 일반은 픽셀이 모자라요</li><li>파일 속성(마우스 오른쪽 → 속성 → 자세히)에서 가로·세로 픽셀 확인</li></ol></div>
+<div class="card" id="c40"><h3><span class="chip c-all">다 같이</span>GPT 검사</h3>
+<div class="prompt"><button class="copy" type="button">복사</button>첨부한 사진을 미리캔버스 디자인허브 "사진" 요소로 올리려고 해. 해상도, DPI, 비율, 손·얼굴 왜곡, 글자·상표 노출, 배경 기준에서 업로드에 적합한지 검토하고 고칠 점을 보고해 줘.</div>
+<p class="note">답이 엉뚱하면 그 이미지는 폐기하고 다시 만들어요.</p></div>
+<div class="card wide" id="c41"><h3><span class="chip c-read">읽기</span>DPI는 미드저니가 안 올려 줘요</h3>
+<p>미드저니는 픽셀은 키워 주지만(HD·업스케일), DPI 숫자는 바꾸지 않아요. 저장할 때 숫자만 바꿔 주면 되는데, 다음 시간에 <b>포토피아</b>(무료 웹 편집기)로 가볍게 바꿉니다.</p>
+<div class="key"><strong>미드저니의 강점</strong> — 사람 얼굴이 매번 달라요. GPT나 나노바나나는 학습이 잘된 만큼 얼굴이 비슷비슷하게 나와요. 남과 겹치지 않는 결과는 <strong>심사에 유리</strong>해요.</div></div>
+</div></section>
+
+<section class="step" data-label="STEP 10" data-title="막힘 사전">
+<div class="grid">
+<div class="card band wide" id="c42"><span class="band-no">STEP 10</span><div><h3>막힘 사전</h3><p>화면 → 원인 → 조치</p></div></div>
+<div class="card wide" id="c43"><h3><span class="chip c-chk">확인</span>자주 만나는 화면</h3>
+<div class="trouble"><h4>8.2에서 Omni Reference가 안 보임</h4><dl><dt>원인</dt><dd>8버전에서 없어지고 Attach to Prompt로 바뀜</dd><dt>조치</dt><dd>옴니가 필요하면 Version 7, 아니면 Attach to Prompt</dd></dl></div>
+<div class="trouble"><h4>"초상권 주의" 안내가 뜸</h4><dl><dt>원인</dt><dd>실존 인물 사진을 참조로 넣음</dd><dt>조치</dt><dd>연습에서만. 판매용에는 내가 만든 인물·캐릭터만</dd></dl></div>
+<div class="trouble"><h4>캐릭터를 넣었는데 이상한 혼합이 나옴</h4><dl><dt>원인</dt><dd>이미지 프롬프트 칸에 넣어 문장과 충돌</dd><dt>조치</dt><dd>Attach to Prompt 칸으로 옮기기</dd></dl></div>
+<div class="trouble"><h4>GPT 프로젝트 메모리를 바꾸고 싶음</h4><dl><dt>원인</dt><dd>만들 때만 정할 수 있음</dd><dt>조치</dt><dd>프로젝트를 새로 만들고 지침을 다시 붙여넣기</dd></dl></div>
+<div class="trouble"><h4>GPT가 프롬프트 대신 이미지를 만듦</h4><dl><dt>원인</dt><dd>요청이 모호함</dd><dt>조치</dt><dd>"이미지는 만들지 말고 프롬프트만"</dd></dl></div>
+<div class="trouble"><h4>무료 플랜에서 소스를 더 못 넣음</h4><dl><dt>원인</dt><dd>소스 파일 5개 제한</dd><dt>조치</dt><dd>내용을 한 파일로 합치거나 꼭 필요한 것만</dd></dl></div></div>
+</div></section>
+
+<section class="step" data-label="STEP 11" data-title="확인">
+<div class="grid">
+<div class="card band wide" id="c44"><span class="band-no">STEP 11</span><div><h3>오늘 정리</h3><p>모델 성격 → Attach to Prompt → GPT 도우미 → 레퍼런스 기반 기획</p></div></div>
+<div class="card wide" id="c45"><h3><span class="chip c-chk">확인</span>퀴즈</h3>
+<div class="q"><p><b>1.</b> 버전 8에서 옴니 레퍼런스 역할을 하는 기능은?</p><div class="qops"><button type="button" class="qo" data-ok="0">Style Reference</button><button type="button" class="qo" data-ok="1">Attach to Prompt</button><button type="button" class="qo" data-ok="0">Animate</button></div><p class="qex">첨부한 대상을 유지한 채 새 장면에 넣어 줘요.</p></div>
+<div class="q"><p><b>2.</b> 만화·일러스트 느낌을 프롬프트 없이 쉽게 낼 수 있는 모델은?</p><div class="qops"><button type="button" class="qo" data-ok="1">Niji</button><button type="button" class="qo" data-ok="0">Version 6</button><button type="button" class="qo" data-ok="0">HD</button></div><p class="qex">니지는 일러스트·애니 톤에 강해요.</p></div>
+<div class="q"><p><b>3.</b> 사진에 현장감을 주는 네 가지가 아닌 것은?</p><div class="qops"><button type="button" class="qo" data-ok="0">뷰</button><button type="button" class="qo" data-ok="0">앵글</button><button type="button" class="qo" data-ok="1">글자</button><button type="button" class="qo" data-ok="0">조명</button></div><p class="qex">뷰·샷·앵글·조명. 글자는 넣지 않아요.</p></div>
+<div class="q"><p><b>4.</b> GPT 업무 프로젝트를 만들 때 고를 메모리는?</p><div class="qops"><button type="button" class="qo" data-ok="0">기본 메모리</button><button type="button" class="qo" data-ok="1">프로젝트 전용 메모리</button></div><p class="qex">내 일반 대화 취향이 업무에 섞이지 않게요. 처음에만 고를 수 있어요.</p></div></div>
+<div class="card wide" id="c46"><h3><span class="chip c-chk">확인</span>숙제</h3>
+<ol class="steps"><li>오늘 기획한 주제로 <b>사진 1장</b> 완성해 오기 (HD로)</li><li>다음 시간: 업스케일 → 규격 맞추기 → 디자인허브 첫 업로드, 검색 키워드 25개 만들기</li></ol>
+<div class="box ext"><h4>한 걸음 더</h4><p>디자인허브에서 승인된 요소를 하나 열어 키워드를 보세요. "빼빼로데이" 하나가 아니라 관련 단어가 25개까지 붙어 있어요. 검색에 걸리는 길이 그만큼 많다는 뜻이에요.</p></div></div>
+</div></section>
+
+</main>
+<aside class="side" aria-label="이 화면의 카드 목록"><p>이 STEP 카드</p><div id="sideList"></div></aside></div>
+<nav class="pager" aria-label="앞뒤 이동"><div class="pager-in">
+<button type="button" id="prev">◀ 이전</button>
+<div class="pager-mid"><select id="stepSel" aria-label="STEP 고르기"></select><select id="cardSel" aria-label="카드 고르기"></select></div>
+<button type="button" id="next" class="next">다음 ▶</button>
+</div></nav>
+<script>
+(function(){
+  /* 구글 사이트 임베드용: position:fixed / scrollIntoView / localStorage / 주소 # 이동 없음 */
+  var steps=[].slice.call(document.querySelectorAll('.step'));
+  var tabs=[].slice.call(document.querySelectorAll('.tab'));
+  var tabBar=document.getElementById('tabs');
+  var side=document.getElementById('sideList');
+  var stepSel=document.getElementById('stepSel');
+  var cardSel=document.getElementById('cardSel');
+  var top=document.getElementById('top');
+  var cur=0, cards=[], links=[], ticking=false;
+
+  function headH(){return top.offsetHeight+12;}
+  function pageY(){return window.pageYOffset||document.documentElement.scrollTop||0;}
+  function cardTitle(c){var h=c.querySelector('h3');if(!h)return '';var t='';for(var i=0;i<h.childNodes.length;i++){var n=h.childNodes[i];if(n.nodeType===3)t+=n.textContent;}t=t.trim();return t||h.textContent.trim();}
+  function goCard(c){var y=c.getBoundingClientRect().top+pageY()-headH();window.scrollTo(0,Math.max(0,y));}
+
+  steps.forEach(function(s,i){var o=document.createElement('option');o.value=i;o.textContent=s.getAttribute('data-label')+' · '+s.getAttribute('data-title');stepSel.appendChild(o);});
+
+  function build(sec){
+    side.innerHTML='';cardSel.innerHTML='';links=[];
+    cards=[].slice.call(sec.querySelectorAll('.card[id]')).filter(function(c){return c.querySelector('h3');});
+    var o0=document.createElement('option');o0.value='';o0.textContent='카드로 바로 가기';cardSel.appendChild(o0);
+    cards.forEach(function(c,i){
+      var t=cardTitle(c);
+      var a=document.createElement('a');a.setAttribute('role','button');a.tabIndex=0;a.textContent=t;
+      a.addEventListener('click',function(e){e.preventDefault();goCard(c);});
+      a.addEventListener('keydown',function(e){if(e.keyCode===13){goCard(c);}});
+      side.appendChild(a);links.push(a);
+      var o=document.createElement('option');o.value=i;o.textContent=(i+1)+'. '+t;cardSel.appendChild(o);
+    });
+    mark();
+  }
+  function mark(){
+    if(!cards.length)return;
+    var line=headH()+40,k=0;
+    for(var i=0;i<cards.length;i++){if(cards[i].getBoundingClientRect().top<=line)k=i;}
+    links.forEach(function(a,i){a.className=(i===k)?'on':'';});
+  }
+  window.addEventListener('scroll',function(){if(!ticking){ticking=true;setTimeout(function(){ticking=false;mark();},80);}});
+
+  function show(i,scroll){
+    cur=Math.max(0,Math.min(steps.length-1,i));
+    steps.forEach(function(s,k){s.classList.toggle('on',k===cur);});
+    tabs.forEach(function(t,k){t.setAttribute('aria-selected',k===cur?'true':'false');});
+    var t=tabs[cur];tabBar.scrollLeft=t.offsetLeft-(tabBar.clientWidth-t.offsetWidth)/2;
+    stepSel.value=cur;
+    build(steps[cur]);
+    document.getElementById('prev').disabled=cur===0;
+    document.getElementById('next').disabled=cur===steps.length-1;
+    var sd=document.querySelector('.side');if(sd)sd.style.top=headH()+'px';
+    if(scroll){var m=document.getElementById('main');var y=m.getBoundingClientRect().top+pageY()-headH()-10;if(pageY()>y)window.scrollTo(0,Math.max(0,y));}
+  }
+  tabs.forEach(function(t){t.addEventListener('click',function(){show(+t.getAttribute('data-i'),true);});});
+  document.getElementById('prev').addEventListener('click',function(){show(cur-1,true);});
+  document.getElementById('next').addEventListener('click',function(){show(cur+1,true);});
+  stepSel.addEventListener('change',function(){show(+stepSel.value,true);});
+  cardSel.addEventListener('change',function(){var v=cardSel.value;if(v!==''){goCard(cards[+v]);}cardSel.value='';});
+
+  /* 글자 크기 */
+  var fs=20;
+  function setFs(v){fs=Math.max(16,Math.min(28,v));document.documentElement.style.setProperty('--fs',fs+'px');var sd=document.querySelector('.side');if(sd)sd.style.top=headH()+'px';}
+  document.getElementById('zUp').addEventListener('click',function(){setFs(fs+2);});
+  document.getElementById('zDown').addEventListener('click',function(){setFs(fs-2);});
+  document.getElementById('zReset').addEventListener('click',function(){setFs(20);});
+
+  /* 복사 */
+  [].slice.call(document.querySelectorAll('.prompt .copy')).forEach(function(b){
+    b.addEventListener('click',function(){
+      var box=b.parentNode,txt='';
+      for(var i=0;i<box.childNodes.length;i++){if(box.childNodes[i]!==b)txt+=box.childNodes[i].textContent;}
+      txt=txt.replace(/^\s+|\s+$/g,'');
+      function ok(){b.textContent='복사됨';b.classList.add('done');setTimeout(function(){b.textContent='복사';b.classList.remove('done');},1600);}
+      function fb(){var t=document.createElement('textarea');t.value=txt;t.style.position='absolute';t.style.left='-9999px';document.body.appendChild(t);t.select();try{document.execCommand('copy');ok();}catch(e){}document.body.removeChild(t);}
+      if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(ok,fb);}else fb();
+    });
+  });
+
+  /* 퀴즈 */
+  [].slice.call(document.querySelectorAll('.q')).forEach(function(q){
+    [].slice.call(q.querySelectorAll('.qo')).forEach(function(b){
+      b.addEventListener('click',function(){
+        if(q.classList.contains('done'))return;q.classList.add('done');
+        [].slice.call(q.querySelectorAll('.qo')).forEach(function(x){if(x.getAttribute('data-ok')==='1')x.classList.add('right');});
+        if(b.getAttribute('data-ok')!=='1')b.classList.add('wrong');
+      });
+    });
+  });
+
+  show(0,false);
+})();
+
+</script>
+</body></html>

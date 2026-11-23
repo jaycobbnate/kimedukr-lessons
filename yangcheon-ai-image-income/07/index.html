@@ -1,0 +1,1243 @@
+<title>PNG·SVG 요소 공방</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@700&family=IBM+Plex+Sans+KR:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* 레이아웃: 상단 sticky(제목+STEP 탭) / 본문 카드 그리드 + 오른쪽 sticky 카드 메뉴 / 하단 sticky 이동 줄. 한 STEP = 한 화면 */
+:root{
+  --bg:#F6F7F4; --paper:#FFFFFF; --line:#E1E4DE; --line-strong:#C9CEC6;
+  --ink:#1F2621; --ink-soft:#56605A; --accent:#2D6A4F; --accent-ink:#FFFFFF; --accent-soft:#E4F0E9;
+  --tip-bg:#EAF1FA; --tip-line:#C3D5EC; --tip-ink:#284868;
+  --warn-bg:#FBECEE; --warn-line:#EDC6CC; --warn-ink:#7A2E3A;
+  --more-bg:#F0ECF8; --more-line:#D6CCEA; --more-ink:#4B3A72;
+  --code-bg:#F1F3EF; --png:#B5543C; --svg:#2D6A4F;
+  --f-display:"Gowun Batang","Noto Serif KR",serif;
+  --f-body:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+  --fs:20px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#141815; --paper:#1C211E; --line:#2E3530; --line-strong:#424A44;
+  --ink:#E6EBE7; --ink-soft:#A3ADA6; --accent:#6CBF95; --accent-ink:#0E1A13; --accent-soft:#1E3328;
+  --tip-bg:#18263A; --tip-line:#2C4566; --tip-ink:#B9D2F0;
+  --warn-bg:#331C21; --warn-line:#5C3039; --warn-ink:#F2C2CA;
+  --more-bg:#251F35; --more-line:#41365E; --more-ink:#D3C6F2;
+  --code-bg:#232925; --png:#E08A72; --svg:#6CBF95; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#141815; --paper:#1C211E; --line:#2E3530; --line-strong:#424A44;
+  --ink:#E6EBE7; --ink-soft:#A3ADA6; --accent:#6CBF95; --accent-ink:#0E1A13; --accent-soft:#1E3328;
+  --tip-bg:#18263A; --tip-line:#2C4566; --tip-ink:#B9D2F0;
+  --warn-bg:#331C21; --warn-line:#5C3039; --warn-ink:#F2C2CA;
+  --more-bg:#251F35; --more-line:#41365E; --more-ink:#D3C6F2;
+  --code-bg:#232925; --png:#E08A72; --svg:#6CBF95; color-scheme:dark}
+*{box-sizing:border-box}
+html{font-size:var(--fs)}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:1rem;line-height:1.7;margin:0}
+.wrap{max-width:1280px;margin:0 auto;padding-inline:16px}
+h1,h2,h3{text-wrap:balance;margin:0}
+button,select{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+
+/* 상단 */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--bg);border-bottom:1px solid var(--line)}
+.top-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;padding-block:12px 8px}
+.eyebrow{font-size:.7rem;letter-spacing:.06em;color:var(--ink-soft)}
+.title{font-family:var(--f-display);font-size:1.35rem;line-height:1.3}
+.title-box{flex:1 1 320px;min-width:0}
+.fsbox{display:flex;gap:4px;align-items:center}
+.fsbox button{border:1px solid var(--line-strong);background:var(--paper);border-radius:8px;padding:2px 10px;font-size:.8rem;cursor:pointer}
+.fsbox button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.tabs{display:flex;gap:6px;overflow-x:auto;padding-block:4px 10px;scrollbar-width:thin}
+.tab{flex:0 0 auto;border:1px solid var(--line-strong);background:var(--paper);border-radius:999px;padding:4px 14px;font-size:.8rem;cursor:pointer;white-space:nowrap}
+.tab b{font-family:var(--f-mono);font-weight:500;margin-right:6px;color:var(--ink-soft)}
+.tab[aria-selected="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.tab[aria-selected="true"] b{color:var(--accent-ink)}
+.tab.qa{border-style:dashed}
+
+/* 본문 */
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 240px;gap:24px;padding-block:24px 32px;align-items:start}
+.side{position:sticky;top:150px;border-left:1px solid var(--line);padding-left:16px;font-size:.75rem}
+.side h3{font-size:.7rem;letter-spacing:.06em;color:var(--ink-soft);font-weight:500;margin-bottom:8px}
+.side ol{list-style:none;margin:0;padding:0;display:grid;gap:2px}
+.side a{display:block;color:var(--ink-soft);text-decoration:none;padding:4px 8px;border-radius:6px;line-height:1.4}
+.side a:hover{background:var(--accent-soft);color:var(--ink)}
+.side a.on{background:var(--accent-soft);color:var(--ink);font-weight:500}
+.side a span{font-family:var(--f-mono);margin-right:6px}
+
+.step-head{display:grid;gap:4px;margin-bottom:20px}
+.step-head .no{font-family:var(--f-mono);font-size:.75rem;color:var(--accent)}
+.step-head h2{font-family:var(--f-display);font-size:1.7rem;line-height:1.3}
+.step-head p{margin:0;color:var(--ink-soft);max-width:44em}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:20px 22px;min-width:0;display:flex;flex-direction:column;gap:12px;scroll-margin-top:160px}
+.card.wide{grid-column:1/-1}
+.card h3{font-size:1.05rem;display:flex;gap:10px;align-items:baseline}
+.card h3 .cn{font-family:var(--f-mono);font-size:.75rem;color:var(--accent);font-weight:500}
+.card p{margin:0}
+.card ol,.card ul{margin:0;padding-left:1.3em;display:grid;gap:4px}
+.tag{display:inline-block;font-size:.7rem;border-radius:999px;padding:1px 10px;border:1px solid var(--line-strong);color:var(--ink-soft)}
+.tag.png{border-color:var(--png);color:var(--png)}
+.tag.svg{border-color:var(--svg);color:var(--svg)}
+kbd{font-family:var(--f-mono);font-size:.8em;background:var(--code-bg);border:1px solid var(--line-strong);border-bottom-width:2px;border-radius:5px;padding:0 6px;white-space:nowrap}
+code{font-family:var(--f-mono);font-size:.85em;background:var(--code-bg);border-radius:4px;padding:0 4px;overflow-wrap:anywhere}
+
+.box{border:1px solid;border-radius:10px;padding:12px 14px;font-size:.9rem}
+.box .bl{font-size:.7rem;font-weight:700;letter-spacing:.04em;display:block;margin-bottom:2px}
+.box.tip{background:var(--tip-bg);border-color:var(--tip-line);color:var(--tip-ink)}
+.box.warn{background:var(--warn-bg);border-color:var(--warn-line);color:var(--warn-ink)}
+.box.more{background:var(--more-bg);border-color:var(--more-line);color:var(--more-ink)}
+
+.prompt{border:1px solid var(--line-strong);border-radius:10px;overflow:hidden}
+.prompt-top{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:6px 10px 6px 14px;background:var(--code-bg);border-bottom:1px solid var(--line);font-size:.7rem;color:var(--ink-soft)}
+.copy{border:1px solid var(--accent);background:var(--paper);color:var(--accent);border-radius:8px;padding:2px 12px;font-size:.75rem;cursor:pointer}
+.copy.done{background:var(--accent);color:var(--accent-ink)}
+.prompt pre{margin:0;padding:12px 14px;font-family:var(--f-mono);font-size:.78rem;line-height:1.6;white-space:pre-wrap;overflow-wrap:anywhere;background:var(--paper)}
+.prompt .ko{padding:10px 14px;border-top:1px dashed var(--line);font-size:.85rem;color:var(--ink-soft)}
+
+table.spec{width:100%;border-collapse:collapse;font-size:.85rem;font-variant-numeric:tabular-nums}
+.spec th,.spec td{border-bottom:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+.spec th{font-weight:500;color:var(--ink-soft);font-size:.75rem}
+.tbl{overflow-x:auto}
+.check{list-style:none;padding:0!important}
+.check li{display:flex;gap:10px;align-items:flex-start}
+.check input{width:1.1em;height:1.1em;margin-top:.35em;accent-color:var(--accent);flex:0 0 auto}
+
+figure{margin:0}
+.fig{overflow-x:auto}
+.fig svg{display:block;width:100%;height:auto;min-width:520px}
+figcaption{font-size:.75rem;color:var(--ink-soft);margin-top:6px}
+.swatches{display:flex;gap:8px;flex-wrap:wrap;align-items:center;font-size:.8rem}
+.sw{width:30px;height:30px;border-radius:50%;border:2px solid var(--paper);box-shadow:0 0 0 1px var(--line-strong);cursor:pointer}
+.sw[aria-pressed="true"]{box-shadow:0 0 0 3px var(--accent)}
+
+/* 설명 영상 (하이퍼프레임 방식: HTML 장면 + GSAP 타임라인 + Three.js, 소리 없이 자막만) */
+.vid{border:1px solid var(--line);border-radius:12px;background:var(--paper);overflow:hidden}
+.vstage{position:relative;aspect-ratio:16/9;background:#F4F6F3;color:#1F2621;overflow:hidden;container-type:inline-size;font-family:var(--f-body)}
+.vstage .v3d{position:absolute;left:0;top:0;width:100%;height:100%;display:block}
+.vlayer{position:absolute;inset:0}
+.vcap{display:grid;grid-template-columns:auto 1fr;column-gap:.7rem;align-items:baseline;padding:.7rem 1rem;border-top:1px solid var(--line);min-height:6em}
+.vno{font-family:var(--f-mono);font-size:.7rem;color:var(--accent);background:var(--accent-soft);border-radius:99px;padding:0 .6rem;white-space:nowrap}
+.vtt{font-size:.95rem}
+.vtx{grid-column:1/-1;margin:.3rem 0 0;font-size:.95rem;line-height:1.6}
+.vbar{display:flex;flex-wrap:wrap;gap:.45rem;align-items:center;padding:.5rem .8rem;border-top:1px solid var(--line);background:var(--code-bg)}
+.vb{font-size:.78rem;border:1px solid var(--line-strong);background:var(--paper);border-radius:8px;padding:.2rem .8rem;cursor:pointer}
+.vb.vplay{border-color:var(--accent);color:var(--accent);font-weight:700}
+.vb.vplay.on{background:var(--accent);color:var(--accent-ink)}
+.vseek{flex:1 1 140px;min-width:0;accent-color:var(--accent)}
+.vchips{display:flex;gap:.25rem;flex-wrap:wrap}
+.vchip{font-size:.7rem;width:2em;height:2em;border-radius:50%;border:1px solid var(--line-strong);background:var(--paper);cursor:pointer;padding:0}
+.vchip.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:700}
+.vscript{display:none;margin:0;padding:.8rem 1.2rem .9rem 2.4rem;font-size:.85rem;border-top:1px solid var(--line)}
+.vscript li{margin:.25rem 0}
+.vid.nolib .vstage,.vid.nolib .vbar,.vid.nolib .vcap{display:none}
+.vid.nolib .vscript{display:block}
+/* 영상 속 글 상자 (영상 화면은 밝은 화면으로 고정) */
+.vt{position:absolute;background:#FFFFFF;border:1px solid #CFD6CF;border-radius:12px;padding:.8cqw 1.4cqw;font-size:1.9cqw;line-height:1.45;color:#1F2621;box-shadow:0 6px 18px rgba(30,45,35,.08)}
+.vt b{display:block;font-size:2.2cqw;color:#2D6A4F}
+.vt.png b{color:#B5543C}.vt.png{border-color:#E6C2B6}
+.vt.warn{border-color:#E7B9C0;color:#7A2E3A}.vt.warn b{color:#B23A4C}
+.vpill{position:absolute;transform:translate(-50%,-50%);white-space:nowrap;background:#FFFFFF;border:1.5px solid #2D6A4F;color:#2D6A4F;border-radius:99px;padding:.4cqw 1.4cqw;font-size:1.8cqw;font-weight:700}
+.vpill.png{border-color:#B5543C;color:#B5543C}
+.vx{position:absolute;font-size:9cqw;line-height:1;color:#C23B4E;font-weight:700;transform:translate(-50%,-50%)}
+/* PNG 마감 영상 */
+.pf{position:absolute;inset:0;background:#F4F6F3}
+.pf-card{position:absolute;left:8%;top:9%;width:43%;aspect-ratio:1;border-radius:10px;overflow:hidden;box-shadow:0 10px 30px rgba(30,45,35,.12);background:#fff}
+.pf-bg,.pf-chk,.pf-art{position:absolute;inset:0}
+.pf-bg{background:#E3E5E2}
+.pf-chk{background-color:#fff;background-image:linear-gradient(45deg,#E4E7E4 25%,transparent 25%),linear-gradient(-45deg,#E4E7E4 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#E4E7E4 75%),linear-gradient(-45deg,transparent 75%,#E4E7E4 75%);background-size:4cqw 4cqw;background-position:0 0,0 2cqw,2cqw -2cqw,-2cqw 0}
+.pf-art svg{width:100%;height:100%;display:block}
+.pf-crop{position:absolute;left:0;top:0;right:0;bottom:0;border:2px dashed #2D6A4F;box-shadow:0 0 0 999px rgba(20,30,25,.45)}
+.pf-px{position:absolute;left:8%;top:84%;font-family:var(--f-mono);font-size:2.2cqw;color:#2D6A4F;font-weight:500}
+.pf-steps{position:absolute;left:57%;top:9%;width:37%;margin:0;padding:0;list-style:none;display:grid;gap:1.1cqw}
+.pf-steps li{background:#fff;border:1px solid #DCE1DB;border-radius:10px;padding:1cqw 1.4cqw;font-size:1.8cqw;color:#7C857F;display:flex;gap:1cqw;align-items:center}
+.pf-steps li i{font-style:normal;font-family:var(--f-mono);font-size:1.5cqw;width:2.8cqw;height:2.8cqw;border-radius:50%;border:1.5px solid #C9CEC6;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto}
+.pf-steps li.on{background:#E4F0E9;border-color:#2D6A4F;color:#1F2621;font-weight:700}
+.pf-steps li.on i{background:#2D6A4F;border-color:#2D6A4F;color:#fff}
+.pf-steps li.done{color:#1F2621}
+.pf-steps li.done i{border-color:#2D6A4F;color:#2D6A4F}
+.pf-up{position:absolute;left:57%;top:9%;width:37%;background:#fff;border:1px solid #CFD6CF;border-radius:12px;padding:1.6cqw;display:grid;gap:1cqw;font-size:1.8cqw;box-shadow:0 10px 30px rgba(30,45,35,.12)}
+.pf-up h4{margin:0;font-size:2cqw}
+.pf-opt{border:1.5px solid #DCE1DB;border-radius:8px;padding:.8cqw 1.2cqw;display:flex;justify-content:space-between}
+.pf-ai{display:flex;gap:1cqw;align-items:center}
+.pf-ai i{font-style:normal;width:2.4cqw;height:2.4cqw;border:2px solid #B9C4BC;border-radius:4px;display:inline-flex;align-items:center;justify-content:center;color:#fff;font-size:1.6cqw}
+.pf-wait{justify-self:start;background:#E4F0E9;color:#2D6A4F;border-radius:99px;padding:.3cqw 1.4cqw;font-weight:700}
+/* SVG 규칙 영상 */
+.sr{position:absolute;inset:0;background:#F4F6F3}
+.sr-p{position:absolute;inset:0}
+.sr-sw{position:absolute;width:6.5cqw;height:6.5cqw;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 1px #C9CEC6;transform:translate(-50%,-50%)}
+.sr-cnt{position:absolute;left:50%;top:80%;transform:translateX(-50%);font-size:2.6cqw;font-weight:700;color:#2D6A4F;font-family:var(--f-display)}
+.sr-bell{position:absolute}
+.sr-bell svg{width:100%;height:100%;display:block}
+.sr-black{position:absolute;left:12%;top:12%;width:76%;height:66%;background:#1E2420;border-radius:12px}
+.sr-blk{position:absolute;top:22%;height:56%;width:20%}
+.sr-hair{position:absolute;top:18%;height:64%;width:2px;left:50%;background:repeating-linear-gradient(#fff 0 5px,transparent 5px 9px)}
+.sr-page{position:absolute;border:2px dashed #2D6A4F;background:rgba(255,255,255,.6)}
+.sr-kbd{position:absolute;font-family:var(--f-mono);font-size:2cqw;background:#fff;border:1px solid #C9CEC6;border-bottom-width:3px;border-radius:6px;padding:.3cqw 1cqw;transform:translateX(-50%)}
+.sr-note{position:absolute;left:10%;top:10%;width:80%;height:72%;background:#fff;border:1px solid #CFD6CF;border-radius:10px;overflow:hidden;box-shadow:0 10px 30px rgba(30,45,35,.12)}
+.sr-note .bar{background:#EEF1ED;padding:.6cqw 1.4cqw;font-size:1.6cqw;color:#56605A;display:flex;justify-content:space-between}
+.sr-note .find{background:#fff;border:1px solid #9FB3A6;border-radius:6px;padding:.1cqw 1cqw;font-family:var(--f-mono);min-width:14cqw}
+.sr-note pre{margin:0;padding:1.4cqw;font-family:var(--f-mono);font-size:1.75cqw;line-height:1.7;white-space:pre;color:#2E3A33}
+.sr-note .hl{background:#FCE3A7;border-radius:3px}
+.sr-meter{position:absolute;left:12%;top:38%;width:76%;height:9%;background:#fff;border:1px solid #CFD6CF;border-radius:99px;overflow:hidden}
+.sr-fill{position:absolute;left:0;top:0;bottom:0;width:0;background:#C23B4E}
+.sr-line{position:absolute;top:30%;height:25%;width:2px;background:#1F2621}
+.sr-lab{position:absolute;font-size:1.8cqw;transform:translateX(-50%);white-space:nowrap}
+.sr-big{position:absolute;left:50%;top:66%;transform:translateX(-50%);font-family:var(--f-display);font-size:3.4cqw;font-weight:700}
+
+/* 하단 */
+.bottom{position:sticky;bottom:0;z-index:20;background:var(--bg);border-top:1px solid var(--line)}
+.bottom-row{display:flex;gap:8px;align-items:center;padding-block:10px calc(10px + env(safe-area-inset-bottom,0px));flex-wrap:wrap}
+.nav-btn{border:1px solid var(--line-strong);background:var(--paper);border-radius:10px;padding:6px 16px;cursor:pointer;font-size:.85rem}
+.nav-btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.nav-btn:disabled{opacity:.4;cursor:default}
+.bottom select{border:1px solid var(--line-strong);background:var(--paper);border-radius:10px;padding:6px 8px;font-size:.8rem;min-width:0;max-width:100%}
+.sel-wrap{display:flex;gap:8px;flex:1 1 280px;min-width:0}
+.sel-wrap select{flex:1 1 0}
+.qa-btn{border:1px dashed var(--accent);background:var(--paper);color:var(--accent);border-radius:10px;padding:6px 14px;cursor:pointer;font-size:.85rem}
+
+.qa-list{display:grid;gap:10px}
+.qa-list details{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:12px 16px}
+.qa-list summary{cursor:pointer;font-weight:500}
+.qa-list dl{margin:8px 0 0;display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:.9rem}
+.qa-list dt{color:var(--ink-soft)}
+.qa-list dd{margin:0}
+
+@media (max-width:980px){.layout{grid-template-columns:minmax(0,1fr)}.side{display:none}}
+@media (max-width:720px){.grid{grid-template-columns:minmax(0,1fr)}.title{font-size:1.1rem}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+
+<header class="top">
+  <div class="wrap">
+    <div class="top-row">
+      <div class="title-box">
+        <div class="eyebrow">양천구 평생학습관 · AI 이미지 수익화 · 6회차</div>
+        <h1 class="title">같은 크리스마스, 다른 설계 — PNG 요소 · SVG 요소</h1>
+      </div>
+      <div class="fsbox" role="group" aria-label="글자 크기">
+        <button type="button" data-fs="18" aria-pressed="false">가-</button>
+        <button type="button" data-fs="20" aria-pressed="true">가</button>
+        <button type="button" data-fs="23" aria-pressed="false">가+</button>
+        <button type="button" data-fs="26" aria-pressed="false">가++</button>
+      </div>
+    </div>
+    <nav class="tabs" id="tabs" role="tablist" aria-label="STEP"></nav>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="layout">
+    <main id="main">
+
+<!-- STEP 0 -->
+<section class="step" data-step="0" data-name="오늘의 지도">
+  <div class="step-head"><span class="no">STEP 0</span><h2>오늘의 지도</h2><p>크리스마스 소재 하나로 PNG 요소 1개, SVG 요소 1개를 만들어 디자인허브에 심사 요청 2건을 넣습니다. 두 요소는 만드는 방법이 처음부터 다릅니다.</p></div>
+  <div class="grid">
+    <article class="card wide" data-title="요약 영상 · 오늘 만드는 두 요소">
+      <h3><span class="cn">▶</span>요약 영상 · 오늘 만드는 두 요소</h3>
+      <div class="vid" data-v="summary"><div class="vstage"></div></div>
+      <p style="font-size:.8rem;color:var(--ink-soft)">소리 없이 자막으로 설명합니다. 장면 번호를 누르면 그 장면에서 멈춥니다.</p>
+    </article>
+    <article class="card" data-title="두 요소, 무엇이 다른가">
+      <h3><span class="cn">0-1</span>두 요소, 무엇이 다른가</h3>
+      <p><span class="tag png">PNG 요소</span> 완성된 그림입니다. 색이 고정되어 있어서 입체감, 그라데이션, 질감을 마음껏 넣어도 됩니다.</p>
+      <p><span class="tag svg">SVG 요소</span> 미리캔버스 사용자가 <b>색을 바꿔 쓰는</b> 그림입니다. 그래서 색 5개 이하, 단순한 면, 150KB 이하로 만듭니다.</p>
+      <div class="box warn"><span class="bl">꼭 기억</span>같은 그림은 SVG와 PNG 중 <b>하나로만</b> 올릴 수 있습니다. 그래서 오늘은 산타(PNG)와 종(SVG)처럼 처음부터 다른 그림으로 만듭니다.</div>
+    </article>
+    <article class="card" data-title="직접 눌러보기: 색이 바뀌는 그림">
+      <h3><span class="cn">0-2</span>직접 눌러보기: 색이 바뀌는 그림</h3>
+      <figure>
+        <div class="fig"><svg viewBox="0 0 520 210" role="img" aria-label="왼쪽은 그라데이션 산타 공, 오른쪽은 색을 바꿀 수 있는 단색 종">
+          <defs><radialGradient id="g1" cx="35%" cy="30%" r="75%"><stop offset="0" stop-color="#FFD9C9"/><stop offset=".45" stop-color="#D9583E"/><stop offset="1" stop-color="#7A2416"/></radialGradient></defs>
+          <text x="120" y="22" text-anchor="middle" font-size="14" fill="var(--png)" font-weight="700">PNG — 색 고정</text>
+          <circle cx="120" cy="115" r="62" fill="url(#g1)"/>
+          <rect x="108" y="44" width="24" height="16" rx="3" fill="#C9A646"/>
+          <ellipse cx="98" cy="92" rx="16" ry="9" fill="#FFFFFF" opacity=".55"/>
+          <text x="120" y="200" text-anchor="middle" font-size="12" fill="var(--ink-soft)">그라데이션·광택 OK</text>
+          <line x1="260" y1="30" x2="260" y2="190" stroke="var(--line-strong)" stroke-dasharray="4 4"/>
+          <text x="390" y="22" text-anchor="middle" font-size="14" fill="var(--svg)" font-weight="700">SVG — 색 바꾸기</text>
+          <g id="bell">
+            <path id="bellBody" d="M390 52 C350 52 340 90 338 130 L330 150 L450 150 L442 130 C440 90 430 52 390 52 Z" fill="#E0A82E"/>
+            <circle id="bellClap" cx="390" cy="160" r="12" fill="#8A5A1A"/>
+            <path id="bellRibbon" d="M372 44 L390 56 L408 44 L404 62 L390 58 L376 62 Z" fill="#C0392B"/>
+          </g>
+          <text x="390" y="200" text-anchor="middle" font-size="12" fill="var(--ink-soft)">단색 면 3개</text>
+        </svg></div>
+        <figcaption>아래 색을 누르면 종의 몸통 색이 바뀝니다. 미리캔버스에서 SVG 요소가 이렇게 쓰입니다.</figcaption>
+      </figure>
+      <div class="swatches" role="group" aria-label="종 색 바꾸기">
+        <span>몸통 색:</span>
+        <button type="button" class="sw" style="background:#E0A82E" data-c="#E0A82E" aria-pressed="true" aria-label="금색"></button>
+        <button type="button" class="sw" style="background:#3E7CB1" data-c="#3E7CB1" aria-pressed="false" aria-label="파랑"></button>
+        <button type="button" class="sw" style="background:#2D6A4F" data-c="#2D6A4F" aria-pressed="false" aria-label="초록"></button>
+        <button type="button" class="sw" style="background:#B04A86" data-c="#B04A86" aria-pressed="false" aria-label="자주"></button>
+      </div>
+    </article>
+    <article class="card wide" data-title="오늘의 두 갈래 길">
+      <h3><span class="cn">0-3</span>오늘의 두 갈래 길</h3>
+      <figure>
+        <div class="fig"><svg viewBox="0 0 960 200" role="img" aria-label="PNG 요소와 SVG 요소 제작 흐름">
+          <g font-size="13" text-anchor="middle">
+            <text x="10" y="40" text-anchor="start" font-size="14" font-weight="700" fill="var(--png)">PNG</text>
+            <g fill="var(--paper)" stroke="var(--png)">
+              <rect x="60" y="18" width="128" height="40" rx="8"/><rect x="210" y="18" width="128" height="40" rx="8"/><rect x="360" y="18" width="128" height="40" rx="8"/><rect x="510" y="18" width="128" height="40" rx="8"/><rect x="660" y="18" width="128" height="40" rx="8"/><rect x="810" y="18" width="140" height="40" rx="8" fill="var(--png)"/>
+            </g>
+            <g fill="var(--ink)"><text x="124" y="43">미드저니(화려하게)</text><text x="274" y="43">업스케일</text><text x="424" y="43">배경 제거</text><text x="574" y="43">포토피아 크롭</text><text x="724" y="43">PNG 저장</text></g>
+            <text x="880" y="43" fill="var(--paper)" font-weight="700">PNG 요소 업로드</text>
+            <g stroke="var(--png)" stroke-width="1.5"><path d="M188 38h22M338 38h22M488 38h22M638 38h22M788 38h22"/></g>
+            <text x="10" y="140" text-anchor="start" font-size="14" font-weight="700" fill="var(--svg)">SVG</text>
+            <g fill="var(--paper)" stroke="var(--svg)">
+              <rect x="60" y="118" width="128" height="40" rx="8"/><rect x="210" y="118" width="128" height="40" rx="8"/><rect x="360" y="118" width="128" height="40" rx="8"/><rect x="510" y="118" width="128" height="40" rx="8"/><rect x="660" y="118" width="128" height="40" rx="8"/><rect x="810" y="118" width="140" height="40" rx="8" fill="var(--svg)"/>
+            </g>
+            <g fill="var(--ink)"><text x="124" y="143">미드저니(단순하게)</text><text x="274" y="143">잉크스케이프 추적</text><text x="424" y="143">색 5개로 정리</text><text x="574" y="143">크랙 받침·크롭</text><text x="724" y="143">evenodd·용량</text></g>
+            <text x="880" y="143" fill="var(--paper)" font-weight="700">SVG 요소 업로드</text>
+            <g stroke="var(--svg)" stroke-width="1.5"><path d="M188 138h22M338 138h22M488 138h22M638 138h22M788 138h22"/></g>
+            <text x="124" y="80" fill="var(--ink-soft)" font-size="12">STEP 1</text><text x="424" y="80" fill="var(--ink-soft)" font-size="12">STEP 2</text>
+            <text x="124" y="180" fill="var(--ink-soft)" font-size="12">STEP 3</text><text x="274" y="180" fill="var(--ink-soft)" font-size="12">STEP 4</text><text x="574" y="180" fill="var(--ink-soft)" font-size="12">STEP 5</text><text x="880" y="180" fill="var(--ink-soft)" font-size="12">STEP 6</text>
+          </g>
+        </svg></div>
+        <figcaption>위 길이 PNG, 아래 길이 SVG입니다. 출발점(미드저니로 뽑는 방식)부터 다릅니다.</figcaption>
+      </figure>
+    </article>
+    <article class="card" data-title="파일 규격표">
+      <h3><span class="cn">0-4</span>파일 규격표</h3>
+      <div class="tbl"><table class="spec">
+        <thead><tr><th></th><th>PNG 요소</th><th>SVG 요소</th></tr></thead>
+        <tbody>
+          <tr><td>확장자</td><td>PNG</td><td>SVG</td></tr>
+          <tr><td>해상도</td><td>120dpi</td><td>72dpi</td></tr>
+          <tr><td>최소 크기</td><td>700px (아이콘·이모티콘·캐릭터)<br>1,500px (그 외 일러스트)</td><td>없음</td></tr>
+          <tr><td>최대 크기</td><td>9,800px</td><td>6,000px</td></tr>
+          <tr><td>최대 용량</td><td>50MB</td><td><b>150KB</b></td></tr>
+        </tbody>
+      </table></div>
+      <p style="font-size:.75rem;color:var(--ink-soft)">출처: 디자인허브 기여자 가이드 「파일 규격 확인하기」 (2026.10.12 확인)</p>
+    </article>
+    <article class="card" data-title="두 요소 공통 약속">
+      <h3><span class="cn">0-5</span>두 요소 공통 약속</h3>
+      <ol>
+        <li>요소 크기에 <b>딱 맞게 크롭</b>합니다.</li>
+        <li>한 파일에 <b>피사체 하나</b>만 둡니다.</li>
+        <li>색만 바꾼 같은 요소는 올릴 수 없습니다.</li>
+        <li>AI로 만들었으면 <b>AI 체크 필수</b>입니다. 포토피아로 손봤어도 체크합니다.</li>
+        <li>내가 직접 쓴 프롬프트만 냅니다. 같은 프롬프트로 여러 장 뽑아 대량으로 내면 반려됩니다.</li>
+      </ol>
+      <div class="box tip"><span class="bl">쉽게 말하면</span>흰색(#FFFFFF)과 진회색(#353840)은 미리캔버스 에디터 배경과 같은 색이라 요소 목록에서 안 보입니다. 그래서 흰 테두리 스티커는 오늘 만들지 않습니다.</div>
+    </article>
+  </div>
+</section>
+
+<!-- STEP 1 -->
+<section class="step" data-step="1" data-name="PNG 화려하게" hidden>
+  <div class="step-head"><span class="no">STEP 1 · PNG 요소</span><h2>화려하게 만들기</h2><p>PNG는 색이 고정되는 대신 무엇이든 표현할 수 있습니다. SVG로는 못 하는 입체감과 그라데이션을 일부러 살립니다.</p></div>
+  <div class="grid">
+    <article class="card" data-title="PNG의 무기">
+      <h3><span class="cn">1-1</span>PNG의 무기</h3>
+      <ul>
+        <li>3D 점토, 유리, 털실 같은 <b>재질감</b></li>
+        <li>빛이 번지는 <b>그라데이션</b>과 광택</li>
+        <li>수채화, 색연필 같은 <b>붓 터치</b></li>
+      </ul>
+      <p>이런 그림은 색을 몇 개로 나눌 수가 없어서 SVG로 바꾸면 깨지거나 용량이 터집니다. 그래서 PNG로 냅니다.</p>
+    </article>
+    <article class="card" data-title="다 같이: 3D 산타 만들기">
+      <h3><span class="cn">1-2</span>다 같이: 3D 산타 만들기</h3>
+      <div class="prompt"><div class="prompt-top"><span>미드저니 · Create</span><button type="button" class="copy">복사</button></div>
+<pre>a cute 3D clay Santa Claus character waving one hand, soft gradient lighting, glossy texture, rich warm colors, full body, single character only, centered, isolated on a plain light gray background, no shadow on the ground --ar 1:1 --s 200</pre>
+        <div class="ko">뜻: 한 손을 흔드는 귀여운 3D 점토 산타, 부드러운 그라데이션 조명, 광택 질감, 따뜻한 색, 전신, <b>캐릭터 한 명만</b>, 가운데, 밝은 회색 단색 배경, 바닥 그림자 없음</div>
+      </div>
+      <div class="box warn"><span class="bl">막힐 때</span>산타가 둘 나오거나 선물 상자가 따로 떨어져 있으면 "피사체 하나" 규칙에 걸립니다. <code>single character only</code>가 들어 있는지 보고 다시 생성합니다.</div>
+    </article>
+    <article class="card" data-title="왜 회색 배경, 왜 그림자 금지">
+      <h3><span class="cn">1-3</span>왜 회색 배경, 왜 그림자 금지</h3>
+      <p>배경 제거 도구는 "피사체와 배경의 경계"를 찾아서 지웁니다. 배경이 한 가지 색이고 바닥 그림자가 없으면 경계가 또렷해서 깔끔하게 빠집니다.</p>
+      <p>지난 시간 책상이 붙어 있던 그림은 경계가 없어서 지우기 힘들었습니다. 오늘은 처음부터 지우기 쉬운 그림으로 뽑습니다.</p>
+      <div class="box tip"><span class="bl">쉽게 말하면</span>지우개질 할 그림은 처음부터 배경을 비워서 그립니다.</div>
+    </article>
+    <article class="card" data-title="내 것 하나 더: 프롬프트 바꿔 쓰기">
+      <h3><span class="cn">1-4</span>내 것 하나 더: 프롬프트 바꿔 쓰기</h3>
+      <p>틀: <b>[소재] + [재질·화풍] + [색감]</b> + 뒤쪽 고정 문장</p>
+      <div class="prompt"><div class="prompt-top"><span>예시 ① 3D 루돌프</span><button type="button" class="copy">복사</button></div>
+<pre>a cheerful Rudolph reindeer with a glowing red nose, 3D felt toy style, soft fuzzy texture, cozy warm palette, single character only, centered, isolated on a plain light gray background, no shadow --ar 1:1 --s 200</pre></div>
+      <div class="prompt"><div class="prompt-top"><span>예시 ② 수채화 트리</span><button type="button" class="copy">복사</button></div>
+<pre>a small Christmas tree decorated with gold ornaments, loose watercolor illustration, soft color bleeding, gentle pastel greens, single object only, centered, isolated on a plain light gray background, no shadow --ar 1:1 --s 250</pre></div>
+      <div class="box more"><span class="bl">한 걸음 더</span>유리 오너먼트, 털실 장갑, 진저브레드 쿠키처럼 소재를 바꿔 <b>프롬프트를 새로</b> 씁니다. 같은 프롬프트를 여러 번 돌려 비슷한 그림을 대량으로 내면 어뷰징으로 반려됩니다.</div>
+    </article>
+    <article class="card wide" data-title="시간 되면: 스티커 형태 PNG 요소">
+      <h3><span class="cn">1-5</span>시간 되면: 스티커 형태 PNG 요소</h3>
+      <div class="grid">
+        <div style="display:grid;gap:12px">
+          <p>테두리가 둘러진 스티커 모양도 PNG 요소로 낼 수 있습니다. 카드, 상세페이지, SNS에 붙이기 좋아서 찾는 사람이 많아요.</p>
+          <div class="box warn"><span class="bl">흰 테두리는 피하기</span>순백(#FFFFFF)은 미리캔버스 에디터 배경과 같은 색이라 요소 목록에서 테두리가 안 보입니다. 테두리는 <b>크림색</b>이나 <b>연한 색</b>으로 뽑습니다.</div>
+          <div class="box tip"><span class="bl">왜 회색 배경</span>크림색 테두리와 배경이 구분돼야 배경 제거 도구가 테두리까지 지우지 않습니다.</div>
+          <div class="box more"><span class="bl">한 걸음 더</span>같은 캐릭터로 표정만 바꾼 스티커 3장을 만들고, 프롬프트도 장마다 표정·동작을 바꿔 새로 씁니다. 다음 시간 GIF 재료로도 쓸 수 있어요.</div>
+        </div>
+        <div style="display:grid;gap:12px">
+          <div class="prompt"><div class="prompt-top"><span>미드저니 · 스티커 산타</span><button type="button" class="copy">복사</button></div>
+<pre>a die-cut sticker of a cute chubby Santa Claus giving a thumbs up, thick cream-colored sticker border around the whole figure, soft gradient shading, glossy vinyl sticker look, single character only, centered, isolated on a plain medium gray background, no shadow --ar 1:1 --s 200</pre>
+            <div class="ko">뜻: 엄지를 치켜든 통통한 산타 다이컷 스티커, 몸 전체를 두르는 <b>두꺼운 크림색 테두리</b>, 부드러운 그라데이션, 광택 비닐 스티커 느낌, 캐릭터 한 명, 가운데, 중간 회색 단색 배경, 그림자 없음</div>
+          </div>
+          <div class="prompt"><div class="prompt-top"><span>예시 · 스티커 루돌프 (다른 프롬프트)</span><button type="button" class="copy">복사</button></div>
+<pre>a die-cut sticker of a sleepy baby reindeer wrapped in a red scarf, thick pale mint sticker border around the whole figure, cozy pastel colors, matte paper sticker texture, single character only, centered, isolated on a plain medium gray background, no shadow --ar 1:1 --s 200</pre></div>
+        </div>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- STEP 2 -->
+<section class="step" data-step="2" data-name="PNG 마감·업로드" hidden>
+  <div class="step-head"><span class="no">STEP 2 · PNG 요소</span><h2>마감하고 올리기</h2><p>업스케일 → 배경 제거 → 포토피아 크롭 → 업로드. 지난 시간에 한 번 해본 길이라 오늘은 규격만 정확히 맞춥니다.</p></div>
+  <div class="grid">
+    <article class="card wide" data-title="설명 영상 · PNG 마감 다섯 단계">
+      <h3><span class="cn">▶</span>설명 영상 · PNG 마감 다섯 단계</h3>
+      <div class="vid" data-v="pngflow"><div class="vstage"></div></div>
+    </article>
+    <article class="card" data-title="업스케일">
+      <h3><span class="cn">2-1</span>업스케일</h3>
+      <ol>
+        <li>마음에 드는 1장에 마우스 오른쪽 버튼 → <b>Upscale</b></li>
+        <li><b>Subtle</b>은 그대로 키우고, <b>Creative</b>는 디테일을 더해 키웁니다. 둘 다 괜찮습니다.</li>
+        <li>완성되면 다운로드합니다.</li>
+      </ol>
+    </article>
+    <article class="card" data-title="배경 제거">
+      <h3><span class="cn">2-2</span>배경 제거</h3>
+      <ol>
+        <li>구글에서 <b>어도비 배경 제거</b> 검색 → 무료 도구에 그림을 끌어다 놓기</li>
+        <li>깔끔하게 빠졌는지 확인하고 다운로드</li>
+      </ol>
+      <div class="box warn"><span class="bl">막힐 때</span>공용 PC라 다운로드가 막히면 <b>윈도우 사진 앱</b>으로 엽니다. 편집 → <b>배경</b> → <b>제거</b> → 복사본으로 저장.</div>
+    </article>
+    <article class="card" data-title="포토피아 크롭·크기">
+      <h3><span class="cn">2-3</span>포토피아 크롭·크기</h3>
+      <ol>
+        <li>파일 → 열기</li>
+        <li>크롭 도구(<kbd>C</kbd>)로 산타 몸에 <b>달랑말랑</b> 맞게 자르고 <kbd>Enter</kbd></li>
+        <li><kbd>V</kbd>를 눌러 이동 도구로 돌아오기</li>
+        <li>이미지 → 이미지 크기 → <b>긴 변 2,000px 정도</b>로 맞추기</li>
+        <li>파일 → <b>PSD로 저장</b> (나중에 고칠 때 쓰는 원본)</li>
+        <li>파일 → 내보내기 → <b>PNG</b></li>
+      </ol>
+      <div class="box tip"><span class="bl">단축키</span>화면 확대·축소는 <kbd>Alt</kbd>+휠, 화면 옮기기는 <kbd>Space</kbd>를 누른 채 끌기. <kbd>Ctrl</kbd>+휠은 브라우저 전체가 커집니다.</div>
+    </article>
+    <article class="card" data-title="몇 px이면 되나">
+      <h3><span class="cn">2-4</span>몇 px이면 되나</h3>
+      <p>PNG 요소는 그림 종류에 따라 최소 크기가 다릅니다.</p>
+      <ul>
+        <li>아이콘·이모티콘·<b>캐릭터</b>: 최소 <b>700px</b></li>
+        <li>그 외 일러스트(풍경, 장식 묶음 등): 최소 <b>1,500px</b></li>
+      </ul>
+      <p>산타는 캐릭터라 700px이면 통과지만, 쓰는 사람이 크게 쓸 수 있도록 2,000px 정도로 넉넉히 맞춥니다.</p>
+    </article>
+    <article class="card wide" data-title="디자인허브 업로드: PNG 요소">
+      <h3><span class="cn">2-5</span>디자인허브 업로드: PNG 요소</h3>
+      <div class="grid">
+        <ol>
+          <li>디자인허브 → 콘텐츠 업로드 → 단일 업로드</li>
+          <li>콘텐츠 타입: <span class="tag png">PNG 요소</span> (배경 제거 사진 아님)</li>
+          <li><b>생성형 AI로 만든 콘텐츠</b> 체크</li>
+          <li>제목·키워드 입력 (오른쪽 프롬프트로 챗GPT에게)</li>
+          <li>승인 요청</li>
+        </ol>
+        <div class="prompt"><div class="prompt-top"><span>챗GPT · 키워드</span><button type="button" class="copy">복사</button></div>
+<pre>미리캔버스 디자인허브에 올릴 PNG 요소야.
+주제: 한 손을 흔드는 3D 점토 산타 캐릭터.
+검색에 걸릴 한국어 키워드 20개를 쉼표로만 나열해 줘.
+시즌어 5개, 대상어 5개, 분위기어 5개, 활용처(카드·배너·상세페이지·SNS) 5개.
+제목 후보도 3개 줘.</pre></div>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- STEP 3 -->
+<section class="step" data-step="3" data-name="SVG 단순하게" hidden>
+  <div class="step-head"><span class="no">STEP 3 · SVG 요소</span><h2>단순하게 설계하기</h2><p>SVG는 미드저니에서 뽑을 때부터 "벡터로 바꾸기 쉬운 그림"으로 뽑아야 합니다. 여기서 성패가 갈립니다.</p></div>
+  <div class="grid">
+    <article class="card wide" data-title="왜 단순해야 하나">
+      <h3><span class="cn">3-1</span>왜 단순해야 하나</h3>
+      <figure>
+        <div class="fig"><svg viewBox="0 0 900 220" role="img" aria-label="그라데이션 그림은 조각이 많아지고 단색 그림은 조각이 적다">
+          <defs><linearGradient id="g2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F3C55B"/><stop offset="1" stop-color="#B5543C"/></linearGradient></defs>
+          <text x="20" y="24" font-size="14" font-weight="700" fill="var(--png)">그라데이션 그림</text>
+          <rect x="20" y="40" width="130" height="130" rx="14" fill="url(#g2)"/>
+          <path d="M165 105h50" stroke="var(--ink-soft)" stroke-width="1.5"/><path d="M208 99l8 6-8 6" fill="none" stroke="var(--ink-soft)" stroke-width="1.5"/>
+          <g id="manySlices"></g>
+          <text x="20" y="200" font-size="13" fill="var(--ink)">추적하면 색 띠 조각이 수백~수천 개 → <tspan font-weight="700" fill="var(--png)">150KB 초과</tspan></text>
+          <text x="480" y="24" font-size="14" font-weight="700" fill="var(--svg)">단색 면 그림</text>
+          <g transform="translate(480,40)"><rect width="130" height="130" rx="14" fill="#F3C55B"/><path d="M0 85 L130 85 L130 116 Q130 130 116 130 L14 130 Q0 130 0 116Z" fill="#B5543C"/><circle cx="92" cy="40" r="20" fill="#2D6A4F"/></g>
+          <path d="M625 105h50" stroke="var(--ink-soft)" stroke-width="1.5"/><path d="M668 99l8 6-8 6" fill="none" stroke="var(--ink-soft)" stroke-width="1.5"/>
+          <g transform="translate(690,40)" fill="none" stroke="var(--svg)" stroke-width="2"><rect width="130" height="130" rx="14"/><path d="M0 85 L130 85"/><circle cx="92" cy="40" r="20"/></g>
+          <text x="480" y="200" font-size="13" fill="var(--ink)">추적하면 조각 3개 → <tspan font-weight="700" fill="var(--svg)">가볍고 색 바꾸기 쉬움</tspan></text>
+        </svg></div>
+        <figcaption>SVG는 "색 면 조각"의 모음입니다. 조각이 적을수록 용량이 작고, 쓰는 사람이 색 바꾸기도 쉽습니다.</figcaption>
+      </figure>
+    </article>
+    <article class="card" data-title="다 같이: 종 아이콘 만들기">
+      <h3><span class="cn">3-2</span>다 같이: 종 아이콘 만들기</h3>
+      <div class="prompt"><div class="prompt-top"><span>미드저니 · Create</span><button type="button" class="copy">복사</button></div>
+<pre>flat vector icon of a Christmas bell with a ribbon, simple bold geometric shapes, only 4 solid colors, no gradient, no texture, no shading, no outline stroke, single object, centered, isolated on a plain light gray background --ar 1:1 --raw --s 50</pre>
+        <div class="ko">뜻: 리본 달린 크리스마스 종 플랫 벡터 아이콘, 단순하고 굵은 도형, <b>단색 4개만</b>, 그라데이션·질감·명암·외곽선 없음, 물체 하나, 가운데, 밝은 회색 단색 배경</div>
+      </div>
+      <div class="box warn"><span class="bl">막힐 때</span>그래도 그라데이션이 생기면 <code>--s</code> 값을 더 낮추고 <code>minimal</code>을 앞에 붙입니다.</div>
+    </article>
+    <article class="card" data-title="프롬프트 단어마다 하는 일">
+      <h3><span class="cn">3-3</span>프롬프트 단어마다 하는 일</h3>
+      <div class="tbl"><table class="spec">
+        <tbody>
+          <tr><td><code>only 4 solid colors</code></td><td>색 5개 이하 규칙을 처음부터 맞춤</td></tr>
+          <tr><td><code>no gradient, no texture</code></td><td>조각이 수천 개로 늘어나는 것을 막음</td></tr>
+          <tr><td><code>no shading</code></td><td>명암은 나중에 검정+투명도로 직접 넣음</td></tr>
+          <tr><td><code>no outline stroke</code></td><td>얇은 외곽선이 조각나는 것을 막음</td></tr>
+          <tr><td><code>--raw --s 50</code></td><td>미드저니가 멋 부리는 것을 줄임</td></tr>
+        </tbody>
+      </table></div>
+    </article>
+    <article class="card" data-title="SVG로 잘 바뀌는 그림 고르기">
+      <h3><span class="cn">3-4</span>SVG로 잘 바뀌는 그림 고르기</h3>
+      <p>4장 중에서 아래가 모두 "예"인 그림을 고릅니다.</p>
+      <ul class="check">
+        <li><input type="checkbox" id="c34a"><label for="c34a">색을 세어보면 5개 이하다</label></li>
+        <li><input type="checkbox" id="c34b"><label for="c34b">면과 면의 경계가 또렷하다</label></li>
+        <li><input type="checkbox" id="c34c"><label for="c34c">아주 작은 점, 반짝이가 없다</label></li>
+        <li><input type="checkbox" id="c34d"><label for="c34d">물체가 하나다</label></li>
+      </ul>
+      <p>고른 그림은 <b>Upscale (Subtle)</b> 후 다운로드합니다.</p>
+    </article>
+    <article class="card" data-title="세트로 늘리기">
+      <h3><span class="cn">3-5</span>세트로 늘리기</h3>
+      <div class="box more"><span class="bl">한 걸음 더</span>양말, 별, 지팡이 사탕으로 크리스마스 아이콘 세트를 기획합니다. 소재마다 프롬프트를 새로 쓰고, 색 4개는 같은 계열로 맞추면 세트 느낌이 납니다.</div>
+      <div class="prompt"><div class="prompt-top"><span>예시 · 크리스마스 양말</span><button type="button" class="copy">복사</button></div>
+<pre>flat vector icon of a Christmas stocking with a snowflake pattern, minimal bold shapes, only 4 solid colors in red, green, gold and cream, no gradient, no texture, no shading, no outline stroke, single object, centered, isolated on a plain light gray background --ar 1:1 --raw --s 50</pre></div>
+    </article>
+  </div>
+</section>
+
+<!-- STEP 4 -->
+<section class="step" data-step="4" data-name="잉크스케이프 추적" hidden>
+  <div class="step-head"><span class="no">STEP 4 · SVG 요소</span><h2>잉크스케이프로 벡터 바꾸기</h2><p>그림(비트맵)을 색깔별 면 조각(벡터)으로 바꿉니다. 메뉴 이름은 잉크스케이프 1.x 한국어 화면 기준입니다.</p></div>
+  <div class="grid">
+    <article class="card wide" data-title="설명 영상 · 비트맵 추적은 색깔별로 오려내기">
+      <h3><span class="cn">▶</span>설명 영상 · 비트맵 추적은 색깔별로 오려내기</h3>
+      <div class="vid" data-v="trace"><div class="vstage"></div></div>
+    </article>
+    <article class="card" data-title="그림 가져오기">
+      <h3><span class="cn">4-1</span>그림 가져오기</h3>
+      <ol>
+        <li>잉크스케이프 실행 → 새 문서</li>
+        <li>파일 → <b>가져오기</b>(<kbd>Ctrl</kbd>+<kbd>I</kbd>) → 종 PNG 선택</li>
+        <li>가져오기 창은 기본값 그대로 <b>확인</b></li>
+      </ol>
+    </article>
+    <article class="card" data-title="비트맵 추적">
+      <h3><span class="cn">4-2</span>비트맵 추적</h3>
+      <ol>
+        <li>그림을 클릭해 선택</li>
+        <li>경로 → <b>비트맵 추적</b>(<kbd>Shift</kbd>+<kbd>Alt</kbd>+<kbd>B</kbd>)</li>
+        <li><b>다중 스캔</b> 탭 → 탐지 모드 <b>색상</b></li>
+        <li>스캔 수 <b>4~5</b> (내 그림의 색 수와 맞춤)</li>
+        <li><b>부드럽게</b>, <b>배경 제거</b> 체크 → <b>적용</b></li>
+      </ol>
+      <div class="box tip"><span class="bl">쉽게 말하면</span>색깔마다 테두리를 따서 색종이 조각처럼 오려내는 작업입니다.</div>
+      <div class="box more"><span class="bl">「배경 제거」는 흰색만 지우나요?</span>아닙니다. 흰색을 찾아 지우는 기능이 아니라, 추적이 끝난 뒤 <b>맨 아래에 깔린 조각(배경 층)을 지우는</b> 기능입니다. 그래서 오늘처럼 회색 배경이어도 빠집니다. 다만 배경이 얼룩져 여러 색으로 나뉘면 일부가 남을 수 있어요. 남은 조각은 4-3처럼 직접 지웁니다.</div>
+      <div class="box warn"><span class="bl">그림 속 흰 부분까지 사라질 때</span>스캔은 "그림 전체에서 같은 색"을 한 조각으로 묶습니다. 배경이 흰색이면 산타 수염·눈·반짝이 같은 흰 부분도 배경과 같은 조각이 되어 <b>배경과 함께 지워집니다</b>. 그래서 SVG용 그림은 <b>회색 배경</b>으로 뽑고, 그림 속 밝은 색은 <b>크림색</b>으로 둡니다. 스캔 수가 너무 적어도 연한 색이 배경색에 합쳐지니 스캔 수는 "그림 색 수 + 배경 1"로 맞춥니다.</div>
+    </article>
+    <article class="card" data-title="원본 치우기">
+      <h3><span class="cn">4-3</span>원본 치우기</h3>
+      <p>추적한 결과는 원본 그림 <b>바로 위에 겹쳐서</b> 생깁니다.</p>
+      <ol>
+        <li>맨 위 그림을 옆으로 끌어냅니다. 이것이 새로 만든 벡터입니다.</li>
+        <li>제자리에 남은 원본 그림을 클릭 → <kbd>Delete</kbd></li>
+        <li>회색 배경 조각이 남아 있으면 클릭 → <kbd>Delete</kbd></li>
+      </ol>
+      <div class="box warn"><span class="bl">막힐 때</span>어느 것이 원본인지 모르겠으면 클릭한 뒤 화면 아래 상태 표시줄을 봅니다. "이미지"라고 뜨면 원본, "그룹"이나 "경로"면 새로 만든 벡터입니다.</div>
+    </article>
+    <article class="card" data-title="조각이 너무 많을 때">
+      <h3><span class="cn">4-4</span>조각이 너무 많을 때</h3>
+      <p>확대해 봤을 때 작은 부스러기 조각이 많으면 용량이 커집니다.</p>
+      <ul>
+        <li>추적을 지우고 <b>스캔 수를 줄여</b> 다시 추적</li>
+        <li>그래도 많으면 STEP 3으로 돌아가 <b>더 단순한 그림</b>을 다시 뽑기</li>
+      </ul>
+      <div class="box more"><span class="bl">한 걸음 더</span>부스러기 조각만 골라 지워도 됩니다. 노드 도구(<kbd>N</kbd>)로 모양이 뭉개진 곳을 다듬어 봅니다.</div>
+    </article>
+  </div>
+</section>
+
+<!-- STEP 5 -->
+<section class="step" data-step="5" data-name="SVG 규칙 맞추기" hidden>
+  <div class="step-head"><span class="no">STEP 5 · SVG 요소</span><h2>규칙 맞추기</h2><p>색 정리 → 크랙 받침 → 그룹·크롭·저장 → evenodd 확인 → 용량 확인. 디자인허브 SVG 가이드의 순서 그대로입니다.</p></div>
+  <div class="grid">
+    <article class="card wide" data-title="설명 영상 · SVG 규칙 여섯 가지">
+      <h3><span class="cn">▶</span>설명 영상 · SVG 규칙 여섯 가지</h3>
+      <div class="vid" data-v="svgrules"><div class="vstage"></div></div>
+    </article>
+    <article class="card" data-title="색상 정리: 5개 이하">
+      <h3><span class="cn">5-1</span>색상 정리: 5개 이하</h3>
+      <ol>
+        <li>벡터 선택 → 그룹 해제(<kbd>Shift</kbd>+<kbd>Ctrl</kbd>+<kbd>G</kbd>)</li>
+        <li>비슷한 색 조각들을 <kbd>Shift</kbd>+클릭으로 함께 선택</li>
+        <li>채우기와 선(<kbd>Shift</kbd>+<kbd>Ctrl</kbd>+<kbd>F</kbd>)에서 <b>같은 색 코드</b>로 통일</li>
+        <li>흰색 조각은 아이보리(<code>#FAF6EE</code>)로 바꾸기</li>
+      </ol>
+      <div class="box more"><span class="bl">한 걸음 더</span>그림자는 검정 <code>#000000</code> + 불투명도 20~30%, 반짝이는 흰색 <code>#FFFFFF</code> + 불투명도로 만듭니다. 업로드할 때 이 두 색을 <b>색상 잠금</b> 하면 사용자가 바꿀 색이 줄어 쓰기 편해집니다.</div>
+    </article>
+    <article class="card" data-title="크랙 방지: 받침 깔기">
+      <h3><span class="cn">5-2</span>크랙 방지: 받침 깔기</h3>
+      <figure>
+        <div class="fig"><svg viewBox="0 0 520 170" role="img" aria-label="조각 사이 틈으로 실선이 보이는 경우와 받침을 깐 경우">
+          <rect x="0" y="0" width="520" height="140" fill="#222"/>
+          <text x="130" y="22" text-anchor="middle" font-size="13" fill="#EEE">받침 없음</text>
+          <path d="M60 40 h70 v80 h-70z" fill="#E0A82E"/><path d="M130.6 40 h70 v80 h-70z" fill="#C0392B"/>
+          <path d="M130.3 36 v88" stroke="#FFF" stroke-width="1.5" stroke-dasharray="3 3"/>
+          <text x="130" y="134" text-anchor="middle" font-size="12" fill="#FFB4A8">틈으로 실선이 보임</text>
+          <text x="390" y="22" text-anchor="middle" font-size="13" fill="#EEE">받침 있음</text>
+          <path d="M320 40 h140 v80 h-140z" fill="#C0392B"/>
+          <path d="M320 40 h70 v80 h-70z" fill="#E0A82E"/><path d="M390.6 40 h70 v80 h-70z" fill="#C0392B"/>
+          <text x="390" y="134" text-anchor="middle" font-size="12" fill="#B7F0CF">뒤에 한 덩어리가 받쳐 줌</text>
+          <text x="260" y="162" text-anchor="middle" font-size="12" fill="var(--ink-soft)">검은 배경에서 확인하면 잘 보입니다</text>
+        </svg></div>
+      </figure>
+      <ol>
+        <li>전체 선택(<kbd>Ctrl</kbd>+<kbd>A</kbd>) → 복제(<kbd>Ctrl</kbd>+<kbd>D</kbd>)</li>
+        <li>경로 → <b>합치기</b>(<kbd>Ctrl</kbd>+<kbd>+</kbd>) → 한 덩어리</li>
+        <li><kbd>End</kbd> 키로 맨 뒤로 보내기</li>
+      </ol>
+    </article>
+    <article class="card" data-title="그룹·크롭·저장">
+      <h3><span class="cn">5-3</span>그룹·크롭·저장</h3>
+      <ol>
+        <li>전체 선택 → 그룹(<kbd>Ctrl</kbd>+<kbd>G</kbd>)</li>
+        <li><b>페이지를 그림 크기에 맞춤</b>(<kbd>Shift</kbd>+<kbd>Ctrl</kbd>+<kbd>R</kbd>) — 이것이 SVG의 크롭입니다</li>
+        <li>파일 → 다른 이름으로 저장 → 형식 <b>최적화된 SVG (Optimized SVG)</b> → 저장</li>
+        <li>옵션 창이 뜨면 아래 표대로 확인하고 확인</li>
+      </ol>
+      <div class="tbl"><table class="spec">
+        <tbody>
+          <tr><td>좌표 유효 자릿수<br><span style="font-size:.7rem">Number of significant digits</span></td><td><b>5 그대로</b>. 줄이면 가벼워지지만 3 이하로 내리면 모양이 뭉개질 수 있어요</td></tr>
+          <tr><td>CSS 속성을 XML 속성으로 변환<br><span style="font-size:.7rem">Convert CSS attributes to XML attributes</span></td><td><b>체크</b> (기본값). 디자인허브 기존 가이드의 "프레젠테이션 속성으로 저장"과 같은 뜻</td></tr>
+          <tr><td>편집기 데이터 유지<br><span style="font-size:.7rem">Keep editor data</span></td><td><b>해제</b> (기본값). 잉크스케이프 전용 정보를 빼서 가벼워져요</td></tr>
+          <tr><td>메타데이터 · 주석 제거<br><span style="font-size:.7rem">Remove metadata / comments</span></td><td><b>체크</b>. 용량이 조금 더 줄어요</td></tr>
+        </tbody>
+      </table></div>
+      <div class="box tip"><span class="bl">일반 SVG와 차이</span>둘 다 업로드할 수 있습니다. 최적화된 SVG가 더 가벼워서 150KB 맞추기가 쉽습니다. 저장한 뒤 열어서 모양이 그대로인지 꼭 확인하세요. 한국어 메뉴 이름은 잉크스케이프 버전에 따라 조금 다를 수 있습니다.</div>
+    </article>
+    <article class="card" data-title="evenodd 확인 (메모장)">
+      <h3><span class="cn">5-4</span>evenodd 확인 (메모장)</h3>
+      <p>SVG 안에 <code>evenodd</code>라는 채우기 규칙이 있으면 인쇄 변환에서 문제가 생겨 <b>업로드가 제한</b>됩니다. 잉크스케이프 추적 결과에 자주 들어가니 꼭 확인합니다.</p>
+      <ol>
+        <li>저장한 SVG에 오른쪽 클릭 → 연결 프로그램 → <b>메모장</b></li>
+        <li><kbd>Ctrl</kbd>+<kbd>F</kbd> → <code>evenodd</code> 검색</li>
+        <li>없으면 끝. 있으면 <code>fill-rule:evenodd;</code> 또는 <code>fill-rule="evenodd"</code> 문구를 통째로 지우고 저장</li>
+        <li>SVG를 다시 열어 모양이 원본과 같은지 확인</li>
+      </ol>
+      <div class="box warn"><span class="bl">막힐 때</span>지웠더니 가운데 구멍(리본 고리 등)이 색으로 메워졌다면, 지우기 전 파일로 되돌리고 강사를 불러 주세요. 안쪽 경로 방향을 뒤집는 작업이 필요합니다.</div>
+    </article>
+    <article class="card wide" data-title="용량 확인: 150KB 이하">
+      <h3><span class="cn">5-5</span>용량 확인: 150KB 이하</h3>
+      <div class="grid">
+        <ol>
+          <li>SVG 파일에 오른쪽 클릭 → 속성 → <b>크기</b> 확인</li>
+          <li>150KB를 넘으면 잉크스케이프로 돌아가 전체 선택 → 경로 → <b>단순화</b>(<kbd>Ctrl</kbd>+<kbd>L</kbd>) → 다시 저장</li>
+          <li>그래도 넘으면 스캔 수를 줄여 다시 추적합니다.</li>
+        </ol>
+        <div class="box warn"><span class="bl">끝까지 안 되면</span>그 그림은 <b>PNG 요소로만</b> 냅니다. 같은 그림을 SVG와 PNG로 둘 다 올릴 수는 없습니다.</div>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- STEP 6 -->
+<section class="step" data-step="6" data-name="올리고 확인" hidden>
+  <div class="step-head"><span class="no">STEP 6</span><h2>올리고 확인하기</h2><p>SVG 요소를 올리고, 오늘 만든 두 요소를 점검표로 확인합니다. 심사 대기 2개가 보이면 오늘 수업 완료입니다.</p></div>
+  <div class="grid">
+    <article class="card" data-title="디자인허브 업로드: SVG 요소">
+      <h3><span class="cn">6-1</span>디자인허브 업로드: SVG 요소</h3>
+      <ol>
+        <li>콘텐츠 업로드 → 단일 업로드 → SVG 파일 선택</li>
+        <li>콘텐츠 타입: <span class="tag svg">SVG 요소</span></li>
+        <li><b>생성형 AI로 만든 콘텐츠</b> 체크</li>
+        <li>명암·반짝이로 쓴 검정·흰색만 <b>색상 잠금</b> (몸통·리본 같은 주인공 색은 잠그지 않아요. 다 잠그면 SVG로 낸 의미가 없습니다)</li>
+        <li>색 칸을 눌러 <b>색이 바뀌는지 직접 확인</b></li>
+        <li>키워드 입력 → 승인 요청</li>
+      </ol>
+    </article>
+    <article class="card" data-title="키워드 프롬프트 (SVG용)">
+      <h3><span class="cn">6-2</span>키워드 프롬프트 (SVG용)</h3>
+      <div class="prompt"><div class="prompt-top"><span>챗GPT · 키워드</span><button type="button" class="copy">복사</button></div>
+<pre>미리캔버스 디자인허브에 올릴 SVG 요소야.
+주제: 리본 달린 크리스마스 종 플랫 아이콘, 색을 바꿔 쓸 수 있음.
+검색에 걸릴 한국어 키워드 20개를 쉼표로만 나열해 줘.
+시즌어 5개, 대상어 5개, 형태·스타일어(플랫·아이콘 등) 5개, 활용처 5개.
+제목 후보도 3개 줘.</pre></div>
+    </article>
+    <article class="card wide" data-title="오늘 점검표">
+      <h3><span class="cn">6-3</span>오늘 점검표</h3>
+      <div class="grid">
+        <div>
+          <p><span class="tag png">PNG 요소 · 산타</span></p>
+          <ul class="check">
+            <li><input type="checkbox" id="p1"><label for="p1">피사체가 하나다</label></li>
+            <li><input type="checkbox" id="p2"><label for="p2">여백 없이 딱 맞게 크롭했다</label></li>
+            <li><input type="checkbox" id="p3"><label for="p3">긴 변 700px 이상이다</label></li>
+            <li><input type="checkbox" id="p4"><label for="p4">PNG 요소로 골랐다</label></li>
+            <li><input type="checkbox" id="p5"><label for="p5">AI 체크를 했다</label></li>
+          </ul>
+        </div>
+        <div>
+          <p><span class="tag svg">SVG 요소 · 종</span></p>
+          <ul class="check">
+            <li><input type="checkbox" id="s1"><label for="s1">색이 5개 이하다</label></li>
+            <li><input type="checkbox" id="s2"><label for="s2">크랙 받침을 깔았다</label></li>
+            <li><input type="checkbox" id="s3"><label for="s3">페이지를 그림 크기에 맞췄다</label></li>
+            <li><input type="checkbox" id="s4"><label for="s4">evenodd가 없다</label></li>
+            <li><input type="checkbox" id="s5"><label for="s5">150KB 이하다</label></li>
+            <li><input type="checkbox" id="s6"><label for="s6">SVG 요소로 고르고 AI 체크를 했다</label></li>
+          </ul>
+        </div>
+      </div>
+    </article>
+    <article class="card wide" data-title="같은 그림, 다른 판로">
+      <h3><span class="cn">6-4</span>같은 그림, 다른 판로</h3>
+      <p>디자인허브 기여자 약관은 <b>비독점</b>입니다(제2조 2-2, 제7조 7-2). 같은 요소를 다른 곳에도 올릴 수 있어요. 단, 판로마다 AI 그림을 받는지가 다릅니다.</p>
+      <div class="tbl"><table class="spec">
+        <thead><tr><th>판로</th><th>AI 그림</th><th>오늘 결과물로 할 수 있는 것 · 주의</th></tr></thead>
+        <tbody>
+          <tr><td><b>크티</b> (국내)</td><td>가능</td><td>심사 없이 가입 즉시 판매, 수수료 11.5%. 저작권 책임은 크리에이터. 8회차에 함께 개설 (2026.08 확인)</td></tr>
+          <tr><td><b>어도비 스톡</b></td><td>가능</td><td>「생성형 AI로 제작」 표시 필수. 같은 프롬프트로 비슷한 것 여러 장 금지, 작가·실존 인물·캐릭터 이름 금지. AI 벡터는 아이콘처럼 단순하고 편집하기 쉬워야 함</td></tr>
+          <tr><td><b>프리픽</b> (현 매그니픽)</td><td>가능</td><td>AI 태그 필수. 추적(Live Trace)으로 조각난 벡터는 비권장이라 오늘 SVG는 PNG·사진 쪽이 무난. 비슷한 반복 제출 거절</td></tr>
+          <tr><td><b>엣시</b> (해외 마켓)</td><td>가능</td><td>내 프롬프트로 만든 디지털 다운로드 판매 가능. 상품 설명에 AI 사용을 꼭 적어야 함</td></tr>
+          <tr><td>캔바 크리에이터스</td><td style="color:var(--warn-ink)">불가</td><td>2026.01.14부터 AI 생성물 제출 금지</td></tr>
+          <tr><td>셔터스톡</td><td style="color:var(--warn-ink)">불가</td><td>기여자의 AI 생성물 받지 않음</td></tr>
+          <tr><td>크라우드픽 · 유토이미지</td><td style="color:var(--warn-ink)">불가</td><td>AI 이미지 금지(크라우드픽은 발견 시 탈퇴 사유), 유토이미지는 개인 작가 AI 불가 (2026.08 확인)</td></tr>
+        </tbody>
+      </table></div>
+      <div class="box warn"><span class="bl">올리기 전에 꼭</span>판로 정책은 자주 바뀝니다. 올리기 직전에 그 사이트의 AI 정책을 다시 확인하고, 어디에 올리든 AI 표시는 빠뜨리지 않습니다. 미드저니는 유료 구독으로 만든 그림이어야 상업적으로 쓸 수 있어요.</div>
+      <p style="font-size:.75rem;color:var(--ink-soft)">확인: 디자인허브 기여자 약관, Adobe Stock 생성형 AI 가이드라인, Magnific(Freepik) AI 가이드라인, Etsy 하우스 룰, Canva 기여자 약관 변경 공지(2026.01), Shutterstock 기여자 FAQ — 2026.10.12. 네이버 OGQ·크리에이티브 패브리카는 AI 정책을 확인하지 못했습니다.</p>
+    </article>
+    <article class="card wide" data-title="다음 시간: GIF 요소">
+      <h3><span class="cn">6-5</span>다음 시간: GIF 요소</h3>
+      <p>오늘 만든 산타로 <b>움직이는 GIF</b>를 만듭니다. 동작이 다른 3장을 포토피아에서 프레임으로 이어 붙입니다.</p>
+      <p style="font-size:.85rem;color:var(--ink-soft)">GIF 요소 규격: 72dpi, 700~1,920px, 최대 25MB, 배경 제거된 그림·일러스트</p>
+      <div class="box more"><span class="bl">미리 해오면 좋아요</span>오늘 산타 그림을 미드저니 이미지 칸에 넣고 동작만 바꿔 3장(손 흔들기 / 점프 / 윙크)을 뽑아 폴더에 저장해 두세요.</div>
+    </article>
+  </div>
+</section>
+
+<!-- 막힘 사전 -->
+<section class="step" data-step="7" data-name="막힘 사전" hidden>
+  <div class="step-head"><span class="no">?</span><h2>막힘 사전</h2><p>화면에서 막혔을 때 여기서 찾아보세요. 증상 / 이유 / 이렇게 하세요 순서입니다.</p></div>
+  <div class="qa-list">
+    <details><summary>산타가 두 명 나와요</summary><dl><dt>이유</dt><dd>한 파일에 피사체가 둘이면 반려됩니다.</dd><dt>조치</dt><dd><code>single character only</code>를 넣고 다시 생성합니다.</dd></dl></details>
+    <details><summary>어도비에서 다운로드가 안 돼요</summary><dl><dt>이유</dt><dd>공용 PC라 무료 횟수가 막혀 있습니다.</dd><dt>조치</dt><dd>윈도우 사진 앱 → 편집 → 배경 → 제거 → 복사본으로 저장.</dd></dl></details>
+    <details><summary>그림판에서 배경 지운 뒤 PNG 저장이 안 돼요</summary><dl><dt>이유</dt><dd>지난 시간에도 같은 증상이 있었습니다.</dd><dt>조치</dt><dd>사진 앱으로 하세요.</dd></dl></details>
+    <details><summary>포토피아에서 확대하려니 브라우저가 커져요</summary><dl><dt>이유</dt><dd><kbd>Ctrl</kbd>+휠은 브라우저 확대입니다.</dd><dt>조치</dt><dd><kbd>Alt</kbd>+휠을 쓰세요.</dd></dl></details>
+    <details><summary>크롭 선이 계속 남아 있어요</summary><dl><dt>이유</dt><dd>아직 크롭 도구가 선택된 상태입니다.</dd><dt>조치</dt><dd><kbd>V</kbd>를 눌러 이동 도구로 돌아옵니다.</dd></dl></details>
+    <details><summary>미드저니 종에 그라데이션이 생겨요</summary><dl><dt>이유</dt><dd>미드저니가 멋을 부렸습니다.</dd><dt>조치</dt><dd><code>--s</code>를 더 낮추고 <code>minimal</code>을 앞에 붙여 다시 생성합니다.</dd></dl></details>
+    <details><summary>잉크스케이프에서 비트맵 추적 메뉴가 안 보여요</summary><dl><dt>이유</dt><dd>그림이 선택되지 않았거나 메뉴 위치가 버전마다 다릅니다.</dd><dt>조치</dt><dd>그림을 클릭한 뒤 <kbd>Shift</kbd>+<kbd>Alt</kbd>+<kbd>B</kbd>를 누릅니다.</dd></dl></details>
+    <details><summary>추적 후 그림 속 흰 부분(눈·수염·반짝이)이 사라졌어요</summary><dl><dt>이유</dt><dd>흰 부분이 흰 배경과 같은 색 조각으로 묶여 「배경 제거」 때 같이 지워졌습니다. 스캔 수가 적어 연한 색이 배경색에 합쳐진 경우도 있습니다.</dd><dt>조치</dt><dd>회색 배경으로 다시 생성하고, 그림 속 흰색은 크림색으로 바꾸게 프롬프트를 고칩니다. 스캔 수는 그림 색 수 + 1. 배경을 미리 지운 투명 PNG 말고 회색 배경 그림을 그대로 넣습니다.</dd></dl></details>
+    <details><summary>추적했더니 조각이 너무 많아요</summary><dl><dt>이유</dt><dd>스캔 수가 많거나 그림이 복잡합니다.</dd><dt>조치</dt><dd>스캔 수를 줄여 다시 추적하거나, 더 단순한 그림을 다시 뽑습니다.</dd></dl></details>
+    <details><summary>SVG가 150KB를 넘어요</summary><dl><dt>이유</dt><dd>조각과 점(노드)이 많습니다.</dd><dt>조치</dt><dd>단순화(<kbd>Ctrl</kbd>+<kbd>L</kbd>) → 최적화된 SVG로 저장. 안 되면 그 그림은 PNG 요소로만 냅니다.</dd></dl></details>
+    <details><summary>evenodd를 지웠더니 구멍이 메워졌어요</summary><dl><dt>이유</dt><dd>구멍 모양이 그 규칙에 기대고 있었습니다.</dd><dt>조치</dt><dd>지우기 전 파일로 되돌리고 강사를 불러 주세요(안쪽 경로 방향 반전).</dd></dl></details>
+    <details><summary>같은 그림을 PNG랑 SVG로 둘 다 올려도 돼요?</summary><dl><dt>답</dt><dd>안 됩니다. 하나만 고르세요. 가이드는 SVG를 권장합니다.</dd></dl></details>
+    <details><summary>색만 바꿔서 여러 개 올려도 돼요?</summary><dl><dt>답</dt><dd>안 됩니다. 디자인을 바꾸지 않고 색만 바꾼 요소는 업로드할 수 없습니다.</dd></dl></details>
+    <details><summary>포토피아로 손봤는데도 AI 체크를 해야 해요?</summary><dl><dt>답</dt><dd>네. 편집했어도 AI로 만든 그림이면 반드시 체크합니다.</dd></dl></details>
+    <details><summary>흰 테두리 스티커는 왜 안 만들어요?</summary><dl><dt>답</dt><dd>흰색(#FFFFFF)은 에디터 배경과 같은 색이라 요소 목록에서 안 보입니다. 기존 디자인허브 가이드에서 피하라고 안내한 색입니다.</dd></dl></details>
+  </div>
+  <p style="font-size:.75rem;color:var(--ink-soft);margin-top:16px">근거: 디자인허브 기여자 가이드(slashpage) 파일 규격·PNG·SVG·GIF 요소 가이드·AI 요소 유의사항, 디자인허브 헬프센터 요소 디자인 작성 가이드 — 2026.10.12 확인. 규정은 바뀔 수 있으니 업로드 전 가이드를 다시 확인하세요.</p>
+</section>
+
+    </main>
+    <aside class="side" aria-label="이 STEP의 카드">
+      <h3 id="sideTitle">카드</h3>
+      <ol id="sideList"></ol>
+    </aside>
+  </div>
+</div>
+
+<footer class="bottom">
+  <div class="wrap bottom-row">
+    <button type="button" class="nav-btn" id="prevBtn">← 이전</button>
+    <div class="sel-wrap">
+      <select id="stepSel" aria-label="STEP 고르기"></select>
+      <select id="cardSel" aria-label="카드 고르기"></select>
+    </div>
+    <button type="button" class="qa-btn" id="qaBtn" aria-label="막힘 사전 열기">? 막힘 사전</button>
+    <button type="button" class="nav-btn primary" id="nextBtn">다음 →</button>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var steps=[].slice.call(document.querySelectorAll('.step'));
+  var tabs=document.getElementById('tabs');
+  var stepSel=document.getElementById('stepSel');
+  var cardSel=document.getElementById('cardSel');
+  var sideList=document.getElementById('sideList');
+  var sideTitle=document.getElementById('sideTitle');
+  var QA=steps.length-1;
+  var cur=0;
+  function store(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+  function load(k){try{return localStorage.getItem(k)}catch(e){return null}}
+
+  steps.forEach(function(s,i){
+    var label=(i===QA?'?':i)+'';
+    var b=document.createElement('button');
+    b.type='button';b.className='tab'+(i===QA?' qa':'');b.setAttribute('role','tab');
+    b.innerHTML='<b>'+(i===QA?'?':'STEP '+i)+'</b>'+s.dataset.name;
+    b.addEventListener('click',function(){show(i,true)});
+    tabs.appendChild(b);
+    var o=document.createElement('option');o.value=i;o.textContent=(i===QA?'? ':'STEP '+i+' · ')+s.dataset.name;stepSel.appendChild(o);
+    s.querySelectorAll('.card').forEach(function(c,j){c.id='c'+i+'-'+j});
+  });
+
+  function topOffset(){var t=document.querySelector('.top');return t?t.offsetHeight+12:0}
+  function goTo(el){
+    var y=el.getBoundingClientRect().top+window.pageYOffset-topOffset();
+    window.scrollTo({top:Math.max(0,y),behavior:'smooth'});
+  }
+
+  function show(i,scroll){
+    cur=i;
+    steps.forEach(function(s,k){s.hidden=k!==i});
+    if(window.__vidsPause)window.__vidsPause();
+    if(window.__vidsResize)setTimeout(window.__vidsResize,30);
+    [].forEach.call(tabs.children,function(t,k){t.setAttribute('aria-selected',k===i?'true':'false')});
+    stepSel.value=i;
+    var cards=[].slice.call(steps[i].querySelectorAll('.card'));
+    sideList.innerHTML='';cardSel.innerHTML='';
+    sideTitle.textContent=(i===QA?'막힘 사전':'STEP '+i+'의 카드');
+    var head=document.createElement('option');head.value='';head.textContent=cards.length?'카드로 바로 가기':'—';cardSel.appendChild(head);
+    cards.forEach(function(c){
+      var cn=c.querySelector('.cn');var no=cn?cn.textContent:'';
+      var li=document.createElement('li');var a=document.createElement('a');
+      a.href='#'+c.id;a.innerHTML='<span>'+no+'</span>'+c.dataset.title;
+      a.addEventListener('click',function(e){e.preventDefault();goTo(c)});
+      li.appendChild(a);sideList.appendChild(li);
+      var o=document.createElement('option');o.value=c.id;o.textContent=no+' '+c.dataset.title;cardSel.appendChild(o);
+    });
+    document.getElementById('prevBtn').disabled=i===0;
+    var nb=document.getElementById('nextBtn');
+    nb.disabled=i>=QA-1&&i!==QA?false:false;
+    nb.textContent=(i>=QA-1)?(i===QA?'STEP 0으로 →':'막힘 사전 →'):'다음 →';
+    store('mj6-step',String(i));
+    if(scroll)window.scrollTo({top:0,behavior:'smooth'});
+    spy();
+  }
+
+  document.getElementById('prevBtn').addEventListener('click',function(){if(cur>0)show(cur===QA?QA-1:cur-1,true)});
+  document.getElementById('nextBtn').addEventListener('click',function(){show(cur===QA?0:cur+1,true)});
+  document.getElementById('qaBtn').addEventListener('click',function(){show(QA,true)});
+  stepSel.addEventListener('change',function(){show(+stepSel.value,true)});
+  cardSel.addEventListener('change',function(){var el=document.getElementById(cardSel.value);if(el)goTo(el);cardSel.value=''});
+
+  function spy(){
+    var links=sideList.querySelectorAll('a');var mark=topOffset()+40;var on=0;
+    [].forEach.call(links,function(a,k){var el=document.getElementById(a.getAttribute('href').slice(1));if(el&&el.getBoundingClientRect().top<=mark)on=k});
+    [].forEach.call(links,function(a,k){a.classList.toggle('on',k===on)});
+  }
+  window.addEventListener('scroll',spy,{passive:true});
+
+  // 글자 크기
+  var fsBtns=document.querySelectorAll('.fsbox button');
+  function setFs(v){document.documentElement.style.setProperty('--fs',v+'px');[].forEach.call(fsBtns,function(b){b.setAttribute('aria-pressed',b.dataset.fs===String(v)?'true':'false')});store('mj6-fs',String(v));if(window.__vidsResize)setTimeout(window.__vidsResize,30)}
+  [].forEach.call(fsBtns,function(b){b.addEventListener('click',function(){setFs(b.dataset.fs)})});
+
+  // 복사
+  document.querySelectorAll('.copy').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var pre=btn.closest('.prompt').querySelector('pre');var text=pre.textContent.trim();
+      function done(){btn.textContent='복사됨';btn.classList.add('done');setTimeout(function(){btn.textContent='복사';btn.classList.remove('done')},1600)}
+      function fallback(){var r=document.createRange();r.selectNodeContents(pre);var s=window.getSelection();s.removeAllRanges();s.addRange(r);try{document.execCommand('copy');done()}catch(e){btn.textContent='선택됨 · Ctrl+C'}}
+      if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(done,fallback)}else{fallback()}
+    });
+  });
+
+  // 종 색 바꾸기
+  document.querySelectorAll('.sw').forEach(function(b){
+    b.addEventListener('click',function(){document.getElementById('bellBody').setAttribute('fill',b.dataset.c);document.querySelectorAll('.sw').forEach(function(x){x.setAttribute('aria-pressed',x===b?'true':'false')})});
+  });
+
+  // 그라데이션 조각 그림
+  (function(){var g=document.getElementById('manySlices');if(!g)return;var n=26,x0=230,y0=40,w=130;var ns='http://www.w3.org/2000/svg';
+    for(var k=0;k<n;k++){var t=k/(n-1);var r=Math.round(243+(181-243)*t),gg=Math.round(197+(84-197)*t),bb=Math.round(91+(60-91)*t);
+      var p=document.createElementNS(ns,'rect');p.setAttribute('x',x0);p.setAttribute('y',y0+k*(w/n));p.setAttribute('width',w);p.setAttribute('height',w/n);
+      p.setAttribute('fill','rgb('+r+','+gg+','+bb+')');p.setAttribute('stroke','var(--paper)');p.setAttribute('stroke-width','0.8');g.appendChild(p);}
+  })();
+
+  var fs=load('mj6-fs');if(fs)setFs(fs);
+  var st=parseInt(load('mj6-step'),10);
+  show(isNaN(st)||st<0||st>=steps.length?0:st,false);
+})();
+</script>
+
+<script>
+/* ── 설명 영상 엔진 — 관악 동화책 2회차 교안과 같은 방식(HTML 장면 + GSAP 타임라인 + Three.js), 소리 없이 자막만 ── */
+(function(){
+  var REG = window.__VIDS = window.__VIDS || {};
+  var ALL = [];
+  function el(tag, cls, txt){ var e=document.createElement(tag); if(cls)e.className=cls; if(txt!=null)e.textContent=txt; return e; }
+  function setup(box){
+    if(box.__vid) return;
+    var def = REG[box.getAttribute('data-v')]; if(!def) return;
+    box.__vid = true;
+    var scenes=def.scenes, starts=[], total=0;
+    scenes.forEach(function(s){ starts.push(total); total+=s.d; });
+    var stage=box.querySelector('.vstage');
+    var cap=el('div','vcap'), cno=el('span','vno'), ctt=el('b','vtt'), ctx=el('p','vtx');
+    cap.appendChild(cno); cap.appendChild(ctt); cap.appendChild(ctx);
+    var bar=el('div','vbar');
+    var bPlay=el('button','vb vplay','▶ 재생'); bPlay.type='button';
+    var bRe=el('button','vb','처음으로'); bRe.type='button';
+    var seek=el('input','vseek'); seek.type='range'; seek.min=0; seek.max=1000; seek.value=0; seek.setAttribute('aria-label','영상 위치');
+    var chips=el('div','vchips');
+    bar.appendChild(bPlay); bar.appendChild(bRe); bar.appendChild(seek); bar.appendChild(chips);
+    var list=el('ol','vscript');
+    scenes.forEach(function(s,i){
+      var c=el('button','vchip',String(i+1)); c.type='button'; c.title=s.t; c.setAttribute('aria-label',(i+1)+'번 장면 · '+s.t);
+      c.addEventListener('click',function(){ go(i); }); chips.appendChild(c);
+      var li=el('li'); li.appendChild(el('b',null,s.t+' ')); li.appendChild(document.createTextNode(s.c)); list.appendChild(li);
+    });
+    box.appendChild(cap); box.appendChild(bar); box.appendChild(list);
+    var cur=-1;
+    function showCap(i){
+      if(i===cur) return; cur=i;
+      cno.textContent=(i+1)+' / '+scenes.length; ctt.textContent=scenes[i].t; ctx.textContent=scenes[i].c;
+      [].forEach.call(chips.children,function(c,k){ c.classList.toggle('on',k===i); });
+      if(api.onScene) api.onScene(i);
+    }
+    var api={box:box, stage:stage, total:total, starts:starts, scenes:scenes,
+      at:function(i,off){ return starts[i]+(off||0); }, renders:[]};
+    if(!window.gsap){ box.classList.add('nolib'); showCap(0); return; }
+    var tl=gsap.timeline({paused:true, onUpdate:upd, onComplete:function(){ setPlay(false); }});
+    api.tl=tl;
+    try{ def.build(api); }catch(err){ box.classList.add('nolib'); if(window.console)console.warn('영상 준비 실패',err); showCap(0); return; }
+    tl.set({}, {}, total);
+    function render(){ for(var k=0;k<api.renders.length;k++) api.renders[k](); }
+    function upd(){ var t=tl.time(), i=0; while(i<starts.length-1 && t>=starts[i+1]-0.001) i++; showCap(i); if(!dragging) seek.value=Math.round(t/total*1000); render(); }
+    function setPlay(p){ bPlay.textContent=p?'❚❚ 일시정지':'▶ 재생'; bPlay.classList.toggle('on',p); }
+    var fresh=true, dragging=false;
+    function go(i){ fresh=false; tl.pause(); tl.seek(starts[i]+0.05); setPlay(false); upd(); }
+    bPlay.addEventListener('click',function(){
+      if(tl.paused()||!tl.isActive()){ if(fresh||tl.progress()>=1) tl.seek(0); fresh=false; pauseAll(api); tl.play(); setPlay(true); }
+      else{ tl.pause(); setPlay(false); }
+    });
+    bRe.addEventListener('click',function(){ fresh=false; tl.pause(); tl.seek(0); setPlay(false); upd(); });
+    seek.addEventListener('input',function(){ fresh=false; dragging=true; tl.pause(); setPlay(false); tl.seek(seek.value/1000*total); upd(); });
+    seek.addEventListener('change',function(){ dragging=false; });
+    api.pause=function(){ tl.pause(); setPlay(false); };
+    api.resize=function(){ if(api.onResize) api.onResize(); render(); };
+    box.__api=api; ALL.push(api);
+    tl.seek(starts[0]+scenes[0].d*0.9); upd();
+  }
+  function pauseAll(except){ ALL.forEach(function(a){ if(a!==except) a.pause(); }); }
+  window.__vidsPause=function(){ pauseAll(); };
+  window.__vidsResize=function(){ ALL.forEach(function(a){ if(a.box.offsetParent) a.resize(); }); };
+  var READY=false;
+  function fin(){ if(READY) return; READY=true; [].forEach.call(document.querySelectorAll('.vid'),function(b){ try{ setup(b); }catch(e){} }); window.__vidsResize(); }
+  /* 영상 라이브러리는 뒤에서 따로 불러온다 (막히거나 늦어도 탭·버튼은 먼저 작동) */
+  var LIBS=['https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js','https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js'], got=0;
+  LIBS.forEach(function(u){ var sc=document.createElement('script'); sc.src=u; sc.async=false; sc.onload=sc.onerror=function(){ if(++got===LIBS.length) fin(); }; (document.head||document.documentElement).appendChild(sc); });
+  setTimeout(fin,6000);
+  var rz; window.addEventListener('resize',function(){ clearTimeout(rz); rz=setTimeout(window.__vidsResize,120); });
+  window.__FT=function(tl,e,a,b,p){ tl.set(e,a,p); tl.to(e,b,p); return tl; };
+  window.__vid3d=function(api,opts){
+    if(!window.THREE) throw new Error('three.js 없음');
+    var cv=document.createElement('canvas'); cv.className='v3d'; api.stage.insertBefore(cv, api.stage.firstChild);
+    var r=new THREE.WebGLRenderer({canvas:cv, antialias:true, alpha:false, preserveDrawingBuffer:true});
+    r.setPixelRatio(Math.min(window.devicePixelRatio||1,2)); r.setClearColor(opts&&opts.bg!=null?opts.bg:0xffffff,1);
+    function size(){ var w=api.stage.clientWidth||640, h=api.stage.clientHeight||360; r.setSize(w,h,false); return {w:w,h:h}; }
+    var o={renderer:r, canvas:cv, w:0, h:0};
+    var prev=api.onResize; api.onResize=function(){ var s=size(); o.w=s.w; o.h=s.h; if(prev)prev(); };
+    var s=size(); o.w=s.w; o.h=s.h; return o;
+  };
+})();
+
+/* ── 영상용 그림 (교안 자체 제작) ── */
+window.__ART6=(function(){
+  var B={
+    body:'M100 38 C66 38 56 74 54 112 L44 140 L156 140 L146 112 C144 74 134 38 100 38 Z',
+    rim:'M40 140 H160 A7 7 0 0 1 160 154 H40 A7 7 0 0 1 40 140 Z',
+    clap:'M112 166 A12 12 0 1 1 88 166 A12 12 0 1 1 112 166 Z',
+    ribbon:'M100 36 L72 20 L70 46 Z M100 36 L128 20 L130 46 Z M92 36 A8 8 0 1 0 108 36 A8 8 0 1 0 92 36 Z',
+    hi:'M80 62 C86 62 87 106 80 106 C73 106 74 62 80 62 Z',
+    shade:'M100 38 C134 38 144 74 146 112 L156 140 L112 140 C122 110 120 60 100 38 Z'
+  };
+  var COL={bg:'#E6E8E5',body:'#E0A82E',rim:'#C98E1F',ribbon:'#C0392B',clap:'#7A4E1A',hi:'#FFF2C8'};
+  var ORDER=['body','rim','clap','ribbon','hi'];
+  function bellSvg(o){ o=o||{}; var c={}; for(var k in COL) c[k]=(o.c&&o.c[k])||COL[k];
+    var s='<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">'+(o.bg?'<rect width="200" height="200" fill="'+c.bg+'"/>':'');
+    ORDER.forEach(function(k){ s+='<path d="'+B[k]+'" fill="'+c[k]+'"/>'; });
+    if(o.shade) s+='<path d="'+B.shade+'" fill="#000" opacity=".25"/>';
+    return s+'</svg>'; }
+  function drawBell(g,size,c,only,bg){ g.save(); g.scale(size/200,size/200);
+    if(bg){ g.fillStyle=c.bg||COL.bg; g.fillRect(0,0,200,200); }
+    (only?[only]:ORDER).forEach(function(k){ g.fillStyle=(c&&c[k])||COL[k]; g.fill(new Path2D(B[k])); });
+    g.restore(); }
+  function santaSvg(){ return '<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><defs>'+
+    '<radialGradient id="sb" cx="38%" cy="32%" r="75%"><stop offset="0" stop-color="#F08A6E"/><stop offset=".55" stop-color="#D2402B"/><stop offset="1" stop-color="#8E2316"/></radialGradient>'+
+    '<radialGradient id="sf" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#FFE3D2"/><stop offset="1" stop-color="#E9B597"/></radialGradient>'+
+    '<radialGradient id="sw" cx="40%" cy="30%" r="80%"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#DCD6CC"/></radialGradient></defs>'+
+    '<ellipse cx="100" cy="132" rx="50" ry="52" fill="url(#sb)"/>'+
+    '<rect x="52" y="126" width="96" height="14" rx="7" fill="#3A2A22"/><rect x="92" y="125" width="16" height="16" rx="3" fill="#E7C15A"/>'+
+    '<ellipse cx="72" cy="182" rx="15" ry="8" fill="#3A2A22"/><ellipse cx="128" cy="182" rx="15" ry="8" fill="#3A2A22"/>'+
+    '<path d="M148 112 Q172 88 166 66" stroke="url(#sb)" stroke-width="16" fill="none" stroke-linecap="round"/><circle cx="166" cy="62" r="9" fill="url(#sw)"/>'+
+    '<circle cx="100" cy="76" r="30" fill="url(#sf)"/>'+
+    '<path d="M70 84 Q100 128 130 84 Q118 96 100 96 Q82 96 70 84 Z" fill="url(#sw)"/>'+
+    '<circle cx="90" cy="72" r="3.4" fill="#3A2A22"/><circle cx="110" cy="72" r="3.4" fill="#3A2A22"/><circle cx="100" cy="82" r="5" fill="#E58A78"/>'+
+    '<path d="M68 58 Q100 8 136 34 Q118 40 132 58 Z" fill="url(#sb)"/><circle cx="138" cy="32" r="9" fill="url(#sw)"/>'+
+    '<rect x="64" y="52" width="72" height="14" rx="7" fill="url(#sw)"/></svg>'; }
+  return {B:B, COL:COL, ORDER:ORDER, bellSvg:bellSvg, drawBell:drawBell, santaSvg:santaSvg};
+})();
+
+/* ── 6회차 설명 영상 정의 ── */
+(function(){
+  var V=window.__VIDS=window.__VIDS||{}, A=window.__ART6;
+  function FT(){ return window.__FT.apply(null,arguments); }
+  function lay(api,html){ var d=document.createElement('div'); d.className='vlayer'; d.innerHTML=html; api.stage.appendChild(d); return d; }
+  function canvasTex(w,h,draw,nearest){ var c=document.createElement('canvas'); c.width=w; c.height=h; var t=new THREE.CanvasTexture(c);
+    t.minFilter=nearest?THREE.NearestFilter:THREE.LinearFilter; if(nearest) t.magFilter=THREE.NearestFilter;
+    var o={tex:t,cv:c,redraw:function(a){ var g=c.getContext('2d'); g.clearRect(0,0,w,h); draw(g,a); t.needsUpdate=true; }}; o.redraw(); return o; }
+  function cam3(api,T,C){ var cam=new THREE.PerspectiveCamera(35,16/9,0.1,100);
+    api.onResize=(function(p){ return function(){ if(p)p(); cam.aspect=T.w/T.h; cam.updateProjectionMatrix(); }; })(api.onResize); api.onResize();
+    return cam; }
+
+  /* ---------- 1. 요약 (3D) ---------- */
+  V.summary={
+    scenes:[
+      {t:'오늘 만드는 두 요소', d:5, c:'오늘은 크리스마스 소재로 두 가지 요소를 만듭니다. 왼쪽은 PNG 요소, 오른쪽은 SVG 요소예요.'},
+      {t:'PNG는 화려하게', d:6, c:'PNG 요소는 완성된 그림입니다. 입체감, 그라데이션, 광택, 질감을 마음껏 넣을 수 있어요. 대신 색은 고정됩니다.'},
+      {t:'SVG는 단순하게', d:6, c:'SVG 요소는 쓰는 사람이 색을 바꿔 쓰는 그림입니다. 그래서 색 5개 이하, 단순한 면, 150KB 이하로 만들어요.'},
+      {t:'같은 그림은 하나만', d:5, c:'같은 그림을 PNG와 SVG로 둘 다 올릴 수는 없습니다. 그래서 산타는 PNG, 종은 SVG로 처음부터 다르게 만들어요.'},
+      {t:'오늘의 결과', d:5, c:'두 요소를 각각 올려 심사 대기 두 개가 보이면 오늘 수업 완성입니다.'}
+    ],
+    build:function(api){
+      var T=__vid3d(api,{bg:0xF4F6F3}), R=T.renderer, scene=new THREE.Scene();
+      var C={x:0,y:0,z:9,tx:0,ty:0}, cam=cam3(api,T,C);
+      scene.add(new THREE.HemisphereLight(0xffffff,0xb7c0b9,0.85));
+      var dl=new THREE.DirectionalLight(0xffffff,0.9); dl.position.set(3,5,6); scene.add(dl);
+      var ball=new THREE.Group();
+      ball.add(new THREE.Mesh(new THREE.SphereGeometry(1,64,40), new THREE.MeshStandardMaterial({color:0xD24B34,roughness:.25,metalness:.18})));
+      var gold=new THREE.MeshStandardMaterial({color:0xD4AF52,roughness:.3,metalness:.6});
+      var capM=new THREE.Mesh(new THREE.CylinderGeometry(.22,.26,.26,32),gold); capM.position.y=1.05; ball.add(capM);
+      var ring=new THREE.Mesh(new THREE.TorusGeometry(.12,.035,12,32),gold); ring.position.y=1.26; ball.add(ring);
+      var band=new THREE.Mesh(new THREE.TorusGeometry(1.004,.06,12,80), new THREE.MeshStandardMaterial({color:0xF3E3B5,roughness:.4})); band.rotation.x=Math.PI/2.3; ball.add(band);
+      ball.position.set(-6,0,-6); scene.add(ball);
+      var PAL=['#E0A82E','#3E7CB1','#2D6A4F','#B04A86','#E0A82E'], P={k:0}, last=-1;
+      var bt=canvasTex(512,512,function(g,col){ A.drawBell(g,512,{body:col||PAL[0]}); });
+      var bellM=new THREE.Mesh(new THREE.PlaneGeometry(2.3,2.3), new THREE.MeshBasicMaterial({map:bt.tex,transparent:true,depthWrite:false}));
+      bellM.position.set(6,0,-6); bellM.rotation.y=-1; scene.add(bellM);
+      var copy=new THREE.Mesh(new THREE.PlaneGeometry(2.3,2.3), new THREE.MeshBasicMaterial({map:bt.tex,transparent:true,opacity:0,depthWrite:false}));
+      copy.position.set(1.9,0,.05); scene.add(copy);
+      var L=lay(api,
+        '<div class="vpill png p1" style="left:29%;top:84%">PNG 요소</div><div class="vpill p2" style="left:71%;top:84%">SVG 요소</div>'+
+        '<div class="vt png t1" style="left:56%;top:24%;width:36%"><b>PNG 요소</b>입체 · 그라데이션 · 광택 · 질감<br>대신 색은 고정</div>'+
+        '<div class="vt t2" style="left:7%;top:24%;width:36%"><b>SVG 요소</b>색 5개 이하 · 단순한 면 · 150KB 이하<br>쓰는 사람이 색을 바꿔요</div>'+
+        '<div class="vx t3" style="left:50%;top:46%">✕</div>'+
+        '<div class="vt warn t4" style="left:28%;top:74%;width:44%;text-align:center"><b>같은 그림은 하나로만</b>SVG로 냈으면 PNG로 또 낼 수 없어요</div>'+
+        '<div class="vpill png t5" style="left:29%;top:80%">PNG 요소 · 심사 대기</div><div class="vpill t6" style="left:71%;top:80%">SVG 요소 · 심사 대기</div>');
+      var q=function(s){ return L.querySelector(s); };
+      gsap.set(L.querySelectorAll('.vpill,.vt,.vx'),{autoAlpha:0});
+      api.renders.push(function(){ var i=Math.min(PAL.length-1,Math.floor(P.k)); if(i!==last){ last=i; bt.redraw(PAL[i]); }
+        cam.position.set(C.x,C.y,C.z); cam.lookAt(C.tx,C.ty,0); R.render(scene,cam); });
+      var tl=api.tl, at=api.at;
+      tl.to(ball.rotation,{y:11,duration:api.total,ease:'none'},0);
+      tl.to(ball.position,{x:-1.9,y:0,z:0,duration:1.6,ease:'power3.out'},at(0,.2));
+      tl.to(bellM.position,{x:1.9,y:0,z:0,duration:1.6,ease:'power3.out'},at(0,.5));
+      tl.to(bellM.rotation,{y:0,duration:1.6,ease:'power3.out'},at(0,.5));
+      tl.to(L.querySelectorAll('.p1,.p2'),{autoAlpha:1,duration:.5,stagger:.3},at(0,2));
+      tl.to(L.querySelectorAll('.p1,.p2'),{autoAlpha:0,duration:.3},at(1,0));
+      tl.to(C,{x:-1.9,y:.1,z:4.6,tx:-1.9,ty:0,duration:1.2,ease:'power2.inOut'},at(1,0));
+      tl.to(dl.position,{x:-4,y:3,duration:4,ease:'sine.inOut'},at(1,1));
+      tl.to(q('.t1'),{autoAlpha:1,duration:.5},at(1,1.2)).to(q('.t1'),{autoAlpha:0,duration:.3},at(1,5.6));
+      tl.to(C,{x:1.9,y:.1,z:4.6,tx:1.9,ty:0,duration:1.2,ease:'power2.inOut'},at(2,0));
+      tl.to(q('.t2'),{autoAlpha:1,duration:.5},at(2,1.2)).to(q('.t2'),{autoAlpha:0,duration:.3},at(2,5.6));
+      tl.to(P,{k:PAL.length-.01,duration:4,ease:'none'},at(2,1.5));
+      tl.to(C,{x:0,y:0,z:9,tx:0,ty:0,duration:1.2,ease:'power2.inOut'},at(3,0));
+      tl.to(copy.material,{opacity:.85,duration:.4},at(3,.6));
+      tl.to(copy.position,{x:-.1,duration:1.2,ease:'power2.inOut'},at(3,.8));
+      tl.to(q('.t3'),{autoAlpha:1,duration:.3},at(3,2.1));
+      tl.to(q('.t4'),{autoAlpha:1,duration:.4},at(3,2.4));
+      tl.to([q('.t3'),q('.t4')],{autoAlpha:0,duration:.3},at(3,4.6));
+      tl.to(copy.material,{opacity:0,duration:.3},at(3,4.6));
+      tl.to(ball.position,{y:.35,duration:1,ease:'power2.inOut'},at(4,0)); tl.to(bellM.position,{y:.35,duration:1,ease:'power2.inOut'},at(4,0));
+      tl.to(L.querySelectorAll('.t5,.t6'),{autoAlpha:1,duration:.5,stagger:.4},at(4,1.2));
+    }
+  };
+
+  /* ---------- 2. PNG 마감 ---------- */
+  V.pngflow={
+    scenes:[
+      {t:'업스케일', d:5, c:'마음에 드는 한 장을 Upscale 합니다. 그림이 두 배로 커져요. Subtle과 Creative 어느 쪽이든 괜찮습니다.'},
+      {t:'배경 제거', d:5, c:'어도비 무료 배경 제거나 윈도우 사진 앱으로 회색 배경을 지웁니다. 바둑판 무늬가 보이면 투명해진 거예요.'},
+      {t:'크롭 · 달랑말랑', d:6, c:'포토피아에서 산타 몸에 딱 맞게 자릅니다. 여백이 남으면 쓰기 불편해서 서비스가 어렵다고 안내돼 있어요.'},
+      {t:'긴 변 2,000px', d:5, c:'이미지 크기에서 긴 변을 2,000px 정도로 맞춥니다. 캐릭터는 최소 700px, 그 외 일러스트는 최소 1,500px이에요.'},
+      {t:'PNG 요소로 업로드', d:6, c:'디자인허브에서 콘텐츠 타입을 「PNG 요소」로 고르고, 생성형 AI 체크를 한 뒤 승인 요청합니다. 사진이 아니니 배경 제거 사진이 아니에요.'}
+    ],
+    build:function(api){
+      var L=lay(api,'<div class="pf"><div class="pf-card"><div class="pf-bg"></div><div class="pf-chk"></div><div class="pf-art">'+A.santaSvg()+'</div><div class="pf-crop"></div></div>'+
+        '<div class="pf-px">긴 변 1,024 px</div>'+
+        '<ol class="pf-steps"><li><i>1</i>업스케일</li><li><i>2</i>배경 제거</li><li><i>3</i>크롭 · 달랑말랑</li><li><i>4</i>긴 변 2,000px</li><li><i>5</i>PNG 요소로 업로드</li></ol>'+
+        '<div class="pf-up"><h4>콘텐츠 타입</h4><div class="pf-opt o1">배경 제거 사진<span>사진용</span></div><div class="pf-opt o2">PNG 요소<span>그림용</span></div>'+
+        '<div class="pf-ai"><i>✓</i>생성형 AI로 만든 콘텐츠</div><div class="pf-wait">심사 대기 1</div></div></div>');
+      var q=function(s){ return L.querySelector(s); }, tl=api.tl, at=api.at;
+      var lis=L.querySelectorAll('.pf-steps li');
+      api.onScene=function(i){ [].forEach.call(lis,function(li,k){ li.classList.toggle('on',k===i); li.classList.toggle('done',k<i); }); };
+      var P={v:1024}, px=q('.pf-px');
+      api.renders.push(function(){ px.textContent='긴 변 '+Math.round(P.v).toLocaleString('ko-KR')+' px'; });
+      gsap.set(q('.pf-chk'),{autoAlpha:0}); gsap.set(q('.pf-crop'),{autoAlpha:0});
+      gsap.set(L.querySelectorAll('.pf-up,.pf-wait'),{autoAlpha:0});
+      FT(tl,q('.pf-card'),{scale:.6},{scale:1,duration:1.6,ease:'power2.out'},at(0,.6));
+      tl.to(P,{v:2048,duration:1.6,ease:'power2.out'},at(0,.6));
+      tl.to(q('.pf-bg'),{autoAlpha:0,duration:1.2},at(1,1)); tl.to(q('.pf-chk'),{autoAlpha:1,duration:1.2},at(1,1));
+      tl.to(q('.pf-crop'),{autoAlpha:1,duration:.4},at(2,.3));
+      tl.to(q('.pf-crop'),{left:'21%',top:'6%',right:'12%',bottom:'4%',duration:2,ease:'power2.inOut'},at(2,.8));
+      tl.to(P,{v:1850,duration:2,ease:'power2.inOut'},at(2,.8));
+      tl.to(P,{v:2000,duration:1.2,ease:'power2.out'},at(3,.6));
+      tl.to(q('.pf-steps'),{autoAlpha:0,duration:.3},at(4,0));
+      FT(tl,q('.pf-up'),{autoAlpha:0,y:20},{autoAlpha:1,y:0,duration:.5},at(4,.3));
+      tl.to(q('.o1'),{opacity:.45,duration:.3},at(4,1.3));
+      tl.to(q('.o2'),{borderColor:'#2D6A4F',backgroundColor:'#E4F0E9',duration:.3},at(4,1.3));
+      tl.to(q('.pf-ai i'),{backgroundColor:'#2D6A4F',borderColor:'#2D6A4F',duration:.25},at(4,2.6));
+      tl.to(q('.pf-wait'),{autoAlpha:1,duration:.4},at(4,3.8));
+    }
+  };
+
+  /* ---------- 3. 비트맵 추적 (3D) ---------- */
+  V.trace={
+    scenes:[
+      {t:'비트맵은 점의 모임', d:5, c:'미드저니에서 받은 그림은 비트맵입니다. 아주 작은 색 점(픽셀)이 모여서 그림이 돼요. 크게 키우면 점이 보입니다.'},
+      {t:'색깔별로 스캔', d:6, c:'비트맵 추적에서 다중 스캔 · 색상을 고르면, 잉크스케이프가 색깔마다 테두리를 따서 색 면을 만듭니다. 스캔 수는 나눌 색의 개수예요.'},
+      {t:'색 면 조각으로 나뉨', d:6, c:'옆에서 보면 색깔별 조각이 겹겹이 쌓여 있습니다. 조각 하나에는 색 하나만 들어 있어요. 이게 SVG입니다.'},
+      {t:'원본과 배경 조각 지우기', d:5, c:'추적 결과는 원본 위에 겹쳐 생깁니다. 원본 그림은 지우고, 남은 회색 배경 조각도 지웁니다.'},
+      {t:'색을 바꿀 수 있는 그림', d:5, c:'이제 조각마다 색을 바꿀 수 있습니다. 미리캔버스에서 사용자가 하는 일이 바로 이거예요.'}
+    ],
+    build:function(api){
+      var T=__vid3d(api,{bg:0xF4F6F3}), R=T.renderer, scene=new THREE.Scene();
+      var C={x:0,y:0,z:7,tx:0,ty:0}, cam=cam3(api,T,C);
+      var bmp=canvasTex(512,512,function(g){ var s=document.createElement('canvas'); s.width=s.height=44; var sg=s.getContext('2d'); A.drawBell(sg,44,{},null,true);
+        g.imageSmoothingEnabled=false; g.drawImage(s,0,0,512,512); },true);
+      var bm=new THREE.Mesh(new THREE.PlaneGeometry(2.6,2.6), new THREE.MeshBasicMaterial({map:bmp.tex,transparent:true,depthWrite:false}));
+      scene.add(bm);
+      var vec=new THREE.Group(); vec.position.set(1.6,0,0); scene.add(vec);
+      var names=['bg'].concat(A.ORDER), layers=[];
+      names.forEach(function(k,i){
+        var t=canvasTex(512,512,function(g){ if(k==='bg'){ g.fillStyle='#fff'; g.fillRect(0,0,512,512); } else A.drawBell(g,512,{body:'#fff',rim:'#fff',clap:'#fff',ribbon:'#fff',hi:'#fff'},k); });
+        var m=new THREE.MeshBasicMaterial({map:t.tex,color:new THREE.Color(A.COL[k]),transparent:true,opacity:0,depthWrite:false});
+        var mesh=new THREE.Mesh(new THREE.PlaneGeometry(2.6,2.6),m); mesh.position.z=i*0.002; mesh.renderOrder=i; vec.add(mesh); layers.push(mesh);
+      });
+      var L=lay(api,
+        '<div class="vpill a1" style="left:50%;top:90%">비트맵 = 작은 색 점(픽셀)의 모임</div>'+
+        '<div class="vpill png a2" style="left:23%;top:86%">원본 (이미지)</div><div class="vpill a3" style="left:70%;top:86%">추적 결과 (벡터)</div>'+
+        '<div class="vt a4" style="left:4%;top:6%;width:34%"><b>다중 스캔 · 색상</b>스캔 수 = 나눌 색 개수<br>부드럽게 · 배경 제거 체크</div>'+
+        '<div class="vt a5" style="left:6%;top:8%;width:34%"><b>조각 하나 = 색 하나</b>배경 · 몸통 · 테 · 추 · 리본 · 반짝이</div>'+
+        '<div class="vx a6" style="left:23%;top:48%">✕</div>'+
+        '<div class="vt warn a7" style="left:4%;top:6%;width:38%"><b>지우기 두 가지</b>원본 그림 → Delete<br>남은 회색 배경 조각 → Delete</div>'+
+        '<div class="vt a8" style="left:60%;top:8%;width:34%"><b>벡터 완성</b>조각마다 색을 바꿀 수 있어요</div>');
+      var q=function(s){ return L.querySelector(s); }, tl=api.tl, at=api.at;
+      gsap.set(L.querySelectorAll('.vpill,.vt,.vx'),{autoAlpha:0});
+      api.renders.push(function(){ cam.position.set(C.x,C.y,C.z); cam.lookAt(C.tx,C.ty,0); R.render(scene,cam); });
+      // 1 점의 모임
+      tl.to(C,{z:2.2,x:-.35,y:.75,tx:-.35,ty:.75,duration:2.2,ease:'power2.inOut'},at(0,.6));
+      tl.to(q('.a1'),{autoAlpha:1,duration:.4},at(0,1.6));
+      // 2 스캔
+      tl.to(q('.a1'),{autoAlpha:0,duration:.3},at(1,0));
+      tl.to(C,{x:0,y:0,z:7,tx:0,ty:0,duration:1.2,ease:'power2.inOut'},at(1,0));
+      tl.to(bm.position,{x:-2.1,duration:1.2,ease:'power2.inOut'},at(1,.3)); tl.to(bm.scale,{x:.85,y:.85,duration:1.2},at(1,.3));
+      layers.forEach(function(m,i){ tl.to(m.material,{opacity:1,duration:.4},at(1,1.6+i*.45)); });
+      tl.to(L.querySelectorAll('.a2,.a3'),{autoAlpha:1,duration:.4},at(1,1.4));
+      tl.to(q('.a4'),{autoAlpha:1,duration:.4},at(1,1.6)).to(q('.a4'),{autoAlpha:0,duration:.3},at(1,5.7));
+      // 3 조각
+      tl.to(L.querySelectorAll('.a2,.a3'),{autoAlpha:0,duration:.3},at(2,0));
+      layers.forEach(function(m,i){ tl.to(m.position,{z:i*.42,duration:1.6,ease:'power2.inOut'},at(2,.2)); });
+      tl.to(bm.material,{opacity:.25,duration:.6},at(2,.2));
+      tl.to(vec.rotation,{y:.85,x:-.12,duration:1.8,ease:'power2.inOut'},at(2,.2));
+      tl.to(C,{x:1.2,y:.6,z:7.2,tx:1.4,ty:0,duration:1.8,ease:'power2.inOut'},at(2,.2));
+      tl.to(q('.a5'),{autoAlpha:1,duration:.4},at(2,1.8)).to(q('.a5'),{autoAlpha:0,duration:.3},at(2,5.7));
+      // 4 지우기
+      tl.to(vec.rotation,{y:0,x:0,duration:1.2,ease:'power2.inOut'},at(3,0)); tl.to(bm.material,{opacity:1,duration:.4},at(3,0));
+      tl.to(C,{x:0,y:0,z:7,tx:0,ty:0,duration:1.2,ease:'power2.inOut'},at(3,0));
+      tl.to(q('.a7'),{autoAlpha:1,duration:.4},at(3,.8));
+      tl.to(q('.a6'),{autoAlpha:1,duration:.3},at(3,1.4)); tl.to(bm.material,{opacity:0,duration:.6},at(3,2)); tl.to(q('.a6'),{autoAlpha:0,duration:.3},at(3,2.4));
+      tl.to(layers[0].position,{y:-3.2,duration:1,ease:'power2.in'},at(3,2.8)); tl.to(layers[0].material,{opacity:0,duration:1},at(3,2.8));
+      tl.to(q('.a7'),{autoAlpha:0,duration:.3},at(3,4.6));
+      // 5 색 바꾸기
+      layers.forEach(function(m,i){ if(i) tl.to(m.position,{z:i*.002,duration:1,ease:'power2.inOut'},at(4,0)); });
+      tl.to(vec.position,{x:0,duration:1.2,ease:'power2.inOut'},at(4,0)); tl.to(vec.scale,{x:1.15,y:1.15,duration:1.2},at(4,0));
+      var blue=new THREE.Color('#3E7CB1'), red2=new THREE.Color('#2D6A4F');
+      tl.to(layers[1].material.color,{r:blue.r,g:blue.g,b:blue.b,duration:.8},at(4,1.8));
+      tl.to(layers[4].material.color,{r:red2.r,g:red2.g,b:red2.b,duration:.8},at(4,2.6));
+      tl.to(q('.a8'),{autoAlpha:1,duration:.4},at(4,1.4));
+    }
+  };
+
+  /* ---------- 4. SVG 규칙 ---------- */
+  V.svgrules={
+    scenes:[
+      {t:'비슷한 색은 하나로', d:6, c:'추적하면 비슷한 색이 여러 개 생깁니다. 비슷한 색끼리 같은 색 코드로 통일해 5개 이하로 맞춰요. 색이 적을수록 쓰기 편합니다.'},
+      {t:'그림자는 검정 + 투명도', d:5, c:'그림자는 검정, 반짝이는 흰색으로 두고 불투명도로 세기를 조절합니다. 업로드할 때 이 두 색은 색상 잠금을 걸어요.'},
+      {t:'크랙 받침 깔기', d:6, c:'조각 사이 틈으로 실선이 보이는 것을 크랙이라고 합니다. 전체를 복제해 합치기로 한 덩어리를 만든 뒤 맨 뒤에 깔면 사라져요.'},
+      {t:'페이지를 그림 크기에', d:5, c:'Shift + Ctrl + R로 페이지를 그림 크기에 딱 맞춥니다. 이게 SVG의 크롭이에요. 그다음 최적화된 SVG로 저장합니다.'},
+      {t:'메모장에서 evenodd 찾기', d:6, c:'저장한 SVG를 메모장으로 열고 evenodd를 찾습니다. 있으면 그 문구를 지우고 저장한 뒤, 다시 열어 모양이 같은지 확인해요.'},
+      {t:'150KB 이하인지', d:5, c:'파일 속성에서 크기를 봅니다. 150KB를 넘으면 경로 → 단순화(Ctrl + L)로 줄여요. 그래도 안 되면 그 그림은 PNG 요소로만 냅니다.'}
+    ],
+    build:function(api){
+      var SW=[['#E0A82E',10],['#E8B54A',18],['#C98E1F',26],['#C0392B',34],['#A93226',42],['#7A4E1A',50],['#FFF2C8',58]];
+      var sw=SW.map(function(s,i){ return '<span class="sr-sw s'+i+'" style="background:'+s[0]+';left:'+s[1]+'%;top:44%"></span>'; }).join('');
+      var code='&lt;svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"&gt;\n  &lt;path style="fill:#e0a82e<span class="hl eo">;fill-rule:evenodd</span>" d="M256 98 C170 98…"/&gt;\n  &lt;path style="fill:#c0392b" d="M256 92 L184 52…"/&gt;\n  &lt;path style="fill:#7a4e1a" d="M286 424 A30 30…"/&gt;\n&lt;/svg&gt;';
+      var L=lay(api,'<div class="sr">'+
+        '<div class="sr-p p0">'+sw+'<div class="sr-bell" style="left:68%;top:14%;width:26%;aspect-ratio:1">'+A.bellSvg()+'</div>'+
+          '<div class="vt" style="left:6%;top:8%;width:52%"><b>비슷한 색은 하나로</b>최대 5개 · 적을수록 쓰기 편해요</div><div class="sr-cnt" style="left:34%">색 <span class="n">7</span>개</div></div>'+
+        '<div class="sr-p p1"><div class="sr-bell b1" style="left:10%;top:10%;width:34%;aspect-ratio:1">'+A.bellSvg({shade:true})+'</div>'+
+          '<div class="vt" style="left:52%;top:18%;width:42%"><b>그림자 = 검정 #000000</b>불투명도 20~30%<br>반짝이 = 흰색 #FFFFFF + 불투명도<br>업로드 때 두 색은 「색상 잠금」</div></div>'+
+        '<div class="sr-p p2"><div class="sr-black"></div><div class="sr-blk base" style="left:30%;width:40%;background:#C0392B"></div>'+
+          '<div class="sr-blk" style="left:30%;background:#E0A82E"></div><div class="sr-blk" style="left:50.4%;background:#C0392B"></div><div class="sr-hair"></div>'+
+          '<div class="sr-lab l1" style="left:50%;top:84%">받침 없음 → 틈으로 실선이 보여요</div><div class="sr-lab l2" style="left:50%;top:84%">받침 깔기 → 실선이 사라져요</div>'+
+          '<div class="sr-kbd k1" style="left:50%;top:4%">Ctrl+D 복제 → Ctrl++ 합치기 → End 맨 뒤로</div></div>'+
+        '<div class="sr-p p3"><div class="sr-page"></div><div class="sr-bell" style="left:40%;top:26%;width:20%;aspect-ratio:1">'+A.bellSvg()+'</div>'+
+          '<div class="sr-kbd" style="left:50%;top:84%">Shift + Ctrl + R</div></div>'+
+        '<div class="sr-p p4"><div class="sr-note"><div class="bar"><span>bell.svg - 메모장</span><span>찾기: <span class="find"></span></span></div><pre>'+code+'</pre></div>'+
+          '<div class="vt warn ok" style="left:30%;top:84%;width:40%;text-align:center;padding:.5cqw 1cqw">지우고 저장 → 다시 열어 모양 확인</div></div>'+
+        '<div class="sr-p p5"><div class="sr-meter"><div class="sr-fill"></div></div><div class="sr-line" style="left:50%"></div>'+
+          '<div class="sr-lab" style="left:50%;top:22%">150KB 한도</div><div class="sr-lab" style="left:12%;top:50%;transform:none">0</div>'+
+          '<div class="sr-big"><span class="kb">0</span>KB</div><div class="sr-kbd ck" style="left:50%;top:8%">경로 → 단순화 · Ctrl + L</div></div>'+
+        '</div>');
+      var q=function(s){ return L.querySelector(s); }, qa=function(s){ return L.querySelectorAll(s); }, tl=api.tl, at=api.at;
+      var panels=qa('.sr-p'); gsap.set(panels,{autoAlpha:0});
+      api.scenes.forEach(function(s,i){ tl.to(panels[i],{autoAlpha:1,duration:.4},at(i,0)); if(i<api.scenes.length-1) tl.to(panels[i],{autoAlpha:0,duration:.3},at(i,s.d-.3)); });
+      // 0 색 정리
+      var P={n:7,f:0,kb:0}, nEl=q('.p0 .n'), find=q('.find'), kb=q('.kb'), big=q('.sr-big');
+      tl.to(q('.s1'),{left:'10%',duration:1,ease:'power2.inOut'},at(0,1.4)); tl.to(q('.s2'),{left:'10%',duration:1,ease:'power2.inOut'},at(0,1.6));
+      tl.to(q('.s4'),{left:'34%',duration:1,ease:'power2.inOut'},at(0,1.8));
+      tl.to(P,{n:4,duration:1,ease:'steps(3)'},at(0,1.6));
+      tl.to(qa('.s1,.s2,.s4'),{autoAlpha:0,duration:.2},at(0,2.8));
+      tl.to(q('.s0'),{left:'16%',duration:.8},at(0,3.2)); tl.to(q('.s3'),{left:'28%',duration:.8},at(0,3.2)); tl.to(q('.s5'),{left:'40%',duration:.8},at(0,3.2)); tl.to(q('.s6'),{left:'52%',duration:.8},at(0,3.2));
+      // 1 명암
+      FT(tl,q('.b1'),{scale:.85},{scale:1,duration:1,ease:'power2.out'},at(1,.3));
+      // 2 크랙
+      gsap.set(q('.base'),{autoAlpha:0,y:'60%'}); gsap.set(q('.l2'),{autoAlpha:0});
+      tl.to(q('.k1'),{autoAlpha:1,duration:.3},at(2,0));
+      tl.to(q('.base'),{autoAlpha:1,y:'0%',duration:1,ease:'power2.out'},at(2,2.4));
+      tl.to(q('.sr-hair'),{autoAlpha:0,duration:.5},at(2,3.2));
+      tl.to(q('.l1'),{autoAlpha:0,duration:.3},at(2,3.2)); tl.to(q('.l2'),{autoAlpha:1,duration:.3},at(2,3.4));
+      // 3 페이지 맞춤
+      FT(tl,q('.sr-page'),{left:'8%',top:'6%',width:'84%',height:'72%'},{left:'43.5%',top:'28%',width:'13%',height:'31%',duration:1.8,ease:'power2.inOut'},at(3,1.2));
+      // 4 evenodd
+      gsap.set(q('.eo'),{backgroundColor:'rgba(252,227,167,0)'}); gsap.set(q('.ok'),{autoAlpha:0});
+      tl.to(P,{f:7,duration:1.4,ease:'none'},at(4,.5));
+      tl.to(q('.eo'),{backgroundColor:'rgba(252,227,167,1)',duration:.3},at(4,2));
+      tl.to(q('.eo'),{color:'#C23B4E',textDecoration:'line-through',duration:.2},at(4,3));
+      tl.to(q('.eo'),{opacity:0,fontSize:0,duration:.6},at(4,3.6));
+      tl.to(q('.ok'),{autoAlpha:1,duration:.3},at(4,4.3));
+      // 5 용량
+      gsap.set(q('.ck'),{autoAlpha:0});
+      tl.to(q('.sr-fill'),{width:'76.7%',duration:1.2,ease:'power2.out'},at(5,.3)); tl.to(P,{kb:230,duration:1.2,ease:'power2.out'},at(5,.3));
+      tl.to(q('.ck'),{autoAlpha:1,duration:.3},at(5,2));
+      tl.to(q('.sr-fill'),{width:'32%',backgroundColor:'#2D6A4F',duration:1.2,ease:'power2.inOut'},at(5,2.6)); tl.to(P,{kb:96,duration:1.2,ease:'power2.inOut'},at(5,2.6));
+      api.renders.push(function(){ nEl.textContent=Math.round(P.n); find.textContent='evenodd'.slice(0,Math.round(P.f));
+        kb.textContent=Math.round(P.kb); big.style.color=P.kb>150?'#C23B4E':'#2D6A4F'; });
+    }
+  };
+})();
+</script>

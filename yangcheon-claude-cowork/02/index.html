@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>클로드 데스크톱 심화 2차시 — 폴더에 규칙을 심는다</title>
+<style>
+:root{
+  --navy:#1E3A5F; --navy-d:#142943; --coral:#D97440; --coral-d:#B85A2B;
+  --sky:#2E74B5; --green:#2E8540; --amber:#B45D0E; --red:#B4232C;
+  --bg:#F7F6F2; --card:#FFFFFF; --ink:#22242A; --sub:#666A73; --line:#E2E0DA;
+  --mono:'D2Coding','JetBrains Mono',Consolas,monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{font-family:Pretendard,'Pretendard Variable','Malgun Gothic','Apple SD Gothic Neo',-apple-system,sans-serif;
+  background:var(--bg);color:var(--ink);font-size:17.5px;line-height:1.75;display:flex;flex-direction:column;overflow:hidden}
+
+#topbar{flex:0 0 auto;background:var(--navy);color:#fff;display:flex;align-items:center;gap:14px;padding:0 20px;height:54px;font-size:15px}
+#topbar .t{font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:16px}
+#topbar .pct{margin-left:auto;font-family:var(--mono);font-weight:700;color:#F5B78E;white-space:nowrap;font-size:16px}
+#pbarwrap{flex:0 0 auto;height:9px;background:#CFD6E2}
+#pbar{height:100%;width:0;min-width:6px;background:linear-gradient(90deg,var(--sky),var(--coral));transition:width .5s}
+
+#tabs{flex:0 0 auto;background:#fff;border-bottom:1px solid var(--line);display:flex;overflow-x:auto;scrollbar-width:none}
+#tabs::-webkit-scrollbar{display:none}
+#tabs button{flex:none;border:0;background:none;padding:14px 20px;font-size:16.5px;font-weight:800;color:var(--sub);cursor:pointer;font-family:inherit;border-bottom:4px solid transparent;white-space:nowrap}
+#tabs button.on{color:var(--navy);border-bottom-color:var(--coral)}
+#sub{flex:0 0 auto;background:var(--bg);border-bottom:1px solid var(--line);display:flex;gap:8px;overflow-x:auto;padding:9px 18px;scrollbar-width:none}
+#sub::-webkit-scrollbar{display:none}
+#sub a{flex:none;font-size:13.5px;font-weight:700;color:var(--sub);text-decoration:none;background:#fff;border:1px solid var(--line);border-radius:20px;padding:4px 13px;cursor:pointer}
+#sub a.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+
+main{flex:1 1 auto;overflow-y:auto;padding:22px 22px 110px;display:flex;flex-direction:column;align-items:center}
+.page{width:100%;max-width:1100px}
+.unit{scroll-margin-top:14px}
+
+.banner{border-radius:16px;color:#fff;padding:28px 30px;margin:4px 0 20px;background:linear-gradient(135deg,var(--navy),#2f5386)}
+.banner .no{font-family:var(--mono);font-size:13px;opacity:.8;letter-spacing:.15em}
+.banner h2{font-size:27px;margin-top:4px;letter-spacing:-.01em;line-height:1.35}
+.banner .aims{margin-top:12px;font-size:15.5px;opacity:.95}
+.banner .aims li{list-style:none;padding-left:20px;position:relative;margin-top:3px}
+.banner .aims li::before{content:'✓';position:absolute;left:0;font-weight:800;color:#F5B78E}
+
+.card{background:var(--card);border:1px solid var(--line);border-left:6px solid var(--navy);border-radius:12px;padding:20px 24px;margin:14px 0}
+.card h3{font-size:20px;margin-bottom:10px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;letter-spacing:-.01em}
+.card p{margin:8px 0}
+.c-do{border-left-color:var(--coral)}
+.c-watch{border-left-color:var(--sky)}
+.c-check{border-left-color:var(--green)}
+.c-warn{border-left-color:var(--amber);background:#FFFBF3}
+.tag{display:inline-block;font-size:12.5px;font-weight:800;padding:3px 11px;border-radius:20px}
+.tg-c{background:#E9EEF6;color:var(--navy)}.tg-d{background:#FBE9DF;color:var(--coral-d)}
+.tg-w{background:#E7F0FA;color:var(--sky)}.tg-v{background:#E8F4EA;color:var(--green)}.tg-a{background:#FBF0E1;color:var(--amber)}
+.num{font-family:var(--mono);font-size:13px;color:var(--sub);font-weight:700}
+
+table{width:100%;border-collapse:collapse;margin:10px 0;font-size:16px}
+th,td{border:1px solid var(--line);padding:9px 12px;text-align:left;vertical-align:top}
+th{background:#EEF1F6;color:var(--navy);font-weight:800}
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}
+.duo>div{border:1px solid var(--line);border-radius:10px;padding:14px 16px;font-size:16px}
+.duo .h{font-weight:800;font-size:15px;margin-bottom:6px}
+.duo .g .h{color:var(--coral-d)}.duo .b .h{color:var(--sub)}
+.duo ul{padding-left:18px}.duo li{margin:3px 0}
+@media(max-width:720px){.duo{grid-template-columns:1fr}}
+
+.say{background:#FFF5EE;border:1px dashed var(--coral);border-radius:10px;padding:12px 16px;margin:12px 0;font-size:16.5px}
+.say b{color:var(--coral-d)}
+.note{font-size:15px;color:var(--sub);margin-top:8px}
+.big{font-size:19px;font-weight:700;color:var(--navy);margin:10px 0}
+
+.steps{counter-reset:s;margin-top:6px}
+.steps li{list-style:none;position:relative;padding:10px 0 10px 46px;border-bottom:1px dashed var(--line)}
+.steps li:last-child{border-bottom:0}
+.steps li::before{counter-increment:s;content:counter(s);position:absolute;left:0;top:10px;width:30px;height:30px;border-radius:50%;background:var(--coral);color:#fff;font-weight:800;font-size:15px;display:flex;align-items:center;justify-content:center}
+.steps b{color:var(--navy)}
+.steps small{display:block;color:var(--sub);font-size:15px}
+
+.pk{background:var(--navy-d);border-radius:12px;margin:14px 0;overflow:hidden;border-left:6px solid var(--coral)}
+.pk .bar{display:flex;align-items:center;gap:10px;padding:10px 16px;background:#0f1e38;font-size:14px;color:#cfd8e6;font-weight:700}
+.pk .bar button{margin-left:auto;background:var(--coral);color:#fff;border:0;border-radius:8px;padding:7px 16px;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit}
+.pk .bar button:hover{background:var(--coral-d)}
+.pk pre{padding:16px 18px;color:#F3F5F8;font-family:var(--mono);font-size:15.5px;line-height:1.6;white-space:pre-wrap;word-break:break-word}
+.md{border-left-color:var(--sky)}
+.md .bar{background:#16294a}
+
+.figwrap{margin:14px 0;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff}
+.fig{width:100%;height:auto;display:block}
+
+.ck label{display:flex;gap:12px;align-items:flex-start;padding:9px 0;border-bottom:1px dashed var(--line);cursor:pointer;font-size:17px}
+.ck label:last-child{border-bottom:0}
+.ck input{width:22px;height:22px;margin-top:5px;accent-color:var(--coral);flex:none}
+
+.qbox{background:#F3F6FA;border-radius:10px;padding:14px 18px;margin-top:10px}
+.qbox details{margin:6px 0}.qbox summary{font-weight:800;cursor:pointer;color:var(--navy);font-size:16.5px}
+.qbox details div{padding:6px 0 4px 18px;font-size:16px}
+
+.flow{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0;font-size:15px;font-weight:800}
+.flow span{background:#E9EEF6;color:var(--navy);border-radius:8px;padding:7px 14px}
+.flow em{align-self:center;color:var(--sub);font-style:normal}
+
+#navbtns{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);display:flex;justify-content:space-between;padding:12px 22px;z-index:50}
+#navbtns button{border:2px solid var(--navy);background:#fff;color:var(--navy);font-weight:800;font-size:16px;padding:10px 22px;border-radius:10px;cursor:pointer;font-family:inherit}
+#navbtns button.next{background:var(--navy);color:#fff}
+#navbtns button:disabled{opacity:.3;cursor:default}
+
+#qbtn{position:fixed;right:22px;bottom:78px;width:58px;height:58px;border-radius:50%;background:var(--coral);color:#fff;border:0;font-size:26px;font-weight:800;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.25);z-index:55}
+#qov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:70;align-items:center;justify-content:center;padding:20px}
+#qov.on{display:flex}
+#qbox{background:#fff;border-radius:16px;max-width:760px;width:100%;max-height:85vh;overflow-y:auto;padding:26px 30px;position:relative}
+#qbox h3{font-size:22px;margin-bottom:12px;color:var(--navy)}
+#qbox details{margin:8px 0;border-bottom:1px dashed var(--line);padding-bottom:8px}
+#qbox summary{font-weight:800;cursor:pointer;font-size:17px}
+#qbox details div{padding:6px 0 0 16px;font-size:16px}
+#qbox .x{position:absolute;right:16px;top:14px;border:0;background:none;font-size:24px;cursor:pointer}
+.flash{animation:fl 1.4s}
+@keyframes fl{0%{box-shadow:0 0 0 4px rgba(217,116,64,.6)}100%{box-shadow:none}}
+
+code{background:#EEF1F6;padding:1px 6px;border-radius:5px;font-family:var(--mono);font-size:.92em}
+.figwrap{margin:14px 0;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff}
+.fig{width:100%;height:auto;display:block}
+.c-wait{border-left-color:#7C5CBF;background:#F7F4FD}
+.tg-wt{background:#E9E2FA;color:#5B3FA0}
+ul.talk{padding-left:0;margin-top:8px}
+ul.talk li{list-style:none;padding:10px 14px;margin:8px 0;background:#fff;border:1px solid #DDD6F0;border-radius:10px;font-size:17px;line-height:1.6}
+ul.talk li::before{content:'🗣  ';}
+</style>
+</head>
+<body>
+<div id="topbar"><span class="t">클로드 데스크톱 심화 2차시 — 폴더에 규칙을 심는다 <span style="font-family:var(--mono);font-size:12px;opacity:.75;margin-left:8px">v2.0 · 2026-09-14</span></span><span class="pct"><span id="pctv">0</span>% 완료</span></div>
+<div id="pbarwrap"><div id="pbar"></div></div>
+<nav id="tabs"></nav>
+<nav id="sub"></nav>
+<main id="main"></main>
+<div id="navbtns"><button id="prevb">◀ 이전 STEP</button><button id="nextb" class="next">다음 STEP ▶</button></div>
+<button id="qbtn" title="막힘 사전">?</button>
+<div id="qov"><div id="qbox">
+  <button class="x" data-act="qaclose">✕</button>
+  <h3>막힘 사전 — 화면 / 왜 / 뭘 누르나</h3>
+  <details open><summary>권한을 허용하겠냐는 창</summary><div>코워크가 폴더를 읽고 쓰려면 허락이 필요합니다. <b>허용</b>. 그 폴더만 허용됩니다.</div></details>
+  <details><summary>"폴더를 찾을 수 없음"</summary><div>USB가 빠졌거나 드라이브 문자가 바뀐 것. 폴더 이름을 눌러 다시 선택하거나 새 대화를 여세요.</div></details>
+  <details><summary>채팅에서 코워크로 못 바꿈</summary><div>대화는 시작할 때 정해지고 중간에 못 바꿉니다. <b>새 대화</b>를 여세요.</div></details>
+  <details><summary>캔바 연결이 안 됨 / 목록에 없음</summary><div>계정이 없으면 구글 계정으로 무료 가입하면 됩니다. 그래도 안 되면 옆자리 화면을 같이 보세요 — 5주차에 제대로 합니다.</div></details>
+  <details><summary>카드뉴스가 안 만들어짐</summary><div>"캔바에 프레젠테이션으로 만들어줘"로 바꿔보세요. 그래도 안 되면 넘어갑니다.</div></details>
+  <details><summary>스킬 만들기가 안 끝남</summary><div>정상입니다. 오래 걸립니다. <b>그 창은 그대로 두고</b> 새 대화를 열어 다음 단계를 진행하세요.</div></details>
+  <details><summary>스킬이 만들어졌는데 "적용" 버튼이 없음</summary><div>오류가 아닙니다. 설정 → 기능 → 스킬 → 업로드로 나온 파일을 직접 올리면 됩니다.</div></details>
+  <details><summary>사진이 안 옮겨짐 / 탐색기에 그대로</summary><div>탐색기에서 <b>F5(새로고침)</b>. 그래도 없으면 클로드에게 "어디에 저장했어?"라고 물어보세요.</div></details>
+  <details><summary>너무 오래 걸림</summary><div>50장이면 분석 1~2분, 옮기기 3분 정도가 정상입니다. 화면에 진행 상황이 올라오면 돌아가는 중입니다.</div></details>
+  <details><summary>CLAUDE.md 가 CLAUDE.md.txt 로 저장됨</summary><div>메모장 저장 시 파일 형식을 <b>"모든 파일"</b>로. 이미 그렇게 됐으면 탐색기에서 이름 바꾸기로 .txt 를 지우세요.</div></details>
+  <details><summary>CLAUDE.md 규칙이 안 지켜짐</summary><div>① 새 대화에서 했는지 ② 그래도 안 되면 "이 폴더의 CLAUDE.md를 먼저 읽고," 를 앞에 붙여 보내세요.</div></details>
+  <details><summary>내장 브라우저가 안 열림</summary><div>설정 → Cowork → 기본 브라우저 확인. 아직 안 보이면 순차 적용 중입니다. 없어도 오늘 수업은 다 됩니다.</div></details>
+  <details><summary>한도가 다 됐다고 함</summary><div>설정 → 사용량에서 확인. 자동 승인 모드는 사용량을 더 씁니다.</div></details>
+  <details><summary>앱에 남의 이름이 보임</summary><div>설정 → 계정 → 로그아웃 → 내 계정으로. 다른 반 흔적인 폴더는 지우지 말고 무시하세요.</div></details>
+</div></div>
+<script>
+const PAGES=[{id:'p0',tab:'STEP 0 복습',banner:['STEP 0','지난주 복습 — 5분이면 됩니다',['채팅과 코워크가 뭐가 달랐는지 떠올린다', 'USB 폴더를 코워크에 연결한다', '오늘 할 일을 안다']],units:[{id:'0-1',t:'지난주 한 줄',h:`<div class="card"><h3><span class="num">0-1</span><span class="tag tg-c">복습</span>지난주에 뭘 했더라</h3>
+<table><tr><th style="width:150px"></th><th>채팅</th><th>코워크</th></tr>
+<tr><td>결과물</td><td>화면에만 — 내려받아야 함</td><td><b>내 폴더에 파일로</b></td></tr>
+<tr><td>내 파일</td><td>올려줘야 봄</td><td><b>폴더를 직접 읽음</b></td></tr>
+<tr><td>비유</td><td>전화 상담</td><td>우리 사무실에 출근한 직원</td></tr></table>
+<div class="say"><b>오늘부터</b> — 코워크만 씁니다. 채팅은 안 씁니다.</div></div>`},{id:'0-2',t:'● 폴더 연결',h:`<div class="card c-do"><h3><span class="num">0-2</span><span class="tag tg-d">다 같이</span>준비 — 3분</h3>
+<ol class="steps">
+<li><b>USB 꽂기 → 안에 <code>사진정리</code> 폴더 확인</b><small>USB 없는 분은 D: 에 복사해서 쓰세요.</small></li>
+<li><b>클로드 앱 → 새 대화 → 스위치를 "코워크"로 → 폴더 선택</b></li>
+<li><b>권한 허용 창이 뜨면 "허용"</b></li>
+<li><b>승인 모드를 "자동 승인(Auto)"으로</b><small>매번 물어보면 진도가 안 나갑니다. 대신 사용량을 좀 더 씁니다.</small></li>
+<li><b>탐색기에서 그 폴더를 열어 옆에 띄워두기 — 보기는 "큰 아이콘"</b><small>오늘 사진이 움직이는 걸 눈으로 봐야 합니다.</small></li></ol>
+<div class="say"><b>확인</b> — "사진이 큰 그림으로 보이는 분 손!"</div></div>`},{id:'0-3',t:'오늘 할 일',h:`<div class="card c-check"><h3><span class="num">0-3</span><span class="tag tg-v">예고</span>오늘 만들 것</h3>
+<ol class="steps">
+<li><b>내가 궁금한 걸 찾아서 → 워드·엑셀·PDF로</b></li>
+<li><b>그 내용으로 캔바 카드뉴스까지</b></li>
+<li><b>방금 한 일을 "내 스킬"로 만들어 두기</b></li>
+<li><b>사진 50장을 통째로 정리시키기</b></li>
+<li><b>★ 폴더에 규칙 한 장을 심어서, 앞으로 내 방식대로 나오게 하기</b></li></ol>
+<div class="say"><b>오늘의 한 줄</b> — 매번 설명하던 내 기준을 <b>폴더에 심어둡니다.</b></div></div>`}]},
+{id:'p1',tab:'STEP 1 브라우저',banner:['STEP 1','깜짝 — 클로드가 직접 검색합니다',['클로드 안에 브라우저가 하나 더 있다는 걸 안다', '검색창에 글자가 타이핑되는 걸 본다', '언제 어느 쪽을 쓰는지 안다']],units:[{id:'1-1',t:'● 직접 검색시키기',h:`<div class="card c-do"><h3><span class="num">1-1</span><span class="tag tg-d">다 같이</span>클로드에게 "직접 검색해봐"</h3>
+<div class="pk"><div class="bar">코워크<button data-cp>복사</button></div><pre>구글에서 "9월 제철 음식"을 검색해서 첫 페이지에 뭐가 나오는지 알려줘. 검색창에 직접 입력하는 방식으로 해줘.</pre></div>
+<p>오른쪽에 브라우저 창이 열리고, <b>검색창에 글자가 하나씩 타이핑되고 버튼이 눌리는 게 보입니다.</b></p><div class="figwrap"><svg class="fig" viewBox="0 0 760 220" xmlns="http://www.w3.org/2000/svg" font-family="Pretendard,Malgun Gothic,sans-serif" font-size="14"><rect x="0" y="0" width="760" height="220" rx="12" fill="#F7F6F2" stroke="#E2E0DA" stroke-width="1.5" /><rect x="20" y="24" width="350" height="176" rx="12" fill="#fff" stroke="#E2E0DA" stroke-width="1.5" /><path d="M20 36 a12 12 0 0 1 12 -12 h326 a12 12 0 0 1 12 12 v28 h-350 z" fill="#EEF1F6"/><text x="40" y="52" fill="#666A73" font-size="15" font-weight="bold" text-anchor="start">웹 검색</text><text x="46" y="92" fill="#22242A" font-size="14" font-weight="normal" text-anchor="start">· 화면에 안 보임</text><text x="46" y="120" fill="#22242A" font-size="14" font-weight="normal" text-anchor="start">· 여러 기사를 빠르게 훑음</text><text x="46" y="148" fill="#22242A" font-size="14" font-weight="normal" text-anchor="start">· 대부분 이걸로 처리</text><rect x="390" y="24" width="350" height="176" rx="12" fill="#fff" stroke="#D97440" stroke-width="2" /><path d="M390 36 a12 12 0 0 1 12 -12 h326 a12 12 0 0 1 12 12 v28 h-350 z" fill="#FBE9DF"/><text x="410" y="52" fill="#D97440" font-size="15" font-weight="bold" text-anchor="start">내장 브라우저</text><text x="416" y="92" fill="#22242A" font-size="14" font-weight="normal" text-anchor="start">· 오른쪽에 창이 열림</text><text x="416" y="120" fill="#22242A" font-size="14" font-weight="normal" text-anchor="start">· 클릭·타이핑이 보임</text><text x="416" y="148" fill="#22242A" font-size="14" font-weight="normal" text-anchor="start">· 눌러야 나오는 것에</text><text x="380" y="212" fill="#666A73" font-size="13" font-weight="bold" text-anchor="middle">어느 쪽을 쓸지는 클로드가 알아서 고릅니다</text></svg></div>
+<div class="say"><b>쉽게 말하면</b> — 클로드 앱 안에 <b>브라우저가 하나 더 들어 있습니다.</b> 여러분 크롬은 건드리지 않고, 여러분 로그인도 가져가지 않습니다. <b>직원 책상에 컴퓨터를 한 대 놓아준 것</b>과 같습니다.</div>
+<p class="note">※ 은행·증권처럼 <b>로그인이 필요한 페이지에는 쓰지 마세요.</b> 만든 회사의 공식 권고입니다.</p>
+<p class="note">※ 설정 → Cowork → 기본 브라우저에서 확인할 수 있습니다. 아직 안 보이는 분은 순차 적용 중이니 그냥 넘어가세요 — 오늘 수업은 다 됩니다.</p></div>`}]},
+{id:'p2',tab:'STEP 2 문서 만들기 ★',banner:['STEP 2','내가 궁금한 걸 → 문서로',['각자 관심 있는 주제를 찾아 정리시킨다', '같은 내용을 워드·엑셀·PDF로 뽑는다', '아무것도 설치하지 않았다는 걸 확인한다']],units:[{id:'2-1',t:'● 내 관심사 찾기',h:`<div class="card c-do"><h3><span class="num">2-1</span><span class="tag tg-d">다 같이</span>① 내가 궁금한 걸 찾아서 정리</h3>
+<p><b>각자 주제를 정하세요.</b> 부동산, 건강, 주식, 여행, 자녀 교육, 반려동물, 요즘 뉴스 — 뭐든 좋습니다.</p>
+<div class="pk"><div class="bar">코워크 · 사진정리 폴더 · ○○를 내 주제로 바꿔서<button data-cp>복사</button></div><pre>○○에 대해 요즘 어떤 이야기가 있는지 찾아서 정리해줘.
+- 핵심 내용 5가지
+- 각각 두세 줄 설명
+- 어디서 찾았는지 출처도
+정리한 내용을 이 폴더에 저장해줘.</pre></div>
+<div class="say"><b>주제가 안 떠오르면</b> — "요즘 물가", "9월 제철 음식", "무릎 건강에 좋은 운동", "서울 가볼 만한 곳" — 이 중에 하나 고르세요.</div>
+<p class="note">※ 1~2분 걸립니다. 검색해서 읽고 정리하는 중입니다.</p></div>`},{id:'2-2',t:'● 워드로',h:`<div class="card c-do"><h3><span class="num">2-2</span><span class="tag tg-d">다 같이</span>② "워드 문서로 만들어줘"</h3>
+<div class="pk"><div class="bar">코워크 · 같은 대화<button data-cp>복사</button></div><pre>방금 정리한 내용을 워드 문서로 만들어서 이 폴더에 저장해줘.</pre></div>
+<div class="say"><b>확인</b> — "폴더에 워드 파일 생긴 분 손! — <b>우리가 뭘 설치했나요? 아무것도 안 했습니다.</b>"</div></div>`},{id:'2-3',t:'● 엑셀로',h:`<div class="card c-do"><h3><span class="num">2-3</span><span class="tag tg-d">다 같이</span>③ "엑셀 표로도"</h3>
+<div class="pk"><div class="bar">코워크 · 같은 대화<button data-cp>복사</button></div><pre>같은 내용을 엑셀 파일로도 만들어줘. 열은 번호·항목·설명·출처로 하고, 제목 줄은 굵게 해줘.</pre></div>
+<p>열어보면 표가 제대로 잡혀 있습니다. 복사해서 붙일 필요가 없습니다.</p></div>`},{id:'2-4',t:'● PDF로',h:`<div class="card c-do"><h3><span class="num">2-4</span><span class="tag tg-d">다 같이</span>④ "PDF로도" 🙂</h3>
+<div class="pk"><div class="bar">코워크 · 같은 대화<button data-cp>복사</button></div><pre>같은 내용을 PDF 파일로도 만들어줘.</pre></div>
+<p class="note">※ 시간이 밀리면 이 단계는 건너뛰어도 됩니다.</p></div>`},{id:'2-5',t:'재료 하나, 결과 넷',h:`<div class="card"><h3><span class="num">2-5</span><span class="tag tg-c">확인</span>폴더를 열어보세요</h3><div class="figwrap"><svg class="fig" viewBox="0 0 760 300" xmlns="http://www.w3.org/2000/svg" font-family="Pretendard,Malgun Gothic,sans-serif" font-size="14"><rect x="0" y="0" width="760" height="300" rx="12" fill="#F7F6F2" stroke="#E2E0DA" stroke-width="1.5" /><rect x="300" y="20" width="160" height="54" rx="10" fill="#fff" stroke="#1E3A5F" stroke-width="2.5" /><text x="380" y="45" fill="#1E3A5F" font-size="13" font-weight="bold" text-anchor="middle">내가 찾은</text><text x="380" y="64" fill="#1E3A5F" font-size="15" font-weight="bold" text-anchor="middle">관심사 내용</text><path d="M380 78 C380 120, 145 120, 145 168" fill="none" stroke="#2E74B5" stroke-width="2.5"/><rect x="60" y="168" width="170" height="64" rx="10" fill="#fff" stroke="#2E74B5" stroke-width="2" /><text x="145" y="198" fill="#2E74B5" font-size="16" font-weight="bold" text-anchor="middle">워드</text><text x="145" y="220" fill="#666A73" font-size="12" font-weight="normal" text-anchor="middle">.docx</text><path d="M380 78 C380 120, 300 120, 300 168" fill="none" stroke="#2E8540" stroke-width="2.5"/><rect x="215" y="168" width="170" height="64" rx="10" fill="#fff" stroke="#2E8540" stroke-width="2" /><text x="300" y="198" fill="#2E8540" font-size="16" font-weight="bold" text-anchor="middle">엑셀</text><text x="300" y="220" fill="#666A73" font-size="12" font-weight="normal" text-anchor="middle">.xlsx</text><path d="M380 78 C380 120, 455 120, 455 168" fill="none" stroke="#B4232C" stroke-width="2.5"/><rect x="370" y="168" width="170" height="64" rx="10" fill="#fff" stroke="#B4232C" stroke-width="2" /><text x="455" y="198" fill="#B4232C" font-size="16" font-weight="bold" text-anchor="middle">PDF</text><text x="455" y="220" fill="#666A73" font-size="12" font-weight="normal" text-anchor="middle">.pdf</text><path d="M380 78 C380 120, 610 120, 610 168" fill="none" stroke="#7C5CBF" stroke-width="2.5"/><rect x="525" y="168" width="170" height="64" rx="10" fill="#fff" stroke="#7C5CBF" stroke-width="2" /><text x="610" y="198" fill="#7C5CBF" font-size="16" font-weight="bold" text-anchor="middle">카드뉴스</text><text x="610" y="220" fill="#666A73" font-size="12" font-weight="normal" text-anchor="middle">캔바</text><text x="380" y="266" fill="#666A73" font-size="14" font-weight="bold" text-anchor="middle">재료는 하나, 결과는 네 가지</text></svg></div>
+<div class="say"><b>오늘 기억할 것</b> — 내가 찾은 내용 <b>하나</b>로 워드·엑셀·PDF가 나왔습니다. 그리고 다음 단계에서 <b>카드뉴스</b>까지 나옵니다.</div>
+<p class="note">※ 워드·엑셀·PDF·발표자료는 클로드에 <b>원래 들어 있습니다.</b> 그래서 말만 하면 됩니다. 이걸 "스킬"이라고 부릅니다 — 다음 단계에서 자세히.</p></div>`}]},
+{id:'p3',tab:'STEP 3 스킬·커넥터 ★',banner:['STEP 3','스킬 · 플러그인 · 커넥터 — 뭐가 다른가',['셋의 차이를 한 장으로 안다', '캔바를 연결해서 카드뉴스를 만든다', '방금 한 일을 내 스킬로 만들어 둔다']],units:[{id:'3-1',t:'셋의 차이',h:`<div class="card"><h3><span class="num">3-1</span><span class="tag tg-c">개념</span>비슷해 보이는 세 가지</h3><div class="figwrap"><svg class="fig" viewBox="0 0 760 250" xmlns="http://www.w3.org/2000/svg" font-family="Pretendard,Malgun Gothic,sans-serif" font-size="14"><rect x="0" y="0" width="760" height="250" rx="12" fill="#F7F6F2" stroke="#E2E0DA" stroke-width="1.5" /><rect x="20" y="24" width="230" height="200" rx="12" fill="#fff" stroke="#2E74B5" stroke-width="2.5" /><path d="M20 36 a12 12 0 0 1 12 -12 h206 a12 12 0 0 1 12 12 v30 h-230 z" fill="#F2F4F8"/><text x="135" y="52" fill="#2E74B5" font-size="17" font-weight="bold" text-anchor="middle">스킬</text><text x="135" y="92" fill="#22242A" font-size="13" font-weight="normal" text-anchor="middle">일하는 방법을 적은 글</text><text x="135" y="124" fill="#666A73" font-size="13" font-weight="normal" text-anchor="middle">비유: 레시피</text><text x="135" y="164" fill="#666A73" font-size="12" font-weight="bold" text-anchor="middle">예</text><text x="135" y="186" fill="#22242A" font-size="13" font-weight="bold" text-anchor="middle">워드·한글 만들기</text><text x="135" y="210" fill="#666A73" font-size="12.5" font-weight="bold" text-anchor="middle">로그인 없음</text><rect x="265" y="24" width="230" height="200" rx="12" fill="#fff" stroke="#2E8540" stroke-width="2.5" /><path d="M265 36 a12 12 0 0 1 12 -12 h206 a12 12 0 0 1 12 12 v30 h-230 z" fill="#F2F4F8"/><text x="380" y="52" fill="#2E8540" font-size="17" font-weight="bold" text-anchor="middle">플러그인</text><text x="380" y="92" fill="#22242A" font-size="13" font-weight="normal" text-anchor="middle">스킬·커넥터 묶음</text><text x="380" y="124" fill="#666A73" font-size="13" font-weight="normal" text-anchor="middle">비유: 레시피 묶음집</text><text x="380" y="164" fill="#666A73" font-size="12" font-weight="bold" text-anchor="middle">예</text><text x="380" y="186" fill="#22242A" font-size="13" font-weight="bold" text-anchor="middle">회사용 세트</text><text x="380" y="210" fill="#666A73" font-size="12.5" font-weight="bold" text-anchor="middle">로그인 없음</text><rect x="510" y="24" width="230" height="200" rx="12" fill="#fff" stroke="#D97440" stroke-width="2.5" /><path d="M510 36 a12 12 0 0 1 12 -12 h206 a12 12 0 0 1 12 12 v30 h-230 z" fill="#FBE9DF"/><text x="625" y="52" fill="#D97440" font-size="17" font-weight="bold" text-anchor="middle">커넥터</text><text x="625" y="92" fill="#22242A" font-size="13" font-weight="normal" text-anchor="middle">바깥 서비스로 가는 문</text><text x="625" y="124" fill="#666A73" font-size="13" font-weight="normal" text-anchor="middle">비유: 배달 전화선</text><text x="625" y="164" fill="#666A73" font-size="12" font-weight="bold" text-anchor="middle">예</text><text x="625" y="186" fill="#22242A" font-size="13" font-weight="bold" text-anchor="middle">캔바·지메일</text><text x="625" y="210" fill="#D97440" font-size="12.5" font-weight="bold" text-anchor="middle">로그인 필요</text></svg></div>
+<table><tr><th style="width:130px"></th><th>스킬</th><th>플러그인</th><th>커넥터 (MCP)</th></tr>
+<tr><td>뭐냐</td><td><b>일하는 방법</b>을 적은 글</td><td>스킬·커넥터를 묶은 <b>꾸러미</b></td><td><b>바깥 서비스</b>로 가는 문</td></tr>
+<tr><td>예</td><td>워드 만들기, 한글 만들기</td><td>회사용 세트</td><td>캔바, 지메일, 캘린더</td></tr>
+<tr><td>로그인</td><td>필요 없음</td><td>필요 없음</td><td><b>필요함</b></td></tr>
+<tr><td>어떻게 부르나</td><td>말하거나 <code>/</code></td><td>설치하면 자동</td><td>연결하면 자동</td></tr></table>
+<div class="say"><b>한 줄로</b> — <b>스킬은 방법, 플러그인은 묶음, 커넥터는 바깥으로 나가는 문.</b> 로그인을 물어보면 커넥터라고 보시면 됩니다.</div></div>`},{id:'3-2',t:'● 캔바 연결',h:`<div class="card c-do"><h3><span class="num">3-2</span><span class="tag tg-d">다 같이</span>① 커넥터 연결해보기 — 캔바</h3>
+<ol class="steps">
+<li><b>설정 → 커넥터 (또는 메시지 칸의 + → 커넥터)</b></li>
+<li><b>목록에서 캔바(Canva) 찾아 "연결"</b></li>
+<li><b>캔바 로그인 창이 열림 → 로그인 → "허용"</b><small>계정이 없으면 구글 계정으로 가입하면 됩니다. 무료입니다.</small></li>
+<li><b>목록에 "연결됨"으로 바뀌는지 확인</b></li></ol>
+<div class="say"><b>여기서 한 마디</b> — "<b>로그인을 물어봤죠?</b> 워드 만들 땐 안 물어봤습니다. <b>바깥 서비스니까요.</b> 이게 커넥터입니다."</div>
+<p class="note">※ 계정이 없거나 연결이 안 되는 분은 옆자리 화면을 같이 보세요. 5주차에 제대로 합니다.</p></div>`},{id:'3-3',t:'● 카드뉴스 만들기',h:`<div class="card c-do"><h3><span class="num">3-3</span><span class="tag tg-d">다 같이</span>② 2단계 내용으로 카드뉴스 5장</h3>
+<div class="pk"><div class="bar">코워크 · 캔바 연결 후<button data-cp>복사</button></div><pre>아까 정리한 ○○ 내용으로 캔바에서 카드뉴스를 만들어줘.
+- 5장
+- 1장은 표지(제목), 2~4장은 핵심 내용, 5장은 마무리
+- 한 장에 한 가지 이야기만, 글자는 크게</pre></div>
+<ol class="steps">
+<li><b>보내고 기다린다</b><small>캔바에서 디자인을 만드는 중입니다.</small></li>
+<li><b>완성되면 링크가 나옴 → 눌러서 캔바에서 열어보기</b></li>
+<li><b>캔바에서 직접 고칠 수도 있습니다</b></li></ol>
+<div class="say"><b>오늘 제일 화려한 장면</b> — 내가 찾은 내용 하나가 <b>워드·엑셀·PDF·카드뉴스</b>가 됐습니다. 같은 재료로요.</div>
+<p class="note">※ 잘 안 되면 "캔바에 프레젠테이션으로 만들어줘"로 바꿔보세요. 그래도 안 되면 넘어갑니다 — 다음 단계가 더 중요합니다.</p></div>`},{id:'3-4',t:'● 내 스킬 만들기',h:`<div class="card c-do"><h3><span class="num">3-4</span><span class="tag tg-d">다 같이</span>③ 방금 한 일을 "내 스킬"로 ⏳</h3>
+<p>매번 "워드로, 엑셀로, PDF로" 세 번 말씀하셨죠. <b>그 과정을 통째로 저장해둡니다.</b></p>
+<ol class="steps">
+<li><b>메시지 칸에 <code>/</code> 를 치고 목록에서 <b>skill-creator</b> 선택</b></li>
+<li><b>이어서 아래를 붙여넣기</b></li></ol>
+<div class="pk"><div class="bar">/skill-creator 선택 후<button data-cp>복사</button></div><pre>내가 관심 있는 주제를 찾아서 정리한 다음, 그 내용을 워드·엑셀·PDF 세 가지로 만들어 폴더에 저장하는 과정을 스킬로 만들어줘.
+- 스킬 이름(name): my-report  (영문 소문자만)
+- 설명(description): 관심 주제를 조사해서 워드·엑셀·PDF 문서로 만들어 폴더에 저장</pre></div>
+<div class="card c-warn" style="margin:12px 0 0"><b>⏳ 여기서 시간이 걸립니다. 기다리지 말고 다음 단계로 넘어갑니다.</b><br>돌아가는 채로 두고 <b>새 대화</b>를 열어 4단계 사진 정리를 시작하세요. 사진 정리하는 동안 스킬이 완성됩니다.</div>
+<p class="note">※ 만들어진 뒤 "적용" 버튼이 안 보이고 파일만 나오면 — 설정 → 기능 → 스킬 → 업로드로 직접 올리면 됩니다. 오류가 아닙니다.</p></div>`}]},
+{id:'p4',tab:'STEP 4 사진 정리 ★★',banner:['STEP 4','사진 50장 통째로 맡기기',['사람 눈으로 못 찾는 중복을 찾아낸다', '폴더가 생기고 사진이 그 안으로 들어간다', '정리 보고서가 나온다']],units:[{id:'4-1',t:'● 뭐가 있는지',h:`<div class="card c-do"><h3><span class="num">4-1</span><span class="tag tg-d">다 같이</span>① "이 폴더에 뭐가 있어?"</h3>
+<p><b>새 대화</b>를 열고 사진정리 폴더를 연결합니다. (스킬 만들던 창은 그대로 두세요)</p>
+<div class="pk"><div class="bar">코워크 · 새 대화 · 사진정리 폴더<button data-cp>복사</button></div><pre>이 폴더에 뭐가 들어 있는지 알려줘. 파일이 몇 개고 어떤 종류인지.</pre></div>
+<div class="say"><b>여기서 한 마디</b> — "제가 이 폴더를 열어본 적 없습니다. <b>클로드가 직접 들어가서 본 겁니다.</b>"</div></div>`},{id:'4-2',t:'● 중복 찾기',h:`<div class="card c-do"><h3><span class="num">4-2</span><span class="tag tg-d">다 같이</span>② "똑같은 사진 찾아줘" ← 놀라는 장면</h3>
+<div class="pk"><div class="bar">코워크 · 같은 대화<button data-cp>복사</button></div><pre>이 폴더에 똑같은 사진이 중복으로 들어 있는지 찾아줘. 지우지는 말고 목록만 알려줘.</pre></div><div class="figwrap"><svg class="fig" viewBox="0 0 760 270" xmlns="http://www.w3.org/2000/svg" font-family="Pretendard,Malgun Gothic,sans-serif" font-size="14"><rect x="0" y="0" width="760" height="270" rx="12" fill="#F7F6F2" stroke="#E2E0DA" stroke-width="1.5" /><text x="24" y="36" fill="#1E3A5F" font-size="16" font-weight="bold" text-anchor="start">클로드가 찾아낸 "똑같은 사진" 8쌍</text><rect x="24" y="58" width="300" height="20" rx="5" fill="#fff" stroke="#E2E0DA" stroke-width="1.5" /><text x="34" y="72" fill="#22242A" font-size="11" font-weight="normal" text-anchor="start">pexels-78973922-11122618.jpg</text><text x="336" y="72" fill="#D97440" font-size="14" font-weight="bold" text-anchor="start">=</text><rect x="354" y="58" width="382" height="20" rx="5" fill="#FBE9DF" stroke="#D97440" stroke-width="1.5" /><text x="364" y="72" fill="#D97440" font-size="11" font-weight="bold" text-anchor="start">pexels-78973922-11122618 - 복사본.jpg</text><rect x="24" y="83" width="300" height="20" rx="5" fill="#fff" stroke="#E2E0DA" stroke-width="1.5" /><text x="34" y="97" fill="#22242A" font-size="11" font-weight="normal" text-anchor="start">pexels-bestgeorgianfood-31071831.jpg</text><text x="336" y="97" fill="#D97440" font-size="14" font-weight="bold" text-anchor="start">=</text><rect x="354" y="83" width="382" height="20" rx="5" fill="#FBE9DF" stroke="#D97440" stroke-width="1.5" /><text x="364" y="97" fill="#D97440" font-size="11" font-weight="bold" text-anchor="start">pexels-bestgeorgianfood-31071831 - 복사본.jpg</text><rect x="24" y="108" width="300" height="20" rx="5" fill="#fff" stroke="#E2E0DA" stroke-width="1.5" /><text x="34" y="122" fill="#22242A" font-size="11" font-weight="normal" text-anchor="start">pexels-blvckart-studio-29051718.jpg</text><text x="336" y="122" fill="#D97440" font-size="14" font-weight="bold" text-anchor="start">=</text><rect x="354" y="108" width="382" height="20" rx="5" fill="#FBE9DF" stroke="#D97440" stroke-width="1.5" /><text x="364" y="122" fill="#D97440" font-size="11" font-weight="bold" text-anchor="start">pexels-blvckart-studio-29051718 - 복사본.jpg</text><rect x="24" y="133" width="300" height="20" rx="5" fill="#fff" stroke="#E2E0DA" stroke-width="1.5" /><text x="34" y="147" fill="#22242A" font-size="11" font-weight="normal" text-anchor="start">pexels-ekoagalarov-8272072.jpg</text><text x="336" y="147" fill="#D97440" font-size="14" font-weight="bold" text-anchor="start">=</text><rect x="354" y="133" width="382" height="20" rx="5" fill="#FBE9DF" stroke="#D97440" stroke-width="1.5" /><text x="364" y="147" fill="#D97440" font-size="11" font-weight="bold" text-anchor="start">pexels-ekoagalarov-8272072 - 복사본.jpg</text><rect x="24" y="158" width="300" height="20" rx="5" fill="#fff" stroke="#E2E0DA" stroke-width="1.5" /><text x="34" y="172" fill="#22242A" font-size="11" font-weight="normal" text-anchor="start">pexels-maksgelatin-4348554.jpg</text><text x="336" y="172" fill="#D97440" font-size="14" font-weight="bold" text-anchor="start">=</text><rect x="354" y="158" width="382" height="20" rx="5" fill="#FBE9DF" stroke="#D97440" stroke-width="1.5" /><text x="364" y="172" fill="#D97440" font-size="11" font-weight="bold" text-anchor="start">pexels-maksgelatin-4348554 - 복사본.jpg</text><rect x="24" y="183" width="300" height="20" rx="5" fill="#fff" stroke="#E2E0DA" stroke-width="1.5" /><text x="34" y="197" fill="#22242A" font-size="11" font-weight="normal" text-anchor="start">pexels-redwolf-12522050.jpg</text><text x="336" y="197" fill="#D97440" font-size="14" font-weight="bold" text-anchor="start">=</text><rect x="354" y="183" width="382" height="20" rx="5" fill="#FBE9DF" stroke="#D97440" stroke-width="1.5" /><text x="364" y="197" fill="#D97440" font-size="11" font-weight="bold" text-anchor="start">pexels-redwolf-12522050 - 복사본.jpg</text><rect x="24" y="208" width="300" height="20" rx="5" fill="#fff" stroke="#E2E0DA" stroke-width="1.5" /><text x="34" y="222" fill="#22242A" font-size="11" font-weight="normal" text-anchor="start">pexels-ricardo-cl-12305660.jpg</text><text x="336" y="222" fill="#D97440" font-size="14" font-weight="bold" text-anchor="start">=</text><rect x="354" y="208" width="382" height="20" rx="5" fill="#FBE9DF" stroke="#D97440" stroke-width="1.5" /><text x="364" y="222" fill="#D97440" font-size="11" font-weight="bold" text-anchor="start">pexels-ricardo-cl-12305660 - 복사본.jpg</text><rect x="24" y="233" width="300" height="20" rx="5" fill="#fff" stroke="#E2E0DA" stroke-width="1.5" /><text x="34" y="247" fill="#22242A" font-size="11" font-weight="normal" text-anchor="start">pexels-zeynep-35204339.jpg</text><text x="336" y="247" fill="#D97440" font-size="14" font-weight="bold" text-anchor="start">=</text><rect x="354" y="233" width="382" height="20" rx="5" fill="#FBE9DF" stroke="#D97440" stroke-width="1.5" /><text x="364" y="247" fill="#D97440" font-size="11" font-weight="bold" text-anchor="start">pexels-zeynep-35204339 - 복사본.jpg</text></svg></div>
+<div class="say"><b>찾아낸 뒤 한 마디</b> — "50장 중에 똑같은 게 8쌍. <b>여러분 눈으로 찾을 수 있으셨겠어요?</b> 이름 뒤에 <b>- 복사본</b>만 붙어 있는 겁니다."</div>
+<p class="note">※ 중복은 <b>지우지 않습니다.</b> 나중에 "중복 폴더로 모아줘"라고 시키면 옮기기만 합니다.</p></div>`},{id:'4-3',t:'● 내용 확인 (대기)',h:`<div class="card c-do"><h3><span class="num">4-3</span><span class="tag tg-d">다 같이</span>③ "사진 내용을 보고 정리 방법을 추천해줘"</h3>
+<div class="pk"><div class="bar">코워크 · 같은 대화<button data-cp>복사</button></div><pre>이 사진들이 어떤 내용인지 직접 확인하고, 어떻게 정리하면 좋을지 폴더 구조를 추천해줘. 왜 그렇게 나누는지 이유도 같이 알려줘.</pre></div>
+<p><b>1~2분 걸립니다.</b> 화면에 진행 상황이 계속 올라옵니다.</p><div class="figwrap"><svg class="fig" viewBox="0 0 760 200" xmlns="http://www.w3.org/2000/svg" font-family="Pretendard,Malgun Gothic,sans-serif" font-size="14"><rect x="0" y="0" width="760" height="200" rx="12" fill="#F7F6F2" stroke="#E2E0DA" stroke-width="1.5" /><rect x="60" y="24" width="640" height="146" rx="12" fill="#fff" stroke="#D97440" stroke-width="2" /><text x="380" y="62" fill="#D97440" font-size="17" font-weight="bold" text-anchor="middle">⏳ 지금 클로드가 하는 일</text><text x="100" y="96" fill="#22242A" font-size="13.5" font-weight="normal" text-anchor="start">① 사진 50장을 클로드 쪽으로 보내는 중  (약 1분)</text><text x="100" y="122" fill="#22242A" font-size="13.5" font-weight="normal" text-anchor="start">② 작게 줄여 한 장에 모은 "축소판" 만드는 중</text><text x="100" y="148" fill="#22242A" font-size="13.5" font-weight="normal" text-anchor="start">③ 축소판을 한 장씩 보며 무슨 사진인지 파악하는 중</text></svg></div></div>
+<div class="card c-wait"><h3><span class="tag tg-wt">⏳ 대기 1~2분</span>기다리는 동안 이 얘기를 하세요</h3><ul class="talk"><li>"지금 화면 보세요. 사진을 클로드 쪽으로 보내고 있습니다."</li><li>"50장을 하나씩 보면 오래 걸리니까, <b>작게 줄여서 한 장에 여러 개를 모은 축소판</b>을 만들고 있습니다."</li><li>"그 축소판을 한 장씩 보면서 무슨 사진인지 파악합니다. 앨범 넘겨보는 것과 같죠."</li><li>"이게 채팅에서는 안 됩니다. 사진 50장을 하나씩 올리실 수 있겠어요?"</li><li>"<b>아까 스킬 만들던 창 한번 보세요.</b> 다 됐나요?"</li></ul></div>`},{id:'4-4',t:'추천안 읽기',h:`<div class="card"><h3><span class="num">4-4</span><span class="tag tg-c">함께 읽기</span>④ 추천안이 나왔습니다</h3>
+<p>클로드가 <b>이유까지 같이</b> 말해줍니다. 예를 들면 이런 식입니다.</p>
+<table><tr><th style="width:220px">폴더</th><th>기준</th></tr>
+<tr><td>01_인물_스튜디오</td><td>배경이 단색인 컷</td></tr>
+<tr><td>02_인물_야외</td><td>건물·거리 배경 컷</td></tr>
+<tr><td>03_기타</td><td>성격이 다른 몇 장</td></tr>
+<tr><td>중복</td><td>- 복사본 파일들</td></tr></table>
+<div class="say"><b>여기서 한 마디</b> — "마음에 안 들면 바꿔 달라고 하면 됩니다. <b>남녀로 나눠줘</b>, <b>색깔별로 나눠줘</b> — 뭐든 됩니다."</div></div>`},{id:'4-5',t:'● 폴더로 옮기기',h:`<div class="card c-do"><h3><span class="num">4-5</span><span class="tag tg-d">다 같이</span>⑤ "그대로 옮겨줘" ← 오늘의 장면</h3>
+<div class="pk"><div class="bar">코워크 · 같은 대화<button data-cp>복사</button></div><pre>추천해준 그 구조대로 폴더를 만들고 사진을 옮겨줘. 중복 파일은 지우지 말고 "중복" 폴더를 따로 만들어서 거기로 옮겨줘.</pre></div>
+<p><b>탐색기 창을 보세요. 3분쯤 걸립니다</b> — 오늘 제일 오래 기다리는 구간입니다.</p><div class="figwrap"><svg class="fig" viewBox="0 0 760 250" xmlns="http://www.w3.org/2000/svg" font-family="Pretendard,Malgun Gothic,sans-serif" font-size="14"><rect x="0" y="0" width="360" height="250" rx="12" fill="#F7F6F2" stroke="#E2E0DA" stroke-width="1.5" /><path d="M0 12 a12 12 0 0 1 12 -12 h336 a12 12 0 0 1 12 12 v26 h-360 z" fill="#1E3A5F"/><text x="14" y="25" fill="#fff" font-size="13" font-weight="bold" text-anchor="start">정리 전 · 사진정리</text><text x="30" y="76" fill="#666A73" font-size="12.5" font-weight="normal" text-anchor="start">🖼 pexels-78973922-11122618.jpg</text><text x="30" y="102" fill="#666A73" font-size="12.5" font-weight="normal" text-anchor="start">🖼 pexels-zeynep-35204339.jpg</text><text x="30" y="128" fill="#666A73" font-size="12.5" font-weight="normal" text-anchor="start">🖼 pexels-redwolf - 복사본.jpg</text><text x="30" y="154" fill="#666A73" font-size="12.5" font-weight="normal" text-anchor="start">🖼 pexels-venus-32472119.jpg</text><text x="30" y="180" fill="#666A73" font-size="12.5" font-weight="normal" text-anchor="start">🖼 ... 50장이 한 폴더에</text><text x="30" y="206" fill="#666A73" font-size="12.5" font-weight="normal" text-anchor="start">🖼 pexels-zizi-6780038.jpg</text><text x="30" y="232" fill="#666A73" font-size="12.5" font-weight="normal" text-anchor="start">🖼 pexels-raf007-17776594.jpg</text><path d="M380 120 h36" stroke="#D97440" stroke-width="4"/><path d="M412 108 l16 12 l-16 12" fill="none" stroke="#D97440" stroke-width="4"/><rect x="400" y="0" width="360" height="250" rx="12" fill="#F7F6F2" stroke="#E2E0DA" stroke-width="1.5" /><path d="M400 12 a12 12 0 0 1 12 -12 h336 a12 12 0 0 1 12 12 v26 h-360 z" fill="#1E3A5F"/><text x="414" y="25" fill="#fff" font-size="13" font-weight="bold" text-anchor="start">정리 후</text><path d="M418 62 h17 l5 -5 h22 v32 h-44 z" fill="#F5C86B" stroke="#D9A83A"/><text x="470.7" y="81.5" fill="#22242A" font-size="15" font-weight="bold" text-anchor="start">01_인물_스튜디오</text><path d="M418 108 h17 l5 -5 h22 v32 h-44 z" fill="#F5C86B" stroke="#D9A83A"/><text x="470.7" y="127.5" fill="#22242A" font-size="15" font-weight="bold" text-anchor="start">02_인물_야외</text><path d="M418 154 h17 l5 -5 h22 v32 h-44 z" fill="#F5C86B" stroke="#D9A83A"/><text x="470.7" y="173.5" fill="#22242A" font-size="15" font-weight="bold" text-anchor="start">03_기타</text><path d="M418 200 h17 l5 -5 h22 v32 h-44 z" fill="#F5C86B" stroke="#D9A83A"/><text x="470.7" y="219.5" fill="#22242A" font-size="15" font-weight="bold" text-anchor="start">중복</text></svg></div>
+<div class="say"><b>확인</b> — "폴더 생긴 분 손! 들어가 보세요. 사진이 들어가 있죠?"</div>
+<p class="note">※ 안 보이면 탐색기에서 새로고침(F5).</p></div>
+<div class="card c-wait"><h3><span class="tag tg-wt">⏳ 대기 3분</span>기다리는 동안 이 얘기를 하세요</h3><ul class="talk"><li>"지금이 오늘 제일 오래 걸리는 부분입니다. 사진을 한 장씩 여러분 컴퓨터에 다시 써넣고 있습니다."</li><li>"왜 오래 걸리냐면 — <b>클로드는 인터넷 저쪽에 있고 여러분 폴더는 여기 있습니다.</b> 오가는 데 시간이 걸리는 겁니다."</li><li>"탐색기에서 F5 눌러보세요. 파일이 하나씩 늘어나는 게 보입니다."</li><li>"집에서 하실 땐 걸어두고 커피 한 잔 하고 오시면 됩니다."</li><li>"기다리는 동안 — 이걸 어디에 쓰실 수 있을까요? 영수증 폴더? 계약서? 가족 사진?"</li><li>"<b>스킬 다 만들어졌는지 한번 보세요.</b> 됐으면 / 쳐서 my-report 가 보이는지 확인!"</li></ul></div>`},{id:'4-6',t:'● 보고서 만들기',h:`<div class="card c-do"><h3><span class="num">4-6</span><span class="tag tg-d">다 같이</span>⑥ "정리한 내용을 보고서로"</h3>
+<div class="pk"><div class="bar">코워크 · 같은 대화<button data-cp>복사</button></div><pre>지금까지 정리한 내용을 보고서로 만들어서 이 폴더에 저장해줘. 파일 이름은 정리보고서 로.</pre></div>
+<p>1분쯤. 폴더에 <code>정리보고서.md</code> 가 생깁니다.</p>
+<div class="say"><b>아직 설명 안 합니다</b> — "파일 하나 생겼죠? <b>이게 뭔지는 조금 있다 보겠습니다.</b>"</div></div>`}]},
+{id:'p5',tab:'STEP 5 md가 뭐냐',banner:['STEP 5','아까 받은 그 파일 — 마크다운',['메모장으로 열어 글자만 있는 걸 본다', '# 과 - 두 개만 안다', '워드랑 뭐가 다른지 안다']],units:[{id:'5-1',t:'● 메모장으로 열기',h:`<div class="card c-do"><h3><span class="num">5-1</span><span class="tag tg-d">다 같이</span>정리보고서.md 열어보기</h3>
+<ol class="steps">
+<li><b>정리보고서.md 우클릭 → 연결 프로그램 → <b>메모장</b></b><small>워드 아닙니다. 메모장.</small></li>
+<li><b>보고 놀라기 — "글자밖에 없네?"</b></li></ol><div class="figwrap"><svg class="fig" viewBox="0 0 760 300" xmlns="http://www.w3.org/2000/svg" font-family="Pretendard,Malgun Gothic,sans-serif" font-size="14"><rect x="0" y="0" width="760" height="300" rx="12" fill="#fff" stroke="#E2E0DA" stroke-width="1.5" /><path d="M0 12 a12 12 0 0 1 12 -12 h736 a12 12 0 0 1 12 12 v24 h-760 z" fill="#EEF1F6"/><text x="16" y="25" fill="#22242A" font-size="14" font-weight="bold" text-anchor="start">정리보고서.md — 메모장</text><text x="20" y="62" fill="#D97440" font-size="14" font-weight="bold" text-anchor="start"># 사진 정리 보고서</text><text x="20" y="87" fill="#22242A" font-size="14" font-weight="normal" text-anchor="start"></text><text x="20" y="112" fill="#D97440" font-size="14" font-weight="bold" text-anchor="start">## 1. 정리 대상</text><text x="20" y="137" fill="#22242A" font-size="14" font-weight="normal" text-anchor="start">- 전체 파일 수: 50장</text><text x="20" y="162" fill="#22242A" font-size="14" font-weight="normal" text-anchor="start">- 파일 형식: JPG 이미지</text><text x="20" y="187" fill="#22242A" font-size="14" font-weight="normal" text-anchor="start"></text><text x="20" y="212" fill="#D97440" font-size="14" font-weight="bold" text-anchor="start">## 2. 확인된 문제</text><text x="20" y="237" fill="#22242A" font-size="14" font-weight="normal" text-anchor="start">- 똑같은 사진 8쌍 발견</text><text x="20" y="262" fill="#22242A" font-size="14" font-weight="normal" text-anchor="start">- 한 폴더에 전부 들어 있어 찾기 어려움</text><text x="470" y="100" fill="#D97440" font-size="13" font-weight="bold" text-anchor="start">← # 은 제목</text><text x="470" y="240" fill="#D97440" font-size="13" font-weight="bold" text-anchor="start">← - 는 목록</text></svg></div>
+<div class="say"><b>쉽게 말하면</b> — <b>md 파일은 그냥 메모장 파일입니다.</b> .txt 와 똑같아요. 특별한 프로그램이 필요 없습니다.</div></div>`},{id:'5-2',t:'# 과 - 딱 두 개',h:`<div class="card"><h3><span class="num">5-2</span><span class="tag tg-c">개념</span>외울 건 두 개뿐입니다</h3>
+<p>메모장에서 본 그 글자들 — 앞에 붙은 <code>#</code> 과 <code>-</code> 가 전부입니다.</p>
+<table><tr><th style="width:240px">메모장에서 이렇게 쓰면</th><th>클로드 화면에서는</th></tr>
+<tr><td><code># 사진 정리 보고서</code></td><td style="font-size:21px;font-weight:800">사진 정리 보고서</td></tr>
+<tr><td><code>## 1. 정리 대상</code></td><td style="font-size:17px;font-weight:800">1. 정리 대상</td></tr>
+<tr><td><code>- 전체 50장</code></td><td>• 전체 50장</td></tr></table>
+<div class="say"><b>쉽게 말하면</b> — <b>#은 "이건 제목이야", -는 "이건 목록이야"</b> 라고 표시해두는 겁니다. 워드에서 글씨를 키우는 대신 <b>글자로 표시</b>하는 거죠.</div></div>`},{id:'5-3',t:'워드랑 뭐가 달라요',h:`<div class="card"><h3><span class="num">5-3</span><span class="tag tg-c">개념</span>"그럼 워드로 하면 안 돼요?"</h3>
+<table><tr><th style="width:140px"></th><th>워드 파일</th><th>md 파일</th></tr>
+<tr><td>열려면</td><td>워드가 깔려 있어야 함</td><td><b>메모장이면 됨</b></td></tr>
+<tr><td>안에 든 것</td><td>글 + 글씨 모양·색·여백</td><td><b>글만</b></td></tr>
+<tr><td>고치기</td><td>워드를 켜야 함</td><td>메모장으로 바로</td></tr></table>
+<div class="say"><b>정리</b> — <b>남에게 보여줄 건 워드·한글로. 클로드한테 시킬 규칙은 md로.</b> 다음 단계에서 그 규칙을 만듭니다.</div></div>`}]},
+{id:'p6',tab:'STEP 6 CLAUDE.md ★★',banner:['STEP 6','오늘의 본론 — 폴더에 규칙 심기',['같은 일을 시켜도 모양이 매번 다른 걸 겪는다', '규칙 한 장으로 형식을 고정한다', '클로드 입으로 확인한다']],units:[{id:'6-1',t:'● 하나 더 만들어보기',h:`<div class="card c-do"><h3><span class="num">6-1</span><span class="tag tg-d">다 같이</span>① 보고서를 하나 더 — 모양이 다릅니다</h3>
+<p><b>새 대화</b>를 열고 (같은 폴더), 비슷하게 시켜봅니다.</p>
+<div class="pk"><div class="bar">코워크 · 새 대화 · 같은 폴더<button data-cp>복사</button></div><pre>이 폴더를 정리한 결과를 보고서로 만들어서 정리보고서2 로 저장해줘.</pre></div><div class="figwrap"><svg class="fig" viewBox="0 0 760 270" xmlns="http://www.w3.org/2000/svg" font-family="Pretendard,Malgun Gothic,sans-serif" font-size="14"><rect x="0" y="0" width="370" height="270" rx="12" fill="#fff" stroke="#E2E0DA" stroke-width="1.5" /><path d="M0 12 a12 12 0 0 1 12 -12 h346 a12 12 0 0 1 12 12 v26 h-370 z" fill="#EEF1F6"/><text x="14" y="25" fill="#666A73" font-size="13" font-weight="bold" text-anchor="start">첫 번째 보고서</text><text x="16" y="66" fill="#666A73" font-size="13" font-weight="normal" text-anchor="start">사진 정리 결과를 말씀드리겠습니다.</text><text x="16" y="92" fill="#666A73" font-size="13" font-weight="normal" text-anchor="start"></text><text x="16" y="118" fill="#666A73" font-size="13" font-weight="normal" text-anchor="start">총 50장의 사진을 확인하였으며,</text><text x="16" y="144" fill="#666A73" font-size="13" font-weight="normal" text-anchor="start">이 중 8쌍이 중복으로 발견되어…</text><text x="16" y="170" fill="#666A73" font-size="13" font-weight="normal" text-anchor="start"></text><text x="16" y="196" fill="#666A73" font-size="13" font-weight="normal" text-anchor="start">분류 기준은 배경과 톤을 중심으로</text><text x="16" y="222" fill="#666A73" font-size="13" font-weight="normal" text-anchor="start">설정하였습니다. 첫째, 스튜디오…</text><rect x="390" y="0" width="370" height="270" rx="12" fill="#fff" stroke="#D97440" stroke-width="2" /><path d="M390 12 a12 12 0 0 1 12 -12 h346 a12 12 0 0 1 12 12 v26 h-370 z" fill="#FBE9DF"/><text x="404" y="25" fill="#D97440" font-size="13" font-weight="bold" text-anchor="start">두 번째 보고서</text><text x="406" y="66" fill="#22242A" font-size="13" font-weight="normal" text-anchor="start"># 정리 결과</text><text x="406" y="90" fill="#22242A" font-size="13" font-weight="normal" text-anchor="start"></text><text x="406" y="114" fill="#22242A" font-size="13" font-weight="normal" text-anchor="start">| 항목 | 값 |</text><text x="406" y="138" fill="#22242A" font-size="13" font-weight="normal" text-anchor="start">|---|---|</text><text x="406" y="162" fill="#22242A" font-size="13" font-weight="normal" text-anchor="start">| 전체 | 50장 |</text><text x="406" y="186" fill="#22242A" font-size="13" font-weight="normal" text-anchor="start">| 중복 | 8쌍 |</text><text x="406" y="210" fill="#22242A" font-size="13" font-weight="normal" text-anchor="start"></text><text x="406" y="234" fill="#22242A" font-size="13" font-weight="normal" text-anchor="start">**분류**: 배경·톤 기준</text><text x="380" y="150" fill="#D97440" font-size="26" font-weight="bold" text-anchor="middle">≠</text></svg></div>
+<div class="say"><b>확인</b> — "아까 것과 나란히 열어보세요. <b>제목 붙이는 방식, 길이, 표를 쓰는지 — 다 다르죠?</b>"</div>
+<p class="note">※ 비슷하게 나왔으면 "이번엔 좀 더 길게 써줘"로 한 번 흔들어보세요.</p></div>`},{id:'6-2',t:'문제 인식',h:`<div class="card c-warn"><h3><span class="num">6-2</span><span class="tag tg-a">문제</span>② 매번 형식을 다시 말할 겁니까?</h3>
+<p>오늘만 해도 "워드로, 엑셀로, 표로, 짧게"를 몇 번 말씀하셨습니다. 내일도, 다음 달에도 그러실 겁니까?</p>
+<p>클로드는 <b>대화가 끝나면 잊습니다.</b> 새 대화는 백지에서 시작합니다.</p>
+<div class="say"><b>그래서</b> — <b>폴더 안에 종이 한 장을 놓아둡니다.</b> 클로드는 이 폴더에서 일을 시작할 때 그 종이를 먼저 읽습니다.</div></div>`},{id:'6-3',t:'● 규칙 만들기',h:`<div class="card c-do"><h3><span class="num">6-3</span><span class="tag tg-d">다 같이</span>③ 메모장으로 규칙 종이 만들기</h3>
+<ol class="steps">
+<li><b>메모장을 연다</b> (시작 → 메모장)</li>
+<li><b>아래를 복사해서 붙여넣는다</b><small>그대로 쓰셔도 되고, 마음에 안 드는 줄은 고치셔도 됩니다.</small></li></ol>
+<div class="pk md"><div class="bar">메모장에 붙여넣기<button data-cp>복사</button></div><pre># 이 폴더의 규칙
+
+## 이 폴더는
+- 내가 자료를 정리하는 폴더입니다
+
+## 문서를 만들 때
+- 존댓말로 씁니다
+- 표로 만들 수 있으면 표로 만듭니다
+- 반 장 넘지 않게 짧게 씁니다
+
+## 하지 마세요
+- 원본 파일을 지우지 마세요
+- 이모지를 쓰지 마세요</pre></div>
+<ol class="steps" style="counter-reset:s 2">
+<li><b>파일 → 다른 이름으로 저장 → 위치는 사진정리 폴더</b></li>
+<li><b>파일 이름 <code>CLAUDE.md</code> / 파일 형식 <b>모든 파일 (*.*)</b> / 인코딩 UTF-8 → 저장</b><small>"텍스트 문서"로 두면 CLAUDE.md.txt 가 됩니다. 반드시 "모든 파일".</small></li>
+<li><b>탐색기에서 CLAUDE.md 가 보이는지 확인</b></li></ol>
+<div class="say"><b>확인</b> — "CLAUDE.md 보이는 분 손!" — 방금 <b>여러분이 md 파일을 하나 만들었습니다.</b></div></div>`},{id:'6-4',t:'● 세 번째 보고서',h:`<div class="card c-do"><h3><span class="num">6-4</span><span class="tag tg-d">다 같이</span>④ 조건 없이 다시 시켜보기</h3>
+<p><b>새 대화</b>를 열고, 이번엔 <b>조건을 하나도 붙이지 않습니다.</b></p>
+<div class="pk"><div class="bar">코워크 · 새 대화 · 같은 폴더<button data-cp>복사</button></div><pre>이 폴더를 정리한 결과를 보고서로 만들어서 정리보고서3 으로 저장해줘.</pre></div>
+<table><tr><th style="width:60px">✓</th><th>확인할 것</th></tr>
+<tr><td>□</td><td>존댓말로 나왔나</td></tr>
+<tr><td>□</td><td>표를 썼나</td></tr>
+<tr><td>□</td><td>짧게 나왔나</td></tr>
+<tr><td>□</td><td>이모지가 없나</td></tr></table>
+<div class="say"><b>확인</b> — "다 맞은 분 손! — <b>아무도 말 안 했습니다.</b> 폴더 안 종이 한 장이 대신 말했습니다."</div></div>`},{id:'6-5',t:'● 직접 물어보기',h:`<div class="card c-do"><h3><span class="num">6-5</span><span class="tag tg-d">다 같이</span>⑤ "너 방금 무슨 규칙 읽었어?" ← 결정적</h3>
+<div class="pk"><div class="bar">코워크 · 같은 대화<button data-cp>복사</button></div><pre>방금 보고서 쓸 때 어떤 규칙을 따랐어? 어디서 읽은 건지 알려줘.</pre></div>
+<div class="say"><b>클로드가 직접 말합니다</b> — "이 폴더의 CLAUDE.md를 읽고 그 기준을 따랐습니다." — <b>제 말이 아니라 클로드가 하는 말입니다.</b></div></div>`}]},
+{id:'p7',tab:'STEP 7 다른 폴더에서',banner:['STEP 7','증명 — 새 폴더에서도 통합니다',['폴더를 하나 더 만든다', '규칙 종이만 복사해 넣는다', '전혀 다른 일을 시켜도 내 형식대로 나온다']],units:[{id:'7-1',t:'● 새 폴더 만들기',h:`<div class="card c-do"><h3><span class="num">7-1</span><span class="tag tg-d">다 같이</span>① 빈 폴더 하나 더</h3>
+<ol class="steps">
+<li><b>USB에 새 폴더 <code>내작업</code> 만들기</b></li>
+<li><b>사진정리 폴더의 <code>CLAUDE.md</code> 를 복사해서 내작업 폴더에 붙여넣기</b><small>Ctrl+C, Ctrl+V. 그게 전부입니다.</small></li>
+<li><b>코워크 새 대화 → 폴더를 <b>내작업</b> 으로 연결</b></li></ol><div class="figwrap"><svg class="fig" viewBox="0 0 760 250" xmlns="http://www.w3.org/2000/svg" font-family="Pretendard,Malgun Gothic,sans-serif" font-size="14"><rect x="0" y="0" width="760" height="250" rx="12" fill="#F7F6F2" stroke="#E2E0DA" stroke-width="1.5" /><rect x="30" y="30" width="330" height="190" rx="12" fill="#fff" stroke="#1E3A5F" stroke-width="2" /><text x="195" y="58" fill="#1E3A5F" font-size="15" font-weight="bold" text-anchor="middle">사진정리 폴더</text><text x="60" y="92" fill="#D97440" font-size="14" font-weight="bold" text-anchor="start">📄 CLAUDE.md</text><text x="60" y="122" fill="#666A73" font-size="13" font-weight="normal" text-anchor="start">🖼 사진 50장</text><text x="60" y="148" fill="#666A73" font-size="13" font-weight="normal" text-anchor="start">📄 정리보고서.md</text><text x="60" y="174" fill="#666A73" font-size="13" font-weight="normal" text-anchor="start">📁 분류 폴더들</text><path d="M200 196 C200 232, 560 232, 560 210" fill="none" stroke="#D97440" stroke-width="2.5" stroke-dasharray="6 4"/><text x="380" y="242" fill="#D97440" font-size="13" font-weight="bold" text-anchor="middle">CLAUDE.md 만 복사</text><rect x="400" y="30" width="330" height="190" rx="12" fill="#fff" stroke="#D97440" stroke-width="2" /><text x="565" y="58" fill="#D97440" font-size="15" font-weight="bold" text-anchor="middle">내작업 폴더 (새로)</text><text x="430" y="92" fill="#D97440" font-size="14" font-weight="bold" text-anchor="start">📄 CLAUDE.md</text><text x="430" y="122" fill="#666A73" font-size="13" font-weight="normal" text-anchor="start">(비어 있음)</text><text x="430" y="160" fill="#22242A" font-size="13" font-weight="bold" text-anchor="start">→ 전혀 다른 일을 시켜도</text><text x="430" y="184" fill="#22242A" font-size="13" font-weight="bold" text-anchor="start">→ 같은 형식으로 나옴</text></svg></div></div>`},{id:'7-2',t:'● 전혀 다른 일 시키기',h:`<div class="card c-do"><h3><span class="num">7-2</span><span class="tag tg-d">다 같이</span>② 사진과 아무 상관 없는 일</h3>
+<div class="pk"><div class="bar">코워크 · 내작업 폴더<button data-cp>복사</button></div><pre>이번 주에 해야 할 일 목록을 정리해서 보고서로 만들어 이 폴더에 저장해줘. 내용은 적당히 예시로 만들어줘.</pre></div>
+<table><tr><th style="width:60px">✓</th><th>확인할 것</th></tr>
+<tr><td>□</td><td>존댓말인가</td></tr>
+<tr><td>□</td><td>표를 썼나</td></tr>
+<tr><td>□</td><td>짧은가</td></tr></table>
+<div class="say"><b>오늘의 마지막 장면</b> — 사진과 아무 상관 없는 일인데 <b>내 형식대로 나왔습니다.</b> 종이 한 장만 복사해 넣었을 뿐인데요.</div>
+<div class="say"><b>한 줄로</b> — <b>규칙은 폴더를 따라다닙니다.</b> 앞으로 새 일을 시작할 때마다 폴더 만들고 이 종이 한 장만 넣으시면 됩니다.</div></div>`},{id:'7-3',t:'● 귀가 체크',h:`<div class="card c-check ck"><h3><span class="num">7-3</span><span class="tag tg-v">체크</span>가기 전에</h3>
+<label><input type="checkbox" data-ck="d1"><span>폴더에 CLAUDE.md 가 있다 (두 폴더 모두)</span></label>
+<label><input type="checkbox" data-ck="d2"><span><code>/</code> 를 쳤을 때 내가 만든 <b>my-report</b> 가 보인다</span></label>
+<label><input type="checkbox" data-ck="d3"><span>클로드 작업이 끝난 것을 확인하고 <b>USB 안전 제거</b>를 했다</span></label>
+<label><input type="checkbox" data-ck="d4"><span>설정 → 계정 → <b>로그아웃</b> 했다 (다른 반이 이 PC를 씁니다)</span></label>
+<label><input type="checkbox" data-ck="d5"><span>다음 주 이 USB를 들고 온다</span></label>
+<div class="say"><b>집에서 해보실 것</b> — 다운로드 폴더나 바탕화면을 오늘과 똑같이 정리해보세요. 그리고 거기에도 CLAUDE.md 를 복사해 넣어보세요.</div>
+<div class="say"><b>다음 주</b> — 오늘 만든 <b>my-report 스킬</b>을 제대로 다듬습니다. 그리고 매주 반복하는 일을 스킬로 만들어 둡니다.</div></div>`}]}];
+
+/* ═══ 렌더 ═══ */
+const KEY='cd_day2_v20';
+let st={};try{st=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){st={}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(st))}catch(e){}}
+let cur=0;
+const tabsEl=document.getElementById('tabs'),subEl=document.getElementById('sub'),mainEl=document.getElementById('main');
+
+PAGES.forEach((p,i)=>{
+  const b=document.createElement('button');b.textContent=p.tab;b.dataset.go=i;tabsEl.appendChild(b);
+});
+function build(i){
+  const p=PAGES[i];
+  let h='<div class="page"><div class="banner"><div class="no">'+p.banner[0]+'</div><h2>'+p.banner[1]+'</h2><ul class="aims">'+p.banner[2].map(a=>'<li>'+a+'</li>').join('')+'</ul></div>';
+  p.units.forEach(u=>{h+='<section class="unit" id="'+u.id+'">'+u.h+'</section>'});
+  h+='</div>';
+  mainEl.innerHTML=h;
+  subEl.innerHTML=p.units.map((u,j)=>'<a data-u="'+u.id+'"'+(j===0?' class="on"':'')+'>'+u.t+'</a>').join('');
+  document.querySelectorAll('[data-ck]').forEach(b=>{
+    if(st[b.dataset.ck])b.checked=true;
+    b.addEventListener('change',()=>{st[b.dataset.ck]=b.checked;save();render()});
+  });
+  mainEl.scrollTop=0;
+}
+function go(i){
+  if(i<0||i>=PAGES.length)return;
+  cur=i;
+  tabsEl.querySelectorAll('button').forEach((b,j)=>b.classList.toggle('on',j===i));
+  build(i);
+  document.getElementById('prevb').disabled=(i===0);
+  document.getElementById('nextb').disabled=(i===PAGES.length-1);
+  st.cur=i;save();
+}
+const TOTAL=5;
+function render(){
+  const ids=['d1','d2','d3','d4','d5'];
+  const d=ids.filter(k=>st[k]).length;
+  const p=Math.round(d/TOTAL*100);
+  document.getElementById('pbar').style.width=p+'%';
+  document.getElementById('pctv').textContent=p;
+  if(p===100&&!st._f){st._f=1;save();confetti(200,'🎉 오늘도 수고하셨습니다')}
+}
+function confetti(n,msg){
+  const c=document.createElement('canvas');c.style.cssText='position:fixed;inset:0;pointer-events:none;z-index:99';c.width=innerWidth;c.height=innerHeight;document.body.appendChild(c);
+  const x=c.getContext('2d'),cols=['#D97440','#1E3A5F','#2E74B5','#F5B78E','#2E8540','#FFD166'];
+  const ps=Array.from({length:n},()=>({x:Math.random()*c.width,y:-20-Math.random()*200,r:4+Math.random()*6,c:cols[Math.random()*cols.length|0],v:2+Math.random()*3,a:Math.random()*6,s:Math.random()*.2-.1}));
+  let t0=0;(function f(ts){if(!t0)t0=ts;const el=ts-t0;x.clearRect(0,0,c.width,c.height);ps.forEach(p=>{p.y+=p.v;p.a+=p.s;x.save();x.translate(p.x,p.y);x.rotate(p.a);x.fillStyle=p.c;x.fillRect(-p.r,-p.r/2,p.r*2,p.r);x.restore()});if(el<3200)requestAnimationFrame(f);else c.remove()})(0);
+  const m=document.createElement('div');m.textContent=msg;m.style.cssText='position:fixed;left:50%;top:40%;transform:translate(-50%,-50%);background:#1E3A5F;color:#fff;font-size:26px;font-weight:800;padding:18px 32px;border-radius:16px;z-index:100;box-shadow:0 8px 30px rgba(0,0,0,.3)';document.body.appendChild(m);setTimeout(()=>m.remove(),2600);
+}
+/* copy */
+function fb(t,done){const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();try{document.execCommand('copy')}catch(e){}document.body.removeChild(ta);done()}
+function cp(btn){
+  const pre=btn.closest('.pk').querySelector('pre');
+  const t=pre.innerText;
+  const done=()=>{const o=btn.textContent;btn.textContent='복사됨 ✓';setTimeout(()=>btn.textContent='복사',1500)};
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(done).catch(()=>fb(t,done))}else fb(t,done);
+}
+document.addEventListener('click',e=>{
+  const t=e.target.closest('[data-cp],[data-go],[data-u],[data-act]');
+  if(!t)return;
+  if(t.hasAttribute('data-cp')){cp(t);return}
+  if(t.hasAttribute('data-go')){go(parseInt(t.dataset.go));return}
+  if(t.hasAttribute('data-u')){e.preventDefault();const el=document.getElementById(t.dataset.u);if(el){subEl.querySelectorAll('a').forEach(a=>a.classList.toggle('on',a===t));el.scrollIntoView({behavior:'smooth',block:'start'});el.classList.add('flash');setTimeout(()=>el.classList.remove('flash'),1400)}return}
+  if(t.dataset.act==='qaclose'){qa(0)}
+});
+document.getElementById('prevb').onclick=()=>go(cur-1);
+document.getElementById('nextb').onclick=()=>go(cur+1);
+function qa(v){document.getElementById('qov').classList.toggle('on',!!v)}
+document.getElementById('qbtn').onclick=()=>qa(1);
+document.getElementById('qov').onclick=e=>{if(e.target.id==='qov')qa(0)};
+/* scroll spy */
+mainEl.addEventListener('scroll',()=>{
+  const us=[...mainEl.querySelectorAll('.unit')];let a=us[0];
+  us.forEach(u=>{if(u.getBoundingClientRect().top-mainEl.getBoundingClientRect().top<140)a=u});
+  if(a)subEl.querySelectorAll('a').forEach(x=>x.classList.toggle('on',x.dataset.u===a.id));
+});
+go(st.cur||0);render();
+
+</script>
+</body>
+</html>

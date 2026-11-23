@@ -1,0 +1,413 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>미리캔버스 교안 만들기 · 기능 실습</title>
+<style>
+:root{--pt:#1d6fb8;--ink:#222;--sub:#666;--line:#e3e3e3;--fs:20px}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:#fafaf8;color:var(--ink);font-family:Pretendard,"Malgun Gothic","Apple SD Gothic Neo",sans-serif;font-size:var(--fs);line-height:1.6;word-break:keep-all}
+.bar{position:sticky;top:0;z-index:5;background:#fff;border-bottom:1px solid var(--line);box-shadow:0 2px 10px rgba(0,0,0,.05);padding:8px 24px 6px}
+.r1{display:flex;align-items:center;gap:12px}
+.groups{display:flex;gap:6px;padding-top:8px}
+.groups .g{font:inherit;font-size:.72em;font-weight:700;border:1px solid var(--line);background:#f4f6f9;border-radius:10px 10px 0 0;padding:6px 14px;cursor:pointer;color:var(--sub)}
+.groups .g em{font-style:normal;font-weight:400;margin-left:8px}
+.groups .g.on{background:var(--pt);color:#fff;border-color:var(--pt)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;padding:8px 10px;background:#f4f8fc;border:1px solid var(--line);border-radius:0 10px 10px 10px}
+.chips a{display:none;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:3px 12px;font-size:.72em;color:var(--ink);text-decoration:none;background:#fff;white-space:nowrap}
+.chips a.show{display:flex}
+.chips a i{width:9px;height:9px;border-radius:50%;background:var(--c)}
+.chips a b{color:var(--sub)}
+.chips a.on{background:var(--c);color:#fff;border-color:var(--c);font-weight:700}.chips a.on b{color:#fff}.chips a.on i{background:#fff}
+.bar b{color:var(--pt);font-size:1em}.bar .sp{flex:1}
+.bar button,.bar a{font:inherit;font-size:.8em;border:1px solid var(--line);background:#fff;border-radius:999px;padding:4px 14px;cursor:pointer;color:var(--ink);text-decoration:none}
+main{max-width:1180px;margin:0 auto;padding:28px 24px 80px}
+h1{font-size:2em;margin:.2em 0 .1em}.lead{color:var(--sub);margin:0 0 .8em}
+.legend{display:flex;gap:22px;flex-wrap:wrap;color:var(--sub);font-size:.85em;margin-bottom:18px}.legend i{display:inline-block;width:14px;height:14px;border-radius:50%;margin-right:6px;vertical-align:-1px}
+.toc{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.tcol{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+.tcol h3{margin:0 0 8px;color:var(--pt);font-size:1em}
+.trow{display:flex;align-items:center;gap:10px;padding:6px 4px;border-radius:8px;color:var(--ink);text-decoration:none;font-size:.85em}
+.trow:hover{background:#f2f6fb}.no{color:var(--sub);width:1.6em}.dot{width:12px;height:12px;border-radius:50%;flex:none}
+.tt.r{font-weight:700}.tt.y{color:#888}
+.after{color:var(--sub);font-size:.85em;margin:12px 0 0}
+.step{background:#fff;border:1px solid var(--line);border-radius:18px;padding:26px 28px;margin-top:34px;scroll-margin-top:170px}
+.shead{display:flex;gap:10px;align-items:center}
+.badge{background:var(--c);color:#fff;font-weight:700;border-radius:999px;padding:2px 14px;font-size:.8em}
+.lv{color:var(--sub);font-size:.8em}
+.step h2{font-size:1.6em;margin:.25em 0 .6em}
+.two{display:grid;grid-template-columns:1fr 1.2fr;gap:16px;margin-bottom:14px}
+.box{background:#f7f9fc;border:1px solid var(--line);border-radius:14px;padding:16px 20px}
+.box.white{background:#fff}.box.tint{background:var(--t)}
+.box h3{margin:0 0 8px;font-size:1em;color:var(--pt)}.box h3.ch{color:var(--c)}
+.box p{margin:0 0 12px}.box ul{margin:0;padding-left:1.2em}.box li{margin:4px 0}
+ol.do{list-style:none;padding:0;margin:0;counter-reset:n}
+ol.do li{counter-increment:n;position:relative;padding:4px 0 10px 46px}
+ol.do li:before{content:counter(n);position:absolute;left:0;top:2px;width:32px;height:32px;border-radius:50%;border:2px solid var(--c);background:#fff;text-align:center;line-height:28px;font-weight:700}
+.note{border:1px solid var(--line);border-radius:12px;padding:12px 18px;margin-bottom:14px}
+.note b{color:var(--pt);margin-right:8px}.note.warn{background:var(--t)}.note.warn b{color:var(--c)}
+.up{display:inline-block;color:var(--sub);font-size:.75em;text-decoration:none}
+.flow{display:flex;align-items:stretch;gap:6px;margin-top:6px}
+.node{flex:1;background:#f7f9fc;border:1px solid var(--line);border-radius:12px;text-align:center;padding:8px 6px 12px;font-size:.75em;font-weight:700;display:flex;flex-direction:column;gap:4px}
+.node small{color:var(--sub);font-weight:400}.node .ic{font-size:2em;line-height:1.2}
+.node.last{background:var(--t);border:2px solid var(--c)}
+.arr{align-self:center;color:#bbb}
+.vs{display:flex;align-items:center;gap:10px;margin-top:6px}
+.vcard{flex:1;border:1.5px solid var(--line);background:#f7f9fc;border-radius:12px;padding:12px 14px;font-size:.85em;align-self:stretch}
+.vcard.hi{background:var(--t);border-color:var(--c)}.vcard h4{margin:0 0 6px;text-align:center}.vcard ul{margin:0;padding-left:1.1em}
+.vsb{width:46px;height:46px;border-radius:50%;background:#222;color:#fff;font-weight:700;display:grid;place-items:center;flex:none;font-size:.75em}
+.grid6{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:6px}
+.grid6 div{background:var(--t);border-radius:6px;text-align:center;padding:14px 4px;color:var(--sub);font-size:.8em}.grid6 div:nth-child(even){background:#eef2f7}
+.chart{display:flex;gap:20px;justify-content:space-around;text-align:center;font-size:.8em;font-weight:700}.chart p{margin:0 0 8px}
+.bars{display:flex;align-items:flex-end;gap:12px;height:140px;border-bottom:1px solid #bbb;padding:0 10px}.bars i{width:30px;background:#c9d3df;border-radius:8px 8px 0 0}
+.gauge{width:140px;height:140px;border-radius:50%;background:conic-gradient(#3a9a5b 0 75%,#e6e6e6 0);display:grid;place-items:center;margin:auto}
+.gauge span{width:104px;height:104px;border-radius:50%;background:#fff;display:grid;place-items:center;font-size:1.6em}
+.sw .row{display:flex;align-items:center;gap:8px;margin:8px 0}.sw em{width:6em;font-style:normal;font-size:.75em;color:var(--sub)}.sw i{flex:1;height:38px;border-radius:6px;border:1px solid var(--line)}
+@media(max-width:860px){.toc,.two{grid-template-columns:1fr}.flow{flex-direction:column}.arr{transform:rotate(90deg)}}
+</style></head><body>
+<div class="bar"><div class="r1"><b>미리캔버스 · 기능 실습</b><span class="sp"></span><a href="#top">목차</a><button onclick="z(-2)">가−</button><button onclick="z(2)">가+</button></div>
+<div class="groups"><button class="g" data-g="0">STEP 01~07<em>사진 · 페이지 · 프레임</em></button><button class="g" data-g="1">STEP 08~15<em>프레임 · 글자 · 요소 · 표</em></button><button class="g" data-g="2">STEP 16~22<em>차트 · 영상 · QR · 테마</em></button></div>
+<nav class="chips"><a href="#s01" data-s="s01" data-g="0" style="--c:#3a9a5b"><i></i><b>01</b> 워크스페이스 · 원본</a><a href="#s02" data-s="s02" data-g="0" style="--c:#d64545"><i></i><b>02</b> 배경 제거 · 리무브비지</a><a href="#s03" data-s="s03" data-g="0" style="--c:#3a9a5b"><i></i><b>03</b> 딱 맞는 페이지</a><a href="#s04" data-s="s04" data-g="0" style="--c:#d64545"><i></i><b>04</b> 다른 템플릿 페이지 가져오기</a><a href="#s05" data-s="s05" data-g="0" style="--c:#d64545"><i></i><b>05</b> 배경색 HEX 맞추기</a><a href="#s06" data-s="s06" data-g="0" style="--c:#3a9a5b"><i></i><b>06</b> 자르기 vs 프레임 · 유료 사진 빼기</a><a href="#s07" data-s="s07" data-g="0" style="--c:#d64545"><i></i><b>07</b> 빈 페이지 프레임에 사진 넣기</a><a href="#s08" data-s="s08" data-g="1" style="--c:#d9a514"><i></i><b>08</b> 프레임에 넣을 수 있는 것</a><a href="#s09" data-s="s09" data-g="1" style="--c:#d9a514"><i></i><b>09</b> 기본 vs 외곽선 프레임</a><a href="#s10" data-s="s10" data-g="1" style="--c:#d9a514"><i></i><b>10</b> 분할 프레임</a><a href="#s11" data-s="s11" data-g="1" style="--c:#d64545"><i></i><b>11</b> 강사 소개 글자 · 행간 · 사진</a><a href="#s12" data-s="s12" data-g="1" style="--c:#d9a514"><i></i><b>12</b> AI 어울리는 요소</a><a href="#s13" data-s="s13" data-g="1" style="--c:#3a9a5b"><i></i><b>13</b> 요소 · 도형 연결 · 스마트 블록</a><a href="#s14" data-s="s14" data-g="1" style="--c:#d9a514"><i></i><b>14</b> 다이어그램 (툴바형)</a><a href="#s15" data-s="s15" data-g="1" style="--c:#3a9a5b"><i></i><b>15</b> 표 → 한글 · 엑셀에서</a><a href="#s16" data-s="s16" data-g="2" style="--c:#d64545"><i></i><b>16</b> 차트 · 막대 하나 색 · 게이지</a><a href="#s17" data-s="s17" data-g="2" style="--c:#d9a514"><i></i><b>17</b> 휴대폰 앱으로 동영상 올리기</a><a href="#s18" data-s="s18" data-g="2" style="--c:#3a9a5b"><i></i><b>18</b> 업로드 영상 vs 유튜브</a><a href="#s19" data-s="s19" data-g="2" style="--c:#3a9a5b"><i></i><b>19</b> QR · 가운데 로고</a><a href="#s20" data-s="s20" data-g="2" style="--c:#3a9a5b"><i></i><b>20</b> 테마 · 셔플</a><a href="#s21" data-s="s21" data-g="2" style="--c:#d64545"><i></i><b>21</b> 패들렛 테마 연습</a><a href="#s22" data-s="s22" data-g="2" style="--c:#d64545"><i></i><b>22</b> 기관 로고 → 링크 패들렛에</a></nav></div>
+<main id="top">
+<h1>미리캔버스 교안 만들기 · 기능 실습</h1>
+<p class="lead">알아보고 → 살펴보고 → 바로 따라 해요. STEP 번호를 누르면 바로 이동해요.</p>
+<div class="legend"><span><i style="background:#d64545"></i>꼭 해요</span><span><i style="background:#3a9a5b"></i>같이 해요</span><span><i style="background:#d9a514"></i>시간 되면</span></div>
+<div class="toc"><div class="tcol"><h3>STEP 01~07</h3><a href="#s01" class="trow"><span class="no">01</span><span class="dot" style="background:#3a9a5b"></span><span class="tt g">워크스페이스 · 원본</span></a><a href="#s02" class="trow"><span class="no">02</span><span class="dot" style="background:#d64545"></span><span class="tt r">배경 제거 · 리무브비지</span></a><a href="#s03" class="trow"><span class="no">03</span><span class="dot" style="background:#3a9a5b"></span><span class="tt g">딱 맞는 페이지</span></a><a href="#s04" class="trow"><span class="no">04</span><span class="dot" style="background:#d64545"></span><span class="tt r">다른 템플릿 페이지 가져오기</span></a><a href="#s05" class="trow"><span class="no">05</span><span class="dot" style="background:#d64545"></span><span class="tt r">배경색 HEX 맞추기</span></a><a href="#s06" class="trow"><span class="no">06</span><span class="dot" style="background:#3a9a5b"></span><span class="tt g">자르기 vs 프레임 · 유료 사진 빼기</span></a><a href="#s07" class="trow"><span class="no">07</span><span class="dot" style="background:#d64545"></span><span class="tt r">빈 페이지 프레임에 사진 넣기</span></a></div><div class="tcol"><h3>STEP 08~15</h3><a href="#s08" class="trow"><span class="no">08</span><span class="dot" style="background:#d9a514"></span><span class="tt y">프레임에 넣을 수 있는 것</span></a><a href="#s09" class="trow"><span class="no">09</span><span class="dot" style="background:#d9a514"></span><span class="tt y">기본 vs 외곽선 프레임</span></a><a href="#s10" class="trow"><span class="no">10</span><span class="dot" style="background:#d9a514"></span><span class="tt y">분할 프레임</span></a><a href="#s11" class="trow"><span class="no">11</span><span class="dot" style="background:#d64545"></span><span class="tt r">강사 소개 글자 · 행간 · 사진</span></a><a href="#s12" class="trow"><span class="no">12</span><span class="dot" style="background:#d9a514"></span><span class="tt y">AI 어울리는 요소</span></a><a href="#s13" class="trow"><span class="no">13</span><span class="dot" style="background:#3a9a5b"></span><span class="tt g">요소 · 도형 연결 · 스마트 블록</span></a><a href="#s14" class="trow"><span class="no">14</span><span class="dot" style="background:#d9a514"></span><span class="tt y">다이어그램 (툴바형)</span></a><a href="#s15" class="trow"><span class="no">15</span><span class="dot" style="background:#3a9a5b"></span><span class="tt g">표 → 한글 · 엑셀에서</span></a></div><div class="tcol"><h3>STEP 16~22</h3><a href="#s16" class="trow"><span class="no">16</span><span class="dot" style="background:#d64545"></span><span class="tt r">차트 · 막대 하나 색 · 게이지</span></a><a href="#s17" class="trow"><span class="no">17</span><span class="dot" style="background:#d9a514"></span><span class="tt y">휴대폰 앱으로 동영상 올리기</span></a><a href="#s18" class="trow"><span class="no">18</span><span class="dot" style="background:#3a9a5b"></span><span class="tt g">업로드 영상 vs 유튜브</span></a><a href="#s19" class="trow"><span class="no">19</span><span class="dot" style="background:#3a9a5b"></span><span class="tt g">QR · 가운데 로고</span></a><a href="#s20" class="trow"><span class="no">20</span><span class="dot" style="background:#3a9a5b"></span><span class="tt g">테마 · 셔플</span></a><a href="#s21" class="trow"><span class="no">21</span><span class="dot" style="background:#d64545"></span><span class="tt r">패들렛 테마 연습</span></a><a href="#s22" class="trow"><span class="no">22</span><span class="dot" style="background:#d64545"></span><span class="tt r">기관 로고 → 링크 패들렛에</span></a></div></div>
+<p class="after">못 끝낸 STEP은 이 페이지를 보면서 이어서 해요.</p>
+
+<section class="step" id="s01" style="--c:#3a9a5b;--t:#EAF5EE">
+  <div class="shead"><span class="badge">STEP 01</span><span class="lv">같이 해요</span></div>
+  <h2>워크스페이스 · 원본</h2>
+  <div class="two">
+    <div class="box"><h3>📖 무엇인가요</h3><p>미리캔버스에서 만든 디자인과 복사해 온 디자인이 모두 모이는 내 보관함이에요. 여기 있는 것이 원본이고, 지우면 되살릴 수 없어요.</p><h3>🙋 이럴 때 써요</h3><ul><li>어제 만든 교안을 다시 열 때</li><li>템플릿을 복사해 와서 고칠 때</li></ul></div>
+    <div class="box white"><h3>🗺️ 한눈에 보기</h3><div class="flow"><div class="node"><small>1</small><b class="ic">📄</b><span>템플릿 복사</span></div><span class="arr">➜</span><div class="node"><small>2</small><b class="ic">✏️</b><span>새 디자인</span></div><span class="arr">➜</span><div class="node"><small>3</small><b class="ic">🗂️</b><span>워크스페이스 (원본)</span></div><span class="arr">➜</span><div class="node last"><small>4</small><b class="ic">📑</b><span>사본에서 작업</span></div></div></div>
+  </div>
+  <div class="note warn">⚠️ <b>주의해요</b> 원본은 그대로 두고 사본을 만들어 연습해요</div>
+  <div class="two">
+    <div class="box"><h3>👀 살펴보기</h3><ul><li>복사해 온 디자인과 새로 만든 디자인은 모두 「워크스페이스」에 저장돼요</li><li>워크스페이스에 있는 것이 원본이에요</li><li>원본을 지우면 되살릴 수 없어요</li></ul></div>
+    <div class="box tint"><h3 class="ch">✋ 따라 하기</h3><ol class="do"><li>왼쪽 메뉴에서 워크스페이스로 이동</li><li>어제 만든 디자인이 있는지 확인</li><li>작업할 디자인은 사본을 만들어 두기</li></ol></div>
+  </div>
+  <div class="note">💡 <b>기억해요</b> 원본은 건드리지 말고 사본에서 연습해요</div>
+  <a class="up" href="#top">▲ 목차로</a>
+</section>
+<section class="step" id="s02" style="--c:#d64545;--t:#fcEDED">
+  <div class="shead"><span class="badge">STEP 02</span><span class="lv">꼭 해요</span></div>
+  <h2>배경 제거 · 리무브비지</h2>
+  <div class="two">
+    <div class="box"><h3>📖 무엇인가요</h3><p>사진에서 사람·물건만 남기고 배경을 지우는 기능이에요. 미리캔버스는 하루 5번만 되니 외부 사이트 리무브비지를 함께 써요.</p><h3>🙋 이럴 때 써요</h3><ul><li>강사 사진을 장표 배경 위에 자연스럽게 올릴 때</li><li>제품·물건 사진을 깔끔하게 쓸 때</li></ul></div>
+    <div class="box white"><h3>🗺️ 한눈에 보기</h3><div class="flow"><div class="node"><small>1</small><b class="ic">🖼️</b><span>원본 사진</span></div><span class="arr">➜</span><div class="node"><small>2</small><b class="ic">✂️</b><span>remove.bg 배경 지우기</span></div><span class="arr">➜</span><div class="node"><small>3</small><b class="ic">⬇️</b><span>내려받기</span></div><span class="arr">➜</span><div class="node last"><small>4</small><b class="ic">⬆️</b><span>미리캔버스 업로드</span></div></div></div>
+  </div>
+  <div class="note warn">⚠️ <b>주의해요</b> 무료로 내려받으면 화질이 낮은 샘플이에요</div>
+  <div class="two">
+    <div class="box"><h3>👀 살펴보기</h3><ul><li>미리캔버스 배경 지우기는 하루 5번만 쓸 수 있어요</li><li>그래서 외부 사이트 리무브비지(remove.bg)를 써요</li><li>무료로 받으면 화질이 낮은 샘플 파일이에요</li></ul></div>
+    <div class="box tint"><h3 class="ch">✋ 따라 하기</h3><ol class="do"><li>remove.bg 접속 → 사진 올리기</li><li>배경이 지워진 사진 내려받기</li><li>미리캔버스 「업로드」에 올려 장표에 넣기</li></ol></div>
+  </div>
+  <div class="note">💡 <b>기억해요</b> 어도비·윈도우 사진 앱도 되지만 리무브비지가 가장 깔끔해요</div>
+  <a class="up" href="#top">▲ 목차로</a>
+</section>
+<section class="step" id="s03" style="--c:#3a9a5b;--t:#EAF5EE">
+  <div class="shead"><span class="badge">STEP 03</span><span class="lv">같이 해요</span></div>
+  <h2>딱 맞는 페이지</h2>
+  <div class="two">
+    <div class="box"><h3>📖 무엇인가요</h3><p>지금 장표 디자인에 맞춰 필요한 형식의 페이지를 알아서 만들어 끼워 주는 기능이에요. 조직도·벤다이어그램·CEO 소개 등을 고를 수 있어요.</p><h3>🙋 이럴 때 써요</h3><ul><li>교안 중간에 조직도·비교 장표가 필요할 때</li><li>기관장·강사 소개 장표가 필요할 때</li></ul></div>
+    <div class="box white"><h3>🗺️ 한눈에 보기</h3><div class="flow"><div class="node"><small>1</small><b class="ic">📌</b><span>장표 선택</span></div><span class="arr">➜</span><div class="node"><small>2</small><b class="ic">🧩</b><span>형식 고르기</span></div><span class="arr">➜</span><div class="node"><small>3</small><b class="ic">✨</b><span>같은 디자인으로 생성</span></div><span class="arr">➜</span><div class="node last"><small>4</small><b class="ic">➕</b><span>자동 끼워 넣기</span></div></div></div>
+  </div>
+  <div class="note warn">⚠️ <b>주의해요</b> 비슷하게 만들어 주지만 배경색은 한 번 더 확인해요</div>
+  <div class="two">
+    <div class="box"><h3>👀 살펴보기</h3><ul><li>빈 페이지를 따로 만들지 않아도 알아서 끼워 넣어 줘요</li><li>조직도·벤다이어그램 등 여러 형식을 지원해요</li><li>선택한 장표 디자인과 최대한 비슷하게 만들어요</li></ul></div>
+    <div class="box tint"><h3 class="ch">✋ 따라 하기</h3><ol class="do"><li>넣고 싶은 위치의 장표 선택</li><li>「딱 맞는 페이지」에서 형식 고르기</li><li>기관장 소개는 「CEO 소개」 형식 활용</li></ol></div>
+  </div>
+  <div class="note">💡 <b>기억해요</b> 디자인이 비슷하게 나오니 배경색만 한 번 더 확인해요</div>
+  <a class="up" href="#top">▲ 목차로</a>
+</section>
+<section class="step" id="s04" style="--c:#d64545;--t:#fcEDED">
+  <div class="shead"><span class="badge">STEP 04</span><span class="lv">꼭 해요</span></div>
+  <h2>다른 템플릿 페이지 가져오기</h2>
+  <div class="two">
+    <div class="box"><h3>📖 무엇인가요</h3><p>지금 템플릿에 없는 장표를 다른 템플릿에서 한 페이지만 골라 가져오는 방법이에요. 디자인이 다르니 색을 맞춰야 해요.</p><h3>🙋 이럴 때 써요</h3><ul><li>강사 소개처럼 지금 템플릿에 없는 장표가 필요할 때</li><li>마음에 드는 장표 하나만 빌려 쓰고 싶을 때</li></ul></div>
+    <div class="box white"><h3>🗺️ 한눈에 보기</h3><div class="flow"><div class="node"><small>1</small><b class="ic">🅰️</b><span>내 템플릿</span></div><span class="arr">➜</span><div class="node"><small>2</small><b class="ic">🔍</b><span>다른 템플릿 검색</span></div><span class="arr">➜</span><div class="node"><small>3</small><b class="ic">📄</b><span>한 페이지만 넣기</span></div><span class="arr">➜</span><div class="node last"><small>4</small><b class="ic">🎨</b><span>배경색 맞추기</span></div></div></div>
+  </div>
+  <div class="note warn">⚠️ <b>주의해요</b> 「전체 적용」을 누르면 기존 장표가 다 바뀌어요 — 한 페이지만!</div>
+  <div class="two">
+    <div class="box"><h3>👀 살펴보기</h3><ul><li>지금 템플릿에 없는 장표(예: 강사 소개)는 다른 템플릿에서 가져와요</li><li>템플릿 메뉴에서 찾아 필요한 페이지만 넣어요</li><li>디자인이 달라서 배경색 등을 맞춰야 해요</li></ul></div>
+    <div class="box tint"><h3 class="ch">✋ 따라 하기</h3><ol class="do"><li>새 페이지 만들기</li><li>템플릿에서 「강사 소개」 검색</li><li>필요한 페이지 하나만 클릭해서 넣기</li></ol></div>
+  </div>
+  <div class="note">💡 <b>기억해요</b> 전체 적용이 아니라 페이지 하나만 넣어야 기존 장표가 안 바뀌어요</div>
+  <a class="up" href="#top">▲ 목차로</a>
+</section>
+<section class="step" id="s05" style="--c:#d64545;--t:#fcEDED">
+  <div class="shead"><span class="badge">STEP 05</span><span class="lv">꼭 해요</span></div>
+  <h2>배경색 HEX 맞추기</h2>
+  <div class="two">
+    <div class="box"><h3>📖 무엇인가요</h3><p>HEX 코드는 색마다 붙은 번호예요. 앞 장표의 색 번호를 복사해 붙이면 색이 똑같아져요.</p><h3>🙋 이럴 때 써요</h3><ul><li>다른 템플릿에서 가져온 장표 색을 맞출 때</li><li>기관 대표색을 정확히 쓸 때</li></ul></div>
+    <div class="box white"><h3>🗺️ 한눈에 보기</h3><div class="flow"><div class="node"><small>1</small><b class="ic">🟫</b><span>앞 장표 배경색</span></div><span class="arr">➜</span><div class="node"><small>2</small><b class="ic">📋</b><span>HEX 코드 복사 #F4F1EA</span></div><span class="arr">➜</span><div class="node"><small>3</small><b class="ic">📄</b><span>새 장표 배경색</span></div><span class="arr">➜</span><div class="node last"><small>4</small><b class="ic">✅</b><span>붙여 넣기 → 같은 색</span></div></div></div>
+  </div>
+  <div class="note warn">⚠️ <b>주의해요</b> # 뒤 6자리(숫자·영문)를 빠짐없이 복사해요</div>
+  <div class="two">
+    <div class="box"><h3>👀 살펴보기</h3><ul><li>가져온 장표 배경색을 앞 장표와 똑같이 맞추는 방법이에요</li><li>배경색 메뉴를 누르면 HEX 코드(색 번호)가 보여요</li></ul></div>
+    <div class="box tint"><h3 class="ch">✋ 따라 하기</h3><ol class="do"><li>앞 장표 배경 클릭 → 배경색 → HEX 코드 복사</li><li>가져온 장표 배경 클릭 → 배경색</li><li>복사한 코드 붙여 넣기</li></ol></div>
+  </div>
+  <div class="note">💡 <b>기억해요</b> 코드는 #과 숫자·영문 6자리예요 (예: #F4F1EA)</div>
+  <a class="up" href="#top">▲ 목차로</a>
+</section>
+<section class="step" id="s06" style="--c:#3a9a5b;--t:#EAF5EE">
+  <div class="shead"><span class="badge">STEP 06</span><span class="lv">같이 해요</span></div>
+  <h2>자르기 vs 프레임 · 유료 사진 빼기</h2>
+  <div class="two">
+    <div class="box"><h3>📖 무엇인가요</h3><p>자르기는 사진의 네모 영역만 줄이고, 프레임은 동그라미·하트 같은 모양 틀에 사진을 담아요. 템플릿 속 유료 사진도 프레임에서 빼낼 수 있어요.</p><h3>🙋 이럴 때 써요</h3><ul><li>사진을 원형·특이한 모양으로 보여 줄 때</li><li>템플릿의 유료 사진을 내 사진으로 바꿀 때</li></ul></div>
+    <div class="box white"><h3>🗺️ 한눈에 보기</h3><div class="vs"><div class="vcard"><h4>✂️ 자르기</h4><ul><li>네모 모양만</li><li>사진 크기·영역 조정</li></ul></div><div class="vsb">VS</div><div class="vcard hi"><h4>🖼️ 프레임</h4><ul><li>원·하트 등 여러 모양</li><li>사진 빼내기·바꾸기 쉬움</li></ul></div></div></div>
+  </div>
+  <div class="note warn">⚠️ <b>주의해요</b> 유료 사진이 남아 있으면 내려받을 때 결제 안내가 떠요</div>
+  <div class="two">
+    <div class="box"><h3>👀 살펴보기</h3><ul><li>크기 조정·자르기로도 사진을 잘라 낼 수 있어요</li><li>여러 모양으로 바꾸려면 프레임을 써요</li><li>강사 사진을 누르면 이름이 「프레임」으로 보여요</li></ul></div>
+    <div class="box tint"><h3 class="ch">✋ 따라 하기</h3><ol class="do"><li>템플릿 내려받기 → 「유료 콘텐츠 있음」 확인</li><li>해당 프레임 클릭 → 사진 빼내기</li><li>빼낸 유료 사진 삭제</li></ol></div>
+  </div>
+  <div class="note">💡 <b>기억해요</b> 프레임은 남기고 안의 사진만 빼면 내 사진을 넣을 수 있어요</div>
+  <a class="up" href="#top">▲ 목차로</a>
+</section>
+<section class="step" id="s07" style="--c:#d64545;--t:#fcEDED">
+  <div class="shead"><span class="badge">STEP 07</span><span class="lv">꼭 해요</span></div>
+  <h2>빈 페이지 프레임에 사진 넣기</h2>
+  <div class="two">
+    <div class="box"><h3>📖 무엇인가요</h3><p>빈 페이지에 프레임을 놓고 사진을 끌어 넣으면 틀에 맞게 자동으로 맞춰져요. 프레임 안에서는 확대만 되고 원래보다 줄일 수는 없어요.</p><h3>🙋 이럴 때 써요</h3><ul><li>강사 얼굴 사진을 동그랗게 넣을 때</li><li>사진을 디자인 틀에 깔끔히 맞출 때</li></ul></div>
+    <div class="box white"><h3>🗺️ 한눈에 보기</h3><div class="flow"><div class="node"><small>1</small><b class="ic">⬜</b><span>빈 페이지</span></div><span class="arr">➜</span><div class="node"><small>2</small><b class="ic">⭕</b><span>요소 → 프레임</span></div><span class="arr">➜</span><div class="node"><small>3</small><b class="ic">🧑</b><span>사진 끌어 넣기</span></div><span class="arr">➜</span><div class="node last"><small>4</small><b class="ic">🔍</b><span>확대해서 얼굴 맞추기</span></div></div></div>
+  </div>
+  <div class="note warn">⚠️ <b>주의해요</b> 상반신 사진은 확대해서 얼굴에 맞춰요</div>
+  <div class="two">
+    <div class="box"><h3>👀 살펴보기</h3><ul><li>「요소」 메뉴에 여러 모양의 프레임이 있어요</li><li>프레임에 사진을 끌어 넣으면 알맞게 맞춰져요</li><li>프레임 안에서 사진은 확대만 되고 원래보다 줄일 수는 없어요</li></ul></div>
+    <div class="box tint"><h3 class="ch">✋ 따라 하기</h3><ol class="do"><li>빈 페이지 만들기 → 요소 → 프레임</li><li>원하는 모양 고르기</li><li>사진 끌어 넣기 → 확대해서 얼굴에 맞추기</li></ol></div>
+  </div>
+  <div class="note">💡 <b>기억해요</b> 상반신 사진을 확대하면 얼굴 사진처럼 쓸 수 있어요</div>
+  <a class="up" href="#top">▲ 목차로</a>
+</section>
+<section class="step" id="s08" style="--c:#d9a514;--t:#FDF6E3">
+  <div class="shead"><span class="badge">STEP 08</span><span class="lv">시간 되면</span></div>
+  <h2>프레임에 넣을 수 있는 것</h2>
+  <div class="two">
+    <div class="box"><h3>📖 무엇인가요</h3><p>프레임에는 사진 성질을 가진 것만 들어가요. 사진·비트맵·GIF·영상은 되고, 색을 바꿀 수 있는 일러스트(SVG)는 안 돼요.</p><h3>🙋 이럴 때 써요</h3><ul><li>움직이는 GIF·영상을 모양 틀에 넣을 때</li><li>일러스트가 왜 안 들어가는지 헷갈릴 때</li></ul></div>
+    <div class="box white"><h3>🗺️ 한눈에 보기</h3><div class="vs"><div class="vcard"><h4>⭕ 들어가요</h4><ul><li>사진 · 비트맵</li><li>GIF · 영상</li></ul></div><div class="vsb">VS</div><div class="vcard hi"><h4>❌ 안 들어가요</h4><ul><li>일러스트(SVG)</li><li>색 바꾸는 그림 요소</li></ul></div></div></div>
+  </div>
+  <div class="note warn">⚠️ <b>주의해요</b> SVG = 색을 바꿀 수 있는 그림 요소예요</div>
+  <div class="two">
+    <div class="box"><h3>👀 살펴보기</h3><ul><li>사진·비트맵·GIF·영상은 넣을 수 있어요</li><li>일러스트(SVG) 요소는 넣을 수 없어요</li><li>SVG는 색을 페이지에 맞게 바꿀 수 있는 요소예요</li></ul></div>
+    <div class="box tint"><h3 class="ch">✋ 따라 하기</h3><ol class="do"><li>프레임에 GIF 하나 넣어 보기</li><li>일러스트를 넣어 보고 안 들어가는 것 확인</li></ol></div>
+  </div>
+  <div class="note">💡 <b>기억해요</b> 비트맵은 사진과 성질이 같아요</div>
+  <a class="up" href="#top">▲ 목차로</a>
+</section>
+<section class="step" id="s09" style="--c:#d9a514;--t:#FDF6E3">
+  <div class="shead"><span class="badge">STEP 09</span><span class="lv">시간 되면</span></div>
+  <h2>기본 vs 외곽선 프레임</h2>
+  <div class="two">
+    <div class="box"><h3>📖 무엇인가요</h3><p>기본 프레임은 틀 모양대로 사진을 채우고, 외곽선 프레임은 테두리 선이 있는 틀이에요.</p><h3>🙋 이럴 때 써요</h3><ul><li>배경을 지운 사진을 넣을 때 → 외곽선</li><li>꽉 찬 사진을 넣을 때 → 기본</li></ul></div>
+    <div class="box white"><h3>🗺️ 한눈에 보기</h3><div class="vs"><div class="vcard"><h4>⬛ 기본 프레임</h4><ul><li>틀 모양대로 꽉 채움</li><li>일반 사진에 어울림</li></ul></div><div class="vsb">VS</div><div class="vcard hi"><h4>🔲 외곽선 프레임</h4><ul><li>테두리 선이 있음</li><li>배경 지운 사진에 어울림</li></ul></div></div></div>
+  </div>
+  <div class="note warn">⚠️ <b>주의해요</b> 배경이 투명한 사진은 외곽선 프레임이 더 어울려요</div>
+  <div class="two">
+    <div class="box"><h3>👀 살펴보기</h3><ul><li>프레임은 기본 프레임과 외곽선 프레임이 있어요</li><li>배경이 투명한 사진은 외곽선 프레임이 더 어울려요</li></ul></div>
+    <div class="box tint"><h3 class="ch">✋ 따라 하기</h3><ol class="do"><li>배경 지운 사진을 두 프레임에 각각 넣기</li><li>어느 쪽이 나은지 비교</li></ol></div>
+  </div>
+  <div class="note">💡 <b>기억해요</b> 리무브비지로 지운 사진과 함께 쓰면 좋아요</div>
+  <a class="up" href="#top">▲ 목차로</a>
+</section>
+<section class="step" id="s10" style="--c:#d9a514;--t:#FDF6E3">
+  <div class="shead"><span class="badge">STEP 10</span><span class="lv">시간 되면</span></div>
+  <h2>분할 프레임</h2>
+  <div class="two">
+    <div class="box"><h3>📖 무엇인가요</h3><p>장표를 여러 칸으로 나눈 프레임이에요. 캔바의 그리드처럼 칸마다 사진을 넣어 한눈에 비교할 수 있어요.</p><h3>🙋 이럴 때 써요</h3><ul><li>활동 사진 여러 장을 한 장표에</li><li>시연 전·후 비교 장표</li></ul></div>
+    <div class="box white"><h3>🗺️ 한눈에 보기</h3><div class="grid6"><div>🖼️<br>활동 1</div><div>🖼️<br>활동 2</div><div>🖼️<br>활동 3</div><div>🖼️<br>시연 전</div><div>🖼️<br>시연 후</div><div>🖼️<br>결과</div></div></div>
+  </div>
+  <div class="note warn">⚠️ <b>주의해요</b> 사진 비율이 다르면 칸 안에서 위치를 조절해요</div>
+  <div class="two">
+    <div class="box"><h3>👀 살펴보기</h3><ul><li>캔바의 그리드와 같은 기능이에요</li><li>장표 전체에 프레임을 깔고 사진 여러 장을 넣어요</li><li>활동 사진·시연 사진 비교에 좋아요</li></ul></div>
+    <div class="box tint"><h3 class="ch">✋ 따라 하기</h3><ol class="do"><li>요소 → 프레임 → 분할 프레임</li><li>칸마다 사진 넣기</li></ol></div>
+  </div>
+  <div class="note">💡 <b>기억해요</b> 수업 활동 사진 모음 장표에 바로 쓸 수 있어요</div>
+  <a class="up" href="#top">▲ 목차로</a>
+</section>
+<section class="step" id="s11" style="--c:#d64545;--t:#fcEDED">
+  <div class="shead"><span class="badge">STEP 11</span><span class="lv">꼭 해요</span></div>
+  <h2>강사 소개 글자 · 행간 · 사진</h2>
+  <div class="two">
+    <div class="box"><h3>📖 무엇인가요</h3><p>가져온 강사 소개 장표의 글자·글꼴·줄 간격을 다듬고 사진을 바꿔 내 장표로 만드는 단계예요.</p><h3>🙋 이럴 때 써요</h3><ul><li>강사·기관 소개 장표 만들 때</li><li>글자가 답답하거나 너무 벌어져 보일 때</li></ul></div>
+    <div class="box white"><h3>🗺️ 한눈에 보기</h3><div class="flow"><div class="node"><small>1</small><b class="ic">🔤</b><span>글자 고치기</span></div><span class="arr">➜</span><div class="node"><small>2</small><b class="ic">🅰️</b><span>글꼴 바꾸기</span></div><span class="arr">➜</span><div class="node"><small>3</small><b class="ic">↕️</b><span>행간 조절</span></div><span class="arr">➜</span><div class="node last"><small>4</small><b class="ic">🧑</b><span>사진 맞추기</span></div></div></div>
+  </div>
+  <div class="note warn">⚠️ <b>주의해요</b> 행간(줄 간격)은 오른쪽 패널에서 조절해요</div>
+  <div class="two">
+    <div class="box"><h3>👀 살펴보기</h3><ul><li>글자는 오른쪽 패널에서 편집해요</li><li>필터로 다양한 글꼴을 골라 바꿀 수 있어요</li><li>행간으로 위아래 줄 간격을 조절해요</li></ul></div>
+    <div class="box tint"><h3 class="ch">✋ 따라 하기</h3><ol class="do"><li>가져온 강사 소개 장표 글자 고치기</li><li>글꼴 바꾸기 → 행간 조절</li><li>사진 메뉴에서 강사 사진 골라 얼굴에 맞춰 넣기</li></ol></div>
+  </div>
+  <div class="note">💡 <b>기억해요</b> 내 사진 대신 사진 메뉴의 인물 사진으로 연습해도 돼요</div>
+  <a class="up" href="#top">▲ 목차로</a>
+</section>
+<section class="step" id="s12" style="--c:#d9a514;--t:#FDF6E3">
+  <div class="shead"><span class="badge">STEP 12</span><span class="lv">시간 되면</span></div>
+  <h2>AI 어울리는 요소</h2>
+  <div class="two">
+    <div class="box"><h3>📖 무엇인가요</h3><p>AI가 지금 장표에 어울리는 그림 요소를 만들어 주는 기능이에요. 하루 200 크레딧이라 몇 개만 만들 수 있어요.</p><h3>🙋 이럴 때 써요</h3><ul><li>톤에 맞는 요소를 찾기 어려울 때</li><li>장표 분위기에 딱 맞는 꾸밈이 필요할 때</li></ul></div>
+    <div class="box white"><h3>🗺️ 한눈에 보기</h3><div class="flow"><div class="node"><small>1</small><b class="ic">📌</b><span>장표 선택</span></div><span class="arr">➜</span><div class="node"><small>2</small><b class="ic">🤖</b><span>AI → 어울리는 요소</span></div><span class="arr">➜</span><div class="node"><small>3</small><b class="ic">🖱️</b><span>캔버스에 넣기</span></div><span class="arr">➜</span><div class="node last"><small>4</small><b class="ic">💾</b><span>업로드에 저장</span></div></div></div>
+  </div>
+  <div class="note warn">⚠️ <b>주의해요</b> 캔버스에 넣어야 업로드에 저장돼요 — 안 넣으면 사라져요</div>
+  <div class="two">
+    <div class="box"><h3>👀 살펴보기</h3><ul><li>요소를 누르면 비슷한 요소를 찾아 줘요</li><li>왼쪽 AI 메뉴에서 페이지에 어울리는 요소를 만들어 줘요 (하루 200 크레딧)</li><li>만든 요소를 캔버스에 넣어야 업로드에 저장돼요</li></ul></div>
+    <div class="box tint"><h3 class="ch">✋ 따라 하기</h3><ol class="do"><li>장표 선택 → AI → 어울리는 요소</li><li>마음에 드는 요소 클릭해 캔버스에 넣기</li><li>프롬프트(원하는 내용 글)로 취향 맞추기</li></ol></div>
+  </div>
+  <div class="note">💡 <b>기억해요</b> 다른 생성 기능은 GPT·제미나이로 대신할 수 있어요</div>
+  <a class="up" href="#top">▲ 목차로</a>
+</section>
+<section class="step" id="s13" style="--c:#3a9a5b;--t:#EAF5EE">
+  <div class="shead"><span class="badge">STEP 13</span><span class="lv">같이 해요</span></div>
+  <h2>요소 · 도형 연결 · 스마트 블록</h2>
+  <div class="two">
+    <div class="box"><h3>📖 무엇인가요</h3><p>요소 검색에서 거름 메뉴로 색 바꾸는 일러스트를 고를 수 있어요. 도형은 선으로 연결되고, 스마트 블록은 +/-로 칸을 늘려요.</p><h3>🙋 이럴 때 써요</h3><ul><li>순서도·관계도를 그릴 때</li><li>항목 수가 바뀌는 목록 장표</li></ul></div>
+    <div class="box white"><h3>🗺️ 한눈에 보기</h3><div class="flow"><div class="node"><small>1</small><b class="ic">🔍</b><span>요소 검색</span></div><span class="arr">➜</span><div class="node"><small>2</small><b class="ic">🎨</b><span>색상 변경 가능</span></div><span class="arr">➜</span><div class="node"><small>3</small><b class="ic">🔗</b><span>도형 선 연결</span></div><span class="arr">➜</span><div class="node last"><small>4</small><b class="ic">➕</b><span>스마트 블록 +/-</span></div></div></div>
+  </div>
+  <div class="note warn">⚠️ <b>주의해요</b> 스마트 블록 = 파워포인트 스마트아트와 같아요</div>
+  <div class="two">
+    <div class="box"><h3>👀 살펴보기</h3><ul><li>검색 후 잘 어울리는·색상 변경 가능·3D·픽셀·손그림으로 거를 수 있어요</li><li>「색상 변경 가능」을 누르면 일러스트를 고를 수 있어요</li><li>도형과 선은 서로 연결돼요</li></ul></div>
+    <div class="box tint"><h3 class="ch">✋ 따라 하기</h3><ol class="do"><li>요소에서 검색 → 색상 변경 가능 → 일러스트 넣고 색 바꾸기</li><li>도형 두 개를 선으로 연결</li><li>스마트 블록 넣고 +/-로 칸 늘리기</li></ol></div>
+  </div>
+  <div class="note">💡 <b>기억해요</b> 스마트 블록은 파워포인트의 스마트아트와 같아요</div>
+  <a class="up" href="#top">▲ 목차로</a>
+</section>
+<section class="step" id="s14" style="--c:#d9a514;--t:#FDF6E3">
+  <div class="shead"><span class="badge">STEP 14</span><span class="lv">시간 되면</span></div>
+  <h2>다이어그램 (툴바형)</h2>
+  <div class="two">
+    <div class="box"><h3>📖 무엇인가요</h3><p>다이어그램은 메뉴 형태가 「툴바형」일 때만 편집돼요. 패널형에서는 안 고쳐져요.</p><h3>🙋 이럴 때 써요</h3><ul><li>다이어그램 글자·칸이 안 고쳐질 때</li></ul></div>
+    <div class="box white"><h3>🗺️ 한눈에 보기</h3><div class="vs"><div class="vcard"><h4>📋 패널형</h4><ul><li>다이어그램 편집 ❌</li></ul></div><div class="vsb">VS</div><div class="vcard hi"><h4>🧰 툴바형</h4><ul><li>다이어그램 편집 ⭕</li></ul></div></div></div>
+  </div>
+  <div class="note warn">⚠️ <b>주의해요</b> 편집이 끝나면 편한 메뉴 형태로 되돌려도 돼요</div>
+  <div class="two">
+    <div class="box"><h3>👀 살펴보기</h3><ul><li>패널형 메뉴에서는 다이어그램을 편집할 수 없어요</li><li>툴바형으로 바꿔야 편집돼요</li></ul></div>
+    <div class="box tint"><h3 class="ch">✋ 따라 하기</h3><ol class="do"><li>메뉴를 툴바형으로 바꾸기</li><li>다이어그램 편집</li><li>편집 후 원하는 메뉴 형태로 되돌리기</li></ol></div>
+  </div>
+  <div class="note">💡 <b>기억해요</b> 편집이 안 되면 메뉴 형태부터 확인해요</div>
+  <a class="up" href="#top">▲ 목차로</a>
+</section>
+<section class="step" id="s15" style="--c:#3a9a5b;--t:#EAF5EE">
+  <div class="shead"><span class="badge">STEP 15</span><span class="lv">같이 해요</span></div>
+  <h2>표 → 한글 · 엑셀에서</h2>
+  <div class="two">
+    <div class="box"><h3>📖 무엇인가요</h3><p>미리캔버스 표는 칸 편집이 불편해요. 한글이나 엑셀에서 표를 만든 뒤 복사해 오는 게 빨라요.</p><h3>🙋 이럴 때 써요</h3><ul><li>칸이 많은 표</li><li>숫자·일정표 장표</li></ul></div>
+    <div class="box white"><h3>🗺️ 한눈에 보기</h3><div class="flow"><div class="node"><small>1</small><b class="ic">📊</b><span>한글 · 엑셀에서 표</span></div><span class="arr">➜</span><div class="node"><small>2</small><b class="ic">📋</b><span>복사</span></div><span class="arr">➜</span><div class="node"><small>3</small><b class="ic">📄</b><span>미리캔버스에 붙여 넣기</span></div><span class="arr">➜</span><div class="node last"><small>4</small><b class="ic">🎨</b><span>글꼴 · 색 맞추기</span></div></div></div>
+  </div>
+  <div class="note warn">⚠️ <b>주의해요</b> 붙여 넣은 뒤 글꼴·색을 장표 톤에 맞춰요</div>
+  <div class="two">
+    <div class="box"><h3>👀 살펴보기</h3><ul><li>미리캔버스 표는 편집이 불편해요</li><li>한글이나 엑셀에서 만든 표를 가져오길 추천해요</li></ul></div>
+    <div class="box tint"><h3 class="ch">✋ 따라 하기</h3><ol class="do"><li>한글·엑셀에서 표 복사</li><li>미리캔버스에 붙여 넣기</li><li>글꼴·색을 장표 톤에 맞추기</li></ol></div>
+  </div>
+  <div class="note">💡 <b>기억해요</b> 칸 내용이 많으면 한글·엑셀에서 미리 다듬어 오세요</div>
+  <a class="up" href="#top">▲ 목차로</a>
+</section>
+<section class="step" id="s16" style="--c:#d64545;--t:#fcEDED">
+  <div class="shead"><span class="badge">STEP 16</span><span class="lv">꼭 해요</span></div>
+  <h2>차트 · 막대 하나 색 · 게이지</h2>
+  <div class="two">
+    <div class="box"><h3>📖 무엇인가요</h3><p>차트 기능이 엑셀과 거의 같아졌어요. 막대 하나만 색을 바꿔 강조하고, 막대를 둥글게 할 수 있어요. 게이지 차트는 % 하나를 깔끔하게 보여 줘요.</p><h3>🙋 이럴 때 써요</h3><ul><li>숫자 하나를 강조할 때 → 막대 하나 색</li><li>달성률·만족도 → 게이지</li></ul></div>
+    <div class="box white"><h3>🗺️ 한눈에 보기</h3><div class="chart"><div><p>막대 하나만 색 바꾸기</p><div class="bars"><i style="height:45%;"></i><i style="height:60%;"></i><i style="height:85%;background:#d64545"></i><i style="height:50%;"></i></div></div><div><p>게이지 차트</p><div class="gauge"><span>75%</span></div></div></div></div>
+  </div>
+  <div class="note warn">⚠️ <b>주의해요</b> 차트 하나 만들면 다른 모양으로 바로 바꿔 볼 수 있어요</div>
+  <div class="two">
+    <div class="box"><h3>👀 살펴보기</h3><ul><li>새 메뉴로 바뀌면서 차트 기능이 엑셀과 거의 같아졌어요</li><li>막대 하나만 색을 바꾸고, 막대를 둥글게 할 수 있어요</li><li>게이지 차트는 퍼센트·수치로 보여 주고 디자인이 깔끔해요</li></ul></div>
+    <div class="box tint"><h3 class="ch">✋ 따라 하기</h3><ol class="do"><li>막대 차트 넣기 → 데이터 고치기</li><li>막대 하나 클릭 → 색 바꾸기 → 둥글게</li><li>게이지 차트 넣고 수치 바꾸기</li></ol></div>
+  </div>
+  <div class="note">💡 <b>기억해요</b> 차트 하나를 만들면 다른 모양으로 바로 바꿔 볼 수 있어요</div>
+  <a class="up" href="#top">▲ 목차로</a>
+</section>
+<section class="step" id="s17" style="--c:#d9a514;--t:#FDF6E3">
+  <div class="shead"><span class="badge">STEP 17</span><span class="lv">시간 되면</span></div>
+  <h2>휴대폰 앱으로 동영상 올리기</h2>
+  <div class="two">
+    <div class="box"><h3>📖 무엇인가요</h3><p>휴대폰과 PC에서 같은 계정으로 로그인하면, 휴대폰으로 올린 사진·영상을 PC에서 바로 쓸 수 있어요.</p><h3>🙋 이럴 때 써요</h3><ul><li>휴대폰으로 찍은 수업 영상을 교안에 넣을 때</li></ul></div>
+    <div class="box white"><h3>🗺️ 한눈에 보기</h3><div class="flow"><div class="node"><small>1</small><b class="ic">📱</b><span>휴대폰 앱 로그인</span></div><span class="arr">➜</span><div class="node"><small>2</small><b class="ic">⬆️</b><span>영상 업로드</span></div><span class="arr">➜</span><div class="node"><small>3</small><b class="ic">☁️</b><span>같은 계정</span></div><span class="arr">➜</span><div class="node last"><small>4</small><b class="ic">💻</b><span>PC에서 바로 사용</span></div></div></div>
+  </div>
+  <div class="note warn">⚠️ <b>주의해요</b> 휴대폰 앱과 PC 계정이 같은지 먼저 확인해요</div>
+  <div class="two">
+    <div class="box"><h3>👀 살펴보기</h3><ul><li>같은 계정이면 스마트폰 앱에서 사진·영상을 올릴 수 있어요</li><li>올린 영상은 PC에서 바로 써요</li></ul></div>
+    <div class="box tint"><h3 class="ch">✋ 따라 하기</h3><ol class="do"><li>휴대폰에서 미리캔버스 앱 로그인</li><li>업로드에서 영상 올리기</li><li>PC 업로드 메뉴에서 확인</li></ol></div>
+  </div>
+  <div class="note">💡 <b>기억해요</b> 같은 계정으로 로그인했는지 먼저 확인해요</div>
+  <a class="up" href="#top">▲ 목차로</a>
+</section>
+<section class="step" id="s18" style="--c:#3a9a5b;--t:#EAF5EE">
+  <div class="shead"><span class="badge">STEP 18</span><span class="lv">같이 해요</span></div>
+  <h2>업로드 영상 vs 유튜브</h2>
+  <div class="two">
+    <div class="box"><h3>📖 무엇인가요</h3><p>업로드한 영상은 슬라이드 쇼에서 바로 재생되고, 유튜브 링크는 재생 버튼을 눌러야 재생돼요.</p><h3>🙋 이럴 때 써요</h3><ul><li>영상 하나를 크게 → 업로드</li><li>여러 영상을 한 장에 → 유튜브</li></ul></div>
+    <div class="box white"><h3>🗺️ 한눈에 보기</h3><div class="vs"><div class="vcard"><h4>⬆️ 업로드 영상</h4><ul><li>장표가 열리면 바로 재생</li><li>앞에 예고 장표 필요</li></ul></div><div class="vsb">VS</div><div class="vcard hi"><h4>▶️ 유튜브 링크</h4><ul><li>재생 버튼 눌러야 재생</li><li>한 장에 여러 개 가능</li></ul></div></div></div>
+  </div>
+  <div class="note warn">⚠️ <b>주의해요</b> 업로드 영상 앞에는 예고 장표를 하나 두세요</div>
+  <div class="two">
+    <div class="box"><h3>👀 살펴보기</h3><ul><li>업로드한 영상은 슬라이드 쇼에서 바로 재생돼요 → 앞에 예고 페이지가 필요해요</li><li>유튜브 링크는 재생 버튼을 눌러야 재생돼요</li><li>그래서 한 페이지에 여러 영상을 넣을 수 있어요</li></ul></div>
+    <div class="box tint"><h3 class="ch">✋ 따라 하기</h3><ol class="do"><li>장표에 유튜브 링크 넣기</li><li>슬라이드 쇼로 재생 방식 비교</li><li>확대 버튼으로 크게 재생</li></ol></div>
+  </div>
+  <div class="note">💡 <b>기억해요</b> 업로드 영상 앞에는 「영상 나옵니다」 장표를 하나 두세요</div>
+  <a class="up" href="#top">▲ 목차로</a>
+</section>
+<section class="step" id="s19" style="--c:#3a9a5b;--t:#EAF5EE">
+  <div class="shead"><span class="badge">STEP 19</span><span class="lv">같이 해요</span></div>
+  <h2>QR · 가운데 로고</h2>
+  <div class="two">
+    <div class="box"><h3>📖 무엇인가요</h3><p>링크를 QR 코드로 바꿔 주는 기능이에요. 가운데에 기관 로고를 넣을 수 있어요.</p><h3>🙋 이럴 때 써요</h3><ul><li>설문·자료 링크를 수강생에게 나눌 때</li><li>인쇄물·배너에 링크 넣을 때</li></ul></div>
+    <div class="box white"><h3>🗺️ 한눈에 보기</h3><div class="flow"><div class="node"><small>1</small><b class="ic">🔗</b><span>링크 복사</span></div><span class="arr">➜</span><div class="node"><small>2</small><b class="ic">🔳</b><span>QR 만들기</span></div><span class="arr">➜</span><div class="node"><small>3</small><b class="ic">🏷️</b><span>가운데 로고</span></div><span class="arr">➜</span><div class="node last"><small>4</small><b class="ic">📱</b><span>휴대폰으로 확인</span></div></div></div>
+  </div>
+  <div class="note warn">⚠️ <b>주의해요</b> 로고가 너무 크면 인식이 안 될 수 있어요</div>
+  <div class="two">
+    <div class="box"><h3>👀 살펴보기</h3><ul><li>QR 코드는 링크 연결만 돼요</li><li>QR 가운데에 로고를 넣을 수 있어요</li></ul></div>
+    <div class="box tint"><h3 class="ch">✋ 따라 하기</h3><ol class="do"><li>QR 코드 메뉴 → 링크 붙여 넣기</li><li>가운데 로고 넣기</li><li>휴대폰으로 찍어 열리는지 확인</li></ol></div>
+  </div>
+  <div class="note">💡 <b>기억해요</b> 로고가 너무 크면 인식이 안 될 수 있어요</div>
+  <a class="up" href="#top">▲ 목차로</a>
+</section>
+<section class="step" id="s20" style="--c:#3a9a5b;--t:#EAF5EE">
+  <div class="shead"><span class="badge">STEP 20</span><span class="lv">같이 해요</span></div>
+  <h2>테마 · 셔플</h2>
+  <div class="two">
+    <div class="box"><h3>📖 무엇인가요</h3><p>테마는 장표 전체 색 조합을 한 번에 바꾸는 기능이에요. 셔플을 누르면 색 조합을 무작위로 섞어 보여 줘요.</p><h3>🙋 이럴 때 써요</h3><ul><li>교안 전체 분위기를 바꿀 때</li><li>기관 색에 맞출 때</li></ul></div>
+    <div class="box white"><h3>🗺️ 한눈에 보기</h3><div class="sw"><div class="row"><em>지금 테마</em><i style="background:#1D6FB8"></i><i style="background:#5FA8E0"></i><i style="background:#D7E9F7"></i><i style="background:#F4F7FA"></i><i style="background:#263238"></i></div><div class="row"><em>🔀 셔플 1</em><i style="background:#2E7D5B"></i><i style="background:#8CC5A3"></i><i style="background:#E5F2EA"></i><i style="background:#FAFAF5"></i><i style="background:#1F2D27"></i></div><div class="row"><em>🔀 셔플 2</em><i style="background:#B85042"></i><i style="background:#E7A08F"></i><i style="background:#F3DCD5"></i><i style="background:#FBF6F3"></i><i style="background:#3A2A26"></i></div></div></div>
+  </div>
+  <div class="note warn">⚠️ <b>주의해요</b> 마음에 안 들면 Ctrl+Z로 되돌려요</div>
+  <div class="two">
+    <div class="box"><h3>👀 살펴보기</h3><ul><li>제목 페이지에서 테마 메뉴로 가요</li><li>테마 색을 여러 가지로 바꿀 수 있어요</li><li>랜덤 셔플로 색 조합을 섞어 볼 수 있어요</li></ul></div>
+    <div class="box tint"><h3 class="ch">✋ 따라 하기</h3><ol class="do"><li>제목 페이지 선택 → 테마</li><li>테마 색 바꾸기</li><li>셔플 여러 번 눌러 보기</li></ol></div>
+  </div>
+  <div class="note">💡 <b>기억해요</b> 마음에 안 들면 되돌리기(Ctrl+Z)로 돌아가요</div>
+  <a class="up" href="#top">▲ 목차로</a>
+</section>
+<section class="step" id="s21" style="--c:#d64545;--t:#fcEDED">
+  <div class="shead"><span class="badge">STEP 21</span><span class="lv">꼭 해요</span></div>
+  <h2>패들렛 테마 연습</h2>
+  <div class="two">
+    <div class="box"><h3>📖 무엇인가요</h3><p>패들렛에 올려 둔 연습 디자인을 가져와 사진 테마에 맞춰 색·글꼴을 바꿔 보는 연습이에요.</p><h3>🙋 이럴 때 써요</h3><ul><li>테마 기능을 직접 써 볼 때</li></ul></div>
+    <div class="box white"><h3>🗺️ 한눈에 보기</h3><div class="flow"><div class="node"><small>1</small><b class="ic">📌</b><span>패들렛 연습 디자인</span></div><span class="arr">➜</span><div class="node"><small>2</small><b class="ic">📑</b><span>사본 만들기</span></div><span class="arr">➜</span><div class="node"><small>3</small><b class="ic">🎨</b><span>사진 테마에 맞추기</span></div><span class="arr">➜</span><div class="node last"><small>4</small><b class="ic">⬆️</b><span>패들렛에 공유</span></div></div></div>
+  </div>
+  <div class="note warn">⚠️ <b>주의해요</b> 꼭 사본을 만들어서 연습해요</div>
+  <div class="two">
+    <div class="box"><h3>👀 살펴보기</h3><ul><li>패들렛에 올린 테마 연습 디자인을 가져와요</li><li>사진 테마에 맞춰 연습해요</li></ul></div>
+    <div class="box tint"><h3 class="ch">✋ 따라 하기</h3><ol class="do"><li>패들렛에서 연습 디자인 열기 → 사본 만들기</li><li>사진 테마에 맞춰 색·글꼴 바꾸기</li></ol></div>
+  </div>
+  <div class="note">💡 <b>기억해요</b> 바꾼 결과는 패들렛에 다시 올려 서로 봐요</div>
+  <a class="up" href="#top">▲ 목차로</a>
+</section>
+<section class="step" id="s22" style="--c:#d64545;--t:#fcEDED">
+  <div class="shead"><span class="badge">STEP 22</span><span class="lv">꼭 해요</span></div>
+  <h2>기관 로고 → 링크 패들렛에</h2>
+  <div class="two">
+    <div class="box"><h3>📖 무엇인가요</h3><p>제목 장표에 기관 로고를 넣고 로고 색에 맞춰 전체 톤앤매너(색·분위기)를 바꾼 뒤, 공유 링크를 패들렛에 올려요.</p><h3>🙋 이럴 때 써요</h3><ul><li>실제 기관용 교안으로 마무리할 때</li></ul></div>
+    <div class="box white"><h3>🗺️ 한눈에 보기</h3><div class="flow"><div class="node"><small>1</small><b class="ic">🏷️</b><span>기관 로고 넣기</span></div><span class="arr">➜</span><div class="node"><small>2</small><b class="ic">🎨</b><span>톤앤매너 맞추기</span></div><span class="arr">➜</span><div class="node"><small>3</small><b class="ic">🔗</b><span>공유 링크 복사</span></div><span class="arr">➜</span><div class="node last"><small>4</small><b class="ic">📌</b><span>패들렛에 올리기</span></div></div></div>
+  </div>
+  <div class="note warn">⚠️ <b>주의해요</b> 오늘 결과물은 링크로 패들렛에 모아요</div>
+  <div class="two">
+    <div class="box"><h3>👀 살펴보기</h3><ul><li>제목 페이지에 기관 로고를 넣어요</li><li>로고에 맞춰 톤앤매너(색·분위기)를 바꿔요</li></ul></div>
+    <div class="box tint"><h3 class="ch">✋ 따라 하기</h3><ol class="do"><li>제목 페이지에 기관 로고 넣기</li><li>로고 색에 맞춰 디자인 고치기</li><li>공유 링크 복사 → 패들렛에 올리기</li></ol></div>
+  </div>
+  <div class="note">💡 <b>기억해요</b> 오늘 결과물은 링크로 패들렛에 모아요</div>
+  <a class="up" href="#top">▲ 목차로</a>
+</section>
+</main>
+<script>
+const cs=[...document.querySelectorAll('.chips a')],gs=[...document.querySelectorAll('.groups .g')];
+function showG(g){gs.forEach(b=>b.classList.toggle('on',b.dataset.g==g));cs.forEach(c=>c.classList.toggle('show',c.dataset.g==g))}
+gs.forEach(b=>b.onclick=()=>showG(b.dataset.g));showG(0);
+const ob=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){const a=cs.find(c=>c.dataset.s===e.target.id);cs.forEach(c=>c.classList.toggle('on',c===a));if(a)showG(a.dataset.g)}})},{rootMargin:'-40% 0px -55% 0px'});
+document.querySelectorAll('.step').forEach(x=>ob.observe(x));
+let f=20;function z(d){f=Math.min(30,Math.max(16,f+d));document.documentElement.style.setProperty('--fs',f+'px')}</script>
+</body></html>

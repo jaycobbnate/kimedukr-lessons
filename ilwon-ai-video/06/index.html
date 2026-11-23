@@ -1,0 +1,1104 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>일원 6회차 주인공의 하루</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --fs:20px;
+  --pt:#0e8a8c; --pt-d:#0a6b6d; --pt-l:#e7f4f4;
+  --ink:#1f2a30; --sub:#5d6a72; --line:#e2e5e7;
+  --bg:#fbfaf7; --card:#ffffff;
+  --set:#eaf2fb; --set-b:#c9dcf2;
+  --warn:#fcedef; --warn-b:#f1c9cf;
+  --more:#f1eefb; --more-b:#d8cff3;
+  --chk:#eaf6ef; --chk-b:#c6e5d2;
+}
+*{box-sizing:border-box}
+html{font-size:var(--fs)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans KR",system-ui,sans-serif;font-size:1rem;line-height:1.7;word-break:keep-all}
+h1,h2,h3,h4{margin:0;line-height:1.35}
+a{color:var(--pt-d)}
+b,strong{font-weight:700}
+
+/* 상단 고정 */
+.top{position:sticky;top:0;z-index:30;background:rgba(251,250,247,.97);border-bottom:1px solid var(--line);backdrop-filter:blur(4px)}
+.top-row{display:flex;align-items:center;gap:14px;padding:10px 20px;max-width:1320px;margin:0 auto}
+.brand{font-weight:800;font-size:.95rem;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.brand small{font-weight:500;color:var(--sub);margin-left:8px;font-size:.75rem}
+.fsbtn{border:1px solid var(--line);background:#fff;border-radius:8px;padding:4px 12px;font-size:.8rem;cursor:pointer;font-family:inherit}
+.fsbtn:hover{border-color:var(--pt)}
+.tabs{display:flex;gap:6px;overflow-x:auto;padding:0 20px 10px;max-width:1320px;margin:0 auto;scrollbar-width:thin}
+.tab{flex:0 0 auto;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:999px;padding:6px 16px;font-size:.78rem;cursor:pointer;font-family:inherit;font-weight:500}
+.tab span{color:var(--pt);font-weight:800;margin-right:6px}
+.tab.on{background:var(--pt);border-color:var(--pt);color:#fff}
+.tab.on span{color:#fff}
+
+/* 본문 + 오른쪽 메뉴 */
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 230px;gap:26px;max-width:1320px;margin:0 auto;padding:22px 20px 30px}
+.side{position:sticky;top:118px;align-self:start}
+.side h4{font-size:.7rem;color:var(--sub);font-weight:700;margin-bottom:8px;letter-spacing:.02em}
+.side a{display:block;text-decoration:none;color:var(--ink);font-size:.72rem;line-height:1.45;padding:7px 10px;border-left:2px solid var(--line)}
+.side a:hover{background:var(--pt-l);border-left-color:var(--pt)}
+@media(max-width:920px){.layout{grid-template-columns:1fr}.side{display:none}}
+
+section.step{display:none}
+section.step.on{display:block}
+.stephead{background:#fff;border:1px solid var(--line);border-left:6px solid var(--pt);border-radius:14px;padding:18px 22px;margin-bottom:18px}
+.stephead .no{display:inline-block;background:var(--pt);color:#fff;border-radius:6px;padding:1px 10px;font-size:.72rem;font-weight:800;margin-bottom:6px}
+.stephead h2{font-size:1.35rem;font-weight:800}
+.stephead p{margin:6px 0 0;color:var(--sub)}
+
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+@media(max-width:1060px){.grid{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px;scroll-margin-top:120px;min-width:0}
+.card.wide{grid-column:1/-1}
+.card h3{font-size:1.02rem;font-weight:800;margin-bottom:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.card p{margin:6px 0}
+.card ul,.card ol{margin:6px 0;padding-left:1.3em}
+.card li{margin:3px 0}
+.chip{display:inline-block;font-size:.66rem;font-weight:800;border-radius:6px;padding:2px 9px;letter-spacing:.02em}
+.c-core{background:var(--pt-l);color:var(--pt-d)}
+.c-all{background:var(--pt);color:#fff}
+.c-mine{background:#3466c2;color:#fff}
+.c-chk{background:var(--chk);color:#24704a;border:1px solid var(--chk-b)}
+.c-warn{background:var(--warn);color:#a43746;border:1px solid var(--warn-b)}
+.c-more{background:var(--more);color:#5b45a6;border:1px solid var(--more-b)}
+.card.k-chk{background:#fbfefc;border-color:var(--chk-b)}
+.card.k-warn{background:#fffafb;border-color:var(--warn-b)}
+.card.k-more{background:#fcfbff;border-color:var(--more-b)}
+.card.k-mine{border-color:#c5d4ef}
+
+.box{border-radius:10px;padding:12px 14px;margin:10px 0;font-size:.9rem}
+.box.set{background:var(--set);border:1px solid var(--set-b)}
+.box.warn{background:var(--warn);border:1px solid var(--warn-b)}
+.box.more{background:var(--more);border:1px solid var(--more-b)}
+.box h4{font-size:.85rem;margin-bottom:4px}
+.where{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 8px}
+.where span{background:#f3f5f6;border:1px solid var(--line);border-radius:6px;padding:1px 9px;font-size:.75rem}
+.note{color:var(--sub);font-size:.85rem}
+
+/* 규칙 세 줄 */
+.rules{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:4px}
+@media(max-width:760px){.rules{grid-template-columns:1fr}}
+.rule{border:1px solid var(--line);border-top:4px solid var(--pt);border-radius:10px;padding:12px 14px;background:#fff}
+.rule b{display:block;color:var(--pt-d);font-size:.75rem}
+.rule div{font-weight:700}
+
+/* 프롬프트 */
+.pb{border:1px solid var(--line);border-radius:12px;margin:10px 0;overflow:hidden;background:#fff}
+.pb-h{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 12px;background:#f6f8f8;border-bottom:1px solid var(--line)}
+.pb-t{font-size:.8rem;font-weight:700}
+.copy{border:1px solid var(--pt);background:#fff;color:var(--pt-d);border-radius:8px;padding:3px 14px;font-size:.75rem;font-weight:700;cursor:pointer;font-family:inherit;flex:0 0 auto}
+.copy:hover,.copy.done{background:var(--pt);color:#fff}
+.pb pre{margin:0;padding:12px 14px;white-space:pre-wrap;word-break:break-word;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.78rem;line-height:1.6}
+.pb pre .hl{background:#fff1c9;border-radius:3px;padding:0 2px}
+.pb details{border-top:1px dashed var(--line);padding:6px 14px}
+.pb summary{cursor:pointer;font-size:.78rem;color:var(--sub);font-weight:700}
+.pb details p{font-size:.82rem;margin:6px 0}
+.save{padding:6px 14px 10px;font-size:.78rem;color:var(--pt-d);font-weight:700}
+.save:before{content:"저장 ▸ ";color:var(--sub);font-weight:500}
+
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.segb{border:0;background:#fff;padding:6px 14px;font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit;color:var(--sub)}
+.segb.on{background:#3466c2;color:#fff}
+select{font-family:inherit;font-size:.9rem;padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:#fff;max-width:100%}
+.pick{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:6px 0 4px}
+.pick label{font-weight:700;font-size:.85rem}
+
+table{border-collapse:collapse;width:100%;font-size:.85rem;margin:8px 0}
+th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+th{background:#f6f8f8;font-weight:700}
+.tbl{overflow-x:auto}
+
+.checks label{display:flex;gap:10px;align-items:flex-start;padding:5px 0;cursor:pointer}
+.checks input{width:20px;height:20px;margin-top:5px;accent-color:var(--pt);flex:0 0 auto}
+
+/* 이미지 */
+.shot{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#111;margin:8px 0}
+.shot img{display:block;width:100%;height:auto}
+.shotcap{font-size:.78rem;color:var(--sub);margin-top:4px}
+details.ans{border:1px solid var(--chk-b);background:var(--chk);border-radius:10px;padding:8px 14px;margin-top:10px}
+details.ans summary{cursor:pointer;font-weight:700;font-size:.85rem;color:#24704a}
+details.ans ul{font-size:.88rem}
+
+/* 링크 카드 */
+.links{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;margin-top:8px}
+.lk{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:#fff}
+.lk b{display:block;font-size:.85rem}
+.lk small{color:var(--sub);font-size:.72rem;display:block;margin-bottom:4px}
+.lk a{display:inline-block;font-size:.75rem;margin-right:10px;font-weight:700}
+
+/* 3D */
+.t3{border:1px solid var(--line);border-radius:12px;background:linear-gradient(#ffffff,#f4f7f7);overflow:hidden}
+.t3c{width:100%;height:300px;position:relative}
+.t3c canvas{display:block}
+.t3bar{display:flex;align-items:center;gap:8px;padding:8px 12px;border-top:1px solid var(--line);background:#fff;flex-wrap:wrap}
+.t3bar button{border:1px solid var(--line);background:#fff;border-radius:8px;padding:3px 12px;font-size:.75rem;cursor:pointer;font-family:inherit;font-weight:700}
+.t3bar button:hover{border-color:var(--pt);color:var(--pt-d)}
+.t3cap{font-size:.78rem;color:var(--sub);flex:1;min-width:180px}
+.t3fb{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:20px;text-align:center;color:var(--sub);font-size:.85rem}
+
+/* 흐름 칩 */
+.flow{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:6px 0}
+.flow i{font-style:normal;background:#fff;border:1px solid var(--line);border-radius:8px;padding:4px 10px;font-size:.8rem;font-weight:700}
+.flow i.on{border-color:var(--pt);color:var(--pt-d);background:var(--pt-l)}
+.flow em{font-style:normal;color:var(--sub)}
+
+/* 하단 */
+.bottom{position:sticky;bottom:0;z-index:25;background:rgba(251,250,247,.97);border-top:1px solid var(--line)}
+.bottom-in{display:flex;justify-content:space-between;align-items:center;gap:10px;max-width:1320px;margin:0 auto;padding:10px 20px}
+.nav{border:1px solid var(--pt);background:#fff;color:var(--pt-d);border-radius:10px;padding:7px 18px;font-size:.82rem;font-weight:700;cursor:pointer;font-family:inherit}
+.nav.next{background:var(--pt);color:#fff}
+.nav:disabled{opacity:.35;cursor:default}
+.pos{font-size:.78rem;color:var(--sub)}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-row">
+    <div class="brand">[일원] AI 영상 만들기 · 6회차 — 내 주인공의 하루 <small>플로우 · 캡컷</small></div>
+    <button class="fsbtn" id="fsDown" aria-label="글자 작게">가−</button>
+    <button class="fsbtn" id="fsUp" aria-label="글자 크게">가+</button>
+  </div>
+  <nav class="tabs" id="tabs"></nav>
+</header>
+
+<div class="layout">
+<main id="main">
+
+<!-- ================= STEP 0 ================= -->
+<section class="step" data-title="오늘의 지도">
+  <div class="stephead"><span class="no">STEP 0</span><h2>오늘의 지도</h2>
+    <p>오늘은 새 주인공을 처음부터 제대로 세우고, 그 사람의 하루를 두 장면 영상으로 만듭니다.</p></div>
+  <div class="grid">
+    <div class="card wide" id="c0a"><h3><span class="chip c-core">핵심</span>12회차 중 오늘은 여기</h3>
+      <div class="t3" data-scene="roadmap"><div class="t3c"></div></div>
+      <p class="note">기본(1~4)에서 배운 프롬프트·주인공·콘티·카메라를 응용(5~8)에서 한 편으로 묶어 갑니다.</p>
+    </div>
+    <div class="card wide" id="c0b"><h3><span class="chip c-core">핵심</span>오늘 만드는 순서</h3>
+      <div class="t3" data-scene="pipeline"><div class="t3c"></div></div>
+      <div class="flow"><i>① 앵커</i><em>→</em><i>② 캐릭터 시트</i><em>→</em><i>③ 장소 사진 2장</i><em>→</em><i>④ 장면 2개 (스타트·엔드·영상)</i><em>→</em><i>⑤ 캡컷 조립 · 음악</i></div>
+      <p class="note">앞 단계에서 만든 것을 다음 단계에 레퍼런스로 넣습니다. 그래서 순서를 건너뛰면 안 됩니다.</p>
+    </div>
+    <div class="card wide" id="c0c"><h3><span class="chip c-core">핵심</span>오늘의 규칙 세 줄</h3>
+      <div class="rules">
+        <div class="rule"><b>규칙 1 · 앵커</b><div>앵커는 빈손 · 기본 복장 · 단색 배경</div></div>
+        <div class="rule"><b>규칙 2 · 시트</b><div>시트는 앵커 한 장만 넣고 만든다</div></div>
+        <div class="rule"><b>규칙 3 · 장면</b><div>장소 사진을 넣고, 손에 할 일을 준다</div></div>
+      </div>
+      <p class="note">STEP 1에서 지난번 결과물을 보면서 이 세 줄이 왜 필요한지 직접 찾아봅니다.</p>
+    </div>
+    <div class="card wide" id="c0f"><h3><span class="chip c-core">핵심</span>오늘 계속 쓰는 말 · 계속 누르는 곳</h3>
+      <div class="tbl"><table>
+        <tr><th>말</th><th>뜻</th></tr>
+        <tr><td><b>레퍼런스</b></td><td>AI에게 "이걸 보고 그려"라고 보여 주는 참고 그림. 오늘은 앵커·시트·장소 사진이 레퍼런스가 됩니다.</td></tr>
+        <tr><td><b>앵커</b></td><td>주인공의 기준 사진 한 장 (STEP 2)</td></tr>
+        <tr><td><b>시트</b></td><td>앵커를 앞·옆·뒤로 펼친 한 장 (STEP 3)</td></tr>
+        <tr><td><b>스타트 · 엔드</b></td><td>영상의 첫 장면 · 마지막 장면 (지난 시간에 배운 것)</td></tr>
+      </table></div>
+      <div class="tbl"><table>
+        <tr><th>하고 싶은 것</th><th>플로우에서 누르는 곳</th></tr>
+        <tr><td>이미지 ↔ 영상 바꾸기, 모델·비율·개수 정하기</td><td>입력창 오른쪽 아래 <b>모델 이름</b>(Nano Banana 2.1 · ▯ · x1)을 누릅니다.</td></tr>
+        <tr><td>내 사진을 플로우에 올려 두기</td><td>왼쪽 메뉴 <b>「업로드」</b></td></tr>
+        <tr><td>올려 둔 사진·만든 그림을 레퍼런스로 넣기</td><td>입력창 왼쪽 <b>「+」</b> → 그림 고르기 (여러 장 넣을 수 있습니다)</td></tr>
+        <tr><td>만든 그림·영상 저장하기</td><td>결과에 마우스를 올리면 위에 나오는 <b>다운로드 아이콘</b></td></tr>
+        <tr><td>프롬프트 넣기</td><td>이 교안의 <b>「복사」</b> → 플로우 입력창에 붙여 넣기(Ctrl+V)</td></tr>
+      </table></div>
+    </div>
+    <div class="card" id="c0d"><h3><span class="chip c-core">준비</span>시작 전에 확인하세요</h3>
+      <div class="checks">
+        <label><input type="checkbox"> 구글 플로우 로그인 (AI Pro 계정)</label>
+        <label><input type="checkbox"> 바탕화면에 「주인공의하루」 폴더 만들기</label>
+        <label><input type="checkbox"> 캡컷 데스크톱 실행 확인</label>
+        <label><input type="checkbox"> 이어폰 (영상 소리 확인용)</label>
+      </div>
+    </div>
+    <div class="card" id="c0e"><h3><span class="chip c-core">설정</span>오늘 쓰는 모델</h3>
+      <div class="box set"><h4>이미지</h4>플로우 입력창 오른쪽 아래 모델 이름이 <b>Nano Banana 2.1</b>인지 확인합니다.</div>
+      <div class="box set"><h4>영상</h4><b>Omni 1.1 Flash · 360p</b>로 만듭니다. 크레딧을 12주 동안 나눠 써야 해서 720p로 다시 만들지 않습니다.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= STEP 1 ================= -->
+<section class="step" data-title="이렇게 되면 안 돼요">
+  <div class="stephead"><span class="no">STEP 1</span><h2>이렇게 되면 안 됩니다</h2>
+    <p>AI는 말하지 않은 것을 그대로 둡니다. 지난번 결과물에서 이상한 곳을 먼저 찾아봅니다.</p></div>
+  <div class="grid">
+    <div class="card wide" id="c1a"><h3><span class="chip c-core">핵심</span>폰은 어떻게 네 칸에 다 들어갔을까</h3>
+      <div class="t3" data-scene="phone"><div class="t3c"></div></div>
+      <p>앵커가 폰을 들고 있으면, AI는 폰도 이 사람의 일부라고 봅니다. 그래서 시트를 만들면 <b>모든 방향에 폰을 그려 넣습니다.</b> 앵커에서 손을 비우면 시트도 깨끗해집니다.</p>
+    </div>
+
+    <div class="card wide" id="c1b"><h3><span class="chip c-all">다 같이</span>① 카페 장면과 앵커 — 무엇이 이상한가요?</h3>
+      <div class="shot"><img src="img01.jpg" alt="지난번 카페 장면 4장과 흰 배경 앵커 4장"></div>
+      <p class="shotcap">위: 카페 장면 4장 · 아래: 그 장면으로 다시 만든 앵커 4장</p>
+      <details class="ans"><summary>정답 보기</summary><ul>
+        <li>카페 장면에서 <b>컵·폰·가방</b>을 모두 들고 있습니다.</li>
+        <li>컵과 벽에 <b>실제 커피 브랜드 로고</b>가 나왔습니다. SNS·공모전에 올리면 문제가 됩니다.</li>
+        <li>앵커는 흰 배경이 되었지만 <b>손에 폰, 어깨에 가방</b>이 그대로 있습니다.</li>
+        <li>네 장의 <b>신발 색이 검정·갈색</b>으로 다르고, 발밑에 그림자가 생겼습니다.</li>
+      </ul><p class="note">원인: 캐릭터를 장면 프롬프트("스마트폰을 보며…")로 만들고, 그 장면 그림을 앵커로 썼습니다.</p></details>
+    </div>
+
+    <div class="card" id="c1c"><h3><span class="chip c-all">다 같이</span>② 캐릭터 시트 — 무엇이 이상한가요?</h3>
+      <div class="shot"><img src="img02.jpg" alt="지난번 캐릭터 시트 4장"></div>
+      <details class="ans"><summary>정답 보기</summary><ul>
+        <li><b>모든 칸</b>에 폰과 가방이 있습니다.</li>
+        <li>표정 칸에서 <b>비니가 있다 없다</b> 합니다.</li>
+        <li>칸 수와 배치가 <b>장마다 다릅니다.</b></li>
+        <li>폰 빛이 얼굴을 비춥니다.</li>
+      </ul><p class="note">원인: 앵커에 폰이 있었고, 유지할 것을 "같은 옷"으로 뭉뚱그렸고, 앞·옆·뒤와 표정을 한 장에 다 넣었습니다.</p></details>
+    </div>
+
+    <div class="card" id="c1d"><h3><span class="chip c-all">다 같이</span>③ 약수터 장면 — 무엇이 이상한가요?</h3>
+      <div class="shot"><img src="img03.jpg" alt="지난번 약수터 장면 4장"></div>
+      <details class="ans"><summary>정답 보기</summary><ul>
+        <li>한국 약수터가 <b>미국 국립공원 온천</b>이 되었습니다.</li>
+        <li>표지판이 전부 <b>영어</b>입니다.</li>
+        <li>여전히 <b>폰</b>을 보고 있습니다.</li>
+        <li>할아버지가 <b>컷마다 다른 사람</b>입니다.</li>
+      </ul><p class="note">원인: 장소를 말로만 썼고, 손에 할 일을 주지 않았고, 할아버지 앵커가 없었습니다.</p></details>
+    </div>
+
+    <div class="card wide" id="c1e"><h3><span class="chip c-core">정리</span>원인과 고치는 규칙</h3>
+      <div class="tbl"><table>
+        <tr><th>보인 문제</th><th>원인</th><th>오늘의 규칙</th></tr>
+        <tr><td>앵커·시트에 폰·가방</td><td>캐릭터를 장면으로 만들었음</td><td><b>규칙 1</b> 앵커는 빈손 · 기본 복장 · 단색 배경</td></tr>
+        <tr><td>칸마다 비니·신발이 바뀜</td><td>"같은 옷"으로 뭉뚱그림, 장면 그림을 같이 넣음</td><td><b>규칙 2</b> 시트는 앵커 한 장만, 유지할 것은 하나하나 적기</td></tr>
+        <tr><td>미국 온천 · 영어 표지판 · 계속 폰</td><td>장소를 말로만, 손이 비어 있음</td><td><b>규칙 3</b> 장소 사진을 넣고, 손에 할 일을 준다</td></tr>
+        <tr><td>실제 브랜드 로고</td><td>로고를 막지 않음</td><td>장면마다 <code>no logos</code></td></tr>
+      </table></div>
+    </div>
+
+    <div class="card k-more wide" id="c1f"><h3><span class="chip c-more">한 걸음 더</span>소품은 두 종류입니다</h3>
+      <div class="tbl"><table>
+        <tr><th>걸치는 소품</th><th>손에 드는 소품</th></tr>
+        <tr><td>모자 · 안경 · 스카프 · 귀걸이</td><td>폰 · 컵 · 가방 · 우산 · 꽃다발</td></tr>
+        <tr><td><b>앵커에 넣어도 됩니다.</b> 이 사람을 알아보는 표시가 됩니다.</td><td><b>앵커에서 뺍니다.</b> 장면 프롬프트에서 그때그때 쥐여 줍니다.</td></tr>
+      </table></div>
+      <p class="note">오늘 서윤의 표시는 목에 두른 노란 스카프 하나입니다.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= STEP 2 ================= -->
+<section class="step" data-title="앵커 만들기">
+  <div class="stephead"><span class="no">STEP 2</span><h2>앵커 만들기</h2>
+    <p>앵커 = 모든 장면이 기준으로 삼는 주인공 사진 한 장. 배가 닻을 내리듯 주인공의 생김새를 이 한 장에 묶어 둡니다.</p></div>
+  <div class="grid">
+    <div class="card wide" id="c2a"><h3><span class="chip c-core">핵심</span>앵커의 조건 여섯 가지</h3>
+      <div class="tbl"><table>
+        <tr><th>조건</th><th>이유</th></tr>
+        <tr><td><b>정면</b> · 차분한 무표정</td><td>각도와 표정은 나중에 바꿀 것이라 기준 사진에서는 빼 둡니다.</td></tr>
+        <tr><td><b>전신</b> (두 발까지)</td><td>상반신만 있으면 시트에서 바지·신발을 AI가 지어내서 컷마다 달라집니다.</td></tr>
+        <tr><td><b>빈손</b> · 팔은 몸 옆에</td><td>손 위치를 써 주지 않으면 AI가 뭔가를 쥐여 줍니다.</td></tr>
+        <tr><td><b>기본 복장</b>만</td><td>걸치는 소품은 하나까지. 가방·폰은 넣지 않습니다.</td></tr>
+        <tr><td><b>연회색 단색 배경</b> · 그림자 없음</td><td>배경이 있으면 시트와 장면에 배경이 섞여 들어옵니다.</td></tr>
+        <tr><td><b>세로 9:16</b></td><td>서 있는 전신이 화면에 크게 들어갑니다.</td></tr>
+      </table></div>
+    </div>
+
+    <div class="card wide" id="c2b"><h3><span class="chip c-all">다 같이</span>서윤 앵커 만들기</h3>
+      <div class="where"><span>플로우</span><span>이미지</span><span>Nano Banana 2.1</span><span>비율 9:16</span><span>개수 x4</span><span>레퍼런스 없음</span></div>
+      <p>레퍼런스를 넣지 말고 새로 만듭니다. 문장은 두 부분입니다. <b>첫 줄이 주인공 설명</b>, 나머지는 <b>고정 문장</b>입니다.</p>
+      <div id="p-anchor-demo"></div>
+      <p class="note">네 장 중 <b>아래 고르는 기준에 가장 맞는 한 장</b>을 골라 저장합니다. 예쁜 것보다 기준에 맞는 것이 우선입니다.</p>
+    </div>
+
+    <div class="card k-mine wide" id="c2c"><h3><span class="chip c-mine">내 차례</span>내 주인공 앵커</h3>
+      <p>같은 문장에서 <b>첫 줄만</b> 바꿉니다. 아래에서 주인공을 고르거나, 첫 줄을 직접 써도 됩니다.</p>
+      <div class="pick"><label for="selChar">주인공 고르기</label><select id="selChar"></select></div>
+      <div id="p-anchor-mine"></div>
+      <div class="box set"><h4>첫 줄을 직접 쓸 때 들어갈 것</h4>나라·나이·성별 / 머리 모양 / 윗옷 / 바지·신발 / 걸치는 소품 하나. 한글로 써서 딥엘로 번역해도 됩니다.</div>
+    </div>
+
+    <div class="card k-chk" id="c2d"><h3><span class="chip c-chk">고르는 기준</span>네 장 중 한 장 고르기</h3>
+      <div class="checks">
+        <label><input type="checkbox"> 머리부터 두 발까지 다 보인다</label>
+        <label><input type="checkbox"> 손이 비어 있다</label>
+        <label><input type="checkbox"> 가방·폰이 없다</label>
+        <label><input type="checkbox"> 배경에 무늬·바닥·그림자가 없다</label>
+        <label><input type="checkbox"> 얼굴이 또렷하다</label>
+      </div>
+    </div>
+
+    <div class="card k-warn" id="c2e"><h3><span class="chip c-warn">주의</span>이럴 땐 이렇게</h3>
+      <ul>
+        <li><b>발이 잘림</b> → 비율이 9:16인지 확인하고 다시 만듭니다.</li>
+        <li><b>그래도 뭔가를 들고 있음</b> → 그 이미지를 「+」로 넣고 아래 문장을 보냅니다.<br><code>Make the hands empty, arms relaxed at the sides. Keep everything else the same.</code></li>
+        <li><b>지난번 그림을 넣고 싶음</b> → 넣지 마세요. 폰과 가방이 다시 따라옵니다.</li>
+        <li>실존 인물(연예인)의 얼굴은 쓰지 않습니다.</li>
+      </ul>
+    </div>
+
+    <div class="card k-more wide" id="c2f"><h3><span class="chip c-more">한 걸음 더</span>지난번 시트를 마스크로 고치기</h3>
+      <p>나노바나나 2.1의 마스크 편집으로 칠한 곳만 바꿀 수 있습니다. 지난번 시트를 열고 <b>폰과 가방만 칠한 뒤</b> 아래 문장을 보냅니다.</p>
+      <div id="p-mask"></div>
+      <p class="note">마스크 = 고칠 곳만 붓으로 칠해서 표시하는 것. 칠할 때는 물건보다 조금 넓게 칠해야 흔적이 남지 않습니다.</p>
+    </div>
+    <div class="card k-more wide" id="c2g"><h3><span class="chip c-more">한 걸음 더</span>함께 나올 사람도 앵커 한 장</h3>
+      <p>약수터의 할아버지처럼 컷마다 얼굴이 바뀌지 않게 하려면, 함께 나올 사람도 <b>같은 고정 문장으로 앵커를 한 장</b> 만들어 둡니다. 장면에서는 내 시트와 그 사람의 앵커를 함께 레퍼런스로 넣습니다.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= STEP 3 ================= -->
+<section class="step" data-title="캐릭터 시트">
+  <div class="stephead"><span class="no">STEP 3</span><h2>캐릭터 시트</h2>
+    <p>시트 = 앵커 한 사람을 정면·옆·뒤로 펼친 한 장. 앵커 한 장만 넣고 만듭니다.</p></div>
+  <div class="grid">
+    <div class="card wide" id="c3a"><h3><span class="chip c-core">핵심</span>앵커 한 장 → 네 방향 한 줄</h3>
+      <div class="t3" data-scene="sheet"><div class="t3c"></div></div>
+      <p>앵커가 "이렇게 생겼다"라면, 시트는 "옆과 뒤는 이렇다"입니다. 시트가 있으면 장면에서 옆모습·뒷모습이 나와도 같은 사람으로 그려집니다.</p>
+    </div>
+
+    <div class="card wide" id="c3b"><h3><span class="chip c-all">다 같이</span>서윤 시트 만들기</h3>
+      <div class="where"><span>플로우</span><span>이미지</span><span>Nano Banana 2.1</span><span>비율 16:9</span><span>레퍼런스: 서윤_앵커 한 장</span></div>
+      <p>입력창 왼쪽 <b>「+」</b>로 서윤_앵커를 넣고 아래 문장을 그대로 붙여 넣습니다. 이 문장은 <b>누구의 앵커든 고칠 곳이 없습니다.</b></p>
+      <div id="p-sheet"></div>
+    </div>
+
+    <div class="card k-mine" id="c3c"><h3><span class="chip c-mine">내 차례</span>내 주인공 시트</h3>
+      <ol>
+        <li>「+」로 <b>내 앵커 한 장만</b> 넣습니다.</li>
+        <li>위 문장을 그대로 붙여 넣습니다.</li>
+        <li>가장 잘 나온 한 장을 <b>내이름_시트</b>로 저장합니다.</li>
+      </ol>
+      <p class="note">빨리 끝난 분은 아래 「한 걸음 더」의 표정 시트까지 만들어 두세요. 다음 시간 말하는 영상에서 씁니다.</p>
+    </div>
+
+    <div class="card k-chk" id="c3d"><h3><span class="chip c-chk">고르는 기준</span>시트 확인</h3>
+      <div class="checks">
+        <label><input type="checkbox"> 네 칸 모두 같은 얼굴</label>
+        <label><input type="checkbox"> 네 칸 모두 같은 옷·같은 신발</label>
+        <label><input type="checkbox"> 칸이 딱 네 개, 크기가 같다</label>
+        <label><input type="checkbox"> 손이 비어 있다</label>
+        <label><input type="checkbox"> 글자·라벨이 없다</label>
+      </div>
+    </div>
+
+    <div class="card k-warn wide" id="c3e"><h3><span class="chip c-warn">주의</span>막혔을 때</h3>
+      <div class="tbl"><table>
+        <tr><th>이렇게 나오면</th><th>이렇게 고칩니다</th></tr>
+        <tr><td>칸마다 옷이 다름</td><td>레퍼런스가 <b>앵커 한 장</b>인지 확인합니다. 다른 그림이 같이 들어가 있으면 빼세요.</td></tr>
+        <tr><td>칸이 다섯 개 이상</td><td>문장에 "Exactly four"가 그대로 있는지 확인하고 다시 만듭니다.</td></tr>
+        <tr><td>FRONT·BACK 같은 글자가 생김</td><td>"no labels, no text"가 들어 있는지 확인하고 다시 만듭니다.</td></tr>
+        <tr><td>한 칸만 이상함</td><td>그 시트를 「+」로 넣고 <code>Fix only the back view so it matches the other three views. Keep everything else the same.</code>를 보냅니다. (back을 이상한 칸 이름으로)</td></tr>
+      </table></div>
+    </div>
+
+    <div class="card k-more wide" id="c3f"><h3><span class="chip c-more">한 걸음 더</span>표정 시트</h3>
+      <p>방금 만든 <b>시트</b>를 레퍼런스로 넣고 만듭니다. 감정 단어는 내 이야기에 맞게 바꿔도 됩니다.</p>
+      <div id="p-face"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= STEP 4 ================= -->
+<section class="step" data-title="장소 사진">
+  <div class="stephead"><span class="no">STEP 4</span><h2>장소 사진 정하기</h2>
+    <p>장소 사진 = 장면의 배경 레퍼런스. AI가 장소를 상상하지 않고 이 사진을 따라 그립니다.</p></div>
+  <div class="grid">
+    <div class="card wide" id="c4a"><h3><span class="chip c-core">핵심</span>왜 사진을 넣을까요</h3>
+      <div class="tbl"><table>
+        <tr><th>말로만 썼을 때 (지난번)</th><th>사진을 넣었을 때 (오늘)</th></tr>
+        <tr><td>"약수터" → AI가 아는 가장 흔한 온천을 그립니다. 그래서 미국 국립공원과 영어 표지판이 나왔습니다.</td><td>사진 속 장소를 따라 그립니다. 돌담, 나무, 바다 색까지 사진에 가깝게 나옵니다.</td></tr>
+      </table></div>
+      <p class="note">오늘은 하루의 두 장면이라 장소 사진도 <b>두 장</b>입니다. 오전 한 장, 오후 한 장.</p>
+    </div>
+
+    <div class="card wide" id="c4b"><h3><span class="chip c-all">다 같이</span>제주 사진 두 장 저장하기</h3>
+      <ol>
+        <li>아래 링크로 언스플래시를 엽니다.</li>
+        <li>마음에 드는 사진을 눌러 오른쪽 위 <b>「다운로드」</b>를 누릅니다.</li>
+        <li>「주인공의하루」 폴더에 <b>서윤_장소_오전</b>, <b>서윤_장소_오후</b>로 저장합니다.</li>
+        <li>플로우 왼쪽 메뉴 <b>「업로드」</b>로 두 장을 올립니다. 올려 둔 사진은 STEP 5에서 입력창 <b>「+」</b>로 골라 레퍼런스로 넣습니다.</li>
+      </ol>
+      <div class="links">
+        <div class="lk"><small>오전</small><b>제주 귤밭</b><a href="https://unsplash.com/s/photos/tangerine-farm" target="_blank" rel="noopener">언스플래시</a><a href="https://www.pexels.com/search/tangerine%20farm/" target="_blank" rel="noopener">펙셀</a></div>
+        <div class="lk"><small>오후</small><b>제주 협재 바다</b><a href="https://unsplash.com/s/photos/jeju-beach" target="_blank" rel="noopener">언스플래시</a><a href="https://www.pexels.com/search/jeju%20beach/" target="_blank" rel="noopener">펙셀</a></div>
+      </div>
+    </div>
+
+    <div class="card k-mine wide" id="c4c"><h3><span class="chip c-mine">내 차례</span>내 주인공의 하루, 어디서 보낼까요</h3>
+      <p>여행지를 하나 골라 <b>오전 한 장, 오후 한 장</b>을 저장합니다. 여기서 고른 곳이 STEP 5의 프롬프트로 이어집니다.</p>
+      <div class="links" id="placeLinks"></div>
+      <p class="note">가 본 곳이 있으면 <b>내가 찍은 사진</b>이 가장 좋습니다.</p>
+    </div>
+
+    <div class="card k-chk" id="c4d"><h3><span class="chip c-chk">고르는 기준</span>좋은 장소 사진</h3>
+      <div class="checks">
+        <label><input type="checkbox"> 사람이 없다 (있으면 그 사람이 장면에 섞입니다)</label>
+        <label><input type="checkbox"> 가로 사진이다</label>
+        <label><input type="checkbox"> 간판·글자가 적다</label>
+        <label><input type="checkbox"> 두 장의 날씨와 빛이 비슷하다</label>
+      </div>
+    </div>
+
+    <div class="card k-more wide" id="c4f"><h3><span class="chip c-more">한 걸음 더</span>사진 한 장으로 오전·오후 만들기</h3>
+      <p>마음에 드는 장소 사진이 한 장뿐이면, 그 사진을 「+」로 넣고 빛만 바꿔 오후 사진을 만듭니다.</p>
+      <div class="pb"><div class="pb-h"><span class="pb-t">같은 장소 · 오후 빛으로</span><button class="copy" type="button">복사</button></div><pre>Keep exactly the same place, same camera angle and same composition as the attached photo. Only change: late afternoon golden sunlight with longer soft shadows. No people, no text.</pre><details><summary>한글 뜻 보기</summary><p>첨부 사진과 같은 장소·같은 각도·같은 구도를 그대로. 바꾸는 것 하나만: 늦은 오후의 금빛 햇살, 길고 부드러운 그림자. 사람·글자 없음.</p></details></div>
+    </div>
+    <div class="card k-warn" id="c4e"><h3><span class="chip c-warn">주의</span>사진 출처</h3>
+      <p>핀터레스트 사진은 원래 주인이 따로 있어 저작권 문제가 생길 수 있습니다. 언스플래시·펙셀처럼 <b>무료로 쓰도록 허락된 곳</b>이나 내가 찍은 사진을 씁니다.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= STEP 5 ================= -->
+<section class="step" data-title="하루 두 장면">
+  <div class="stephead"><span class="no">STEP 5</span><h2>서윤의 하루 두 장면</h2>
+    <p>시트 + 장소 사진을 함께 넣고, 장면마다 스타트 → 엔드 → 영상 순서로 만듭니다.</p></div>
+  <div class="grid">
+    <div class="card wide" id="c5a"><h3><span class="chip c-core">핵심</span>한 장면을 만드는 순서</h3>
+      <div class="t3" data-scene="startend"><div class="t3c"></div></div>
+      <div class="tbl"><table>
+        <tr><th>단계</th><th>넣는 레퍼런스</th><th>할 일</th></tr>
+        <tr><td><b>스타트</b> 이미지</td><td>시트 + 장소 사진</td><td>장면의 첫 모습. 손에 할 일을 줍니다.</td></tr>
+        <tr><td><b>엔드</b> 이미지</td><td>방금 만든 스타트 한 장</td><td>같은 사람·같은 장소·같은 카메라, <b>바뀌는 것 하나만</b></td></tr>
+        <tr><td><b>영상</b></td><td>스타트 + 엔드</td><td>그 사이를 움직임으로 잇습니다.</td></tr>
+      </table></div>
+    </div>
+
+    <div class="card wide" id="c5b"><h3><span class="chip c-core">핵심</span>톤 한 줄 — 두 장면의 색을 맞추는 문장</h3>
+      <p>두 장면 끝에 <b>똑같은 한 줄</b>을 붙이면 색감이 통일되어 한 편처럼 보입니다. 아래 프롬프트에는 이미 들어 있습니다.</p>
+      <div id="p-tone-demo"></div>
+    </div>
+
+    <div class="card wide" id="c5x"><h3><span class="chip c-core">진행</span>다 같이는 장면 1만 따라 합니다</h3>
+      <div class="box set"><h4>크레딧 아끼기</h4>장면 1은 <b>스타트·엔드 이미지까지</b> 함께 따라 하고, 영상과 장면 2는 강사 화면으로 봅니다. 영상은 <b>내 차례</b>에서 내 주인공으로 두 개만 만듭니다.</div>
+    </div>
+    <div class="card" id="c5c"><h3><span class="chip c-all">다 같이</span>장면 1 · 오전 귤밭</h3>
+      <div class="where"><span>이미지 · 16:9</span><span>레퍼런스: 서윤_시트 + 서윤_장소_오전</span></div>
+      <div id="p-s1-start-demo"></div>
+      <div class="where"><span>이미지 · 16:9</span><span>레퍼런스: 서윤_장면1_스타트 한 장</span></div>
+      <div id="p-s1-end-demo"></div>
+      <div class="where"><span>영상 · Omni 1.1 Flash · 360p</span><span>「+」로 스타트 먼저, 엔드 나중에</span></div>
+      <div id="p-s1-video-demo"></div>
+    </div>
+
+    <div class="card" id="c5d"><h3><span class="chip c-core">강사 시연</span>장면 2 · 오후 협재 바다</h3>
+      <p class="note">장면 1과 순서가 똑같습니다. 레퍼런스만 장소_오후로 바꿉니다. 화면으로 함께 봅니다.</p>
+      <div class="where"><span>이미지 · 16:9</span><span>레퍼런스: 서윤_시트 + 서윤_장소_오후</span></div>
+      <div id="p-s2-start-demo"></div>
+      <div class="where"><span>이미지 · 16:9</span><span>레퍼런스: 서윤_장면2_스타트 한 장</span></div>
+      <div id="p-s2-end-demo"></div>
+      <div class="where"><span>영상 · Omni 1.1 Flash · 360p</span><span>스타트·엔드 순서로 넣기</span></div>
+      <div id="p-s2-video-demo"></div>
+    </div>
+
+    <div class="card k-mine wide" id="c5e"><h3><span class="chip c-mine">내 차례</span>내 주인공의 하루 두 장면</h3>
+      <p>STEP 4에서 고른 여행지를 선택하면 문장이 그 장소로 바뀝니다. 오른쪽 단추로 <b>장면 1 · 장면 2</b>를 바꿔 봅니다. 레퍼런스는 <b>내 시트와 내 장소 사진</b>을 넣습니다.</p>
+      <div class="pick"><label for="selPlace">여행지</label><select id="selPlace"></select>
+        <span class="seg"><button type="button" class="segb on" data-n="1">장면 1 · 오전</button><button type="button" class="segb" data-n="2">장면 2 · 오후</button></span></div>
+      <div id="mineScenes"></div>
+    </div>
+
+    <div class="card k-chk" id="c5f"><h3><span class="chip c-chk">고르는 기준</span>영상 만들기 전에</h3>
+      <div class="checks">
+        <label><input type="checkbox"> 스타트와 엔드의 구도가 같다</label>
+        <label><input type="checkbox"> 얼굴·옷이 시트와 같다</label>
+        <label><input type="checkbox"> 장소가 사진과 비슷하다</label>
+        <label><input type="checkbox"> 폰·가방·로고가 없다</label>
+      </div>
+    </div>
+
+    <div class="card k-warn" id="c5g"><h3><span class="chip c-warn">주의</span>이럴 땐 이렇게</h3>
+      <div class="tbl"><table>
+        <tr><th>문제</th><th>고치는 법</th></tr>
+        <tr><td>얼굴이 바뀜</td><td>레퍼런스에 <b>시트</b>가 들어 있는지 확인</td></tr>
+        <tr><td>폰·가방이 다시 나옴</td><td>앵커부터 빈손인지 확인, 장면에 손에 할 일 주기</td></tr>
+        <tr><td>장소가 사진과 다름</td><td>장소 사진이 들어 있는지, 사람 없는 사진인지 확인</td></tr>
+        <tr><td>영어 간판</td><td>"no text or signs" 확인, 장소 사진에 간판이 있으면 다른 사진으로</td></tr>
+        <tr><td>영상이 튐</td><td>엔드에서 카메라 위치가 바뀌었는지 확인, <b>바꾸는 건 하나만</b></td></tr>
+      </table></div>
+    </div>
+
+    <div class="card k-more wide" id="c5h"><h3><span class="chip c-more">한 걸음 더</span>다시 만들지 말고 말로 고치기</h3>
+      <p>영상이 거의 마음에 드는데 한 곳만 아쉬우면, 그 영상을 연 상태에서 <b>한 문장으로</b> 고칩니다. 크레딧도 아낄 수 있습니다.</p>
+      <div id="p-fix"></div>
+      <p>카메라 움직임도 실험해 보세요. 영상 문장의 <code>Static camera</code>를 <code>Slow push-in</code>(천천히 다가가기)으로 바꾸면 4회차에 배운 카메라 워크가 들어갑니다.</p>
+      <p class="note">세로 영상이 필요하면 스타트·엔드를 9:16으로 만들면 됩니다. 릴스·쇼츠용입니다.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= STEP 6 ================= -->
+<section class="step" data-title="캡컷 조립·음악">
+  <div class="stephead"><span class="no">STEP 6</span><h2>캡컷 조립 · 음악 넣기</h2>
+    <p>두 영상을 순서대로 붙이고, 픽사베이에서 받은 음악 한 곡을 깔면 한 편이 완성됩니다.</p></div>
+  <div class="grid">
+    <div class="card wide" id="c6a"><h3><span class="chip c-core">핵심</span>영상 줄 + 음악 줄</h3>
+      <div class="t3" data-scene="capcut"><div class="t3c"></div></div>
+      <p>캡컷 타임라인은 <b>위에 영상 줄, 아래에 음악 줄</b>입니다. 영상 두 개를 붙인 다음, 그 아래에 음악을 깔고 영상 끝에 맞춰 자릅니다.</p>
+    </div>
+
+    <div class="card" id="c6m"><h3><span class="chip c-all">다 같이</span>① 픽사베이에서 음악 받기</h3>
+      <ol>
+        <li>아래 링크로 <b>픽사베이 음악</b>을 엽니다.</li>
+        <li>곡 이름 옆 <b>▶</b>로 들어 봅니다. 영상 분위기와 맞는 곡을 고릅니다.</li>
+        <li>오른쪽 <b>「다운로드」</b>를 누릅니다. 로그인 창이 뜨면 구글 계정으로 로그인합니다.</li>
+        <li>「주인공의하루」 폴더에 저장합니다.</li>
+      </ol>
+      <div class="links">
+        <div class="lk"><small>시연 · 제주</small><b>밝은 어쿠스틱 여행</b><a href="https://pixabay.com/music/search/acoustic%20travel/" target="_blank" rel="noopener">픽사베이에서 듣기</a></div>
+      </div>
+      <div class="save" style="padding-left:0">서윤_음악.mp3</div>
+    </div>
+
+    <div class="card" id="c6b"><h3><span class="chip c-all">다 같이</span>② 캡컷에서 조립하고 음악 깔기</h3>
+      <ol>
+        <li>플로우에서 영상에 마우스를 올리고 <b>다운로드 아이콘</b>으로 두 영상을 「주인공의하루」 폴더에 저장합니다.</li>
+        <li>캡컷 <b>새 프로젝트</b> → <b>가져오기</b>로 영상 두 개와 음악 한 곡을 불러옵니다.</li>
+        <li>장면 1 영상을 타임라인에 끌어 놓고, 그 바로 뒤에 장면 2 영상을 붙입니다.</li>
+        <li>음악을 영상 <b>아래 줄</b>로 끌어 놓고, 앞쪽 끝을 영상 시작에 맞춥니다.</li>
+        <li>하얀 세로선(재생 위치)을 <b>영상 끝</b>에 두고 음악을 클릭 → <b>분할</b>(Ctrl+B) → 뒤에 남은 음악을 지웁니다(Delete).</li>
+        <li>음악을 클릭 → 오른쪽 <b>「기본」</b>에서 <b>페이드 아웃</b>을 2초 정도로 올립니다.</li>
+        <li>오른쪽 위 <b>「내보내기」</b> → 이름 <b>서윤의하루</b> → 내보내기.</li>
+      </ol>
+      <div class="save" style="padding-left:0">서윤의하루.mp4</div>
+    </div>
+
+    <div class="card k-mine wide" id="c6c"><h3><span class="chip c-mine">내 차례</span>내 하루에 맞는 음악</h3>
+      <p>내 여행지 분위기에 맞는 검색어로 한 곡을 골라, 같은 순서로 <b>내이름의하루.mp4</b>를 만듭니다.</p>
+      <div class="links">
+        <div class="lk"><small>제주 · 부산</small><b>상쾌한 바다</b><a href="https://pixabay.com/music/search/summer%20ukulele/" target="_blank" rel="noopener">summer ukulele</a></div>
+        <div class="lk"><small>경주 · 교토</small><b>잔잔한 산책</b><a href="https://pixabay.com/music/search/calm%20piano/" target="_blank" rel="noopener">calm piano</a></div>
+        <div class="lk"><small>아말피</small><b>이탈리아 낭만</b><a href="https://pixabay.com/music/search/italian%20guitar/" target="_blank" rel="noopener">italian guitar</a></div>
+        <div class="lk"><small>산토리니</small><b>지중해 휴양</b><a href="https://pixabay.com/music/search/mediterranean/" target="_blank" rel="noopener">mediterranean</a></div>
+      </div>
+      <p class="note">마음에 드는 곡이 없으면 검색창에 분위기를 영어로 씁니다. 예: happy, sunset, lofi, acoustic.</p>
+    </div>
+
+    <div class="card k-chk" id="c6f"><h3><span class="chip c-chk">고르는 기준</span>어울리는 음악</h3>
+      <div class="checks">
+        <label><input type="checkbox"> 영상 색감과 분위기가 맞는다 (밝은 화면엔 밝은 곡)</label>
+        <label><input type="checkbox"> 가사가 없는 곡이다 (현장음이 묻히지 않게)</label>
+        <label><input type="checkbox"> 음악이 영상 끝에서 자연스럽게 작아진다</label>
+      </div>
+    </div>
+
+    <div class="card k-warn" id="c6d"><h3><span class="chip c-warn">주의</span>자주 막히는 곳</h3>
+      <ul>
+        <li><b>클립 사이에 검은 화면</b> → 뒤 클립을 앞 클립 끝에 딱 붙입니다.</li>
+        <li><b>음악이 영상보다 길게 남음</b> → 영상 끝에서 분할하고 뒷부분을 지웁니다.</li>
+        <li><b>음악 때문에 현장음이 안 들림</b> → 음악을 클릭하고 볼륨을 조금 내립니다.</li>
+        <li>픽사베이 음악은 무료로 쓸 수 있지만, 유튜브에 올리면 저작권 알림이 뜨는 곡이 가끔 있습니다. <b>곡 이름을 메모</b>해 두세요.</li>
+      </ul>
+    </div>
+
+    <div class="card k-more wide" id="c6e"><h3><span class="chip c-more">한 걸음 더</span>전환 하나 + 현장음 살리기</h3>
+      <p>캡컷 위쪽 <b>「전환」</b> 탭에서 <b>디졸브</b>를 두 클립 사이로 끌어 놓으면 오전에서 오후로 시간이 흐른 느낌이 납니다.</p>
+      <p>음악 볼륨을 영상 소리보다 낮게(예: 음악 40%) 맞추면, 귤 따는 소리·파도 소리가 음악 위로 살아납니다.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= STEP 7 ================= -->
+<section class="step" data-title="정리">
+  <div class="stephead"><span class="no">STEP 7</span><h2>정리</h2>
+    <p>오늘 만든 것을 확인하고 서로의 하루를 봅니다.</p></div>
+  <div class="grid">
+    <div class="card k-chk" id="c7a"><h3><span class="chip c-chk">확인</span>오늘 만든 것</h3>
+      <div class="checks">
+        <label><input type="checkbox"> 내 주인공 앵커</label>
+        <label><input type="checkbox"> 캐릭터 시트</label>
+        <label><input type="checkbox"> 장소 사진 두 장</label>
+        <label><input type="checkbox"> 장면 영상 두 개</label>
+        <label><input type="checkbox"> 음악까지 넣은 내 하루 한 편 (.mp4)</label>
+      </div>
+    </div>
+    <div class="card" id="c7b"><h3><span class="chip c-core">다시 보기</span>규칙 세 줄</h3>
+      <ol>
+        <li>앵커는 <b>빈손 · 기본 복장 · 단색 배경</b></li>
+        <li>시트는 <b>앵커 한 장만</b> 넣고 만든다</li>
+        <li>장면에서는 <b>장소 사진을 넣고, 손에 할 일을 준다</b></li>
+      </ol>
+    </div>
+    <div class="card wide" id="c7c"><h3><span class="chip c-core">다음 시간</span>7회차 · 말하는 영상</h3>
+      <p>내 주인공이 화면을 보며 <b>인사말을 건네는 영상</b>을 만듭니다. 오늘 만든 <b>앵커와 시트를 그대로</b> 쓰니 꼭 저장해 두세요.</p>
+    </div>
+  </div>
+</section>
+
+</main>
+<aside class="side" id="side"><h4>이 STEP의 카드</h4><div id="sideList"></div></aside>
+</div>
+
+<footer class="bottom"><div class="bottom-in">
+  <button class="nav" id="prev">← 이전 STEP</button>
+  <span class="pos" id="pos"></span>
+  <button class="nav next" id="next">다음 STEP →</button>
+</div></footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+/* ============ 데이터 ============ */
+const FIX_ANCHOR = "Photorealistic character reference photo. Front view, full body from head to toe with both feet visible, standing straight, calm neutral expression, empty hands, arms relaxed at the sides.\nPlain light grey background, no floor, no shadow, no props, no bag, no phone, no logos, no text. Soft even lighting.";
+const FIX_ANCHOR_KO = "실사 캐릭터 기준 사진. 정면, 머리부터 발끝까지 두 발이 보이게, 똑바로 서서, 차분한 무표정, 빈손, 팔은 몸 옆에 편하게. 연회색 단색 배경, 바닥·그림자·소품·가방·폰·로고·글자 없음. 고르고 부드러운 조명.";
+
+const CHARS = [
+ {k:"청년 ① · 서윤 (시연)", en:"A Korean woman in her early 30s with a chin-length bob, wearing a white linen shirt, light blue wide-leg trousers, white sneakers and a yellow scarf around her neck.", ko:"30대 초반 한국 여성, 턱선 단발, 흰 리넨 셔츠, 하늘색 와이드 팬츠, 흰 스니커즈, 목에 노란 스카프.", save:"서윤_앵커"},
+ {k:"청년 ② · 야구모자 · 후드티", en:"A Korean man in his late 20s with short black hair and a navy baseball cap, wearing a light green hoodie, light blue jeans and white sneakers.", ko:"20대 후반 한국 남성, 짧은 검은 머리, 네이비 야구모자, 연두색 후드티, 연청바지, 흰 운동화.", save:"내이름_앵커"},
+ {k:"중년 ① · 긴 웨이브 · 카디건", en:"A Korean woman in her mid 40s with long soft wavy hair and small pearl earrings, wearing a pale pink cardigan, white straight trousers and beige flat shoes.", ko:"40대 중반 한국 여성, 긴 웨이브 머리, 작은 진주 귀걸이, 연분홍 카디건, 흰 일자 바지, 베이지 플랫슈즈.", save:"내이름_앵커"},
+ {k:"중년 ② · 안경 · 셔츠", en:"A Korean man in his mid 40s with neatly combed short hair and thin silver-rimmed glasses, wearing a light blue oxford shirt, navy chino trousers and brown suede sneakers.", ko:"40대 중반 한국 남성, 단정하게 빗은 짧은 머리, 얇은 은테 안경, 하늘색 옥스퍼드 셔츠, 네이비 면바지, 갈색 스웨이드 운동화.", save:"내이름_앵커"},
+ {k:"장년 ① · 베레모 · 트렌치코트", en:"A Korean woman in her late 50s with short grey-streaked hair and a red beret, wearing a khaki trench coat, black trousers and white sneakers.", ko:"50대 후반 한국 여성, 회색 섞인 짧은 머리, 빨간 베레모, 카키 트렌치코트, 검정 바지, 흰 운동화.", save:"내이름_앵커"},
+ {k:"장년 ② · 은발 · 니트", en:"A Korean man in his early 60s with short silver hair and round tortoiseshell glasses, wearing a navy crewneck sweater, beige chino trousers and brown leather loafers.", ko:"60대 초반 한국 남성, 짧은 은발, 둥근 뿔테 안경, 네이비 니트, 베이지 면바지, 갈색 가죽 로퍼.", save:"내이름_앵커"}
+];
+
+const SHEET_EN = "Create a character turnaround sheet of the same person in the attached image.\nExactly four full-body views of equal size in one row, from left to right: front, left side, back, right side.\nKeep exactly the same face, hairstyle, every piece of clothing, shoes, accessories and body proportions as the attached image.\nEmpty hands in every view, no bag, no phone. Plain light grey background, no shadow, no labels, no text. Photorealistic, soft even lighting.";
+const SHEET_KO = "첨부 이미지와 같은 사람의 앞·옆·뒤 캐릭터 시트를 만든다. 같은 크기의 전신 딱 네 개를 한 줄로, 왼쪽부터 정면·왼쪽 옆·뒤·오른쪽 옆. 얼굴, 머리 모양, 옷 하나하나, 신발, 액세서리, 몸 비율을 첨부 이미지와 똑같이 유지. 모든 칸에서 빈손, 가방·폰 없음. 연회색 단색 배경, 그림자·라벨·글자 없음. 실사, 부드럽고 고른 조명.";
+
+const FACE_EN = "Using the attached turnaround sheet, create an expression sheet of the same person.\nSix chest-up front views in a 3 by 2 grid: neutral, smiling, laughing, surprised, thinking, shy.\nSame face, hairstyle and clothes in every view. Plain light grey background, no labels, no text. Photorealistic.";
+const FACE_KO = "첨부한 턴어라운드 시트로 같은 사람의 표정 시트를 만든다. 가슴 위 정면 여섯 칸, 3×2 배열: 무표정·미소·활짝 웃음·놀람·생각·수줍음. 모든 칸에서 같은 얼굴·머리·옷. 연회색 단색 배경, 라벨·글자 없음. 실사.";
+
+const MASK_EN = "Remove the painted phone and bag. Empty hands, arms relaxed at the sides. Keep everything else exactly the same.";
+const MASK_KO = "칠한 곳의 폰과 가방을 지운다. 빈손, 팔은 몸 옆에 편하게. 나머지는 모두 그대로.";
+
+const FIX_EN = "Keep everything the same. Only change: make the picking motion slower and gentler.";
+const FIX_KO = "모두 그대로 두고 한 가지만 바꾼다: 귤 따는 동작을 더 느리고 부드럽게.";
+
+/* 여행지: am/pm 장면 */
+const PLACES = [
+ {id:"jeju", k:"제주 (국내 · 시연)", tone:"Bright clear autumn daylight, fresh vivid colors, natural photo look.", toneKo:"맑은 가을 햇살, 산뜻하고 선명한 색, 자연스러운 사진 느낌.",
+  am:{name:"귤밭", q:"tangerine farm", start:"stands between rows of tangerine trees on a Korean farm in Jeju, reaching up with both hands toward a bright orange tangerine on a branch, smiling", startKo:"제주의 한국 귤밭 나무 사이에 서서, 가지에 달린 주황색 귤을 향해 두 손을 뻗으며 웃는다", shot:"Medium wide shot, eye level.", end:"the tangerine is picked and held up in one hand, the person looking at it happily.", endKo:"귤을 따서 한 손에 들어 올리고 기쁘게 바라본다.", move:"picks the tangerine from the branch and lifts it up, smiling.", moveKo:"가지에서 귤을 따서 들어 올리며 웃는다.", sound:"birds chirping"},
+  pm:{name:"협재 바다", q:"jeju beach", start:"walks along the white sand of a Korean beach in Jeju with emerald water, holding a tangerine in one hand, the breeze moving the hair and clothes", startKo:"에메랄드빛 바다가 있는 제주의 한국 해변 흰 모래 위를 한 손에 귤을 들고 걷는다, 바람에 머리카락과 옷이 날린다", shot:"Wide shot, eye level.", end:"the person has stopped walking and turned to look out at the sea.", endKo:"걸음을 멈추고 몸을 돌려 바다를 바라본다.", move:"slows down, stops and turns to look out at the sea.", moveKo:"천천히 걸음을 늦추다 멈추고 바다 쪽으로 몸을 돌린다.", sound:"gentle waves and wind"}},
+ {id:"gyeongju", k:"경주 (국내)", tone:"Soft clear autumn daylight, warm natural colors, natural photo look.", toneKo:"부드럽고 맑은 가을 햇살, 따뜻한 자연색, 자연스러운 사진 느낌.",
+  am:{name:"한옥 돌담 골목", q:"hanok village", start:"walks slowly down a quiet hanok alley with low stone walls and tiled roofs in Gyeongju, Korea, one hand lightly touching the stone wall", startKo:"경주의 낮은 돌담과 기와지붕이 있는 조용한 한옥 골목을 한 손으로 돌담을 살짝 짚으며 천천히 걷는다", shot:"Medium wide shot, eye level.", end:"the person has stopped and looks up at the tiled roof.", endKo:"걸음을 멈추고 기와지붕을 올려다본다.", move:"walks a few steps, stops and looks up at the tiled roof.", moveKo:"몇 걸음 걷다 멈추고 기와지붕을 올려다본다.", sound:"footsteps and birds"},
+  pm:{name:"핑크뮬리 들판", q:"pink muhly", start:"stands in a field of pink muhly grass in Gyeongju, Korea, both hands gently brushing the tops of the grass", startKo:"경주의 핑크뮬리 들판에 서서 두 손으로 풀 끝을 살며시 쓸어 본다", shot:"Wide shot, eye level.", end:"the person has turned around toward the camera with a big smile.", endKo:"카메라 쪽으로 돌아서며 환하게 웃는다.", move:"brushes the grass, then turns around with a big smile.", moveKo:"풀을 쓸어 보다가 돌아서며 환하게 웃는다.", sound:"wind in the grass"}},
+ {id:"busan", k:"부산 (국내)", tone:"Bright sunny daylight, cheerful saturated colors, natural photo look.", toneKo:"밝은 햇살, 경쾌하고 진한 색, 자연스러운 사진 느낌.",
+  am:{name:"감천문화마을", q:"gamcheon culture village", start:"stands at a railing overlooking the colorful hillside houses of Gamcheon Culture Village in Busan, Korea, both hands resting on the railing", startKo:"부산 감천문화마을의 알록달록한 언덕 집들이 내려다보이는 난간에 두 손을 얹고 서 있다", shot:"Medium wide shot, eye level.", end:"the person has turned toward the camera and waves one hand.", endKo:"카메라 쪽으로 돌아서 한 손을 흔든다.", move:"looks over the village, then turns and waves.", moveKo:"마을을 내려다보다가 돌아서서 손을 흔든다.", sound:"distant city sounds and birds"},
+  pm:{name:"광안리 해변", q:"gwangalli beach", start:"walks barefoot along Gwangalli beach in Busan, Korea, with the long bridge in the distance, carrying their shoes in one hand", startKo:"멀리 긴 다리가 보이는 부산 광안리 해변을 맨발로, 한 손에 신발을 들고 걷는다", shot:"Wide shot, eye level.", end:"the person stands at the edge of the water as a small wave reaches their feet.", endKo:"물가에 서 있고 작은 파도가 맨발에 닿는다.", move:"walks to the water's edge and a small wave washes over their feet.", moveKo:"물가로 걸어가고 작은 파도가 발을 적신다.", sound:"waves"}},
+ {id:"amalfi", k:"아말피 (해외 · 이탈리아)", tone:"Bright Mediterranean sunlight, lemon yellow and deep blue tones, natural photo look.", toneKo:"밝은 지중해 햇살, 레몬 노랑과 짙은 파랑, 자연스러운 사진 느낌.",
+  am:{name:"레몬 골목 계단", q:"amalfi lemons", start:"climbs narrow stone steps in a lemon-tree alley of a cliffside village on the Amalfi Coast, Italy, one hand on the old railing, yellow lemons hanging overhead", startKo:"이탈리아 아말피 해안 절벽 마을의 레몬 나무 골목에서 한 손으로 낡은 난간을 잡고 좁은 돌계단을 오른다, 머리 위로 노란 레몬이 달려 있다", shot:"Medium wide shot, eye level.", end:"the person has reached the top step and turned to look back down the alley.", endKo:"맨 위 계단에 올라 골목 아래를 돌아본다.", move:"climbs the last steps and turns to look back.", moveKo:"마지막 계단을 오르고 뒤를 돌아본다.", sound:"birds and distant church bells"},
+  pm:{name:"바다 테라스", q:"amalfi coast", start:"stands at a white terrace railing above the blue sea on the Amalfi Coast, Italy, with pastel houses on the cliffs behind, both hands on the railing", startKo:"이탈리아 아말피 해안, 파스텔색 절벽 집들을 뒤로하고 파란 바다 위 흰 테라스 난간에 두 손을 얹고 서 있다", shot:"Wide shot, eye level.", end:"the person has turned slightly and smiles toward the camera.", endKo:"살짝 돌아서 카메라를 보며 웃는다.", move:"gazes at the sea, then turns and smiles at the camera.", moveKo:"바다를 바라보다 돌아서 카메라를 보며 웃는다.", sound:"sea breeze and waves below"}},
+ {id:"santorini", k:"산토리니 (해외 · 그리스)", tone:"Clean bright sunlight, white and blue tones, natural photo look.", toneKo:"깨끗하고 밝은 햇살, 흰색과 파란색, 자연스러운 사진 느낌.",
+  am:{name:"하얀 골목", q:"oia santorini street", start:"walks down a narrow white-washed alley with blue doors and pink bougainvillea in Oia, Santorini, Greece, one hand trailing along the white wall", startKo:"그리스 산토리니 이아 마을, 파란 문과 분홍 부겐빌레아가 있는 좁은 하얀 골목을 한 손으로 흰 벽을 스치며 걷는다", shot:"Medium wide shot, eye level.", end:"the person has stopped beside a blue door and looks up at the flowers.", endKo:"파란 문 옆에 멈춰 서서 꽃을 올려다본다.", move:"walks along the wall, stops by the blue door and looks up at the flowers.", moveKo:"벽을 따라 걷다 파란 문 옆에 멈추고 꽃을 올려다본다.", sound:"soft wind and footsteps"},
+  pm:{name:"파란 지붕 계단", q:"santorini blue dome", start:"sits on low white steps overlooking the blue domes and the sea in Oia, Santorini, Greece, arms resting on the knees", startKo:"그리스 산토리니 이아 마을, 파란 돔 지붕과 바다가 내려다보이는 낮은 흰 계단에 앉아 팔을 무릎에 얹고 있다", shot:"Wide shot, eye level.", end:"the person has turned toward the camera with a calm smile.", endKo:"카메라 쪽으로 돌아보며 잔잔하게 웃는다.", move:"looks out at the sea, then turns toward the camera with a calm smile.", moveKo:"바다를 바라보다 카메라 쪽으로 돌아보며 잔잔하게 웃는다.", sound:"distant waves and wind"}},
+ {id:"kyoto", k:"교토 (해외 · 일본)", tone:"Soft autumn daylight, gentle green and red tones, natural photo look.", toneKo:"부드러운 가을 햇살, 은은한 초록과 빨강, 자연스러운 사진 느낌.",
+  am:{name:"대나무숲", q:"arashiyama bamboo", start:"walks along the path in the Arashiyama bamboo forest in Kyoto, Japan, looking up at the tall green bamboo, one hand lightly touching a bamboo stalk", startKo:"일본 교토 아라시야마 대나무숲 길을 걸으며 키 큰 초록 대나무를 올려다본다, 한 손으로 대나무 줄기를 살짝 짚는다", shot:"Medium wide shot, eye level.", end:"the person has stopped in the middle of the path with eyes closed, enjoying the breeze.", endKo:"길 한가운데 멈춰 눈을 감고 바람을 느낀다.", move:"walks slowly, stops and closes their eyes to feel the breeze.", moveKo:"천천히 걷다 멈추고 눈을 감고 바람을 느낀다.", sound:"bamboo rustling in the wind"},
+  pm:{name:"단풍 돌길", q:"kyoto autumn street", start:"walks up a sloped stone street in Kyoto, Japan, lined with old wooden houses and red autumn maple leaves, holding a red maple leaf in one hand", startKo:"일본 교토, 오래된 목조 가옥과 빨간 단풍이 늘어선 비탈 돌길을 한 손에 빨간 단풍잎을 들고 걸어 오른다", shot:"Wide shot, eye level.", end:"the person has stopped and turned back to look at the street below.", endKo:"멈춰 서서 아래 거리를 돌아본다.", move:"walks up, stops and turns back to look at the street.", moveKo:"걸어 오르다 멈추고 아래 거리를 돌아본다.", sound:"footsteps and soft wind"}}
+];
+
+function startEN(p, sc){ return "The person from the attached character sheet " + sc.start + ". Only one person in the image.\nThe background matches the attached place photo. " + sc.shot + "\nNo phone, no logos, no text or signs. " + p.tone + " Photorealistic."; }
+function shotKO(s){ return s.indexOf("Medium")===0 ? "인물이 무릎 위까지 보이는 중간 거리, 눈높이." : "인물과 주변이 함께 보이는 넓은 화면, 눈높이."; }
+function startKO(p, sc){ return "첨부한 캐릭터 시트의 사람이 " + sc.startKo + ". 화면에는 한 사람만. 배경은 첨부한 장소 사진과 같게. " + shotKO(sc.shot) + " 폰·로고·글자·간판 없음. " + p.toneKo + " 실사."; }
+function endEN(sc){ return "Keep the same person, same clothes, same place, same camera position and same lighting as the attached image.\nOnly change: " + sc.end; }
+function endKO(sc){ return "첨부 이미지와 같은 사람·같은 옷·같은 장소·같은 카메라 위치·같은 조명을 유지. 바뀌는 것 하나만: " + sc.endKo; }
+function videoEN(sc){ return "The person " + sc.move + "\nStatic camera. Natural ambient sound: " + sc.sound + ". No music."; }
+const SOUNDKO = {"birds chirping":"새소리","gentle waves and wind":"잔잔한 파도와 바람","footsteps and birds":"발소리와 새소리","wind in the grass":"풀 사이 바람","distant city sounds and birds":"먼 도시 소리와 새소리","waves":"파도","birds and distant church bells":"새소리와 먼 성당 종소리","sea breeze and waves below":"바닷바람과 아래 파도","soft wind and footsteps":"부드러운 바람과 발소리","distant waves and wind":"먼 파도와 바람","bamboo rustling in the wind":"바람에 흔들리는 대나무","footsteps and soft wind":"발소리와 부드러운 바람"};
+function videoKO(sc){ return "그 사람이 " + sc.moveKo + " 카메라 고정. 자연스러운 현장음(" + (SOUNDKO[sc.sound]||"") + "), 음악 없음."; }
+
+/* ============ 프롬프트 블록 ============ */
+function esc(s){ return s.replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
+function pblock(title, en, ko, save, hlFirstLine){
+  let pre = esc(en);
+  if(hlFirstLine){ const i = pre.indexOf("\n"); pre = '<span class="hl">' + pre.slice(0,i) + '</span>' + pre.slice(i); }
+  return '<div class="pb"><div class="pb-h"><span class="pb-t">'+title+'</span><button class="copy" type="button">복사</button></div>'
+    + '<pre>'+pre+'</pre>'
+    + (ko ? '<details><summary>한글 뜻 보기</summary><p>'+esc(ko)+'</p></details>' : '')
+    + (save ? '<div class="save">'+esc(save)+'</div>' : '') + '</div>';
+}
+function put(id, html){ const el = document.getElementById(id); if(el) el.innerHTML = html; }
+
+function anchorBlock(c, title){ return pblock(title, c.en + "\n" + FIX_ANCHOR, c.ko + " " + FIX_ANCHOR_KO, c.save, true); }
+
+function renderStatic(){
+  put("p-anchor-demo", anchorBlock(CHARS[0], "서윤 앵커 · 노란 줄이 주인공 설명"));
+  put("p-sheet", pblock("캐릭터 시트 · 그대로 붙여 넣기", SHEET_EN, SHEET_KO, "서윤_시트"));
+  put("p-face", pblock("표정 시트 · 시트를 레퍼런스로", FACE_EN, FACE_KO, "서윤_표정"));
+  put("p-mask", pblock("마스크 편집 · 폰과 가방을 칠한 뒤", MASK_EN, MASK_KO, "지난시트_고침"));
+  put("p-fix", pblock("영상 한 곳만 고치기 (예시)", FIX_EN, FIX_KO, ""));
+  const p = PLACES[0];
+  put("p-tone-demo", pblock("톤 한 줄 · 제주", p.tone, p.toneKo, ""));
+  put("p-s1-start-demo", pblock("① 스타트 이미지", startEN(p,p.am), startKO(p,p.am), "서윤_장면1_스타트"));
+  put("p-s1-end-demo", pblock("② 엔드 이미지", endEN(p.am), endKO(p.am), "서윤_장면1_엔드"));
+  put("p-s1-video-demo", pblock("③ 영상", videoEN(p.am), videoKO(p.am), "서윤_장면1_영상"));
+  put("p-s2-start-demo", pblock("① 스타트 이미지", startEN(p,p.pm), startKO(p,p.pm), "서윤_장면2_스타트"));
+  put("p-s2-end-demo", pblock("② 엔드 이미지", endEN(p.pm), endKO(p.pm), "서윤_장면2_엔드"));
+  put("p-s2-video-demo", pblock("③ 영상", videoEN(p.pm), videoKO(p.pm), "서윤_장면2_영상"));
+}
+function renderChar(){
+  const c = CHARS[+document.getElementById("selChar").value];
+  put("p-anchor-mine", anchorBlock(c, "내 주인공 앵커 · " + c.k));
+}
+let sceneN = 1;
+document.addEventListener("click", e => { const b = e.target.closest(".segb"); if(!b) return; sceneN = +b.dataset.n; document.querySelectorAll(".segb").forEach(x => x.classList.toggle("on", x===b)); renderPlace(); });
+function renderPlace(){
+  const p = PLACES[+document.getElementById("selPlace").value];
+  let h = '<div class="box set"><h4>톤 한 줄 · '+esc(p.k)+'</h4>'+esc(p.tone)+'</div>';
+  [["장면 1 · 오전 ", p.am, 1], ["장면 2 · 오후 ", p.pm, 2]].filter(x => x[2]===sceneN).forEach(([lab, sc, n]) => {
+    h += '<h3 style="margin-top:16px">'+lab+esc(sc.name)+'</h3>';
+    h += '<div class="where"><span>이미지 · 16:9</span><span>레퍼런스: 내 시트 + 장소_'+(n==1?'오전':'오후')+'</span></div>';
+    h += pblock("① 스타트 이미지", startEN(p,sc), startKO(p,sc), "내이름_장면"+n+"_스타트");
+    h += '<div class="where"><span>이미지 · 16:9</span><span>레퍼런스: 장면'+n+'_스타트 한 장</span></div>';
+    h += pblock("② 엔드 이미지", endEN(sc), endKO(sc), "내이름_장면"+n+"_엔드");
+    h += '<div class="where"><span>영상 · Omni 1.1 Flash · 360p</span><span>스타트·엔드</span></div>';
+    h += pblock("③ 영상", videoEN(sc), videoKO(sc), "내이름_장면"+n+"_영상");
+  });
+  put("mineScenes", h);
+}
+function renderLinks(){
+  let h = "";
+  PLACES.forEach(p => {
+    [["오전", p.am], ["오후", p.pm]].forEach(([t, sc]) => {
+      const q = encodeURIComponent(sc.q);
+      h += '<div class="lk"><small>'+esc(p.k)+' · '+t+'</small><b>'+esc(sc.name)+'</b>'
+        + '<a href="https://unsplash.com/s/photos/'+sc.q.replace(/ /g,"-")+'" target="_blank" rel="noopener">언스플래시</a>'
+        + '<a href="https://www.pexels.com/search/'+q+'/" target="_blank" rel="noopener">펙셀</a></div>';
+    });
+  });
+  put("placeLinks", h);
+}
+
+/* 복사 (iframe 안에서도 되도록 예비 방식 포함) */
+document.addEventListener("click", e => {
+  const b = e.target.closest(".copy"); if(!b) return;
+  const text = b.closest(".pb").querySelector("pre").innerText;
+  const done = () => { b.textContent = "복사됨"; b.classList.add("done"); setTimeout(()=>{ b.textContent="복사"; b.classList.remove("done"); }, 1500); };
+  const fallback = () => { const t = document.createElement("textarea"); t.value = text; t.style.position="absolute"; t.style.left="-9999px"; document.body.appendChild(t); t.select(); try{ document.execCommand("copy"); }catch(_){} t.remove(); done(); };
+  if(navigator.clipboard && window.isSecureContext){ navigator.clipboard.writeText(text).then(done, fallback); } else fallback();
+});
+
+/* ============ 네비게이션 ============ */
+const steps = [...document.querySelectorAll("section.step")];
+let cur = 0;
+function buildTabs(){
+  document.getElementById("tabs").innerHTML = steps.map((s,i) => '<button class="tab" type="button" data-i="'+i+'"><span>'+i+'</span>'+s.dataset.title+'</button>').join("");
+  document.getElementById("tabs").addEventListener("click", e => { const t = e.target.closest(".tab"); if(t) show(+t.dataset.i, true); });
+}
+function show(i, scrollTop){
+  cur = Math.max(0, Math.min(steps.length-1, i));
+  steps.forEach((s,k) => s.classList.toggle("on", k===cur));
+  document.querySelectorAll(".tab").forEach((t,k) => t.classList.toggle("on", k===cur));
+  const on = document.querySelector(".tab.on"); if(on) on.scrollIntoView({block:"nearest", inline:"center"});
+  const cards = steps[cur].querySelectorAll(".card[id]");
+  document.getElementById("sideList").innerHTML = [...cards].map(c => '<a href="#'+c.id+'" data-id="'+c.id+'">'+c.querySelector("h3").innerText.replace(/\s+/g," ").trim()+'</a>').join("");
+  document.getElementById("prev").disabled = cur===0;
+  document.getElementById("next").disabled = cur===steps.length-1;
+  document.getElementById("pos").textContent = "STEP " + cur + " / " + (steps.length-1);
+  if(scrollTop) window.scrollTo({top:0});
+  setTimeout(() => { T3.forEach(s => s.resize && s.resize()); initVisible3D(); }, 30);
+}
+document.getElementById("sideList").addEventListener("click", e => {
+  const a = e.target.closest("a"); if(!a) return; e.preventDefault();
+  document.getElementById(a.dataset.id).scrollIntoView({behavior:"smooth", block:"start"});
+});
+document.getElementById("prev").onclick = () => show(cur-1, true);
+document.getElementById("next").onclick = () => show(cur+1, true);
+
+/* 글자 크기 */
+let fs = 20;
+try{ const v = parseInt(localStorage.getItem("ilwon6_fs")); if(v) fs = v; }catch(_){}
+function applyFs(){ document.documentElement.style.setProperty("--fs", fs+"px"); try{ localStorage.setItem("ilwon6_fs", fs); }catch(_){} }
+document.getElementById("fsUp").onclick = () => { fs = Math.min(28, fs+2); applyFs(); };
+document.getElementById("fsDown").onclick = () => { fs = Math.max(16, fs-2); applyFs(); };
+applyFs();
+
+/* ============ three.js 도식 ============ */
+const T3 = [];
+const CAPS = {
+  roadmap:"1~5회차는 지나왔고, 6회차가 오늘입니다. 7~8회차는 소리, 9~12회차는 광고와 영화입니다.",
+  pipeline:"공이 지나가는 순서대로 만듭니다. 앞에서 만든 것이 다음 단계의 레퍼런스가 됩니다.",
+  phone:"전반부: 폰 든 앵커 → 시트 네 칸 모두 폰 / 후반부: 빈손 앵커 → 깨끗한 시트",
+  sheet:"앵커 한 사람이 돌아가며 정면 · 왼쪽 옆 · 뒤 · 오른쪽 옆 네 칸이 됩니다.",
+  startend:"시트 + 장소 사진 → 스타트 → (카메라는 그대로) 엔드 → 그 사이를 잇는 영상",
+  capcut:"영상 두 개를 위 줄에 붙이고, 아래 줄에 음악을 깔아 영상 끝에서 자릅니다."
+};
+function lbl(text, h, color, bg){
+  h = h || 0.5; color = color || "#1f2a30";
+  const c = document.createElement("canvas"), x = c.getContext("2d"), fsz = 64;
+  x.font = "700 "+fsz+"px 'Noto Sans KR', sans-serif";
+  const w = Math.ceil(x.measureText(text).width) + fsz*0.8;
+  c.width = w; c.height = Math.ceil(fsz*1.5);
+  x.font = "700 "+fsz+"px 'Noto Sans KR', sans-serif";
+  if(bg){ x.fillStyle = bg; const r=24; x.beginPath(); x.moveTo(r,0); x.arcTo(w,0,w,c.height,r); x.arcTo(w,c.height,0,c.height,r); x.arcTo(0,c.height,0,0,r); x.arcTo(0,0,w,0,r); x.fill(); }
+  x.fillStyle = color; x.textAlign = "center"; x.textBaseline = "middle"; x.fillText(text, w/2, c.height/2+2);
+  const tex = new THREE.CanvasTexture(c); tex.minFilter = THREE.LinearFilter;
+  const s = new THREE.Sprite(new THREE.SpriteMaterial({map:tex, transparent:true, depthTest:false}));
+  s.scale.set(h*w/c.height, h, 1); s.renderOrder = 10; return s;
+}
+const M = c => new THREE.MeshStandardMaterial({color:c, roughness:0.75});
+function person(o){
+  o = o || {};
+  const g = new THREE.Group(), skin = M(0xf0c8a4);
+  const pants = M(o.pants || 0x9cc3e6), shirt = M(o.shirt || 0xf6f3ea), shoe = M(o.shoe || 0xffffff);
+  [-0.13,0.13].forEach(x => {
+    const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.1,0.12,1.0,14), pants); leg.position.set(x,0.55,0); g.add(leg);
+    const s = new THREE.Mesh(new THREE.BoxGeometry(0.2,0.1,0.32), shoe); s.position.set(x,0.05,0.05); g.add(s);
+  });
+  const body = new THREE.Mesh(new THREE.CylinderGeometry(0.26,0.3,0.85,18), shirt); body.position.y = 1.45; g.add(body);
+  if(o.scarf !== false){ const sc = new THREE.Mesh(new THREE.TorusGeometry(0.17,0.06,10,20), M(o.scarf || 0xf2c230)); sc.rotation.x = Math.PI/2; sc.position.y = 1.9; g.add(sc); }
+  const head = new THREE.Mesh(new THREE.SphereGeometry(0.24,24,18), skin); head.position.y = 2.18; g.add(head);
+  const hair = new THREE.Mesh(new THREE.SphereGeometry(0.26,24,18,0,Math.PI*2,0,Math.PI*0.55), M(o.hair || 0x2c2420)); hair.position.set(0,2.2,-0.02); g.add(hair);
+  if(o.beanie){ const b = new THREE.Mesh(new THREE.SphereGeometry(0.27,24,18,0,Math.PI*2,0,Math.PI*0.45), M(0x3a3a3a)); b.position.y = 2.25; g.add(b); }
+  const nose = new THREE.Mesh(new THREE.SphereGeometry(0.04,8,8), skin); nose.position.set(0,2.16,0.24); g.add(nose);
+  g.arms = [];
+  [-1,1].forEach(sd => {
+    const piv = new THREE.Group(); piv.position.set(sd*0.36,1.82,0);
+    const arm = new THREE.Mesh(new THREE.CylinderGeometry(0.075,0.07,0.78,12), shirt); arm.position.y = -0.39; piv.add(arm);
+    const hand = new THREE.Mesh(new THREE.SphereGeometry(0.08,10,10), skin); hand.position.y = -0.8; piv.add(hand);
+    piv.hand = hand; g.add(piv); g.arms.push(piv);
+  });
+  if(o.phone){
+    g.arms[1].rotation.x = -1.0;
+    const ph = new THREE.Mesh(new THREE.BoxGeometry(0.14,0.24,0.03), new THREE.MeshStandardMaterial({color:0x2f6bff, emissive:0x2f6bff, emissiveIntensity:0.6}));
+    ph.position.set(0,-0.86,0.08); g.arms[1].add(ph); g.phone = ph;
+  }
+  if(o.bag){
+    const bag = new THREE.Mesh(new THREE.BoxGeometry(0.42,0.32,0.14), M(0x7a4a26)); bag.position.set(-0.42,1.05,0.05); g.add(bag); g.bag = bag;
+    const strap = new THREE.Mesh(new THREE.BoxGeometry(0.05,1.0,0.03), M(0x6a3e1f)); strap.position.set(-0.05,1.55,0.29); strap.rotation.z = -0.55; g.add(strap); g.strap = strap;
+  }
+  return g;
+}
+function frame(w,h,color){
+  const g = new THREE.Group();
+  const back = new THREE.Mesh(new THREE.PlaneGeometry(w,h), new THREE.MeshStandardMaterial({color: color || 0xffffff, roughness:0.9}));
+  g.add(back);
+  const edge = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.PlaneGeometry(w,h)), new THREE.LineBasicMaterial({color:0xc4ccd0}));
+  edge.position.z = 0.01; g.add(edge);
+  return g;
+}
+const ease = t => t<0 ? 0 : t>1 ? 1 : t*t*(3-2*t);
+
+const BUILD = {
+  roadmap(st){
+    const {scene, cam} = st; cam.position.set(0,3.0,7.4); cam.lookAt(0,0,0);
+    const names = ["첫 영상","주인공","콘티","카메라","여행","하루","말하기","다큐","식품 광고","화장품 광고","가게 광고","30초 영화"];
+    const tiles = [];
+    for(let i=0;i<12;i++){
+      const x = -6.05 + i*1.1, done = i<5, today = i===5;
+      const m = new THREE.Mesh(new THREE.BoxGeometry(0.9,0.35,0.9), M(today ? 0x0e8a8c : done ? 0x9fd3d3 : 0xe4e8ea));
+      m.position.set(x,0,0); scene.add(m); tiles.push(m);
+      const n = lbl(String(i+1), 0.42, today ? "#ffffff" : "#1f2a30"); n.position.set(x,0.45,0.2); scene.add(n);
+      const t = lbl(names[i], 0.26, "#5d6a72"); t.position.set(x,-0.55,0.5); scene.add(t);
+    }
+    [["기본",-4.4,0x9fd3d3],["응용",0,0x0e8a8c],["완성",4.4,0xc9cfd3]].forEach(([s,x,c]) => {
+      const bar = new THREE.Mesh(new THREE.BoxGeometry(4.3,0.06,0.15), M(c)); bar.position.set(x,-1.0,0.6); scene.add(bar);
+      const l = lbl(s, 0.32, "#1f2a30"); l.position.set(x,-1.35,0.6); scene.add(l);
+    });
+    const tag = lbl("오늘 · 6회차 내 주인공의 하루", 0.4, "#ffffff", "#0e8a8c"); scene.add(tag);
+    const ring = new THREE.Mesh(new THREE.TorusGeometry(0.75,0.04,10,40), new THREE.MeshBasicMaterial({color:0x0e8a8c})); ring.rotation.x = Math.PI/2; scene.add(ring);
+    st.update = t => {
+      const y = 0.18 + Math.sin(t*2.5)*0.15; tiles[5].position.y = y;
+      ring.position.set(tiles[5].position.x, -0.15, 0); ring.scale.setScalar(1 + Math.sin(t*2.5)*0.08);
+      tag.position.set(tiles[5].position.x, 1.45 + y*0.3, 0);
+      cam.position.x = Math.sin(t*0.35)*1.2; cam.lookAt(0,0,0);
+    };
+  },
+  pipeline(st){
+    const {scene, cam} = st; cam.position.set(0,2.3,7.4); cam.lookAt(0,0.3,0);
+    const names = ["① 앵커","② 시트","③ 장소 사진","④ 장면 2개","⑤ 캡컷 · 음악"];
+    const blocks = [];
+    names.forEach((n,i) => {
+      const x = -4.8 + i*2.4;
+      const b = new THREE.Mesh(new THREE.BoxGeometry(1.7,0.25,1.4), M(0xe7f4f4)); b.position.set(x,0,0); scene.add(b); blocks.push(b);
+      const l = lbl(n, 0.36); l.position.set(x,-0.6,0.8); scene.add(l);
+    });
+    const p1 = person(); p1.scale.setScalar(0.45); p1.position.set(-4.8,0.13,0); scene.add(p1);
+    for(let k=0;k<4;k++){ const q = person(); q.scale.setScalar(0.28); q.position.set(-2.4-0.6+k*0.4,0.13,0); q.rotation.y = k*Math.PI/2; scene.add(q); }
+    const ph = frame(1.3,0.85,0x9ed7e8); ph.position.set(0,0.6,0); scene.add(ph);
+    const sun = new THREE.Mesh(new THREE.CircleGeometry(0.13,20), new THREE.MeshBasicMaterial({color:0xffb347})); sun.position.set(0.35,0.85,0.02); scene.add(sun);
+    const hill = new THREE.Mesh(new THREE.CircleGeometry(0.5,24,0,Math.PI), new THREE.MeshBasicMaterial({color:0x6cbf73})); hill.position.set(-0.2,0.18,0.02); scene.add(hill);
+    [-0.3,0.3].forEach(dx => { const f = frame(0.8,0.5,0xf6f3ea); f.position.set(2.4+dx*1.6,0.55,0); scene.add(f); const mini = person(); mini.scale.setScalar(0.15); mini.position.set(2.4+dx*1.6,0.32,0.03); scene.add(mini); });
+    const track = new THREE.Mesh(new THREE.BoxGeometry(1.5,0.12,0.3), M(0x333b40)); track.position.set(4.8,0.25,0); scene.add(track);
+    [[-0.35,0x0e8a8c],[0.35,0x3466c2]].forEach(([dx,c]) => { const cl = new THREE.Mesh(new THREE.BoxGeometry(0.66,0.14,0.32), M(c)); cl.position.set(4.8+dx,0.34,0); scene.add(cl); });
+    const line = new THREE.Mesh(new THREE.BoxGeometry(9.8,0.03,0.03), M(0xc4ccd0)); line.position.set(0,0.14,0.75); scene.add(line);
+    const ball = new THREE.Mesh(new THREE.SphereGeometry(0.16,20,16), new THREE.MeshStandardMaterial({color:0x0e8a8c, emissive:0x0e8a8c, emissiveIntensity:0.35})); scene.add(ball);
+    st.update = t => {
+      const u = (t % 7) / 7, x = -5.6 + u*11.2;
+      ball.position.set(x, 0.3 + Math.abs(Math.sin(u*Math.PI*10))*0.25, 0.75);
+      blocks.forEach(b => { const d = Math.abs(b.position.x - x); const k = d<1.1 ? 1-d/1.1 : 0; b.material.color.setHex(k>0.2 ? 0x0e8a8c : 0xe7f4f4); b.position.y = k*0.12; });
+    };
+  },
+  phone(st){
+    const {scene, cam} = st; cam.position.set(0,2.0,8.2); cam.lookAt(0.3,1.3,0);
+    const bad = person({beanie:true, shirt:0x262a2e, pants:0x3d5d7c, shoe:0x2a2a2a, hair:0x2c2420, scarf:false, phone:true, bag:true});
+    const good = person();
+    [bad, good].forEach(p => { p.position.set(-4,0,0); p.scale.setScalar(0.95); scene.add(p); });
+    const ped = new THREE.Mesh(new THREE.CylinderGeometry(0.8,0.8,0.1,30), M(0xe2e5e7)); ped.position.set(-4,-0.05,0); scene.add(ped);
+    const al = lbl("앵커", 0.38); al.position.set(-4,-0.5,0.6); scene.add(al);
+    const arrow = lbl("→", 0.9, "#0e8a8c"); arrow.position.set(-2.2,1.2,0); scene.add(arrow);
+    const board = frame(6.2,3.0,0xffffff); board.position.set(1.8,1.2,-0.6); scene.add(board);
+    const sl = lbl("캐릭터 시트", 0.36); sl.position.set(1.8,-0.5,0.6); scene.add(sl);
+    const badC = [], goodC = [];
+    for(let k=0;k<4;k++){
+      const x = -0.45 + k*1.5;
+      const b = person({beanie:true, shirt:0x262a2e, pants:0x3d5d7c, shoe:0x2a2a2a, scarf:false, phone:true, bag:true}); b.scale.setScalar(0.62); b.position.set(x,0,0); b.rotation.y = -k*Math.PI/2; scene.add(b); badC.push(b);
+      const g = person(); g.scale.setScalar(0.62); g.position.set(x,0,0); g.rotation.y = -k*Math.PI/2; scene.add(g); goodC.push(g);
+    }
+    const capBad = lbl("폰 든 앵커 → 네 칸 모두 폰", 0.42, "#ffffff", "#c2414f"); capBad.position.set(0,3.25,0); scene.add(capBad);
+    const capGood = lbl("빈손 앵커 → 깨끗한 시트", 0.42, "#ffffff", "#0e8a8c"); capGood.position.set(0,3.25,0); scene.add(capGood);
+    const rings = badC.map(b => { const r = new THREE.Mesh(new THREE.TorusGeometry(0.16,0.025,8,24), new THREE.MeshBasicMaterial({color:0xe0414f})); scene.add(r); return r; });
+    st.update = t => {
+      const u = t % 12, phaseBad = u < 6, lu = phaseBad ? u : u-6;
+      bad.visible = phaseBad; good.visible = !phaseBad; capBad.visible = phaseBad; capGood.visible = !phaseBad;
+      for(let k=0;k<4;k++){
+        const s = ease((lu - 0.6 - k*0.7)/0.5) * 0.62;
+        badC[k].visible = phaseBad && s>0.01; goodC[k].visible = !phaseBad && s>0.01;
+        badC[k].scale.setScalar(Math.max(s,0.001)); goodC[k].scale.setScalar(Math.max(s,0.001));
+        const showR = phaseBad && lu > 3.8;
+        rings[k].visible = showR && s>0.5;
+        if(rings[k].visible){ const w = new THREE.Vector3(); badC[k].phone.getWorldPosition(w); rings[k].position.copy(w); rings[k].position.z += 0.3; rings[k].scale.setScalar(1+0.25*Math.sin(t*8)); }
+      }
+      if(bad.phone) bad.phone.material.emissiveIntensity = 0.5 + 0.4*Math.sin(t*6);
+    };
+  },
+  sheet(st){
+    const {scene, cam} = st; cam.position.set(0,2.0,8.0); cam.lookAt(-0.2,1.3,0);
+    const a = person(); a.position.set(-4.2,0,0); scene.add(a);
+    const al = lbl("서윤_앵커", 0.36); al.position.set(-4.2,-0.45,0.6); scene.add(al);
+    const board = frame(6.4,3.1,0xeef0f1); board.position.set(1.9,1.25,-0.6); scene.add(board);
+    const views = ["정면","왼쪽 옆","뒤","오른쪽 옆"], cs = [];
+    for(let k=0;k<4;k++){
+      const x = -0.5 + k*1.6;
+      const c = person(); c.scale.setScalar(0.001); c.position.set(x,0,0); c.rotation.y = -k*Math.PI/2; scene.add(c); cs.push(c);
+      const l = lbl(views[k], 0.3, "#5d6a72"); l.position.set(x,-0.45,0.6); scene.add(l);
+    }
+    const top = lbl("앵커 한 장만 넣기", 0.38, "#ffffff", "#0e8a8c"); top.position.set(-1.2,3.2,0); scene.add(top);
+    st.update = t => {
+      const u = t % 9;
+      a.rotation.y = -Math.min(u/6,1) * Math.PI*1.5 + (u>7 ? 0 : 0);
+      for(let k=0;k<4;k++){ const s = ease((u - k*1.5)/0.6); cs[k].scale.setScalar(Math.max(s*0.8,0.001)); }
+      if(u > 7.5) a.rotation.y = 0;
+    };
+  },
+  startend(st){
+    const {scene, cam} = st; cam.position.set(0.2,2.0,8.4); cam.lookAt(0.2,1.3,0);
+    const fS = frame(2.6,1.6,0xf3faf6), fE = frame(2.6,1.6,0xf3faf6), fV = frame(2.6,1.6,0x20272b);
+    fS.position.set(-1.9,1.1,0); fE.position.set(1.3,1.1,0); fV.position.set(4.5,1.1,0); scene.add(fS, fE, fV);
+    const lS = lbl("스타트", 0.34), lE = lbl("엔드", 0.34), lV = lbl("영상", 0.34);
+    lS.position.set(-1.9,0.0,0.3); lE.position.set(1.3,0.0,0.3); lV.position.set(4.5,0.0,0.3); scene.add(lS,lE,lV);
+    // 레퍼런스 카드
+    const rSheet = frame(1.3,0.8,0xffffff); const rPlace = frame(1.3,0.8,0xbfe6c8);
+    const miniS = []; for(let k=0;k<4;k++){ const q = person(); q.scale.setScalar(0.11); q.position.set(-0.45+k*0.3,-0.3,0.02); q.rotation.y=-k*Math.PI/2; rSheet.add(q); miniS.push(q); }
+    for(let k=0;k<3;k++){ const tr = new THREE.Mesh(new THREE.SphereGeometry(0.1,10,10), new THREE.MeshBasicMaterial({color:0xf08a24})); tr.position.set(-0.35+k*0.35,0.05,0.03); rPlace.add(tr); }
+    scene.add(rSheet, rPlace);
+    const lr1 = lbl("시트", 0.26), lr2 = lbl("장소 사진", 0.26); scene.add(lr1, lr2);
+    // 사람
+    const ps = person(), pe = person(), pv = person();
+    [ps,pe,pv].forEach(p => { p.scale.setScalar(0.5); scene.add(p); });
+    ps.position.set(-1.9,0.35,0.05); pe.position.set(1.3,0.35,0.05); pv.position.set(4.5,0.35,0.05);
+    const orange = () => new THREE.Mesh(new THREE.SphereGeometry(0.09,12,12), new THREE.MeshStandardMaterial({color:0xf08a24}));
+    const oE = orange(); pe.arms[1].add(oE); oE.position.y = -0.85; pe.arms[1].rotation.z = 2.6;
+    const oV = orange(); pv.arms[1].add(oV); oV.position.y = -0.85;
+    const oS = orange(); oS.position.set(-1.55,1.55,0.08); scene.add(oS);
+    ps.arms[0].rotation.z = -2.4; ps.arms[1].rotation.z = 2.4;
+    // 카메라 아이콘
+    const camG = new THREE.Group(); const body = new THREE.Mesh(new THREE.BoxGeometry(0.6,0.4,0.4), M(0x333b40)); camG.add(body);
+    const lens = new THREE.Mesh(new THREE.CylinderGeometry(0.13,0.13,0.25,16), M(0x111111)); lens.rotation.x = Math.PI/2; lens.position.z = 0.3; camG.add(lens);
+    camG.position.set(-0.3,2.6,0.4); scene.add(camG);
+    const lc = lbl("카메라는 그대로", 0.3, "#ffffff", "#333b40"); lc.position.set(-0.3,3.15,0.4); scene.add(lc);
+    const bar = new THREE.Mesh(new THREE.BoxGeometry(2.4,0.08,0.05), M(0x0e8a8c)); scene.add(bar);
+    const arrow1 = lbl("→", 0.6, "#0e8a8c"), arrow2 = lbl("→", 0.6, "#0e8a8c"); arrow1.position.set(-0.3,1.1,0.2); arrow2.position.set(2.9,1.1,0.2); scene.add(arrow1, arrow2);
+    st.update = t => {
+      const u = t % 11;
+      const m = ease(u/2);
+      rSheet.position.set(-5.4 + m*2.6, 2.0 - m*0.9, 0.3 - m*0.2); rPlace.position.set(-5.4 + m*2.6, 0.6 + m*0.5, 0.3 - m*0.2);
+      rSheet.scale.setScalar(1 - m*0.55); rPlace.scale.setScalar(1 - m*0.55);
+      lr1.position.set(rSheet.position.x, rSheet.position.y+0.55, 0.4); lr2.position.set(rPlace.position.x, rPlace.position.y-0.55, 0.4);
+      rSheet.visible = rPlace.visible = lr1.visible = lr2.visible = u < 2.6;
+      const sOn = u > 1.8; ps.visible = oS.visible = sOn; ps.scale.setScalar(sOn ? 0.5*ease((u-1.8)/0.5) + 0.001 : 0.001);
+      const eOn = u > 3.6; pe.visible = eOn; pe.scale.setScalar(eOn ? 0.5*ease((u-3.6)/0.5)+0.001 : 0.001); arrow1.visible = u > 3.2;
+      arrow2.visible = u > 5.4;
+      const v = ease((u - 6)/3.5);
+      pv.visible = u > 5.8; pv.arms[0].rotation.z = -2.4*(1-v); pv.arms[1].rotation.z = 2.4 + 0.2*v; oV.visible = v > 0.5;
+      bar.scale.x = Math.max(v,0.001); bar.position.set(4.5 - 1.2 + 1.2*v, 0.38, 0.06); bar.visible = u > 6;
+      camG.rotation.y = 0;
+    };
+  },
+  capcut(st){
+    const {scene, cam} = st; cam.position.set(0,3.6,7.2); cam.lookAt(0,0.2,0);
+    const track = new THREE.Mesh(new THREE.BoxGeometry(9,0.15,1.0), M(0x2c3338)); track.position.z = -0.6; scene.add(track);
+    const atrack = new THREE.Mesh(new THREE.BoxGeometry(9,0.15,0.7), M(0x2c3338)); atrack.position.z = 0.55; scene.add(atrack);
+    const head = new THREE.Mesh(new THREE.BoxGeometry(0.05,1.2,2.2), new THREE.MeshBasicMaterial({color:0xffffff, transparent:true, opacity:0.85})); scene.add(head);
+    const c1 = new THREE.Mesh(new THREE.BoxGeometry(3.6,0.25,0.85), M(0x0e8a8c)), c2 = new THREE.Mesh(new THREE.BoxGeometry(3.6,0.25,0.85), M(0x3466c2));
+    const mus = new THREE.Mesh(new THREE.BoxGeometry(9.0,0.2,0.55), M(0x7a5cc8)); mus.geometry.translate(4.5,0,0);
+    scene.add(c1,c2,mus);
+    const cut = new THREE.Mesh(new THREE.BoxGeometry(1.8,0.2,0.55), M(0xc9c2e6)); scene.add(cut);
+    const l1 = lbl("장면 1", 0.32, "#ffffff"), l2 = lbl("장면 2", 0.32, "#ffffff"), lm = lbl("♪ 픽사베이 음악", 0.3, "#ffffff"); scene.add(l1,l2,lm);
+    const tv = lbl("영상 줄", 0.26, "#5d6a72"), ta = lbl("음악 줄", 0.26, "#5d6a72"); tv.position.set(-5.1,0,-0.6); ta.position.set(-5.1,0,0.55); scene.add(tv,ta);
+    const sc = lbl("✂ 영상 끝에서 자르기", 0.32, "#ffffff", "#c2414f"); sc.position.set(3.6,1.3,0.55); scene.add(sc);
+    const out = lbl("내보내기 → 서윤의하루.mp4", 0.4, "#ffffff", "#0e8a8c"); out.position.set(0,1.9,0); scene.add(out);
+    st.update = t => {
+      const u = t % 13;
+      const a = ease(u/1.0), b = ease((u-1.3)/1.0), m = ease((u-2.8)/1.0);
+      c1.position.set(-1.8, 0.2 + (1-a)*2.2, -0.6); c2.position.set(1.8, 0.2 + (1-b)*2.2, -0.6); c2.visible = u > 1.3;
+      mus.position.set(-3.6, 0.18 + (1-m)*2.2, 0.55); mus.visible = u > 2.8;
+      const trimmed = u > 5.6;
+      mus.scale.x = trimmed ? 0.8 : 1.0;
+      cut.visible = u > 4.6 && u < 5.6; cut.position.set(4.5, 0.18, 0.55); sc.visible = u > 4.2 && u < 6.2;
+      l1.position.set(c1.position.x, c1.position.y+0.32, c1.position.z+0.5); l2.position.set(c2.position.x, c2.position.y+0.32, c2.position.z+0.5); l2.visible = c2.visible;
+      lm.position.set(-1.0, mus.position.y+0.3, 0.95); lm.visible = mus.visible;
+      const h = ease((u-6.6)/4.6); head.position.set(-3.6 + 7.2*h, 0.4, 0); head.visible = u > 6.6;
+      out.visible = u > 11.3;
+    };
+  }
+};
+
+function make3D(box){
+  if(box.dataset.done) return; box.dataset.done = "1";
+  const key = box.dataset.scene, cbox = box.querySelector(".t3c");
+  const bar = document.createElement("div"); bar.className = "t3bar";
+  bar.innerHTML = '<button type="button" class="pp">⏸ 멈춤</button><button type="button" class="rs">↺ 처음부터</button><span class="t3cap">'+(CAPS[key]||"")+'</span>';
+  box.appendChild(bar);
+  if(typeof THREE === "undefined"){ cbox.innerHTML = '<div class="t3fb">입체 도식을 불러오지 못했습니다. 인터넷 연결을 확인해 주세요.</div>'; cbox.style.height = "120px"; return; }
+  let renderer;
+  try{ renderer = new THREE.WebGLRenderer({antialias:true, alpha:true}); }catch(e){ cbox.innerHTML = '<div class="t3fb">이 브라우저에서는 입체 도식을 볼 수 없습니다. 아래 설명을 참고하세요.</div>'; cbox.style.height="120px"; return; }
+  renderer.setPixelRatio(Math.min(2, window.devicePixelRatio || 1));
+  cbox.appendChild(renderer.domElement);
+  const scene = new THREE.Scene(), cam = new THREE.PerspectiveCamera(36, 2, 0.1, 200);
+  scene.add(new THREE.HemisphereLight(0xffffff, 0xd9e2e6, 0.95));
+  const dl = new THREE.DirectionalLight(0xffffff, 0.55); dl.position.set(4,8,6); scene.add(dl);
+  const st = {key, box, renderer, scene, cam, t:0, playing:true, dirty:true};
+  st.resize = () => {
+    const w = cbox.clientWidth; if(!w) return;
+    const h = w < 560 ? 230 : 300; cbox.style.height = h + "px";
+    renderer.setSize(w, h); cam.aspect = w/h;
+    cam.fov = w < 560 ? 52 : 36; cam.updateProjectionMatrix(); st.dirty = true;
+  };
+  BUILD[key](st);
+  st.resize(); st.update(0);
+  const pp = bar.querySelector(".pp");
+  pp.onclick = () => { st.playing = !st.playing; pp.textContent = st.playing ? "⏸ 멈춤" : "▶ 재생"; };
+  bar.querySelector(".rs").onclick = () => { st.t = 0; st.update(0); st.dirty = true; };
+  T3.push(st);
+}
+let fontsReady = false;
+function initVisible3D(){ if(!fontsReady) return; document.querySelectorAll("section.step.on .t3").forEach(make3D); }
+let last = performance.now();
+function loop(now){
+  const dt = Math.min(0.05, (now - last)/1000); last = now;
+  T3.forEach(st => {
+    if(!st.box.offsetParent) return;
+    const r = st.box.getBoundingClientRect();
+    if(r.bottom < 0 || r.top > window.innerHeight) return;
+    if(st.playing){ st.t += dt; st.update(st.t); st.dirty = true; }
+    if(st.dirty){ st.renderer.render(st.scene, st.cam); st.dirty = false; }
+  });
+  requestAnimationFrame(loop);
+}
+window.addEventListener("resize", () => T3.forEach(s => s.resize()));
+
+/* ============ 시작 ============ */
+document.getElementById("selChar").innerHTML = CHARS.map((c,i) => '<option value="'+i+'">'+c.k+'</option>').join("");
+document.getElementById("selPlace").innerHTML = PLACES.map((p,i) => '<option value="'+i+'">'+p.k+'</option>').join("");
+document.getElementById("selChar").value = 2; document.getElementById("selPlace").value = 3;
+document.getElementById("selChar").onchange = renderChar;
+document.getElementById("selPlace").onchange = renderPlace;
+renderStatic(); renderChar(); renderPlace(); renderLinks();
+buildTabs();
+const ready = (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
+show(0, false);
+const go = () => { if(fontsReady) return; fontsReady = true; initVisible3D(); };
+ready.then(go); setTimeout(go, 2500);
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>

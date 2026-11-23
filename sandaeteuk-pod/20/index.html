@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>내 캐릭터로 그림책 — 미드저니 캐릭터부터 플로우 장면, 책까지</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>:root{--fs:20px;--bg:#FAFAF7;--card:#FFFFFF;--line:#E4E2DC;--ink:#24231F;--sub:#5F5E5A;--ac:#2F5FA8;--acbg:#EEF3FA;--topH:120px}
+*{box-sizing:border-box}
+html{font-size:var(--fs);scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Pretendard,-apple-system,"Malgun Gothic","Apple SD Gothic Neo",sans-serif;line-height:1.65;word-break:keep-all;overflow-wrap:anywhere}
+.top{position:sticky;top:0;z-index:20;background:rgba(250,250,247,.97);border-bottom:1px solid var(--line)}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:12px;max-width:1500px;margin:0 auto;padding:10px 20px 6px}
+.bar h1{margin:0;font-size:1.05rem;font-weight:700;line-height:1.3}
+.bar h1 span{color:var(--sub);font-weight:500}
+.zoom{display:flex;gap:6px;flex:none}
+.zoom button{font:inherit;font-size:.8rem;padding:4px 12px;border:1px solid var(--line);background:#fff;border-radius:999px;color:var(--ink);cursor:pointer}
+.tabs{display:flex;flex-wrap:wrap;gap:6px;max-width:1500px;margin:0 auto;padding:4px 20px 10px}
+.tabs button{font:inherit;font-size:.82rem;padding:6px 14px;border:1px solid var(--line);background:#fff;border-radius:999px;color:var(--sub);cursor:pointer;white-space:nowrap}
+.tabs button.on{background:var(--ac);border-color:var(--ac);color:#fff;font-weight:700}
+.wrap{display:grid;grid-template-columns:minmax(0,1fr) 250px;gap:22px;max-width:1500px;margin:0 auto;padding:22px 20px 40px;align-items:start}
+.panel{display:none}.panel.on{display:block}
+.head{margin:0 0 18px}
+.head .no{display:inline-block;font-size:.78rem;font-weight:700;color:var(--ac);background:var(--acbg);border-radius:999px;padding:3px 12px;margin-bottom:8px}
+.head h2{margin:0 0 6px;font-size:1.5rem;line-height:1.3}
+.head p{margin:0;color:var(--sub)}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px 22px;min-width:0}
+.card.wide{grid-column:1/-1}
+.card h3{margin:0 0 12px;font-size:1.12rem;line-height:1.35;display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.lab{font-size:.72rem;font-weight:700;border-radius:999px;padding:2px 10px;border:1px solid var(--line);color:var(--sub);background:#F6F5F1;white-space:nowrap}
+.lab.d{color:#2F5FA8;background:#EEF3FA;border-color:#D5E1F2}
+.lab.p{color:#2E7350;background:#EAF4EE;border-color:#CFE5D8}
+.lab.m{color:#8A3F63;background:#F6EEF2;border-color:#EAD5DF}
+.lab.u,.lab.o{color:#5B4B8A;background:#F0EEF8;border-color:#DCD7EE}
+.card p{margin:0 0 10px}
+.card ul,.card ol{margin:0 0 10px;padding-left:1.3em}
+.card li{margin:3px 0}
+.card strong{font-weight:700}
+.card code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.86em;background:#F3F2EE;border:1px solid var(--line);border-radius:6px;padding:1px 6px;white-space:normal;word-break:break-all}
+.card a{color:var(--ac)}
+.tw{overflow-x:auto;margin:0 0 12px}
+table{border-collapse:collapse;width:100%;font-size:.92rem}
+th,td{border-bottom:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+td code{white-space:nowrap;word-break:normal}
+th{font-size:.82rem;color:var(--sub);font-weight:700;background:#F6F5F1}
+.prompt{position:relative;margin:0 0 12px;border:1px solid #D5E1F2;background:#F5F8FC;border-radius:12px;padding:14px 86px 14px 16px}
+.prompt pre{margin:0;white-space:pre-wrap;word-break:break-word;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.84rem;line-height:1.55;color:#1F2A3D}
+.prompt .cp{position:absolute;top:10px;right:10px;font:inherit;font-size:.78rem;font-weight:700;padding:5px 14px;border:1px solid var(--ac);background:#fff;color:var(--ac);border-radius:999px;cursor:pointer}
+.prompt .cp.ok{background:var(--ac);color:#fff}
+.box{border-radius:12px;padding:12px 16px;margin:0 0 10px;border:1px solid var(--line);font-size:.95rem}
+.box b{display:inline-block;margin-right:10px;font-size:.78rem;border-radius:999px;padding:1px 10px;background:#fff;border:1px solid var(--line)}
+.box.help{background:#EAF4EE;border-color:#CFE5D8}.box.help b{color:#2E7350}
+.box.more{background:#EEF3FA;border-color:#D5E1F2}.box.more b{color:#2F5FA8}
+.box.warn{background:#F6EEF2;border-color:#EAD5DF}.box.warn b{color:#8A3F63}
+.shot{margin:0 0 14px}
+.shot img{display:block;width:100%;height:auto;border:1px solid var(--line);border-radius:12px;background:#F3F2EE}
+.shot figcaption{font-size:.88rem;color:var(--sub);margin-top:6px}
+.flowsvg{display:block;width:100%;height:auto}
+.side{position:sticky;top:calc(var(--topH) + 14px);align-self:start}
+.sidein{border:1px solid var(--line);background:#fff;border-radius:16px;padding:14px 14px 10px;font-size:.8rem}
+.sidein>b{display:block;margin-bottom:8px;color:var(--sub);font-size:.76rem}
+#sidelist a{display:block;padding:6px 8px;border-radius:8px;color:var(--ink);text-decoration:none;line-height:1.35;cursor:pointer}
+#sidelist a:hover{background:var(--acbg)}
+#sidelist a i{font-style:normal;color:var(--ac);font-weight:700;margin-right:6px;font-size:.72rem}
+.pager{position:sticky;bottom:0;display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:20px;padding:10px 0;background:rgba(250,250,247,.97);border-top:1px solid var(--line)}
+.pager button{font:inherit;font-size:.86rem;font-weight:700;padding:8px 20px;border:1px solid var(--ac);background:#fff;color:var(--ac);border-radius:999px;cursor:pointer}
+.pager button:disabled{opacity:.35;cursor:default}
+.pager span{font-size:.8rem;color:var(--sub)}
+.card{scroll-margin-top:calc(var(--topH) + 14px)}
+@media (max-width:1100px){.wrap{grid-template-columns:1fr}.side{display:none}}
+@media (max-width:820px){.grid{grid-template-columns:1fr}.bar h1 span{display:none}}
+
+.shots{display:grid;gap:14px;margin:0 0 14px;align-items:start}
+.shots.n2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.shots.n3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.shots .shot{margin:0}
+.shots .shot img{max-height:640px;object-fit:contain}
+@media(max-width:700px){.shots.n2,.shots.n3{grid-template-columns:1fr}}
+
+.box.use{background:#F4F6F2;border-color:#DDE3D6}
+.box.use b{color:#3E6B3A}
+
+.lr{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;margin-top:6px}
+.lr>div{border:1px solid var(--line);border-radius:14px;padding:14px 16px;min-width:0}
+.lr .ex{background:#FAF8F3}
+.lr .my{background:#F4F7FC}
+.lrh{font-size:.82rem;font-weight:700;letter-spacing:.02em;color:#5F5E5A;margin:-2px 0 10px;padding-bottom:8px;border-bottom:1px dashed var(--line)}
+.lr .my .lrh{color:#2F5FA8}
+@media (max-width:980px){.lr{grid-template-columns:1fr}}
+
+.box.tr{background:#FFFFFF;border:1px dashed var(--line);font-size:.92em;color:#3d3c38;margin-top:-4px}
+.box.tr b{color:#5F5E5A}
+.box.stop{background:#F3F2EE;border:1px solid var(--line)}
+</style></head><body>
+<div class="top" id="top">
+  <div class="bar">
+    <h1>내 캐릭터로 그림책 <span>— 미드저니 캐릭터부터 플로우 장면, 책까지</span></h1>
+    <div class="zoom" aria-label="글자 크기"><button type="button" data-z="-2" aria-label="글자 작게">가−</button><button type="button" data-z="0" aria-label="기본 크기">가</button><button type="button" data-z="2" aria-label="글자 크게">가+</button></div>
+  </div>
+  <nav class="tabs" id="tabs"><button type="button" data-p="0" class="on">전체 흐름</button><button type="button" data-p="1">STEP 1 재료</button><button type="button" data-p="2">STEP 2 화풍</button><button type="button" data-p="3">STEP 3 인물 컨셉</button><button type="button" data-p="4">STEP 4 9컷 시트</button><button type="button" data-p="5">STEP 5 앵커</button><button type="button" data-p="6">STEP 6 장면</button><button type="button" data-p="7">STEP 7 글 쪽</button><button type="button" data-p="8">STEP 8 책으로</button><button type="button" data-p="9">STEP 9 패들렛</button></nav>
+</div>
+<div class="wrap">
+  <main id="main"><section class="panel on" data-panel="0"><div class="head"><span class="no">전체 흐름</span><h2>내 기획안으로 인물을 굳히고 책까지</h2><p>미드저니로 화풍과 인물을 먼저 굳히고, 장면은 미드저니나 플로우에서 만들어 책으로 엮어요. 왼쪽은 「할아버지의 라디오」로 실제 만든 예시, 오른쪽은 내 것을 만드는 빈칸 틀이에요.</p></div><div class="grid"><section class="card wide" id="c0-0"><h3><span class="lab k">한눈에</span><span class="t">아홉 단계와 두 갈래 길</span></h3><p><svg class="flowsvg" viewBox="0 0 960 360" role="img" aria-label="재료, 화풍, 인물 컨셉, 9컷 시트, 앵커 다음 미드저니 길 A 또는 플로우 길 B로 장면을 만들고 글 쪽, 책, 패들렛으로 이어지는 흐름"><defs><marker id="arz" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M2 1L8 5L2 9" fill="none" stroke="#2F5FA8" stroke-width="1.6" stroke-linecap="round"/></marker></defs><text x="8" y="18" font-size="14" font-weight="700" fill="#5F5E5A">미드저니 — 화풍과 인물 굳히기</text><rect x="8" y="28" width="168" height="96" rx="14" fill="#EEF3FA" stroke="#E4E2DC"/><text x="92" y="56" text-anchor="middle" font-size="15" font-weight="700" fill="#2F5FA8">STEP 1</text><text x="92" y="82" text-anchor="middle" font-size="18" font-weight="700" fill="#24231F">재료</text><text x="92" y="106" text-anchor="middle" font-size="13" fill="#5F5E5A">기획안 → 인물·장면</text><line x1="179" y1="76" x2="194" y2="76" stroke="#2F5FA8" stroke-width="2" marker-end="url(#arz)"/><rect x="198" y="28" width="168" height="96" rx="14" fill="#F6EEF2" stroke="#E4E2DC"/><text x="282" y="56" text-anchor="middle" font-size="15" font-weight="700" fill="#2F5FA8">STEP 2</text><text x="282" y="82" text-anchor="middle" font-size="18" font-weight="700" fill="#24231F">화풍</text><text x="282" y="106" text-anchor="middle" font-size="13" fill="#5F5E5A">무드보드 · 프로필</text><line x1="369" y1="76" x2="384" y2="76" stroke="#2F5FA8" stroke-width="2" marker-end="url(#arz)"/><rect x="388" y="28" width="168" height="96" rx="14" fill="#F6EEF2" stroke="#E4E2DC"/><text x="472" y="56" text-anchor="middle" font-size="15" font-weight="700" fill="#2F5FA8">STEP 3</text><text x="472" y="82" text-anchor="middle" font-size="18" font-weight="700" fill="#24231F">인물 컨셉</text><text x="472" y="106" text-anchor="middle" font-size="13" fill="#5F5E5A">4장 → 하나 고르기</text><line x1="559" y1="76" x2="574" y2="76" stroke="#2F5FA8" stroke-width="2" marker-end="url(#arz)"/><rect x="578" y="28" width="168" height="96" rx="14" fill="#F6EEF2" stroke="#E4E2DC"/><text x="662" y="56" text-anchor="middle" font-size="15" font-weight="700" fill="#2F5FA8">STEP 4</text><text x="662" y="82" text-anchor="middle" font-size="18" font-weight="700" fill="#24231F">9컷 시트</text><text x="662" y="106" text-anchor="middle" font-size="13" fill="#5F5E5A">고른 그림 첨부</text><line x1="749" y1="76" x2="764" y2="76" stroke="#2F5FA8" stroke-width="2" marker-end="url(#arz)"/><rect x="768" y="28" width="168" height="96" rx="14" fill="#F6EEF2" stroke="#E4E2DC"/><text x="852" y="56" text-anchor="middle" font-size="15" font-weight="700" fill="#2F5FA8">STEP 5</text><text x="852" y="82" text-anchor="middle" font-size="18" font-weight="700" fill="#24231F">앵커</text><text x="852" y="106" text-anchor="middle" font-size="13" fill="#5F5E5A">시트 첨부 → 차렷</text><path d="M852 124 V150 H250 V172" fill="none" stroke="#2F5FA8" stroke-width="2" marker-end="url(#arz)"/><path d="M852 150 H700 V172" fill="none" stroke="#2F5FA8" stroke-width="2" marker-end="url(#arz)"/><rect x="70" y="176" width="360" height="74" rx="14" fill="#EAF4EE" stroke="#E4E2DC"/><text x="250" y="204" text-anchor="middle" font-size="16" font-weight="700" fill="#24231F">STEP 6 · 가는 길 A  미드저니로 끝까지</text><text x="250" y="230" text-anchor="middle" font-size="13" fill="#5F5E5A">앵커를 「프롬프트에 첨부」해 장면 — Fast 넉넉할 때</text><rect x="520" y="176" width="360" height="74" rx="14" fill="#FBF3E6" stroke="#E4E2DC"/><text x="700" y="204" text-anchor="middle" font-size="16" font-weight="700" fill="#24231F">STEP 6 · 가는 길 B  플로우로 넘어가기</text><text x="700" y="230" text-anchor="middle" font-size="13" fill="#5F5E5A">앵커를 재료로 장면 → 워터마크 지우기</text><path d="M250 250 V272 H480 V290" fill="none" stroke="#2F5FA8" stroke-width="2"/><path d="M700 250 V272 H480" fill="none" stroke="#2F5FA8" stroke-width="2"/><line x1="480" y1="272" x2="480" y2="290" stroke="#2F5FA8" stroke-width="2" marker-end="url(#arz)"/><rect x="150" y="294" width="200" height="58" rx="12" fill="#F3F2EE" stroke="#E4E2DC"/><text x="250" y="318" text-anchor="middle" font-size="15" font-weight="700" fill="#24231F">STEP 7 · 글 쪽</text><text x="250" y="340" text-anchor="middle" font-size="12.5" fill="#5F5E5A">템플릿 리듬</text><line x1="353" y1="323" x2="376" y2="323" stroke="#2F5FA8" stroke-width="2" marker-end="url(#arz)"/><rect x="380" y="294" width="200" height="58" rx="12" fill="#F3F2EE" stroke="#E4E2DC"/><text x="480" y="318" text-anchor="middle" font-size="15" font-weight="700" fill="#24231F">STEP 8 · 책으로</text><text x="480" y="340" text-anchor="middle" font-size="12.5" fill="#5F5E5A">미리캔버스 → PDF</text><line x1="583" y1="323" x2="606" y2="323" stroke="#2F5FA8" stroke-width="2" marker-end="url(#arz)"/><rect x="610" y="294" width="200" height="58" rx="12" fill="#F3F2EE" stroke="#E4E2DC"/><text x="710" y="318" text-anchor="middle" font-size="15" font-weight="700" fill="#24231F">STEP 9 · 패들렛</text><text x="710" y="340" text-anchor="middle" font-size="12.5" fill="#5F5E5A">한 번에 올리기</text></svg></p></section><section class="card wide" id="c0-1"><h3><span class="lab k">알아 두기</span><span class="t">이 교안 보는 법</span></h3><div class="lr"><div class="ex"><div class="lrh">예시 · 할아버지의 라디오</div><p><strong>왼쪽 — 예시 「할아버지의 라디오」</strong></p>
+<ul>
+<li>실제로 넣은 문장과 그렇게 나온 그림이에요</li>
+<li>"이렇게 넣으면 이런 그림이 나온다"를 보여 주는 모범 가이드예요</li>
+<li>꼭 이 순서대로 하지 않아도 돼요</li>
+</ul></div><div class="my"><div class="lrh">내 것 만들기</div><p><strong>오른쪽 — 내 것 만들기</strong></p>
+<ul>
+<li>내 기획안으로 바꿔 넣는 빈칸 틀이에요</li>
+<li>대괄호 <code>[ ]</code> 부분만 내 것으로 바꾸고, 대괄호도 지워요</li>
+<li>회색 상자의 「복사」 버튼으로 복사해요. <strong>미드저니 상자는 영어, 제미나이·플로우 상자는 우리말</strong>이에요</li>
+<li>영어 상자 바로 밑 점선 상자는 <strong>우리말 해석</strong>이에요. 복사하지 않고 읽기만 해요</li>
+</ul></div></div></section><section class="card wide" id="c0-2"><h3><span class="lab k">알아 두기</span><span class="t">두 갈래 길 — 내 Fast 시간에 맞춰 골라요</span></h3><div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>가는 길 A · 미드저니로 끝까지</th>
+<th>가는 길 B · 플로우로 넘어가기</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>누구에게</td>
+<td>Fast 시간이 넉넉한 분</td>
+<td>Fast 시간이 얼마 안 남은 분</td>
+</tr>
+<tr>
+<td>미드저니에서</td>
+<td>화풍 → 인물 → 9컷 → 앵커 → <strong>장면까지</strong></td>
+<td>화풍 → 인물 → 9컷 → 앵커<strong>까지만</strong></td>
+</tr>
+<tr>
+<td>장면은</td>
+<td>앵커(인물 기준 그림)를 「프롬프트에 첨부」로 붙여 미드저니에서</td>
+<td>앵커를 <strong>재료</strong>로 올려 플로우에서</td>
+</tr>
+<tr>
+<td>장면 비용</td>
+<td>Fast 시간이 계속 들어요</td>
+<td>플로우 이미지는 <strong>0 크레딧</strong> (설정 창에 「생성 시 0 크레딧」이 보여요)</td>
+</tr>
+<tr>
+<td>마지막에</td>
+<td>바로 미리캔버스로</td>
+<td><strong>워터마크(AI가 만든 그림이라는 작은 표시) 지우기</strong> → 미리캔버스</td>
+</tr>
+</tbody>
+</table></div>
+<div class="box use"><b>사용량</b>베이직은 한 달 Fast(빠른 생성 시간) 200분이에요. 한 번 만들 때 대략 1분, 9컷(<code>--hd</code>, 고화질)은 그보다 조금 더 들어요. 예시를 만들 때 인물 두 명 컨셉 → 9컷 → 앵커 + 장면 1번에 대략 12분이 들었어요. 남은 시간은 왼쪽 아래 내 이름 옆 점 세 개 → 구독 관리에서 봐요.</div></section><section class="card wide" id="c0-3"><h3><span class="lab o">결과물</span><span class="t">끝나면 남는 것</span></h3><div class="tw"><table>
+<thead>
+<tr>
+<th>STEP</th>
+<th>남는 것</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>인물표 + 영어 주인공 프롬프트 + 리듬 있는 스토리보드</td>
+</tr>
+<tr>
+<td>2</td>
+<td>내 화풍 코드 하나 (<code>--p</code> 또는 <code>--sref</code>)</td>
+</tr>
+<tr>
+<td>3</td>
+<td>인물마다 고른 컨셉 그림 1장</td>
+</tr>
+<tr>
+<td>4</td>
+<td>인물마다 9컷 캐릭터 시트 1장</td>
+</tr>
+<tr>
+<td>5</td>
+<td>인물마다 차렷 앵커 1장</td>
+</tr>
+<tr>
+<td>6</td>
+<td>스토리보드 장면 그림</td>
+</tr>
+<tr>
+<td>7</td>
+<td>리듬 있는 글 쪽</td>
+</tr>
+<tr>
+<td>8</td>
+<td>미리캔버스 책 → PDF (용량 줄인 것)</td>
+</tr>
+</tbody>
+</table></div></section></div></section><section class="panel" data-panel="1"><div class="head"><span class="no">STEP 1</span><h2>기획안에서 인물과 장면 뽑기</h2><p>패들렛 내 칸의 기획안을 제미나이에 붙여 넣고, 그림에 쓸 인물 문장과 장면 순서를 받아요. 새로 지어낼 것은 없어요.</p></div><div class="grid"><section class="card wide" id="c1-0"><h3><span class="lab p">같이 실습</span><span class="t">1-1 인물표와 주인공 프롬프트</span></h3><div class="lr"><div class="ex"><div class="lrh">예시 · 할아버지의 라디오</div><p><strong>「할아버지의 라디오」 인물표</strong> — 책을 보고 정리한 예시예요. 제미나이 결과도 이런 모양으로 나와요</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>인물</th>
+<th>생김새</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>할아버지 (1970년대)</td>
+<td>흰머리, 주름진 웃는 얼굴, 민트색 저고리풍 셔츠, 흰 바지, 맨발</td>
+</tr>
+<tr>
+<td>소년 (1970년대)</td>
+<td>일곱 살, 까만 바가지 머리, 흰 민소매, 남색 반바지, 맨발</td>
+</tr>
+<tr>
+<td>손자 (지금)</td>
+<td>까만 머리, 노란 스웨터</td>
+</tr>
+<tr>
+<td>할아버지 (지금, 커서 된 소년)</td>
+<td>안경, 베이지 카디건, 회색 바지</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>할아버지 주인공 프롬프트</strong> — 앵커용 이름: <code>grandfather</code></p>
+<div class="prompt"><pre>picture book illustration, a Korean grandfather in his seventies, short white hair, kind wrinkled face, light mint green traditional-style shirt, loose white trousers, barefoot</pre><button type="button" class="cp">복사</button></div>
+<div class="box tr"><b>해석</b>그림책 삽화, 칠십 대 한국 할아버지, 짧은 흰머리, 다정한 주름진 얼굴, 연한 민트색 한복풍 셔츠, 헐렁한 흰 바지, 맨발</div>
+
+<p><strong>소년 주인공 프롬프트</strong> — 앵커용 이름: <code>boy</code></p>
+<div class="prompt"><pre>picture book illustration, a seven-year-old Korean boy, short black bowl haircut, bright round eyes, white sleeveless undershirt, navy blue shorts, barefoot</pre><button type="button" class="cp">복사</button></div>
+<div class="box tr"><b>해석</b>그림책 삽화, 일곱 살 한국 소년, 짧은 까만 바가지 머리, 반짝이는 동그란 눈, 흰 민소매 속셔츠, 남색 반바지, 맨발</div></div><div class="my"><div class="lrh">내 것 만들기</div><p><strong>제미나이에 기획안을 붙인 뒤 이어서 보내요</strong></p>
+<div class="prompt"><pre>위 기획안에 나오는 인물을 모두 찾아 표로 정리해 줘.
+같은 사람이라도 나이가 다르면 따로 적어 줘.
+
+표: 인물 | 나이 | 머리 | 옷(무늬 없는 단색) | 신발 | 얼굴 느낌
+
+표 아래에 인물마다 미드저니용 「주인공 프롬프트」를 영어 한 문장으로 만들어 코드 블록에 하나씩 넣어 줘.
+형식: picture book illustration, a [나이] Korean [누구], [머리], [얼굴], [윗옷], [아랫옷], [신발]
+코드 블록 위에는 인물마다 「앵커용 이름」을 영어 한 단어로 적어 줘. (예: grandfather, boy, girl, mother)
+코드 블록 아래에는 우리말 해석을 한 줄 붙여 줘.
+기획안에 없는 생김새는 지어내지 말고 나에게 물어봐.</pre><button type="button" class="cp">복사</button></div>
+<ul>
+<li>옷은 <strong>무늬 없는 단색</strong>이 좋아요. 무늬는 칸마다 달라지기 쉬워요</li>
+<li>나이 단서(wrinkled face, seven-year-old)를 꼭 넣어요. 빠지면 할아버지가 젊어지기도 해요</li>
+</ul></div></div><div class="box help"><b>막히면</b>기획안에 생김새가 거의 없으면, 제미나이가 묻는 대로 "흰머리", "노란 스웨터"처럼 짧게만 답해도 돼요.</div></section><section class="card wide" id="c1-1"><h3><span class="lab p">같이 실습</span><span class="t">1-2 리듬 있는 스토리보드</span></h3><div class="lr"><div class="ex"><div class="lrh">예시 · 할아버지의 라디오</div><p><strong>「할아버지의 라디오」 장면 카메라 (일부)</strong> — 책 그림을 보고 정리한 예시예요</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>장</th>
+<th>장면</th>
+<th>샷</th>
+<th>앵글</th>
+<th>빛</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>지금, 방문 앞 할아버지와 휴대폰 보는 손자</td>
+<td>롱샷</td>
+<td>눈높이</td>
+<td>회청색 저녁</td>
+</tr>
+<tr>
+<td>2</td>
+<td>1970년대, 노을 진 툇마루의 할아버지와 소년</td>
+<td>풀샷</td>
+<td>눈높이</td>
+<td>따뜻한 주황</td>
+</tr>
+<tr>
+<td>3</td>
+<td>모깃불 앞 두 사람의 뒷모습</td>
+<td>롱샷</td>
+<td>살짝 하이</td>
+<td>따뜻한 주황</td>
+</tr>
+<tr>
+<td>4</td>
+<td>테이프 감은 나무 라디오</td>
+<td>클로즈업</td>
+<td>하이</td>
+<td>따뜻한 주황</td>
+</tr>
+<tr>
+<td>5</td>
+<td>라디오에 귀를 대는 두 사람</td>
+<td>미디엄</td>
+<td>눈높이</td>
+<td>따뜻한 주황</td>
+</tr>
+<tr>
+<td>6</td>
+<td>다이얼을 돌리는 할아버지 손</td>
+<td>클로즈업 ❗</td>
+<td>눈높이</td>
+<td>따뜻한 주황</td>
+</tr>
+</tbody>
+</table></div>
+<p>❗ 표시는 "느낌표 장면"이에요. 마음이 가장 큰 순간에만 가까이 다가가요.</p>
+<figure class="shot"><img data-k="book_rhythm" alt="실제 책의 그림 쪽 — 멀리 · 가까이 · 뒷모습 · 물건 · 둘이 함께, 샷이 번갈아 바뀌어요"><figcaption>실제 책의 그림 쪽 — 멀리 · 가까이 · 뒷모습 · 물건 · 둘이 함께, 샷이 번갈아 바뀌어요</figcaption></figure></div><div class="my"><div class="lrh">내 것 만들기</div><p><strong>제미나이에 이어서 보내요</strong></p>
+<div class="prompt"><pre>이 기획안의 장면 순서대로 그림 스토리보드를 표로 만들어 줘.
+
+표: 장 | 그림 내용 한 줄 | 뷰 | 샷 | 앵글 | 빛·색 | 이렇게 고른 이유
+
+카메라 규칙:
+① 첫 장면은 멀리서(롱샷)
+② 보통 장면(풀샷·롱샷·미디엄 샷, 눈높이)이 약 70%
+③ 느낌표 장면(클로즈업·로우 앵글·하이 앵글)은 20~30%, 마음이 가장 큰 순간에만
+④ 같은 샷 3장 연속 금지
+⑤ 마지막 장면은 한 걸음 뒤로(미디엄 샷이나 롱샷)
+지금은 회청색 저녁빛, 옛날은 따뜻한 주황빛으로 구분해 줘.
+
+표 아래에 샷 순서를 한 줄로 보여 줘.</pre><button type="button" class="cp">복사</button></div></div></div><div class="box more"><b>한 걸음 더</b>샷 순서 한 줄을 소리 내어 읽어 보세요. "롱 · 풀 · 롱 · 클로즈 · 미디엄 · 클로즈"처럼 멀고 가까운 게 섞여 있으면 책장을 넘길 때 리듬이 생겨요.</div>
+
+<div class="box help"><b>막히면</b>제미나이가 표 대신 긴 글로 답하면 "표로 다시 보여 줘"라고 한 번 더 보내요. 장면이 기획안과 다르게 바뀌었으면 "기획안 장면 순서 그대로"라고 짚어 줘요.</div>
+
+<div class="box use"><b>사용량</b>STEP 1은 제미나이만 써서 미드저니 시간이 들지 않아요.</div></section></div></section><section class="panel" data-panel="2"><div class="head"><span class="no">STEP 2</span><h2>화풍 정하기 — 무드보드 · 프로필 · 스타일 참조</h2><p>미드저니에 내 책 화풍을 먼저 알려 줘요. 화풍이 정해져야 인물도 그 화풍으로 나와요.</p></div><div class="grid"><section class="card wide" id="c2-0"><h3><span class="lab d">시연</span><span class="t">2-1 무드보드(화풍 그림 모음판) 만들기</span></h3><div class="lr"><div class="ex"><div class="lrh">예시 · 할아버지의 라디오</div><p><strong>책 그림 8장으로 무드보드 「할아버지의 라디오」를 만들었어요</strong></p>
+<div class="shots n2"><figure class="shot"><img data-k="ui_mood_new" alt="새 무드보드 — 처음 화면"><figcaption>새 무드보드 — 처음 화면</figcaption></figure><figure class="shot"><img data-k="ui_mood_radio" alt="책 그림 8장을 올린 무드보드"><figcaption>책 그림 8장을 올린 무드보드</figcaption></figure></div>
+
+<p>「프롬프트에 사용」을 누르니 이 코드가 나왔어요.</p>
+<div class="prompt"><pre>--p m7519681894506995511</pre><button type="button" class="cp">복사</button></div>
+<div class="box tr"><b>해석</b>무드보드 「할아버지의 라디오」 화풍으로 그려 줘</div></div><div class="my"><div class="lrh">내 것 만들기</div><p><strong>순서</strong></p>
+<ol>
+<li>왼쪽 메뉴 「무드보드」 → 「새 무드보드」</li>
+<li>제목 칸을 눌러 내 책 이름으로 바꿔요</li>
+<li>그림 넣기 — 세 가지 중 편한 것
+   - 「이미지 업로드하기」: 내 컴퓨터의 그림
+   - 「링크에서 가져오기」: 핀터레스트 등 웹 그림 주소
+   - 「내 창작물에서 가져오기」: 미드저니에서 만든 내 그림</li>
+<li>「프롬프트에 사용」을 눌러 나온 <code>--p m숫자</code>를 메모해요</li>
+</ol>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>그림 수</th>
+<th>느낌</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>5~10장</td>
+<td>수업용으로 충분해요. 화풍이 비슷한 그림만 모아요</td>
+</tr>
+<tr>
+<td>20~40장</td>
+<td>화풍이 더 단단해져요</td>
+</tr>
+<tr>
+<td>100장 넘게</td>
+<td>오래 쓸 내 화풍 저장고</td>
+</tr>
+</tbody>
+</table></div></div></div><div class="box warn"><b>주의</b>무드보드 아이디는 꼭 <code>--p m숫자</code>로 써요. 앞의 <code>m</code>이 빠지면 오류가 나요.</div></section><section class="card wide" id="c2-1"><h3><span class="lab k">알아 두기</span><span class="t">2-2 화풍을 정하는 세 가지 방법</span></h3><div class="lr"><div class="ex"><div class="lrh">예시 · 할아버지의 라디오</div><p><strong>예시는 무드보드로 했어요</strong></p>
+<p>책 그림이 이미 있어서, 그 그림들을 모아 무드보드로 만드는 게 가장 빨랐어요. 앞으로 모든 문장 끝에 <code>--p m7519681894506995511</code>를 붙여요.</p></div><div class="my"><div class="lrh">내 것 만들기</div><div class="tw"><table>
+<thead>
+<tr>
+<th>방법</th>
+<th>언제</th>
+<th>문장 끝에 붙이는 것</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>무드보드</td>
+<td>마음에 드는 그림이 여러 장 있을 때</td>
+<td><code>--p m숫자</code></td>
+</tr>
+<tr>
+<td>프로필(개인화)</td>
+<td>미드저니에서 그림 고르기를 해 둔 분</td>
+<td><code>--p 코드</code></td>
+</tr>
+<tr>
+<td>스타일 참조</td>
+<td>딱 맞는 그림 한 장이나 코드가 있을 때</td>
+<td><code>--sref 코드</code></td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li>오른쪽 위 「개인화」가 켜져 있으면 기본 프로필이 같이 들어가요. 내 코드만 쓰려면 끄거나 원하는 것만 켜요</li>
+<li>무드보드와 <code>--sref</code>는 같이 써도 돼요</li>
+</ul></div></div><div class="box help"><b>막히면</b>그림을 올렸는데 「프롬프트에 사용」이 안 보이면 그림이 다 올라갈 때까지 잠깐 기다려요. 코드를 잃어버리면 왼쪽 「무드보드」 목록에서 내 보드를 열면 다시 보여요.</div>
+
+<div class="box more"><b>한 걸음 더</b>무드보드와 스타일 참조(<code>--sref</code>)를 같이 붙이면, 무드보드 화풍에 그림 한 장의 색감을 더할 수 있어요. 둘 다 붙인 뒤 4장을 비교해 보세요.</div>
+
+<div class="box use"><b>사용량</b>무드보드를 만들 때는 시간이 들지 않아요.</div></section></div></section><section class="panel" data-panel="3"><div class="head"><span class="no">STEP 3</span><h2>인물 컨셉 — 4장 뽑고 하나 고르기</h2><p>주인공 프롬프트에 화풍 코드를 붙여 서 있는 전신을 뽑고, 그중 가장 마음에 드는 한 장을 골라요. 이 한 장이 다음 단계의 기준이 돼요.</p></div><div class="grid"><section class="card wide" id="c3-0"><h3><span class="lab p">같이 실습</span><span class="t">3-1 할아버지 컨셉</span></h3><div class="lr"><div class="ex"><div class="lrh">예시 · 할아버지의 라디오</div><div class="prompt"><pre>picture book illustration, a Korean grandfather in his seventies, short white hair, kind wrinkled face, light mint green traditional-style shirt, loose white trousers, barefoot, standing calmly, full body from head to toe, plain warm paper background --ar 2:3 --p m7519681894506995511</pre><button type="button" class="cp">복사</button></div>
+<div class="box tr"><b>해석</b>그림책 삽화, 칠십 대 한국 할아버지, 짧은 흰머리, 다정한 주름진 얼굴, 연한 민트색 한복풍 셔츠, 헐렁한 흰 바지, 맨발, 편안히 서 있는 모습, 머리부터 발끝까지 전신, 따뜻한 종이색 민무늬 바탕 / 세로 2:3, 무드보드 화풍</div>
+
+<figure class="shot"><img data-k="gp_concept" alt="무드보드 화풍으로 나온 할아버지 4장 — 세 번째를 골랐어요"><figcaption>무드보드 화풍으로 나온 할아버지 4장 — 세 번째를 골랐어요</figcaption></figure>
+
+<p><strong>세 번째를 고른 이유:</strong> 머리부터 발끝까지 다 나오고, 손을 내리고 바로 서 있어서 옷 모양이 잘 보여요.</p></div><div class="my"><div class="lrh">내 것 만들기</div><div class="prompt"><pre>[내 주인공 프롬프트], standing calmly, full body from head to toe, plain warm paper background --ar 2:3 --p [내 화풍 코드]</pre><button type="button" class="cp">복사</button></div>
+<div class="box tr"><b>해석</b>(내 주인공 문장), 편안히 서 있는 모습, 머리부터 발끝까지 전신, 따뜻한 종이색 민무늬 바탕 / 세로 2:3, 내 화풍</div>
+
+<p><strong>고르는 기준</strong></p>
+<ul>
+<li>머리부터 발끝까지 다 나왔나</li>
+<li>손이 옷을 가리지 않나</li>
+<li>나이·옷 색이 인물표와 맞나</li>
+<li>고른 그림에 하트를 눌러 두면 나중에 찾기 쉬워요</li>
+</ul></div></div></section><section class="card wide" id="c3-1"><h3><span class="lab p">같이 실습</span><span class="t">3-2 소년 컨셉</span></h3><div class="lr"><div class="ex"><div class="lrh">예시 · 할아버지의 라디오</div><div class="prompt"><pre>picture book illustration, a seven-year-old Korean boy, short black bowl haircut, bright round eyes, white sleeveless undershirt, navy blue shorts, barefoot, standing with a curious smile, full body from head to toe, plain warm paper background --ar 2:3 --p m7519681894506995511</pre><button type="button" class="cp">복사</button></div>
+<div class="box tr"><b>해석</b>그림책 삽화, 일곱 살 한국 소년, 짧은 까만 바가지 머리, 반짝이는 동그란 눈, 흰 민소매 속셔츠, 남색 반바지, 맨발, 궁금한 듯 웃으며 서 있는 모습, 머리부터 발끝까지 전신, 따뜻한 종이색 민무늬 바탕 / 세로 2:3, 무드보드 화풍</div>
+
+<figure class="shot"><img data-k="boy_concept" alt="소년 4장 — 세 번째를 골랐어요"><figcaption>소년 4장 — 세 번째를 골랐어요</figcaption></figure></div><div class="my"><div class="lrh">내 것 만들기</div><p><strong>인물마다 3-1을 되풀이해요</strong></p>
+<ul>
+<li>주인공 프롬프트만 바꾸고 뒤는 그대로 둬요</li>
+<li>표정이나 자세를 한 마디 넣어도 돼요: <code>standing with a curious smile</code></li>
+</ul>
+<div class="box help"><b>막히면</b>4장이 다 마음에 안 들면 「다시 실행」을 한 번 더 눌러요. 그래도 안 되면 주인공 프롬프트의 나이·옷 단어를 더 또렷하게 바꿔요.</div></div></div><div class="box more"><b>한 걸음 더</b>4장 중 둘이 비슷하게 마음에 들면, 하나를 열어 「약하게 변형」으로 한 번 더 돌려 보세요. 얼굴은 그대로, 옷 주름·자세만 조금씩 달라진 후보가 나와요.</div>
+
+<div class="box use"><b>사용량</b>인물 한 명에 대략 1분이에요.</div></section></div></section><section class="panel" data-panel="4"><div class="head"><span class="no">STEP 4</span><h2>9컷 캐릭터 시트 — 한 장에 아홉 칸</h2><p>고른 컨셉 그림을 「프롬프트에 첨부」로 붙이고, 고정 문장 앞에 주인공 프롬프트만 넣으면 같은 인물이 아홉 칸에 나와요.</p></div><div class="grid"><section class="card wide" id="c4-0"><h3><span class="lab d">시연</span><span class="t">4-1 고른 그림을 「프롬프트에 첨부」로 붙이기</span></h3><figure class="shot"><img data-k="ui_attach_big" alt="프롬프트 창 왼쪽 그림 버튼 → 빨간 상자 「프롬프트에 첨부」 칸에 고른 할아버지를 넣었어요"><figcaption>프롬프트 창 왼쪽 그림 버튼 → 빨간 상자 「프롬프트에 첨부」 칸에 고른 할아버지를 넣었어요</figcaption></figure><div class="lr"><div class="ex"><div class="lrh">예시 · 할아버지의 라디오</div><p><strong>스타일 참조 칸이 아니라 「프롬프트에 첨부」 칸</strong>에 넣어요. 프롬프트에 첨부는 "이 사람을 그려 줘", 스타일 참조는 "이 그림 느낌으로 그려 줘"예요.</p></div><div class="my"><div class="lrh">내 것 만들기</div><ol>
+<li>프롬프트 창 왼쪽 그림 버튼을 눌러요</li>
+<li>고른 컨셉 그림을 <strong>「프롬프트에 첨부」</strong> 칸으로 끌어다 놓아요 (스타일 참조 칸 아님)</li>
+<li>칸에 작은 그림이 보이면 준비 끝</li>
+</ol>
+<div class="box warn"><b>주의</b>그림을 붙이면 결과 비율이 붙인 그림 비율을 따라가요. 9컷은 문장 끝 <code>--ar 1:1</code>을 꼭 남겨요.</div></div></div></section><section class="card wide" id="c4-1"><h3><span class="lab p">같이 실습</span><span class="t">4-2 9컷 문장</span></h3><div class="lr"><div class="ex"><div class="lrh">예시 · 할아버지의 라디오</div><div class="prompt"><pre>picture book illustration, a Korean grandfather in his seventies, short white hair, kind wrinkled face, light mint green traditional-style shirt, loose white trousers, barefoot. A character sample sheet: one image divided into a 3 by 3 grid of nine equal square panels with thin white gutters, a plain white background as the same background in every panel. Top row, three panels, eye level, soft daylight: close-up of the face, medium shot from the waist up, full shot from head to toe with shoes. Middle row, three panels, medium shot, soft daylight: low angle looking up, high angle looking down, top-down view from directly above. Bottom row, three panels, medium shot, eye level: backlit by an orange sunset, clean studio lighting, night with pink and blue neon light. The same character with the same face, hair, clothes, colors and proportions in all nine panels --ar 1:1 --hd --no text, letters, numbers, logo --p m7519681894506995511</pre><button type="button" class="cp">복사</button></div>
+<div class="box tr"><b>해석</b>(할아버지 문장) + 캐릭터 견본 시트: 그림 한 장을 얇은 흰 줄로 나눈 3×3, 똑같은 정사각형 아홉 칸. 모든 칸 배경은 똑같은 흰 바탕. 윗줄 세 칸은 눈높이·부드러운 낮 빛으로 얼굴 클로즈업, 허리 위 미디엄 샷, 신발까지 보이는 머리~발끝 풀 샷. 가운뎃줄 세 칸은 미디엄 샷·낮 빛으로 아래에서 올려다본 로우 앵글, 위에서 내려다본 하이 앵글, 바로 위에서 본 탑뷰. 아랫줄 세 칸은 미디엄 샷·눈높이로 주황 노을 역광, 깔끔한 스튜디오 조명, 분홍·파랑 네온이 비치는 밤. 아홉 칸 모두 같은 얼굴·머리·옷·색·몸 비율 / 정사각형, 고화질, 글자·숫자·로고 빼기, 무드보드 화풍</div>
+
+<figure class="shot"><img data-k="gp_sheet4" alt="4장 중 세 번째를 골랐어요"><figcaption>4장 중 세 번째를 골랐어요</figcaption></figure>
+<figure class="shot"><img data-k="gp_sheet" alt="고른 할아버지 9컷 — 윗줄 샷, 가운뎃줄 앵글, 아랫줄 조명"><figcaption>고른 할아버지 9컷 — 윗줄 샷, 가운뎃줄 앵글, 아랫줄 조명</figcaption></figure></div><div class="my"><div class="lrh">내 것 만들기</div><p><strong>맨 앞 <code>[내 주인공 프롬프트]</code>만 바꿔요</strong></p>
+<div class="prompt"><pre>[내 주인공 프롬프트]. A character sample sheet: one image divided into a 3 by 3 grid of nine equal square panels with thin white gutters, a plain white background as the same background in every panel. Top row, three panels, eye level, soft daylight: close-up of the face, medium shot from the waist up, full shot from head to toe with shoes. Middle row, three panels, medium shot, soft daylight: low angle looking up, high angle looking down, top-down view from directly above. Bottom row, three panels, medium shot, eye level: backlit by an orange sunset, clean studio lighting, night with pink and blue neon light. The same character with the same face, hair, clothes, colors and proportions in all nine panels --ar 1:1 --hd --no text, letters, numbers, logo --p [내 화풍 코드]</pre><button type="button" class="cp">복사</button></div>
+<div class="box tr"><b>해석</b>(내 주인공 문장) + 캐릭터 견본 시트: 그림 한 장을 얇은 흰 줄로 나눈 3×3, 똑같은 정사각형 아홉 칸. 모든 칸 배경은 똑같은 흰 바탕. 윗줄 세 칸은 눈높이·부드러운 낮 빛으로 얼굴 클로즈업, 허리 위 미디엄 샷, 신발까지 보이는 머리~발끝 풀 샷. 가운뎃줄 세 칸은 미디엄 샷·낮 빛으로 아래에서 올려다본 로우 앵글, 위에서 내려다본 하이 앵글, 바로 위에서 본 탑뷰. 아랫줄 세 칸은 미디엄 샷·눈높이로 주황 노을 역광, 깔끔한 스튜디오 조명, 분홍·파랑 네온이 비치는 밤. 아홉 칸 모두 같은 얼굴·머리·옷·색·몸 비율 / 정사각형, 고화질, 글자·숫자·로고 빼기, 내 화풍</div>
+
+<div class="tw"><table>
+<thead>
+<tr>
+<th>줄</th>
+<th>왼쪽</th>
+<th>가운데</th>
+<th>오른쪽</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>윗줄 (샷)</td>
+<td>클로즈업</td>
+<td>미디엄 샷</td>
+<td>풀 샷</td>
+</tr>
+<tr>
+<td>가운뎃줄 (앵글)</td>
+<td>로우 앵글</td>
+<td>하이 앵글</td>
+<td>탑뷰</td>
+</tr>
+<tr>
+<td>아랫줄 (조명)</td>
+<td>노을 역광</td>
+<td>스튜디오 조명</td>
+<td>밤 네온</td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li><strong>배경을 넣고 싶으면</strong> <code>a plain white background</code>만 내 장소로 바꿔요. 예: <code>the wooden porch of a Korean countryside house</code></li>
+<li>스타일 참조를 쓰면 끝을 <code>--sref 코드</code>로 바꿔요</li>
+<li>맨발 인물이라면 <code>with shoes</code>를 <code>with bare feet</code>로 바꿔도 돼요</li>
+</ul></div></div></section><section class="card wide" id="c4-2"><h3><span class="lab p">같이 실습</span><span class="t">4-3 좋은 시트 고르기</span></h3><div class="lr"><div class="ex"><div class="lrh">예시 · 할아버지의 라디오</div><figure class="shot"><img data-k="boy_sheet4" alt="소년 9컷 4장 — 첫 번째를 골랐어요"><figcaption>소년 9컷 4장 — 첫 번째를 골랐어요</figcaption></figure>
+<figure class="shot"><img data-k="boy_sheet" alt="고른 소년 9컷 — 아홉 칸 얼굴·옷이 같아요"><figcaption>고른 소년 9컷 — 아홉 칸 얼굴·옷이 같아요</figcaption></figure></div><div class="my"><div class="lrh">내 것 만들기</div><p><strong>4장 중 하나를 고르는 기준</strong></p>
+<ul>
+<li>아홉 칸이 3×3으로 반듯한가 (3+4처럼 깨진 것은 빼요)</li>
+<li>아홉 칸 얼굴·옷·나이가 같은가</li>
+<li>아랫줄 조명 칸은 배경까지 색이 물들어도 괜찮아요. 빛이 바뀐 모습을 보는 칸이에요</li>
+<li>칸에 숫자나 글자가 찍혔으면 빼요</li>
+</ul>
+<div class="box help"><b>막히면</b>칸이 자꾸 깨지면 「다시 실행」을 한 번 더 해요. 9컷은 한 번에 만들어야 칸끼리 톤이 같아요. 칸을 따로 만들어 붙이지 않아요.</div></div></div><div class="box more"><b>한 걸음 더</b>아랫줄 조명 세 칸을 내 이야기 빛으로 바꿔 보세요. 예: <code>backlit by an orange sunset, warm lamp light in a dark room, cool blue moonlight</code>. 내 책 장면에 나올 빛을 미리 확인할 수 있어요.</div>
+
+<div class="box use"><b>사용량</b>9컷은 <code>--hd</code>라서 한 번에 1분보다 조금 더 들어요.</div>
+
+<div class="box stop"><b>여기서 끊어도 돼요</b>9컷 시트 2장까지 만들었으면 오늘은 여기까지 해도 좋아요. 다음 시간에 STEP 5부터 이어서 해요.</div></section></div></section><section class="panel" data-panel="5"><div class="head"><span class="no">STEP 5</span><h2>앵커 — 9컷 시트를 붙여 차렷 한 장</h2><p>고른 9컷 시트를 통째로 붙이고 차렷 전신 한 장을 뽑아요. 이 한 장이 장면을 만들 때 계속 붙이는 "기준 그림"이에요.</p></div><div class="grid"><section class="card wide" id="c5-0"><h3><span class="lab p">같이 실습</span><span class="t">5-1 할아버지 앵커</span></h3><div class="lr"><div class="ex"><div class="lrh">예시 · 할아버지의 라디오</div><p>「프롬프트에 첨부」 칸에 9컷 시트를 통째로 넣고:</p>
+<div class="prompt"><pre>the grandfather from the attached character sheet, one single full-body picture, standing straight at attention with both arms at the sides, front view, head to toe with both feet fully visible, empty space above the head and below the feet, calm face, plain white background, no shadow --ar 2:3 --p m7519681894506995511</pre><button type="button" class="cp">복사</button></div>
+<div class="box tr"><b>해석</b>첨부한 캐릭터 시트 속 할아버지, 전신 그림 딱 한 장. 두 팔을 옆에 붙이고 반듯하게 차렷, 정면, 머리부터 두 발까지 다 보이게, 머리 위와 발아래에 여백, 차분한 얼굴, 흰 바탕, 그림자 없음 / 세로 2:3, 무드보드 화풍</div>
+
+<div class="shots n2"><figure class="shot"><img data-k="anchors8" alt="앵커 결과 — 왼쪽 4장 할아버지, 오른쪽 4장 소년"><figcaption>앵커 결과 — 왼쪽 4장 할아버지, 오른쪽 4장 소년</figcaption></figure><figure class="shot"><img data-k="gp_anchor" alt="고른 할아버지 앵커"><figcaption>고른 할아버지 앵커</figcaption></figure></div></div><div class="my"><div class="lrh">내 것 만들기</div><div class="prompt"><pre>the [누구] from the attached character sheet, one single full-body picture, standing straight at attention with both arms at the sides, front view, head to toe with both feet fully visible, empty space above the head and below the feet, calm face, plain white background, no shadow --ar 2:3 --p [내 화풍 코드]</pre><button type="button" class="cp">복사</button></div>
+<div class="box tr"><b>해석</b>첨부한 캐릭터 시트 속 (누구), 전신 그림 딱 한 장. 두 팔을 옆에 붙이고 반듯하게 차렷, 정면, 머리부터 두 발까지 다 보이게, 머리 위와 발아래에 여백, 차분한 얼굴, 흰 바탕, 그림자 없음 / 세로 2:3, 내 화풍</div>
+
+<ul>
+<li><code>[누구]</code>에는 STEP 1에서 받은 「앵커용 이름」을 넣어요 (<code>grandfather</code>, <code>boy</code>처럼 한 단어)</li>
+<li>시트는 자르지 않고 <strong>통째로</strong> 붙여요</li>
+<li>저장 이름: 「앵커_할아버지」처럼</li>
+</ul>
+<div class="box help"><b>막히면</b>옷에 칸 줄 무늬가 옮겨 오면, 그 그림을 열어 「빠른 편집」에서 <code>plain mint green shirt without any pattern</code>처럼 고쳐요.</div></div></div></section><section class="card wide" id="c5-1"><h3><span class="lab p">같이 실습</span><span class="t">5-2 소년 앵커</span></h3><div class="lr"><div class="ex"><div class="lrh">예시 · 할아버지의 라디오</div><div class="shots n2"><figure class="shot"><img data-k="boy_anchor" alt="고른 소년 앵커"><figcaption>고른 소년 앵커</figcaption></figure><figure class="shot"><img data-k="gp_anchor" alt="할아버지 앵커와 나란히 — 같은 화풍"><figcaption>할아버지 앵커와 나란히 — 같은 화풍</figcaption></figure></div></div><div class="my"><div class="lrh">내 것 만들기</div><p><strong>인물마다 STEP 3 → 4 → 5를 되풀이해요</strong></p>
+<ul>
+<li>인물이 셋 이상이면 주인공 둘만 먼저 하고, 나머지는 다음 시간에 해도 돼요</li>
+<li>앵커는 PNG로 내려받아 폴더 하나에 모아요. 다음 STEP에서 계속 써요</li>
+</ul></div></div><div class="box more"><b>한 걸음 더</b>앵커를 정면 하나만 두지 말고 <code>side view</code>(옆모습) 한 장을 더 뽑아 두면, 옆으로 걷는 장면에서 얼굴이 더 잘 맞아요.</div>
+
+<div class="box use"><b>사용량</b>앵커 한 장에 대략 1분이에요. 여기서 남은 시간을 보고 가는 길 A와 B 중에 골라요.</div>
+
+<div class="box stop"><b>여기서 끊어도 돼요</b>앵커를 PNG로 내려받아 두면, 다음 시간에 미드저니든 플로우든 바로 장면부터 시작할 수 있어요.</div></section></div></section><section class="panel" data-panel="6"><div class="head"><span class="no">STEP 6</span><h2>장면 만들기 — 가는 길 A 미드저니 · 가는 길 B 플로우</h2><p>앵커를 붙이면 장면마다 같은 사람이 나와요. Fast 시간이 넉넉하면 A, 모자라면 B로 가요.</p></div><div class="grid"><section class="card wide" id="c6-0"><h3><span class="lab p">같이 실습</span><span class="t">6-A 미드저니로 장면 만들기</span></h3><div class="lr"><div class="ex"><div class="lrh">예시 · 할아버지의 라디오</div><p>「프롬프트에 첨부」 칸에 <strong>앵커 두 장</strong>(할아버지, 소년)을 넣고:</p>
+<div class="prompt"><pre>the grandfather and the boy from the attached pictures, sitting side by side on the wooden porch of a Korean countryside house at sunset, the grandfather smiling down at the boy, full shot, eye level, warm orange evening light --ar 3:4 --p m7519681894506995511</pre><button type="button" class="cp">복사</button></div>
+<div class="box tr"><b>해석</b>첨부한 그림 속 할아버지와 소년이 노을 진 한국 시골집 나무 마루에 나란히 앉아 있다, 할아버지가 소년을 내려다보며 웃는다, 풀 샷, 눈높이, 따뜻한 주황 저녁빛 / 세로 3:4, 무드보드 화풍</div>
+
+<figure class="shot"><img data-k="ui_attach_big2" alt="「프롬프트에 첨부」 칸에 앵커 두 장"><figcaption>「프롬프트에 첨부」 칸에 앵커 두 장</figcaption></figure>
+<figure class="shot"><img data-k="scene_mj4" alt="미드저니 결과 — 네 장 모두 같은 할아버지와 소년"><figcaption>미드저니 결과 — 네 장 모두 같은 할아버지와 소년</figcaption></figure></div><div class="my"><div class="lrh">내 것 만들기</div><p><strong>한 사람이 나오는 장면</strong> — 앵커 1장 첨부</p>
+<div class="prompt"><pre>the [누구] from the attached picture, [장면 내용 한 줄], [샷], [앵글], [빛·색] --ar 3:4 --p [내 화풍 코드]</pre><button type="button" class="cp">복사</button></div>
+<div class="box tr"><b>해석</b>첨부한 그림 속 (누구)가 (장면), (샷), (앵글), (빛·색) / 세로 3:4, 내 화풍</div>
+
+<p><strong>두 사람이 나오는 장면</strong> — 앵커 2장 첨부</p>
+<div class="prompt"><pre>the [누구] and the [누구] from the attached pictures, [장면 내용 한 줄], [샷], [앵글], [빛·색] --ar 3:4 --p [내 화풍 코드]</pre><button type="button" class="cp">복사</button></div>
+<div class="box tr"><b>해석</b>첨부한 그림 속 (누구)와 (누구)가 (장면), (샷), (앵글), (빛·색) / 세로 3:4, 내 화풍</div>
+
+<p><strong>세 사람 이상</strong> — 앵커를 모두 첨부 (최대 4장)</p>
+<div class="prompt"><pre>the [누구], the [누구] and the [누구] from the attached pictures, [장면 내용 한 줄], [샷], [앵글], [빛·색] --ar 3:4 --p [내 화풍 코드]</pre><button type="button" class="cp">복사</button></div>
+<div class="box tr"><b>해석</b>첨부한 그림 속 (누구), (누구), (누구)가 (장면), (샷), (앵글), (빛·색) / 세로 3:4, 내 화풍</div>
+
+<ul>
+<li><code>[장면 내용]</code>·<code>[샷]</code>·<code>[앵글]</code>·<code>[빛·색]</code>은 STEP 1-2 스토리보드 표에서 그대로 가져와요</li>
+<li>붙이는 앵커는 그 장면에 나오는 사람만</li>
+<li>그림책 한 쪽 비율은 <code>--ar 3:4</code>예요</li>
+<li>사람이 안 나오는 장면(물건·풍경)은 첨부 없이 장면 문장 + <code>--p [내 화풍 코드]</code>만 써요</li>
+</ul>
+<div class="box help"><b>막히면</b>두 사람 얼굴이 섞이면 문장에 옷 색을 한 번 더 써 줘요. 예: <code>the grandfather in a mint green shirt and the boy in a white sleeveless top</code></div></div></div></section><section class="card wide" id="c6-1"><h3><span class="lab p">같이 실습</span><span class="t">6-B 플로우로 넘어가 장면 만들기</span></h3><div class="lr"><div class="ex"><div class="lrh">예시 · 할아버지의 라디오</div><div class="prompt"><pre>그림책 삽화. 첨부한 할아버지와 소년이 노을 진 한옥 나무 마루에 나란히 앉아 있다. 할아버지가 소년을 내려다보며 웃는다. 풀 샷, 눈높이, 따뜻한 주황빛. 첨부한 인물의 얼굴, 머리, 옷과 그림 화풍을 그대로 유지. 글자 없음, 테두리 없음.</pre><button type="button" class="cp">복사</button></div>
+<figure class="shot"><img data-k="ui_flow_add" alt="앵커 두 장을 올리고 「+」 → 「프롬프트에 추가」"><figcaption>앵커 두 장을 올리고 「+」 → 「프롬프트에 추가」</figcaption></figure>
+<figure class="shot"><img data-k="ui_flow_set" alt="비율 3:4, 이미지 모드"><figcaption>비율 3:4, 이미지 모드</figcaption></figure>
+<figure class="shot"><img data-k="ui_flow_prompt" alt="앵커 두 장 + 우리말 장면 문장"><figcaption>앵커 두 장 + 우리말 장면 문장</figcaption></figure>
+<figure class="shot"><img data-k="scene_flow4" alt="플로우 결과 — 앵커 덕분에 같은 두 사람"><figcaption>플로우 결과 — 앵커 덕분에 같은 두 사람</figcaption></figure></div><div class="my"><div class="lrh">내 것 만들기</div><ol>
+<li>플로우에서 「새 프로젝트」를 열어요</li>
+<li>프롬프트 창 왼쪽 「+」 → 왼쪽 아래 「미디어 업로드」로 앵커 PNG를 올려요 (화면에 끌어다 놓아도 돼요)</li>
+<li>다시 「+」 → 앵커를 고르고 「프롬프트에 추가」 (장면에 나오는 사람 모두)</li>
+<li>오른쪽 모델 버튼에서 <strong>이미지 · 3:4</strong> 로 맞춰요</li>
+<li>스토리보드 장면을 우리말로 써요</li>
+</ol>
+<div class="prompt"><pre>그림책 삽화. 첨부한 [누구](와 [누구])가 [장면 내용 한 줄]. [샷], [앵글], [빛·색]. 첨부한 인물의 얼굴, 머리, 옷과 그림 화풍을 그대로 유지. 글자 없음, 테두리 없음.</pre><button type="button" class="cp">복사</button></div>
+<ul>
+<li>
+<p>한 사람이면 <code>(와 [누구])</code>를 지우고, 세 사람이면 <code>[누구], [누구], [누구]</code>로 써요</p>
+</li>
+<li>
+<p>화풍은 앵커에 이미 담겨 있어서 따로 코드가 필요 없어요</p>
+</li>
+<li>같은 장면을 2~4장 뽑고 가장 좋은 것을 내려받아요</li>
+</ul>
+<div class="box help"><b>막히면</b>화풍이 앵커와 달라 보이면 "첨부한 그림과 똑같은 화풍으로"를 문장 맨 앞으로 옮겨요. 사람이 하나 빠지면 「+」에서 그 앵커가 정말 추가됐는지 프롬프트 창 위 작은 그림을 확인해요.</div></div></div></section><section class="card wide" id="c6-2"><h3><span class="lab p">같이 실습</span><span class="t">6-C 워터마크 지우기 (가는 길 B)</span></h3><div class="lr"><div class="ex"><div class="lrh">예시 · 할아버지의 라디오</div><figure class="shot"><img data-k="watermark" alt="왼쪽: 오른쪽 아래 반짝이 표시 · 가운데: 확대 · 오른쪽: 15% 키워 잘라낸 뒤"><figcaption>왼쪽: 오른쪽 아래 반짝이 표시 · 가운데: 확대 · 오른쪽: 15% 키워 잘라낸 뒤</figcaption></figure></div><div class="my"><div class="lrh">내 것 만들기</div><p>플로우 그림은 <strong>오른쪽 아래 구석에 작은 반짝이 표시</strong>가 들어가요.</p>
+<p><strong>기본 — 미리캔버스에서 살짝 키워 잘라내기</strong></p>
+<ol>
+<li>그림을 쪽에 넣고, 그림의 <strong>왼쪽 위 모서리</strong>를 쪽 왼쪽 위에 맞춰요</li>
+<li>오른쪽 아래 모서리를 끌어 <strong>15% 정도</strong> 키워요 (3~5%로는 표시가 안 잘려요)</li>
+<li>오른쪽 아래 표시가 쪽 밖으로 나가면 끝. 인물 발끝이 잘리지 않았는지 확인해요</li>
+</ol>
+<p><strong>한 걸음 더 — 표시가 인물에 걸릴 때</strong></p>
+<ul>
+<li>그 그림을 미드저니 편집기에 올려 표시 부분만 지우고 다시 채워요 (Fast 시간이 조금 들어요)</li>
+</ul>
+<div class="box warn"><b>주의</b>워터마크를 지워도 AI로 만든 그림이라는 사실은 그대로예요. 책을 낼 때는 판권 쪽이나 맺는 글에 "그림은 AI 도구로 만들었어요"처럼 밝혀 두세요.</div></div></div><div class="box more"><b>한 걸음 더</b>가는 길 A와 B로 같은 장면을 하나씩 만들어 나란히 놓고 비교해 보세요. 내 책에 더 맞는 쪽으로 남은 장면을 만들면 돼요.</div>
+
+<div class="box use"><b>사용량</b>가는 길 B는 미드저니 시간이 더 들지 않아요.</div>
+
+<div class="box stop"><b>여기서 끊어도 돼요</b>장면 2~3장을 만들었으면 나머지 장면은 같은 방법으로 집에서 이어서 해도 돼요.</div></section></div></section><section class="panel" data-panel="7"><div class="head"><span class="no">STEP 7</span><h2>글 쪽도 리듬 있게 — 템플릿 다섯 가지</h2><p>그림 쪽만 리듬이 있으면 반쪽이에요. 오른쪽 글 쪽 모양도 장면에 따라 바꿔 줘요.</p></div><div class="grid"><section class="card wide" id="c7-0"><h3><span class="lab k">알아 두기</span><span class="t">7-1 글 쪽 템플릿 다섯 가지</span></h3><div class="lr"><div class="ex"><div class="lrh">예시 · 할아버지의 라디오</div><p><strong>「할아버지의 라디오」 글 쪽</strong> — 실제 책의 7쪽이에요</p>
+<figure class="shot"><img data-k="book_text" alt="글 쪽 — 따뜻한 종이색 바탕, 제목과 글이 가운데"><figcaption>글 쪽 — 따뜻한 종이색 바탕, 제목과 글이 가운데</figcaption></figure>
+
+<p>이 책은 모든 글 쪽이 "기본 쪽" 하나예요. 아래 템플릿을 섞으면 넘기는 맛이 더 생겨요.</p></div><div class="my"><div class="lrh">내 것 만들기</div><div class="tw"><table>
+<thead>
+<tr>
+<th>템플릿</th>
+<th>모양</th>
+<th>쓰는 곳</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>기본 쪽</td>
+<td>쪽 제목 + 글 3~4줄, 가운데</td>
+<td>보통 장면</td>
+</tr>
+<tr>
+<td>대사 쪽</td>
+<td>대사 한 줄만 크게 ("치, 지, 직!")</td>
+<td>느낌표 장면 옆</td>
+</tr>
+<tr>
+<td>소품 쪽</td>
+<td>글 아래 구석에 작은 소품 그림</td>
+<td>물건이 주인공인 장면</td>
+</tr>
+<tr>
+<td>숨 고르기 쪽</td>
+<td>한 문장만, 여백 넓게</td>
+<td>장면이 바뀌는 곳</td>
+</tr>
+<tr>
+<td>바탕색</td>
+<td>옛날은 따뜻한 종이색, 지금은 연한 회청색</td>
+<td>전체</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>규칙</strong></p>
+<ul>
+<li>같은 템플릿 3쪽 연속 금지</li>
+<li>느낌표 장면(클로즈업) 옆에는 대사 쪽</li>
+<li>템플릿 하나를 완성하면 「페이지 복제」로 늘리고 글만 바꿔요</li>
+</ul></div></div></section><section class="card wide" id="c7-1"><h3><span class="lab p">같이 실습</span><span class="t">7-2 제미나이에게 글 쪽 배치 받기</span></h3><div class="lr"><div class="ex"><div class="lrh">예시 · 할아버지의 라디오</div><p>책 장면에 템플릿을 붙여 본 예시예요.</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>장</th>
+<th>그림 샷</th>
+<th>글 쪽 템플릿</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>롱샷</td>
+<td>기본 쪽 (회청색)</td>
+</tr>
+<tr>
+<td>2</td>
+<td>풀샷</td>
+<td>기본 쪽 (종이색)</td>
+</tr>
+<tr>
+<td>3</td>
+<td>롱샷</td>
+<td>숨 고르기 쪽</td>
+</tr>
+<tr>
+<td>4</td>
+<td>클로즈업 ❗</td>
+<td>소품 쪽 (라디오)</td>
+</tr>
+<tr>
+<td>5</td>
+<td>미디엄</td>
+<td>기본 쪽</td>
+</tr>
+<tr>
+<td>6</td>
+<td>클로즈업 ❗</td>
+<td>대사 쪽 "치, 지, 직!"</td>
+</tr>
+</tbody>
+</table></div></div><div class="my"><div class="lrh">내 것 만들기</div><div class="prompt"><pre>위 스토리보드 장면마다 오른쪽 글 쪽 템플릿을 하나씩 정해 줘.
+
+템플릿: 기본 쪽 / 대사 쪽 / 소품 쪽 / 숨 고르기 쪽
+바탕색: 옛날 장면은 따뜻한 종이색, 지금 장면은 연한 회청색
+
+규칙:
+- 같은 템플릿 3쪽 연속 금지
+- 느낌표 장면(클로즈업·로우·하이) 옆에는 대사 쪽
+- 대사 쪽은 글에 있는 대사 중 한 줄만 크게
+
+표: 장 | 그림 샷 | 글 쪽 템플릿 | 바탕색 | 이 쪽에 들어갈 글</pre><button type="button" class="cp">복사</button></div>
+<div class="box help"><b>막히면</b>대사가 없는 이야기라면 대사 쪽 대신 "마음 한 줄"(예: 할아버지는 아무 말도 하지 않았다)을 크게 써도 돼요.</div>
+
+<div class="box more"><b>한 걸음 더</b>미리캔버스에서 템플릿 네 가지를 한 쪽씩 먼저 만들어 두고, 페이지 복제로 늘리면 배치가 훨씬 빨라요.</div></div></div></section></div></section><section class="panel" data-panel="8"><div class="head"><span class="no">STEP 8</span><h2>미리캔버스로 책 엮기 → PDF → 용량 줄이기</h2><p>그림과 글을 미리캔버스에 넣어 책으로 엮고, PDF로 내려받아 용량을 줄여요.</p></div><div class="grid"><section class="card wide" id="c8-0"><h3><span class="lab p">같이 실습</span><span class="t">8-1 미리캔버스 쪽 배치</span></h3><div class="lr"><div class="ex"><div class="lrh">예시 · 할아버지의 라디오</div><p><strong>「할아버지의 라디오」 펼침면 — 왼쪽 그림, 오른쪽 글</strong></p>
+<figure class="shot"><img data-k="book_spread" alt="6쪽 그림 · 7쪽 글 — 펼치면 왼쪽 그림, 오른쪽 글"><figcaption>6쪽 그림 · 7쪽 글 — 펼치면 왼쪽 그림, 오른쪽 글</figcaption></figure></div><div class="my"><div class="lrh">내 것 만들기</div><p><strong>쪽 배치 공식: 장면 N개면 2N + 6쪽</strong> (10장면이면 26쪽)</p>
+<p>예시 책은 27쪽이에요. 맨 끝에 빈 쪽 하나가 더 붙어 있어서 그래요. 공식은 내 책의 기본 쪽수를 잡는 기준이에요.</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>쪽</th>
+<th>무엇</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>앞표지</td>
+</tr>
+<tr>
+<td>2 · 3</td>
+<td>앞속표지 · 목차</td>
+</tr>
+<tr>
+<td>4 ~ 2N+3</td>
+<td>장면 — 짝수 쪽 그림(왼쪽), 홀수 쪽 글(오른쪽)</td>
+</tr>
+<tr>
+<td>2N+4 · 2N+5</td>
+<td>판권 · 맺는 글</td>
+</tr>
+<tr>
+<td>2N+6</td>
+<td>뒷표지</td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li>그림은 쪽에 꽉 차게 넣어요 (가는 길 B는 여기서 워터마크까지 잘라내요)</li>
+<li>글 쪽은 STEP 7 템플릿대로</li>
+<li>판권(책 정보 쪽: 발행일·저자·출판사·ISBN)은 부크크에서 받은 내용을 넣어요</li>
+</ul>
+<div class="box help"><b>막히면</b>그림과 글의 좌우가 뒤바뀌면, 앞부분 쪽수가 홀수가 된 거예요. 앞속표지·목차 쪽이 빠졌는지 확인해요.</div></div></div></section><section class="card wide" id="c8-1"><h3><span class="lab p">같이 실습</span><span class="t">8-2 PDF 내려받고 용량 줄이기</span></h3><div class="lr"><div class="ex"><div class="lrh">예시 · 할아버지의 라디오</div><p><strong>「할아버지의 라디오」 PDF — 27쪽</strong></p>
+<p>27쪽 그림책 PDF가 약 7MB예요. 그림 원본을 그대로 넣으면 수십 MB가 되기 쉬워서, 20MB를 넘으면 줄여요.</p></div><div class="my"><div class="lrh">내 것 만들기</div><ol>
+<li>미리캔버스 오른쪽 위 「다운로드」 → <strong>PDF</strong> 로 내려받아요</li>
+<li>파일 크기를 확인해요 (파일 오른쪽 클릭 → 속성)</li>
+<li>부크크 전자책은 <strong>20MB 이하</strong>여야 해요. 넘으면 줄여요
+   - 무료 PDF 압축 사이트에 올려 줄여요. 검색창에 「PDF 압축」을 치면 여러 곳이 나와요
+   - 압축 단계는 중간(권장)부터 해 보고, 그림이 뭉개지면 한 단계 약하게 해요</li>
+<li>줄인 PDF를 넘겨 보며 그림·글이 깨진 쪽이 없는지 확인해요</li>
+</ol>
+<div class="box warn"><b>주의</b>인쇄용(종이책) PDF는 줄이지 않아요. 줄이는 건 전자책용만이에요.</div>
+
+<div class="box help"><b>막히면</b>압축 사이트에서 파일이 안 올라가면 다른 압축 사이트를 써 보거나, 미리캔버스에 넣는 그림을 JPG로 바꿔 넣고 다시 내려받아요.</div>
+
+<div class="box more"><b>한 걸음 더</b>줄인 PDF로 플립북(넘겨 보는 웹 책)을 만들어 패들렛에 링크로 올려 보세요.</div></div></div></section></div></section><section class="panel" data-panel="9"><div class="head"><span class="no">STEP 9</span><h2>패들렛 내 칸에 한 번에 올리기</h2><p>지금까지 만든 것을 내 칸 글 하나에 모아 올려요.</p></div><div class="grid"><section class="card wide" id="c9-0"><h3><span class="lab u">패들렛</span><span class="t">올릴 것</span></h3><div class="lr"><div class="ex"><div class="lrh">예시 · 할아버지의 라디오</div><p><strong>제목:</strong> 할아버지의 라디오 — 캐릭터부터 장면까지</p>
+<p><strong>첨부 순서</strong></p>
+<ol>
+<li>할아버지 9컷 시트</li>
+<li>할아버지 앵커</li>
+<li>소년 9컷 시트</li>
+<li>소년 앵커</li>
+<li>장면 그림</li>
+</ol>
+<p><strong>본문:</strong> 무드보드 코드 <code>--p m7519681894506995511</code>, 가는 길 A</p></div><div class="my"><div class="lrh">내 것 만들기</div><p><strong>제목:</strong> [내 책 제목] — 캐릭터부터 장면까지</p>
+<p><strong>첨부 순서</strong></p>
+<ol>
+<li>인물마다 9컷 시트 → 앵커</li>
+<li>만든 장면 그림</li>
+<li>(했으면) 줄인 PDF</li>
+</ol>
+<p><strong>본문 세 줄</strong></p>
+<ul>
+<li>내 화풍 코드</li>
+<li>가는 길 A 또는 B</li>
+<li>다음에 이어서 할 것 한 줄</li>
+</ul></div></div><div class="box help"><b>막히면</b>그림이 한꺼번에 안 올라가면 한 장씩 「첨부」를 눌러 추가해요. 글을 먼저 저장하고 나중에 그림을 더해도 돼요.</div>
+
+<div class="box more"><b>한 걸음 더</b>다른 분 글에 내 앵커 그림과 비교해 "잘 맞는 칸" 한 줄 댓글을 남겨 보세요.</div></section></div></section>
+    <div class="pager" id="pager"><button type="button" id="prev">← 이전</button><span id="where"></span><button type="button" id="next">다음 →</button></div>
+  </main>
+  <aside class="side"><div class="sidein" id="side"><b>이 STEP의 내용</b><div id="sidelist"></div></div></aside>
+</div>
+<script>var IMG={anchors8:"img01.jpg",book_rhythm:"img02.jpg",book_spread:"img03.jpg",book_text:"img04.jpg",boy_anchor:"img05.jpg",boy_concept:"img06.jpg",boy_sheet:"img07.jpg",boy_sheet4:"img08.jpg",gp_anchor:"img09.jpg",gp_concept:"img10.jpg",gp_sheet:"img11.jpg",gp_sheet4:"img12.jpg",scene_flow4:"img13.jpg",scene_mj4:"img14.jpg",ui_attach_big:"img15.jpg",ui_attach_big2:"img16.jpg",ui_flow_add:"img17.jpg",ui_flow_prompt:"img18.jpg",ui_flow_set:"img19.jpg",ui_mood_new:"img20.jpg",ui_mood_radio:"img21.jpg",watermark:"img22.jpg"};(function(){
+  var root=document.documentElement, base=20, cur=0;
+  var tabs=[].slice.call(document.querySelectorAll('#tabs button'));
+  var panels=[].slice.call(document.querySelectorAll('.panel'));
+  var list=document.getElementById('sidelist'), top=document.getElementById('top');
+  var prev=document.getElementById('prev'), next=document.getElementById('next'), where=document.getElementById('where');
+  function setTop(){ root.style.setProperty('--topH', top.offsetHeight+'px'); }
+  function side(p){
+    list.innerHTML='';
+    [].forEach.call(panels[p].querySelectorAll('.card'),function(c){
+      var a=document.createElement('a'), lab=c.querySelector('.lab'), t=c.querySelector('.t');
+      var i=document.createElement('i'); i.textContent=lab?lab.textContent:'';
+      a.appendChild(i); a.appendChild(document.createTextNode(t?t.textContent:''));
+      a.onclick=function(e){ e.preventDefault(); c.scrollIntoView({behavior:'smooth',block:'start'}); };
+      list.appendChild(a);
+    });
+  }
+  function go(p,keep){
+    cur=p;
+    panels.forEach(function(el,i){ el.classList.toggle('on',i===p); });
+    tabs.forEach(function(b,i){ b.classList.toggle('on',i===p); });
+    side(p); prev.disabled=(p===0); next.disabled=(p===panels.length-1);
+    where.textContent=tabs[p].textContent+' ('+(p+1)+' / '+panels.length+')';
+    setTop();
+    if(!keep){ try{ window.scrollTo({top:0,behavior:'auto'}); }catch(e){ window.scrollTo(0,0); } }
+  }
+  tabs.forEach(function(b){ b.onclick=function(){ go(+b.getAttribute('data-p')); }; });
+  prev.onclick=function(){ if(cur>0) go(cur-1); };
+  next.onclick=function(){ if(cur<panels.length-1) go(cur+1); };
+  [].forEach.call(document.querySelectorAll('.zoom button'),function(b){
+    b.onclick=function(){ var z=+b.getAttribute('data-z'); base=z===0?20:Math.max(16,Math.min(30,base+z)); root.style.setProperty('--fs',base+'px'); setTop(); };
+  });
+  function copyText(t){
+    function fb(){
+      var ta=document.createElement('textarea'); ta.value=t; ta.setAttribute('readonly','');
+      ta.style.position='absolute'; ta.style.left='-9999px'; ta.style.top=(window.pageYOffset||0)+'px';
+      document.body.appendChild(ta); ta.select(); ta.setSelectionRange(0,t.length);
+      var ok=false; try{ ok=document.execCommand('copy'); }catch(e){}
+      document.body.removeChild(ta); return ok;
+    }
+    if(navigator.clipboard&&navigator.clipboard.writeText){
+      return navigator.clipboard.writeText(t).then(function(){return true;},function(){return fb();});
+    }
+    return Promise.resolve(fb());
+  }
+  [].forEach.call(document.querySelectorAll('.prompt .cp'),function(b){
+    b.onclick=function(){
+      var pre=b.parentNode.querySelector('pre');
+      copyText(pre.textContent).then(function(ok){
+        b.textContent=ok?'복사됨':'직접 선택';
+        b.classList.toggle('ok',!!ok);
+        if(!ok){ var r=document.createRange(); r.selectNodeContents(pre); var s=window.getSelection(); s.removeAllRanges(); s.addRange(r); }
+        setTimeout(function(){ b.textContent='복사'; b.classList.remove('ok'); },1600);
+      });
+    };
+  });
+  [].forEach.call(document.querySelectorAll('img[data-k]'),function(e){ var k=e.getAttribute('data-k'); if(IMG[k]) e.src=IMG[k]; });
+  window.addEventListener('resize',setTop);
+  go(0,true);
+})();
+</script></body></html>

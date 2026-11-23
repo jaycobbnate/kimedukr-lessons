@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>캡컷 프로 200% 활용 · 3회차 말이 글이 되는 날</title>
+<style>
+:root{--pt:#1f6feb;--pt-soft:#eef4ff;--line:#e3e7ee;--ink:#1d2433;--sub:#5b6476;--bg:#fbfbf9;
+--set:#eef4ff;--set-b:#c9dafc;--warn:#fff3f1;--warn-b:#f4c7bf;--more:#eef8f2;--more-b:#c5e6d1;--stuck:#f6f1fb;--stuck-b:#ddcdee;--fs:20px}
+*{box-sizing:border-box}
+html{font-size:var(--fs)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Pretendard","Noto Sans KR","Malgun Gothic",system-ui,sans-serif;line-height:1.7;word-break:keep-all}
+a{color:var(--pt)}
+.top{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid var(--line)}
+.top-in{max-width:1280px;margin:0 auto;padding:12px 20px 0}
+.ttl{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.ttl h1{font-size:1.05rem;margin:0;font-weight:800}
+.ttl .badge{font-size:.72rem;background:var(--pt-soft);color:var(--pt);border:1px solid var(--set-b);border-radius:999px;padding:2px 10px;font-weight:700}
+.zoom{margin-left:auto;display:flex;gap:6px}
+.zoom button{font:inherit;font-size:.78rem;border:1px solid var(--line);background:#fff;border-radius:8px;padding:2px 10px;cursor:pointer}
+.tabs{display:flex;gap:4px;overflow-x:auto;padding-top:8px}
+.tabs button{font:inherit;font-size:.82rem;border:0;background:none;padding:8px 14px;border-bottom:3px solid transparent;cursor:pointer;color:var(--sub);white-space:nowrap}
+.tabs button.on{color:var(--pt);border-bottom-color:var(--pt);font-weight:800}
+.wrap{max-width:1280px;margin:0 auto;padding:22px 20px 40px;display:grid;grid-template-columns:1fr 230px;gap:24px;align-items:start}
+.side{position:sticky;top:110px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px}
+.side b{display:block;font-size:.75rem;color:var(--sub);margin-bottom:6px}
+.side a{display:block;font-size:.78rem;padding:5px 8px;border-radius:8px;text-decoration:none;color:var(--ink)}
+.side a:hover{background:var(--pt-soft);color:var(--pt)}
+.step{display:none}.step.on{display:block}
+.step-head .no{color:var(--pt);font-weight:800;font-size:.8rem;letter-spacing:.05em}
+.step-head h2{margin:2px 0 6px;font-size:1.45rem}
+.step-head p{margin:0 0 18px;color:var(--sub)}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px 22px;scroll-margin-top:120px}
+.card.wide,.card:has(> .shot){grid-column:1/-1}
+.card:has(> .shot) > .shot{max-width:1100px}
+.card h3{margin:0 0 10px;font-size:1.05rem;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.card h3 .n{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--pt);color:#fff;font-size:.75rem}
+.tag{font-size:.65rem;border-radius:6px;padding:1px 8px;border:1px solid var(--line);color:var(--sub);font-weight:700}
+.tag.must{background:var(--pt-soft);color:var(--pt);border-color:var(--set-b)}
+.tag.pro{background:#f3eefe;color:#6d3fd8;border-color:#dccff8}
+.tag.free{background:#eef8f2;color:#25834d;border-color:#c5e6d1}
+ol,ul{padding-left:1.3em;margin:.4em 0}
+li{margin:.2em 0}
+.box{border-radius:12px;padding:12px 16px;margin:12px 0;border:1px solid}
+.box .t{display:block;margin-bottom:4px}
+.box.set{background:var(--set);border-color:var(--set-b)}
+.box.warn{background:var(--warn);border-color:var(--warn-b)}
+.box.more{background:var(--more);border-color:var(--more-b)}
+.box.stuck{background:var(--stuck);border-color:var(--stuck-b)}
+.shot{margin:12px 0 4px;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#1d1f24;text-align:center}
+.shot img{max-width:100%;display:block;margin:0 auto;cursor:zoom-in}
+.cap{font-size:.78rem;color:var(--sub);margin:4px 0 0}
+.kbd{display:inline-block;border:1px solid #cfd5df;border-bottom-width:2px;border-radius:6px;padding:0 7px;font-size:.8em;background:#fff;font-family:inherit}
+table{border-collapse:collapse;width:100%;font-size:.85rem;margin:8px 0}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:#f4f6f9}
+.svgbox{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px;margin:8px 0}
+.prompt{position:relative;background:#f7f8fb;border:1px solid var(--line);border-radius:12px;padding:12px 70px 12px 16px;margin:10px 0;font-size:.88rem;white-space:pre-wrap}
+.prompt .cp{position:absolute;top:8px;right:8px;font:inherit;font-size:.72rem;border:1px solid var(--set-b);background:#fff;color:var(--pt);border-radius:8px;padding:2px 10px;cursor:pointer}
+.links li{margin:.35em 0}
+.lk{font-weight:700}
+.navbtn{position:sticky;bottom:0;background:linear-gradient(transparent,var(--bg) 30%);padding:18px 0 10px;display:flex;justify-content:space-between;margin-top:20px}
+.navbtn button{font:inherit;font-size:.85rem;border:1px solid var(--set-b);background:#fff;color:var(--pt);border-radius:10px;padding:8px 18px;cursor:pointer}
+.navbtn button.go{background:var(--pt);color:#fff;border-color:var(--pt)}
+.navbtn button:disabled{opacity:.3;cursor:default}
+.lb{display:none;position:absolute;left:0;right:0;z-index:50;background:rgba(10,12,16,.9);padding:20px;text-align:center;cursor:zoom-out}
+.lb img{max-width:100%;border-radius:10px}
+@media (max-width:900px){.wrap{grid-template-columns:1fr}.side{display:none}.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="top"><div class="top-in">
+  <div class="ttl"><h1>캡컷 프로 200% 활용 · 3회차</h1><span class="badge">말이 글이 되는 날 + 글자 뒤 인물</span>
+    <div class="zoom"><button onclick="fz(-1)">가 −</button><button onclick="fz(1)">가 +</button></div></div>
+  <nav class="tabs" id="tabs"></nav>
+</div></header>
+
+<div class="wrap">
+<main id="main">
+
+<!-- STEP 0 -->
+<section class="step" data-title="오늘 할 것">
+  <div class="step-head"><div class="no">STEP 0</div><h2>오늘 만들 영상과 배울 것</h2>
+  <p>지난 시간에 못 한 <b>글자 뒤로 사람이 지나가는 타이틀</b>을 먼저 끝내고, 이어서 오늘의 본 내용인 <b>소리 다듬기와 말 자막</b>으로 숏폼 한 편을 완성합니다.</p></div>
+  <div class="grid">
+    <div class="card wide" id="s0-goal" data-nav="학습 목표">
+      <h3><span class="n">1</span>오늘의 학습 목표</h3>
+      <ol>
+        <li>영상을 두 줄로 겹치고 <b>배경 제거</b>로 사람만 오려, 글자 뒤로 사람이 지나가는 타이틀을 만들 수 있다.</li>
+        <li>오디오 패널의 <b>프로 기능(💎)</b>인 노이즈 제거·음성 보정·음향 노멀라이즈·음성 변조기와, 무료 기능인 음성 분리가 각각 무엇을 하는지 말할 수 있다.</li>
+        <li><b>에디트 파일럿</b>에게 말로 부탁해 소리 정리를 시키고, 결과를 확인할 수 있다.</li>
+        <li><b>대본</b> 기능으로 말 사이의 쉬는 구간을 한 번에 잘라 낼 수 있다.</li>
+        <li><b>자동 캡션</b>을 만들고, 오타 수정과 <b>자막 배경</b>으로 원래 박혀 있던 자막을 덮을 수 있다.</li>
+      </ol>
+    </div>
+    <div class="card wide" id="s0-flow" data-nav="오늘 흐름 한눈에">
+      <h3><span class="n">2</span>오늘 흐름 한눈에</h3>
+      <div class="svgbox">
+      <svg viewBox="0 0 1000 300" width="100%" role="img" aria-label="1교시 글자 뒤 인물 타이틀, 2교시 소리 실험실, 곰 숏폼 소리 다듬기, 곰 숏폼 자막, 완성">
+        <defs><marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M1 1L8 5L1 9" fill="none" stroke="#9aa3b2" stroke-width="1.6"/></marker></defs>
+        <g font-family="inherit" text-anchor="middle">
+          <text x="125" y="26" font-size="15" fill="#5b6476" font-weight="700">1교시</text>
+          <text x="625" y="26" font-size="15" fill="#5b6476" font-weight="700">2교시</text>
+          <line x1="250" y1="14" x2="250" y2="290" stroke="#e3e7ee" stroke-dasharray="5 5"/>
+          <rect x="15" y="50" width="220" height="140" rx="14" fill="#fff" stroke="#1f6feb" stroke-width="2"/>
+          <text x="125" y="84" font-size="14" fill="#1f6feb" font-weight="700">STEP 2 · 작품 ①</text>
+          <text x="125" y="114" font-size="19" fill="#1d2433" font-weight="700">글자 뒤 인물</text>
+          <text x="125" y="140" font-size="13" fill="#5b6476">배경 제거 💎 · 3층 쌓기</text>
+          <text x="125" y="162" font-size="13" fill="#5b6476">대형 타이틀 · 효과음</text>
+          <rect x="270" y="50" width="200" height="140" rx="14" fill="#f3eefe" stroke="#dccff8"/>
+          <text x="370" y="84" font-size="14" fill="#6d3fd8" font-weight="700">STEP 3</text>
+          <text x="370" y="114" font-size="19" fill="#1d2433" font-weight="700">소리 실험실</text>
+          <text x="370" y="140" font-size="13" fill="#5b6476">음성 분리 (MP3)</text>
+          <text x="370" y="162" font-size="13" fill="#5b6476">음성 변조기 💎 (토리)</text>
+          <line x1="474" y1="120" x2="502" y2="120" stroke="#9aa3b2" stroke-width="2" marker-end="url(#ar)"/>
+          <rect x="506" y="50" width="220" height="140" rx="14" fill="#fff" stroke="#1f6feb" stroke-width="2"/>
+          <text x="616" y="84" font-size="14" fill="#1f6feb" font-weight="700">STEP 4 · 작품 ②-1</text>
+          <text x="616" y="114" font-size="19" fill="#1d2433" font-weight="700">곰 숏폼 소리</text>
+          <text x="616" y="140" font-size="13" fill="#5b6476">노이즈·보정·노멀라이즈 💎</text>
+          <text x="616" y="162" font-size="13" fill="#5b6476">대본으로 쉼 삭제 💎</text>
+          <line x1="730" y1="120" x2="758" y2="120" stroke="#9aa3b2" stroke-width="2" marker-end="url(#ar)"/>
+          <rect x="762" y="50" width="225" height="140" rx="14" fill="#fff" stroke="#1f6feb" stroke-width="2"/>
+          <text x="874" y="84" font-size="14" fill="#1f6feb" font-weight="700">STEP 5 · 작품 ②-2</text>
+          <text x="874" y="114" font-size="19" fill="#1d2433" font-weight="700">곰 숏폼 자막</text>
+          <text x="874" y="140" font-size="13" fill="#5b6476">자동 캡션 · 오타 고치기</text>
+          <text x="874" y="162" font-size="13" fill="#5b6476">배경으로 덮기 · 펀치 줌</text>
+          <rect x="506" y="222" width="481" height="56" rx="12" fill="#eef8f2" stroke="#c5e6d1"/>
+          <text x="746" y="256" font-size="16" fill="#25834d" font-weight="700">STEP 6 · 내보내기 → 스페이스 업로드 → 로그아웃</text>
+          <rect x="15" y="222" width="455" height="56" rx="12" fill="#f7f8fb" stroke="#e3e7ee"/>
+          <text x="242" y="256" font-size="14" fill="#5b6476">소리를 먼저 다듬어야 자막 타이밍이 꼬이지 않습니다</text>
+        </g>
+      </svg></div>
+      <p class="cap">곰 숏폼은 <b>소리 → 자막</b> 순서가 핵심입니다. 쉬는 구간을 잘라 길이가 바뀐 다음에 자막을 만들어야 자막이 말과 딱 맞습니다.</p>
+    </div>
+    <div class="card wide" id="s0-pro" data-nav="오늘 쓰는 프로 기능 지도">
+      <h3><span class="n">3</span>오늘 쓰는 프로(💎) 기능 지도</h3>
+      <div class="box set"><b class="t">교안 표시 읽는 법</b><span class="tag must">필수</span> 꼭 함께 하기 · <span class="tag">선택</span> 시간이 남거나 집에서 · <span class="tag">시연 위주</span> 강사 화면을 보며 따라 하기</div>
+      <p>우리는 프로 구독 중이라 보석(💎) 표시 기능을 <b>전부</b> 쓸 수 있습니다. 오늘은 오디오와 자막 쪽 보석 기능을 하나도 빼지 않고 다 눌러 봅니다.</p>
+      <table>
+        <tr><th>어디에</th><th>기능</th><th>쉽게 말하면</th><th>오늘 STEP</th></tr>
+        <tr><td rowspan="2">동영상 패널</td><td>배경 제거 → 자동 삭제 💎</td><td>사람만 남기고 배경을 지움</td><td>2</td></tr>
+        <tr><td>텍스트 템플릿 💎 · 효과음</td><td>크고 멋진 제목 글자, 휙 소리</td><td>2</td></tr>
+        <tr><td rowspan="7">오디오 패널</td><td>음성 분리 <span class="tag free">Free</span></td><td>노래에서 목소리와 반주를 나눔</td><td>3</td></tr>
+        <tr><td>음성 변조기 💎</td><td>목소리를 다른 목소리·효과로 바꿈</td><td>3</td></tr>
+        <tr><td>노이즈 제거 💎</td><td>웅웅·쉬익 하는 잡음 지우기</td><td>4</td></tr>
+        <tr><td>음성 보정 💎</td><td>목소리를 또렷하게 (강도 0~100)</td><td>4</td></tr>
+        <tr><td>음향 노멀라이즈 💎</td><td>큰 소리·작은 소리를 고른 크기로</td><td>4</td></tr>
+        <tr><td>동영상(오디오) 번역기 💎</td><td>말을 다른 나라 말로 바꾸는 기능</td><td>5 한 걸음 더</td></tr>
+        <tr><td>채널 채우기</td><td>한쪽 스피커에서만 나는 소리를 양쪽으로</td><td>참고</td></tr>
+        <tr><td>타임라인 위</td><td>대본 💎 → 채우기용 단어 삭제</td><td>말 사이 쉼·반복·"음/어"를 한 번에 잘라 냄</td><td>4</td></tr>
+        <tr><td>오른쪽 아래</td><td>에디트 파일럿(EditPilot) 💎</td><td>말로 부탁하면 편집을 대신 해 줌</td><td>3·4</td></tr>
+        <tr><td rowspan="4">캡션 메뉴</td><td>자동 캡션 <span class="tag pro">Pro</span></td><td>말을 받아 적어 자막으로</td><td>5</td></tr>
+        <tr><td>캡션 템플릿 💎</td><td>숏폼식 자막 디자인 (히트·단어·글로우 등)</td><td>5</td></tr>
+        <tr><td>이중 언어 캡션 💎</td><td>한국어 + 다른 언어 자막을 두 줄로</td><td>5 한 걸음 더</td></tr>
+        <tr><td>자동 가사</td><td>노래 가사를 자막으로 만드는 기능</td><td>3 한 걸음 더</td></tr>
+      </table>
+    </div>
+    <div class="card" id="s0-ready" data-nav="시작 전 준비">
+      <h3><span class="n">4</span>시작 전 준비</h3>
+      <ul>
+        <li>캡컷 PC 앱 실행 → 왼쪽 위에 <b>Pro</b> 표시가 있는지 확인</li>
+        <li>내 D드라이브 폴더 안에 <b>3회차</b> 폴더 하나 만들기 (오늘 받는 파일은 전부 여기에)</li>
+        <li>설정의 「공간」은 지난번처럼 <b>자동 동기화 끄기</b> 상태인지 확인</li>
+      </ul>
+      <div class="box stuck"><b class="t">막힐 때: 단축키가 이상해요</b>공용 PC라 앞사람이 단축키를 바꿔 놓았을 수 있습니다. 「분할」이 <span class="kbd">Ctrl</span>+<span class="kbd">B</span>가 아니라 다른 키로 보이면, 메뉴 → 설정의 단축키에서 <b>기본값으로 초기화</b>하세요.</div>
+    </div>
+    <div class="card" id="s0-words" data-nav="오늘 나오는 말">
+      <h3><span class="n">5</span>오늘 나오는 말</h3>
+      <ul>
+        <li><b>트랙</b>(타임라인의 한 줄) — 위에 있는 줄이 화면에서 앞에 보입니다.</li>
+        <li><b>노멀라이즈</b>(소리 크기 고르게 맞추기)</li>
+        <li><b>캡션</b>(자막과 같은 말)</li>
+        <li><b>키프레임</b>(◇ 표시, "이 순간에는 이 값" 하고 찍는 점) — 점 두 개 사이가 저절로 움직입니다.</li>
+        <li><b>채우기용 단어</b>("음", "어"처럼 뜻 없이 끼는 말)</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- STEP 1 -->
+<section class="step" data-title="소재 받기">
+  <div class="step-head"><div class="no">STEP 1</div><h2>오늘 쓸 영상·음악 받기</h2>
+  <p>1교시는 <b>걷는 사람 영상</b>, 2교시는 <b>곰·토리 영상과 노래 두 곡</b>을 씁니다. 받은 파일은 모두 D드라이브 내 폴더 → 3회차 폴더에 저장하세요.</p></div>
+  <div class="grid">
+    <div class="card wide" id="s1-map" data-nav="무엇을 어디에 쓰나">
+      <h3><span class="n">1</span>무엇을 어디에 쓰나</h3>
+      <div class="svgbox">
+      <svg viewBox="0 0 1000 200" width="100%" role="img" aria-label="소재와 쓰는 곳 연결">
+        <g font-family="inherit" text-anchor="middle">
+          <rect x="10" y="20" width="230" height="70" rx="12" fill="#eef4ff" stroke="#c9dafc"/><text x="125" y="50" font-size="16" font-weight="700" fill="#1d2433">걷는 사람 영상</text><text x="125" y="74" font-size="13" fill="#5b6476">플로우 2 · 펙셀스 3 중 하나</text>
+          <rect x="10" y="110" width="230" height="70" rx="12" fill="#f3eefe" stroke="#dccff8"/><text x="125" y="140" font-size="16" font-weight="700" fill="#1d2433">노래 MP3 2곡</text><text x="125" y="164" font-size="13" fill="#5b6476">마운틴팝 · 마운틴록</text>
+          <rect x="385" y="20" width="230" height="70" rx="12" fill="#f3eefe" stroke="#dccff8"/><text x="500" y="50" font-size="16" font-weight="700" fill="#1d2433">뚜비 · 토리와 뚜비 (가로)</text><text x="500" y="74" font-size="13" fill="#5b6476">대사 + 배경음악</text>
+          <rect x="385" y="110" width="230" height="70" rx="12" fill="#fff" stroke="#1f6feb" stroke-width="2"/><text x="500" y="140" font-size="16" font-weight="700" fill="#1d2433">민원 해결 · 곰 (세로)</text><text x="500" y="164" font-size="13" fill="#5b6476">31초 내레이션 · 자막 박혀 있음</text>
+          <rect x="760" y="20" width="230" height="40" rx="10" fill="#fff" stroke="#e3e7ee"/><text x="875" y="46" font-size="15" fill="#1d2433">STEP 2 글자 뒤 인물</text>
+          <rect x="760" y="80" width="230" height="40" rx="10" fill="#fff" stroke="#e3e7ee"/><text x="875" y="106" font-size="15" fill="#1d2433">STEP 3 소리 실험실</text>
+          <rect x="760" y="140" width="230" height="40" rx="10" fill="#fff" stroke="#e3e7ee"/><text x="875" y="166" font-size="15" fill="#1d2433">STEP 4·5 곰 숏폼</text>
+          <path d="M240 55 C 500 30, 600 40, 760 40" fill="none" stroke="#9aa3b2" stroke-width="2"/>
+          <path d="M240 145 C 600 145, 650 100, 760 100" fill="none" stroke="#9aa3b2" stroke-width="2"/>
+          <path d="M615 55 C 680 60, 700 100, 760 100" fill="none" stroke="#9aa3b2" stroke-width="2"/>
+          <path d="M615 145 L 760 160" fill="none" stroke="#1f6feb" stroke-width="2.5"/>
+        </g></svg></div>
+    </div>
+    <div class="card" id="s1-walk" data-nav="1교시 걷는 영상">
+      <h3><span class="n">2</span>1교시: 걷는 사람 영상 (하나만 골라 받기)</h3>
+      <ul class="links">
+        <li>강사 견본 ① 벽돌 카페 (왼→오): <a class="lk" href="https://flow.google.com/shared/video/a1da38be-ebc5-4a62-8419-ace9b036b970" target="_blank" rel="noopener">플로우 링크</a></li>
+        <li>강사 견본 ② 민트색 벽 (왼→오): <a class="lk" href="https://flow.google.com/shared/video/de95dbf1-89e7-488e-9a9e-0113311bde88" target="_blank" rel="noopener">플로우 링크</a></li>
+        <li>펙셀스 ① 노란 벽·빨간 문 (왼→오): <a class="lk" href="https://www.pexels.com/video/8126439/" target="_blank" rel="noopener">pexels.com/video/8126439</a></li>
+        <li>펙셀스 ② 보라색 벽 (왼→오): <a class="lk" href="https://www.pexels.com/video/6951582/" target="_blank" rel="noopener">pexels.com/video/6951582</a></li>
+        <li>펙셀스 ③ 셔터 앞 (오→왼): <a class="lk" href="https://www.pexels.com/video/5899455/" target="_blank" rel="noopener">pexels.com/video/5899455</a></li>
+      </ul>
+      <div class="box set"><b class="t">받는 법</b>
+        <ul><li><b>플로우</b>: 링크를 열고 영상 위 <b>다운로드(↓)</b></li>
+        <li><b>펙셀스</b>: 「무료 다운로드」 옆 <b>∨</b> → <b>Full HD (1920×1080)</b> 고르기</li></ul>
+        화질이 낮으면 배경 제거 때 사람 테두리가 지글거립니다. 꼭 1080으로 받으세요.</div>
+      <div class="box more"><b class="t">지난주에 이미 받았다면</b>D드라이브 내 폴더에 있는 걷는 영상을 그대로 쓰면 됩니다.</div>
+    </div>
+    <div class="card" id="s1-drive" data-nav="2교시 영상·음악">
+      <h3><span class="n">3</span>2교시: 영상 2개 + 노래 2곡 (전부 받기)</h3>
+      <p style="margin-top:0">링크를 누르면 구글 드라이브 미리보기가 열립니다. 구글 로그인 없이 받을 수 있습니다.</p>
+      <table>
+        <tr><th>파일 (누르면 열림)</th><th>쓰는 곳</th></tr>
+        <tr><td><a class="lk" href="https://drive.google.com/file/d/1FfsYoiis32-IBTByJ2dzqjaBKefXtEvL/view?usp=sharing" target="_blank" rel="noopener">민원 해결 (곰, 세로)</a></td><td>STEP 4·5 오늘의 작품</td></tr>
+        <tr><td><a class="lk" href="https://drive.google.com/file/d/1Q8Th6zK9kwgNxLeNErOsq9dD8NS2mxuK/view?usp=sharing" target="_blank" rel="noopener">뚜비 (토리와 뚜비의 달리기, 가로)</a></td><td>STEP 3 음성 변조기</td></tr>
+        <tr><td><a class="lk" href="https://drive.google.com/file/d/1SPAbjqnMQS7nFo1QJnmqRAb3p_9fNXtW/view?usp=sharing" target="_blank" rel="noopener">마운틴팝 (the_mountain-pop-vocal.mp3)</a></td><td>STEP 3 음성 분리</td></tr>
+        <tr><td><a class="lk" href="https://drive.google.com/file/d/1GqRkafsBrk-TI9RJzlo6imsEOevEXmOM/view?usp=sharing" target="_blank" rel="noopener">마운틴록 (the_mountain-vocal-rock.mp3)</a></td><td>STEP 3 음성 분리</td></tr>
+      </table>
+      <div class="box set"><b class="t">받는 법</b>링크를 연 뒤 오른쪽 위 <b>다운로드(↓)</b>를 누르세요. 영상은 크기가 커서 「바이러스 검사를 할 수 없습니다」 창이 뜰 수 있는데, <b>무시하고 다운로드</b>를 누르면 됩니다. 받은 파일은 D드라이브 내 폴더 → 3회차 폴더로 옮기세요.</div>
+    </div>
+  </div>
+</section>
+
+<!-- STEP 2 -->
+<section class="step" data-title="글자 뒤 인물">
+  <div class="step-head"><div class="no">STEP 2 · 작품 ①</div><h2>글자 뒤로 사람이 지나가는 타이틀</h2>
+  <p>지난 시간에 못 한 내용을 여기서 합니다. 핵심은 <b>같은 영상 두 줄 + 가운데 글자</b>, 이 세 층 쌓기입니다.</p></div>
+  <div class="grid">
+    <div class="card wide" id="s2-idea" data-nav="원리: 3층 쌓기">
+      <h3><span class="n">1</span>원리: 3층 샌드위치</h3>
+      <div class="svgbox">
+      <svg viewBox="0 0 1000 250" width="100%" role="img" aria-label="위: 배경 지운 사람, 가운데: 글자, 아래: 원래 영상">
+        <g font-family="inherit">
+          <g transform="translate(40,20)">
+            <polygon points="60,0 360,0 320,50 20,50" fill="#f3eefe" stroke="#dccff8"/>
+            <circle cx="190" cy="16" r="8" fill="#6d3fd8"/><rect x="183" y="24" width="14" height="20" rx="4" fill="#6d3fd8"/>
+            <polygon points="60,70 360,70 320,120 20,120" fill="#eef4ff" stroke="#1f6feb" stroke-width="2"/>
+            <text x="190" y="104" font-size="26" font-weight="900" fill="#1f6feb" text-anchor="middle">COFFEE</text>
+            <polygon points="60,140 360,140 320,190 20,190" fill="#f4f1ea" stroke="#d9d2c3"/>
+            <circle cx="190" cy="156" r="8" fill="#8a7a5c"/><rect x="183" y="164" width="14" height="20" rx="4" fill="#8a7a5c"/>
+          </g>
+          <g font-size="17" fill="#1d2433">
+            <text x="430" y="50"><tspan font-weight="800">위 트랙</tspan> · 같은 영상, <tspan fill="#6d3fd8" font-weight="700">배경 제거 💎</tspan> → 사람만 남음</text>
+            <text x="430" y="120"><tspan font-weight="800">가운데 트랙</tspan> · 큰 제목 글자</text>
+            <text x="430" y="190"><tspan font-weight="800">아래 트랙</tspan> · 원래 영상 (배경 + 사람)</text>
+            <text x="430" y="235" fill="#5b6476" font-size="15">→ 화면에서는 사람이 글자 <tspan font-weight="800">앞</tspan>, 배경이 글자 <tspan font-weight="800">뒤</tspan>에 보입니다.</text>
+          </g>
+        </g></svg></div>
+    </div>
+    <div class="card" id="s2-dup" data-nav="영상 두 줄 깔기">
+      <h3><span class="n">2</span>영상 넣고 똑같이 하나 더 깔기 <span class="tag must">필수</span></h3>
+      <ol>
+        <li>새 프로젝트 → <b>가져오기</b> → 걷는 영상 고르기</li>
+        <li>영상을 타임라인으로 끌어 놓기</li>
+        <li>영상 클립을 누르고 <span class="kbd">Ctrl</span>+<span class="kbd">C</span></li>
+        <li>재생 헤드를 <b>0초</b>에 두고 <span class="kbd">Ctrl</span>+<span class="kbd">V</span> → 위쪽 줄에 같은 영상이 하나 더 생김</li>
+        <li>두 영상의 시작점이 <b>0초로 딱 맞는지</b> 확인</li>
+        <li>위쪽 영상 트랙 왼쪽의 <b>스피커</b>를 눌러 소리 끄기 (소리가 두 번 겹치지 않게)</li>
+      </ol><div class="shot"><img src="img01.jpg" alt="가져온 영상. 오른쪽 세부 정보에 「레이어 배치: 켜기」인지 이때 확인해 두세요."></div><p class="cap">가져온 영상. 오른쪽 세부 정보에 「레이어 배치: 켜기」인지 이때 확인해 두세요.</p><div class="shot"><img src="img02.jpg" alt="같은 영상이 두 줄. 시작점이 둘 다 0초여야 사람이 어긋나지 않습니다."></div><p class="cap">같은 영상이 두 줄. 시작점이 둘 다 0초여야 사람이 어긋나지 않습니다.</p>
+      <div class="box stuck"><b class="t">막힐 때</b>붙여 넣은 영상이 옆으로 이어 붙었다면 <span class="kbd">Ctrl</span>+<span class="kbd">Z</span>로 취소하고, 재생 헤드를 0초에 둔 뒤 다시 붙여 넣으세요. 영상을 위 트랙으로 끌어 올려도 됩니다.</div>
+    </div>
+    <div class="card" id="s2-bg" data-nav="배경 자동 삭제 💎">
+      <h3><span class="n">3</span>위쪽 영상의 배경 지우기 <span class="tag pro">💎 프로</span> <span class="tag must">필수</span></h3>
+      <ol>
+        <li><b>위쪽</b> 영상을 누르기 (아래쪽 아님!)</li>
+        <li>오른쪽 패널 <b>동영상 → 배경 제거</b></li>
+        <li><b>자동 삭제</b> 체크</li>
+        <li>「처리 중 ○○%」가 끝날 때까지 기다리기</li>
+      </ol><div class="shot"><img src="img03.jpg" alt="위쪽 영상을 누른 상태의 배경 제거 탭. 왼쪽 스피커를 누르면 「트랙 음소거」 표시가 뜹니다."></div><p class="cap">위쪽 영상을 누른 상태의 배경 제거 탭. 왼쪽 스피커를 누르면 「트랙 음소거」 표시가 뜹니다.</p><div class="shot"><img src="img04.jpg" alt="「처리 중 72%」. 15초 영상은 10초 안팎이면 끝나고 「자동 컷아웃 완료」가 뜹니다."></div><p class="cap">「처리 중 72%」. 15초 영상은 10초 안팎이면 끝나고 「자동 컷아웃 완료」가 뜹니다.</p>
+      <div class="box warn"><b class="t">지금은 달라 보이지 않아요</b>배경을 지워도 아래에 같은 영상이 깔려 있어서 화면은 그대로입니다. 정상입니다! 글자를 넣으면 차이가 보입니다.</div>
+    </div>
+    <div class="card" id="s2-title" data-nav="대형 타이틀 💎">
+      <h3><span class="n">4</span>큰 제목 글자 넣기 <span class="tag pro">💎 텍스트 템플릿</span> <span class="tag must">필수</span></h3>
+      <ol>
+        <li>위쪽 메뉴 <b>텍스트</b> → <b>텍스트 템플릿</b>에서 보석 표시가 있는 큰 타이틀 하나 고르기
+          <br><span class="cap">템플릿이 마음에 안 들면 「기본 텍스트」로 넣어도 됩니다.</span></li>
+        <li>오른쪽 텍스트 칸에 제목 입력 (예: <b>COFFEE</b>, <b>WINTER</b>, <b>2026</b>)</li>
+        <li>글꼴은 굵게(<b>B</b>), 크기는 화면을 가로로 꽉 채울 만큼</li>
+        <li>글자 클립 끝을 끌어 영상 길이만큼 늘리기</li>
+      </ol>
+      <div class="box stuck"><b class="t">막힐 때: 글자가 안 보여요</b>텍스트 템플릿은 글자가 날아 들어오는 애니메이션이 들어 있어서 <b>0초에서는 안 보입니다</b>. 재생 헤드를 2~3초로 옮겨서 확인하세요.</div><div class="shot"><img src="img05.jpg" alt="텍스트 → 텍스트 템플릿. 예시는 보석 표시가 있는 「CREATIVE」를 골라 글자를 COFFEE로 바꿨습니다."></div><p class="cap">텍스트 → 텍스트 템플릿. 강사는 보석 표시가 있는 「CREATIVE」를 골라 글자를 COFFEE로 바꿨습니다.</p>
+      <div class="box set"><b class="t">짧고 굵은 단어가 잘 보여요</b>글자가 두껍고 클수록 사람이 가리는 모습이 잘 보입니다. 한글은 굵은 고딕 계열을 고르세요.</div>
+    </div>
+    <div class="card" id="s2-order" data-nav="글자를 가운데 층으로">
+      <h3><span class="n">5</span>글자를 두 영상 사이로 옮기기 <span class="tag must">필수</span></h3>
+      <p style="margin-top:0">처음에는 글자가 맨 위에 생겨서 사람 <b>위에</b> 덮여 보입니다.</p><div class="shot"><img src="img06.jpg" alt="글자 줄이 맨 위 → 사람보다 글자가 앞에 보임"></div><p class="cap">글자 줄이 맨 위 → 사람보다 글자가 앞에 보임</p>
+      <ol>
+        <li>글자 클립을 잡고 <b>두 영상 줄 사이</b>로 끌어 내리기</li>
+        <li>순서가 <b>위: 배경 지운 영상 / 가운데: 글자 / 아래: 원래 영상</b>인지 확인</li>
+      </ol><div class="shot"><img src="img07.jpg" alt="완성된 3층. 사람이 COFFEE의 O 앞을 지나갑니다."></div><p class="cap">완성된 3층. 사람이 COFFEE의 O 앞을 지나갑니다.</p>
+      <div class="box stuck"><b class="t">막힐 때: 글자가 사이로 안 들어가요</b>미디어 창 오른쪽 <b>세부 정보</b>에서 <b>레이어 배치</b>가 「켜기」인지 확인하세요. 꺼져 있으면 「수정하기」로 켭니다.</div>
+    </div>
+    <div class="card" id="s2-check" data-nav="자리 맞추기·확인">
+      <h3><span class="n">6</span>글자 자리 맞추고 확인하기 <span class="tag must">필수</span></h3>
+      <ul>
+        <li>글자는 <b>사람의 허리~가슴 높이</b>에 두세요. 너무 위에 있으면 머리 위로 그냥 보입니다.</li>
+        <li>사람이 <b>지나가는 길 위</b>에 글자를 두세요.</li>
+        <li><span class="kbd">Space</span>로 재생하며 사람이 글자를 가리는 순간을 확인합니다.</li>
+      </ul>
+      <div class="box stuck"><b class="t">막힐 때</b>
+        <ul>
+          <li><b>사람 테두리가 지글거려요</b> → 영상 화질이 낮아서입니다. 1080 영상으로 바꿔 보세요.</li>
+          <li><b>글자가 사람 앞에 그대로 보여요</b> → 배경 지운 쪽이 위쪽 영상인지, 글자가 가운데인지 다시 확인.</li>
+          <li><b>사람이 두 명처럼 어긋나 보여요</b> → 위아래 영상 시작점이 다릅니다. 둘 다 0초로 맞추세요.</li>
+        </ul></div>
+    </div>
+    <div class="card" id="s2-sfx" data-nav="효과음으로 마무리">
+      <h3><span class="n">7</span>효과음으로 마무리 <span class="tag">선택</span></h3>
+      <ol>
+        <li><b>오디오 → 사운드 효과</b> → 검색 <b>whoosh</b>(휙 지나가는 소리)</li>
+        <li>사람이 글자 한가운데를 지나는 순간에 맞춰 넣기</li>
+        <li>글자 클립 → <b>애니메이션 → 시작</b>에서 나타나는 효과를 하나 골라 첫 1초에 넣기</li>
+      </ol><div class="shot"><img src="img08.jpg" alt="오디오 → 사운드 효과 → whoosh 검색. 오른쪽 ↓로 받아 타임라인에 끌어 놓습니다."></div><p class="cap">오디오 → 사운드 효과 → whoosh 검색. 오른쪽 ↓로 받아 타임라인에 끌어 놓습니다.</p>
+      <div class="box set"><b class="t">에디트 파일럿에게 말로 시켜 보기</b>오른쪽 아래 <b>EditPilot</b>을 눌러 아래처럼 써 보세요. 안 되면 손으로 하면 됩니다.</div>
+      <div class="prompt">사람이 글자 가운데를 지나가는 순간에 휙 지나가는 효과음을 넣어 줘. 효과음 볼륨은 배경 소리보다 조금 작게 해 줘.<button class="cp">복사</button></div>
+    </div>
+    <div class="card" id="s2-more" data-nav="한 걸음 더">
+      <h3><span class="n">8</span>한 걸음 더 <span class="tag">선택</span></h3>
+      <div class="box more"><b class="t">① 사람이 지나가며 글자가 "드러나게"</b>글자 클립에 <b>마스크 → 선형</b>을 넣고, 마스크 경계가 사람 등 뒤를 따라가도록 <b>2~3초마다 키프레임</b>을 찍습니다. 글자가 반대쪽부터 나오면 마스크 <b>각도를 90° ↔ 270°</b>로 바꿉니다.</div>
+      <div class="box more"><b class="t">② 사람에게만 효과 주기</b>위쪽(배경 지운) 영상에만 <b>필터 → 흑백</b>을 넣으면 사람만 흑백, 배경은 컬러가 됩니다.</div>
+      <div class="box more"><b class="t">③ 반대 방향으로 1편 더</b>펙셀스 ③(오른쪽 → 왼쪽)으로 같은 순서를 해 보세요. 방법은 똑같습니다.</div>
+    </div>
+  </div>
+</section>
+
+<!-- STEP 3 -->
+<section class="step" data-title="소리 실험실">
+  <div class="step-head"><div class="no">STEP 3</div><h2>소리 실험실: 오디오 프로 기능 둘러보기</h2>
+  <p>곰 숏폼에 들어가기 전에, 노래와 토리 영상으로 오디오 패널의 기능을 하나씩 눌러 보며 "무엇이 바뀌는지" 귀로 확인합니다.</p></div>
+  <div class="grid">
+    <div class="card wide" id="s3-panel" data-nav="오디오 패널 지도">
+      <h3><span class="n">1</span>오디오 패널은 어디에?</h3>
+      <p style="margin-top:0">타임라인에서 <b>음악·영상 클립을 누르면</b> 오른쪽에 패널이 바뀝니다. 영상은 <b>오디오</b> 탭, 음악은 <b>기본</b> 탭입니다. 아래로 내리면 기능이 차례로 나옵니다.</p>
+      <div class="shot"><img src="img09.jpg" alt="음악 클립을 누른 뒤 오른쪽 기본 탭을 아래로 내린 모습. 음향 노멀라이즈 💎 · 음성 보정 💎 · 오디오 번역기 💎 · 노이즈 제거 💎 · 음성 분리(Free) · 채널 채우기"></div><p class="cap">음악 클립을 누른 뒤 오른쪽 기본 탭을 아래로 내린 모습. 음향 노멀라이즈 💎 · 음성 보정 💎 · 오디오 번역기 💎 · 노이즈 제거 💎 · 음성 분리(Free) · 채널 채우기</p>
+      <div class="box set"><b class="t">보석(💎) = 프로 기능</b>보석 표시가 있는 건 무료 계정에서는 써도 내보내기가 막힙니다. 우리는 프로라서 다 됩니다.</div>
+    </div>
+    <div class="card" id="s3-sep" data-nav="실습 A 음성 분리">
+      <h3><span class="n">2</span>실습 A · 노래에서 목소리와 반주 나누기 <span class="tag free">Free</span> <span class="tag">시연 위주</span></h3>
+      <ol>
+        <li>새 프로젝트에 <b>마운틴록</b>(the_mountain-vocal-rock.mp3) 넣기</li>
+        <li><b>먼저 30초만 남기기</b>: 재생 헤드를 30초에 두고 <span class="kbd">W</span>(오른쪽 삭제)
+          <br><span class="cap">3분짜리 곡을 통째로 분리하면 한참 기다려야 합니다.</span></li>
+        <li>음악 클립 누르기 → 오른쪽 아래 <b>음성 분리</b> 체크</li>
+        <li>「음성 분리 적용 중 ○○%」가 끝나면 재생해서 듣기</li>
+        <li>재생해서 들어 보기 → 체크를 껐다 켜며 원곡과 비교</li>
+      </ol><div class="shot"><img src="img10.jpg" alt="30초 자리에 재생 헤드를 두고 클립을 누른 뒤 W. 오른쪽 아래 길이가 30초로 바뀝니다."></div><p class="cap">30초 자리에 재생 헤드를 두고 클립을 누른 뒤 W. 오른쪽 아래 길이가 30초로 바뀝니다.</p><div class="shot"><img src="img11.jpg" alt="음성 분리를 체크하면 「음성 아이솔레이션 중… 9.5%」. 30초 곡은 20초 안팎이면 끝납니다."></div><p class="cap">음성 분리를 체크하면 「음성 아이솔레이션 중… 9.5%」. 30초 곡은 20초 안팎이면 끝납니다.</p><div class="shot"><img src="img12.jpg" alt="분리 후 파형. 앞쪽 10초쯤이 비어 있죠? 노래가 시작되기 전 전주(반주만 나오는 부분)라서 목소리가 없는 것입니다."></div><p class="cap">분리 후 파형. 앞쪽 10초쯤이 비어 있죠? 노래가 시작되기 전 전주(반주만 나오는 부분)라서 목소리가 없는 것입니다.</p>
+      <div class="box more"><b class="t">어디에 쓰나요?</b>
+        <ul><li>노래 반주만 깔고 내 목소리를 얹을 때</li>
+        <li>말하는 영상에서 배경음악을 빼고 목소리만 남길 때</li></ul></div>
+      <div class="box stuck"><b class="t">막힐 때</b>파형(소리 모양)이 군데군데 비어 보이면 정상입니다. 목소리만 남아서 반주 자리가 비었기 때문입니다. 체크 아래 「보컬 유지」 칸은 남길 소리를 고르는 곳입니다. 목록을 열어 다른 항목도 골라 들어 보세요.</div>
+    </div>
+    <div class="card" id="s3-voice" data-nav="실습 B 음성 변조기 💎">
+      <h3><span class="n">3</span>실습 B · 토리 목소리 바꾸기 <span class="tag pro">💎 음성 변조기</span> <span class="tag">시연 위주</span></h3>
+      <ol>
+        <li><b>뚜비</b>(토리와 뚜비의 달리기.mp4) 넣기</li>
+        <li>영상 클립 누르기 → <b>오디오</b> 탭 → 위쪽 <b>음성 변조기</b></li>
+        <li><b>음성 필터</b>에서 <b>베이스 부스트</b>, <b>마이크 고장</b>, <b>강한 에코</b>, <b>확성기</b>를 차례로 눌러 듣기 (누르면 바로 재생됩니다)</li>
+        <li>아래 <b>강도</b> 막대로 세기 조절</li>
+        <li><b>음성 유형</b>(캐릭터 목소리), <b>음성에서 노래로</b>도 눌러 보기</li>
+      </ol>
+      <div class="shot"><img src="img13.jpg" alt="오디오 → 음성 변조기 → 음성 필터에서 「베이스 부스트」를 누른 모습. 아래 강도 막대로 세기를 조절합니다."></div><p class="cap">오디오 → 음성 변조기 → 음성 필터에서 「베이스 부스트」를 누른 모습. 아래 강도 막대로 세기를 조절합니다.</p>
+      <div class="box set"><b class="t">「전체 적용」</b>위쪽 「전체 적용」을 켜면 이 프로젝트의 모든 목소리에 같은 효과가 들어갑니다. 한 클립만 바꾸려면 꺼 두세요.</div>
+    </div>
+    <div class="card wide" id="s3-ep" data-nav="에디트 파일럿으로 말로 시키기">
+      <h3><span class="n">4</span>에디트 파일럿에게 말로 시키기 <span class="tag pro">💎 AI</span></h3>
+      <div class="grid">
+        <div><ol>
+          <li>오른쪽 아래 <b>EditPilot</b> 누르기</li>
+          <li>아래 입력 칸에 프롬프트(AI에게 하는 부탁 말) 붙여 넣고 <span class="kbd">Enter</span></li>
+          <li>「처리 중…」 → 「모든 작업 완료」가 뜨면 재생해서 확인</li>
+        </ol>
+        <div class="prompt">이 영상에서 배경 음악은 빼고 토리와 뚜비 목소리만 남겨 줘<button class="cp">복사</button></div>
+        <div class="box warn"><b class="t">다른 트랙까지 지울 수 있어요</b>타임라인에 노래(마운틴록)가 함께 있을 때 이 부탁을 했더니, 에디트 파일럿이 노래 트랙까지 「배경 음악」으로 보고 지웠습니다. 말로 시킨 뒤에는 <b>타임라인을 꼭 확인</b>하고, 이상하면 <span class="kbd">Ctrl</span>+<span class="kbd">Z</span>로 되돌리세요.</div></div>
+        <div><div class="shot"><img src="img14.jpg" alt="부탁을 보내면 영상 클립 위에 「EditPilot이 처리 중입니다」가 뜨고 음성 분리를 진행합니다."></div><p class="cap">부탁을 보내면 영상 클립 위에 「EditPilot이 처리 중입니다」가 뜨고 음성 분리를 진행합니다.</p><div class="shot"><img src="img15.jpg" alt="결과: 「배경 음악 트랙을 제거하고 인물 음성만 분리하여 남겼습니다」. 크레딧은 0 사용."></div><p class="cap">결과: 「배경 음악 트랙을 제거하고 인물 음성만 분리하여 남겼습니다」. 크레딧은 0 사용.</p></div>
+      </div>
+    </div>
+    <div class="card wide" id="s3-more" data-nav="한 걸음 더">
+      <h3><span class="n">5</span>한 걸음 더 <span class="tag">선택</span></h3>
+      <div class="box more"><b class="t">① 토리 영상에서 대사만 남기고 음악 바꾸기</b>토리 영상에 <b>음성 분리</b>를 걸어 목소리만 남긴 뒤, <b>오디오 → 음악</b>에서 다른 동요풍 음악을 깔아 보세요. 같은 장면이 전혀 다른 분위기가 됩니다.</div>
+      <div class="box more"><b class="t">② 노래에 가사 자막 달기</b>위쪽 메뉴 <b>캡션 → 자동 가사</b>는 노래 가사를 받아 적어 자막으로 만드는 기능입니다. 분리하기 전 원곡으로 해 보고, 가사가 제대로 나오는지 확인해 보세요.</div>
+    </div>
+  </div>
+</section>
+
+<!-- STEP 4 -->
+<section class="step" data-title="곰 숏폼: 소리">
+  <div class="step-head"><div class="no">STEP 4 · 작품 ②-1</div><h2>곰 숏폼 ① 소리 다듬기</h2>
+  <p>오늘의 작품입니다. 자막을 넣기 전에 소리부터 깨끗하게 만들고, 말 사이 쉬는 구간을 잘라 냅니다.</p></div>
+  <div class="grid">
+    <div class="card wide" id="s4-flow" data-nav="소리 다듬기 순서">
+      <h3><span class="n">1</span>소리 다듬기 순서</h3>
+      <div class="svgbox">
+      <svg viewBox="0 0 1000 150" width="100%" role="img" aria-label="노이즈 제거, 음성 보정, 음향 노멀라이즈, 대본으로 쉼 삭제">
+        <defs><marker id="ar2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M1 1L8 5L1 9" fill="none" stroke="#9aa3b2" stroke-width="1.6"/></marker></defs>
+        <g font-family="inherit" text-anchor="middle">
+          <rect x="10" y="25" width="215" height="100" rx="14" fill="#f3eefe" stroke="#dccff8"/><text x="117" y="65" font-size="18" font-weight="800" fill="#1d2433">① 노이즈 제거</text><text x="117" y="95" font-size="14" fill="#5b6476">잡음 빼기</text>
+          <line x1="228" y1="75" x2="255" y2="75" stroke="#9aa3b2" stroke-width="2" marker-end="url(#ar2)"/>
+          <rect x="260" y="25" width="215" height="100" rx="14" fill="#f3eefe" stroke="#dccff8"/><text x="367" y="65" font-size="18" font-weight="800" fill="#1d2433">② 음성 보정</text><text x="367" y="95" font-size="14" fill="#5b6476">목소리 또렷하게</text>
+          <line x1="478" y1="75" x2="505" y2="75" stroke="#9aa3b2" stroke-width="2" marker-end="url(#ar2)"/>
+          <rect x="510" y="25" width="215" height="100" rx="14" fill="#f3eefe" stroke="#dccff8"/><text x="617" y="65" font-size="18" font-weight="800" fill="#1d2433">③ 노멀라이즈</text><text x="617" y="95" font-size="14" fill="#5b6476">크기 고르게</text>
+          <line x1="728" y1="75" x2="755" y2="75" stroke="#9aa3b2" stroke-width="2" marker-end="url(#ar2)"/>
+          <rect x="760" y="25" width="230" height="100" rx="14" fill="#fff" stroke="#1f6feb" stroke-width="2"/><text x="875" y="65" font-size="18" font-weight="800" fill="#1d2433">④ 대본으로 쉼 삭제</text><text x="875" y="95" font-size="14" fill="#5b6476">31초 → 약 26초</text>
+        </g></svg></div>
+      <p class="cap">①~③은 소리만 바뀌고 길이는 그대로, ④는 영상 길이가 줄어듭니다. 그래서 ④까지 끝낸 다음 STEP 5에서 자막을 만듭니다.</p>
+    </div>
+    <div class="card" id="s4-new" data-nav="세로 프로젝트 만들기">
+      <h3><span class="n">2</span>세로 프로젝트 만들기 <span class="tag must">필수</span></h3>
+      <ol>
+        <li>홈 → <b>프로젝트 만들기</b></li>
+        <li><b>가져오기</b> → <b>민원 해결</b>(고객 불만 해결 스토리) 영상 넣기</li>
+        <li>영상을 타임라인으로 끌어 놓기 → 화면이 자동으로 <b>세로(9:16)</b>로 바뀌는지 확인</li>
+      </ol><div class="shot"><img src="img16.jpg" alt="영상을 내려놓으면 미리보기가 세로로 바뀝니다."></div><p class="cap">영상을 내려놓으면 미리보기가 세로로 바뀝니다.</p>
+      <div class="box stuck"><b class="t">막힐 때: 화면이 가로로 나와요</b>미리보기 오른쪽 아래 <b>비율</b> 버튼에서 <b>9:16</b>을 고르세요.</div>
+    </div>
+    <div class="card" id="s4-clean" data-nav="노이즈·보정·노멀라이즈 💎">
+      <h3><span class="n">3</span>노이즈 제거 → 음성 보정 → 노멀라이즈 <span class="tag pro">💎 ×3</span> <span class="tag must">필수</span></h3>
+      <ol>
+        <li>곰 영상 클립 누르기 → 오른쪽 <b>오디오</b> 탭</li>
+        <li><b>노이즈 제거</b> 체크</li>
+        <li><b>음성 보정</b> 체크 → 「처리 중」이 끝나면 아래 <b>강도</b> 막대 확인 (처음 값 75)</li>
+        <li><b>음향 노멀라이즈</b> 체크</li>
+        <li>체크를 켰다 껐다 하며 들어 보고 비교</li>
+      </ol>
+      <div class="box set"><b class="t">말로 시켜도 됩니다 (에디트 파일럿)</b>아래 부탁 하나로 세 가지가 한 번에 됩니다. 결과를 본 뒤 오디오 탭에서 체크가 켜졌는지 확인하세요.</div>
+      <div class="prompt">목소리 잡음을 없애고 또렷하게 해 줘. 소리 크기도 고르게 맞춰 줘.<button class="cp">복사</button></div><div class="shot"><img src="img17.jpg" alt="에디트 파일럿 답: 잡음 제거 → 음성 개선 → 음량 균일화를 차례로 하고 「모든 작업 완료 2/2」."></div><p class="cap">에디트 파일럿 답: 잡음 제거 → 음성 개선 → 음량 균일화를 차례로 하고 「모든 작업 완료 2/2」.</p>
+      <div class="shot"><img src="img18.jpg" alt="세 가지를 켠 모습. 노멀라이즈 아래 「-23 LUFS로 음량 평준화」(방송 표준 소리 크기), 음성 보정 아래 강도 75. 노이즈 제거를 켜면 「노이즈가 조절되었습니다」가 잠깐 뜹니다."></div><p class="cap">세 가지를 켠 모습. 노멀라이즈 아래 「-23 LUFS로 음량 평준화」(방송 표준 소리 크기), 음성 보정 아래 강도 75. 노이즈 제거를 켜면 「노이즈가 조절되었습니다」가 잠깐 뜹니다.</p><p class="cap">음성 보정 강도는 너무 올리면 목소리가 기계처럼 들리니 50~80 사이에서 고르세요.</p>
+    </div>
+    <div class="card wide" id="s4-script" data-nav="대본으로 쉼 삭제 💎">
+      <h3><span class="n">4</span>대본으로 말 사이 쉼 한 번에 자르기 <span class="tag pro">💎 대본</span> <span class="tag must">필수</span></h3>
+      <div class="grid">
+        <div>
+          <ol>
+            <li>곰 영상 클립을 누른 채로 타임라인 위 도구 줄의 <b>대본</b> 버튼 누르기</li>
+            <li>「분석 중… 채우기용 단어 인식 중」이 끝나면 <b>채우기용 단어 삭제</b> 창이 열림</li>
+            <li>오른쪽 탭 확인:
+              <ul><li><b>일시 중지</b> — 말이 끊긴 빈 구간 (곰 영상은 0.6~0.7초짜리가 여러 개)</li>
+              <li><b>반복</b> — 같은 말을 두 번 한 곳</li>
+              <li><b>채우기용 단어</b> — "음", "어" 같은 말</li></ul></li>
+            <li>지울 항목에 체크(줄 그은 글자, 처음부터 모두 체크돼 있음) → 왼쪽 아래 <b>총 길이</b>가 줄어드는 것 확인 (31초 → 26초)</li>
+            <li>오른쪽 아래 <b>삭제</b></li>
+          </ol>
+          <div class="shot"><img src="img19.jpg" alt="타임라인 도구 줄의 대본 버튼"></div>
+          <p class="cap">도구 줄의 「대본」 버튼 (보석 표시)</p>
+        </div>
+        <div><div class="shot"><img src="img20.jpg" alt="「일시 중지」 탭: 곰 영상에서 쉬는 구간 6곳(0.53~0.97초)을 찾았습니다. 왼쪽 아래 총 길이 26초 17."></div><p class="cap">「일시 중지」 탭: 곰 영상에서 쉬는 구간 6곳(0.53~0.97초)을 찾았습니다. 왼쪽 아래 총 길이 26초 17.</p><div class="shot"><img src="img21.jpg" alt="삭제 후: 영상이 7조각으로 나뉘고 길이가 31초 → 26초 17로 줄었습니다."></div><p class="cap">삭제 후: 영상이 7조각으로 나뉘고 길이가 31초 → 26초 17로 줄었습니다.</p></div>
+      </div>
+      <div class="box warn"><b class="t">너무 많이 지우면 숨이 막혀요</b>쉼을 다 지우면 말이 숨 쉴 틈 없이 붙어서 어색할 수 있습니다. 미리보기로 들어 보고, 이상한 곳은 체크를 풀어 두세요.</div>
+      <div class="box more"><b class="t">한 걸음 더: 내 목소리로 해 보기</b>마이크 버튼(타임라인 위 🎤)으로 "음… 그러니까…" 하며 일부러 쉬어 가며 20초 녹음한 뒤 대본 기능을 걸어 보세요. 효과가 훨씬 크게 보입니다.</div>
+    </div>
+  </div>
+</section>
+
+<!-- STEP 5 -->
+<section class="step" data-title="곰 숏폼: 자막">
+  <div class="step-head"><div class="no">STEP 5 · 작품 ②-2</div><h2>곰 숏폼 ② 자막 넣고 원래 자막 덮기</h2>
+  <p>곰 영상에는 자막이 이미 박혀 있습니다. 자동 캡션을 만든 뒤 <b>배경이 있는 자막</b>으로 원래 자막을 덮어 새 자막으로 바꿉니다.</p></div>
+  <div class="grid">
+    <div class="card wide" id="s5-order" data-nav="자막 순서 (중요)">
+      <h3><span class="n">1</span>순서가 중요합니다</h3>
+      <div class="svgbox">
+      <svg viewBox="0 0 1000 160" width="100%" role="img" aria-label="자동 캡션, 오타 고치기, 배경으로 덮기, 펀치 줌, 스티커">
+        <defs><marker id="ar3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M1 1L8 5L1 9" fill="none" stroke="#9aa3b2" stroke-width="1.6"/></marker></defs>
+        <g font-family="inherit" text-anchor="middle">
+          <rect x="10" y="20" width="170" height="90" rx="12" fill="#fff" stroke="#1f6feb" stroke-width="2"/><text x="95" y="58" font-size="17" font-weight="800">① 자동 캡션</text><text x="95" y="86" font-size="13" fill="#5b6476">받아 적기</text>
+          <line x1="183" y1="65" x2="205" y2="65" stroke="#9aa3b2" stroke-width="2" marker-end="url(#ar3)"/>
+          <rect x="210" y="20" width="170" height="90" rx="12" fill="#fff" stroke="#1f6feb" stroke-width="2"/><text x="295" y="58" font-size="17" font-weight="800">② 오타 고치기</text><text x="295" y="86" font-size="13" fill="#5b6476">목록에서 바로</text>
+          <line x1="383" y1="65" x2="405" y2="65" stroke="#9aa3b2" stroke-width="2" marker-end="url(#ar3)"/>
+          <rect x="410" y="20" width="170" height="90" rx="12" fill="#fff" stroke="#1f6feb" stroke-width="2"/><text x="495" y="58" font-size="17" font-weight="800">③ 배경으로 덮기</text><text x="495" y="86" font-size="13" fill="#5b6476">원래 자막 가리기</text>
+          <line x1="583" y1="65" x2="605" y2="65" stroke="#9aa3b2" stroke-width="2" marker-end="url(#ar3)"/>
+          <rect x="610" y="20" width="170" height="90" rx="12" fill="#eef8f2" stroke="#c5e6d1"/><text x="695" y="58" font-size="17" font-weight="800">④ 펀치 줌</text><text x="695" y="86" font-size="13" fill="#5b6476">키프레임 ◇</text>
+          <line x1="783" y1="65" x2="805" y2="65" stroke="#9aa3b2" stroke-width="2" marker-end="url(#ar3)"/>
+          <rect x="810" y="20" width="180" height="90" rx="12" fill="#eef8f2" stroke="#c5e6d1"/><text x="900" y="58" font-size="17" font-weight="800">⑤ 프로 스티커</text><text x="900" y="86" font-size="13" fill="#5b6476">마지막 장면</text>
+          <text x="500" y="145" font-size="15" fill="#c0392b" font-weight="700">「생성」을 다시 누르면 자막을 새로 만들어서 고친 오타가 사라집니다 → 생성은 한 번만!</text>
+        </g></svg></div>
+    </div>
+    <div class="card wide" id="s5-auto" data-nav="자동 캡션">
+      <h3><span class="n">2</span>자동 캡션 만들기 <span class="tag pro">Pro</span> <span class="tag must">필수</span></h3>
+      <div class="grid">
+        <div><ol>
+          <li>위쪽 메뉴 <b>캡션</b> → 왼쪽 <b>자동 캡션</b></li>
+          <li>소스 언어 <b>한국어</b> 확인 (이중 언어 캡션은 「없음」 그대로)</li>
+          <li>오른쪽 아래 <b>생성</b> → 「음성이 인식되었습니다」가 뜨고 영상 위에 자막 줄(TT)이 생김</li>
+        </ol>
+        <div class="box set"><b class="t">왜 템플릿 대신 기본 자막인가요?</b>캡션 템플릿(💎)으로 만든 자막은 오른쪽에 「속성」만 나오고 <b>배경 설정이 없습니다</b>. 오늘처럼 원래 자막을 덮어야 할 때는 기본 자동 캡션으로 만드세요. 템플릿은 「한 걸음 더」에서 써 봅니다.</div></div>
+        <div><div class="shot"><img src="img22.jpg" alt="캡션 메뉴의 자동 캡션, 이중 언어 캡션, 생성 버튼"></div><p class="cap">캡션 메뉴 → 자동 캡션 → 생성. 「이중 언어 캡션」 옆 보석 표시도 프로 기능입니다.</p></div>
+      </div>
+    </div>
+    <div class="card wide" id="s5-fix" data-nav="오타 고치기">
+      <h3><span class="n">3</span>오타 고치기 <span class="tag must">필수</span></h3>
+      <div class="grid">
+        <div><ol>
+          <li>자막 하나를 누르고 오른쪽 맨 앞 <b>캡션</b> 탭 → 자막이 한 줄씩 목록으로 나옴</li>
+          <li>틀린 줄을 <b>두 번 눌러</b> 바로 고치기</li>
+          <li>위에서 아래로 한 줄씩 읽으며 끝까지 확인</li>
+        </ol>
+        <table>
+          <tr><th>자동 캡션이 받아 적은 것 (예)</th><th>바르게</th></tr>
+          <tr><td>고객님을 분석하기 / 온인을 분석하기</td><td>원인을 분석하기</td></tr>
+          <tr><td>이게 심각한 문제였습니다</td><td>이것은 심각한 문제였습니다</td></tr>
+          <tr><td>앱 앱 빨라졌습니다 ㅎㅎ</td><td>세 배 빨라졌습니다</td></tr>
+        </table>
+        <div class="box warn"><b class="t">틀리는 곳은 매번 달라요</b>같은 영상인데도 만들 때마다 틀리는 단어가 다릅니다(예: 한 번은 「온인을」, 다른 한 번은 「고객님을」). 그러니 표만 보지 말고 <b>내 화면의 자막을 직접 읽고</b> 고치세요.</div></div>
+        <div><div class="shot"><img src="img23.jpg" alt="캡션 탭의 자막 목록: 이게 심각한 문제였습니다, 고객님을 분석하기 시작했습니다"></div><p class="cap">캡션 탭 목록. 빨간 상자 안 4번·6번 줄이 틀렸습니다.</p>
+        <div class="shot"><img src="img24.jpg" alt="6번 줄을 원인을 분석하기 시작했습니다로 고친 모습"></div><p class="cap">줄을 두 번 누르면 입력 칸이 열립니다. 고친 뒤 다른 곳을 누르면 저장.</p></div>
+      </div>
+    </div>
+    <div class="card wide" id="s5-cover" data-nav="배경으로 원래 자막 덮기">
+      <h3><span class="n">4</span>자막 배경으로 원래 자막 덮기 <span class="tag must">필수</span></h3>
+      <div class="grid">
+        <div>
+          <ol>
+            <li>자막 하나를 누르고 오른쪽 <b>텍스트 → 기본</b>, 위쪽 <b>모든 주요 캡션에 적용</b> 체크 확인 (한 번에 전체 자막이 바뀜)</li>
+            <li>아래로 끝까지 내려 <b>배경</b> 체크 → 옆 ∨ 눌러 펼치기</li>
+            <li>색상 <b>검정</b>, 불투명도 <b>100%</b>, <b>너비 100%</b></li>
+          </ol>
+          <div class="shot"><img src="img25.jpg" alt="모든 주요 캡션에 적용과 배경 체크"></div>
+          <p class="cap">배경을 켜면 글자 뒤에 검은 상자가 생깁니다. 아직 원래 자막(아래 흰 글자)이 보이죠.</p>
+          <div class="shot"><img src="img26.jpg" alt="배경 너비 100%"></div>
+          <p class="cap">너비를 100%로 올리면 상자가 양옆으로 넓어집니다.</p>
+        </div>
+        <div>
+          <ol start="4">
+            <li>위로 올라가 <b>변형</b>에서 확대 <b>130%</b>, 위치 <b>Y -1600</b></li>
+            <li>재생하며 원래 자막이 삐져나오는 곳이 없는지 처음부터 끝까지 확인</li>
+          </ol>
+          <div class="shot"><img src="img27.jpg" alt="확대 130%, Y -1600으로 원래 자막을 덮은 모습"></div>
+          <p class="cap">원래 자막 자리에 새 자막이 딱 덮였습니다.</p>
+          <table>
+            <tr><th>항목</th><th>곰 영상 값</th></tr>
+            <tr><td>위치 Y · 확대</td><td>-1600 · 130%</td></tr>
+            <tr><td>배경 색 · 불투명도 · 너비</td><td>검정 · 100% · 100%</td></tr>
+            <tr><td>배경 높이</td><td>14%(기본) → 원래 자막이 위로 보이면 <b>25%</b></td></tr>
+          </table>
+        </div>
+      </div>
+      <div class="box stuck"><b class="t">막힐 때</b>
+        <ul>
+          <li><b>숫자가 이상하게 들어가요</b> → 숫자 칸에 바로 치면 첫 글자가 빠지기도 합니다(-1500 → -500). 입력한 뒤 꼭 다시 보세요.</li>
+          <li><b>원래 자막 윗줄이 상자 위로 보여요</b> → 원래 자막이 두 줄인 곳입니다. 배경 <b>높이</b>를 25% 정도로 올리세요.</li>
+        </ul></div>
+    </div>
+    <div class="card wide" id="s5-punch" data-nav="키프레임 펀치 줌">
+      <h3><span class="n">5</span>마지막 장면에 펀치 줌 <span class="tag">선택</span></h3>
+      <div class="grid">
+        <div><ol>
+          <li>재생 헤드를 곰이 엄지척 하는 마지막 장면 시작에 두기</li>
+          <li>그 영상 조각을 누르고 <b>동영상 → 기본 → 확대</b> 옆 <b>◇</b> 눌러 키프레임 (100%)</li>
+          <li>눈금자를 살짝 오른쪽(약 0.3초 뒤)으로 눌러 재생 헤드 옮기기</li>
+          <li>확대를 <b>130%</b>로 바꾸기 → ◇가 저절로 하나 더 찍힘</li>
+          <li>재생해서 화면이 "쿵" 하고 다가오는지 확인</li>
+        </ol>
+        <div class="box warn"><b class="t">영상을 키우면 원래 자막도 같이 커져요</b>영상을 130%로 키우면 박혀 있던 원래 자막도 커지고 아래로 밀려서 덮개 상자 밖으로 삐져나옵니다. <b>115% 정도로 약하게</b> 하거나, 그 구간만 배경 높이를 올리세요.</div>
+        <div class="box stuck"><b class="t">막힐 때</b>타임라인 빈 곳을 누르면 영상 조각이 모두 선택돼서 값이 「-」로 바뀝니다. 그럴 땐 <span class="kbd">Ctrl</span>+<span class="kbd">Z</span>로 되돌리고 조각 하나만 다시 누르세요.</div></div>
+        <div><div class="shot"><img src="img28.jpg" alt="확대 130%와 키프레임, 크게 다가온 곰"></div><p class="cap">확대 130%. 곰이 크게 다가왔지만 아래 원래 자막(빠라졌습니다)이 삐져나온 것도 보입니다.</p></div>
+      </div>
+    </div>
+    <div class="card wide" id="s5-sticker" data-nav="프로 스티커">
+      <h3><span class="n">6</span>엄지척 장면에 스티커 <span class="tag pro">💎</span> <span class="tag">선택</span></h3>
+      <div class="grid">
+        <div><ol>
+          <li>위쪽 메뉴 <b>스티커</b> → 검색 <b>thumbs up</b></li>
+          <li>보석 표시가 있는 스티커 하나를 마지막 장면 위 트랙에 끌어 놓기</li>
+          <li>곰 얼굴과 자막을 가리지 않게 크기·자리 맞추기</li>
+        </ol>
+        <div class="box set"><b class="t">에디트 파일럿에게 말로 시켜 보기</b>안 되면 손으로 하면 됩니다.</div>
+        <div class="prompt">마지막 3초 동안 오른쪽 위에 엄지척 스티커를 넣어 줘. 곰 얼굴과 자막은 가리지 않게 해 줘.<button class="cp">복사</button></div></div>
+        <div><div class="shot"><img src="img29.jpg" alt="스티커 메뉴에서 thumbs up 검색 결과"></div><p class="cap">「thumbs up」 검색 결과. 왼쪽 위 보석 표시가 프로 스티커입니다.</p></div>
+      </div>
+    </div>
+    <div class="card wide" id="s5-more" data-nav="한 걸음 더">
+      <h3><span class="n">7</span>한 걸음 더 <span class="tag">선택</span></h3>
+      <div class="grid">
+        <div>
+          <div class="box more"><b class="t">① 캡션 템플릿 💎으로 숏폼 자막 만들기</b>
+            <ol>
+              <li>새 프로젝트에 곰 영상을 다시 넣기 (자막이 없는 상태)</li>
+              <li>캡션 → <b>템플릿 → 히트</b>에서 디자인 고르기 → 미리보기 확인</li>
+              <li>아래 버튼이 <b>캡션 생성</b>으로 바뀜 → 누르면 디자인이 입혀진 자막이 바로 만들어짐</li>
+            </ol>
+            템플릿 자막은 배경 설정이 없으니, 원래 자막과 겹치지 않게 <b>위치를 화면 가운데쯤</b>으로 올려 쓰세요.</div>
+        </div>
+        <div><div class="shot"><img src="img30.jpg" alt="캡션 템플릿 히트 분류와 캡션 생성 버튼, 미리보기의 분홍 자막"></div><p class="cap">템플릿을 누르면 미리보기에 디자인이 보이고, 아래 버튼이 「캡션 생성」으로 바뀝니다.</p></div>
+      </div>
+      <div class="box more"><b class="t">② 이중 언어 캡션 💎</b>자동 캡션 화면의 <b>이중 언어 캡션</b>은 한국어 아래 다른 언어 자막을 한 줄 더 붙이는 기능입니다. 「영어」를 골라 생성해 보세요. 해외 손님용 매장 홍보 영상에 좋습니다.</div>
+      <div class="box more"><b class="t">③ 동영상 번역기 💎</b>오디오 탭의 <b>동영상 번역기</b>는 곰의 한국어 내레이션을 다른 나라 말 목소리로 바꾸는 기능입니다. 결과 목소리와 길이가 어떻게 바뀌는지 들어 보세요.</div>
+      <div class="box more"><b class="t">④ 토리 영상에 화자별 자막</b>토리와 뚜비 대사에 자동 캡션을 만든 뒤, 「모든 주요 캡션에 적용」을 끄고 토리 대사는 분홍, 뚜비 대사는 초록으로 한 줄씩 글자 색을 바꿔 보세요.</div>
+    </div>
+  </div>
+</section>
+
+<!-- STEP 6 -->
+<section class="step" data-title="저장·마무리">
+  <div class="step-head"><div class="no">STEP 6</div><h2>내보내고, 올리고, 로그아웃</h2>
+  <p>오늘 만든 두 작품을 파일로 내보내고, 스페이스에 올려 집에서도 이어서 고칠 수 있게 합니다.</p></div>
+  <div class="grid">
+    <div class="card" id="s6-export" data-nav="내보내기">
+      <h3><span class="n">1</span>내보내기</h3>
+      <ol>
+        <li>오른쪽 위 <b>내보내기</b></li>
+        <li>파일 이름을 알아볼 수 있게 바꾸기 (예: <b>3회차_곰숏폼</b>, <b>3회차_글자뒤인물</b>)</li>
+        <li>해상도 <b>1080P</b> 확인</li>
+        <li><b>워터마크 삭제 💎</b> 켜기 (AI로 만든 이미지·영상에 붙는 표시를 지움)</li>
+        <li><b>내보내기</b></li>
+        <li>끝나면 유튜브·틱톡 공유 창은 <b>닫기</b></li>
+      </ol><div class="shot"><img src="img31.jpg" alt="내보내기 창. 이름·저장 위치(폴더 아이콘)·해상도 1080P·워터마크 삭제(💎)·공간 동기화 체크"></div><p class="cap">내보내기 창. 이름·저장 위치(폴더 아이콘)·해상도 1080P·워터마크 삭제(💎)·공간 동기화 체크</p><div class="box set"><b class="t">저장 위치</b>기본은 다운로드 폴더입니다. 「내보내기」 칸 오른쪽 <b>폴더 아이콘</b>을 눌러 D드라이브 내 폴더로 바꾸세요. 「내보낸 동영상을 공간에 동기화」는 꺼 둔 채로 두고, 프로젝트를 따로 업로드합니다.</div>
+    </div>
+    <div class="card" id="s6-upload" data-nav="스페이스 업로드·로그아웃">
+      <h3><span class="n">2</span>스페이스에 올리고 로그아웃</h3>
+      <ol>
+        <li>홈 → 프로젝트 목록에서 오늘 프로젝트 위에 마우스 → <b>⋯</b> → <b>업로드</b></li>
+        <li>내 <b>스페이스</b> 고르기 → 업로드</li>
+        <li>왼쪽 <b>공간</b>에서 올라온 것 확인 (조금 걸립니다)</li>
+        <li>공용 PC이므로 <b>로그아웃</b>까지 꼭 하기</li>
+      </ol>
+      <div class="box set"><b class="t">집에서 이어 하기</b>집 PC 캡컷에서 같은 계정으로 로그인하면 스페이스에 그대로 있습니다. 웹 캡컷에서는 보이기만 하고 편집은 PC 앱에서 해야 합니다.</div>
+    </div>
+    <div class="card wide" id="s6-check" data-nav="오늘 체크리스트">
+      <h3><span class="n">3</span>오늘 체크리스트</h3>
+      <ul>
+        <li>☐ 글자 뒤로 사람이 지나가는 타이틀 1편 내보내기</li>
+        <li>☐ 노래에서 목소리와 반주를 나눠 들어 봤다</li>
+        <li>☐ 노이즈 제거·음성 보정·노멀라이즈를 켜고 끄며 비교해 봤다</li>
+        <li>☐ 대본으로 쉬는 구간을 잘라 31초를 줄였다</li>
+        <li>☐ 자동 캡션 → 오타 수정 → 배경 덮기 순서로 곰 숏폼 1편 내보내기</li>
+        <li>☐ 스페이스 업로드와 로그아웃</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+</main>
+<aside class="side" id="side"><b>이 STEP 안에서 바로 가기</b><div id="sidelist"></div></aside>
+</div>
+<div class="wrap" style="padding-top:0"><div class="navbtn" style="grid-column:1/-1"><button id="prev">← 이전 STEP</button><button id="next" class="go">다음 STEP →</button></div></div>
+<div class="lb" id="lb"><img alt=""></div>
+
+<script>
+(function(){
+  var steps=[].slice.call(document.querySelectorAll('.step'));
+  var tabs=document.getElementById('tabs'),side=document.getElementById('sidelist');
+  var cur=0;
+  steps.forEach(function(s,i){var b=document.createElement('button');b.textContent='STEP '+i+' '+s.dataset.title;b.onclick=function(){show(i,true)};tabs.appendChild(b);});
+  function show(i,scroll){cur=i;steps.forEach(function(s,k){s.classList.toggle('on',k===i)});
+    [].forEach.call(tabs.children,function(b,k){b.classList.toggle('on',k===i)});
+    side.innerHTML='';
+    steps[i].querySelectorAll('[data-nav]').forEach(function(c){var a=document.createElement('a');a.href='#'+c.id;a.textContent=c.dataset.nav;a.onclick=function(e){e.preventDefault();c.scrollIntoView({behavior:'smooth',block:'start'})};side.appendChild(a)});
+    document.getElementById('prev').disabled=i===0;document.getElementById('next').disabled=i===steps.length-1;
+    if(scroll){document.querySelector('.top').scrollIntoView({block:'start'});}
+  }
+  document.getElementById('prev').onclick=function(){if(cur>0)show(cur-1,true)};
+  document.getElementById('next').onclick=function(){if(cur<steps.length-1)show(cur+1,true)};
+  show(0,false);
+  var fs=20;window.fz=function(d){fs=Math.max(16,Math.min(30,fs+d*2));document.documentElement.style.setProperty('--fs',fs+'px')};
+  document.querySelectorAll('.cp').forEach(function(b){b.onclick=function(){var t=b.parentNode.firstChild.textContent.trim();
+    function ok(){b.textContent='복사됨';setTimeout(function(){b.textContent='복사'},1500)}
+    try{navigator.clipboard.writeText(t).then(ok,fb)}catch(e){fb()}
+    function fb(){var ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();try{document.execCommand('copy')}catch(e){}document.body.removeChild(ta);ok()}}});
+  var lb=document.getElementById('lb');
+  document.querySelectorAll('.shot img').forEach(function(im){im.onclick=function(){lb.querySelector('img').src=im.src;lb.style.top=(window.scrollY||document.documentElement.scrollTop)+'px';lb.style.display='block'}});
+  lb.onclick=function(){lb.style.display='none'};
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,1452 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"><script>document.documentElement.classList.add("js")</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>내 인생 동화책 | 구글 플로우로 완성하는 「토끼와 거북이」 그림책 6장</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Sans+KR:wght@400;500;700&family=Noto+Serif+KR:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#FCFCFA; --card:#FFFFFF; --ink:#23272D; --sub:#5B636E; --line:#E3E5E8;
+  --point:#2D5B9A; --point-soft:#EAF0F8;
+  --setup-bg:#EEF3FA; --setup-line:#C9D8EC;
+  --warn-bg:#FBEFF0; --warn-line:#EBCBD0; --warn-ink:#9A3A48;
+  --help-bg:#F3F0F9; --help-line:#DAD2EA; --help-ink:#5B4A86;
+  --ext-bg:#EDF6F1; --ext-line:#CBE2D5; --ext-ink:#2E6B4C;
+  --fs:20px; --vp:var(--point); --vps:var(--point-soft);
+  --serif:"Gowun Batang","Noto Serif KR",serif;
+  --sans:"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+}
+*{box-sizing:border-box}
+html{font-size:var(--fs);scroll-padding-top:150px}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);line-height:1.65;word-break:keep-all}
+:focus-visible{outline:3px solid var(--point);outline-offset:2px}
+
+.topbar{position:sticky;top:0;z-index:10;background:rgba(252,252,250,.97);border-bottom:1px solid var(--line)}
+.bar-row{max-width:1320px;margin:0 auto;padding:.55rem 1rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
+.course{font-family:var(--serif);font-weight:700;font-size:1.05rem;margin-right:auto}
+.course small{font-family:var(--sans);font-weight:400;color:var(--sub);font-size:.75rem;margin-left:.5rem}
+.zoom{display:flex;gap:.3rem}
+.zoom button{font:inherit;font-size:.8rem;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:8px;padding:.2rem .65rem;cursor:pointer}
+.zoom button:hover{border-color:var(--point);color:var(--point)}
+.tabs{max-width:1320px;margin:0 auto;padding:0 1rem;display:flex;gap:.2rem;overflow-x:auto}
+.tab{font:inherit;font-size:.82rem;border:0;background:none;color:var(--sub);padding:.55rem .8rem .6rem;border-bottom:3px solid transparent;cursor:pointer;white-space:nowrap}
+.tab b{margin-right:.35rem}
+.tab[aria-selected="true"]{color:var(--point);border-bottom-color:var(--point);font-weight:700}
+
+.layout{max-width:1320px;margin:0 auto;padding:1.4rem 1rem 1rem;display:grid;grid-template-columns:minmax(0,1fr) 220px;gap:1.6rem;align-items:start}
+.side{position:sticky;top:130px;border-left:1px solid var(--line);padding-left:1rem}
+.side p{margin:0 0 .5rem;font-size:.72rem;color:var(--sub)}
+.side a{display:block;font-size:.78rem;color:var(--ink);text-decoration:none;padding:.3rem 0;border-bottom:1px dashed var(--line)}
+.side a:hover{color:var(--point)}
+
+.step{display:none}
+.step.on{display:block}
+.step-head{display:flex;align-items:baseline;gap:.9rem;margin-bottom:.4rem}
+.step-num{font-family:var(--serif);font-size:2.2rem;line-height:1;color:var(--point)}
+.step-head h2{font-family:var(--serif);font-size:1.45rem;margin:0}
+.lead{margin:0 0 1.1rem;color:var(--sub);font-size:.92rem}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:1rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:1.1rem 1.25rem}
+.card.wide{grid-column:1/-1}
+.card h3{font-size:1.05rem;margin:0 0 .6rem}
+.card h3 .k{color:var(--point);font-family:var(--serif);margin-right:.4rem}
+.card p{margin:.3rem 0}
+.card ul,.card ol{margin:.3rem 0;padding-left:1.25rem}
+.card li{margin:.2rem 0}
+.note{font-size:.82rem;color:var(--sub)}
+
+.box{border-radius:10px;padding:.75rem 1rem;margin-top:.8rem;font-size:.9rem}
+.box .t{display:block;font-size:.82rem;font-weight:700;margin-bottom:.15rem}
+.box ul{margin:.1rem 0;padding-left:1.1rem}
+.box.warn{background:var(--warn-bg);border:1px solid var(--warn-line)} .box.warn .t{color:var(--warn-ink)}
+.box.help{background:var(--help-bg);border:1px solid var(--help-line)} .box.help .t{color:var(--help-ink)}
+.box.ext{background:var(--ext-bg);border:1px solid var(--ext-line)} .box.ext .t{color:var(--ext-ink)}
+.card.setup{background:var(--setup-bg);border-color:var(--setup-line)}
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}
+.duo .box{margin-top:0}
+
+/* 전체 과정 도식 */
+.phases{display:grid;grid-template-columns:repeat(4,1fr);gap:1.4rem;position:relative}
+.phase{border:1px solid var(--line);border-radius:12px;background:#fff;padding:.7rem .8rem;position:relative}
+.phase:not(:last-child)::after{content:"";position:absolute;right:-1.05rem;top:50%;width:.7rem;height:.7rem;border-top:2px solid var(--point);border-right:2px solid var(--point);transform:translateY(-50%) rotate(45deg)}
+.phase h4{margin:0 0 .45rem;font-family:var(--serif);font-size:1rem;color:var(--point)}
+.phase ol{list-style:none;padding:0;margin:0}
+.phase li{font-size:.82rem;padding:.35rem 0;border-top:1px dashed var(--line);line-height:1.4}
+.phase li b{display:block;font-size:.72rem;color:var(--sub);font-weight:500}
+.phase li.now{background:var(--point-soft);border-radius:6px;padding:.35rem .4rem;border-top-color:transparent}
+.phase li.now b{color:var(--point)}
+.phase .out{margin-top:.45rem;font-size:.75rem;color:var(--ext-ink);background:var(--ext-bg);border-radius:6px;padding:.25rem .45rem}
+
+.tools{display:grid;grid-template-columns:repeat(4,1fr);gap:.6rem}
+.tool{border:1px solid var(--line);border-radius:10px;padding:.6rem .7rem;background:#fff;text-align:center}
+.tool .what{font-size:.75rem;color:var(--sub)}
+.tool .name{font-weight:700;font-size:.9rem;margin-top:.1rem}
+
+.chain{display:flex;flex-wrap:wrap;align-items:center;gap:.35rem;list-style:none;padding:0!important;margin:0}
+.chain li{border:1px solid var(--line);border-radius:99px;padding:.25rem .8rem;font-size:.85rem;background:#fff}
+.chain li.arrow{border:0;padding:0;color:var(--point);background:none}
+
+/* 화풍 갤러리 */
+.styles{display:grid;grid-template-columns:repeat(4,1fr);gap:.6rem}
+.sc{border:1px solid var(--line);border-radius:10px;background:#fff;overflow:hidden;display:flex;flex-direction:column}
+.sw{height:3.2rem;border-bottom:1px solid var(--line)}
+.sc .bd{padding:.5rem .6rem;flex:1;display:flex;flex-direction:column;gap:.15rem}
+.sc .nm{font-weight:700;font-size:.9rem}
+.sc .fe{font-size:.75rem;color:var(--sub);line-height:1.4}
+.sc .fit{font-size:.72rem;color:var(--ext-ink)}
+.sc .prc{background:#F6F8FB;border-top:1px dashed var(--line);padding:.4rem .6rem;margin-top:auto}
+.sc .prompt{font-size:.72rem;line-height:1.45}
+.sc .lbl{font-size:.68rem;font-weight:700;color:var(--point);display:flex;justify-content:space-between;align-items:center}
+.sw-water{background:radial-gradient(circle at 30% 45%,rgba(120,170,220,.55),transparent 40%),radial-gradient(circle at 65% 55%,rgba(240,160,170,.5),transparent 42%),radial-gradient(circle at 50% 30%,rgba(250,215,140,.45),transparent 40%),#FBFAF6}
+.sw-pencil{background:repeating-linear-gradient(115deg,#E9A7A0 0 1px,transparent 1px 4px),repeating-linear-gradient(60deg,#9CC3A3 0 1px,transparent 1px 5px),#FDFBF7}
+.sw-crayon{background:repeating-linear-gradient(170deg,#F2B86B 0 5px,#F6CE8E 5px 8px,#EFA35A 8px 12px),#F6CE8E}
+.sw-clay{background:radial-gradient(circle at 40% 38%,#FFE3D0 0 8%,#F4A98A 22%,#D97F63 40%,transparent 41%),radial-gradient(circle at 72% 60%,#DDF0C8 0 6%,#9FCB7C 20%,#6FA254 32%,transparent 33%),#F3EEE6}
+.sw-paper{background:linear-gradient(170deg,transparent 58%,#5E9C76 58% 66%,transparent 66%),linear-gradient(185deg,transparent 48%,#86BE8F 48% 100%),linear-gradient(#CFE6F2,#CFE6F2);box-shadow:inset 0 -6px 0 #3E7A57}
+.sw-3d{background:radial-gradient(circle at 45% 40%,#fff 0 5%,#9CC8F5 18%,#4A8BDB 38%,transparent 39%),linear-gradient(#EAF3FB,#D5E6F6)}
+.sw-print{background:repeating-linear-gradient(0deg,#2B2B2B 0 2px,transparent 2px 7px),linear-gradient(90deg,#C7493A 0 35%,#F1E8D8 35%)}
+.sw-flat{background:radial-gradient(circle at 30% 50%,#F2B544 0 18%,transparent 19%),linear-gradient(135deg,transparent 55%,#4FA3A5 55%),#FBEFE3}
+.checkline{font-size:.86rem;margin:.4rem 0}
+.checkline b{color:var(--point)}
+/* 미니 쪽 */
+.mini{display:grid;grid-template-columns:repeat(6,1fr);gap:.45rem}
+.page{border:1px solid var(--line);border-radius:10px;background:#fff;overflow:hidden}
+.page .img{background:var(--point-soft);color:var(--point);height:3.4rem;display:flex;align-items:center;justify-content:center;font-size:.8rem;text-align:center;padding:.3rem}
+.page .txt{padding:.45rem .6rem;font-size:.78rem;color:var(--sub);border-top:1px dashed var(--line)}
+.page .ttl{font-size:.82rem;font-weight:700;padding:.35rem .6rem 0;color:var(--ink)}
+.style-line{background:#FFF;border:1px dashed var(--point);border-radius:8px;padding:.5rem .8rem;font-size:.86rem;margin:.3rem 0 .6rem}
+.style-line b{color:var(--point)}
+/* 앵커 도식 */
+.anc{border:2px solid var(--point);background:var(--point-soft);border-radius:10px;padding:.55rem .8rem;text-align:center;font-weight:700;color:var(--point);font-size:.9rem;line-height:1.35}
+.anc small{display:block;font-weight:400;color:var(--sub);font-size:.72rem}
+.anc-arrow{height:2px;background:var(--point);position:relative}
+.anc-arrow::after{content:"";position:absolute;right:-1px;top:-4px;width:8px;height:8px;border-top:2px solid var(--point);border-right:2px solid var(--point);transform:rotate(45deg)}
+.anc-list{display:grid;grid-template-columns:repeat(5,1fr);gap:.35rem}
+.anc-list span{border:1px solid var(--line);border-radius:8px;background:#fff;padding:.35rem .3rem;text-align:center;font-size:.8rem}
+.chk2{list-style:none;padding:0!important;margin:.3rem 0 0;display:flex;flex-wrap:wrap;gap:.3rem .9rem;font-size:.85rem}
+.chk2 li::before{content:"□ ";color:var(--point)}
+/* 예시 | 프롬프트 */
+.pair{display:grid;grid-template-columns:1fr 1.3fr;border:1px solid var(--line);border-radius:10px;overflow:hidden;margin:.5rem 0}
+.pair>div{padding:.75rem .9rem}
+.pair .lbl{font-size:.75rem;font-weight:700;margin-bottom:.3rem;display:flex;justify-content:space-between;align-items:center;gap:.5rem}
+.pair .exc{background:#fff}
+.pair .exc .lbl{color:var(--sub)}
+.pair .prc{background:#F6F8FB;border-left:1px solid var(--line)}
+.pair .prc .lbl{color:var(--point)}
+.pair .exc ol{margin:0;padding-left:1.1rem;font-size:.88rem}
+.pair .exc p{font-size:.88rem;margin:.15rem 0}
+.prompt{font-size:.88rem;line-height:1.6;white-space:pre-wrap;margin:0}
+.blank{color:var(--point);font-weight:700}
+.copy{font:inherit;font-size:.72rem;border:1px solid var(--setup-line);background:#fff;color:var(--point);border-radius:6px;padding:.1rem .55rem;cursor:pointer}
+.copy.done{background:var(--point);color:#fff}
+
+table{width:100%;border-collapse:collapse;font-size:.86rem}
+th,td{border-bottom:1px solid var(--line);padding:.4rem .5rem;text-align:left;vertical-align:top}
+th{color:var(--sub);font-weight:500;font-size:.78rem;background:#F7F8F9}
+td:first-child{font-weight:700;white-space:nowrap}
+.tbl{overflow-x:auto}
+.calc{font-size:.95rem;margin:.4rem 0}
+.calc b{background:var(--point-soft);color:var(--point);border-radius:6px;padding:0 .45rem}
+
+.ex{display:grid;grid-template-columns:1fr auto 1fr;gap:.5rem;align-items:center;font-size:.88rem;margin:.3rem 0}
+.ex span{border:1px solid var(--line);border-radius:8px;padding:.3rem .6rem;background:#fff}
+.ex i{font-style:normal;color:var(--point)}
+.q{list-style:none;padding:0!important;margin:.2rem 0}
+.q li{padding:.3rem 0;border-bottom:1px dashed var(--line);font-size:.92rem}
+.fill{font-family:var(--serif);font-size:1.02rem;margin:.5rem 0 .2rem}
+.write{border-bottom:1px solid #CBD0D6;height:1.9rem;margin:.1rem 0}
+.check{list-style:none;padding:0!important}
+.check li::before{content:"□ ";color:var(--point)}
+
+.pager{position:sticky;bottom:0;background:rgba(252,252,250,.97);border-top:1px solid var(--line)}
+.pager div{max-width:1320px;margin:0 auto;padding:.55rem 1rem;display:flex;justify-content:space-between}
+.pager button{font:inherit;font-size:.85rem;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:8px;padding:.35rem 1rem;cursor:pointer}
+.pager button:hover:not(:disabled){border-color:var(--point);color:var(--point)}
+.pager button:disabled{opacity:.35;cursor:default}
+.print-only{display:none}
+
+@media (max-width:980px){
+  .styles{grid-template-columns:1fr 1fr}
+  .anc-arrow{display:none} .anc-list{grid-template-columns:repeat(3,1fr)}
+  .layout{grid-template-columns:1fr} .side{display:none}
+  .grid{grid-template-columns:1fr}
+  .phases{grid-template-columns:1fr 1fr} .phase::after{display:none}
+  .tools{grid-template-columns:1fr 1fr}
+  .pair,.duo{grid-template-columns:1fr} .pair .prc{border-left:0;border-top:1px solid var(--line)}
+}
+
+
+/* ── 설명 영상 (공통) ── */
+.vid{border:1px solid var(--line);border-radius:12px;background:#fff;overflow:hidden}
+.vstage{position:relative;aspect-ratio:16/9;background:#fff;overflow:hidden;container-type:inline-size}
+.vstage .v3d{position:absolute;left:0;top:0;width:100%;height:100%;display:block}
+.vlayer{position:absolute;left:0;top:0;right:0;bottom:0}
+.vcap{display:grid;grid-template-columns:auto 1fr;column-gap:.7rem;align-items:baseline;padding:.75rem 1.1rem .7rem;border-top:1px solid var(--line);min-height:6.2em}
+.vno{font-size:.72rem;font-weight:700;color:var(--vp);background:var(--vps);border-radius:99px;padding:.05rem .6rem;white-space:nowrap}
+.vtt{font-size:1rem}
+.vtx{grid-column:1/-1;margin:.3rem 0 0;font-size:1rem;line-height:1.6}
+.vbar{display:flex;flex-wrap:wrap;gap:.45rem;align-items:center;padding:.55rem .9rem;border-top:1px solid var(--line);background:#FAFAF8}
+.vb{font:inherit;font-size:.8rem;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:8px;padding:.3rem .85rem;cursor:pointer}
+.vb.vplay{border-color:var(--vp);color:var(--vp);font-weight:700}
+.vb.vplay.on{background:var(--vp);color:#fff}
+.vseek{flex:1;min-width:140px;accent-color:var(--vp)}
+.vchips{display:flex;gap:.25rem;flex-wrap:wrap}
+.vchip{font:inherit;font-size:.74rem;width:2.1em;height:2.1em;border-radius:50%;border:1px solid var(--line);background:#fff;color:var(--ink);cursor:pointer;padding:0}
+.vchip.on{background:var(--vp);border-color:var(--vp);color:#fff;font-weight:700}
+.vscript{display:none;margin:0;padding:.8rem 1.2rem .9rem 2.4rem;font-size:.9rem;border-top:1px solid var(--line)}
+.vscript li{margin:.25rem 0}
+.vid.nolib .vstage,.vid.nolib .vbar,.vid.nolib .vcap{display:none}
+.vid.nolib .vscript{display:block}
+/* 요약 영상 겹침 글 */
+.s-tag{position:absolute;left:50%;transform:translate(-50%,-50%);white-space:nowrap;background:#fff;border:1px solid var(--point);color:var(--point);border-radius:99px;padding:.3em 1em;font-size:2.1cqw;font-weight:700}
+.s-top{top:34%}.s-bot{top:79%}
+.s-gem{position:absolute;left:4%;top:6%;background:#fff;border:1px solid var(--setup-line);border-radius:14px;padding:1.2cqw 1.6cqw;display:flex;flex-direction:column;gap:.4cqw;font-size:1.7cqw;box-shadow:0 6px 20px rgba(40,60,90,.08)}
+.s-gem b{color:var(--point);font-size:1.9cqw}
+.s-sty{position:absolute;left:0;right:0;top:7%;display:flex;justify-content:center;gap:1.4cqw}
+.s-sty i{font-style:normal;display:flex;align-items:center;gap:.6cqw;background:#fff;border:1px solid var(--line);border-radius:99px;padding:.6cqw 1.4cqw;font-size:1.8cqw}
+.s-sty i::before{content:"";width:1.6cqw;height:1.6cqw;border-radius:50%;background:var(--c)}
+.s-done{position:absolute;right:6%;bottom:9%;font-family:var(--serif);font-weight:700;font-size:2.8cqw;color:var(--point);background:#fff;border-radius:12px;padding:.6cqw 1.6cqw;border:1px solid var(--setup-line)}
+.fm-ring{position:absolute;left:0;top:0;width:10%;height:10%;border:3px solid #8AB4F8;border-radius:12px;pointer-events:none;box-shadow:0 0 0 3px rgba(138,180,248,.25)}
+.fm-cur{position:absolute;left:50%;top:50%;width:0;height:0;z-index:5}
+.fm-cur::before{content:"";position:absolute;left:0;top:0;border-style:solid;border-width:0 0 2.2cqw 1.3cqw;border-color:transparent transparent transparent #2A2E33;transform:rotate(-20deg);transform-origin:0 0;filter:drop-shadow(0 1px 1px rgba(255,255,255,.9))}
+.fm-cur i{position:absolute;left:-1.2cqw;top:-1.2cqw;width:2.4cqw;height:2.4cqw;border-radius:50%;background:var(--point);opacity:0}
+.ed-sum{left:0;top:0;right:0;bottom:0;background:rgba(247,248,250,.96);display:flex;align-items:center;justify-content:center;gap:2cqw}
+.ed-sum div{background:#fff;border:1px solid #DCE1E7;border-radius:14px;padding:2cqw 2.4cqw;text-align:center;min-width:22%}
+.ed-sum b{display:block;font-family:var(--serif);font-size:2.6cqw;color:var(--point)}.ed-sum span{font-size:1.6cqw;color:var(--sub)}
+/* 앵커 */
+.an{position:absolute;left:0;top:0;right:0;bottom:0;background:#F7F8FA;font-size:1.6cqw}
+.an>*{position:absolute}
+.an-card{top:6%;width:20%;height:52%;background:#fff;border:1px solid #DCE1E7;border-radius:10px;display:flex;flex-direction:column;align-items:center;padding-bottom:.6cqw}
+.an-card.a{left:4%}.an-card.b{left:26%}
+.an-card svg{flex:1;width:100%;min-height:0}.an-card span{font-size:1.4cqw;font-weight:700;color:var(--point)}
+.an-chk{left:4%;top:63%;width:42%;margin:0;padding:0;list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:.8cqw 1.4cqw}
+.an-chk li{display:flex;align-items:center;gap:.7cqw;background:#fff;border:1px solid #E3E5E8;border-radius:8px;padding:.7cqw 1cqw}
+.an-chk li i{font-style:normal;display:inline-flex;align-items:center;justify-content:center;width:2cqw;height:2cqw;border:2px solid #B9C4D0;border-radius:4px;color:#fff;font-size:1.3cqw;background:#fff}
+.an-in{left:52%;top:6%;width:44%;height:22%;background:#fff;border:1px solid #DCE1E7;border-radius:14px;display:flex;align-items:center;gap:1cqw;padding:0 1.4cqw}
+.an-in i{display:block;width:4.8cqw;height:6.4cqw;border:1px solid #E3E5E8;border-radius:6px}.an-in i svg{width:100%;height:100%}
+.an-in span{color:var(--sub)}
+.an-lines{left:73%;top:29%;color:var(--point);font-size:2cqw}
+.an-grid{left:56%;top:37%;width:36%;height:60%;display:grid;grid-template-columns:repeat(3,1fr);gap:1cqw;align-items:start}
+.an-pg{background:#fff;border:1px solid #DCE1E7;border-radius:6px;aspect-ratio:3/4;position:relative;overflow:hidden}
+.an-art{position:absolute;left:0;top:0;width:100%;height:66.7%}.an-art svg{width:100%;height:100%;display:block}
+.an-pg span{position:absolute;left:0;right:0;bottom:6%;text-align:center;font-size:1.2cqw;font-weight:700;color:var(--point)}
+/* 3:4 구조 */
+.ly{position:absolute;left:0;top:0;right:0;bottom:0;background:#F7F8FA;font-size:1.6cqw}
+.ly>*{position:absolute}
+.ly-pg{left:5%;top:5%;width:33%;height:88%;background:#fff;border:1px solid #DCE1E7;border-radius:6px;overflow:hidden;box-shadow:0 8px 24px rgba(30,40,60,.08)}
+.ly-art{position:absolute;left:0;top:0;width:100%;height:66.7%}.ly-art svg{width:100%;height:100%;display:block}
+.ly-div{position:absolute;left:4%;right:4%;top:66.7%;height:2px;background:var(--point);transform-origin:left}
+.ly-txt{position:absolute;left:0;right:0;top:66.7%;bottom:0;display:flex;flex-direction:column;justify-content:center;align-items:center;font-family:"Noto Serif KR",serif;font-size:1.55cqw;line-height:1.7}
+.ly-txt p{margin:0;position:relative}.ly-txt .l2{min-width:80%;text-align:center;height:1.7em}
+.ly-txt .l2 span{position:absolute;left:0;right:0}.ly-txt u{text-decoration:none;color:#B03A48}
+.ly-o{position:absolute;left:58%;top:38%;width:9%;height:28%;border:3px solid #B03A48;border-radius:50%}
+.ly-r{position:absolute;right:3%;top:2%;font-size:1.3cqw;color:var(--point);font-weight:700}
+.ly-b{left:39.5%;border-left:3px solid var(--point);padding:.4cqw 1cqw;background:#fff;border-radius:0 8px 8px 0}
+.ly-b b{display:block;color:var(--point)}.ly-b.b1{top:30%}.ly-b.b2{top:76%}
+.ly-pr{left:56%;top:6%;width:40%;margin:0;display:flex;flex-direction:column;gap:1cqw}
+.ly-pr p{margin:0;background:#fff;border:1px solid #DCE1E7;border-radius:10px;padding:1cqw 1.2cqw;line-height:1.5}
+.ly-pr b{color:var(--point)}
+.ly-pt{left:56%;top:58%;width:34%;border-collapse:collapse;background:#fff;font-size:1.6cqw}
+.ly-pt th,.ly-pt td{border-bottom:1px solid #E3E5E8;padding:.5cqw 1cqw;text-align:left}
+.ly-pt td:first-child{font-weight:700}
+.ly-fix{left:56%;top:62%;width:40%;background:var(--warn-bg);border:1px solid var(--warn-line);border-radius:10px;padding:1cqw 1.2cqw;line-height:1.5;color:var(--warn-ink)}
+/* ── 구글 플로우 화면 모형 (어두운 실제 화면) ── */
+.fd{position:absolute;left:0;top:0;right:0;bottom:0;background:#0B0B0C;color:#E8EAED;font-size:1.3cqw;font-family:"Noto Sans KR",sans-serif;overflow:hidden}
+.fd>*,.fd-side>*,.fd-box>*{position:absolute}
+.fd-side{left:0;top:0;width:15%;height:100%}
+.fd-home{left:9%;top:3%;font-style:normal;font-size:1.7cqw}
+.fd-name{left:24%;top:3.2%;width:66%;height:4%;font-weight:700;white-space:nowrap}.fd-name b{position:absolute;left:0;top:0}
+.fd-dots{right:2%;top:3%;font-style:normal;color:#9AA0A6}
+.fd-m{left:3%;width:94%;padding:.5cqw .9cqw;border-radius:1cqw;font-weight:700;white-space:nowrap}
+.fd-m.on{background:#3C3D40}
+.fd-hr{left:3%;width:94%;top:34%;height:1px;background:#3C4043}
+.fd-search{left:33%;top:2.5%;width:28%;height:6%;border-radius:99px;background:#1F1F21;padding-left:1cqw;display:flex;align-items:center;color:#9AA0A6}
+.fd-filter{left:61.6%;top:2.5%;width:3%;height:6%;border-radius:1cqw;background:#1F1F21;display:flex;align-items:center;justify-content:center}
+.fd-icons{left:78.5%;top:3.2%;font-size:1.5cqw;white-space:nowrap}
+.fd-pro{left:91%;top:2.2%;width:8%;height:7%;border-radius:1.4cqw;background:#1F1F21;display:flex;align-items:center;gap:.5cqw;padding-left:.6cqw;font-weight:700;font-size:1.1cqw}
+.fd-pro i{width:2.6cqw;height:2.6cqw;border-radius:50%;background:#8AB4F8;border:2px solid #4A7BD0}
+.fd-empty{left:15%;width:85%;top:38%;text-align:center;font-size:1.6cqw;color:#C4C7C5}.fd-empty b{display:block;font-size:3.4cqw;margin-bottom:.6cqw}
+.fd-box{left:29%;top:81%;width:40%;height:15%;border-radius:1.6cqw;background:#1E1F21;border:1px solid #2F3033}
+.fd-ph{left:3%;top:14%;color:#9AA0A6}
+.fd-ty{left:3%;top:14%;width:94%;white-space:nowrap;overflow:hidden;color:#E8EAED}
+.fd-plus{left:1.5%;bottom:10%;width:6.5%;height:40%;border-radius:50%;background:#2A2B2E;display:flex;align-items:center;justify-content:center;font-style:normal}
+.fd-agent{left:9%;bottom:10%;width:16%;height:40%;border-radius:99px;background:#2A2B2E;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.15cqw}
+.fd-set{left:63.5%;bottom:10%;width:28.5%;height:40%;border-radius:99px;background:#2A2B2E;display:flex;align-items:center;justify-content:center;gap:.3cqw;font-size:1.05cqw;white-space:nowrap}
+.fd-set i{font-style:normal}.fd-set .cc{position:relative;display:inline-block;width:1.7cqw;height:1.3em}.fd-set .cc b{position:absolute;left:0;top:0;font-weight:700}
+.fd-aic{left:80%;bottom:16%;font-size:1.4cqw;white-space:nowrap}
+.fd-go{right:1.5%;bottom:10%;width:6.5%;height:40%;border-radius:50%;background:#2A2B2E;display:flex;align-items:center;justify-content:center;font-style:normal}
+.fd-note{right:1%;bottom:.6%;font-size:.95cqw;color:#7B7F86}
+.fd-homev{left:0;top:0;width:100%;height:100%;background:#0B0B0C;z-index:3;display:flex;flex-direction:column;align-items:center;padding-top:8%}
+.fd-homev>*{position:static}.fd-homev b{font-size:2cqw;margin-bottom:5%}
+.fd-newp{margin-top:6%;width:20%;height:10%;border-radius:99px;background:#E8EAED;color:#111;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.6cqw}
+.fd-homev p{margin:4% 0 1%;color:#9AA0A6}.fd-homev i{display:inline-block;width:14%;height:12%;margin:.4%;border-radius:1cqw;background:#1F1F21}
+.fd-pop{left:47%;top:44%;width:22%;height:35%;border-radius:1.6cqw;background:#1B1C1E;border:1px solid #2F3033;padding:.7cqw;display:flex;flex-direction:column;gap:.5cqw;z-index:2}
+.fd-pop>*{position:static!important}
+.fd-tabs{display:flex;gap:.4cqw}.fd-tabs span{flex:1;text-align:center;padding:.4cqw;border-radius:.8cqw;font-weight:700}.fd-tabs span.on{background:#E8EAED;color:#111}
+.fd-ratios{display:flex;gap:.3cqw;background:#242528;border-radius:.8cqw;padding:.3cqw}.fd-ratios span{flex:1;text-align:center;font-size:.95cqw;line-height:1.25;padding:.25cqw 0;border-radius:.6cqw}
+.fd-ratios span.on{background:#3C4043}
+.fd-model{background:#242528;border-radius:.8cqw;padding:.45cqw .8cqw;font-weight:700;display:flex;justify-content:space-between}.fd-model i{font-style:normal}
+.fd-cnt{display:flex;gap:.3cqw;background:#242528;border-radius:.8cqw;padding:.3cqw}.fd-cnt span{flex:1;text-align:center;padding:.3cqw 0;border-radius:.6cqw;font-weight:700}.fd-cnt span.on{background:#3C4043}
+.fd-pop p{margin:0;text-align:center;font-size:1cqw;color:#C4C7C5}
+.fd-panel{left:77%;top:11%;width:22%;height:86%;border-radius:1.4cqw;background:#18191B;border:1px solid #2F3033;padding:1cqw;display:flex;flex-direction:column;gap:.7cqw;z-index:2}
+.fd-panel>*{position:static!important}.fd-panel p{margin:.6cqw 0;text-align:center;color:#C4C7C5;font-size:1.4cqw}
+.fd-panel span{background:#26272A;border-radius:1cqw;padding:.9cqw;font-weight:700;font-size:1.05cqw}.fd-panel em{margin-top:auto;font-style:normal;color:#9AA0A6;border:1px solid #2F3033;border-radius:1cqw;padding:.8cqw;font-size:1cqw}
+.fd-tile{top:13%;width:16.9%;height:40%;border-radius:1cqw;background:#fff;overflow:hidden}
+.fd-tile svg{position:absolute;left:0;top:0;width:100%;height:100%}
+.fd-tile.t1{left:17%}.fd-tile.t2,.fd-tile.t3{left:34.5%}.fd-tile.t4{left:52%;width:22.5%}
+.fd-hv{right:4%;top:3%;display:flex;gap:.3cqw;background:rgba(60,64,67,.85);border-radius:.8cqw;padding:.2cqw .4cqw}
+.fd-hv i{position:static;font-style:normal;color:#E8EAED;width:1.9cqw;text-align:center}
+.fd-tile em{left:5%;bottom:3%;font-style:normal;font-size:.95cqw;color:#fff;text-shadow:0 1px 3px #000}
+.fd-drag{left:18%;top:18%;width:8%;height:19%;border-radius:.6cqw;overflow:hidden;background:#fff;z-index:4;box-shadow:0 6px 18px rgba(0,0,0,.6)}.fd-drag svg{width:100%;height:100%}
+.fd-det{left:15%;top:10%;width:85%;height:90%;background:#0B0B0C;z-index:2}
+.fd-det>*{position:absolute}
+.fd-x{left:1%;top:1%;font-style:normal;color:#C4C7C5}
+.fd-tools{left:1%;top:14%;display:flex;flex-direction:column;gap:1.4cqw}.fd-tools i{position:relative;font-style:normal;width:3cqw;height:3cqw;border-radius:50%;background:#26272A;display:flex;align-items:center;justify-content:center}
+.fd-tools em{position:absolute;left:3.6cqw;font-style:normal;font-size:1.1cqw;white-space:nowrap;color:#C4C7C5}
+.fd-big{left:22%;top:2%;width:31%;height:86%;background:#fff;border-radius:.8cqw;overflow:hidden}.fd-big>svg{position:absolute;left:0;top:0;width:100%;height:100%}
+.fd-crop{position:absolute;border:2px solid #fff;box-shadow:0 0 0 999px rgba(0,0,0,.55)}
+.fd-crop i{position:absolute;width:1.2cqw;height:1.2cqw;background:#fff}
+.fd-crop i:nth-child(1){left:-.6cqw;top:-.6cqw}.fd-crop i:nth-child(2){right:-.6cqw;top:-.6cqw}.fd-crop i:nth-child(3){left:-.6cqw;bottom:-.6cqw}.fd-crop i:nth-child(4){right:-.6cqw;bottom:-.6cqw}
+.fd-cbtn{position:absolute;right:4%;bottom:3%;background:#E8EAED;color:#111;border-radius:99px;padding:.3cqw 1.2cqw;font-weight:700}
+.fd-hist{left:73%;top:0;width:25%;height:88%;background:#18191B;border-radius:1cqw;padding:1cqw;display:flex;flex-direction:column;gap:.8cqw}
+.fd-hist>*{position:static}.fd-hist div{position:relative;height:38%;border-radius:.6cqw;overflow:hidden;background:#fff}.fd-hist svg{width:100%;height:100%}
+.fd-hist span{position:absolute;left:4%;bottom:3%;font-size:1cqw;color:#111;background:rgba(255,255,255,.85);border-radius:4px;padding:0 .3cqw}
+.fd-cur::before{border-color:transparent transparent transparent #fff!important;filter:drop-shadow(0 1px 2px rgba(0,0,0,.9))}
+.fd-cur i{background:#8AB4F8!important}
+.fd-sum{background:rgba(11,11,12,.94)!important;z-index:6}
+/* 이번 교안 추가 부품 */
+.flow7{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(9,1fr);gap:.9rem}
+.flow7 li{position:relative;border:1px solid var(--line);border-radius:10px;background:#fff;padding:.5rem .5rem .55rem;text-align:center;font-size:.82rem;font-weight:700;line-height:1.35}
+.flow7 li b{display:block;font-family:var(--serif);font-size:1.15rem;color:var(--point)}
+.flow7 li small{display:block;font-weight:400;font-size:.7rem;color:var(--sub);margin-top:.15rem}
+.flow7 li:not(:last-child)::after{content:"";position:absolute;right:-.72rem;top:50%;width:.5rem;height:.5rem;border-top:2px solid var(--point);border-right:2px solid var(--point);transform:translateY(-50%) rotate(45deg)}
+.flow7 li.hot{background:var(--point-soft);border-color:var(--setup-line)}
+.m6{display:grid;grid-template-columns:repeat(6,1fr);gap:.7rem}
+.m34{max-width:280px;margin:0 auto}
+.m34p{aspect-ratio:3/4;background:#fff;border:1px solid var(--line);border-radius:6px;overflow:hidden;display:flex;flex-direction:column;container-type:inline-size;box-shadow:0 4px 14px rgba(40,60,90,.06)}
+.m34a{height:66.7%;border-bottom:1px dashed #C9D8EC}.m34a svg{width:100%;height:100%;display:block}
+.m34t{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;font-family:"Noto Serif KR",serif;font-size:5.6cqw;line-height:1.55;text-align:center;padding:0 4%}
+.m34t .tt{font-weight:700;font-size:10cqw;line-height:1.25}.m34t .st{font-size:5.4cqw}
+.m34t.two{flex-direction:row;justify-content:space-around;align-items:center}.m34t.two{font-size:4.6cqw;line-height:1.45}.m34t.two b{display:block;font-size:5.6cqw}
+.m6 .m34n{text-align:center;font-size:.78rem;font-weight:700;color:var(--point);margin-top:.3rem}
+.then{display:grid;grid-template-columns:1fr 1.6fr;gap:1rem}
+.tn{border:1px solid var(--line);border-radius:10px;padding:.7rem .9rem;background:#fff}
+.tn>b{display:block;font-size:.82rem;color:var(--sub);margin-bottom:.4rem}
+.tn.now{background:var(--point-soft);border-color:var(--setup-line)}.tn.now>b{color:var(--point)}
+.kis{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem}
+.kis div{border:1px solid var(--line);border-radius:10px;background:#fff;padding:.5rem;text-align:center;font-size:.86rem;font-weight:700;line-height:1.35}
+.kis b{display:block;font-family:var(--serif);font-size:1.4rem;color:var(--point)}
+.kis small{display:block;font-weight:400;font-size:.72rem;color:var(--sub)}
+.ag{display:grid;gap:.5rem}
+.ag div{border:1px solid var(--line);border-radius:10px;padding:.6rem .8rem;font-size:.9rem;background:#fff}
+.ag div b{display:block;font-size:.82rem;color:var(--sub)}
+.ag div.on{border-color:var(--setup-line);background:var(--setup-bg)}.ag div.on b{color:var(--point)}
+.prc.solo{background:#F6F8FB;border:1px solid var(--line);border-radius:10px;padding:.6rem .8rem;margin:.6rem 0}
+.prc.solo .lbl{font-size:.75rem;font-weight:700;color:var(--point);display:flex;justify-content:space-between;align-items:center;margin-bottom:.3rem}
+.styles.st4{grid-template-columns:repeat(4,1fr)}
+.stybtn{font:inherit;text-align:left;cursor:pointer;padding:0;color:inherit}
+.stybtn.on{border:2px solid var(--point);box-shadow:0 0 0 3px var(--point-soft)}
+.stybtn .fit{font-size:.72rem}
+.seg{display:flex;flex-wrap:wrap;gap:.35rem;margin:0 0 .6rem}
+.seg-b{font:inherit;font-size:.85rem;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:99px;padding:.3rem 1rem;cursor:pointer}
+.seg-b.on{background:var(--point);border-color:var(--point);color:#fff;font-weight:700}
+.seg-p{display:none}.seg-p.on{display:block}
+.ancv{max-width:150px;margin:0 auto .4rem;border:1px solid var(--line);border-radius:8px;background:#fff;aspect-ratio:3/4}.ancv svg{width:100%;height:100%;display:block}
+.next-line{margin:.8rem 0 0;padding:.6rem .9rem;border-left:3px solid var(--point);background:var(--point-soft);border-radius:0 8px 8px 0;font-size:.92rem}
+.next-line b{color:var(--point)}
+.step-num{min-width:1.2em}
+@media (max-width:980px){
+  .flow7{grid-template-columns:repeat(3,1fr)} .flow7 li:nth-child(3n)::after{display:none}
+  .m6{grid-template-columns:repeat(3,1fr)} .styles.st4{grid-template-columns:1fr 1fr}
+  .then,.kis{grid-template-columns:1fr 1fr}
+}
+@media (max-width:600px){ .flow7{grid-template-columns:1fr 1fr} .flow7 li::after{display:none} .then{grid-template-columns:1fr} }
+main,.grid>*{min-width:0}
+@media (max-width:980px){.layout{grid-template-columns:minmax(0,1fr)}.grid{grid-template-columns:minmax(0,1fr)}}
+.fmap{display:grid;grid-template-columns:repeat(4,1fr);gap:.6rem}
+.fmap div{border:1px solid var(--line);border-radius:10px;padding:.55rem .7rem;font-size:.85rem;background:#fff;line-height:1.5}
+.fmap b{display:block;font-size:.78rem;color:var(--point)}
+.fmap div.hot{background:var(--point-soft);border-color:var(--setup-line)}
+@media (max-width:980px){.fmap{grid-template-columns:1fr 1fr}}
+
+.chk2[style*="column"] li{padding:.15rem 0}
+
+/* 스크립트가 꺼진 미리보기에서도 내용이 보이게 */
+html:not(.js) .step{display:block!important;margin-bottom:2.5rem}
+html:not(.js) .tabs,html:not(.js) .pager,html:not(.js) .zoom,html:not(.js) .side,html:not(.js) .copy,html:not(.js) .seg{display:none!important}
+html:not(.js) .vid .vstage{display:none}
+html:not(.js) .vscript{display:block}
+html:not(.js) .seg-p{display:block;margin-bottom:.8rem}
+html.js .vid:not(.vset) .vstage{display:none}
+html.js .vid:not(.vset):not(.nolib) .vstatic{display:block}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="bar-row">
+    <div class="course">내 인생 동화책 만들기 <small>구글 플로우로 완성하는 「토끼와 거북이」 그림책 6장</small></div>
+    <div class="zoom" aria-label="글자 크기">
+      <button type="button" data-z="-1" aria-label="글자 작게">가−</button>
+      <button type="button" data-z="0" aria-label="기본 크기">기본</button>
+      <button type="button" data-z="1" aria-label="글자 크게">가+</button>
+    </div>
+  </div>
+  <nav class="tabs" role="tablist" aria-label="수업 단계">
+    <button class="tab" role="tab" aria-selected="true"><b>처음</b>요약 영상</button>
+    <button class="tab" role="tab" aria-selected="false"><b>STEP 1</b>쉬운 복습</button>
+    <button class="tab" role="tab" aria-selected="false"><b>STEP 2</b>플로우 익히기</button>
+    <button class="tab" role="tab" aria-selected="false"><b>STEP 3</b>고치기 연습</button>
+    <button class="tab" role="tab" aria-selected="false"><b>STEP 4</b>원고 · 제미나이</button>
+    <button class="tab" role="tab" aria-selected="false"><b>STEP 5</b>화풍과 앵커</button>
+    <button class="tab" role="tab" aria-selected="false"><b>STEP 6</b>표지 · 소개</button>
+    <button class="tab" role="tab" aria-selected="false"><b>STEP 7</b>장면 4장</button>
+    <button class="tab" role="tab" aria-selected="false"><b>STEP 8</b>6장 모아 보기</button>
+    <button class="tab" role="tab" aria-selected="false"><b>STEP 9</b>내 이야기 시놉시스</button>
+  </nav>
+</header>
+
+<div class="layout">
+<main>
+
+<!-- 처음 -->
+<section class="step on" id="s0">
+  <div class="step-head"><span class="step-num">0</span><h2>오늘 한눈에</h2></div>
+  <p class="lead">다 아는 이야기 「토끼와 거북이」로, 글씨까지 들어간 그림책 6장을 구글 플로우 하나로 끝까지 만듭니다.</p>
+  <div class="grid">
+    <article class="card wide" id="c0-1">
+      <h3><span class="k">①</span>요약 영상 · 오늘 만드는 그림책</h3>
+      <div class="vid" data-v="summary"><div class="vstage"></div><ol class="vscript vstatic"><li><b>오늘 만들 여섯 장</b> 오늘 만들 그림책은 여섯 장입니다. 표지, 캐릭터 소개, 그리고 기·승·전·결 네 장면이에요.</li><li><b>한 장의 구조</b> 모든 장은 세로 3:4. 위쪽 3분의 2에는 그림, 아래쪽 3분의 1에는 글이 들어갑니다.</li><li><b>글은 제미나이</b> 글은 제미나이가 씁니다. 4챕터 원고를 한 번에 받아 장마다 나눠 넣어요.</li><li><b>화풍 고르기</b> 화풍은 수채화, 3D 클레이, 페이퍼컷, 색연필 중 하나를 고릅니다. 여섯 장 모두 같은 화풍으로 갑니다.</li><li><b>앵커 두 장</b> 토끼와 거북이 앵커를 순백 배경으로 한 장씩 만듭니다. 이 두 장이 모든 장면의 기준이에요.</li><li><b>앵커로 장면 만들기</b> 앵커 두 장을 첨부하고 장면 프롬프트를 넣으면, 어느 장이든 같은 얼굴·같은 옷·같은 화풍으로 나옵니다.</li><li><b>여섯 장이 한 권으로</b> 여섯 장을 모으면 한 권이 됩니다. 글자 오타와 얼굴은 마지막에 반드시 사람의 눈으로 확인해요.</li></ol></div>
+      <p class="note">소리 없이 자막으로 설명합니다. 번호를 누르면 그 장면에서 멈춰요.</p>
+    </article>
+    <article class="card wide" id="c0-2">
+      <h3><span class="k">②</span>오늘의 흐름</h3>
+      <ol class="flow7">
+        <li><b>1</b>쉬운 복습<small>스토리보드 → 그림책</small></li>
+        <li><b>2</b>플로우 익히기<small>메뉴 · 비율 · 즐겨찾기</small></li>
+        <li><b>3</b>고치기 연습<small>수정 · 비율 · 크롭</small></li>
+        <li><b>4</b>원고<small>제미나이 4챕터</small></li>
+        <li class="hot"><b>5</b>화풍과 앵커<small>토끼 · 거북이 2장</small></li>
+        <li><b>6</b>표지 · 소개<small>2장</small></li>
+        <li><b>7</b>장면 4장<small>기 · 승 · 전 · 결</small></li>
+        <li><b>8</b>모아 보기<small>6장 = 한 권</small></li>
+        <li><b>9</b>내 이야기<small>시놉시스 · 장면 8~12</small></li>
+      </ol>
+    </article>
+    <article class="card wide" id="c0-3">
+      <h3><span class="k">③</span>오늘 만드는 6장 · 모두 세로 3:4</h3>
+      <div class="m6" data-m6></div>
+      <p class="note" style="margin-top:.5rem">위 3분의 2는 그림, 아래 3분의 1은 글. 글꼴은 노토 세리프(Noto Serif KR), 크기는 포인트로 정합니다. 그림은 교안 설명용 도식이에요.</p>
+    </article>
+  </div>
+</section>
+
+<!-- STEP 1 -->
+<section class="step" id="s1">
+  <div class="step-head"><span class="step-num">1</span><h2>쉬운 복습 · 스토리보드에서 그림책으로</h2></div>
+  <p class="lead">지난 시간에는 이야기를 장면으로 나눴습니다. 오늘은 그 장면을 그림과 글이 있는 한 장 한 장으로 바꿉니다.</p>
+  <div class="grid">
+    <article class="card wide" id="c1-1">
+      <h3><span class="k">①</span>지난 시간과 오늘</h3>
+      <div class="then">
+        <div class="tn"><b>지난 시간</b><ol class="chain"><li>이야기</li><li class="arrow">›</li><li>장면 나누기 (스토리보드)</li></ol></div>
+        <div class="tn now"><b>오늘</b><ol class="chain"><li>스토리보드</li><li class="arrow">›</li><li>그림</li><li class="arrow">›</li><li>글씨 넣기</li><li class="arrow">›</li><li>그림책 6장</li></ol></div>
+      </div>
+    </article>
+    <article class="card" id="c1-2">
+      <h3><span class="k">②</span>그림책 한 장은 세 가지로 됩니다</h3>
+      <div class="tbl"><table>
+        <tr><th>요소</th><th>뜻</th><th>도구</th></tr>
+        <tr><td>글</td><td>그 장에 들어갈 문장</td><td>제미나이</td></tr>
+        <tr><td>그림</td><td>그 장의 장면</td><td>구글 플로우</td></tr>
+        <tr><td>같은 얼굴</td><td>장마다 주인공이 똑같아 보이게 하는 기준 그림, <b>앵커</b></td><td>구글 플로우</td></tr>
+      </table></div>
+    </article>
+    <article class="card" id="c1-3">
+      <h3><span class="k">③</span>기승전결 4장면</h3>
+      <div class="kis">
+        <div><b>기</b>출발<small>시작과 인물</small></div>
+        <div><b>승</b>토끼의 낮잠<small>일이 꼬임</small></div>
+        <div><b>전</b>거북이의 한 걸음<small>뒤집히는 순간</small></div>
+        <div><b>결</b>결승선<small>마무리와 여운</small></div>
+      </div>
+      <p class="note" style="margin-top:.5rem">스토리보드 칸 하나 = 그림책 한 장. 오늘은 네 칸으로 연습합니다.</p>
+    </article>
+    <article class="card wide" id="c1-4">
+      <h3><span class="k">④</span>내 속도로</h3>
+      <div class="duo">
+        <div class="box help"><span class="t">막힐 때</span>스토리보드를 못 끝냈어도 괜찮습니다. 오늘은 모두 같은 이야기 「토끼와 거북이」로 합니다.</div>
+        <div class="box ext"><span class="t">한 걸음 더</span>지난 시간 내 스토리보드 장면 하나를 옆에 펴 두세요. 오늘 배우는 프롬프트에 내 장면을 넣어 보면 다음 시간이 쉬워집니다.</div>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- STEP 2 -->
+<section class="step" id="s2">
+  <div class="step-head"><span class="step-num">2</span><h2>구글 플로우 익히기</h2></div>
+  <p class="lead">오늘 그림은 전부 구글 플로우에서 만듭니다. 아래 입력창 하나와 그 안의 버튼 네 개만 알면 됩니다.</p>
+  <div class="grid">
+    <article class="card wide" id="c2-1">
+      <h3><span class="k">①</span>설명 영상 · 플로우 화면 따라가기</h3>
+      <div class="vid" data-v="flow"><div class="vstage"></div><ol class="vscript vstatic"><li><b>새 프로젝트 만들기</b> labs.google/fx/tools/flow에 들어가 홈 화면에서 「+ 새 프로젝트」를 누릅니다. 빈 프로젝트가 열리고 가운데에 "미디어 만들기를 시작하거나 미디어를 드롭하세요"가 보여요.</li><li><b>프로젝트 이름</b> 이름은 왼쪽 위에 날짜와 시각으로 자동으로 붙습니다. 홈 화면에서 프로젝트의 연필 아이콘(프로젝트 수정)을 눌러 「토끼와 거북이 그림책」으로 바꿔 두면 찾기 쉬워요.</li><li><b>에이전트 켜기·끄기</b> 입력창의 「에이전트」를 누르면 버튼이 흰색으로 바뀌며 켜집니다. 펼치기를 누르면 오른쪽에 대화 패널이 열려요. 다시 누르면 꺼집니다. 그림을 새로 만들 때는 꺼 두세요.</li><li><b>설정 칩 · 이미지와 비율</b> 입력창 오른쪽의 「🍌 Nano Banana 2.1 ▯ x1」을 누르면 설정 창이 열립니다. 「이미지」 탭을 확인하고, 비율은 처음에 9:16일 수 있으니 3:4를 누르세요.</li><li><b>모델과 개수</b> 모델은 Nano Banana 2.1(안 보이면 Pro). 개수는 x1~x4 중 처음엔 x2. 아래에 사용될 크레딧이 표시돼요.</li><li><b>붙여 넣고 → 누르기</b> 「무엇을 만들고 싶으신가요?」 칸에 교안 프롬프트를 붙여 넣고 오른쪽 화살표(→)를 누릅니다. 잠시 뒤 그림 두 장이 나와요.</li><li><b>즐겨찾기</b> 그림 위에 마우스를 올리면 오른쪽 위에 ♡(즐겨찾기) · ↩ · ⋮(더보기)가 나옵니다. 고른 그림은 ♡를 눌러 표시하세요. 다운로드와 「프롬프트에 추가」는 ⋮ 안에 있어요.</li></ol></div>
+    </article>
+    <article class="card wide" id="c2-0">
+      <h3><span class="k">②</span>화면 지도 · 어디에 무엇이 있나</h3>
+      <div class="fmap">
+        <div><b>왼쪽 위</b>프로젝트 이름 (처음엔 날짜·시각) · ⋮</div>
+        <div><b>왼쪽 메뉴</b>전체 미디어 · 캐릭터 · 장면 · 도구 · 휴지통 · 접기</div>
+        <div><b>위</b>검색창 · 필터 · ＋(컬렉션 만들기) · ? · 설정</div>
+        <div class="hot"><b>아래 입력창</b>＋(이미지 넣기) · 에이전트 · 🍌 Nano Banana 2.1 ▯ x1 (설정 칩) · →(만들기)</div>
+      </div>
+    </article>
+    <article class="card setup" id="c2-2">
+      <h3><span class="k">③</span>따라하기</h3>
+      <div class="tbl"><table>
+        <tr><th>순서</th><th>할 일</th></tr>
+        <tr><td>접속</td><td>크롬 주소창에 <b>labs.google/fx/tools/flow</b> → 구글 계정 로그인</td></tr>
+        <tr><td>새 프로젝트</td><td>홈 화면에서 <b>＋ 새 프로젝트</b></td></tr>
+        <tr><td>이름</td><td>처음엔 날짜·시각으로 붙음 → 홈 화면의 연필(프로젝트 수정)로 <b>「토끼와 거북이 그림책」</b></td></tr>
+        <tr><td>에이전트</td><td>입력창의 <b>에이전트</b> 버튼이 어두운 색이면 꺼짐, 흰색이면 켜짐 → 지금은 <b>꺼짐</b></td></tr>
+        <tr><td>설정 칩</td><td>입력창 오른쪽 <b>🍌 Nano Banana 2.1 ▯ x1</b> 누르기</td></tr>
+        <tr><td>이미지 · 비율</td><td><b>이미지</b> 탭 → 비율 <b>3:4</b> (처음엔 9:16일 수 있음)</td></tr>
+        <tr><td>모델 · 개수</td><td>Nano Banana 2.1 (없으면 Pro) · <b>x2</b></td></tr>
+        <tr><td>만들기</td><td>「무엇을 만들고 싶으신가요?」에 붙여넣기 → 오른쪽 <b>→</b></td></tr>
+        <tr><td>즐겨찾기</td><td>그림 위에 마우스 → 오른쪽 위 <b>♡</b> (⋮ 안에 다운로드 · 프롬프트에 추가)</td></tr>
+      </table></div>
+      <p class="note">2026년 10월 화면 기준입니다. 업데이트로 달라질 수 있어요.</p>
+    </article>
+    <article class="card" id="c2-3">
+      <h3><span class="k">④</span>에이전트는 언제 켜나요?</h3>
+      <div class="ag">
+        <div><b>켜면 · STEP 3에서</b>입력창이 대화창으로 바뀌고, 펼치기를 누르면 오른쪽에 대화 패널이 열립니다. 여러 버전 만들기, <b>이미지 수정</b>, 비율 바꾸기를 말로 시킵니다. 크레딧이 드는 작업 전에는 먼저 확인을 물어요. 입력창 설정의 「생성 전 확인」은 <b>항상</b> 그대로 두세요.</div>
+        <div class="on"><b>끄면 · 지금</b>내가 넣은 프롬프트를 설정 칩의 비율·모델·개수 그대로 만듭니다. 교안 프롬프트로 결과를 비교할 때 맞아요.</div>
+      </div>
+    </article>
+    <article class="card wide" id="c2-4">
+      <h3><span class="k">⑤</span>첫 그림 만들기 · 고치기 연습에 쓸 토끼</h3>
+      <div class="pair">
+        <div class="exc"><div class="lbl">이렇게 합니다</div>
+          <ol><li>에이전트 꺼짐 · 설정 칩 <b>이미지 · 3:4 · x2</b> 확인</li><li>오른쪽 프롬프트 복사 → 입력창에 붙여넣기 → <b>→</b></li><li>더 나은 한 장에 <b>♡</b></li></ol>
+          <p class="note">이 토끼로 STEP 3에서 고치기를 연습합니다.</p></div>
+        <div class="prc"><div class="lbl">프롬프트 <button class="copy" type="button">복사</button></div>
+          <p class="prompt">그림책 연습 그림. 부드러운 수채화 그림책 화풍. 순수한 흰 배경(#FFFFFF)에 하얀 털, 긴 귀, 빨간 목도리를 두른 토끼 한 마리가 정면을 보고 서 있는 전신, 머리부터 발끝까지. 세로 3:4, 글자 없음.</p></div>
+      </div>
+      <div class="duo">
+        <div class="box help"><span class="t">막힐 때</span>영어 화면은 크롬 오른쪽 클릭 → 한국어로 번역. 설정 칩이 안 보이면 에이전트가 켜진 것이니 <b>에이전트</b>를 한 번 더 눌러 끄세요. 그림이 길쭉하게 나오면 설정 칩에서 3:4를 다시 고르세요.</div>
+        <div class="box ext"><span class="t">한 걸음 더</span>에이전트를 켜고 <b>"이 토끼를 조명만 다르게 해서 네 가지 버전으로 만들어 줘"</b>라고 해 보세요. 한 번에 여러 버전을 만드는 일은 에이전트가 잘합니다.</div>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- STEP 3 -->
+<section class="step" id="s3">
+  <div class="step-head"><span class="step-num">3</span><h2>고치기 연습 · 수정 · 비율 · 자르기</h2></div>
+  <p class="lead">방금 만든 토끼로 연습합니다. 다시 뽑지 않고 고치는 세 가지 방법입니다. 고쳐도 원본은 「기록」에 남습니다.</p>
+  <div class="grid">
+    <article class="card wide" id="c3-1">
+      <h3><span class="k">①</span>설명 영상 · 고치는 세 가지</h3>
+      <div class="vid" data-v="edit"><div class="vstage"></div><ol class="vscript vstatic"><li><b>그림을 누르면 상세 화면</b> 그림을 누르면 크게 열립니다. 왼쪽에는 자르기 같은 도구, 오른쪽에는 이전 버전과 프롬프트가 남는 「기록」 패널이 있어요.</li><li><b>한 곳만 고치기 · 에이전트</b> 그림 수정은 에이전트로 합니다. 에이전트를 켜고 그림을 입력창으로 끌어다 놓은 뒤 「목도리 색만 파란색으로, 나머지는 그대로」를 넣고 →. 생성 전에 확인을 물으면 승인하세요.</li><li><b>기록 패널로 전후 비교</b> 고쳐도 원본은 사라지지 않습니다. 새 그림을 눌러 「기록」 패널에서 전후를 나란히 보고, 얼굴과 배경이 그대로인지 확인해요.</li><li><b>비율 바꾸기</b> 비율도 에이전트에게 말로 바꿉니다. 「이 그림을 1:1로 바꿔 줘. 토끼는 그대로, 늘어난 양옆은 흰 배경으로」. 표지를 홍보용 정사각형으로 만들 때 써요.</li><li><b>자르기</b> 자르기는 상세 화면 왼쪽의 「자르기」를 누르고 자를 방법을 고른 뒤 「자르기」를 누릅니다. 얼굴과 목도리만 남기면 캐릭터 소개용 얼굴 그림이 돼요.</li><li><b>세 가지 정리</b> 고치기는 에이전트, 비율도 에이전트, 부분만 남기기는 상세 화면의 자르기. 원본은 늘 「기록」에 남아 있어요.</li></ol></div>
+    </article>
+    <article class="card" id="c3-2">
+      <h3><span class="k">②</span>한 곳만 고치기 · 에이전트</h3>
+      <ol><li>입력창의 <b>에이전트</b> 켜기 (흰색)</li><li>토끼 그림을 입력창으로 <b>끌어다 놓기</b></li><li>아래 문장 붙여넣기 → <b>→</b> (확인을 물으면 승인)</li><li>새 그림을 눌러 오른쪽 <b>기록</b>에서 전후 비교</li></ol>
+      <div class="prc solo"><div class="lbl">수정 문장 <button class="copy" type="button">복사</button></div>
+        <p class="prompt">목도리 색만 파란색으로 바꿔 줘. 토끼의 얼굴, 자세, 화풍, 배경은 그대로 유지.</p></div>
+      <ul class="chk2"><li>목도리만 바뀜</li><li>얼굴 그대로</li><li>배경 흰색 그대로</li></ul>
+    </article>
+    <article class="card" id="c3-3">
+      <h3><span class="k">③</span>비율 바꾸기 · 3:4 → 1:1</h3>
+      <ol><li>에이전트 켠 상태에서 그림을 입력창으로 끌어다 놓기</li><li>아래 문장 → <b>→</b></li><li>잘린 곳 · 늘어난 곳 확인</li></ol>
+      <div class="prc solo"><div class="lbl">비율 문장 <button class="copy" type="button">복사</button></div>
+        <p class="prompt">이 그림을 정사각형 1:1로 바꿔 줘. 토끼와 화풍은 그대로, 늘어난 양옆은 흰 배경으로 채워 줘. 글자 없음.</p></div>
+      <p class="note">처음부터 다른 비율이 필요하면, 에이전트를 끄고 설정 칩에서 비율을 바꿔 새로 만들어도 됩니다.</p>
+    </article>
+    <article class="card" id="c3-4">
+      <h3><span class="k">④</span>자르기 · 필요한 부분만</h3>
+      <ol><li>그림을 눌러 크게 열기</li><li>왼쪽 도구에서 <b>자르기</b></li><li>자를 방법을 골라 얼굴과 목도리만 남기기 → <b>자르기</b></li></ol>
+      <div class="tbl"><table>
+        <tr><th>방법</th><th>어디서</th><th>언제</th></tr>
+        <tr><td>한 곳만 고치기</td><td>에이전트</td><td>색·소품·표정 하나</td></tr>
+        <tr><td>비율 바꾸기</td><td>에이전트</td><td>표지를 홍보용 정사각형으로</td></tr>
+        <tr><td>자르기</td><td>그림 열기 → 왼쪽</td><td>얼굴 컷, 프로필</td></tr>
+      </table></div>
+    </article>
+    <article class="card" id="c3-5">
+      <h3><span class="k">⑤</span>내 속도로</h3>
+      <div class="box help"><span class="t">막힐 때</span>한 번에 여러 곳을 고치라고 하면 다른 곳까지 바뀝니다. <b>한 번에 하나씩</b>. 결과가 이상하면 「기록」에서 처음 그림을 다시 쓰면 됩니다. 끌어다 놓기가 어려우면 그림 위 <b>⋮ → 프롬프트에 추가</b>.</div>
+      <div class="box ext"><span class="t">한 걸음 더</span>"표정만 놀란 표정으로", "목도리를 줄무늬로"처럼 두 번 연속 고친 뒤 「기록」에서 처음 그림과 비교해 보세요. 몇 번 고쳐도 얼굴이 그대로인지가 실력입니다.</div>
+    </article>
+  </div>
+</section>
+
+<!-- STEP 4 -->
+<section class="step" id="s4">
+  <div class="step-head"><span class="step-num">4</span><h2>원고 · 제미나이로 4챕터 받기</h2></div>
+  <p class="lead">제미나이에게 편집자 역할을 주고, 표지·소개·4챕터 글과 화풍 추천까지 한 번에 받습니다.</p>
+  <div class="grid">
+    <article class="card wide" id="c4-1">
+      <h3><span class="k">①</span>6장 원고 받기</h3>
+      <div class="pair">
+        <div class="exc"><div class="lbl">이렇게 나옵니다 (예시)</div>
+          <div class="tbl"><table>
+            <tr><th>장</th><th>들어갈 글</th></tr>
+            <tr><td>01 표지</td><td>느려도 괜찮아 / 토끼와 거북이의 특별한 경주</td></tr>
+            <tr><td>02 소개</td><td>토끼는 숲에서 제일 빨라요. 자랑도 제일 잘해요. / 거북이는 느릿느릿 걸어요. 그래도 멈추지 않아요.</td></tr>
+            <tr><td>03 기</td><td>"출발!" 올빼미가 외쳤어요. / 토끼는 휙 달려 나갔어요. / 거북이는 한 발 내디뎠어요.</td></tr>
+            <tr><td>04 승</td><td>토끼가 뒤를 돌아봤어요. / 거북이는 보이지 않았어요. / "한숨 자야지." 쿨쿨.</td></tr>
+            <tr><td>05 전</td><td>거북이는 쉬지 않았어요. / 엉금엉금, 또 엉금엉금. / 해가 뉘엿뉘엿 기울었어요.</td></tr>
+            <tr><td>06 결</td><td>거북이가 리본을 넘었어요. / 토끼가 깜짝 놀라 깼어요. / 거북이가 손을 내밀었어요.</td></tr>
+          </table></div>
+          <p class="note">STEP 6·7 프롬프트에는 이 예시 글이 이미 들어 있습니다.</p></div>
+        <div class="prc"><div class="lbl">프롬프트 <button class="copy" type="button">복사</button></div>
+          <p class="prompt">너는 어린이 그림책 편집자야. 이솝우화 「토끼와 거북이」를 5~7세 아이가 읽을 그림책으로 만들어 줘.
+구성: 표지 1장 + 캐릭터 소개 1장 + 이야기 4챕터(기·승·전·결) = 모두 6장
+조건
+1. 표지: 제목(8자 이내)과 부제 한 줄
+2. 캐릭터 소개: 토끼와 거북이 각각 성격이 드러나는 2문장
+3. 4챕터: 기=출발, 승=토끼의 낮잠, 전=거북이의 한 걸음, 결=결승선. 챕터마다 정확히 3줄, 한 줄 15자 이내, 흉내말 1개
+4. 교훈은 말로 하지 말고 마지막 장면의 행동으로 보여 줄 것
+5. 생김새는 이대로 고정: 토끼=하얀 털, 긴 귀, 분홍 코, 빨간 목도리 / 거북이=연두색 등껍질, 둥근 눈, 작은 파란 가방
+6. 이 이야기에 어울리는 화풍을 수채화·3D 클레이·페이퍼컷·색연필 중에서 순서대로 추천하고 이유를 한 줄씩
+결과는 [장 | 들어갈 글(줄바꿈 그대로) | 그림 설명(한 줄)] 표로 정리해 줘.</p></div>
+      </div>
+      <p class="checkline"><b>사람이 확인</b> □ 줄마다 15자 이내 □ 아이가 아는 낱말 □ 교훈을 말로 하지 않음 □ 생김새가 프롬프트대로 → 하나라도 아니면 그 쪽만 다시 요청</p>
+      <div class="duo">
+        <div class="box help"><span class="t">막힐 때</span>줄글로 나오면 <b>"표로 다시 정리해 줘"</b>. 한 줄이 길면 <b>"모든 줄을 15자 이내로"</b>. 원고가 마음에 안 들면 왼쪽 예시 글을 그대로 써도 됩니다.</div>
+        <div class="box ext"><span class="t">한 걸음 더</span>STEP 7 장면 프롬프트의 글 부분을 <b>내 제미나이 원고</b>로 바꿔 넣으세요. "할머니가 손주에게 들려주는 말투로" 다시 받아 비교하면 내 책의 문체가 정해집니다.</div>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- STEP 5 -->
+<section class="step" id="s5">
+  <div class="step-head"><span class="step-num">5</span><h2>화풍 고르기와 앵커 이미지</h2></div>
+  <p class="lead">화풍을 하나 고르면 아래 앵커 프롬프트에 그 화풍이 자동으로 들어갑니다. 토끼와 거북이를 순백 배경으로 한 장씩 만듭니다.</p>
+  <div class="grid">
+    <article class="card wide" id="c5-1">
+      <h3><span class="k">①</span>화풍 고르기 · 네 가지 중 하나</h3>
+      <div class="styles st4">
+        <button type="button" class="sc stybtn on" data-p="부드러운 수채화 그림책 화풍, 번지는 물감, 종이 질감"><div class="sw sw-water"></div><div class="bd"><div class="nm">수채화</div><div class="fe">번지는 물감, 맑고 부드러움</div><div class="fit">고민되면 이것</div></div></button>
+        <button type="button" class="sc stybtn" data-p="점토로 빚은 3D 클레이 애니메이션 화풍, 손자국 질감, 둥근 형태, 부드러운 조명"><div class="sw sw-clay"></div><div class="bd"><div class="nm">3D 클레이</div><div class="fe">점토 인형, 손자국 질감</div><div class="fit">유쾌한 동물 이야기</div></div></button>
+        <button type="button" class="sc stybtn" data-p="색종이를 오려 겹겹이 붙인 페이퍼컷 화풍, 종이 그림자, 층이 보이는 입체감"><div class="sw sw-paper"></div><div class="bd"><div class="nm">페이퍼컷</div><div class="fe">색종이를 오려 겹친 입체감</div><div class="fit">옛날이야기 · 우화</div></div></button>
+        <button type="button" class="sc stybtn" data-p="색연필로 그린 그림책, 사각거리는 선, 따뜻한 손그림"><div class="sw sw-pencil"></div><div class="bd"><div class="nm">색연필</div><div class="fe">사각거리는 손그림 선</div><div class="fit">일상 · 성장 이야기</div></div></button>
+      </div>
+      <p class="style-line">고른 화풍 · <b class="sty-now">부드러운 수채화 그림책 화풍, 번지는 물감, 종이 질감</b></p>
+    </article>
+    <article class="card wide" id="c5-2">
+      <h3><span class="k">②</span>설명 영상 · 앵커 두 장이 장면이 되기까지</h3>
+      <div class="vid" data-v="anchor"><div class="vstage"></div><ol class="vscript vstatic"><li><b>토끼 앵커</b> 앵커는 순백 배경에 정면, 머리부터 발끝까지 전신. 배경이 깨끗해야 AI가 캐릭터만 정확히 읽어요.</li><li><b>거북이 앵커</b> 거북이도 같은 화풍, 같은 조건으로 한 장. 두 장의 화풍이 같아야 장면에서 어울립니다.</li><li><b>확인 네 가지</b> 흰 배경(그림자·바닥 없음), 발끝까지 전신, 목도리·가방 색, 글자 없음. 넷 다 맞을 때까지 다시 만듭니다.</li><li><b>두 장을 함께 첨부</b> 장면을 만들 때마다 이 두 장을 입력창에 넣습니다. 그림 위 ⋮ → 「프롬프트에 추가」나 끌어다 놓기, 입력창 ＋ 모두 됩니다. 그다음 장면 프롬프트를 붙여 넣어요.</li><li><b>여섯 장이 같은 얼굴로</b> 그러면 표지부터 결말까지 같은 얼굴, 같은 옷, 같은 화풍으로 이어집니다. 여섯 장 모두 같은 두 장을 넣는 게 핵심이에요.</li></ol></div>
+    </article>
+    <article class="card wide" id="c5-3">
+      <h3><span class="k">③</span>앵커 이미지 두 장 · 순백 배경</h3>
+      <div class="seg" role="group" aria-label="앵커 고르기"><button type="button" class="seg-b on" data-t="aR">A 토끼 앵커</button><button type="button" class="seg-b" data-t="aT">B 거북이 앵커</button></div>
+      <div class="seg-p on" data-p="aR"><div class="pair">
+        <div class="exc"><div class="lbl">이렇게 합니다</div><div class="ancv" data-art="rabbit"></div>
+          <ol><li>위에서 화풍 고르기 → 복사 → 만들기</li><li>아래 네 가지 확인</li><li>즐겨찾기 → <b>A_토끼앵커</b>로 저장</li></ol></div>
+        <div class="prc"><div class="lbl">토끼 앵커 프롬프트 <button class="copy" type="button">복사</button></div>
+          <p class="prompt">그림책 캐릭터 앵커 이미지. <span class="blank sty-slot">부드러운 수채화 그림책 화풍, 번지는 물감, 종이 질감</span>. 순수한 흰 배경(#FFFFFF), 바닥·그림자·소품·다른 캐릭터 없음. 하얀 털, 긴 귀, 분홍 코, 빨간 목도리를 두른 토끼 한 마리가 정면을 보고 똑바로 선 전신, 머리부터 발끝까지 잘리지 않게 화면 가운데. 자신만만한 미소. 고르고 부드러운 조명. 세로 3:4, 글자·워터마크 없음.</p></div>
+      </div></div>
+      <div class="seg-p" data-p="aT"><div class="pair">
+        <div class="exc"><div class="lbl">이렇게 합니다</div><div class="ancv" data-art="turtle"></div>
+          <ol><li>토끼와 <b>같은 화풍</b>인지 확인 → 복사 → 만들기</li><li>아래 네 가지 확인</li><li>즐겨찾기 → <b>B_거북이앵커</b>로 저장</li></ol></div>
+        <div class="prc"><div class="lbl">거북이 앵커 프롬프트 <button class="copy" type="button">복사</button></div>
+          <p class="prompt">그림책 캐릭터 앵커 이미지. <span class="blank sty-slot">부드러운 수채화 그림책 화풍, 번지는 물감, 종이 질감</span>. 순수한 흰 배경(#FFFFFF), 바닥·그림자·소품·다른 캐릭터 없음. 연두색 등껍질, 둥근 눈, 작은 파란 가방을 멘 거북이 한 마리가 두 발로 서서 정면을 보는 전신, 머리부터 발끝까지 잘리지 않게 화면 가운데. 느긋한 미소. 고르고 부드러운 조명. 세로 3:4, 글자·워터마크 없음.</p></div>
+      </div></div>
+      <p class="checkline"><b>확인</b> □ 완전한 흰 배경(그림자·바닥 없음) □ 발끝까지 전신 □ 목도리·가방 색 □ 글자 없음 → 넷 다 맞을 때까지 다시</p>
+      <div class="duo">
+        <div class="box help"><span class="t">막힐 때</span>배경에 그림자가 생기면 STEP 3의 수정으로 <b>"그림자와 바닥을 지우고 순수한 흰 배경으로, 캐릭터는 그대로"</b>. 화풍이 고민되면 수채화로 가세요.</div>
+        <div class="box ext"><span class="t">한 걸음 더</span>왼쪽 메뉴 <b>캐릭터</b>에서 앵커를 넣어 「토끼」, 「거북이」 캐릭터로 등록해 두면, 프롬프트에 <b>@토끼 @거북이</b>라고만 써도 같은 생김새로 나옵니다. 턴어라운드 시트는 「AI 이미지 프롬프트 연습실」의 캐릭터 시트에서.</div>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- STEP 6 -->
+<section class="step" id="s6">
+  <div class="step-head"><span class="step-num">6</span><h2>표지와 캐릭터 소개</h2></div>
+  <p class="lead">앵커 두 장을 함께 첨부하고, 글자까지 그림 안에 넣습니다. 글꼴과 크기는 숫자로 정해 둡니다.</p>
+  <div class="grid">
+    <article class="card" id="c6-1">
+      <h3><span class="k">①</span>글자 규칙 · 모든 장 공통</h3>
+      <div class="tbl"><table>
+        <tr><th>자리</th><th>글꼴</th><th>크기</th></tr>
+        <tr><td>제목</td><td>Noto Serif KR</td><td>48pt 굵게</td></tr>
+        <tr><td>부제</td><td>Noto Serif KR</td><td>24pt</td></tr>
+        <tr><td>이름</td><td>Noto Serif KR</td><td>26pt 굵게</td></tr>
+        <tr><td>본문</td><td>Noto Serif KR</td><td>22pt</td></tr>
+      </table></div>
+      <p class="note">그림책 한 쪽(세로 3:4) 기준입니다. AI는 크기를 정확히 지키지 못할 때가 있어서 "아래 3분의 1 칸" 같은 자리도 함께 적습니다.</p>
+    </article>
+    <article class="card setup" id="c6-2">
+      <h3><span class="k">②</span>진행</h3>
+      <ol><li>에이전트 <b>꺼짐</b> · 설정 칩 <b>이미지 · 3:4 · x2</b> 확인</li><li>앵커 두 장을 입력창에 넣기 · 그림 위 <b>⋮ → 프롬프트에 추가</b>를 두 번 (또는 끌어다 놓기, 입력창 <b>＋</b>)</li><li>프롬프트 붙여넣기 → <b>→</b></li><li>더 나은 한 장에 <b>♡</b> → <b>01_표지</b>, <b>02_소개</b></li></ol>
+      <ul class="chk2"><li>글자 한 글자도 틀리지 않음</li><li>그림과 글이 겹치지 않음</li><li>앵커와 같은 얼굴·색</li></ul>
+    </article>
+    <article class="card wide" id="c6-3">
+      <h3><span class="k">③</span>표지 · 캐릭터 소개 프롬프트</h3>
+      <div class="seg" role="group" aria-label="장 고르기"><button type="button" class="seg-b on" data-t="cv">01 표지</button><button type="button" class="seg-b" data-t="it">02 캐릭터 소개</button></div>
+      <div class="seg-p on" data-p="cv"><div class="pair">
+        <div class="exc"><div class="lbl">완성 모양 (도식)</div><div class="m34" data-k="0"></div></div>
+        <div class="prc"><div class="lbl">01 표지 프롬프트 <button class="copy" type="button">복사</button></div>
+          <p class="prompt">첨부한 두 캐릭터 이미지(토끼, 거북이)의 생김새·옷·색과 화풍을 그대로 유지한 그림책 표지. 세로 3:4.
+[화면 나누기] 위쪽 3분의 2는 그림, 아래쪽 3분의 1은 그림과 겹치지 않는 흰 바탕의 글 자리.
+[그림] 아침 햇살이 비치는 숲속 언덕길 출발선에 자신만만한 토끼와 느긋하게 웃는 거북이가 나란히 서 있다. 두 캐릭터 모두 전신.
+[글] 아래 칸 가운데 정렬, 글꼴 Noto Serif KR(본명조). 첫 줄 제목 48pt 굵게, 둘째 줄 부제 24pt. 아래 글자만 정확히 쓸 것:
+"느려도 괜찮아"
+"토끼와 거북이의 특별한 경주"
+다른 글씨·서명·워터마크 없음.</p></div>
+      </div></div>
+      <div class="seg-p" data-p="it"><div class="pair">
+        <div class="exc"><div class="lbl">완성 모양 (도식)</div><div class="m34" data-k="1"></div></div>
+        <div class="prc"><div class="lbl">02 캐릭터 소개 프롬프트 <button class="copy" type="button">복사</button></div>
+          <p class="prompt">첨부한 두 캐릭터 이미지(토끼, 거북이)의 생김새·옷·색과 화풍을 그대로 유지한 그림책 캐릭터 소개 쪽. 세로 3:4.
+[화면 나누기] 위쪽 3분의 2는 그림, 아래쪽 3분의 1은 그림과 겹치지 않는 흰 바탕의 글 자리.
+[그림] 흰 배경에 토끼(왼쪽)와 거북이(오른쪽)가 간격을 두고 나란히 서서 정면을 보는 전신. 토끼는 자신만만한 표정, 거북이는 느긋한 미소.
+[글] 아래 칸을 왼쪽·오른쪽 두 단으로 나누고, 글꼴 Noto Serif KR(본명조). 이름은 26pt 굵게, 소개는 22pt. 아래 글자만 정확히 쓸 것:
+왼쪽 단: "토끼" / "숲에서 제일 빨라요." / "자랑도 제일 잘해요."
+오른쪽 단: "거북이" / "느릿느릿 걸어요." / "그래도 멈추지 않아요."
+다른 글씨·서명·워터마크 없음.</p></div>
+      </div></div>
+      <div class="duo">
+        <div class="box help"><span class="t">막힐 때</span>글자가 틀리면 그림 클릭 → <b>"아래 글자 중 '○○'를 '△△'로만 고쳐 줘, 나머지는 그대로"</b>. 계속 틀리면 그 장만 글 없이 만들고 미리캔버스에서 글자를 얹으세요.</div>
+        <div class="box ext"><span class="t">한 걸음 더</span>"제목만 둥근 손글씨 느낌으로"를 붙여 제목 글꼴을 비교해 보세요. 뒷표지(한 줄 소개 + "지은이 ○○○")도 같은 방식으로 한 장 더 만들 수 있습니다.</div>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- STEP 7 -->
+<section class="step" id="s7">
+  <div class="step-head"><span class="step-num">7</span><h2>장면 4장 · 기 · 승 · 전 · 결</h2></div>
+  <p class="lead">앵커 두 장을 입력창에 넣고(⋮ → 프롬프트에 추가) 장면 프롬프트만 바꿔 가며 네 장을 만듭니다. 글은 이미 프롬프트 안에 들어 있습니다.</p>
+  <div class="grid">
+    <article class="card wide" id="c7-1">
+      <h3><span class="k">①</span>설명 영상 · 3:4 한 장의 구조</h3>
+      <div class="vid" data-v="layout"><div class="vstage"></div><ol class="vscript vstatic"><li><b>세로 3:4 한 장</b> 그림책 한 쪽은 세로 3:4입니다. 플로우에서 비율을 3:4로 고르고, 프롬프트에도 "세로 3:4"를 적어요.</li><li><b>위 2/3 그림 · 아래 1/3 글</b> 프롬프트의 [화면 나누기]에 "위쪽 3분의 2는 그림, 아래쪽 3분의 1은 흰 바탕의 글 자리"라고 적으면 그림과 글이 겹치지 않아요.</li><li><b>[그림] 칸</b> [그림]에는 누가, 어디서, 무엇을 하는지를 한 문장으로. 시간(아침·노을)을 넣으면 장마다 분위기가 달라집니다.</li><li><b>[글] 칸 · 노토 세리프</b> [글]에는 글꼴 Noto Serif KR(본명조)과 크기, 그리고 따옴표 안에 들어갈 글자를 그대로 적습니다. "아래 글자만 정확히"를 꼭 붙여요.</li><li><b>포인트 크기 정하기</b> 제목 48pt, 부제 24pt, 이름 26pt, 본문 22pt. 숫자로 정해 두면 여섯 장의 글자 크기가 고르게 나옵니다.</li><li><b>틀린 글자 고치기</b> AI는 한글을 틀릴 때가 있어요. 그림을 눌러 「\</li></ol></div>
+    </article>
+    <article class="card wide" id="c7-2">
+      <h3><span class="k">②</span>장면 프롬프트 네 개</h3>
+      <div class="seg" role="group" aria-label="장면 고르기"><button type="button" class="seg-b on" data-t="g">03 기 · 출발</button><button type="button" class="seg-b" data-t="s">04 승 · 낮잠</button><button type="button" class="seg-b" data-t="j">05 전 · 한 걸음</button><button type="button" class="seg-b" data-t="y">06 결 · 결승</button></div>
+      <div class="seg-p on" data-p="g"><div class="pair">
+        <div class="exc"><div class="lbl">완성 모양 (도식)</div><div class="m34" data-k="2"></div></div>
+        <div class="prc"><div class="lbl">03 기 프롬프트 <button class="copy" type="button">복사</button></div>
+          <p class="prompt">첨부한 두 캐릭터 이미지(토끼, 거북이)의 생김새·옷·색과 화풍을 그대로 유지한 그림책 한 쪽. 세로 3:4.
+[화면 나누기] 위쪽 3분의 2는 그림, 아래쪽 3분의 1은 그림과 겹치지 않는 흰 바탕의 글 자리.
+[그림] 나무 위 올빼미 심판이 날개를 들어 출발 신호를 하고, 토끼가 먼저 휙 뛰어나가며, 거북이는 출발선에서 천천히 첫걸음을 내딛는다. 아침 햇살, 숲속 언덕길.
+[글] 아래 칸 가운데 정렬, 글꼴 Noto Serif KR(본명조), 본문 22pt, 세 줄. 아래 글자만 정확히 쓸 것:
+"출발!" 올빼미가 외쳤어요.
+토끼는 휙 달려 나갔어요.
+거북이는 한 발 내디뎠어요.
+다른 글씨·서명·워터마크 없음.</p></div>
+      </div></div>
+      <div class="seg-p" data-p="s"><div class="pair">
+        <div class="exc"><div class="lbl">완성 모양 (도식)</div><div class="m34" data-k="3"></div></div>
+        <div class="prc"><div class="lbl">04 승 프롬프트 <button class="copy" type="button">복사</button></div>
+          <p class="prompt">첨부한 두 캐릭터 이미지(토끼, 거북이)의 생김새·옷·색과 화풍을 그대로 유지한 그림책 한 쪽. 세로 3:4.
+[화면 나누기] 위쪽 3분의 2는 그림, 아래쪽 3분의 1은 그림과 겹치지 않는 흰 바탕의 글 자리.
+[그림] 언덕 중턱 큰 나무 그늘에서 토끼가 팔베개를 하고 코를 골며 잠들어 있고, 멀리 언덕 아래에 거북이가 작게 걸어오고 있다. 한낮의 밝은 햇살.
+[글] 아래 칸 가운데 정렬, 글꼴 Noto Serif KR(본명조), 본문 22pt, 세 줄. 아래 글자만 정확히 쓸 것:
+토끼가 뒤를 돌아봤어요.
+거북이는 보이지 않았어요.
+"한숨 자야지." 쿨쿨.
+다른 글씨·서명·워터마크 없음.</p></div>
+      </div></div>
+      <div class="seg-p" data-p="j"><div class="pair">
+        <div class="exc"><div class="lbl">완성 모양 (도식)</div><div class="m34" data-k="4"></div></div>
+        <div class="prc"><div class="lbl">05 전 프롬프트 <button class="copy" type="button">복사</button></div>
+          <p class="prompt">첨부한 두 캐릭터 이미지(토끼, 거북이)의 생김새·옷·색과 화풍을 그대로 유지한 그림책 한 쪽. 세로 3:4.
+[화면 나누기] 위쪽 3분의 2는 그림, 아래쪽 3분의 1은 그림과 겹치지 않는 흰 바탕의 글 자리.
+[그림] 거북이가 이마의 땀을 닦으며 쉬지 않고 언덕길을 오르고, 옆에서 작은 새들이 응원한다. 뒤쪽 나무 아래에는 잠든 토끼가 작게 보인다. 기울어 가는 오후 햇살.
+[글] 아래 칸 가운데 정렬, 글꼴 Noto Serif KR(본명조), 본문 22pt, 세 줄. 아래 글자만 정확히 쓸 것:
+거북이는 쉬지 않았어요.
+엉금엉금, 또 엉금엉금.
+해가 뉘엿뉘엿 기울었어요.
+다른 글씨·서명·워터마크 없음.</p></div>
+      </div></div>
+      <div class="seg-p" data-p="y"><div class="pair">
+        <div class="exc"><div class="lbl">완성 모양 (도식)</div><div class="m34" data-k="5"></div></div>
+        <div class="prc"><div class="lbl">06 결 프롬프트 <button class="copy" type="button">복사</button></div>
+          <p class="prompt">첨부한 두 캐릭터 이미지(토끼, 거북이)의 생김새·옷·색과 화풍을 그대로 유지한 그림책 한 쪽. 세로 3:4.
+[화면 나누기] 위쪽 3분의 2는 그림, 아래쪽 3분의 1은 그림과 겹치지 않는 흰 바탕의 글 자리.
+[그림] 거북이가 결승선 리본을 통과하고, 뒤늦게 달려온 토끼가 깜짝 놀라 서 있으며, 거북이가 토끼에게 손을 내민다. 박수 치는 숲속 친구들, 노을빛 하늘.
+[글] 아래 칸 가운데 정렬, 글꼴 Noto Serif KR(본명조), 본문 22pt, 세 줄. 아래 글자만 정확히 쓸 것:
+거북이가 리본을 넘었어요.
+토끼가 깜짝 놀라 깼어요.
+거북이가 손을 내밀었어요.
+다른 글씨·서명·워터마크 없음.</p></div>
+      </div></div>
+      <p class="checkline"><b>장마다 확인</b> □ 앵커와 같은 얼굴·옷·색 □ 그림 위 2/3 · 글 아래 1/3 □ 글자 오타 없음 □ 다른 글씨 없음</p>
+      <div class="duo">
+        <div class="box help"><span class="t">막힐 때</span>캐릭터가 달라지면 <b>입력창에 앵커 두 장이 들어 있는지</b> 먼저 확인하세요. 글자 오타는 틀린 글자만 콕 집어 고칩니다. 한 장이 계속 안 되면 다음 장으로 넘어가고 마지막에 다시 하세요.</div>
+        <div class="box ext"><span class="t">한 걸음 더</span>장면마다 카메라를 바꿔 보세요. 04 승은 <b>"멀리서 넓게, long shot"</b>, 06 결은 <b>"아래에서 올려다봄, low angle"</b>을 [그림] 끝에 붙이면 분위기가 달라집니다. 자세한 건 「AI 이미지 프롬프트 연습실」에서.</div>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- STEP 8 -->
+<section class="step" id="s8">
+  <div class="step-head"><span class="step-num">8</span><h2>6장 모아 보기</h2></div>
+  <p class="lead">즐겨찾기만 모아 여섯 장을 확인하고, 이름을 붙여 「내 동화책」 폴더에 저장합니다.</p>
+  <div class="grid">
+    <article class="card" id="c8-1">
+      <h3><span class="k">①</span>저장 순서</h3>
+      <ol><li>♡ 표시한 여섯 장 찾기</li><li>한 장을 다른 장 위로 끌어다 놓아 <b>컬렉션</b> 만들기 → 여섯 장을 모두 넣기</li><li>컬렉션 위에 마우스 → <b>다운로드</b> (한 장씩은 ⋮ → 다운로드)</li><li>아래 표대로 이름 바꾸기 → 「내 동화책」 폴더</li><li>01부터 넘겨 보며 <b>글자 · 같은 얼굴 · 순서</b> 마지막 확인</li></ol>
+      <p class="note">AI가 만든 결과는 마지막에 꼭 사람이 확인합니다.</p>
+    </article>
+    <article class="card" id="c8-2">
+      <h3><span class="k">②</span>파일 이름</h3>
+      <div class="tbl"><table>
+        <tr><th>파일 이름</th><th>내용</th><th>확인</th></tr>
+        <tr><td>01_표지</td><td>제목 · 부제</td><td>□</td></tr>
+        <tr><td>02_소개</td><td>두 주인공</td><td>□</td></tr>
+        <tr><td>03_기</td><td>출발</td><td>□</td></tr>
+        <tr><td>04_승</td><td>낮잠</td><td>□</td></tr>
+        <tr><td>05_전</td><td>한 걸음</td><td>□</td></tr>
+        <tr><td>06_결</td><td>결승</td><td>□</td></tr>
+      </table></div>
+    </article>
+    <article class="card wide" id="c8-3">
+      <h3><span class="k">③</span>내 속도로 · 그리고 다음</h3>
+      <div class="duo">
+        <div class="box help"><span class="t">막힐 때</span>여섯 장을 다 못 만들었으면 된 장까지만 저장하세요. 모자란 장은 다음 시간에 같은 프롬프트로 이어서 만들면 됩니다.</div>
+        <div class="box ext"><span class="t">한 걸음 더</span>미리캔버스에서 A4 세로 문서에 여섯 장을 한 장씩 넣고 PDF로 내려받으면 전자책 첫 견본이 됩니다.</div>
+      </div>
+      <p class="next-line">다음 · <b>STEP 9 내 이야기 시놉시스</b> — 오늘 해 본 순서 그대로 내 이야기로</p>
+    </article>
+  </div>
+</section>
+
+<!-- STEP 9 -->
+<section class="step" id="s9">
+  <div class="step-head"><span class="step-num">9</span><h2>내 이야기 시놉시스와 장면 배분</h2></div>
+  <p class="lead">「토끼와 거북이」로 해 본 순서 그대로, 이제 내 이야기로 합니다. 다음 시간 캐릭터 시트는 오늘 정한 등장인물로 만듭니다.</p>
+  <div class="grid">
+    <article class="card wide" id="c9-1">
+      <h3><span class="k">①</span>오늘 정할 다섯 가지</h3>
+      <ol class="chain">
+        <li>주제 한 줄</li><li class="arrow">›</li><li>타겟 독자</li><li class="arrow">›</li><li>등장인물</li><li class="arrow">›</li><li>기승전결 시놉시스</li><li class="arrow">›</li><li>장면 8~12개</li><li class="arrow">›</li><li><b>사람이 확인 · 다듬기</b></li>
+      </ol>
+      <p class="note" style="margin-top:.5rem">지난 시간 스토리보드가 있으면 그대로 가져옵니다. 오늘은 그 장면들을 시놉시스와 장면 표로 정리하는 날이에요.</p>
+    </article>
+    <article class="card" id="c9-2">
+      <h3><span class="k">②</span>주제가 아직 없다면</h3>
+      <ul class="q">
+        <li>어린 시절, 지금도 또렷한 장면 하나는?</li>
+        <li>우리 가족만 아는 물건 · 음식 · 장소는?</li>
+        <li>손주(자녀)에게 꼭 들려주고 싶은 말은?</li>
+      </ul>
+      <p style="font-size:.9rem;margin-top:.5rem"><b>변신 규칙</b> 사람 → 동물 주인공 · 긴 세월 → 하루 · 교훈 → 행동 하나</p>
+      <p class="note">예) 30년 동네 빵집 → 새벽마다 제일 먼저 불을 켜는 곰 제빵사</p>
+    </article>
+    <article class="card" id="c9-3">
+      <h3><span class="k">③</span>이렇게 나옵니다 (예시)</h3>
+      <div class="tbl"><table>
+        <tr><th>항목</th><th>내용</th></tr>
+        <tr><td>주제</td><td>새벽마다 제일 먼저 불을 켜는 곰 제빵사</td></tr>
+        <tr><td>독자</td><td>5~7세 · 할머니가 손주에게 읽어 줌</td></tr>
+        <tr><td>주인공</td><td>곰 제빵사 보리 · 갈색 털, 하얀 앞치마 · 말수 적고 부지런함</td></tr>
+        <tr><td>조연</td><td>다람쥐 꼬마 손님 · 빨간 목도리 · 궁금한 게 많음</td></tr>
+        <tr><td>기</td><td>보리는 매일 새벽 마을에서 제일 먼저 불을 켠다.</td></tr>
+        <tr><td>승</td><td>어느 겨울, 눈이 쌓여 아무도 빵을 사러 오지 않는다.</td></tr>
+        <tr><td>전</td><td>보리는 빵을 들고 눈길을 걸어 집집마다 찾아간다.</td></tr>
+        <tr><td>결</td><td>봄이 오자 마을 사람들이 새벽에 먼저 와 문을 두드린다.</td></tr>
+        <tr><td>장면</td><td>10장면 표 (기 2 · 승 3 · 전 3 · 결 2)</td></tr>
+      </table></div>
+    </article>
+    <article class="card wide" id="c9-4">
+      <h3><span class="k">④</span>시놉시스 받기 · 제미나이</h3>
+      <div class="pair">
+        <div class="exc"><div class="lbl">이렇게 합니다</div>
+          <ol><li>제미나이 새 채팅 첫 줄에 <b>「내 동화책 시놉시스」</b></li><li>오른쪽 프롬프트의 대괄호 자리에 내 주제 한 줄 (스토리보드가 있으면 그 내용을 아래에 붙여넣기)</li><li>표와 수정 질문 3개를 받기</li></ol>
+          <p class="note">장면 수는 전자책 20쪽 이상을 생각해 8~12개로 잡습니다. 한 장면이 두 쪽이 될 수도 있어요.</p></div>
+        <div class="prc"><div class="lbl">프롬프트 <button class="copy" type="button">복사</button></div>
+          <p class="prompt">너는 어린이 그림책 편집자야. 아래 내 이야기로 그림책 시놉시스를 만들어 줘.
+내 이야기: <span class="blank">[주제 한 줄]</span>
+1. 타겟 독자: 아이 나이와 읽어 줄 사람을 정하고 이유 한 줄
+2. 등장인물: 주인공 1명, 조연 2명 이내. 각각 생김새 한 줄(색·옷·소품) + 성격 한 줄
+3. 시놉시스: 기·승·전·결 각 2문장. 교훈은 말로 하지 말고 결의 행동으로 보여 줄 것
+4. 장면 배분: 8~12장면을 [장면 번호 | 기승전결 | 장면 내용 한 줄 | 그림 설명 한 줄] 표로
+5. 마지막에 내가 골라 답할 수 있는 수정 질문 3개
+아직 정하지 않은 것은 네가 추측하지 말고 질문으로 남겨 줘.</p></div>
+      </div>
+    </article>
+    <article class="card wide" id="c9-5">
+      <h3><span class="k">⑤</span>사람이 확인하고 다듬기</h3>
+      <div class="pair">
+        <div class="exc"><div class="lbl">사람이 확인할 것</div>
+          <ul class="chk2" style="flex-direction:column"><li>내 경험·내 가족 이야기와 맞는가</li><li>타겟 독자 나이에 맞는 낱말인가</li><li>장면이 8~12개이고 기승전결에 고루 나뉘었나</li><li>교훈을 말로 하지 않고 행동으로 보여 주나</li></ul>
+          <p class="note">AI는 내 기억을 모릅니다. 사실과 다른 곳, 내 마음과 다른 곳은 내가 고쳐야 합니다.</p></div>
+        <div class="prc"><div class="lbl">다듬기 프롬프트 <button class="copy" type="button">복사</button></div>
+          <p class="prompt">수정 질문에 대한 내 답이야.
+1. <span class="blank">[답]</span>
+2. <span class="blank">[답]</span>
+3. <span class="blank">[답]</span>
+그리고 고칠 곳: <span class="blank">[예: 4장면과 5장면을 하나로, 조연은 다람쥐 하나만]</span>
+이 내용을 반영해 시놉시스와 장면 표를 다시 정리해 줘. 바뀐 곳은 굵게 표시해 줘.</p></div>
+      </div>
+    </article>
+    <article class="card wide" id="c9-6">
+      <h3><span class="k">⑥</span>저장하고 다음 시간으로</h3>
+      <div class="duo">
+        <div class="box help"><span class="t">막힐 때</span>주제가 안 떠오르면 ②의 질문 하나에만 답하고 그 답을 그대로 대괄호에 넣으세요. 시간이 모자라면 시놉시스까지만 받고 장면 표는 과제로 합니다.</div>
+        <div class="box ext"><span class="t">한 걸음 더</span>다듬은 장면 표를 「토끼와 거북이」처럼 [장 | 들어갈 글 3줄 | 그림 설명] 표로 한 번 더 바꿔 달라고 하세요. 4회차 장면 그림을 만들 때 그대로 씁니다.</div>
+      </div>
+      <p class="next-line">저장 · 결과를 복사해 「내 동화책」 폴더의 구글 문서에 붙여 둡니다. <b>3회차</b>에는 이 등장인물로 캐릭터 시트를 만듭니다.</p>
+    </article>
+  </div>
+</section>
+
+</main>
+
+<aside class="side" aria-label="이 단계의 카드"><p>이 단계의 카드</p><div id="sideList"></div></aside>
+</div>
+
+<nav class="pager" aria-label="단계 이동"><div>
+  <button type="button" id="prev">← 이전 STEP</button>
+  <button type="button" id="next">다음 STEP →</button>
+</div></nav>
+
+<script>
+/* 설명 영상 엔진 — 하이퍼프레임 방식(HTML 장면 + GSAP 타임라인), 소리 없이 자막만 */
+(function(){
+  var REG = window.__VIDS = window.__VIDS || {};
+  var ALL = [];
+  function el(tag, cls, txt){ var e=document.createElement(tag); if(cls)e.className=cls; if(txt!=null)e.textContent=txt; return e; }
+
+  function setup(box){
+    if(box.__vid) return;
+    var def = REG[box.getAttribute('data-v')]; if(!def) return;
+    box.__vid = true;
+    var scenes = def.scenes, starts=[], total=0;
+    scenes.forEach(function(s){ starts.push(total); total += s.d; });
+
+    var stage = box.querySelector('.vstage');
+    var cap = el('div','vcap'); var cno=el('span','vno'); var ctt=el('b','vtt'); var ctx=el('p','vtx');
+    cap.appendChild(cno); cap.appendChild(ctt); cap.appendChild(ctx);
+    var bar = el('div','vbar');
+    var bPlay = el('button','vb vplay','▶ 재생'); bPlay.type='button';
+    var bRe = el('button','vb','처음으로'); bRe.type='button';
+    var seek = el('input','vseek'); seek.type='range'; seek.min=0; seek.max=1000; seek.value=0; seek.setAttribute('aria-label','영상 위치');
+    var chips = el('div','vchips');
+    bar.appendChild(bPlay); bar.appendChild(bRe); bar.appendChild(seek); bar.appendChild(chips);
+    var list = box.querySelector('.vstatic') || el('ol','vscript'); var hadList = !!box.querySelector('.vstatic');
+    scenes.forEach(function(s,i){
+      var c = el('button','vchip',String(i+1)); c.type='button'; c.title=s.t; c.setAttribute('aria-label',(i+1)+'번 장면 · '+s.t);
+      c.addEventListener('click',function(){ go(i); });
+      chips.appendChild(c);
+      if(!hadList){ var li = el('li'); li.appendChild(el('b',null,s.t+' ')); li.appendChild(document.createTextNode(s.c)); list.appendChild(li); }
+    });
+    box.appendChild(cap); box.appendChild(bar); box.appendChild(list);
+
+    var cur=-1;
+    function showCap(i){
+      if(i===cur) return; cur=i;
+      cno.textContent=(i+1)+' / '+scenes.length; ctt.textContent=scenes[i].t; ctx.textContent=scenes[i].c;
+      [].forEach.call(chips.children,function(c,k){ c.classList.toggle('on',k===i); });
+      if(api.onScene) api.onScene(i);
+    }
+    var api = { box:box, stage:stage, total:total, starts:starts, scenes:scenes,
+      q:function(s){return stage.querySelector(s);}, qa:function(s){return [].slice.call(stage.querySelectorAll(s));},
+      at:function(i,off){ return starts[i]+(off||0); }, renders:[] };
+
+    if(!window.gsap){ box.classList.add('nolib'); showCap(0); return; }
+    var tl = gsap.timeline({paused:true, onUpdate:upd, onComplete:function(){ setPlay(false); }});
+    api.tl = tl;
+    try { def.build(api); } catch(err){ box.classList.add('nolib'); if(window.console)console.warn('영상 준비 실패',err); showCap(0); return; }
+    tl.set({}, {}, total);
+    function render(){ for(var k=0;k<api.renders.length;k++) api.renders[k](); }
+    function upd(){
+      var t=tl.time(), i=0; while(i<starts.length-1 && t>=starts[i+1]-0.001) i++;
+      showCap(i); if(!dragging) seek.value=Math.round(t/total*1000); render();
+    }
+    function setPlay(p){ bPlay.textContent = p?'❚❚ 일시정지':'▶ 재생'; bPlay.classList.toggle('on',p); }
+    var fresh=true;
+    function go(i){ fresh=false; tl.pause(); tl.seek(starts[i]+0.05); setPlay(false); upd(); }
+    bPlay.addEventListener('click',function(){
+      if(tl.paused()||!tl.isActive()){ if(fresh||tl.progress()>=1){ tl.seek(0); } fresh=false; pauseAll(api); tl.play(); setPlay(true); }
+      else { tl.pause(); setPlay(false); }
+    });
+    bRe.addEventListener('click',function(){ fresh=false; tl.pause(); tl.seek(0); setPlay(false); upd(); });
+    var dragging=false;
+    seek.addEventListener('input',function(){ fresh=false; dragging=true; tl.pause(); setPlay(false); tl.seek(seek.value/1000*total); upd(); });
+    seek.addEventListener('change',function(){ dragging=false; });
+    api.pause=function(){ tl.pause(); setPlay(false); };
+    api.seekTo=function(t){ fresh=false; tl.pause(); tl.seek(t); setPlay(false); upd(); };
+    box.__api=api;
+    api.resize=function(){ if(api.onResize) api.onResize(); render(); };
+    ALL.push(api); box.classList.add('vset');
+    /* 재생 전 표지: 첫 장면이 다 그려진 모습 */
+    tl.seek(starts[0]+scenes[0].d*0.9); upd();
+  }
+  function pauseAll(except){ ALL.forEach(function(a){ if(a!==except) a.pause(); }); }
+  var READY=false, LAST=null;
+  window.__vidsInit = function(root){
+    LAST = root || document;
+    if(!READY) return;
+    pauseAll();
+    [].forEach.call((root||document).querySelectorAll('.vid'),function(b){ setup(b); });
+    ALL.forEach(function(a){ if(a.box.offsetParent) a.resize(); });
+  };
+  /* 영상 라이브러리는 뒤에서 따로 불러온다 (막히거나 늦어도 탭·버튼은 먼저 작동) */
+  function fin(){ if(READY) return; READY=true; try{ window.__vidsInit(LAST); }catch(e){} }
+  var LIBS=['https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js','https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js'], got=0;
+  LIBS.forEach(function(u){ var sc=document.createElement('script'); sc.src=u; sc.async=false;
+    sc.onload=sc.onerror=function(){ if(++got===LIBS.length) fin(); };
+    (document.head||document.documentElement).appendChild(sc); });
+  setTimeout(fin, 6000);
+
+  var rz; window.addEventListener('resize',function(){ clearTimeout(rz); rz=setTimeout(function(){ ALL.forEach(function(a){ if(a.box.offsetParent) a.resize(); }); },120); });
+
+  /* fromTo 대신: 시작 상태를 그 시점에 set → to (되감을 때 원래대로 돌아감) */
+  window.__FT=function(tl,el,a,b,p){ tl.set(el,a,p); tl.to(el,b,p); return tl; };
+
+  /* Three.js 도우미: 무대에 캔버스 붙이고 크기 맞추기 */
+  window.__vid3d = function(api, opts){
+    if(!window.THREE) throw new Error('three.js 없음');
+    var cv = document.createElement('canvas'); cv.className='v3d';
+    api.stage.insertBefore(cv, api.stage.firstChild);
+    var r = new THREE.WebGLRenderer({canvas:cv, antialias:true, alpha:false, preserveDrawingBuffer:true});
+    r.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+    r.setClearColor(opts&&opts.bg!=null?opts.bg:0xffffff,1);
+    function size(){ var w=api.stage.clientWidth||640, h=api.stage.clientHeight||360; r.setSize(w,h,false); return {w:w,h:h}; }
+    var o = { renderer:r, canvas:cv, size:size, w:0, h:0 };
+    var prev=api.onResize; api.onResize=function(){ var s=size(); o.w=s.w; o.h=s.h; if(prev)prev(); };
+    var s=size(); o.w=s.w; o.h=s.h;
+    return o;
+  };
+})();
+
+/* 영상용 그림 (교안 자체 제작 SVG) */
+window.__ART = (function(){
+  var L='#7D848C';
+  function rabbit(o){ o=o||{}; var sc=o.scarf||'#D9443B', x=o.x||0, y=o.y||0, s=o.s||1, r=o.r||0, face=o.face||'smile';
+    var eyes = face==='sleep' ? '<path d="M39 56q4 3 8 0M53 56q4 3 8 0" stroke="#3A3F45" stroke-width="2" fill="none" stroke-linecap="round"/>'
+      : face==='wow' ? '<circle cx="43" cy="55" r="3.2" fill="#3A3F45"/><circle cx="57" cy="55" r="3.2" fill="#3A3F45"/><ellipse cx="50" cy="67" rx="3.5" ry="4.5" fill="#B5474F"/>'
+      : '<circle cx="43" cy="55" r="2.6" fill="#3A3F45"/><circle cx="57" cy="55" r="2.6" fill="#3A3F45"/><path d="M45 65q5 4 10 0" stroke="#3A3F45" stroke-width="1.8" fill="none" stroke-linecap="round"/>';
+    return '<g transform="translate('+x+' '+y+') rotate('+r+' 50 80) scale('+s+')" stroke="'+L+'" stroke-width="1.6" stroke-linejoin="round">'+
+      '<ellipse cx="41" cy="22" rx="7.5" ry="21" fill="#fff" transform="rotate(-8 41 22)"/><ellipse cx="41" cy="24" rx="3.5" ry="14" fill="#F4C6CC" stroke="none" transform="rotate(-8 41 24)"/>'+
+      '<ellipse cx="59" cy="22" rx="7.5" ry="21" fill="#fff" transform="rotate(10 59 22)"/><ellipse cx="59" cy="24" rx="3.5" ry="14" fill="#F4C6CC" stroke="none" transform="rotate(10 59 24)"/>'+
+      '<ellipse cx="50" cy="104" rx="21" ry="25" fill="#fff"/>'+
+      '<ellipse cx="38" cy="131" rx="9" ry="5" fill="#fff"/><ellipse cx="62" cy="131" rx="9" ry="5" fill="#fff"/>'+
+      '<path d="M31 92q-9 10-5 20M69 92q9 10 5 20" fill="none"/>'+
+      '<circle cx="50" cy="58" r="21" fill="#fff"/>'+eyes+
+      '<ellipse cx="50" cy="61" rx="2.8" ry="2" fill="#E58A98" stroke="none"/><circle cx="38" cy="63" r="3.2" fill="#F7D0D6" stroke="none"/><circle cx="62" cy="63" r="3.2" fill="#F7D0D6" stroke="none"/>'+
+      '<path class="scarf" d="M31 77q19 8 38 0l1 8q-20 8-40 0z" fill="'+sc+'"/><path class="scarf" d="M60 82l6 18-8 1-4-17z" fill="'+sc+'"/>'+
+      '</g>'; }
+  function turtle(o){ o=o||{}; var x=o.x||0, y=o.y||0, s=o.s||1, r=o.r||0;
+    return '<g transform="translate('+x+' '+y+') rotate('+r+' 50 80) scale('+s+')" stroke="'+L+'" stroke-width="1.6" stroke-linejoin="round">'+
+      '<ellipse cx="50" cy="94" rx="30" ry="32" fill="#8DC26B"/>'+
+      '<ellipse cx="50" cy="96" rx="19" ry="25" fill="#F1E7BF"/><path d="M33 86h34M32 100h36M35 113h30" stroke="#C9B979"/>'+
+      '<ellipse cx="36" cy="128" rx="9" ry="6" fill="#B9DD94"/><ellipse cx="64" cy="128" rx="9" ry="6" fill="#B9DD94"/>'+
+      '<path d="M21 88q-10 8-6 18M79 88q10 8 6 18" fill="none" stroke="#7FB55C" stroke-width="5" stroke-linecap="round"/>'+
+      '<path d="M34 70l42 40" stroke="#3B6FB6" stroke-width="3"/><rect x="70" y="100" width="16" height="14" rx="3" fill="#4C84CF"/>'+
+      '<circle cx="50" cy="50" r="19" fill="#B9DD94"/><circle cx="43" cy="48" r="3" fill="#3A3F45"/><circle cx="57" cy="48" r="3" fill="#3A3F45"/>'+
+      '<path d="M44 58q6 4 12 0" stroke="#3A3F45" stroke-width="1.8" fill="none" stroke-linecap="round"/>'+
+      '</g>'; }
+  function owl(x,y,s){ return '<g transform="translate('+x+' '+y+') scale('+(s||1)+')" stroke="'+L+'" stroke-width="1.4"><ellipse cx="20" cy="24" rx="14" ry="17" fill="#B88A5C"/><circle cx="14" cy="18" r="5" fill="#fff"/><circle cx="26" cy="18" r="5" fill="#fff"/><circle cx="14" cy="18" r="2" fill="#333"/><circle cx="26" cy="18" r="2" fill="#333"/><path d="M18 24l2 4 2-4z" fill="#E3A33B"/><path d="M6 22l-8-10M34 22l8-10" stroke="#B88A5C" stroke-width="4" stroke-linecap="round"/></g>'; }
+  function tree(x,y,s){ return '<g transform="translate('+x+' '+y+') scale('+(s||1)+')"><rect x="22" y="50" width="12" height="50" fill="#9C7A55"/><circle cx="28" cy="38" r="30" fill="#7DB36A"/><circle cx="10" cy="52" r="18" fill="#8CC07A"/><circle cx="46" cy="52" r="18" fill="#6FA85D"/></g>'; }
+  function bird(x,y){ return '<path d="M'+x+' '+y+'q5-6 10 0q5-6 10 0" stroke="#5B636E" stroke-width="2" fill="none"/>'; }
+  /* 그림책 한 장의 그림 칸 (300 x 267) */
+  var SKY={day:['#DDEEF8','#F7FBFD'],noon:['#CFE6F5','#F4FAFD'],eve:['#F6D7B8','#FBEFE0'],sunset:['#F2B9A0','#F9E2CF'],white:['#FFFFFF','#FFFFFF']};
+  function bg(k){ var c=SKY[k]; return '<defs><linearGradient id="g'+k+'" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="'+c[0]+'"/><stop offset="1" stop-color="'+c[1]+'"/></linearGradient></defs><rect width="300" height="267" fill="url(#g'+k+')"/>'; }
+  function hill(c){ return '<path d="M0 205q80-40 160-10t140-10V267H0z" fill="'+(c||'#A9D38E')+'"/><path d="M0 235q90-25 300-15V267H0z" fill="#93C47A"/>'; }
+  var PAGES={
+    cover: function(){ return bg('day')+'<circle cx="250" cy="45" r="22" fill="#FBE3A2"/>'+hill()+'<path d="M40 225h220" stroke="#fff" stroke-width="4" stroke-dasharray="10 8"/>'+rabbit({x:70,y:80,s:1})+turtle({x:150,y:84,s:1}); },
+    intro: function(){ return bg('white')+rabbit({x:55,y:70,s:1.15})+turtle({x:160,y:74,s:1.15}); },
+    gi: function(){ return bg('day')+hill()+tree(210,95,1.2)+owl(232,92,0.9)+rabbit({x:120,y:80,s:.95,r:14})+turtle({x:20,y:96,s:.85}); },
+    seung: function(){ return bg('noon')+hill()+tree(20,70,1.6)+rabbit({x:70,y:150,s:.9,r:-78,face:'sleep'})+'<text x="150" y="150" font-size="22" fill="#5B636E">z z</text>'+turtle({x:225,y:170,s:.38}); },
+    jeon: function(){ return bg('eve')+'<circle cx="240" cy="70" r="24" fill="#F6C27E"/>'+hill('#B8CF86')+turtle({x:110,y:80,s:1.05})+bird(60,60)+bird(80,40)+bird(200,110)+tree(230,150,.7)+rabbit({x:236,y:200,s:.3,r:-78,face:'sleep'}); },
+    gyeol: function(){ return bg('sunset')+hill('#B5C97F')+'<path d="M30 150v80M270 150v80" stroke="#9C7A55" stroke-width="5"/><path d="M30 160q120 20 240 0" stroke="#D9443B" stroke-width="5" fill="none"/>'+turtle({x:95,y:90,s:1})+rabbit({x:180,y:84,s:.95,face:'wow'}); }
+  };
+  function page(k){ return '<svg viewBox="0 0 300 267" xmlns="http://www.w3.org/2000/svg">'+PAGES[k]()+'</svg>'; }
+  function svg(inner,vb){ return '<svg viewBox="'+(vb||'0 0 100 140')+'" xmlns="http://www.w3.org/2000/svg">'+inner+'</svg>'; }
+  return {rabbit:rabbit, turtle:turtle, owl:owl, tree:tree, page:page, svg:svg};
+})();
+
+/* 동화책 교안 설명 영상 정의 */
+(function(){
+  var V = window.__VIDS = window.__VIDS || {};
+  var A = window.__ART;
+  var PG = [
+    {k:'cover', no:'01', name:'표지', lines:['느려도 괜찮아','토끼와 거북이의 특별한 경주']},
+    {k:'intro', no:'02', name:'캐릭터 소개', lines:['토끼|숲에서 제일 빨라요.|자랑도 제일 잘해요.','거북이|느릿느릿 걸어요.|그래도 멈추지 않아요.']},
+    {k:'gi', no:'03', name:'기 · 출발', lines:['"출발!" 올빼미가 외쳤어요.','토끼는 휙 달려 나갔어요.','거북이는 한 발 내디뎠어요.']},
+    {k:'seung', no:'04', name:'승 · 낮잠', lines:['토끼가 뒤를 돌아봤어요.','거북이는 보이지 않았어요.','"한숨 자야지." 쿨쿨.']},
+    {k:'jeon', no:'05', name:'전 · 한 걸음', lines:['거북이는 쉬지 않았어요.','엉금엉금, 또 엉금엉금.','해가 뉘엿뉘엿 기울었어요.']},
+    {k:'gyeol', no:'06', name:'결 · 결승', lines:['거북이가 리본을 넘었어요.','토끼가 깜짝 놀라 깼어요.','거북이가 손을 내밀었어요.']}
+  ];
+  window.__BOOKPG = PG;
+  var FT=function(){ return window.__FT.apply(null,arguments); };
+  var SERIF='"Noto Serif KR","Nanum Myeongjo",serif';
+  function lay(api, html){ var d=document.createElement('div'); d.className='vlayer'; d.innerHTML=html; api.stage.appendChild(d); return d; }
+  function svgUrl(s){ return 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(s); }
+
+  /* ---------- 1. 처음 · 요약 (3D) ---------- */
+  V.summary = {
+    scenes:[
+      {t:'오늘 만들 여섯 장', d:5, c:'오늘 만들 그림책은 여섯 장입니다. 표지, 캐릭터 소개, 그리고 기·승·전·결 네 장면이에요.'},
+      {t:'한 장의 구조', d:6, c:'모든 장은 세로 3:4. 위쪽 3분의 2에는 그림, 아래쪽 3분의 1에는 글이 들어갑니다.'},
+      {t:'글은 제미나이', d:5, c:'글은 제미나이가 씁니다. 4챕터 원고를 한 번에 받아 장마다 나눠 넣어요.'},
+      {t:'화풍 고르기', d:5, c:'화풍은 수채화, 3D 클레이, 페이퍼컷, 색연필 중 하나를 고릅니다. 여섯 장 모두 같은 화풍으로 갑니다.'},
+      {t:'앵커 두 장', d:6, c:'토끼와 거북이 앵커를 순백 배경으로 한 장씩 만듭니다. 이 두 장이 모든 장면의 기준이에요.'},
+      {t:'앵커로 장면 만들기', d:7, c:'앵커 두 장을 첨부하고 장면 프롬프트를 넣으면, 어느 장이든 같은 얼굴·같은 옷·같은 화풍으로 나옵니다.'},
+      {t:'여섯 장이 한 권으로', d:7, c:'여섯 장을 모으면 한 권이 됩니다. 글자 오타와 얼굴은 마지막에 반드시 사람의 눈으로 확인해요.'}
+    ],
+    build:function(api){
+      var T = __vid3d(api,{bg:0xF3F5F8}), R=T.renderer;
+      var scene=new THREE.Scene(), cam=new THREE.PerspectiveCamera(35,16/9,0.1,100);
+      var C={x:0,y:0.2,z:10.6,tx:0,ty:0.2};
+      api.onResize=(function(p){return function(){ if(p)p(); cam.aspect=T.w/T.h; cam.updateProjectionMatrix(); };})(api.onResize); api.onResize();
+      function canvasTex(w,h,draw){ var c=document.createElement('canvas'); c.width=w; c.height=h; var t=new THREE.CanvasTexture(c); t.minFilter=THREE.LinearFilter; draw(c.getContext('2d'),c); t.needsUpdate=true; return {tex:t,cv:c,redraw:function(){draw(c.getContext('2d'),c); t.needsUpdate=true; again();}}; }
+      function svgTex(svg,w,h){ var o=canvasTex(w,h,function(g){g.fillStyle='#fff';g.fillRect(0,0,w,h);}); var im=new Image(); im.onload=function(){ var g=o.cv.getContext('2d'); g.fillStyle='#fff'; g.fillRect(0,0,w,h); g.drawImage(im,0,0,w,h); o.tex.needsUpdate=true; again(); }; im.src=svgUrl(svg); return o.tex; }
+      function mat(tex,op){ return new THREE.MeshBasicMaterial({map:tex,transparent:true,opacity:op==null?1:op,depthWrite:false}); }
+      function again(){ R.render(scene,cam); }
+      var frameTex=canvasTex(300,400,function(g){ g.fillStyle='#fff'; g.fillRect(0,0,300,400); g.strokeStyle='#D5DAE0'; g.lineWidth=4; g.strokeRect(2,2,296,396); }).tex;
+      var pages=[], pivots=[];
+      PG.forEach(function(p,i){
+        var pivot=new THREE.Group(), g=new THREE.Group(); g.position.x=0.75; pivot.add(g);
+        var base=new THREE.Mesh(new THREE.PlaneGeometry(1.5,2), mat(frameTex)); g.add(base);
+        var div=new THREE.Mesh(new THREE.PlaneGeometry(1.42,0.02), new THREE.MeshBasicMaterial({color:0x2D5B9A,transparent:true,opacity:0})); div.position.set(0,-0.333,0.004); g.add(div);
+        var art=new THREE.Mesh(new THREE.PlaneGeometry(1.44,1.28), mat(svgTex(A.page(p.k),300,267),0)); art.position.set(0,0.35,0.002); g.add(art);
+        var txt=canvasTex(300,140,function(gc){ gc.clearRect(0,0,300,140); gc.fillStyle='#2A2E33'; gc.textAlign='center'; gc.textBaseline='middle';
+          if(p.k==='cover'){ gc.font='700 34px '+SERIF; gc.fillText(p.lines[0],150,55); gc.font='17px '+SERIF; gc.fillText(p.lines[1],150,98); }
+          else if(p.k==='intro'){ p.lines.forEach(function(L,j){ var a=L.split('|'), x=j?225:75; gc.font='700 19px '+SERIF; gc.fillText(a[0],x,35); gc.font='14px '+SERIF; gc.fillText(a[1],x,70); gc.fillText(a[2],x,96); }); }
+          else { gc.font='17px '+SERIF; p.lines.forEach(function(L,j){ gc.fillText(L,150,38+j*32); }); } });
+        var tx=new THREE.Mesh(new THREE.PlaneGeometry(1.5,0.7), mat(txt.tex,0)); tx.position.set(0,-0.66,0.003); g.add(tx);
+        var lab=canvasTex(300,60,function(gc){ gc.clearRect(0,0,300,60); gc.fillStyle='#2D5B9A'; gc.font='700 26px "Noto Sans KR",sans-serif'; gc.textAlign='center'; gc.fillText(p.no+'  '+p.name,150,40); });
+        var lb=new THREE.Mesh(new THREE.PlaneGeometry(1.5,0.3), mat(lab.tex,1)); lb.position.set(0,-1.25,0); g.add(lb);
+        pivot.position.set((i-2.5)*1.75-0.75,0.2,-14); pivot.rotation.set(0.6,-1.2+i*0.4,0.3);
+        scene.add(pivot); pivots.push(pivot); pages.push({g:g,art:art,txt:tx,div:div,lab:lb,redraw:txt.redraw,labr:lab.redraw});
+      });
+      if(document.fonts&&document.fonts.load){ Promise.all([document.fonts.load('700 34px "Noto Serif KR"'),document.fonts.load('17px "Noto Serif KR"'),document.fonts.load('700 26px "Noto Sans KR"')]).then(function(){ pages.forEach(function(p){p.redraw();p.labr();}); },function(){}); }
+      // 앵커 두 장
+      function anchorMesh(svg){ var g=new THREE.Group(); var b=new THREE.Mesh(new THREE.PlaneGeometry(1.2,1.6), mat(frameTex)); g.add(b);
+        var a=new THREE.Mesh(new THREE.PlaneGeometry(1.0,1.4), mat(svgTex(A.svg(svg),200,280))); a.position.z=0.003; g.add(a); g.position.set(0,-6,2); g.userData.m=[b.material,a.material]; scene.add(g); return g; }
+      var aR=anchorMesh(A.rabbit()), aT=anchorMesh(A.turtle());
+      // 연결선
+      var lines=[];
+      [aR,aT].forEach(function(an,ai){ PG.forEach(function(p,i){ var geo=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(ai?0.9:-0.9,-1.45,0),new THREE.Vector3((i-2.5)*1.6,0.12,0)]);
+        var l=new THREE.Line(geo,new THREE.LineBasicMaterial({color:ai?0x6FA85D:0xD9443B,transparent:true,opacity:0})); scene.add(l); lines.push(l); }); });
+      // HTML 겹침 글
+      var L=lay(api,'<div class="s-tag s-top">위 3분의 2 · 그림</div><div class="s-tag s-bot">아래 3분의 1 · 글</div>'+
+        '<div class="s-gem"><b>제미나이</b><span>01 표지 · 02 소개 · 03 기 · 04 승 · 05 전 · 06 결</span><span>장마다 3줄, 한 줄 15자 이내</span></div>'+
+        '<div class="s-sty"><i data-c="#9CC3E6">수채화</i><i data-c="#E9A98E">3D 클레이</i><i data-c="#8CC07A">페이퍼컷</i><i data-c="#E7B7A8">색연필</i></div>'+
+        '<div class="s-done">「느려도 괜찮아」 완성</div>');
+      [].forEach.call(L.querySelectorAll('.s-sty i'),function(i){ i.style.setProperty('--c',i.getAttribute('data-c')); });
+      api.renders.push(function(){ cam.position.set(C.x,C.y,C.z); cam.lookAt(C.tx,C.ty,0); R.render(scene,cam); });
+      var tl=api.tl, at=api.at, q=function(s){return L.querySelector(s);};
+      gsap.set(L.querySelectorAll('.s-tag,.s-gem,.s-sty,.s-done'),{autoAlpha:0});
+      // 1 날아와 한 줄
+      pivots.forEach(function(p,i){ tl.to(p.position,{z:0,duration:1.6,ease:'power3.out'},at(0,0.2+i*0.25)); tl.to(p.rotation,{x:0,y:0,z:0,duration:1.6,ease:'power3.out'},at(0,0.2+i*0.25)); });
+      // 2 구조
+      tl.to(C,{x:-1.875,y:0.2,z:3.7,tx:-1.875,ty:0.2,duration:1.4,ease:'power2.inOut'},at(1,0));
+      pages.forEach(function(p){ tl.to(p.div.material,{opacity:1,duration:.6},at(1,1)); });
+      tl.to(q('.s-top'),{autoAlpha:1,duration:.5},at(1,1.6)).to(q('.s-bot'),{autoAlpha:1,duration:.5},at(1,2.4));
+      tl.to(L.querySelectorAll('.s-tag'),{autoAlpha:0,duration:.4},at(1,5.4));
+      tl.to(C,{x:0,y:0.2,z:10.6,tx:0,ty:0.2,duration:1.2,ease:'power2.inOut'},at(2,0));
+      // 3 제미나이 글
+      tl.to(q('.s-gem'),{autoAlpha:1,y:0,duration:.6},at(2,0.6));
+      pages.forEach(function(p,i){ tl.to(p.txt.material,{opacity:1,duration:.5},at(2,1.4+i*0.35)); });
+      tl.to(q('.s-gem'),{autoAlpha:0,duration:.4},at(2,4.5));
+      // 4 화풍
+      tl.to(q('.s-sty'),{autoAlpha:1,duration:.5},at(3,0.2));
+      FT(tl,L.querySelectorAll('.s-sty i'),{scale:.6,autoAlpha:0},{scale:1,autoAlpha:1,stagger:.25,duration:.4},at(3,0.4));
+      tl.to(L.querySelectorAll('.s-sty i:not(:first-child)'),{opacity:.35,duration:.4},at(3,2.6));
+      tl.to(q('.s-sty i:first-child'),{scale:1.25,duration:.4},at(3,2.6));
+      tl.to(q('.s-sty'),{autoAlpha:0,duration:.4},at(3,4.5));
+      // 5 앵커
+      pivots.forEach(function(p){ tl.to(p.position,{y:1.35,duration:1,ease:'power2.inOut'},at(4,0)); tl.to(p.scale,{x:.8,y:.8,z:.8,duration:1},at(4,0)); });
+      pivots.forEach(function(p,i){ tl.to(p.position,{x:(i-2.5)*1.6-0.6,duration:1},at(4,0)); });
+      tl.to(aR.position,{x:-0.9,y:-2.3,z:0,duration:1.2,ease:'back.out(1.4)'},at(4,0.8)).to(aT.position,{x:0.9,y:-2.3,z:0,duration:1.2,ease:'back.out(1.4)'},at(4,1.3));
+      // 6 선과 그림
+      lines.forEach(function(l,i){ tl.to(l.material,{opacity:.8,duration:.4},at(5,0.3+(i%6)*0.18)); });
+      pages.forEach(function(p,i){ tl.to(p.art.material,{opacity:1,duration:.6},at(5,1.6+i*0.4)); });
+      lines.forEach(function(l){ tl.to(l.material,{opacity:0,duration:.5},at(5,6.2)); });
+      // 7 한 권
+      [aR,aT].forEach(function(a){ tl.to(a.position,{y:-6,duration:.8,ease:'power2.in'},at(6,0)); });
+      pivots.forEach(function(p,i){ tl.to(p.position,{x:-0.75,y:0.1,z:-(i*0.02),duration:1.2,ease:'power2.inOut'},at(6,0.4)); tl.to(p.scale,{x:1.2,y:1.2,z:1.2,duration:1.2},at(6,0.4)); });
+      pages.forEach(function(p){ tl.to(p.lab.material,{opacity:0,duration:.4},at(6,0.4)); });
+      tl.to(C,{x:1.2,y:1.2,z:7,tx:0,ty:0.1,duration:1.4,ease:'power2.inOut'},at(6,1.4));
+      tl.to(pivots[0].rotation,{y:-2.5,duration:1.6,ease:'power2.inOut'},at(6,3));
+      tl.to(q('.s-done'),{autoAlpha:1,duration:.5},at(6,4.4));
+    }
+  };
+
+  /* ---------- 4. 앵커 두 장 ---------- */
+  V.anchor = {
+    scenes:[
+      {t:'토끼 앵커', d:5, c:'앵커는 순백 배경에 정면, 머리부터 발끝까지 전신. 배경이 깨끗해야 AI가 캐릭터만 정확히 읽어요.'},
+      {t:'거북이 앵커', d:5, c:'거북이도 같은 화풍, 같은 조건으로 한 장. 두 장의 화풍이 같아야 장면에서 어울립니다.'},
+      {t:'확인 네 가지', d:6, c:'흰 배경(그림자·바닥 없음), 발끝까지 전신, 목도리·가방 색, 글자 없음. 넷 다 맞을 때까지 다시 만듭니다.'},
+      {t:'두 장을 함께 첨부', d:5, c:'장면을 만들 때마다 이 두 장을 입력창에 넣습니다. 그림 위 ⋮ → 「프롬프트에 추가」나 끌어다 놓기, 입력창 ＋ 모두 됩니다. 그다음 장면 프롬프트를 붙여 넣어요.'},
+      {t:'여섯 장이 같은 얼굴로', d:6, c:'그러면 표지부터 결말까지 같은 얼굴, 같은 옷, 같은 화풍으로 이어집니다. 여섯 장 모두 같은 두 장을 넣는 게 핵심이에요.'}
+    ],
+    build:function(api){
+      var pages=PG.map(function(p){ return '<div class="an-pg"><div class="an-art">'+A.page(p.k)+'</div><span>'+p.no+'</span></div>'; }).join('');
+      var L=lay(api,'<div class="an">'+
+        '<div class="an-card a">'+A.svg(A.rabbit({x:0,y:4}))+'<span>A_토끼앵커</span></div>'+
+        '<div class="an-card b">'+A.svg(A.turtle({x:0,y:4}))+'<span>B_거북이앵커</span></div>'+
+        '<ul class="an-chk"><li><i>✓</i>순수한 흰 배경</li><li><i>✓</i>발끝까지 전신</li><li><i>✓</i>목도리 · 가방 색</li><li><i>✓</i>글자 없음</li></ul>'+
+        '<div class="an-in"><i class="t1">'+A.svg(A.rabbit())+'</i><i class="t2">'+A.svg(A.turtle())+'</i><span>+ 장면 프롬프트</span></div>'+
+        '<div class="an-lines">▼</div>'+
+        '<div class="an-grid">'+pages+'</div></div>');
+      var tl=api.tl, at=api.at, q=function(s){return L.querySelector(s);}, qa=function(s){return L.querySelectorAll(s);};
+      gsap.set(qa('.an-card,.an-chk li,.an-in,.an-grid,.an-in i,.an-lines'),{autoAlpha:0}); gsap.set(qa('.an-art'),{autoAlpha:0});
+      FT(tl,q('.an-card.a'),{y:30,autoAlpha:0},{y:0,autoAlpha:1,duration:.8},at(0,.3));
+      FT(tl,q('.an-card.b'),{y:30,autoAlpha:0},{y:0,autoAlpha:1,duration:.8},at(1,.3));
+      qa('.an-chk li').forEach(function(li,i){ tl.to(li,{autoAlpha:1,duration:.3},at(2,.3+i*1.1)); tl.to(li.querySelector('i'),{backgroundColor:'#2D5B9A',borderColor:'#2D5B9A',duration:.25},at(2,.8+i*1.1)); });
+      tl.to(q('.an-in'),{autoAlpha:1,duration:.4},at(3,.2));
+      FT(tl,q('.an-in .t1'),{x:-260,autoAlpha:0},{x:0,autoAlpha:1,duration:1},at(3,.6));FT(tl,q('.an-in .t2'),{x:-200,autoAlpha:0},{x:0,autoAlpha:1,duration:1},at(3,1.2));
+      tl.to(qa('.an-grid,.an-lines'),{autoAlpha:1,duration:.4},at(4,0));
+      qa('.an-art').forEach(function(a,i){ FT(tl,a,{autoAlpha:0,scale:.9},{autoAlpha:1,scale:1,duration:.5},at(4,.5+i*.6)); });
+    }
+  };
+
+  /* ---------- 5. 3:4 한 장의 구조 ---------- */
+  V.layout = {
+    scenes:[
+      {t:'세로 3:4 한 장', d:4, c:'그림책 한 쪽은 세로 3:4입니다. 플로우에서 비율을 3:4로 고르고, 프롬프트에도 "세로 3:4"를 적어요.'},
+      {t:'위 2/3 그림 · 아래 1/3 글', d:6, c:'프롬프트의 [화면 나누기]에 "위쪽 3분의 2는 그림, 아래쪽 3분의 1은 흰 바탕의 글 자리"라고 적으면 그림과 글이 겹치지 않아요.'},
+      {t:'[그림] 칸', d:5, c:'[그림]에는 누가, 어디서, 무엇을 하는지를 한 문장으로. 시간(아침·노을)을 넣으면 장마다 분위기가 달라집니다.'},
+      {t:'[글] 칸 · 노토 세리프', d:6, c:'[글]에는 글꼴 Noto Serif KR(본명조)과 크기, 그리고 따옴표 안에 들어갈 글자를 그대로 적습니다. "아래 글자만 정확히"를 꼭 붙여요.'},
+      {t:'포인트 크기 정하기', d:6, c:'제목 48pt, 부제 24pt, 이름 26pt, 본문 22pt. 숫자로 정해 두면 여섯 장의 글자 크기가 고르게 나옵니다.'},
+      {t:'틀린 글자 고치기', d:7, c:'AI는 한글을 틀릴 때가 있어요. 그림을 눌러 「\'나갓어요\'를 \'나갔어요\'로만 고쳐 줘」처럼 틀린 글자만 콕 집어 고치고, 끝까지 사람이 확인합니다.'}
+    ],
+    build:function(api){
+      var L=lay(api,'<div class="ly">'+
+        '<div class="ly-pg"><div class="ly-art">'+A.page('gi')+'</div><div class="ly-div"></div>'+
+        '<div class="ly-txt"><p>"출발!" 올빼미가 외쳤어요.</p><p class="l2"><span class="bad">토끼는 휙 달려 나<u>갓</u>어요.</span><span class="good">토끼는 휙 달려 나갔어요.</span></p><p>거북이는 한 발 내디뎠어요.</p><i class="ly-o"></i></div>'+
+        '<span class="ly-r">3 : 4</span></div>'+
+        '<div class="ly-b b1"><b>위 3분의 2</b>그림</div><div class="ly-b b2"><b>아래 3분의 1</b>글</div>'+
+        '<div class="ly-pr"><p class="k0"><b>[화면 나누기]</b> 위 2/3 그림 · 아래 1/3 흰 바탕 글 자리</p><p class="k1"><b>[그림]</b> 올빼미 신호에 토끼가 휙, 거북이는 첫걸음. 아침 햇살</p><p class="k2"><b>[글]</b> Noto Serif KR · 본문 22pt · 아래 글자만 정확히</p></div>'+
+        '<table class="ly-pt"><tr><th>자리</th><th>크기</th></tr><tr><td>제목</td><td>48pt 굵게</td></tr><tr><td>부제</td><td>24pt</td></tr><tr><td>이름</td><td>26pt 굵게</td></tr><tr><td>본문</td><td>22pt</td></tr></table>'+
+        '<div class="ly-fix">「\'나갓어요\'를 \'나갔어요\'로만 고쳐 줘. 나머지는 그대로.」</div></div>');
+      var tl=api.tl, at=api.at, q=function(s){return L.querySelector(s);}, qa=function(s){return L.querySelectorAll(s);};
+      gsap.set(qa('.ly-pg,.ly-art,.ly-txt p,.ly-b,.ly-pr p,.ly-pt,.ly-fix,.ly-o,.bad'),{autoAlpha:0}); gsap.set(q('.ly-div'),{scaleX:0});
+      FT(tl,q('.ly-pg'),{scale:.85,autoAlpha:0},{scale:1,autoAlpha:1,duration:.8},at(0,.2));
+      tl.to(q('.ly-div'),{scaleX:1,duration:.8},at(1,.3)).to(q('.ly-b.b1'),{autoAlpha:1,duration:.4},at(1,1.2)).to(q('.ly-b.b2'),{autoAlpha:1,duration:.4},at(1,1.8)).to(q('.ly-pr .k0'),{autoAlpha:1,duration:.4},at(1,2.6));
+      tl.to(q('.ly-art'),{autoAlpha:1,duration:.8},at(2,.4)).to(q('.ly-pr .k1'),{autoAlpha:1,duration:.4},at(2,.6));
+      tl.to(q('.ly-pr .k2'),{autoAlpha:1,duration:.4},at(3,.2)); qa('.ly-txt p').forEach(function(p,i){ tl.to(p,{autoAlpha:1,duration:.5},at(3,1+i*.8)); });
+      tl.to(qa('.ly-b'),{autoAlpha:0,duration:.3},at(4,0)).to(q('.ly-pt'),{autoAlpha:1,duration:.5},at(4,.3));
+      tl.to(q('.ly-pt'),{autoAlpha:0,duration:.3},at(5,0)).to(q('.good'),{autoAlpha:0,duration:.2},at(5,.2)).to(q('.bad'),{autoAlpha:1,duration:.2},at(5,.25));FT(tl,q('.ly-o'),{autoAlpha:0,scale:1.6},{autoAlpha:1,scale:1,duration:.5},at(5,.6));
+      tl.to(q('.ly-fix'),{autoAlpha:1,duration:.5},at(5,1.6)).to(q('.bad'),{autoAlpha:0,duration:.3},at(5,4)).to(q('.good'),{autoAlpha:1,duration:.4},at(5,4.2)).to(q('.ly-o'),{borderColor:'#2E6B4C',duration:.3},at(5,4.2));
+    }
+  };
+})();
+
+/* 구글 플로우 화면 모형 (2026.10 실제 화면 기준) · 플로우 익히기 · 고치기 연습 */
+(function(){
+  var V = window.__VIDS, A = window.__ART;
+  function FT(){ return window.__FT.apply(null,arguments); }
+  function lay(api, html){ var d=document.createElement('div'); d.className='vlayer'; d.innerHTML=html; api.stage.appendChild(d); return d; }
+  function base(extra){
+    return '<div class="fd">'+
+      '<div class="fd-side"><i class="fd-home">⌂</i><span class="fd-name"><b class="n0">10월 12 - 07:09</b><b class="n1">토끼와 거북이 그림책</b></span><i class="fd-dots">⋮</i>'+
+      '<span class="fd-m on" style="top:12%">▦ 전체 미디어</span><span class="fd-m" style="top:20%">☺ 캐릭터</span><span class="fd-m" style="top:28%">▭ 장면</span><i class="fd-hr"></i><span class="fd-m" style="top:38%">✦ 도구</span>'+
+      '<span class="fd-m" style="top:83%">🗑 휴지통</span><span class="fd-m" style="top:91%">◧ 접기</span></div>'+
+      '<div class="fd-search">⌕</div><div class="fd-filter">≡</div><div class="fd-icons">＋ &nbsp; ? &nbsp; ⚙ &nbsp; ⋮</div><div class="fd-pro">PRO <i></i></div>'+
+      '<div class="fd-empty"><b>✿</b>미디어 만들기를 시작하거나 미디어를 드롭하세요</div>'+
+      (extra||'')+
+      '<div class="fd-box"><span class="fd-ph">무엇을 만들고 싶으신가요?</span><span class="fd-ty"></span>'+
+      '<i class="fd-plus">＋</i><span class="fd-agent">에이전트</span>'+
+      '<span class="fd-set">🍌 Nano Banana 2.1 <i class="fd-rt">▯</i> <span class="cc"><b class="c1">x1</b><b class="c2">x2</b></span></span><span class="fd-aic">▤ &nbsp;☷</span><i class="fd-go">→</i></div>'+
+      '<div class="fd-note">화면 모형 · 2026년 10월 화면 기준, 업데이트로 달라질 수 있어요</div>'+
+      '<div class="fm-ring"></div><div class="fm-cur fd-cur"><i></i></div></div>';
+  }
+  var POP='<div class="fd-pop"><div class="fd-tabs"><span class="on">▣ 이미지</span><span>▶ 동영상</span></div>'+
+    '<div class="fd-ratios"><span>▭<br>16:9</span><span>▭<br>4:3</span><span>□<br>1:1</span><span class="r34">▯<br>3:4</span><span class="r916 on">▯<br>9:16</span></div>'+
+    '<div class="fd-model">🍌 Nano Banana 2.1 <i>▾</i></div><div class="fd-cnt"><span class="k1 on">x1</span><span class="k2">x2</span><span>x3</span><span>x4</span></div><p>생성 시 0 크레딧이 사용됩니다</p></div>';
+  var PANEL='<div class="fd-panel"><b>≡ &nbsp;제목 없는 세션</b><p>무엇을 만들고 싶으신가요?</p><span>여러 버전의 이미지를 만들어 줘</span><span>이미지 수정해 줘</span><span>컨셉 아트를 생성해 줘</span><em>무엇을 만들고 싶으신가요?</em></div>';
+  function tile(cls,scarf){ return '<div class="fd-tile '+cls+'">'+A.svg(A.rabbit({y:4,scarf:scarf}))+'<span class="fd-hv"><i class="h">♡</i><i>↩</i><i>⋮</i></span><em>▣ 그림책 연습 그림</em></div>'; }
+  // 좌표(%) : [left, top, width, height]
+  var R={ newp:[40,40,20,10], name:[1,1.5,13.5,6], agent:[32.6,88.5,6.4,6], expand:[67,82,2,4], set:[54.5,88.5,11.4,6], tab:[48,48,10,6],
+          r34:[57.4,55,3.6,8], model:[48,64.5,20,6], k2:[52.5,72,4.3,5.5], go:[66,88.5,2.6,6], heart:[27.3,15,2.6,5], filter:[61.6,2.5,3,6], plus:[29.6,88.5,2.6,6],
+          t1:[17,13,16.9,40], crop:[16,24,6,6], hist:[77,10,21,80], box:[29,81,40,15] };
+  function c(k){ var r=R[k]; return [r[0]+r[2]/2, r[1]+r[3]/2]; }
+  function mv(tl,L,k,t,d){ var p=c(k); tl.to(L.querySelector('.fd-cur'),{left:p[0]+'%',top:p[1]+'%',duration:d||.9,ease:'power2.inOut'},t); }
+  function ck(tl,L,t){ FT(tl,L.querySelector('.fd-cur i'),{scale:.3,opacity:.9},{scale:2.2,opacity:0,duration:.5},t); }
+  function rg(tl,L,k,t){ var r=R[k]; tl.to(L.querySelector('.fm-ring'),{left:r[0]+'%',top:r[1]+'%',width:r[2]+'%',height:r[3]+'%',autoAlpha:1,duration:.45},t); }
+  function agentOn(tl,L,t,on){ var q=function(s){return L.querySelector(s);};
+    tl.to(q('.fd-agent'),{backgroundColor:on?'#FFFFFF':'#2A2B2E',color:on?'#111':'#E8EAED',duration:.25},t)
+      .to(q('.fd-set'),{autoAlpha:on?0:1,duration:.2},t).to(q('.fd-aic'),{autoAlpha:on?1:0,duration:.2},t); }
+
+  V.flow = {
+    scenes:[
+      {t:'새 프로젝트 만들기', d:6, c:'labs.google/fx/tools/flow에 들어가 홈 화면에서 「+ 새 프로젝트」를 누릅니다. 빈 프로젝트가 열리고 가운데에 "미디어 만들기를 시작하거나 미디어를 드롭하세요"가 보여요.'},
+      {t:'프로젝트 이름', d:6, c:'이름은 왼쪽 위에 날짜와 시각으로 자동으로 붙습니다. 홈 화면에서 프로젝트의 연필 아이콘(프로젝트 수정)을 눌러 「토끼와 거북이 그림책」으로 바꿔 두면 찾기 쉬워요.'},
+      {t:'에이전트 켜기·끄기', d:8, c:'입력창의 「에이전트」를 누르면 버튼이 흰색으로 바뀌며 켜집니다. 펼치기를 누르면 오른쪽에 대화 패널이 열려요. 다시 누르면 꺼집니다. 그림을 새로 만들 때는 꺼 두세요.'},
+      {t:'설정 칩 · 이미지와 비율', d:7, c:'입력창 오른쪽의 「🍌 Nano Banana 2.1 ▯ x1」을 누르면 설정 창이 열립니다. 「이미지」 탭을 확인하고, 비율은 처음에 9:16일 수 있으니 3:4를 누르세요.'},
+      {t:'모델과 개수', d:6, c:'모델은 Nano Banana 2.1(안 보이면 Pro). 개수는 x1~x4 중 처음엔 x2. 아래에 사용될 크레딧이 표시돼요.'},
+      {t:'붙여 넣고 → 누르기', d:6, c:'「무엇을 만들고 싶으신가요?」 칸에 교안 프롬프트를 붙여 넣고 오른쪽 화살표(→)를 누릅니다. 잠시 뒤 그림 두 장이 나와요.'},
+      {t:'즐겨찾기', d:7, c:'그림 위에 마우스를 올리면 오른쪽 위에 ♡(즐겨찾기) · ↩ · ⋮(더보기)가 나옵니다. 고른 그림은 ♡를 눌러 표시하세요. 다운로드와 「프롬프트에 추가」는 ⋮ 안에 있어요.'}
+    ],
+    build:function(api){
+      var L=lay(api,base('<div class="fd-homev"><b>Google Flow · 홈</b><span class="fd-newp">＋ 새 프로젝트</span><p>내 프로젝트</p><i></i><i></i><i></i></div>'+tile('t1')+tile('t2','#C9483F')+POP+PANEL));
+      var tl=api.tl, at=api.at, q=function(s){return L.querySelector(s);}, qa=function(s){return L.querySelectorAll(s);};
+      gsap.set(qa('.fd-tile,.fd-pop,.fd-panel,.fm-ring,.fd-aic,.n1,.fd-ty,.c2,.fd-hv'),{autoAlpha:0}); gsap.set(q('.fd-cur'),{left:'55%',top:'60%'});
+      q('.fd-ty').textContent='그림책 연습 그림. 부드러운 수채화 그림책 화풍. 순수한 흰 배경(#FFFFFF)에 하얀 털, 긴 귀…';
+      // 1 새 프로젝트
+      mv(tl,L,'newp',at(0,.3)); ck(tl,L,at(0,1.4)); tl.to(q('.fd-homev'),{autoAlpha:0,duration:.5},at(0,1.8)); rg(tl,L,'box',at(0,2.6));
+      // 2 이름
+      rg(tl,L,'name',at(1,.2)); mv(tl,L,'name',at(1,.3)); tl.to(q('.n0'),{autoAlpha:0,duration:.3},at(1,2.6)).to(q('.n1'),{autoAlpha:1,duration:.4},at(1,2.8));
+      // 3 에이전트
+      rg(tl,L,'agent',at(2,.2)); mv(tl,L,'agent',at(2,.2)); ck(tl,L,at(2,1.2)); agentOn(tl,L,at(2,1.3),true);
+      mv(tl,L,'expand',at(2,2.2),.7); ck(tl,L,at(2,3)); tl.to(q('.fd-panel'),{autoAlpha:1,x:0,duration:.5},at(2,3.1));
+      mv(tl,L,'agent',at(2,5.2),.7); ck(tl,L,at(2,6)); agentOn(tl,L,at(2,6.1),false); tl.to(q('.fd-panel'),{autoAlpha:0,duration:.3},at(2,6.1));
+      // 4 설정 칩
+      rg(tl,L,'set',at(3,.2)); mv(tl,L,'set',at(3,.2)); ck(tl,L,at(3,1.1)); tl.to(q('.fd-pop'),{autoAlpha:1,duration:.3},at(3,1.2));
+      rg(tl,L,'tab',at(3,1.8)); mv(tl,L,'tab',at(3,1.8),.6); rg(tl,L,'r34',at(3,3.3)); mv(tl,L,'r34',at(3,3.3),.7); ck(tl,L,at(3,4.1));
+      tl.to(q('.r916'),{backgroundColor:'rgba(0,0,0,0)',duration:.2},at(3,4.2)).to(q('.r34'),{backgroundColor:'#3C4043',duration:.2},at(3,4.2));
+      // 5 모델 · 개수
+      rg(tl,L,'model',at(4,.2)); mv(tl,L,'model',at(4,.2)); rg(tl,L,'k2',at(4,2)); mv(tl,L,'k2',at(4,2),.7); ck(tl,L,at(4,2.8));
+      tl.to(q('.k1'),{backgroundColor:'rgba(0,0,0,0)',duration:.2},at(4,2.9)).to(q('.k2'),{backgroundColor:'#3C4043',duration:.2},at(4,2.9));
+      // 6 붙여넣기 → 생성
+      tl.to(q('.fd-pop'),{autoAlpha:0,duration:.3},at(5,0)).to(q('.c1'),{autoAlpha:0,duration:.1},at(5,0)).to(q('.c2'),{autoAlpha:1,duration:.1},at(5,0));
+      rg(tl,L,'box',at(5,.2)); tl.to(q('.fd-ph'),{autoAlpha:0,duration:.2},at(5,.6)); FT(tl,q('.fd-ty'),{autoAlpha:1,clipPath:'inset(0 100% 0 0)'},{clipPath:'inset(0 0% 0 0)',duration:1.2,ease:'none'},at(5,.7));
+      rg(tl,L,'go',at(5,2.2)); mv(tl,L,'go',at(5,2.2),.7); ck(tl,L,at(5,3));
+      tl.to(q('.fd-empty'),{autoAlpha:0,duration:.3},at(5,3.1)); FT(tl,qa('.fd-tile'),{autoAlpha:0,scale:.92},{autoAlpha:1,scale:1,stagger:.35,duration:.5},at(5,3.3));
+      // 7 즐겨찾기
+      mv(tl,L,'t1',at(6,.1)); tl.to(q('.t1 .fd-hv'),{autoAlpha:1,duration:.3},at(6,.9)); rg(tl,L,'heart',at(6,1.3)); mv(tl,L,'heart',at(6,1.3),.7); ck(tl,L,at(6,2.1));
+      tl.to(q('.t1 .h'),{color:'#F28B82',scale:1.25,duration:.3},at(6,2.2));
+    }
+  };
+
+  V.edit = {
+    scenes:[
+      {t:'그림을 누르면 상세 화면', d:6, c:'그림을 누르면 크게 열립니다. 왼쪽에는 자르기 같은 도구, 오른쪽에는 이전 버전과 프롬프트가 남는 「기록」 패널이 있어요.'},
+      {t:'한 곳만 고치기 · 에이전트', d:9, c:'그림 수정은 에이전트로 합니다. 에이전트를 켜고 그림을 입력창으로 끌어다 놓은 뒤 「목도리 색만 파란색으로, 나머지는 그대로」를 넣고 →. 생성 전에 확인을 물으면 승인하세요.'},
+      {t:'기록 패널로 전후 비교', d:6, c:'고쳐도 원본은 사라지지 않습니다. 새 그림을 눌러 「기록」 패널에서 전후를 나란히 보고, 얼굴과 배경이 그대로인지 확인해요.'},
+      {t:'비율 바꾸기', d:7, c:'비율도 에이전트에게 말로 바꿉니다. 「이 그림을 1:1로 바꿔 줘. 토끼는 그대로, 늘어난 양옆은 흰 배경으로」. 표지를 홍보용 정사각형으로 만들 때 써요.'},
+      {t:'자르기', d:7, c:'자르기는 상세 화면 왼쪽의 「자르기」를 누르고 자를 방법을 고른 뒤 「자르기」를 누릅니다. 얼굴과 목도리만 남기면 캐릭터 소개용 얼굴 그림이 돼요.'},
+      {t:'세 가지 정리', d:5, c:'고치기는 에이전트, 비율도 에이전트, 부분만 남기기는 상세 화면의 자르기. 원본은 늘 「기록」에 남아 있어요.'}
+    ],
+    build:function(api){
+      var det='<div class="fd-det"><i class="fd-x">✕</i><div class="fd-tools"><i>⤢</i><i class="cr">⧉<em>자르기</em></i><i>✎</i></div>'+
+        '<div class="fd-big">'+A.svg(A.rabbit({y:4}))+'<div class="fd-crop"><i></i><i></i><i></i><i></i></div><span class="fd-cbtn">자르기</span></div>'+
+        '<div class="fd-hist"><b>기록</b><div class="v1">'+A.svg(A.rabbit({y:4}))+'<span>처음 그림</span></div><div class="v2">'+A.svg(A.rabbit({y:4,scarf:'#3B6FB6'}))+'<span>목도리만 파란색</span></div></div></div>';
+      var L=lay(api,base(tile('t1')+tile('t3','#3B6FB6')+'<div class="fd-tile sq t4">'+A.svg(A.rabbit({y:4,scarf:'#3B6FB6'}),'-20 0 140 140')+'</div><div class="fd-drag">'+A.svg(A.rabbit({y:4}))+'</div>'+det+
+        '<div class="ed-sum fd-sum"><div><b>수정</b><span>에이전트 + 끌어다 놓기</span></div><div><b>비율</b><span>에이전트에게 말로</span></div><div><b>자르기</b><span>상세 화면 왼쪽</span></div></div>'));
+      var tl=api.tl, at=api.at, q=function(s){return L.querySelector(s);}, qa=function(s){return L.querySelectorAll(s);};
+      gsap.set(qa('.fd-empty,.fd-det,.fm-ring,.fd-aic,.fd-ty,.c2,.fd-hv,.t3,.t4,.fd-drag,.fd-sum,.fd-crop,.fd-cbtn,.v2,.n0'),{autoAlpha:0});
+      gsap.set(q('.n1'),{autoAlpha:1}); gsap.set(q('.fd-cur'),{left:'55%',top:'60%'});
+      var ty=q('.fd-ty');
+      // 1 상세 화면
+      mv(tl,L,'t1',at(0,.2)); ck(tl,L,at(0,1.2)); tl.to(q('.fd-det'),{autoAlpha:1,duration:.4},at(0,1.4));
+      rg(tl,L,'crop',at(0,2.4)); rg(tl,L,'hist',at(0,4));
+      // 2 에이전트로 고치기
+      tl.to(q('.fd-det'),{autoAlpha:0,duration:.3},at(1,0)).to(q('.fm-ring'),{autoAlpha:0,duration:.2},at(1,0));
+      mv(tl,L,'agent',at(1,.3)); ck(tl,L,at(1,1.1)); agentOn(tl,L,at(1,1.2),true);
+      mv(tl,L,'t1',at(1,1.6),.6); FT(tl,q('.fd-drag'),{autoAlpha:.9,left:'18%',top:'18%'},{left:'30%',top:'74.5%',duration:1.1,ease:'power2.inOut'},at(1,2.3));
+      tl.to(q('.fd-cur'),{left:'33%',top:'86%',duration:1.1,ease:'power2.inOut'},at(1,2.3)).to(q('.fd-drag'),{width:'2.2%',height:'5%',duration:.3},at(1,3.4));
+      tl.to(q('.fd-ph'),{autoAlpha:0,duration:.2},at(1,3.6));
+      ty.textContent='목도리 색만 파란색으로 바꿔 줘. 얼굴·자세·화풍·배경은 그대로.';
+      FT(tl,ty,{autoAlpha:1,clipPath:'inset(0 100% 0 0)'},{clipPath:'inset(0 0% 0 0)',duration:1.8,ease:'none'},at(1,3.7));
+      mv(tl,L,'go',at(1,5.8),.6); ck(tl,L,at(1,6.5)); FT(tl,q('.t3'),{autoAlpha:0,scale:.9},{autoAlpha:1,scale:1,duration:.6},at(1,7));
+      // 3 기록
+      tl.to(q('.fd-drag'),{autoAlpha:0,duration:.2},at(2,0));
+      mv(tl,L,'t1',at(2,.1)); tl.to(q('.fd-cur'),{left:'43%',top:'33%',duration:.6},at(2,.1)); ck(tl,L,at(2,.8));
+      tl.set(qa('.fd-big .scarf'),{fill:'#3B6FB6'},at(2,.9)).to(q('.fd-det'),{autoAlpha:1,duration:.4},at(2,.9)).to(q('.v2'),{autoAlpha:1,duration:.4},at(2,1.6)); rg(tl,L,'hist',at(2,1.8));
+      // 4 비율
+      tl.to(q('.fd-det'),{autoAlpha:0,duration:.3},at(3,0)).to(q('.fm-ring'),{autoAlpha:0,duration:.2},at(3,0)).to(ty,{autoAlpha:0,duration:.2},at(3,0));
+      tl.set(qa('.fd-drag .scarf'),{fill:'#3B6FB6'},at(3,.3)); tl.to(q('.fd-drag'),{autoAlpha:.95,duration:.3},at(3,.4));
+      var ty2=document.createElement('span'); ty2.className='fd-ty fd-ty2'; ty2.textContent='이 그림을 1:1로 바꿔 줘. 토끼는 그대로, 늘어난 양옆은 흰 배경으로.'; q('.fd-box').appendChild(ty2); gsap.set(ty2,{autoAlpha:0});
+      FT(tl,ty2,{autoAlpha:1,clipPath:'inset(0 100% 0 0)'},{clipPath:'inset(0 0% 0 0)',duration:1.8,ease:'none'},at(3,.8));
+      mv(tl,L,'go',at(3,2.9),.6); ck(tl,L,at(3,3.6)); FT(tl,q('.t4'),{autoAlpha:0,scale:.9},{autoAlpha:1,scale:1,duration:.6},at(3,4));
+      // 5 자르기
+      tl.to([ty2,q('.fd-drag')],{autoAlpha:0,duration:.2},at(4,0)); mv(tl,L,'t1',at(4,.1)); tl.to(q('.fd-cur'),{left:'43%',top:'33%',duration:.6},at(4,.1)); ck(tl,L,at(4,.8));
+      tl.to(q('.fd-det'),{autoAlpha:1,duration:.4},at(4,.9)); mv(tl,L,'crop',at(4,1.5),.6); rg(tl,L,'crop',at(4,1.5)); ck(tl,L,at(4,2.2));
+      FT(tl,q('.fd-crop'),{autoAlpha:1,left:'0%',top:'0%',width:'100%',height:'100%'},{left:'22%',top:'12%',width:'56%',height:'48%',duration:1.6,ease:'power2.inOut'},at(4,2.4));
+      tl.to(q('.fd-cbtn'),{autoAlpha:1,duration:.3},at(4,4.2));
+      // 6 정리
+      tl.to(qa('.fd-det,.fm-ring'),{autoAlpha:0,duration:.3},at(5,0)).to(q('.fd-sum'),{autoAlpha:1,duration:.4},at(5,.2));
+    }
+  };
+})();
+
+(function(){
+  var steps=[].slice.call(document.querySelectorAll('.step'));
+  var tabs=[].slice.call(document.querySelectorAll('.tab'));
+  var side=document.getElementById('sideList');
+  var prev=document.getElementById('prev'), next=document.getElementById('next');
+  var cur=0;
+  function show(i,scroll){
+    cur=i;
+    steps.forEach(function(s,k){s.classList.toggle('on',k===i)});
+    tabs.forEach(function(t,k){t.setAttribute('aria-selected',k===i?'true':'false')});
+    side.innerHTML='';
+    steps[i].querySelectorAll('.card').forEach(function(c){
+      var h=c.querySelector('h3'); if(!h)return;
+      var a=document.createElement('a'); a.href='#'+c.id;
+      a.textContent=h.textContent.replace(/^[①②③④⑤⑥⑦⑧⑨]\s*/,'').trim();
+      a.addEventListener('click',function(e){e.preventDefault();var bar=document.querySelector('.topbar').offsetHeight;var y=c.getBoundingClientRect().top+window.pageYOffset-bar-12;window.scrollTo({top:y,behavior:'smooth'})});
+      side.appendChild(a);
+    });
+    prev.disabled=i===0; next.disabled=i===steps.length-1;
+    if(scroll) window.scrollTo({top:0});
+    if(window.__vidsInit) window.__vidsInit(steps[i]);
+  }
+  tabs.forEach(function(t,k){t.addEventListener('click',function(){show(k,true)})});
+  prev.addEventListener('click',function(){if(cur>0)show(cur-1,true)});
+  next.addEventListener('click',function(){if(cur<steps.length-1)show(cur+1,true)});
+  var size=20;
+  document.querySelectorAll('.zoom button').forEach(function(b){
+    b.addEventListener('click',function(){
+      var z=+b.dataset.z; size=z===0?20:Math.min(28,Math.max(16,size+z*2));
+      document.documentElement.style.setProperty('--fs',size+'px');
+      if(window.__vidsInit) window.__vidsInit(steps[cur]);
+    });
+  });
+  function fallbackCopy(t){var ta=document.createElement('textarea');ta.value=t;ta.style.position='absolute';ta.style.left='-9999px';document.body.appendChild(ta);ta.select();try{document.execCommand('copy')}catch(e){}document.body.removeChild(ta)}
+  document.querySelectorAll('.copy').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var t=btn.closest('.prc').querySelector('.prompt').innerText;
+      var ok=function(){btn.textContent='복사됨';btn.classList.add('done');setTimeout(function(){btn.textContent='복사';btn.classList.remove('done')},1500)};
+      if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(t).then(ok,function(){fallbackCopy(t);ok()})}else{fallbackCopy(t);ok()}
+    });
+  });
+  // 장면 고르기 버튼
+  document.querySelectorAll('.seg').forEach(function(seg){
+    var box=seg.parentNode;
+    seg.querySelectorAll('.seg-b').forEach(function(b){
+      b.addEventListener('click',function(){
+        seg.querySelectorAll('.seg-b').forEach(function(x){x.classList.toggle('on',x===b)});
+        box.querySelectorAll('.seg-p').forEach(function(p){p.classList.toggle('on',p.getAttribute('data-p')===b.getAttribute('data-t'))});
+      });
+    });
+  });
+  // 화풍 고르기 → 앵커 프롬프트에 반영
+  document.querySelectorAll('.stybtn').forEach(function(b){
+    b.addEventListener('click',function(){
+      document.querySelectorAll('.stybtn').forEach(function(x){x.classList.toggle('on',x===b)});
+      var p=b.getAttribute('data-p');
+      document.querySelectorAll('.sty-slot,.sty-now').forEach(function(s){s.textContent=p});
+    });
+  });
+  // 완성 모양 도식
+  var A=window.__ART, PG=window.__BOOKPG||[];
+  function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;')}
+  function mini(i){
+    var p=PG[i]; if(!p||!A) return '';
+    var t;
+    if(p.k==='cover') t='<div class="m34t"><span class="tt">'+esc(p.lines[0])+'</span><span class="st">'+esc(p.lines[1])+'</span></div>';
+    else if(p.k==='intro') t='<div class="m34t two">'+p.lines.map(function(L){var a=L.split('|');return '<div><b>'+esc(a[0])+'</b>'+esc(a[1])+'<br>'+esc(a[2])+'</div>'}).join('')+'</div>';
+    else t='<div class="m34t">'+p.lines.map(function(L){return '<span>'+esc(L)+'</span>'}).join('')+'</div>';
+    return '<div class="m34p"><div class="m34a">'+A.page(p.k)+'</div>'+t+'</div>';
+  }
+  document.querySelectorAll('.m34').forEach(function(m){ m.innerHTML=mini(+m.getAttribute('data-k')); });
+  var m6=document.querySelector('[data-m6]');
+  if(m6) m6.innerHTML=PG.map(function(p,i){return '<div>'+mini(i)+'<div class="m34n">'+p.no+' '+p.name+'</div></div>'}).join('');
+  document.querySelectorAll('.ancv').forEach(function(v){ v.innerHTML=A?A.svg(v.getAttribute('data-art')==='turtle'?A.turtle({y:2}):A.rabbit({y:2})):''; });
+  show(0,false);
+})();
+
+</script>
+</body>
+</html>

@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>미드저니 4차시 · 승인 패턴 학습에서 첫 업로드까지</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --fs:20px;
+  --bg:#FCFCFA; --paper:#FFFFFF; --ink:#2A2826; --sub:#68645F; --line:#E5E2DC; --line2:#EFEDE8;
+  --accent:#A44E3C; --accent-soft:#F7ECE8;
+  --set:#EDF2F6; --set-line:#C9D7E2;
+  --warn:#F6EEF3; --warn-line:#E0CBD7;
+  --ext:#EEF3EC; --ext-line:#CADBC5;
+  --ok:#4F7A55; --no:#A44E3C;
+}
+*{box-sizing:border-box}
+html{font-size:var(--fs)}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;line-height:1.7;word-break:keep-all}
+h1,h2,h3,h4{font-family:"Gowun Batang","Nanum Myeongjo",serif;line-height:1.35;margin:0}
+a{color:#2F5E8A}
+button,select{font:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+code{font-family:"Pretendard",monospace;background:#F3F1EC;border-radius:5px;padding:1px 6px;font-size:.88em}
+
+/* 상단 (sticky) */
+.top{position:sticky;top:0;z-index:20;background:#FCFCFA;border-bottom:1px solid var(--line)}
+.top-row{display:flex;align-items:center;gap:16px;max-width:1280px;margin:0 auto;padding:12px 24px 6px}
+.top-title{font-family:"Gowun Batang",serif;font-weight:700;font-size:1.05rem;flex:1}
+.top-title small{display:block;font-family:"Pretendard",sans-serif;font-weight:400;font-size:.7rem;color:var(--sub)}
+.zoom{display:flex;gap:6px;align-items:center}
+.zoom span{font-size:.7rem;color:var(--sub);margin-right:2px}
+.zoom button{border:1px solid var(--line);background:var(--paper);border-radius:8px;padding:2px 12px;font-size:.8rem}
+.tabs{display:flex;gap:4px;overflow-x:auto;max-width:1280px;margin:0 auto;padding:4px 24px 0;scrollbar-width:thin}
+.tab{flex:0 0 auto;border:0;background:none;padding:8px 14px 10px;font-size:.8rem;color:var(--sub);border-bottom:3px solid transparent;white-space:nowrap}
+.tab b{display:block;font-size:.62rem;font-weight:600;letter-spacing:.02em;color:#9A958F}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent);font-weight:600}
+.tab[aria-selected="true"] b{color:var(--accent)}
+
+/* 본문 + 오른쪽 sticky 카드 메뉴 */
+.wrap{max-width:1280px;margin:0 auto;padding:28px 24px 40px;display:grid;grid-template-columns:minmax(0,1fr) 240px;gap:32px;align-items:start}
+.side{position:sticky;top:132px;border-left:1px solid var(--line);padding:4px 0 4px 18px;max-height:calc(100vh - 220px);overflow:auto}
+.side p{margin:0 0 8px;font-size:.68rem;color:var(--sub)}
+.side a{display:block;color:var(--sub);text-decoration:none;font-size:.74rem;padding:6px 0 6px 10px;border-left:2px solid transparent;margin-left:-20px;line-height:1.45;cursor:pointer}
+.side a.on{color:var(--accent);border-left-color:var(--accent);font-weight:600}
+.step{display:none}
+.step.on{display:block}
+
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:22px 24px}
+.card.wide{grid-column:1 / -1}
+.card h3{font-size:1.08rem;margin-bottom:10px}
+.card p{margin:0 0 10px}
+.card p:last-child{margin-bottom:0}
+.card ul,.card ol{margin:4px 0 10px;padding-left:1.3em}
+.card li{margin:4px 0}
+.note{font-size:.8rem;color:var(--sub);margin-top:12px!important}
+
+/* 칩 */
+.chip{display:inline-block;font-family:"Pretendard",sans-serif;font-size:.62rem;font-weight:700;border-radius:99px;padding:2px 10px;margin-right:8px;vertical-align:3px}
+.c-read{background:#ECEAE5;color:var(--sub)}
+.c-all{background:var(--accent-soft);color:var(--accent)}
+.c-more{background:#EEF3EC;color:#46684A}
+.c-chk{background:#EDF2F6;color:#3D5A70}
+
+/* 박스 */
+.box{border-radius:10px;padding:14px 18px;border:1px solid;margin-top:12px}
+.box h4{font-family:"Pretendard",sans-serif;font-size:.84rem;font-weight:700;margin:0 0 4px}
+.box p,.box li{font-size:.86rem}
+.box p{margin:0 0 6px}
+.box p:last-child{margin:0}
+.box ul,.box ol{margin:2px 0 0;padding-left:1.2em}
+.box.set{background:var(--set);border-color:var(--set-line)}.box.set h4{color:#3D5A70}
+.box.warn{background:var(--warn);border-color:var(--warn-line)}.box.warn h4{color:#7D4566}
+.box.ext{background:var(--ext);border-color:var(--ext-line)}.box.ext h4{color:#46684A}
+.key{background:var(--accent-soft);border:1px solid #E8CFC6;border-left:5px solid var(--accent);border-radius:10px;padding:16px 20px;font-size:1.02rem}
+.key strong{color:var(--accent)}
+
+/* 프롬프트 */
+.prompt{position:relative;background:#F7F6F3;border:1px solid var(--line);border-radius:10px;padding:42px 18px 16px;font-size:.8rem;line-height:1.65;white-space:pre-wrap;font-family:"Pretendard",sans-serif;margin:6px 0 4px}
+.prompt .copy{position:absolute;top:10px;right:10px;border:1px solid var(--line);background:var(--paper);border-radius:8px;font-size:.66rem;padding:3px 10px}
+.prompt .copy.done{color:var(--ok);border-color:var(--ok)}
+.plabel{font-size:.72rem;color:var(--sub);margin:14px 0 4px!important;font-weight:700}
+.plabel b{color:var(--accent)}
+
+/* 표 */
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table.cmp{width:100%;border-collapse:collapse;font-size:.8rem}
+table.cmp th,table.cmp td{border-bottom:1px solid var(--line2);padding:9px 8px;text-align:left;vertical-align:top}
+table.cmp th{font-weight:600;color:var(--sub);font-size:.72rem;background:#FAF9F6}
+table.cmp td b{color:var(--accent)}
+
+/* 시작 화면 */
+.hero{padding:22px 0 30px;margin-bottom:24px;border-bottom:1px solid var(--line)}
+.hero-kicker{margin:0 0 12px;font-size:.78rem;color:var(--accent);font-weight:700}
+.hero-line{font-size:2rem;line-height:1.45;font-weight:700}
+.hero-line em{font-style:normal;color:var(--accent);border-bottom:3px solid #E8CFC6}
+.hero-sub{margin:16px 0 0;font-size:1.02rem;color:var(--sub);max-width:46em}
+.band{display:flex;gap:18px;align-items:center;background:var(--accent-soft)!important;border-color:#E8CFC6!important}
+.band-no{flex:0 0 auto;background:var(--accent);color:#fff;border-radius:10px;padding:8px 14px;font-weight:700;font-size:.9rem}
+.band h3{margin:0 0 4px!important;font-size:1.2rem!important}
+.band p{margin:0!important;color:var(--sub);font-size:.9rem}
+
+/* 흐름 도식 */
+.csflow{display:flex;align-items:stretch;gap:0;flex-wrap:nowrap}
+.csflow div{flex:1;border:1px solid var(--line);border-radius:12px;padding:12px 8px;text-align:center;background:#fff;font-size:.8rem;font-weight:600;line-height:1.4}
+.csflow div b{display:block;font-family:"Gowun Batang",serif;color:#9A958F;font-size:1.05rem}
+.csflow div small{display:block;font-weight:400;font-size:.66rem;color:var(--sub);margin-top:2px}
+.csflow div.hot{border:2px solid var(--accent);background:var(--accent-soft)}.csflow div.hot b{color:var(--accent)}
+.csflow div.done{background:#FAF9F6}
+.csflow span{flex:0 0 18px;position:relative}.csflow span:after{content:"";position:absolute;left:3px;right:3px;top:50%;height:2px;background:#C9C5BF}
+
+/* 블록 도식 */
+.blocks{display:grid;grid-template-columns:repeat(var(--n,4),1fr);gap:8px}
+.blocks span{border-radius:10px;padding:12px 8px;text-align:center;font-weight:700;font-size:.86rem}
+.blocks small{display:block;font-weight:400;font-size:.66rem;color:var(--sub)}
+.b1{background:#F7ECE8}.b2{background:#EDF2F6}.b3{background:#EEF3EC}.b4{background:#F6EEF3}.b5{background:#F3F0E8}
+
+/* 비교 두 칸 */
+.split{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.split > div{border-radius:10px;padding:14px 16px;border:1px solid var(--line)}
+.split .yes{background:#F3F7F2}
+.split .nope{background:#FAF2F0}
+.split h4{margin:0 0 6px;font-size:.88rem}
+.split p,.split li{font-size:.84rem}
+.split ul{margin:0;padding-left:1.1em}
+
+/* 단계 목록 */
+ol.steps{margin:0;padding-left:1.4em}
+ol.steps li{margin:7px 0}
+ol.steps li b{color:var(--ink)}
+.path{display:inline-block;background:#F3F1EC;border-radius:6px;padding:0 8px;font-size:.86em;font-weight:600}
+
+/* 막힘 사전 */
+.trouble{border-bottom:1px solid var(--line2);padding:12px 0}
+.trouble:last-child{border:0}
+.trouble h4{font-family:"Pretendard",sans-serif;font-size:.9rem;margin-bottom:6px}
+.trouble dl{display:grid;grid-template-columns:64px 1fr;gap:4px 10px;margin:0;font-size:.84rem}
+.trouble dt{font-weight:700;color:var(--sub);font-size:.74rem;padding-top:2px}
+.trouble dd{margin:0}
+
+/* 퀴즈 */
+.q{border-bottom:1px solid var(--line2);padding:12px 0}.q p{margin:0 0 8px!important}
+.qops{display:flex;flex-wrap:wrap;gap:8px}
+.qo{border:1px solid var(--line);background:#fff;border-radius:99px;padding:6px 14px;font-size:.82rem}
+.qo.right{background:#E2EDE2;border-color:#9EBE9F;color:#2F5A35}.qo.wrong{background:#F3E3DF;border-color:#E0B8AE;color:var(--no)}
+.qex{display:none;font-size:.8rem;color:var(--sub);margin-top:8px!important}.q.done .qex{display:block}
+
+/* 체크리스트 */
+ul.chk{list-style:none;margin:0;padding:0}ul.chk li{padding:6px 0;border-bottom:1px solid var(--line2);font-size:.88rem}ul.chk li:last-child{border:0}
+ul.chk input{width:18px;height:18px;vertical-align:-3px;margin-right:8px;accent-color:var(--accent)}
+
+/* 링크 카드 */
+.lcard{display:block;border:1px solid var(--line);border-radius:10px;background:#fff;padding:10px 14px;text-decoration:none;margin-top:8px}
+.lcard b{display:block;color:#2F5E8A;font-size:.88rem}.lcard span{display:block;color:var(--sub);font-size:.72rem;margin-top:2px}
+
+/* 대화 말풍선 */
+.chat{display:flex;flex-direction:column;gap:10px}
+.bub{max-width:82%;border-radius:14px;padding:10px 14px}
+.bub p{margin:0!important;font-size:.84rem;line-height:1.6}
+.bub .who{display:block;font-size:.64rem;font-weight:700;margin-bottom:2px}
+.bub.u{align-self:flex-end;background:#EDF2F6;border:1px solid #C9D7E2}.bub.u .who{color:#3D5A70}
+.bub.a{align-self:flex-start;background:#fff;border:1px solid var(--line)}.bub.a .who{color:var(--accent)}
+
+/* 화면 모형 */
+.mock{border:1px solid var(--line);border-radius:10px;background:#FAFAF8;padding:10px 12px;font-size:.78rem}
+.mock .bar{display:flex;gap:6px;flex-wrap:wrap}
+.mock .bar span{border:1px solid var(--line);background:#fff;border-radius:6px;padding:2px 8px}
+.mock .bar span.on{border-color:var(--accent);color:var(--accent);font-weight:700}
+.diagram svg{width:100%;height:auto;display:block}
+
+/* 하단 이동 (sticky) */
+.pager{position:sticky;bottom:0;z-index:15;background:#FCFCFA;border-top:1px solid var(--line)}
+.pager-in{max-width:1280px;margin:0 auto;padding:8px 24px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.pager button{border:1px solid var(--line);background:var(--paper);border-radius:10px;padding:7px 16px;font-size:.78rem;flex:0 0 auto}
+.pager button.next{background:var(--accent);border-color:var(--accent);color:#fff}
+.pager button:disabled{opacity:.35;cursor:default}
+.pager-mid{display:flex;gap:8px;flex:1;justify-content:center;min-width:0}
+.pager select{border:1px solid var(--line);background:#fff;border-radius:8px;padding:6px 8px;font-size:.72rem;max-width:300px;min-width:0;flex:1}
+
+@media (max-width:1000px){
+  .wrap{grid-template-columns:1fr}
+  .side{display:none}
+  .csflow{flex-wrap:wrap;gap:8px}.csflow span{display:none}.csflow div{flex:1 1 30%}
+}
+@media (max-width:720px){
+  :root{--fs:18px}
+  .grid,.split{grid-template-columns:1fr}
+  .blocks{grid-template-columns:1fr 1fr}
+  .hero-line{font-size:1.5rem}
+  .top-row,.tabs,.wrap,.pager-in{padding-left:14px;padding-right:14px}
+  .pager button{padding:7px 10px}
+  .band{flex-direction:column;align-items:flex-start}
+  .csflow div{flex:1 1 45%}
+}
+@media (max-height:700px){.top-row{display:none}.side{top:70px}}
+@media (max-width:600px){table.cmp{min-width:420px}}
+@media (max-width:720px){.top-title small{display:none}.top-title{font-size:.88rem}.zoom span{display:none}.zoom button{padding:2px 8px}}
+/* 녹화 영상 */
+.vbox{position:relative;width:100%;aspect-ratio:16/9;border-radius:10px;overflow:hidden;background:#1E1C1A;border:1px solid var(--line)}
+.vbox iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.vfoot{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:12px;flex-wrap:wrap}
+.vfoot span{font-size:.82rem;color:var(--sub)}
+.vbtn{display:inline-block;background:var(--accent);color:#fff!important;text-decoration:none;border-radius:10px;padding:8px 18px;font-size:.8rem;font-weight:600}
+.card.video{max-width:none}
+
+</style></head><body>
+<header class="top" id="top"><div class="top-row"><div class="top-title">미드저니 4차시 · 승인 패턴 학습에서 첫 업로드까지<small>AI 이미지 수익화 · 전략 가이드 md · 키워드 · 포토피아 · 심사 제출</small></div>
+<div class="zoom" role="group" aria-label="글자 크기"><span>글자</span><button type="button" id="zDown" aria-label="글자 작게">가−</button><button type="button" id="zReset" aria-label="기본 크기">가</button><button type="button" id="zUp" aria-label="글자 크게">가+</button></div></div>
+<nav class="tabs" id="tabs" role="tablist" aria-label="단계 이동"><button class="tab" role="tab" type="button" data-i="0"><b>STEP 0</b><span>시작</span></button><button class="tab" role="tab" type="button" data-i="1"><b>STEP 1</b><span>결과 돌아보기</span></button><button class="tab" role="tab" type="button" data-i="2"><b>STEP 2</b><span>레퍼런스 모으기</span></button><button class="tab" role="tab" type="button" data-i="3"><b>STEP 3</b><span>패턴 학습</span></button><button class="tab" role="tab" type="button" data-i="4"><b>STEP 4</b><span>패턴으로 프롬프트</span></button><button class="tab" role="tab" type="button" data-i="5"><b>STEP 5</b><span>전략 가이드 md</span></button><button class="tab" role="tab" type="button" data-i="6"><b>STEP 6</b><span>미드저니 다듬기</span></button><button class="tab" role="tab" type="button" data-i="7"><b>STEP 7</b><span>키워드 25개</span></button><button class="tab" role="tab" type="button" data-i="8"><b>STEP 8</b><span>포토피아 규격</span></button><button class="tab" role="tab" type="button" data-i="9"><b>STEP 9</b><span>업로드</span></button><button class="tab" role="tab" type="button" data-i="10"><b>STEP 10</b><span>다음 예고</span></button><button class="tab" role="tab" type="button" data-i="11"><b>STEP 11</b><span>막힘 사전</span></button><button class="tab" role="tab" type="button" data-i="12"><b>STEP 12</b><span>확인</span></button></nav></header>
+<div class="wrap"><main id="main">
+<section class="step" data-label="STEP 0" data-title="시작">
+<div class="hero"><p class="hero-kicker">4차시 · 승인 패턴 학습에서 첫 업로드까지</p>
+<h2 class="hero-line"><em>승인받은 이미지</em>에서 배우고,<br>오늘 첫 요소를 올립니다.</h2>
+<p class="hero-sub">AI에게 승인 사례의 패턴을 학습시켜 전략 가이드(md)로 만들고, 그 기준으로 만든 사진을 규격에 맞춰 디자인허브에 제출해요.</p></div>
+<div class="grid">
+<div class="card wide video" id="vid"><h3><span class="chip c-read">읽기</span>4차시 녹화 영상</h3><div class="vbox"><iframe src="https://www.youtube-nocookie.com/embed/MFLZ9EWM5SI?rel=0" title="4차시 녹화 영상" loading="lazy" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div><div class="vfoot"><span>[현장강의] 디자인허브 수익화 올인원 — GPT 지식 프로젝트부터 심사 접수까지</span><a class="vbtn" href="https://youtu.be/MFLZ9EWM5SI" target="_blank" rel="noopener">유튜브에서 보기 ↗</a></div><p class="note">영상이 재생되지 않으면 "유튜브에서 보기"를 눌러 주세요. 복습할 때는 교안의 STEP 순서대로 영상을 따라가면 돼요.</p></div>
+
+<div class="card wide" id="c1"><h3><span class="chip c-read">읽기</span>우리 과정 전체 지도</h3>
+<div class="csflow"><div class="done"><b>1</b>미드저니 기초<small>구독·둘러보기·설정</small></div><span></span><div class="done"><b>2</b>판매처·화풍<small>디자인허브·프로필·무드보드</small></div><span></span><div class="done"><b>3</b>참조·AI 도우미<small>Attach to Prompt·GPT 프로젝트</small></div><span></span><div class="hot"><b>4</b>첫 업로드<small>패턴 학습·규격·심사 제출</small></div><span></span><div><b>5</b>규격 보정<small>레퍼런스 묶음·16:9·배경 제거 예고</small></div><span></span><div><b>6</b>PNG 요소<small>배경 제거·스티커 화풍</small></div></div></div>
+<div class="card wide" id="c2"><h3><span class="chip c-read">읽기</span>오늘의 7단계 — 이 순서가 앞으로의 작업 공식이에요</h3>
+<div class="csflow"><div><b>①</b>레퍼런스 조사<small>미리캔버스 승인 사례</small></div><span></span><div><b>②</b>패턴 학습<small>GPT에 첨부·분석</small></div><span></span><div><b>③</b>프롬프트<small>패턴 기반 생성</small></div><span></span><div><b>④</b>제목·키워드<small>최대 25개</small></div><span></span><div><b>⑤</b>미드저니 생성<small>HD 또는 업스케일</small></div><span></span><div><b>⑥</b>규격 맞추기<small>포토피아 픽셀·DPI</small></div><span></span><div class="hot"><b>⑦</b>업로드<small>디자인허브 제출</small></div></div></div>
+<div class="card" id="c3"><h3><span class="chip c-chk">확인</span>준비물</h3>
+<ul class="chk"><li><label><input type="checkbox">지난 시간 만든 GPT 프로젝트</label></li><li><label><input type="checkbox">숙제로 만든 사진 (있으면)</label></li><li><label><input type="checkbox">미리캔버스·디자인허브 로그인</label></li><li><label><input type="checkbox">윈도우 11 캡처 도구 (Win+Shift+S)</label></li></ul></div>
+</div></section>
+
+<section class="step" data-label="STEP 1" data-title="결과 돌아보기">
+<div class="grid">
+<div class="card band wide" id="c4"><span class="band-no">STEP 1</span><div><h3>지난 결과 돌아보기</h3><p>왜 패턴 학습이 필요한지, 지난번 결과에서 먼저 느껴 봐요.</p></div></div>
+<div class="card" id="c5"><h3><span class="chip c-read">읽기</span>안 팔리는 사진의 신호</h3>
+<ul><li><b>너무 시네마틱</b> — 영화 같지만 아무도 안 사요. 쓸 곳이 적어요</li><li><b>손가락·팔다리 이상</b> — 정확히 보면 심사에서 떨어져요</li><li><b>인원이 너무 많음</b> — 초점이 흩어져요</li><li><b>뒤 사람이 이상한 행동</b> — 지나가야 할 사람이 따봉을 하는 등</li></ul></div>
+<div class="card" id="c6"><h3><span class="chip c-read">읽기</span>미드저니를 쓰는 이유</h3>
+<p>남과 차별되는 <b>미학 한 스푼</b>을 넣기 위해서예요. 하지만 그 한 스푼이 너무 많으면 판매용으로 쓸 곳이 줄어요.</p>
+<div class="key"><strong>피사체는 1~2명</strong>, 초점은 분명하게. 단체 사진은 어색해지기 쉬워요.</div></div>
+</div></section>
+
+<section class="step" data-label="STEP 2" data-title="레퍼런스 모으기">
+<div class="grid">
+<div class="card band wide" id="c7"><span class="band-no">STEP 2</span><div><h3>① 승인 레퍼런스 모으기</h3><p>본진(미리캔버스)에 이미 올라가 있는 것 = 승인받은 것. 이걸 AI에게 보여 줄 거예요.</p></div></div>
+<div class="card" id="c8"><h3><span class="chip c-read">읽기</span>어디서 모으나</h3>
+<div class="tw"><table class="cmp"><tr><th>사이트</th><th>쓰임</th></tr>
+<tr><td><b>미리캔버스</b></td><td>최우선 — 승인 사례 그 자체</td></tr>
+<tr><td>크라우드픽</td><td>함께 보면 좋음</td></tr>
+<tr><td>픽사베이·펙셀스</td><td>해외 이미지라 한국 소재엔 애매</td></tr>
+<tr><td>핀터레스트</td><td>창작 아이디어용. 승인 패턴 학습엔 안 맞음</td></tr></table></div></div>
+<div class="card" id="c9"><h3><span class="chip c-all">다 같이</span>프레임에 모아 한 장으로</h3>
+<ol class="steps"><li>미리캔버스 → <span class="path">프레젠테이션</span> (화면이 제일 커요)</li><li><span class="path">요소 → 프레임</span> → 아래로 내려 <b>분할 프레임</b> (여러 칸짜리)</li><li>왼쪽 <span class="path">사진</span>에서 주제 검색 → 사진을 프레임 칸에 끌어다 놓기</li><li>다 채우면 Win+Shift+S로 캡처</li></ol>
+<p class="note">사진 하나에서 <span class="path">⋯ → 비슷한 사진 찾기</span>를 누르면 같은 결의 사진만 모아 볼 수 있어요.</p></div>
+<div class="card wide" id="c10"><h3><span class="chip c-read">읽기</span>주제는 쉬운 것으로</h3>
+<p>"학생 응원"처럼 검색이 잘 안 되는 주제는 레퍼런스가 부족해요. 할로윈, 가을 등산처럼 사진이 많은 주제로 연습하세요. 패턴이 보이는 게 먼저예요.</p></div>
+</div></section>
+
+<section class="step" data-label="STEP 3" data-title="패턴 학습">
+<div class="grid">
+<div class="card band wide" id="c11"><span class="band-no">STEP 3</span><div><h3>② AI에게 패턴 학습시키기</h3><p>지난 시간 GPT는 규격에만 충실해서 이상한 이미지를 기획했어요. 이번엔 승인 사례를 보여 주고 배우게 해요.</p></div></div>
+<div class="card wide" id="c12"><h3><span class="chip c-all">다 같이</span>패턴 분석 프롬프트</h3>
+<p>GPT 프로젝트 채팅에 캡처 이미지를 첨부하고:</p>
+<div class="prompt"><button class="copy" type="button">복사</button>지금 첨부한 이미지는 미리캔버스 디자인허브에서 승인받은 유·무료 사진 요소입니다.
+사진의 구도, 뷰, 샷, 앵글, 조명, 색감, 인원수, 피사체 크기 등을 분석해서
+심사에 최적화된 이미지의 패턴을 보고해 주세요.
+알기 쉽게 개조식으로 설명하고, 마지막에 표로 정리해 주세요.</div>
+<p class="note">레퍼런스는 한 번에 끝내지 말고 계속 넣으세요. 한두 장으로 판단하면 성급한 일반화가 돼요.</p></div>
+<div class="card wide" id="c13"><h3><span class="chip c-read">읽기</span>수업에서 나온 패턴 예시</h3>
+<div class="tw"><table class="cmp"><tr><th>항목</th><th>승인 사례에서 강하게 보이는 패턴</th></tr>
+<tr><td>피사체</td><td>인물 중심, 대상이 분명하고 크게</td></tr>
+<tr><td>인원</td><td>많지 않게 (1명·3명·5명처럼 적게)</td></tr>
+<tr><td>앵글·거리</td><td>로우 앵글, 근거리</td></tr>
+<tr><td>조명·색감</td><td>밝고 자연스럽게, 과한 연출 없이</td></tr>
+<tr><td>배열</td><td>사람마다 배치가 다르게, 단조롭지 않게</td></tr></table></div></div>
+</div></section>
+
+<section class="step" data-label="STEP 4" data-title="패턴으로 프롬프트">
+<div class="grid">
+<div class="card band wide" id="c14"><span class="band-no">STEP 4</span><div><h3>③ 학습한 패턴으로 프롬프트 받기</h3><p>이제 주제만 말하면 위 패턴에 맞춰 프롬프트를 써 줘요.</p></div></div>
+<div class="card wide" id="c15"><h3><span class="chip c-all">다 같이</span>주제 요청</h3>
+<div class="prompt"><button class="copy" type="button">복사</button>위에서 학습한 내용으로, 고등학생들이 교실에서 수능 잘 보자고 파이팅하는 장면의 미드저니 프롬프트를 작성해 줘.
+비율, 조명, 뷰·샷·앵글을 모두 고려하고, Raw를 넣을지 말지도 판단해 줘. 버전은 8.2야.</div>
+<p class="note">수업 결과: 인원을 확 줄이고, Stylize를 50으로 낮춘 프롬프트가 나왔어요.</p></div>
+<div class="card" id="c16"><h3><span class="chip c-read">읽기</span>Stylize 50이란?</h3>
+<p>Stylize(스타일라이즈)는 미드저니 미학의 양이에요. 기본 100. <b>50으로 낮추면</b> 미드저니가 덜 꾸미고 힘을 뺀다는 뜻이에요. 판매용 사진에는 이게 더 자연스러울 때가 많아요.</p></div>
+<div class="card" id="c17"><h3><span class="chip c-all">다 같이</span>만들고 바로 검사</h3>
+<ul class="chk"><li><label><input type="checkbox">한국 사람으로 보이나</label></li><li><label><input type="checkbox">손가락·팔다리 개수 정상</label></li><li><label><input type="checkbox">표정이 시험 응원에 맞나 (우울하지 않게)</label></li><li><label><input type="checkbox">글자·상표 없음</label></li></ul></div>
+</div></section>
+
+<section class="step" data-label="STEP 5" data-title="전략 가이드 md">
+<div class="grid">
+<div class="card band wide" id="c18"><span class="band-no">STEP 5</span><div><h3>성공한 대화를 매뉴얼로</h3><p>잘된 대화 기록은 업무 매뉴얼이에요. AI가 가장 잘 읽는 md 파일로 만들어 프로젝트에 넣어요.</p></div></div>
+<div class="card" id="c19"><h3><span class="chip c-all">다 같이</span>md로 정리</h3>
+<div class="prompt"><button class="copy" type="button">복사</button>지금까지 너와 내가 조사한 내용을 기반으로 MD 문서로 만들어 줘.
+제목은 "미리캔버스 사진 요소 제작 전략 가이드".
+승인 패턴, 프롬프트 공식, 피해야 할 것, 체크리스트 순서로 정리해 줘.</div>
+<p class="note">"가이드"라는 이름이 애매하면 GPT에게 물어보세요. 수업에서는 공식 규격 가이드와 구별해 <b>전략 가이드</b>로 정했어요.</p></div>
+<div class="card" id="c20"><h3><span class="chip c-all">다 같이</span>내려받아 열어 보기</h3>
+<ol class="steps"><li>md 파일 내려받기</li><li>더블클릭으로는 안 열려요 → 마우스 오른쪽 → <span class="path">연결 프로그램 → 메모장</span></li><li>그냥 글이에요. 앞에 기호만 조금 달라요</li></ol>
+<div class="tw"><table class="cmp"><tr><th>기호</th><th>뜻</th></tr><tr><td><code>#</code></td><td>제목</td></tr><tr><td><code>**글자**</code></td><td>굵게 (중요)</td></tr><tr><td><code>-</code></td><td>항목</td></tr><tr><td><code>|</code></td><td>표</td></tr></table></div></div>
+<div class="card wide" id="c21"><h3><span class="chip c-all">다 같이</span>프로젝트 소스에 넣고 써 보기</h3>
+<ol class="steps"><li>GPT 프로젝트 <span class="path">홈</span> → <span class="path">소스</span>에 md 파일 추가</li><li>이제 프로젝트에 지식이 두 개: 공식 <b>규격</b> 가이드 + 내가 만든 <b>전략</b> 가이드</li><li>새 채팅에서 테스트</li></ol>
+<div class="prompt"><button class="copy" type="button">복사</button>소스의 사진 전략 가이드를 기반으로 분석해서, 유치원 할로윈 파티 사진 요소의 미드저니 프롬프트를 제시하고 이유를 알려 줘. 미드저니 8.2 기준이야.</div>
+<div class="box set"><h4>무료 플랜 소스 5개</h4><p>가이드를 업데이트할 때마다 새 파일을 넣지 말고, 같은 파일을 고쳐서 바꿔 넣으세요.</p></div>
+<div class="box ext"><h4>한 걸음 더</h4><p>레퍼런스를 계속 넣어 분석을 돌린 뒤 md를 다시 만들어 교체하세요. 가이드가 두꺼워질수록 앞 단계(조사·기획)가 필요 없어져요.</p></div></div>
+</div></section>
+
+<section class="step" data-label="STEP 6" data-title="미드저니 다듬기">
+<div class="grid">
+<div class="card band wide" id="c22"><span class="band-no">STEP 6</span><div><h3>⑤ 미드저니에서 고르고 다듬기</h3><p>오늘 올릴 이미지 1~2장을 정해요.</p></div></div>
+<div class="card" id="c23"><h3><span class="chip c-all">다 같이</span>다시 만들기 버튼</h3>
+<div class="tw"><table class="cmp"><tr><th>버튼</th><th>하는 일</th></tr>
+<tr><td>Rerun</td><td>같은 프롬프트·설정으로 다시 4장</td></tr>
+<tr><td>Run batch HD</td><td>같은 조건을 HD로 다시 (고해상도)</td></tr>
+<tr><td>Use (T)</td><td>프롬프트+파라미터 전부 입력창으로 — 다시 쓰기 귀찮을 때</td></tr></table></div></div>
+<div class="card" id="c24"><h3><span class="chip c-all">다 같이</span>여분의 손발 검사</h3>
+<p>확대해서 손가락 수, 다리 개수, 얼굴 모양을 꼭 보세요. 6손가락보다 다리 하나 더 있는 게 더 자주 나와요.</p>
+<div class="box warn"><h4>하나라도 이상하면</h4><p>그 이미지는 올리지 않아요. Rerun이나 Vary로 다시.</p></div></div>
+<div class="card wide" id="c25"><h3><span class="chip c-read">읽기</span>해상도 — HD냐 업스케일이냐</h3>
+<div class="split"><div class="yes"><h4>HD로 만들었다면</h4><p>내려받아 속성을 보면 가로 2,500픽셀 이상이에요. 그대로 써도 돼요.</p></div><div class="nope"><h4>Standard로 만들었다면</h4><p>픽셀이 모자라요. 이미지 마우스 오른쪽 → <span class="path">Upscale</span>.<br><b>Subtle</b> 그대로 키우기 / <b>Creative</b> 디테일·명암 보강</p></div></div>
+<p class="note">업스케일은 시간이 걸리고 사용량도 써요. 오늘은 Creative로 해 봐요. AI가 만든 16:9는 미묘하게 비율이 틀어져 있기도 해요 — 다음 시간에 맞춰요.</p></div>
+</div></section>
+
+<section class="step" data-label="STEP 7" data-title="키워드 25개">
+<div class="grid">
+<div class="card band wide" id="c26"><span class="band-no">STEP 7</span><div><h3>④ 검색 키워드 만들기</h3><p>디자인허브 키워드는 최대 25개. 검색에 걸리는 길이에요. AI는 업로드 화면에서 5개밖에 안 채워 줘요.</p></div></div>
+<div class="card" id="c27"><h3><span class="chip c-all">다 같이</span>승인 요소의 키워드 학습</h3>
+<ol class="steps"><li>미리캔버스에서 승인된 요소 하나 열기 → 키워드가 보이는 화면</li><li><b>Win + Shift + S</b> → 위 메뉴의 <b>텍스트 추출</b> 버튼 (윈도우 11)</li><li>키워드 영역을 끌면 글자가 복사돼요</li><li>GPT에 붙여넣고 아래 문장</li></ol>
+<div class="prompt"><button class="copy" type="button">복사</button>이미지를 생성하고 디자인허브에 업로드하려면, 그 사진에 어울리고 해당하는 위와 같은 키워드를 넣어야 합니다. 학습하세요. 최대 키워드 수는 25개입니다.</div></div>
+<div class="card" id="c28"><h3><span class="chip c-all">다 같이</span>내 이미지의 키워드 뽑기</h3>
+<ol class="steps"><li>미드저니에서 내 이미지 클릭 → <span class="path">Copy Image</span></li><li>GPT 채팅에 붙여넣기</li></ol>
+<div class="prompt"><button class="copy" type="button">복사</button>이 이미지의 디자인허브 업로드용 제목 1개와 검색 키워드 25개를 쉼표로 구분해서 뽑아 줘.</div>
+<p class="note">GPT에서 이미지 붙여넣기가 안 되면 제미나이(또는 강사가 공유한 디자인허브 도우미 젬)를 써도 돼요.</p></div>
+</div></section>
+
+<section class="step" data-label="STEP 8" data-title="포토피아 규격">
+<div class="grid">
+<div class="card band wide" id="c29"><span class="band-no">STEP 8</span><div><h3>⑥ 포토피아로 규격 맞추기</h3><p>포토샵과 비슷한 무료 웹 편집기예요. 설치 없이 브라우저에서.</p></div></div>
+<div class="card wide" id="c30"><h3><span class="chip c-all">다 같이</span>따라 하기</h3>
+<ol class="steps"><li>새 창에서 <b>photopea.com</b> → 무료로 사용 (광고가 떠도 괜찮아요)</li><li><span class="path">파일 → 열기</span> (컴퓨터에서 열기) → 업스케일한 이미지</li><li><span class="path">이미지 → 이미지 크기</span></li><li><b>종횡비 유지</b> 체크 (체인 아이콘이 연결된 상태)</li><li>가로가 2,500보다 작으면 <b>2,500 이상</b>으로</li><li><b>DPI 72 → 120</b></li><li>확인</li><li><span class="path">파일 → 내보내기 형식 → JPG</span>, 품질을 <b>최대</b>로 → 저장</li></ol>
+<div class="split"><div class="yes"><h4>배경이 있는 사진</h4><p>무조건 <b>JPG</b></p></div><div class="nope"><h4>용량</h4><p>품질 100으로 올려도 수업 이미지는 약 8MB. 기준 50MB 이하라 괜찮아요.</p></div></div>
+<div class="box warn"><h4>리샘플(Resample)이 뭐예요?</h4><p>켜져 있으면 DPI를 바꿀 때 픽셀도 같이 불어나요. 이번처럼 픽셀을 늘려야 할 때는 켜 둔 채로 진행해요. 5차시에 리샘플을 끄고 DPI만 바꾸는 방법도 배워요.</p></div></div>
+</div></section>
+
+<section class="step" data-label="STEP 9" data-title="업로드">
+<div class="grid">
+<div class="card band wide" id="c31"><span class="band-no">STEP 9</span><div><h3>⑦ 디자인허브 첫 업로드</h3><p>작업이 다 됐으면 올리는 건 어렵지 않아요.</p></div></div>
+<div class="card wide" id="c32"><h3><span class="chip c-all">다 같이</span>업로드 순서</h3>
+<ol class="steps"><li>디자인허브 → <span class="path">단일 요소</span> 업로드 → 파일 선택 → 방금 저장한 JPG</li><li><b>빨간 마크가 안 뜨면</b> 정상. 뜨면 규격 문제 — 손을 들어 주세요</li><li><span class="path">다음</span></li><li>유형: <b>사진</b> (배경 아님) / <b>AI로 만듦 체크</b></li><li>판매: <b>프리미엄(유료)</b> 또는 <b>무료</b></li><li>요소 이름: AI 채우기 써도 돼요</li><li>키워드: AI가 5개만 채워요 → GPT가 만든 키워드를 <b>쉼표 구분 그대로</b> 붙여넣고 <b>Enter</b> → 쭉 들어가요. 25개 넘으면 안 맞는 것 지우기</li><li><span class="path">메타데이터 저장</span> → 제출</li></ol>
+<p class="note">메타데이터는 "데이터 안의 데이터"예요. 사진을 찍으면 날짜·장소가 남듯, 요소에도 이름·키워드 정보를 저장해요.</p></div>
+<div class="card" id="c33"><h3><span class="chip c-read">읽기</span>유료냐 무료냐</h3>
+<p>시리즈로 만든다면 <b>하나는 무료</b>(미끼, 내 작품 홍보), 나머지는 유료로 하는 것도 좋은 전략이에요.</p></div>
+<div class="card" id="c34"><h3><span class="chip c-read">읽기</span>심사 대기 vs 심사 중</h3>
+<div class="tw"><table class="cmp"><tr><th>상태</th><th>삭제</th></tr><tr><td>심사 대기</td><td><b>가능</b> — 아무 영향 없음</td></tr><tr><td>심사 중</td><td><b>불가</b></td></tr></table></div>
+<p class="note">반려가 쌓이면 좋지 않아요. 연습으로 올렸다가 아니다 싶으면 <b>심사 대기일 때</b> 빨리 지우세요.</p></div>
+<div class="card wide" id="c35"><h3><span class="chip c-read">읽기</span>앞으로의 업로드 리듬</h3>
+<div class="key">심사는 <strong>열흘 정도</strong> 걸려요. 제출 대기 20개가 다 차면 더 못 올려요. 집에서 20개를 몰아 올리지 말고 <strong>수업마다 2개 정도</strong>씩.</div></div>
+</div></section>
+
+<section class="step" data-label="STEP 10" data-title="다음 예고">
+<div class="grid">
+<div class="card band wide" id="c36"><span class="band-no">STEP 10</span><div><h3>사진에서 배경을 빼면</h3><p>사진은 디자인허브에서 잘 팔리는 요소는 아니에요. 같은 사진에서 배경을 빼면 또 하나의 요소가 돼요. 원소스 멀티유즈.</p></div></div>
+<div class="card" id="c37"><h3><span class="chip c-read">읽기</span>배경 뺄 이미지는 처음부터 다르게</h3>
+<p>미드저니는 아직 배경을 투명하게 만들지 못하고 무조건 배경을 채워요. 그래서 처음부터 <b>단색 배경</b>으로 만들어야 나중에 빼기 쉬워요.</p></div>
+<div class="card" id="c38"><h3><span class="chip c-read">읽기</span>배경 제거 도구</h3>
+<div class="tw"><table class="cmp"><tr><th>도구</th><th>특징</th></tr>
+<tr><td>MS 디자이너</td><td>무료, 원본 크기 유지</td></tr><tr><td>어도비 익스프레스</td><td>무료, 원본 크기 유지</td></tr><tr><td>웹 포토샵</td><td>원본 크기 유지</td></tr><tr><td>포토피아</td><td>올가미 도구로 직접</td></tr><tr><td>remove.bg 등</td><td>편하지만 해상도를 확 줄여요</td></tr></table></div>
+<div class="box warn"><h4>웹 도구는 내 파일이 서버로 올라가요</h4><p>웹 기반 배경 제거는 100% 업로드 후 처리돼서 내려와요. 알고 쓰세요.</p></div></div>
+</div></section>
+
+<section class="step" data-label="STEP 11" data-title="막힘 사전">
+<div class="grid">
+<div class="card band wide" id="c39"><span class="band-no">STEP 11</span><div><h3>막힘 사전</h3><p>화면 → 원인 → 조치</p></div></div>
+<div class="card wide" id="c40"><h3><span class="chip c-chk">확인</span>자주 만나는 화면</h3>
+<div class="trouble"><h4>업로드했더니 빨간 마크가 뜸</h4><dl><dt>원인</dt><dd>픽셀·DPI·용량·형식이 기준 미달</dd><dt>조치</dt><dd>포토피아에서 2,500 이상·120 DPI·JPG로 다시 저장</dd></dl></div>
+<div class="trouble"><h4>md 파일을 더블클릭해도 안 열림</h4><dl><dt>원인</dt><dd>연결된 프로그램이 없음</dd><dt>조치</dt><dd>마우스 오른쪽 → 연결 프로그램 → 메모장</dd></dl></div>
+<div class="trouble"><h4>캡처 메뉴에 텍스트 추출 버튼이 없음</h4><dl><dt>원인</dt><dd>윈도우 10 이하</dd><dt>조치</dt><dd>캡처한 이미지를 GPT에 붙여 "키워드만 글자로 옮겨 줘"</dd></dl></div>
+<div class="trouble"><h4>키워드를 붙여넣었는데 한 덩어리로 들어감</h4><dl><dt>원인</dt><dd>쉼표가 아닌 줄바꿈·번호로 구분됨</dd><dt>조치</dt><dd>GPT에 "쉼표로만 구분해서 한 줄로"</dd></dl></div>
+<div class="trouble"><h4>잘못 올린 요소를 지우고 싶음</h4><dl><dt>원인</dt><dd>-</dd><dt>조치</dt><dd>심사 대기면 삭제 가능, 심사 중이면 결과를 기다려야 해요</dd></dl></div>
+<div class="trouble"><h4>포토피아 광고 때문에 화면이 좁음</h4><dl><dt>원인</dt><dd>무료 사용</dd><dt>조치</dt><dd>그대로 써도 돼요. 화면 확대/축소(Ctrl + -)로 조절</dd></dl></div></div>
+</div></section>
+
+<section class="step" data-label="STEP 12" data-title="확인">
+<div class="grid">
+<div class="card band wide" id="c41"><span class="band-no">STEP 12</span><div><h3>오늘 정리</h3><p>레퍼런스 → 패턴 학습 → 전략 가이드 md → 생성 → 규격 → 업로드</p></div></div>
+<div class="card wide" id="c42"><h3><span class="chip c-chk">확인</span>퀴즈</h3>
+<div class="q"><p><b>1.</b> AI가 가장 잘 읽는, 성공한 대화를 매뉴얼로 남기는 파일 형식은?</p><div class="qops"><button type="button" class="qo" data-ok="0">hwp</button><button type="button" class="qo" data-ok="1">md</button><button type="button" class="qo" data-ok="0">jpg</button></div><p class="qex">마크다운(md)은 메모장으로도 열리는 글 파일이에요.</p></div>
+<div class="q"><p><b>2.</b> 사진 요소 규격에 맞춘 DPI 숫자는?</p><div class="qops"><button type="button" class="qo" data-ok="0">72</button><button type="button" class="qo" data-ok="1">120</button><button type="button" class="qo" data-ok="0">300</button></div><p class="qex">미드저니 기본은 72라 포토피아에서 120으로 바꿔요.</p></div>
+<div class="q"><p><b>3.</b> 심사 중인 요소를 지울 수 있을까요?</p><div class="qops"><button type="button" class="qo" data-ok="0">있다</button><button type="button" class="qo" data-ok="1">없다</button></div><p class="qex">심사 대기일 때만 지울 수 있어요.</p></div>
+<div class="q"><p><b>4.</b> Stylize를 100에서 50으로 낮추면?</p><div class="qops"><button type="button" class="qo" data-ok="1">덜 꾸며져 자연스러워짐</button><button type="button" class="qo" data-ok="0">해상도가 높아짐</button><button type="button" class="qo" data-ok="0">인원이 늘어남</button></div><p class="qex">미드저니 미학의 양을 줄여요.</p></div></div>
+<div class="card wide" id="c43"><h3><span class="chip c-chk">확인</span>숙제</h3>
+<ol class="steps"><li>레퍼런스를 더 넣어 전략 가이드 md를 업데이트</li><li>심사 대기 상태 확인하기</li><li>다음 시간: 레퍼런스를 한 번에 모으는 법, 수능 응원 사진 2장, 16:9 보정, 배경 제거 맛보기</li></ol></div>
+</div></section>
+
+</main>
+<aside class="side" aria-label="이 화면의 카드 목록"><p>이 STEP 카드</p><div id="sideList"></div></aside></div>
+<nav class="pager" aria-label="앞뒤 이동"><div class="pager-in">
+<button type="button" id="prev">◀ 이전</button>
+<div class="pager-mid"><select id="stepSel" aria-label="STEP 고르기"></select><select id="cardSel" aria-label="카드 고르기"></select></div>
+<button type="button" id="next" class="next">다음 ▶</button>
+</div></nav>
+<script>
+(function(){
+  /* 구글 사이트 임베드용: position:fixed / scrollIntoView / localStorage / 주소 # 이동 없음 */
+  var steps=[].slice.call(document.querySelectorAll('.step'));
+  var tabs=[].slice.call(document.querySelectorAll('.tab'));
+  var tabBar=document.getElementById('tabs');
+  var side=document.getElementById('sideList');
+  var stepSel=document.getElementById('stepSel');
+  var cardSel=document.getElementById('cardSel');
+  var top=document.getElementById('top');
+  var cur=0, cards=[], links=[], ticking=false;
+
+  function headH(){return top.offsetHeight+12;}
+  function pageY(){return window.pageYOffset||document.documentElement.scrollTop||0;}
+  function cardTitle(c){var h=c.querySelector('h3');if(!h)return '';var t='';for(var i=0;i<h.childNodes.length;i++){var n=h.childNodes[i];if(n.nodeType===3)t+=n.textContent;}t=t.trim();return t||h.textContent.trim();}
+  function goCard(c){var y=c.getBoundingClientRect().top+pageY()-headH();window.scrollTo(0,Math.max(0,y));}
+
+  steps.forEach(function(s,i){var o=document.createElement('option');o.value=i;o.textContent=s.getAttribute('data-label')+' · '+s.getAttribute('data-title');stepSel.appendChild(o);});
+
+  function build(sec){
+    side.innerHTML='';cardSel.innerHTML='';links=[];
+    cards=[].slice.call(sec.querySelectorAll('.card[id]')).filter(function(c){return c.querySelector('h3');});
+    var o0=document.createElement('option');o0.value='';o0.textContent='카드로 바로 가기';cardSel.appendChild(o0);
+    cards.forEach(function(c,i){
+      var t=cardTitle(c);
+      var a=document.createElement('a');a.setAttribute('role','button');a.tabIndex=0;a.textContent=t;
+      a.addEventListener('click',function(e){e.preventDefault();goCard(c);});
+      a.addEventListener('keydown',function(e){if(e.keyCode===13){goCard(c);}});
+      side.appendChild(a);links.push(a);
+      var o=document.createElement('option');o.value=i;o.textContent=(i+1)+'. '+t;cardSel.appendChild(o);
+    });
+    mark();
+  }
+  function mark(){
+    if(!cards.length)return;
+    var line=headH()+40,k=0;
+    for(var i=0;i<cards.length;i++){if(cards[i].getBoundingClientRect().top<=line)k=i;}
+    links.forEach(function(a,i){a.className=(i===k)?'on':'';});
+  }
+  window.addEventListener('scroll',function(){if(!ticking){ticking=true;setTimeout(function(){ticking=false;mark();},80);}});
+
+  function show(i,scroll){
+    cur=Math.max(0,Math.min(steps.length-1,i));
+    steps.forEach(function(s,k){s.classList.toggle('on',k===cur);});
+    tabs.forEach(function(t,k){t.setAttribute('aria-selected',k===cur?'true':'false');});
+    var t=tabs[cur];tabBar.scrollLeft=t.offsetLeft-(tabBar.clientWidth-t.offsetWidth)/2;
+    stepSel.value=cur;
+    build(steps[cur]);
+    document.getElementById('prev').disabled=cur===0;
+    document.getElementById('next').disabled=cur===steps.length-1;
+    var sd=document.querySelector('.side');if(sd)sd.style.top=headH()+'px';
+    if(scroll){var m=document.getElementById('main');var y=m.getBoundingClientRect().top+pageY()-headH()-10;if(pageY()>y)window.scrollTo(0,Math.max(0,y));}
+  }
+  tabs.forEach(function(t){t.addEventListener('click',function(){show(+t.getAttribute('data-i'),true);});});
+  document.getElementById('prev').addEventListener('click',function(){show(cur-1,true);});
+  document.getElementById('next').addEventListener('click',function(){show(cur+1,true);});
+  stepSel.addEventListener('change',function(){show(+stepSel.value,true);});
+  cardSel.addEventListener('change',function(){var v=cardSel.value;if(v!==''){goCard(cards[+v]);}cardSel.value='';});
+
+  /* 글자 크기 */
+  var fs=20;
+  function setFs(v){fs=Math.max(16,Math.min(28,v));document.documentElement.style.setProperty('--fs',fs+'px');var sd=document.querySelector('.side');if(sd)sd.style.top=headH()+'px';}
+  document.getElementById('zUp').addEventListener('click',function(){setFs(fs+2);});
+  document.getElementById('zDown').addEventListener('click',function(){setFs(fs-2);});
+  document.getElementById('zReset').addEventListener('click',function(){setFs(20);});
+
+  /* 복사 */
+  [].slice.call(document.querySelectorAll('.prompt .copy')).forEach(function(b){
+    b.addEventListener('click',function(){
+      var box=b.parentNode,txt='';
+      for(var i=0;i<box.childNodes.length;i++){if(box.childNodes[i]!==b)txt+=box.childNodes[i].textContent;}
+      txt=txt.replace(/^\s+|\s+$/g,'');
+      function ok(){b.textContent='복사됨';b.classList.add('done');setTimeout(function(){b.textContent='복사';b.classList.remove('done');},1600);}
+      function fb(){var t=document.createElement('textarea');t.value=txt;t.style.position='absolute';t.style.left='-9999px';document.body.appendChild(t);t.select();try{document.execCommand('copy');ok();}catch(e){}document.body.removeChild(t);}
+      if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(ok,fb);}else fb();
+    });
+  });
+
+  /* 퀴즈 */
+  [].slice.call(document.querySelectorAll('.q')).forEach(function(q){
+    [].slice.call(q.querySelectorAll('.qo')).forEach(function(b){
+      b.addEventListener('click',function(){
+        if(q.classList.contains('done'))return;q.classList.add('done');
+        [].slice.call(q.querySelectorAll('.qo')).forEach(function(x){if(x.getAttribute('data-ok')==='1')x.classList.add('right');});
+        if(b.getAttribute('data-ok')!=='1')b.classList.add('wrong');
+      });
+    });
+  });
+
+  show(0,false);
+})();
+
+</script>
+</body></html>

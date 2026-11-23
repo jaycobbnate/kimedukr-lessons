@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI로 만드는 다큐 영상 · 소리 따로 입히기</title>
+<style>
+:root{
+  --bg:#fbfaf7;--card:#fff;--line:#e5e2db;--text:#23221f;--muted:#68655e;
+  --accent:#0f766e;--accent-soft:#e7f4f2;
+  --set:#eef4fc;--set-line:#cfe0f5;
+  --warn:#fdf0f1;--warn-line:#f2d3d7;
+  --more:#f2effc;--more-line:#dcd4f5;
+  --help:#eef8f2;--help-line:#cfe8da;
+  --fs:20px;
+}
+*{box-sizing:border-box}
+html{font-size:var(--fs);-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--text);font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;line-height:1.7;word-break:keep-all;overflow-wrap:anywhere}
+a{color:var(--accent)}
+b{font-weight:700}
+.stick{position:sticky;top:0;z-index:20;background:rgba(251,250,247,.97);border-bottom:1px solid var(--line)}
+.bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;max-width:1240px;margin:0 auto;padding:10px 18px 6px}
+.bar h1{font-size:1.02rem;margin:0;flex:1 1 300px;line-height:1.4}
+.bar h1 small{display:block;color:var(--muted);font-weight:400;font-size:.72rem}
+.ctrl{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.ctrl label{font-size:.72rem;color:var(--muted)}
+.ctrl select{font:inherit;font-size:.78rem;padding:3px 8px;border:1px solid var(--line);border-radius:8px;background:#fff}
+.zbtn{font:inherit;font-size:.72rem;border:1px solid var(--line);background:#fff;border-radius:8px;padding:2px 10px;cursor:pointer}
+.tabs{display:flex;gap:6px;overflow-x:auto;max-width:1240px;margin:0 auto;padding:4px 18px 10px;scrollbar-width:thin}
+.tab{flex:0 0 auto;font:inherit;font-size:.78rem;border:1px solid var(--line);background:#fff;color:var(--text);border-radius:999px;padding:5px 14px;cursor:pointer;white-space:nowrap}
+.tab b{color:var(--accent);margin-right:4px}
+.tab.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.tab.on b{color:#fff}
+.wrap{max-width:1240px;margin:0 auto;padding:22px 18px 30px;display:grid;grid-template-columns:minmax(0,1fr) 230px;gap:22px}
+.side{position:sticky;top:120px;align-self:start;border-left:1px solid var(--line);padding:4px 0 4px 16px}
+.side p{margin:0 0 6px;font-size:.7rem;color:var(--muted)}
+.side a{display:block;font-size:.76rem;color:var(--text);text-decoration:none;padding:5px 8px;border-radius:8px;line-height:1.45}
+.side a:hover{background:var(--accent-soft);color:var(--accent)}
+section.step{display:none}
+section.step.on{display:block}
+.shead{margin:0 0 16px}
+.shead .no{display:inline-block;color:var(--accent);font-weight:700;font-size:.8rem;letter-spacing:.04em}
+.shead h2{margin:2px 0 4px;font-size:1.45rem;line-height:1.35}
+.shead p{margin:0;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;min-width:0;scroll-margin-top:130px}
+.card.wide{grid-column:1/-1}
+.card h3{margin:0 0 10px;font-size:1.08rem;line-height:1.45}
+.card p{margin:0 0 10px}
+.tag{display:inline-block;font-size:.66rem;font-weight:700;border-radius:999px;padding:1px 10px;margin-right:6px;vertical-align:2px}
+.t-show{background:var(--accent-soft);color:var(--accent)}
+.t-do{background:#e9f2ff;color:#2459a8}
+.t-my{background:#fdeee6;color:#a3452a}
+.t-base{background:#e8f6ee;color:#1f7a47}
+.t-more{background:var(--more);color:#5b45b0}
+.box{border-radius:12px;padding:12px 16px;margin:12px 0;border:1px solid}
+.box>:last-child{margin-bottom:0}
+.box .bt{font-weight:700;font-size:.85rem;margin-bottom:4px;display:block}
+.set{background:var(--set);border-color:var(--set-line)}
+.warn{background:var(--warn);border-color:var(--warn-line)}
+.more{background:var(--more);border-color:var(--more-line)}
+.help{background:var(--help);border-color:var(--help-line)}
+ol.num,ul.dot{margin:6px 0 10px;padding-left:1.3em}
+ol.num li,ul.dot li{margin:4px 0}
+.menu{display:inline-block;background:#f3f2ee;border:1px solid var(--line);border-radius:6px;padding:0 7px;font-size:.86em;white-space:nowrap}
+.kbd{display:inline-block;border:1px solid #cfccc4;border-bottom-width:2px;border-radius:6px;padding:0 6px;font-size:.82em;background:#fff}
+.term{color:var(--muted);font-size:.9em}
+.prompt{position:relative;background:#f7f6f2;border:1px solid var(--line);border-radius:12px;padding:12px 14px 12px 14px;margin:8px 0;font-size:.9rem;white-space:pre-wrap}
+.prompt .lab{display:block;font-size:.7rem;font-weight:700;color:var(--accent);margin-bottom:2px}
+.copy{font:inherit;font-size:.68rem;border:1px solid var(--accent);color:var(--accent);background:#fff;border-radius:8px;padding:1px 10px;cursor:pointer;float:right;margin:0 0 4px 8px}
+.copy.done{background:var(--accent);color:#fff}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+.chip{font:inherit;font-size:.82rem;border:1px solid var(--line);background:#fff;border-radius:999px;padding:4px 14px;cursor:pointer}
+.chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.inp{font:inherit;font-size:.86rem;border:1px solid var(--line);border-radius:10px;padding:6px 12px;width:100%;max-width:420px;background:#fff}
+.shots{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:8px}
+.shot{border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:#fff;min-width:0}
+.shot .sn{font-weight:700;font-size:.82rem;color:var(--accent)}
+.shot .sn em{font-style:normal;color:var(--muted);font-weight:400;margin-left:6px}
+.shot .person{display:inline-block;font-size:.64rem;background:#fdeee6;color:#a3452a;border-radius:999px;padding:0 8px;margin-left:6px}
+.shot .pt{font-size:.82rem;white-space:pre-wrap;margin-top:4px}
+.seq{display:flex;gap:6px;overflow-x:auto;padding:6px 0 10px}
+.seq .it{flex:0 0 150px;border:1px solid var(--line);border-radius:12px;background:#fff;padding:8px 10px;font-size:.74rem;line-height:1.5}
+.seq .it b{display:block;color:var(--accent);font-size:.78rem}
+.seq .it.iv{background:#fdeee6;border-color:#f1cdbb}
+.seq .it.iv b{color:#a3452a}
+table.t{border-collapse:collapse;width:100%;font-size:.84rem;margin:8px 0}
+table.t th,table.t td{border:1px solid var(--line);padding:6px 10px;text-align:left;vertical-align:top}
+table.t th{background:#f5f4f0;font-weight:700}
+.three{width:100%;height:320px;border:1px solid var(--line);border-radius:12px;background:linear-gradient(#fdfcf9,#f3f1ec);overflow:hidden;position:relative}
+.three canvas{display:block;width:100%;height:100%}
+.tctl{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px}
+.tctl button{font:inherit;font-size:.74rem;border:1px solid var(--line);background:#fff;border-radius:8px;padding:3px 12px;cursor:pointer}
+.tctl .cap{font-size:.78rem;color:var(--muted)}
+.flow{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:.8rem;margin:10px 0 0}
+.flow span{background:#fff;border:1px solid var(--line);border-radius:10px;padding:3px 10px}
+.flow i{font-style:normal;color:var(--muted)}
+.pager{position:sticky;bottom:0;z-index:15;background:rgba(251,250,247,.97);border-top:1px solid var(--line)}
+.pager .in{max-width:1240px;margin:0 auto;padding:8px 18px;display:flex;justify-content:space-between;gap:10px}
+.pager button{font:inherit;font-size:.8rem;border:1px solid var(--accent);color:var(--accent);background:#fff;border-radius:10px;padding:5px 18px;cursor:pointer}
+.pager button.next{background:var(--accent);color:#fff}
+.pager button:disabled{opacity:.35;cursor:default}
+.dlbtn{display:inline-block;background:var(--accent);color:#fff;border-radius:10px;padding:4px 16px;font-weight:700;text-decoration:none;font-size:.85rem}
+@media (max-width:980px){
+  .menu{white-space:normal}
+  .wrap{grid-template-columns:minmax(0,1fr)}
+  .side{display:none}
+  .grid,.shots{grid-template-columns:minmax(0,1fr)}
+  .three{height:250px}
+}
+
+.gmock{border:1px solid var(--line);border-radius:12px;background:#fff;padding:10px 12px;margin:6px 0 12px}
+.gmock .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:4px 0}
+.gmock .fake{display:inline-flex;align-items:center;gap:4px;border:1px solid var(--line);border-radius:8px;padding:2px 10px;font-size:.78rem;background:#fff;white-space:nowrap}
+.gmock .fake.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.gmock .fake.pill{border-radius:999px}
+.gnum{display:inline-flex;align-items:center;justify-content:center;width:1.45em;height:1.45em;border-radius:50%;background:#23221f;color:#fff;font-size:.72rem;font-weight:700;flex:0 0 auto}
+.glist{list-style:none;margin:0;padding:0}
+.glist li{display:flex;gap:10px;align-items:flex-start;margin:7px 0}
+.swatch{display:inline-block;width:1em;height:1em;border-radius:4px;border:1px solid;vertical-align:-2px;margin-right:4px}
+.helpbtn{font:inherit;font-size:.72rem;border:1px solid var(--accent);color:var(--accent);background:#fff;border-radius:8px;padding:2px 10px;cursor:pointer}
+</style>
+</head>
+<body>
+
+<div class="stick">
+  <div class="bar">
+    <h1>AI로 만드는 다큐 영상 <small>사진 6장 + 나레이션 + 인터뷰 컷 · 소리 따로 입히기(후시더빙)</small></h1>
+    <div class="ctrl">
+      <label for="placeSel">내 장소</label>
+      <select id="placeSel"></select>
+      <input class="inp cname" id="customTop" placeholder="장소 이름 적기" style="display:none;width:180px;font-size:.78rem;padding:3px 10px">
+      <button class="helpbtn" id="guideBtn" aria-label="이 교안 보는 법">보는 법</button>
+      <button class="zbtn" data-z="-1" aria-label="글자 작게">가−</button>
+      <button class="zbtn" data-z="0" aria-label="글자 기본">가</button>
+      <button class="zbtn" data-z="1" aria-label="글자 크게">가+</button>
+    </div>
+  </div>
+  <nav class="tabs" id="tabs"></nav>
+</div>
+
+<div class="wrap">
+<main id="main">
+
+<!-- STEP 0 -->
+<section class="step" data-title="오늘 만들 영상">
+  <div class="shead"><span class="no">STEP 0</span><h2>오늘 만들 영상</h2>
+  <p>지난 여행지의 하루를 <b>다큐</b><span class="term">(다큐멘터리, 실제 모습을 보여 주며 설명하는 영상)</span>로 만듭니다.</p></div>
+  <div class="grid">
+    <div class="card wide" id="s0-guide">
+      <h3><span class="tag t-show">처음에</span>이 교안 보는 법</h3>
+      <p>수업 내내 이 화면을 보며 따라 합니다. 위쪽 바와 아래쪽 단추가 무엇인지 먼저 알아 두면 길을 잃지 않습니다.</p>
+      <div class="grid">
+        <div>
+          <div class="gmock">
+            <div class="row"><span class="gnum">1</span><span class="fake">내 장소 <b>아말피 ▾</b></span><span class="fake" style="border-color:var(--accent);color:var(--accent)">보는 법</span><span class="gnum">2</span><span class="fake">가−</span><span class="fake">가</span><span class="fake">가+</span></div>
+            <div class="row"><span class="gnum">3</span><span class="fake pill on">STEP 0 …</span><span class="fake pill">STEP 1 …</span><span class="fake pill">STEP 2 …</span><span class="fake pill">…</span></div>
+            <div class="row" style="justify-content:space-between;border-top:1px dashed var(--line);padding-top:8px;margin-top:8px"><span><span class="gnum">4</span> <span class="fake">◀ 이전 STEP</span></span><span><span class="fake on">다음 STEP ▶</span></span></div>
+          </div>
+          <ul class="glist">
+            <li><span class="gnum">1</span><div><b>내 장소</b>: 지난 시간에 만든 장소를 고르면 아래 STEP의 사진 프롬프트와 나레이션 문장이 고른 장소로 모두 바뀝니다. 「다른 장소」를 고르면 옆에 칸이 생기니 장소 이름을 적습니다.</div></li>
+            <li><span class="gnum">2</span><div><b>글자 크기</b>: 「가+」는 크게, 「가−」는 작게, 「가」는 처음 크기로 돌아갑니다. 옆의 「보는 법」을 누르면 언제든 이 설명으로 돌아옵니다.</div></li>
+            <li><span class="gnum">3</span><div><b>STEP 단추</b>: 누르면 그 단계로 바로 갑니다. 단추가 옆으로 길면 손가락이나 마우스로 옆으로 밀어 봅니다.</div></li>
+            <li><span class="gnum">4</span><div><b>이전·다음</b>: 화면 맨 아래에 늘 붙어 있습니다. 차례대로 넘길 때 씁니다.</div></li>
+          </ul>
+        </div>
+        <div>
+          <ul class="glist">
+            <li><span class="gnum">5</span><div><b>오른쪽 「이 STEP의 카드」</b>: 넓은 화면에서는 오른쪽에 지금 단계의 카드 목록이 따라다닙니다. 누르면 그 카드로 내려갑니다. 노트북 화면이 좁으면 보이지 않으니 아래로 내려 보면 됩니다.</div></li>
+            <li><span class="gnum">6</span><div><b>「복사」 단추</b>: 프롬프트나 문장 옆의 「복사」를 누르면 「복사됨」으로 바뀝니다. 그다음 쓸 곳에 <span class="kbd">Ctrl</span>+<span class="kbd">V</span>로 붙여 넣습니다. 「직접 선택해 복사」가 뜨면 글자를 마우스로 끌어 선택한 뒤 <span class="kbd">Ctrl</span>+<span class="kbd">C</span>를 누릅니다.</div></li>
+            <li><span class="gnum">7</span><div><b>움직이는 그림</b>: 아래 「❚❚ 멈춤」으로 세우고, 「⟲ 처음부터」로 다시 봅니다. 그림 아래 글이 지금 장면을 설명합니다.</div></li>
+            <li><span class="gnum">8</span><div><b>표시와 색 상자</b><br>
+              <span class="tag t-show">같이 보기</span> 먼저 보며 이해하기 · <span class="tag t-do">따라 하기</span> 화면을 보며 같이 하기 · <span class="tag t-my">내 차례</span> 내 것으로 해 보기<br>
+              <span class="swatch" style="background:var(--set);border-color:var(--set-line)"></span>설정·알아 둘 것
+              <span class="swatch" style="background:var(--warn);border-color:var(--warn-line);margin-left:8px"></span>주의
+              <span class="swatch" style="background:var(--help);border-color:var(--help-line);margin-left:8px"></span>막힐 때
+              <span class="swatch" style="background:var(--more);border-color:var(--more-line);margin-left:8px"></span>한 걸음 더(여유가 있을 때)</div></li>
+            
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="card wide" id="s0-what">
+      <h3><span class="tag t-show">한눈에 보기</span>사진 6장에 목소리를 입혀 한 편의 다큐를 만듭니다</h3>
+      <div class="three" id="sceneA"></div>
+      <div class="tctl"><button data-act="play">❚❚ 멈춤</button><button data-act="reset">⟲ 처음부터</button><span class="cap" id="capA">① 사진 6장 만들기</span></div>
+      <div class="flow"><span>① 사진 6장 (플로우)</span><i>→</i><span>② 나레이션 대본 (예시 문장 · 원하면 제미나이)</span><i>→</i><span>③ 목소리 (AI 스튜디오)</span><i>→</i><span>④ 캡컷에 맞추기</span><i>→</i><span>⑤ 음악·자막 마감</span></div>
+      <div class="box set"><span class="bt">완성 영상의 순서</span>
+        사진 ① → ② → ③ → ④ → ⑤ → <b>인터뷰 컷</b>(지난 시간에 만든 말하는 영상 1개) → 사진 ⑥<br>
+        사진 1장 = 약 5초 = <b>나레이션</b><span class="term">(화면 밖에서 설명해 주는 목소리)</span> 한 문장
+      </div>
+      <p class="term">다큐에서 주인공이 카메라를 보고 한마디 하는 장면을 「인터뷰 컷」이라고 합니다. 지난 시간에 만든 말하는 영상이 바로 이 자리에 들어갑니다.</p>
+    </div>
+    <div class="card" id="s0-place">
+      <h3><span class="tag t-my">내 차례</span>내 장소 고르기</h3>
+      <p>지난 시간에 만든 장소를 고르세요. 아래 STEP의 프롬프트<span class="term">(AI에게 주는 지시문)</span>와 나레이션이 모두 이 장소로 바뀝니다. 위쪽 「내 장소」에서도 언제든 바꿀 수 있습니다.</p>
+      <div class="chips" data-place-chips></div>
+      <div id="customBox" style="display:none">
+        <p style="margin:8px 0 4px">장소 이름을 적어 주세요 (예: 남해 독일마을, 전주 한옥마을, 파리 몽마르트르)</p>
+        <input class="inp cname" id="customName" placeholder="장소 이름">
+      </div>
+      <p class="term">예시는 「아말피」(이탈리아 남쪽 바닷가 마을)입니다.</p>
+    </div>
+    <div class="card" id="s0-ready">
+      <h3><span class="tag t-base">기본</span>준비물과 시작 전 확인</h3>
+      <ul class="dot">
+        <li>지난 시간에 만든 <b>말하는 영상 1개</b> (인터뷰 컷으로 씁니다)</li>
+        <li>지난번 만든 주인공의 <b>앵커</b><span class="term">(주인공 얼굴의 기준 사진)</span> 1장</li>
+      </ul>
+      <div class="box help"><span class="bt">지난 시간 결과물이 없으면</span>
+        <a class="dlbtn" href="https://drive.google.com/file/d/1CllIJN3-GOLRC2K3R0OtHynR5iRQWYpv/view?usp=sharing" target="_blank" rel="noopener">강사 예제 받기 (zip)</a><br>
+        장소는 「아말피」로 고르고, 묶음 안의 「바다 테라스」 영상을 인터뷰 컷으로 씁니다.</div>
+      <div class="box warn"><span class="bt">확인 1 · 플로우</span>
+        오른쪽 위 톱니바퀴 → <span class="menu">무음 동영상 반환</span>이 <b>꺼져</b> 있어야 합니다. 켜져 있으면 영상의 대사까지 모두 사라집니다.</div>
+      <div class="box warn"><span class="bt">확인 2 · 캡컷</span>
+        말하는 영상을 캡컷에 넣었을 때, 영상 아래에 <b>소리 물결</b><span class="term">(파형, 소리가 있다는 표시)</span>이 보여야 합니다. 물결이 없으면 확인 1의 설정을 끈 뒤 플로우에서 다시 내려받아 봅니다. 그래도 없으면 강사 예제의 「바다 테라스」 영상을 인터뷰 컷으로 씁니다.</div>
+    </div>
+  </div>
+</section>
+
+<!-- STEP 1 -->
+<section class="step" data-title="다큐 사진 6장">
+  <div class="shead"><span class="no">STEP 1</span><h2>다큐 사진 6장 만들기</h2>
+  <p>플로우<span class="term">(구글의 AI 이미지·영상 만들기 사이트)</span>에서 <b>나노바나나 2.1</b>로 이미지를 만듭니다. 현재는 이미지에 크레딧<span class="term">(플로우 이용 포인트)</span>이 들지 않으니 마음에 들 때까지 다시 만들어도 됩니다.</p></div>
+  <div class="grid">
+    <div class="card wide" id="s1-rule">
+      <h3><span class="tag t-show">같이 보기</span>다큐 사진은 이 6컷으로 짭니다</h3>
+      <table class="t">
+        <tr><th>컷</th><th>무엇을</th><th>왜</th></tr>
+        <tr><td>① 아침 전경</td><td>장소가 한눈에 보이는 넓은 풍경</td><td>"여기가 어디인지" 먼저 알려 줍니다</td></tr>
+        <tr><td>② 소품 <span class="term">클로즈업(가까이 찍기)</span></td><td>그곳을 상징하는 물건·음식</td><td>장소의 특징을 보여 줍니다</td></tr>
+        <tr><td>③ 현지의 삶</td><td>시장·가게, 사람은 손만</td><td>사는 사람들의 이야기가 생깁니다</td></tr>
+        <tr><td>④ 주인공 뒷모습</td><td>걸어가는 뒷모습 <span class="person" style="font-size:.64rem;background:#fdeee6;color:#a3452a;border-radius:999px;padding:0 8px">앵커 첨부</span></td><td>여행자가 등장합니다</td></tr>
+        <tr><td>⑤ 주인공 멀리서</td><td>풍경 속에 작게 선 모습 <span class="person" style="font-size:.64rem;background:#fdeee6;color:#a3452a;border-radius:999px;padding:0 8px">앵커 첨부</span></td><td>여행자의 감정이 보입니다</td></tr>
+        <tr><td>⑥ 노을 전경</td><td>해 질 무렵 넓은 풍경</td><td>하루를 마무리합니다</td></tr>
+      </table>
+      <div class="box set"><span class="bt">주인공은 ④⑤ 두 장에만</span>
+        나머지 네 장은 사람 없이 만듭니다. 주인공이 나오는 장면이 적을수록 얼굴이 달라지는 문제가 줄어듭니다. ④⑤도 뒷모습과 먼 모습이라 얼굴이 크게 보이지 않습니다.</div>
+      <div class="box set"><span class="bt">플로우 설정</span>
+        <span class="menu">이미지</span> · 모델 <span class="menu">나노바나나 2.1</span> · 비율 <span class="menu">16:9 가로</span><br>
+        ④⑤는 프롬프트 칸의 <span class="menu">＋</span>로 주인공 앵커 사진을 첨부한 뒤 만듭니다.</div>
+    </div>
+    <div class="card wide" id="s1-prompts">
+      <h3><span class="tag t-do">따라 하기</span><span class="tag t-my">내 차례</span><span id="s1-place">아말피</span> 사진 6장 프롬프트 <span class="term">(AI에게 주는 지시문)</span></h3>
+      <p>예시 아말피로 ① 한 장을 같이 만든 뒤, 내 장소로 ②~⑥을 이어서 만듭니다. 프롬프트는 <b>한 개씩</b> 복사해 플로우에 붙여 넣습니다.</p><p class="term" id="customHint" style="display:none">「다른 장소」를 골랐다면 아래 「한 걸음 더 · 제미나이에게 6컷 프롬프트 받기」로 먼저 프롬프트를 받는 것을 권합니다. 장소 이름만으로는 AI가 어느 나라인지 헷갈리기 쉽습니다.</p>
+      <p style="margin:0;display:flex;justify-content:flex-end"><button class="copy" style="float:none" data-copy-all="shots">6개 한꺼번에 복사 (메모장 보관용)</button></p>
+      <div class="shots" id="shotList"></div>
+      <p class="term" style="margin-top:10px">프롬프트 끝의 「실사 다큐멘터리 사진…」 문장은 6장 모두 같습니다. 이 문장이 같아야 6장의 색감과 분위기가 한 편처럼 맞춰집니다.</p>
+    </div>
+    <div class="card" id="s1-help">
+      <h3><span class="tag t-base">막힐 때</span>이럴 땐 이렇게</h3>
+      <table class="t">
+        <tr><th>이런 결과</th><th>이렇게 고칩니다</th></tr>
+        <tr><td>사진에 글자·간판이 생김</td><td>끝에 "글자, 간판, 로고 없음"을 한 번 더 붙여 다시 만들기</td></tr>
+        <tr><td>다른 나라처럼 보임</td><td>장소 이름 앞에 나라·도시 이름과 대표 건물을 넣기 (예: 한국 경주의 첨성대)</td></tr>
+        <tr><td>주인공 얼굴이 달라짐</td><td>"뒷모습", "멀리서 작게"를 넣기 / 앵커 사진 한 장만 첨부했는지 확인</td></tr>
+        <tr><td>주인공이 물건을 들고 있음</td><td>"빈손"을 넣기 (AI는 말하지 않은 것을 그대로 둡니다)</td></tr>
+        <tr><td>6장 색감이 제각각</td><td>꼬리 문장을 지우지 않았는지 확인</td></tr>
+      </table>
+    </div>
+    <div class="card" id="s1-more">
+      <h3><span class="tag t-more">한 걸음 더</span>제미나이에게 내 장소의 6컷 프롬프트 받기</h3>
+      <p>목록에 없는 장소이거나 더 자세한 장면을 원하면 제미나이에게 6컷 구성을 맡깁니다. 고른 장소 이름이 자동으로 들어가 있습니다.</p>
+      <div class="prompt" data-copyable><button class="copy">복사</button><span class="lab">제미나이에 붙여 넣기</span><span class="ptxt" id="g1"></span></div>
+      <p class="term">받은 프롬프트에 그 장소에만 있는 건물·음식·풍경 이름이 들어 있는지 보세요. 이름이 구체적일수록 사진이 그 장소처럼 나옵니다.</p>
+    </div>
+  </div>
+</section>
+
+<!-- STEP 2 -->
+<section class="step" data-title="나레이션 대본">
+  <div class="shead"><span class="no">STEP 2</span><h2>나레이션 대본</h2>
+  <p>사진 한 장에 한 문장입니다. 되도록 사진 길이(약 5초) 안에 들어오게 짧게 씁니다. 문장이 길면 꾸미는 말 하나를 빼면 됩니다.</p></div>
+  <div class="grid">
+    <div class="card wide" id="s2-script">
+      <h3><span class="tag t-base">기본</span><span id="s2-place">아말피</span> 나레이션 6문장</h3>
+      <div class="box set"><span class="bt">다큐 나레이션 규칙 4가지</span>
+        ① 한 문장 <b>18~25자</b> (띄어쓰기·문장부호 빼고 · 소리 내어 읽으면 약 5초) ② 차분한 존댓말 「~ㅂ니다」 ③ 사진에 <b>보이는 것 하나 + 느낌 하나</b> ④ 주인공은 이름 대신 「오늘의 여행자」</div>
+      <p style="margin:0;display:flex;justify-content:flex-end"><button class="copy" style="float:none" data-copy-all="narr">6문장 한꺼번에 복사</button></p>
+      <div id="narrList"></div>
+      <p class="term">이 문장을 그대로 써도 되고, 내 사진에 맞게 단어 몇 개를 바꿔도 됩니다. 사진 ③에 시장 대신 카페가 나왔다면 "시장"을 "카페"로 바꾸는 식입니다.</p>
+    </div>
+    <div class="card wide" id="s2-more">
+      <h3><span class="tag t-more">한 걸음 더</span>제미나이에 내 사진 6장 올려 대본 받기</h3>
+      <p>STEP 1에서 만든 사진 6장을 순서대로 제미나이에 올리고 아래 문장을 붙여 넣습니다. 내 사진에 딱 맞는 대본이 나옵니다.</p>
+      <div class="prompt" data-copyable><button class="copy">복사</button><span class="lab">제미나이 · 다큐 대본</span><span class="ptxt" id="g2"></span></div>
+      <p>대본을 받은 뒤 같은 대화창에 아래 문장을 이어서 넣으면 말투만 바꾼 대본이 나옵니다. 두 대본을 소리 내어 읽어 보고 영상에 맞는 쪽을 고릅니다.</p>
+      <div class="prompt" data-copyable><button class="copy">복사</button><span class="lab">제미나이 · 말투 바꾸기</span><span class="ptxt">같은 사진으로 이번에는 유튜브 여행 브이로그처럼 밝고 친근한 말투로 다시 써 주세요. 규칙(한 문장 18~25자, 사진 한 장에 한 문장, 6문장)은 그대로 지켜 주세요.</span></div>
+      <div class="box warn"><span class="bt">꼭 확인</span>제미나이가 사진에 없는 내용(유명한 식당 이름, 역사 이야기 등)을 지어낼 수 있습니다. 사실처럼 들리는 문장은 한 번 더 확인하고, 모르면 "보이는 것 + 느낌"만 남깁니다.</div>
+    </div>
+  </div>
+</section>
+
+<!-- STEP 3 -->
+<section class="step" data-title="AI 스튜디오 목소리">
+  <div class="shead"><span class="no">STEP 3</span><h2>목소리 만들기 · AI 스튜디오</h2>
+  <p>글을 목소리로 읽어 주는 기능<span class="term">(TTS)</span>을 구글 AI 스튜디오에서 무료로 씁니다.</p></div>
+  <div class="grid">
+    <div class="card" id="s3-how">
+      <h3><span class="tag t-show">같이 보기</span>AI 스튜디오 순서</h3>
+      <ol class="num">
+        <li><a href="https://aistudio.google.com" target="_blank" rel="noopener">aistudio.google.com</a> 접속 (구글 계정 로그인)</li>
+        <li>왼쪽 메뉴 <span class="menu">미디어 생성 (Generate Media)</span></li>
+        <li><span class="menu">Gemini 음성 생성 (Gemini speech generation)</span></li>
+        <li>오른쪽 설정에서 모드 <span class="menu">단일 화자 (Single speaker)</span></li>
+        <li><span class="menu">목소리 (Voice)</span> 고르기</li>
+        <li><span class="menu">스타일 지시 (Style instructions)</span> 칸에 말투 붙여 넣기</li>
+        <li>글 칸에 나레이션 <b>한 문장</b>만 넣고 <span class="menu">실행 (Run)</span></li>
+        <li>들어 보고 마음에 들면 <span class="menu">⋮</span> → <span class="menu">다운로드</span> (wav 소리 파일)</li>
+      </ol>
+      <div class="box set"><span class="bt">한 문장씩 따로 만듭니다</span>
+        문장마다 파일이 따로 있어야 캡컷에서 사진 한 장 한 장에 맞추기 쉽습니다. 내려받을 때마다 파일 이름을 「1_나레이션」, 「2_나레이션」…으로 바꿔 두면 캡컷에서 순서가 섞이지 않습니다. 사진도 「1_사진」~「6_사진」으로 바꿔 둡니다.</div>
+      <p class="term">메뉴 이름은 영어로 보일 수 있고, 구글이 자주 바꿉니다. 괄호 안 영어를 함께 찾아보세요.</p>
+    </div>
+    <div class="card" id="s3-voice">
+      <h3><span class="tag t-do">따라 하기</span>목소리와 말투 고르기</h3>
+      <table class="t">
+        <tr><th>목소리</th><th>느낌</th></tr>
+        <tr><td>Charon (남)</td><td>차분하게 설명하는 · <b>예시에서 쓴 목소리</b></td></tr>
+        <tr><td>Iapetus (남)</td><td>맑고 또렷한</td></tr>
+        <tr><td>Algieba (남)</td><td>부드러운</td></tr>
+        <tr><td>Sulafat (여)</td><td>따뜻한</td></tr>
+        <tr><td>Achernar (여)</td><td>부드러운</td></tr>
+        <tr><td>Vindemiatrix (여)</td><td>온화한</td></tr>
+      </table>
+      <p class="term">목소리 이름 옆 ▶로 미리 들어 볼 수 있습니다. 목록은 바뀔 수 있으니 귀로 고르면 됩니다.</p>
+      <div class="prompt" data-copyable><button class="copy">복사</button><span class="lab">스타일 지시 · 다큐 (기본)</span><span class="ptxt">자연 다큐멘터리 내레이터처럼 차분하고 따뜻하게 읽어 주세요. 서두르지 말고, 문장 끝은 부드럽게 내려 주세요.</span></div>
+      <div class="prompt" data-copyable><button class="copy">복사</button><span class="lab">스타일 지시 · 비교용 (밝게)</span><span class="ptxt">여행 유튜버처럼 밝고 신나게, 친구에게 말하듯 읽어 주세요.</span></div>
+    </div>
+    <div class="card wide" id="s3-try">
+      <h3><span class="tag t-my">내 차례</span>①번 문장으로 비교해 보고, 6문장 만들기</h3>
+      <ol class="num">
+        <li>①번 문장을 「다큐」 말투로 한 번, 「밝게」 말투로 한 번 만들어 들어 봅니다. 같은 목소리인데 말투가 얼마나 다른지 비교합니다.</li>
+        <li>다큐 말투로 정하고 ①~⑥을 하나씩 만들어 내려받습니다.</li>
+      </ol>
+      <div class="prompt" data-copyable><button class="copy">복사</button><span class="lab">①번 문장</span><span class="ptxt" id="firstLine"></span></div>
+      <div class="box help"><span class="bt">막힐 때</span>
+        <ul class="dot">
+          <li><b>스타일 지시 칸이 안 보이면</b>: 글 칸 맨 앞에 "다음 문장을 다큐 내레이터처럼 차분하게 읽어 주세요:"를 쓰고 그 뒤에 문장을 넣습니다.</li>
+          <li><b>목소리가 너무 빠르면</b>: 스타일 지시에 "아주 천천히"를 더하거나, 문장 중간에 쉼표를 넣습니다.</li>
+          <li><b>숫자·영어를 이상하게 읽으면</b>: 한글로 풀어 씁니다 (천 년, 에게해).</li>
+          <li><b>실행이 안 되면</b>: 잠시 뒤 다시 누르거나 모델 목록에서 다른 음성 모델을 고릅니다.</li>
+          <li><b>「한도 초과」 같은 문구가 뜨면</b>: 무료 사용량이 찬 것입니다. 아래 「한 번에 만들고 자르기」로 6문장을 한 번에 만듭니다.</li>
+        </ul></div>
+      <div class="box more"><span class="bt">한 걸음 더 · 한 번에 만들고 자르기</span>
+        6문장을 한 칸에 모두 넣어 한 파일로 만들면 말투가 처음부터 끝까지 고르게 이어집니다. 캡컷에서 문장 사이 빈 곳에 플레이헤드를 두고 <span class="kbd">Ctrl</span>+<span class="kbd">B</span>로 잘라 사진마다 나눕니다.</div>
+    </div>
+  </div>
+</section>
+
+<!-- STEP 4 -->
+<section class="step" data-title="캡컷에 맞추기">
+  <div class="shead"><span class="no">STEP 4</span><h2>캡컷에 맞추기</h2>
+  <p>오늘의 핵심입니다. 타임라인<span class="term">(사진과 소리를 시간 순서로 놓는 아래쪽 편집 칸)</span>에서 사진 길이를 목소리 길이에 맞추는 것이 「소리 따로 입히기(후시더빙)」의 기본입니다.</p></div>
+  <div class="grid">
+    <div class="card wide" id="s4-scene">
+      <h3><span class="tag t-show">한눈에 보기</span>타임라인은 이렇게 놓입니다</h3>
+      <div class="three" id="sceneB"></div>
+      <div class="tctl"><button data-act="play">❚❚ 멈춤</button><button data-act="reset">⟲ 처음부터</button><span class="cap" id="capB">위 줄은 사진, 아래 줄은 나레이션입니다</span></div>
+      <div class="seq" id="seqList"></div>
+    </div>
+    <div class="card" id="s4-place">
+      <h3><span class="tag t-do">따라 하기</span>순서대로 놓기</h3>
+      <ol class="num">
+        <li>캡컷 <span class="menu">새 프로젝트</span> → 이름을 「다큐_<span data-pname>아말피</span>」로 바꾸기</li>
+        <li>사진 6장, 나레이션 6개, 인터뷰 컷 1개를 한 폴더에 모은 뒤, <span class="menu">가져오기</span> → 그 폴더에서 <span class="kbd">Ctrl</span>+<span class="kbd">A</span>로 모두 골라 가져오기</li>
+        <li>사진 ①~⑥을 순서대로 아래 메인 줄<span class="term">(트랙)</span>로 끌어 놓기 → 사진은 처음에 5초로 들어옵니다</li>
+        <li>인터뷰 컷을 사진 ⑤와 ⑥ 사이에 끌어 넣기. AI 배경음악이 섞여 있으면 인터뷰 컷 <b>오른쪽 클릭</b> → <span class="menu">음성 분리</span> → <span class="menu">보컬 유지</span><span class="term">(보컬 = 사람 목소리, 목소리만 남기기)</span>로 음악을 뺍니다.</li>
+        <li>나레이션 ①을 사진 ① <b>아래</b> 오디오 줄에 놓고, 사진 시작보다 <b>살짝 뒤</b>에 둡니다. ②~⑥도 같은 방법으로 놓습니다.</li>
+      </ol>
+      <div class="box warn"><span class="bt">인터뷰 컷 위에는 나레이션을 두지 않습니다</span>
+        주인공의 목소리와 나레이션이 겹치면 둘 다 안 들립니다. 인터뷰 컷 동안은 오디오 줄을 비워 둡니다.</div>
+    </div>
+    <div class="card" id="s4-fit">
+      <h3><span class="tag t-my">내 차례</span>길이 맞추기와 천천히 확대</h3>
+      <p><b>1) 사진 길이를 목소리에 맞추기</b></p>
+      <ul class="dot">
+        <li>나레이션이 사진보다 길면 → 사진의 <b>오른쪽 끝</b>을 끌어 늘립니다. 나레이션이 끝나고 반 박자 쉬는 곳까지.</li>
+        <li>나레이션이 많이 짧으면 → 사진을 줄여도 되지만, 3초보다 짧게는 줄이지 않습니다.</li>
+      </ul>
+      <p><b>2) 사진을 천천히 확대하기</b> <span class="term">키프레임(움직임의 시작과 끝을 찍어 두는 표시)</span></p>
+      <ol class="num">
+        <li>사진 ①을 클릭하고 플레이헤드<span class="term">(타임라인 위 지금 위치를 가리키는 세로선)</span>를 사진 <b>맨 앞</b>에 둡니다.</li>
+        <li>오른쪽 <span class="menu">동영상</span> → <span class="menu">기본</span> → <span class="menu">확대</span> 옆 <b>◇</b>를 누릅니다.</li>
+        <li>플레이헤드를 사진 <b>맨 끝</b>으로 옮기고, 확대를 <b>110%</b>로 바꿉니다. ◇가 하나 더 생깁니다.</li>
+        <li>재생해 보면 사진이 천천히 다가옵니다. ②~⑥도 같은 방법으로 합니다.</li>
+      </ol>
+      <div class="box help"><span class="bt">막힐 때</span>
+        <ul class="dot">
+          <li><b>◇가 안 보여요</b>: 사진을 먼저 한 번 클릭해 선택했는지 확인합니다.</li>
+          <li><b>나레이션이 엉뚱한 줄에 붙었어요</b>: <span class="kbd">Ctrl</span>+<span class="kbd">Z</span>로 되돌린 뒤 사진 바로 아래 빈 줄에 다시 놓습니다.</li>
+          <li><b>사진 사이에 틈이 생겼어요</b>: 뒤 사진을 왼쪽으로 끌어 붙입니다. 틈은 검은 화면으로 나옵니다.</li>
+          <li><b>사진이 5초가 아닌 길이로 들어왔어요</b>: 괜찮습니다. 오른쪽 끝을 끌어 나레이션에 맞추면 됩니다.</li>
+        </ul></div>
+      <div class="box more"><span class="bt">한 걸음 더</span>
+        사진마다 움직임을 다르게 줍니다. ⑥ 노을은 110% → 100%로 <b>멀어지게</b> 하면 끝나는 느낌이 납니다. ④ 뒷모습은 확대와 함께 위치를 살짝 옆으로 옮기면 따라 걷는 느낌이 납니다.</div>
+    </div>
+  </div>
+</section>
+
+<!-- STEP 5 -->
+<section class="step" data-title="음악·자막 마감">
+  <div class="shead"><span class="no">STEP 5</span><h2>다큐 마감 · 음악과 자막</h2>
+  <p>음악은 나레이션 뒤에서 조용히 깔리고, 자막은 나레이션을 그대로 보여 줍니다.</p></div>
+  <div class="grid">
+    <div class="card" id="s5-music">
+      <h3><span class="tag t-do">따라 하기</span>음악 한 곡 깔기 · 픽사베이 또는 유튜브 오디오 보관함</h3>
+      <ol class="num">
+        <li>아래 두 곳 중 한 곳에서 가사 없는 곡을 골라 내려받기
+          <ul class="dot">
+            <li><b>픽사베이</b>: <a href="https://pixabay.com/music/" target="_blank" rel="noopener">pixabay.com/music</a> → 아래 검색어로 검색 → ▶ 들어 보기 → 다운로드</li>
+            <li><b>유튜브 오디오 보관함</b>: <a href="https://studio.youtube.com" target="_blank" rel="noopener">studio.youtube.com</a> → 왼쪽 메뉴 <span class="menu">오디오 보관함</span> → 장르·분위기로 거르기 → ▶ 들어 보기 → 다운로드. 처음 들어가면 채널을 만들라고 물어볼 수 있습니다. 「저작자 표시」가 붙은 곡은 설명란에 출처를 적어야 하니, 표시 없는 곡을 고릅니다.</li>
+          </ul></li>
+        <li>캡컷으로 가져와 오디오 줄 맨 아래에 놓고, 영상 끝에 맞춰 자르기</li>
+        <li>음악을 클릭 → <span class="menu">오디오</span> → <span class="menu">볼륨</span>을 <b>-15dB 정도</b>로 내리기 <span class="term">(dB는 소리 크기 단위, 나레이션이 또렷하게 들릴 때까지)</span></li>
+        <li><span class="menu">페이드 아웃</span>을 2초 정도로 → 음악이 끝에서 스르르 작아집니다</li>
+      </ol>
+      <div class="chips" id="musicWords"></div>
+      <p class="term">검색어를 누르면 복사됩니다. 다큐는 잔잔한 피아노나 바람 같은 배경음이 잘 어울립니다.</p>
+    </div>
+    <div class="card" id="s5-sub">
+      <h3><span class="tag t-my">내 차례</span>자막 넣기</h3>
+      <ol class="num">
+        <li><span class="menu">텍스트</span> → <span class="menu">기본 텍스트</span>의 ＋ → 나레이션 ① 문장 붙여 넣기</li>
+        <li>자막 길이를 사진 ① 길이에 맞추고, 화면 아래쪽 가운데에 놓기</li>
+        <li>①을 오른쪽 클릭 → 복사 → 붙여 넣기 후 문장만 바꾸면 ②~⑥ 글자 모양이 똑같이 맞춰집니다</li>
+        <li>인터뷰 컷에는 대사 자막을 넣고, 왼쪽 위에 작게 <b>「오늘의 여행자 인터뷰」</b>를 함께 넣습니다</li>
+      </ol>
+      <div class="box more"><span class="bt">한 걸음 더 · 자동 자막</span>
+        <span class="menu">캡션</span> → 자동 캡션(캡션 생성)을 쓰면 목소리를 듣고 자막을 만들어 줍니다. 무료는 <b>한 달에 2번</b>뿐이니 마지막에 한 번만 씁니다. 자동 캡션은 기본 텍스트 <b>대신</b> 쓰는 방법이라, 이미 넣은 자막이 있으면 지우고 씁니다. 틀린 글자는 꼭 고칩니다. 보석 표시가 붙어 있으면 유료라 내보낼 수 없으니 기본 텍스트로 합니다.</div>
+    </div>
+    <div class="card wide" id="s5-sites">
+      <h3><span class="tag t-show">소개</span>다른 무료 음악 사이트와 저작권 한눈에</h3>
+      <p>오늘 실습은 픽사베이와 유튜브 오디오 보관함으로 합니다. 아래 사이트도 같은 방식으로 쓸 수 있으니, 곡이 마음에 들지 않을 때 둘러보세요.</p>
+      <table class="t" style="table-layout:fixed"><colgroup><col style="width:9.5em"><col style="width:8.5em"><col></colgroup>
+        <tr><th>사이트</th><th>출처 표기</th><th>특징</th></tr>
+        <tr><td><a href="https://pixabay.com/music/" target="_blank" rel="noopener"><b>픽사베이 뮤직</b></a></td><td>필요 없음</td><td>곡이 아주 많습니다. 로그인해서 받으면 다운로드 기록과 라이선스<span class="term">(사용 허락 조건)</span> 확인서가 남아 증거로 쓰기 좋습니다. 누구나 곡을 올리는 곳이라, 드물게 유튜브에서 저작권 표시(클레임)가 걸리는 곡이 있습니다.</td></tr>
+        <tr><td><a href="https://studio.youtube.com" target="_blank" rel="noopener"><b>유튜브 오디오 보관함</b></a></td><td>대부분 필요 없음<br><span class="term">(「저작자 표시」 곡만 필요)</span></td><td>유튜브가 직접 주는 음악이라 유튜브에 올려 수익을 내도 안전한 편입니다. 유튜브 스튜디오 왼쪽 메뉴에 있습니다.</td></tr>
+        <tr><td><a href="https://mixkit.co/free-stock-music/" target="_blank" rel="noopener"><b>Mixkit</b></a></td><td>필요 없음</td><td>디자인 소재 회사 Envato가 운영합니다. 가입·횟수 제한 없이 받습니다. 곡 수는 적은 편이지만 깔끔한 배경음악이 많습니다.</td></tr>
+        <tr><td><a href="https://uppbeat.io" target="_blank" rel="noopener"><b>Uppbeat</b></a></td><td>무료 회원은 필요<br><span class="term">(사이트가 주는 문구를 설명란에)</span></td><td>유튜버를 위해 만든 사이트로, 클레임이 걸려도 사이트에서 풀어 주는 서비스가 있습니다. 회원가입이 필요하고, 무료는 한 달에 받을 수 있는 곡이 몇 곡뿐입니다.</td></tr>
+        <tr><td><a href="https://gongu.copyright.or.kr" target="_blank" rel="noopener"><b>공유마당</b></a></td><td>곡마다 다름</td><td>한국저작권위원회가 운영합니다. 국악·전통음악·효과음 같은 한국 소리가 많아 경주·제주 영상에 잘 어울립니다. 곡마다 「출처 표시」, 「상업적 이용 금지」 같은 조건이 다르니 받기 전에 확인합니다.</td></tr>
+        <tr><td><a href="https://freemusicarchive.org" target="_blank" rel="noopener"><b>Free Music Archive</b></a></td><td>곡마다 다름</td><td>세계 여러 음악가가 공유한 큰 무료 음악 저장소입니다. 곡마다 라이선스가 다릅니다. 「CC0」(조건 없이 사용) 곡은 표기 없이, 「CC BY」(출처만 적으면 사용) 곡은 출처를 적고 씁니다. 「NC」(상업적 이용 금지)가 붙은 곡은 수익을 내는 영상에 쓰지 않습니다.</td></tr>
+        <tr><td><a href="https://www.bensound.com" target="_blank" rel="noopener"><b>Bensound</b></a></td><td>무료로 쓰면 필요</td><td>프랑스 작곡가가 시작한 사이트로, 지금은 여러 작곡가 곡이 있습니다. 무료로 쓰면 출처 표기가 필수이고 쓸 수 있는 범위가 정해져 있으니, 다운로드 화면의 조건을 확인합니다.</td></tr>
+        <tr><td><a href="https://incompetech.com/music/royalty-free/music.html" target="_blank" rel="noopener"><b>Incompetech</b></a></td><td>필요 (CC BY)</td><td>작곡가 케빈 맥클라우드의 곡 모음으로, 유튜브에서 많이 들어 본 익숙한 배경음악이 많습니다. 설명란에 곡 제목·작곡가·라이선스를 적습니다.</td></tr>
+      </table>
+      <div class="grid">
+        <div class="box set" style="margin:0"><span class="bt">「로열티 프리」는 이런 뜻입니다</span>
+          사용료를 따로 내지 않고 <b>써도 된다는 허락</b>입니다. 저작권이 사라진 것은 아닙니다. 그래서 출처를 적으라는 곡은 꼭 적습니다.</div>
+        <div class="box warn" style="margin:0"><span class="bt">유튜브에서 저작권 표시가 뜨면</span>
+          유튜브의 자동 검사(콘텐츠 ID)는 내가 허락받았는지 모르고 소리만 비교합니다. 채널 경고가 아니라 이의 제기로 풀 수 있으니, <b>곡을 받은 사이트와 라이선스 화면을 캡처</b>해 두면 증거가 됩니다.</div>
+      </div>
+    </div>
+    <div class="card wide" id="s5-end">
+      <h3><span class="tag t-base">기본</span>마무리하고 내보내기</h3>
+      <div class="grid">
+        <div>
+          <ul class="dot">
+            <li>사진 ① <span class="menu">애니메이션</span> → <span class="menu">인</span> → <span class="menu">페이드 인</span></li>
+            <li>사진 ⑥ <span class="menu">애니메이션</span> → <span class="menu">아웃</span> → <span class="menu">페이드 아웃</span></li>
+            <li>장면 사이 전환은 <span class="menu">혼합</span>이나 <span class="menu">흐리게</span> <b>하나만</b> 골라 통일합니다</li>
+            <li>오른쪽 위 <span class="menu">내보내기</span> → 파일 이름 「다큐_<span data-pname>아말피</span>」</li>
+          </ul>
+        </div>
+        <div class="box help" style="margin:0"><span class="bt">내보내기 전에 끝까지 한 번 보기</span>
+          <ul class="dot">
+            <li>나레이션과 인터뷰 목소리가 겹치지 않나요?</li>
+            <li>음악이 나레이션보다 크지 않나요?</li>
+            <li>자막이 목소리보다 먼저 사라지지 않나요?</li>
+            <li>사진 사이에 검은 화면이 생기지 않았나요?</li>
+          </ul></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STEP 6 -->
+<section class="step" data-title="인터뷰 목소리 바꾸기">
+  <div class="shead"><span class="no">STEP 6</span><h2><span class="tag t-more" style="vertical-align:4px">한 걸음 더</span>인터뷰 목소리 바꿔 입히기</h2>
+  <p>영상과 함께 생긴 목소리를 끄고, 내가 고른 목소리를 따로 입혀 봅니다. 이것이 진짜 「소리 따로 입히기(후시더빙)」입니다.</p></div>
+  <div class="grid">
+    <div class="card" id="s6-how">
+      <h3><span class="tag t-do">따라 하기</span>순서</h3>
+      <ol class="num">
+        <li>인터뷰 컷을 <b>오른쪽 클릭</b> → <span class="menu">음성 분리</span> → <span class="menu">보컬 제거</span>. 사람 목소리만 빠지고 바람·파도 같은 주변 소리는 남습니다. STEP 4에서 이 컷에 「보컬 유지」를 했다면, 먼저 오른쪽 클릭 → <span class="menu">음성 분리</span> → <span class="menu">음성 분리 안 함</span>으로 되돌린 뒤 「보컬 제거」를 합니다. 영상에 AI 배경음악이 섞여 있었다면 그 음악도 함께 남습니다.</li>
+        <li>AI 스튜디오에서 인터뷰 대사와 똑같은 문장을 만듭니다. 말투는 오른쪽 문장을 쓰고, 주인공에 맞게 목소리를 고릅니다.</li>
+        <li>내려받은 파일을 인터뷰 컷 아래 오디오 줄에 놓습니다.</li>
+        <li>재생하면서 입 모양과 맞도록 파일을 앞뒤로 조금씩 밀어 맞춥니다.</li>
+      </ol>
+    </div>
+    <div class="card" id="s6-voice">
+      <h3><span class="tag t-my">내 차례</span>인터뷰 말투 만들기</h3>
+      <p>주인공에 맞게 고르면 스타일 지시 문장이 만들어집니다.</p>
+      <div class="chips" id="gChips"></div>
+      <div class="chips" id="aChips"></div>
+      <div class="prompt" data-copyable><button class="copy">복사</button><span class="lab">스타일 지시 · 인터뷰</span><span class="ptxt" id="ivStyle"></span></div>
+      <div class="prompt" data-copyable><button class="copy">복사</button><span class="lab">인터뷰 대사 (내 대사로 바꿔 쓰기)</span><span class="ptxt" id="ivLine"></span></div>
+    </div>
+    <div class="card wide" id="s6-compare">
+      <h3><span class="tag t-show">비교해 보기</span>함께 생긴 목소리 vs 따로 입힌 목소리</h3>
+      <table class="t">
+        <tr><th></th><th>소리 동시 생성 (동시녹음)</th><th>소리 따로 입히기 (후시더빙)</th></tr>
+        <tr><td>입 모양</td><td>대체로 맞음</td><td>내가 밀어서 맞춰야 함, 조금 어긋날 수 있음</td></tr>
+        <tr><td>목소리</td><td>AI가 정함, 장면마다 달라질 수 있음</td><td>내가 고른 목소리로 계속 같게</td></tr>
+        <tr><td>고치기</td><td>영상을 다시 만들어야 함 (크레딧)</td><td>목소리만 다시 만들면 됨 (무료)</td></tr>
+        <tr><td>잘 맞는 곳</td><td>짧은 대사, 생생한 현장 느낌</td><td>나레이션, 같은 목소리가 계속 나와야 할 때</td></tr>
+      </table>
+      <p>두 가지를 모두 들어 보고, 내 다큐에는 어느 쪽을 쓸지 정해서 최종본을 내보냅니다.</p>
+    </div>
+  </div>
+</section>
+
+</main>
+<aside class="side"><p>이 STEP의 카드</p><div id="sideList"></div></aside>
+</div>
+
+<div class="pager"><div class="in"><button id="prevB">◀ 이전 STEP</button><button id="nextB" class="next">다음 STEP ▶</button></div></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+var TAIL='실사 다큐멘터리 사진, 16:9 가로 구도, 자연광, 차분하고 따뜻한 색감, 글자·간판·로고 없음.';
+var PERSON='첨부한 사진 속 인물을 그대로 유지해 주세요(얼굴, 머리 모양, 옷). 빈손. ';
+var SHOTNAME=['아침 전경','소품 클로즈업','현지의 삶','주인공 뒷모습','주인공 멀리서','노을 전경'];
+var P={
+ amalfi:{n:'아말피',iv:'오늘 정말 행복했어요.',s:[
+  '이른 아침 햇살을 받은 이탈리아 아말피 해안, 절벽을 따라 층층이 들어선 파스텔색 집들과 바다가 한눈에 보이는 넓은 전경, 사람 없음',
+  '아말피 레몬 나무에 매달린 주먹보다 큰 노란 레몬과 나무 바구니에 담긴 레몬 클로즈업, 잎에 맺힌 아침 이슬',
+  '아말피 골목의 작은 레몬 가게 진열대, 레몬술 병과 레몬 그림 도자기 접시, 레몬을 정리하는 가게 주인의 손만 보임',
+  '아말피 레몬 나무 사이 돌계단을 천천히 올라가는 첨부한 인물의 뒷모습, 계단 양옆의 레몬 나무',
+  '아말피 바다 테라스 난간 앞에 서서 바다를 바라보는 첨부한 인물, 멀리서 작게 보이는 모습, 넓은 지중해',
+  '노을이 지는 아말피 해안과 항구로 돌아오는 작은 배들, 주황빛 하늘과 바다의 넓은 전경, 사람 없음'],
+  t:['절벽 위 파스텔빛 마을에 지중해의 아침이 찾아옵니다.','이곳의 레몬은 주먹보다 크고, 향은 더 짙습니다.','작은 가게마다 레몬으로 만든 이야기가 놓여 있습니다.','오늘의 여행자는 레몬 향을 따라 계단을 오릅니다.','긴 계단 끝에서 만난 바다는 끝없이 파랗습니다.','노을이 지면, 작은 배들도 하나둘 돌아옵니다.']},
+ jeju:{n:'제주',iv:'(지난 시간에 넣은 내 대사)',s:[
+  '이른 아침 옅은 안개가 낀 한국 제주도의 귤밭과 검은 현무암 돌담, 멀리 한라산이 보이는 넓은 전경, 사람 없음',
+  '제주 검은 돌담 위에 놓인 귤 바구니와 이슬이 맺힌 주황색 귤 클로즈업',
+  '제주 오일장의 귤과 한라봉 좌판, 귤을 담는 상인의 손만 보임',
+  '제주 귤밭 사이 검은 돌담길을 천천히 걸어가는 첨부한 인물의 뒷모습',
+  '제주 협재 해변의 에메랄드빛 바다 앞에 서서 비양도를 바라보는 첨부한 인물, 멀리서 작게 보이는 모습',
+  '노을이 지는 제주 협재 해변과 비양도 실루엣의 넓은 전경, 사람 없음'],
+  t:['제주의 아침은 돌담 너머 귤밭에서 시작됩니다.','아침 이슬이 마르기 전, 귤은 가장 향이 진합니다.','오일장에는 오늘 아침 딴 귤이 주인을 기다립니다.','오늘의 여행자는 돌담길을 따라 천천히 걷습니다.','푸른 바다 건너 비양도가 손에 잡힐 듯 가깝습니다.','해가 지면, 제주의 하루도 노을 속에 조용히 저뭅니다.']},
+ gyeongju:{n:'경주',iv:'(지난 시간에 넣은 내 대사)',s:[
+  '이른 아침 안개가 낀 한국 경주 대릉원의 둥근 고분들과 소나무, 넓은 전경, 사람 없음',
+  '경주 한옥 기와지붕 끝과 처마 아래 매달린 작은 풍경(종) 클로즈업',
+  '경주 황리단길 한옥 카페 앞 골목, 찻잔을 내려놓는 직원의 손만 보임',
+  '경주 기와 돌담 골목을 천천히 걸어가는 첨부한 인물의 뒷모습',
+  '경주 첨성대 옆 분홍빛 핑크뮬리 들판에 서 있는 첨부한 인물, 멀리서 작게 보이는 모습',
+  '노을이 지는 경주 첨성대와 핑크뮬리 들판의 넓은 전경, 사람 없음'],
+  t:['오래전 신라 왕들이 잠든 언덕에 아침 안개가 내립니다.','기와 끝 풍경 소리가 골목의 시간을 알려 줍니다.','오래된 한옥은 이제 카페가 되어 손님을 맞습니다.','오늘의 여행자는 돌담 골목을 천천히 걷습니다.','분홍빛 들판 너머로 신라의 첨성대가 우뚝 보입니다.','해 질 무렵, 천 년의 도시는 다시 고요해집니다.']},
+ busan:{n:'부산',iv:'(지난 시간에 넣은 내 대사)',s:[
+  '아침 햇살을 받은 한국 부산 감천문화마을, 산비탈을 따라 들어선 알록달록한 집들의 넓은 전경, 사람 없음',
+  '부산 감천마을 좁은 계단에 놓인 작은 화분들과 벽화 클로즈업',
+  '부산 자갈치시장 생선 좌판, 고무장갑을 낀 상인의 손만 보임',
+  '부산 감천마을의 좁은 계단을 올라가는 첨부한 인물의 뒷모습',
+  '부산 광안리 해변 모래사장에 맨발로 서서 바다를 바라보는 첨부한 인물, 멀리서 작게 보이는 모습',
+  '노을이 지고 광안대교에 불이 켜지기 시작한 광안리의 넓은 전경, 사람 없음'],
+  t:['산비탈을 따라 알록달록한 집들이 아침을 맞습니다.','좁은 계단마다 누군가의 화분이 놓여 있습니다.','자갈치 시장은 바다보다 먼저 하루를 시작합니다.','오늘의 여행자는 마을 꼭대기까지 올라가 봅니다.','광안리의 차가운 파도가 오래 걸은 발을 식혀 줍니다.','다리에 불이 켜지면, 부산의 밤이 시작됩니다.']},
+ santorini:{n:'산토리니',iv:'(지난 시간에 넣은 내 대사)',s:[
+  '아침 햇살을 받은 그리스 산토리니 이아 마을, 절벽 위 하얀 집과 파란 돔 지붕, 에게해가 보이는 넓은 전경, 사람 없음',
+  '산토리니 하얀 벽의 파란 나무 문과 분홍 부겐빌레아 꽃 클로즈업',
+  '산토리니 골목 기념품 가게의 파란 도자기와 파란 구슬 장식, 물건을 정리하는 주인의 손만 보임',
+  '산토리니 하얀 골목길을 천천히 걸어가는 첨부한 인물의 뒷모습',
+  '산토리니 하얀 계단에 앉아 바다를 내려다보는 첨부한 인물, 멀리서 작게 보이는 모습',
+  '노을이 지는 산토리니 이아 마을과 풍차 실루엣의 넓은 전경, 사람 없음'],
+  t:['바다 위 절벽에 하얀 마을이 아침 햇살을 받습니다.','파란 문 앞에서 분홍 꽃이 바닷바람에 흔들립니다.','골목 가게마다 바다를 닮은 파란색이 가득합니다.','오늘의 여행자는 하얀 골목 사이를 천천히 걷습니다.','하얀 계단에 앉으니 에게해가 한눈에 들어옵니다.','이름난 이아의 노을이 하얀 마을을 붉게 물들입니다.']},
+ kyoto:{n:'교토',iv:'(지난 시간에 넣은 내 대사)',s:[
+  '이른 아침 옅은 안개가 낀 일본 교토 아라시야마 대나무숲 길, 높이 솟은 대나무의 넓은 전경, 사람 없음',
+  '교토 이끼 낀 석등 위에 내려앉은 붉은 단풍잎 클로즈업',
+  '교토 오래된 찻집 툇마루의 말차 한 잔과 화과자, 찻잔을 내려놓는 주인의 손만 보임',
+  '교토 대나무숲 길을 천천히 걸어가는 첨부한 인물의 뒷모습',
+  '교토 붉은 단풍이 덮인 돌길에 서서 단풍을 올려다보는 첨부한 인물, 멀리서 작게 보이는 모습',
+  '노을이 지는 교토 기요미즈데라 나무 무대와 단풍 산의 넓은 전경, 사람 없음'],
+  t:['아침 안개 속 대나무숲은 바람 소리만 들립니다.','이끼 낀 석등 위로 붉은 잎 하나가 내려앉습니다.','오래된 찻집에서는 말차 한 잔이 손님을 기다립니다.','오늘의 여행자는 대나무 사이를 천천히 걷습니다.','돌길을 덮은 단풍이 가을이 왔다고 말해 줍니다.','해가 기울면, 오래된 절과 단풍 산이 붉게 물듭니다.']},
+ custom:{n:'다른 장소',iv:'(지난 시간에 넣은 내 대사)'}
+};
+var ORDER=['amalfi','jeju','gyeongju','busan','santorini','kyoto','custom'];
+var cur='amalfi';
+try{var sv=localStorage.getItem('ilwon8place');if(sv&&P[sv])cur=sv;}catch(e){}
+var CN='';function cname(){return CN.trim()||'[장소]';}
+function pname(){return cur==='custom'?cname():P[cur].n;}
+function shots(){
+  if(cur!=='custom')return P[cur].s;
+  var p=cname();
+  return ['이른 아침 '+p+'의 대표 풍경이 한눈에 보이는 넓은 전경, 사람 없음',
+  p+'에서만 볼 수 있는 대표 소품이나 음식 클로즈업',
+  p+'의 시장이나 가게, 물건을 정리하는 주인의 손만 보임',
+  p+'의 골목길을 천천히 걸어가는 첨부한 인물의 뒷모습',
+  p+'의 가장 멋진 곳에 서서 풍경을 바라보는 첨부한 인물, 멀리서 작게 보이는 모습',
+  '노을이 지는 '+p+'의 넓은 전경, 사람 없음'];
+}
+function narr(){
+  if(cur!=='custom')return P[cur].t;
+  var p=cname();
+  return [p+'의 아침이 오늘도 조용히 밝아옵니다.','작은 물건 하나에 이곳의 이야기가 담겨 있습니다.','시장의 작은 가게가 하루를 천천히 준비합니다.','오늘의 여행자는 낯선 골목을 천천히 걸어 봅니다.','걸음을 멈추자, '+p+'의 풍경이 한눈에 들어옵니다.','해가 지면, '+p+'의 하루도 조용히 저뭅니다.'];
+}
+function shotPrompt(i){return (i===3||i===4?PERSON:'')+shots()[i]+'. '+TAIL;}
+function esc(s){return s.replace(/[&<>]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c];});}
+var CIR=['①','②','③','④','⑤','⑥'];
+
+function render(){
+  var pn=pname();
+  document.getElementById('placeSel').value=cur;
+  document.querySelectorAll('[data-place-chips] .chip').forEach(function(b){b.classList.toggle('on',b.dataset.k===cur);});
+  document.getElementById('customBox').style.display=cur==='custom'?'block':'none';
+  document.getElementById('customHint').style.display=cur==='custom'?'block':'none';
+  document.getElementById('customTop').style.display=cur==='custom'?'inline-block':'none';
+  document.querySelectorAll('.cname').forEach(function(x){if(x.value!==CN&&document.activeElement!==x)x.value=CN;});
+  ['s1-place','s2-place'].forEach(function(id){document.getElementById(id).textContent=pn;});
+  document.querySelectorAll('[data-pname]').forEach(function(e){e.textContent=pn;});
+  var h='';
+  for(var i=0;i<6;i++){
+    h+='<div class="shot" data-copyable><button class="copy">복사</button><div class="sn">'+CIR[i]+' '+SHOTNAME[i]+(i===3||i===4?'<span class="person">앵커 첨부</span>':'')+'</div><div class="pt ptxt">'+esc(shotPrompt(i))+'</div></div>';
+  }
+  document.getElementById('shotList').innerHTML=h;
+  var n=narr(),nh='';
+  for(i=0;i<6;i++){nh+='<div class="prompt" data-copyable><button class="copy">복사</button><span class="lab">'+CIR[i]+' '+SHOTNAME[i]+' · '+n[i].replace(/[\s.,!?·]/g,'').length+'자</span><span class="ptxt">'+esc(n[i])+'</span></div>';}
+  document.getElementById('narrList').innerHTML=nh;
+  document.getElementById('firstLine').textContent=n[0];
+  var sq='';
+  for(i=0;i<6;i++){
+    if(i===5)sq+='<div class="it iv"><b>인터뷰 컷</b>지난 시간 말하는 영상<br>나레이션 없음</div>';
+    sq+='<div class="it"><b>사진 '+CIR[i]+' · 약 5초</b>'+esc(n[i])+'</div>';
+  }
+  document.getElementById('seqList').innerHTML=sq;
+  var pl=cur==='custom'?cname():pn;
+  document.getElementById('g1').textContent='나는 AI 이미지로 「'+pl+'」 여행 다큐 영상을 만들려고 합니다. 다큐 사진 6컷의 이미지 프롬프트를 한국어로 써 주세요.\n순서: ① 이른 아침 넓은 전경 ② 그 장소를 상징하는 소품·음식 클로즈업 ③ 시장이나 가게 등 현지의 삶(사람은 손만) ④ 주인공이 걸어가는 뒷모습 ⑤ 주인공이 멀리서 풍경을 바라보는 모습 ⑥ 노을 전경\n조건:\n- 실제 지명과 그곳의 대표 건물·자연·음식 이름을 넣을 것\n- ①②③⑥은 "사람 없음"(③은 손만)\n- ④⑤는 맨 앞에 "'+PERSON.trim()+'"를 붙일 것\n- 모든 프롬프트 끝에 "'+TAIL+'"를 붙일 것\n- 설명 없이 번호와 프롬프트만';
+  document.getElementById('g2').textContent='첨부한 사진 6장은 「'+pl+'」에서 보낸 하루를 순서대로 담은 것입니다. 이 사진으로 여행 다큐멘터리 나레이션을 써 주세요.\n조건:\n- 사진 한 장에 한 문장, 모두 6문장\n- 한 문장은 18~25자(띄어쓰기·문장부호 빼고)\n- 차분한 존댓말 "~ㅂ니다"\n- 사진에 보이는 것 하나 + 느낌 하나\n- 사진 속 사람은 "오늘의 여행자"라고 부를 것\n- 사진에 없는 가게 이름·역사 이야기는 지어내지 말 것\n- 마지막 문장은 하루를 마무리하는 느낌으로\n- 설명 없이 번호와 문장만';
+  document.getElementById('ivLine').textContent=P[cur].iv;
+  ivRender();
+  try{localStorage.setItem('ilwon8place',cur);}catch(e){}
+}
+var G='남성',A='40대';
+function ivRender(){document.getElementById('ivStyle').textContent='여행을 막 마친 '+A+' '+G+'이 카메라를 보며, 기분 좋은 목소리로 자연스럽게 말하듯 읽어 주세요. 너무 꾸미지 말고 진짜 인터뷰처럼.';}
+function mkChips(el,arr,get,set){
+  el.innerHTML=arr.map(function(a){return '<button class="chip'+(a===get()?' on':'')+'">'+a+'</button>';}).join('');
+  el.querySelectorAll('.chip').forEach(function(b){b.onclick=function(){set(b.textContent);el.querySelectorAll('.chip').forEach(function(x){x.classList.toggle('on',x===b);});ivRender();};});
+}
+mkChips(document.getElementById('gChips'),['남성','여성'],function(){return G;},function(v){G=v;});
+mkChips(document.getElementById('aChips'),['20대','30대','40대','50대','60대','70대'],function(){return A;},function(v){A=v;});
+
+// place controls
+var sel=document.getElementById('placeSel');
+sel.innerHTML=ORDER.map(function(k){return '<option value="'+k+'">'+P[k].n+(k==='amalfi'?' (예시)':'')+'</option>';}).join('');
+sel.onchange=function(){cur=sel.value;render();};
+var pc=document.querySelector('[data-place-chips]');
+pc.innerHTML=ORDER.map(function(k){return '<button class="chip" data-k="'+k+'">'+P[k].n+'</button>';}).join('');
+pc.querySelectorAll('.chip').forEach(function(b){b.onclick=function(){cur=b.dataset.k;render();};});
+document.querySelectorAll('.cname').forEach(function(x){x.addEventListener('input',function(){CN=x.value;try{localStorage.setItem('ilwon8cn',CN);}catch(e){}render();});});
+try{CN=localStorage.getItem('ilwon8cn')||'';}catch(e){}
+
+// music words
+var MW=['documentary piano','calm ambient','travel cinematic','gentle acoustic','emotional strings','nature documentary'];
+var mw=document.getElementById('musicWords');
+mw.innerHTML=MW.map(function(w){return '<button class="chip">'+w+'</button>';}).join('');
+mw.querySelectorAll('.chip').forEach(function(b){b.onclick=function(){copyText(b.textContent,b);};});
+
+// copy
+function copyText(t,btn){
+  function ok(){if(!btn)return;var o=btn.textContent;btn.classList.add('done');btn.textContent='복사됨';setTimeout(function(){btn.classList.remove('done');btn.textContent=o;},1200);}
+  function fb(){var ta=document.createElement('textarea');ta.value=t;ta.style.position='absolute';ta.style.left='-9999px';document.body.appendChild(ta);ta.select();var okc=false;try{okc=document.execCommand('copy');}catch(e){}document.body.removeChild(ta);if(okc)ok();else if(btn)btn.textContent='직접 선택해 복사';}
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(ok,fb);}else fb();
+}
+document.addEventListener('click',function(e){
+  var b=e.target.closest('.copy');if(!b)return;
+  if(b.dataset.copyAll==='shots'){var s=[];for(var i=0;i<6;i++)s.push(CIR[i]+' '+shotPrompt(i));copyText(s.join('\n\n'),b);return;}
+  if(b.dataset.copyAll==='narr'){copyText(narr().map(function(x,i){return CIR[i]+' '+x;}).join('\n'),b);return;}
+  var box=b.closest('[data-copyable]');if(!box)return;var t=box.querySelector('.ptxt');if(t)copyText(t.textContent,b);
+});
+
+// zoom
+var fs=20;try{var z=parseInt(localStorage.getItem('ilwon8fs'),10);if(z)fs=z;}catch(e){}
+function setFs(){document.documentElement.style.setProperty('--fs',fs+'px');try{localStorage.setItem('ilwon8fs',fs);}catch(e){}}
+document.querySelectorAll('.zbtn').forEach(function(b){b.onclick=function(){var d=+b.dataset.z;fs=d===0?20:Math.max(16,Math.min(28,fs+d*2));setFs();};});
+setFs();
+
+// steps
+var steps=[].slice.call(document.querySelectorAll('section.step'));
+var tabs=document.getElementById('tabs');
+tabs.innerHTML=steps.map(function(s,i){return '<button class="tab" data-i="'+i+'"><b>STEP '+i+'</b>'+s.dataset.title+'</button>';}).join('');
+var curStep=0;
+function go(i,noScroll){
+  curStep=i;
+  steps.forEach(function(s,j){s.classList.toggle('on',j===i);});
+  tabs.querySelectorAll('.tab').forEach(function(t,j){t.classList.toggle('on',j===i);if(j===i&&t.scrollIntoView)try{t.scrollIntoView({block:'nearest',inline:'nearest'});}catch(e){}});
+  var cards=steps[i].querySelectorAll('.card[id]');
+  document.getElementById('sideList').innerHTML=[].map.call(cards,function(c){var h=c.querySelector('h3');var t=h?h.cloneNode(true):null;if(t)t.querySelectorAll('.tag').forEach(function(x){x.remove();});return '<a href="#'+c.id+'" data-go="'+c.id+'">'+(t?t.textContent:'')+'</a>';}).join('');
+  document.getElementById('prevB').disabled=i===0;
+  document.getElementById('nextB').disabled=i===steps.length-1;
+  if(!noScroll){var top=document.getElementById('main').getBoundingClientRect().top+window.pageYOffset-130;window.scrollTo(0,Math.max(0,top));}
+  SC.forEach(function(s){s.active=steps[i].contains(s.el);if(s.active)s.resize();});
+}
+window.go=go;
+tabs.addEventListener('click',function(e){var t=e.target.closest('.tab');if(t)go(+t.dataset.i);});
+document.getElementById('prevB').onclick=function(){if(curStep>0)go(curStep-1);};
+document.getElementById('nextB').onclick=function(){if(curStep<steps.length-1)go(curStep+1);};
+document.getElementById('sideList').addEventListener('click',function(e){var a=e.target.closest('a');if(!a)return;e.preventDefault();var c=document.getElementById(a.dataset.go);var top=c.getBoundingClientRect().top+window.pageYOffset-125;window.scrollTo({top:top,behavior:'smooth'});});
+
+// ===== three.js scenes =====
+var SC=[];
+function canvasTex(w,h,draw){var c=document.createElement('canvas');c.width=w;c.height=h;var g=c.getContext('2d');draw(g,w,h);var t=new THREE.CanvasTexture(c);t.anisotropy=4;return t;}
+function label(text,color){
+  var t=canvasTex(512,128,function(g,w,h){g.font='bold 52px "Malgun Gothic","Apple SD Gothic Neo",sans-serif';g.textAlign='center';g.textBaseline='middle';g.fillStyle='rgba(255,255,255,.92)';var tw=g.measureText(text).width+48;g.beginPath();var x=(w-tw)/2,r=30;g.moveTo(x+r,14);g.arcTo(x+tw,14,x+tw,h-14,r);g.arcTo(x+tw,h-14,x,h-14,r);g.arcTo(x,h-14,x,14,r);g.arcTo(x,14,x+tw,14,r);g.fill();g.fillStyle=color||'#23221f';g.fillText(text,w/2,h/2+2);});
+  var s=new THREE.Sprite(new THREE.SpriteMaterial({map:t,transparent:true,depthTest:false}));s.scale.set(1.9,.475,1);return s;
+}
+function photoTex(kind){
+  return canvasTex(256,180,function(g,w,h){
+    var sky={0:['#fde7c2','#bfe0f0'],1:['#fff6dc','#fff6dc'],2:['#f4ece0','#f4ece0'],3:['#dff0e6','#cfe8f5'],4:['#cfe8f5','#9cc9e6'],5:['#f6a46b','#7a5ca8']}[kind];
+    var gr=g.createLinearGradient(0,0,0,h);gr.addColorStop(0,sky[0]);gr.addColorStop(1,sky[1]);g.fillStyle=gr;g.fillRect(0,0,w,h);
+    if(kind===0){g.fillStyle='#f7c55a';g.beginPath();g.arc(190,55,22,0,7);g.fill();g.fillStyle='#7fb07a';g.beginPath();g.moveTo(0,140);g.quadraticCurveTo(80,80,160,130);g.quadraticCurveTo(210,100,256,125);g.lineTo(256,180);g.lineTo(0,180);g.fill();g.fillStyle='#e9d9c4';for(var i=0;i<5;i++)g.fillRect(40+i*30,118-i*6,22,20);}
+    if(kind===1){g.fillStyle='#8a6a45';g.fillRect(50,110,156,50);g.fillStyle='#f2c230';[[90,95],[128,88],[166,96],[110,72],[148,72]].forEach(function(p){g.beginPath();g.ellipse(p[0],p[1],22,18,0,0,7);g.fill();});g.fillStyle='#5e9c4c';g.beginPath();g.ellipse(70,70,18,8,-.6,0,7);g.fill();}
+    if(kind===2){g.fillStyle='#c98f5a';g.fillRect(20,100,216,60);g.fillStyle='#fff';for(i=0;i<4;i++){g.fillRect(36+i*50,70,26,32);}g.fillStyle='#f1c9a5';g.beginPath();g.ellipse(128,96,26,14,0,0,7);g.fill();}
+    if(kind===3){g.fillStyle='#b7a58c';for(i=0;i<6;i++)g.fillRect(0,150-i*14,256,8);g.fillStyle='#3d4b63';g.fillRect(118,62,22,52);g.beginPath();g.arc(129,52,12,0,7);g.fill();g.fillRect(120,112,7,24);g.fillRect(132,112,7,24);}
+    if(kind===4){g.fillStyle='#3f7fb3';g.fillRect(0,105,256,75);g.fillStyle='#e8dcc4';g.fillRect(0,140,256,40);g.fillStyle='#3d4b63';g.fillRect(70,112,7,24);g.beginPath();g.arc(73,106,5,0,7);g.fill();}
+    if(kind===5){g.fillStyle='#fbd27a';g.beginPath();g.arc(128,112,30,0,7);g.fill();g.fillStyle='#3b2f55';g.fillRect(0,118,256,62);g.fillStyle='#2a2140';g.beginPath();g.moveTo(60,140);g.lineTo(90,140);g.lineTo(84,150);g.lineTo(66,150);g.fill();}
+    g.strokeStyle='rgba(0,0,0,.08)';g.lineWidth=6;g.strokeRect(3,3,w-6,h-6);
+  });
+}
+function makeScene(el,build){
+  if(!window.THREE){el.innerHTML='<p style="padding:20px;color:#68655e">입체 그림을 불러오지 못했습니다. 아래 설명을 보며 진행하세요.</p>';return null;}
+  var r;try{r=new THREE.WebGLRenderer({antialias:true,alpha:true});}catch(e){el.innerHTML='<p style="padding:20px;color:#68655e">이 컴퓨터에서는 입체 그림이 보이지 않습니다. 아래 설명을 보며 진행하세요.</p>';return null;}
+  r.setPixelRatio(Math.min(2,window.devicePixelRatio||1));el.appendChild(r.domElement);
+  var scene=new THREE.Scene();var cam=new THREE.PerspectiveCamera(36,1,.1,100);
+  scene.add(new THREE.HemisphereLight(0xffffff,0xd8d2c4,.95));var dl=new THREE.DirectionalLight(0xffffff,.6);dl.position.set(3,6,5);scene.add(dl);
+  var s={el:el,r:r,scene:scene,cam:cam,t:0,playing:true,active:false};
+  s.resize=function(){var w=el.clientWidth,h=el.clientHeight;if(!w||!h)return;r.setSize(w,h,false);cam.aspect=w/h;cam.updateProjectionMatrix();if(s.onResize)s.onResize(w/h);};
+  build(s);SC.push(s);
+  var card=el.parentNode;
+  card.querySelectorAll('.tctl button').forEach(function(b){b.onclick=function(){if(b.dataset.act==='play'){s.playing=!s.playing;b.textContent=s.playing?'❚❚ 멈춤':'▶ 재생';}else{s.t=0;if(s.reset)s.reset();}};});
+  return s;
+}
+var last=performance.now();
+function loop(now){
+  var dt=Math.min(.05,(now-last)/1000);last=now;
+  SC.forEach(function(s){if(!s.active)return;if(s.playing)s.t+=dt;s.update(s.t,dt);s.r.render(s.scene,s.cam);});
+  requestAnimationFrame(loop);
+}
+window.addEventListener('resize',function(){SC.forEach(function(s){if(s.active)s.resize();});});
+
+// Scene A: overview props
+makeScene(document.getElementById('sceneA'),function(s){
+  var T=THREE,root=new T.Group();s.scene.add(root);
+  function M(c,o){return new T.MeshStandardMaterial(Object.assign({color:c,roughness:.6,metalness:.05},o||{}));}
+  var props=[];
+  // 1 photo stack
+  var p1=new T.Group();[0,1,2].forEach(function(i){var m=new T.Mesh(new T.BoxGeometry(.95,.68,.03),[M(0xffffff),M(0xffffff),M(0xffffff),M(0xffffff),new T.MeshStandardMaterial({map:photoTex([0,1,5][i]),roughness:.7}),M(0xffffff)]);m.position.set(i*.12-.12,i*.1,i*.05);m.rotation.z=(i-1)*.12;p1.add(m);});
+  // 2 script + pencil
+  var p2=new T.Group();var paper=new T.Mesh(new T.BoxGeometry(.72,.95,.02),[M(0xffffff),M(0xffffff),M(0xffffff),M(0xffffff),new T.MeshStandardMaterial({map:canvasTex(180,240,function(g,w,h){g.fillStyle='#fff';g.fillRect(0,0,w,h);g.fillStyle='#0f766e';g.font='bold 24px sans-serif';g.fillText('대본',16,34);g.fillStyle='#c9c5bb';for(var i=0;i<6;i++){g.fillRect(16,58+i*28,w-32-(i%2)*30,6);}})}),M(0xffffff)]);p2.add(paper);
+  var pen=new T.Group();var body=new T.Mesh(new T.CylinderGeometry(.045,.045,.7,12),M(0xf2c230));pen.add(body);var tip=new T.Mesh(new T.ConeGeometry(.045,.13,12),M(0xe8c9a0));tip.position.y=-.41;pen.add(tip);var er=new T.Mesh(new T.CylinderGeometry(.047,.047,.09,12),M(0xe58a9a));er.position.y=.39;pen.add(er);pen.position.set(.38,-.05,.12);pen.rotation.z=.6;p2.add(pen);
+  // 3 mic
+  var p3=new T.Group();var head=new T.Mesh(new T.SphereGeometry(.23,24,18),M(0x4b5563,{roughness:.4,metalness:.4}));head.position.y=.32;p3.add(head);var ring=new T.Mesh(new T.TorusGeometry(.2,.025,8,24),M(0x0f766e));ring.position.y=.2;ring.rotation.x=Math.PI/2;p3.add(ring);var hd=new T.Mesh(new T.CylinderGeometry(.07,.05,.5,16),M(0x2f3640));hd.position.y=-.07;p3.add(hd);var base=new T.Mesh(new T.CylinderGeometry(.28,.3,.05,24),M(0x2f3640));base.position.y=-.36;p3.add(base);
+  var waves=[];[0,1,2].forEach(function(i){var w=new T.Mesh(new T.TorusGeometry(.32+i*.13,.012,6,32,Math.PI*.6),M(0x0f766e,{transparent:true,opacity:.8}));w.position.y=.32;w.rotation.z=-Math.PI*.3;p3.add(w);waves.push(w);});
+  // 4 film strip timeline
+  var p4=new T.Group();var strip=new T.Mesh(new T.BoxGeometry(1.25,.5,.04),M(0x2f3640));p4.add(strip);for(var i=0;i<6;i++){[-1,1].forEach(function(sd){var h=new T.Mesh(new T.BoxGeometry(.06,.05,.05),M(0xf5f3ee));h.position.set(-.5+i*.2,sd*.2,.01);p4.add(h);});}
+  [0,1,2,3].forEach(function(i){var f=new T.Mesh(new T.PlaneGeometry(.24,.24),new T.MeshStandardMaterial({map:photoTex([0,1,3,5][i])}));f.position.set(-.42+i*.28,0,.025);p4.add(f);});
+  var wave=new T.Group();for(i=0;i<14;i++){var b=new T.Mesh(new T.BoxGeometry(.05,.05+Math.abs(Math.sin(i*1.3))*.18,.03),M(0x0f766e));b.position.set(-.55+i*.085,-.42,0);wave.add(b);}p4.add(wave);
+  var head4=new T.Mesh(new T.BoxGeometry(.025,.95,.06),M(0xe0453a));head4.position.z=.05;p4.add(head4);
+  // 5 screen + note
+  var p5=new T.Group();var mon=new T.Mesh(new T.BoxGeometry(1.05,.68,.06),M(0x2f3640));p5.add(mon);var scr=new T.Mesh(new T.PlaneGeometry(.95,.58),new T.MeshStandardMaterial({map:canvasTex(256,160,function(g,w,h){var gr=g.createLinearGradient(0,0,0,h);gr.addColorStop(0,'#f6a46b');gr.addColorStop(1,'#7a5ca8');g.fillStyle=gr;g.fillRect(0,0,w,h);g.fillStyle='rgba(255,255,255,.9)';g.beginPath();g.moveTo(112,52);g.lineTo(152,80);g.lineTo(112,108);g.fill();g.fillStyle='rgba(0,0,0,.45)';g.fillRect(40,128,176,18);g.fillStyle='#fff';g.font='14px sans-serif';g.fillText('오늘의 여행자는...',58,142);})}));scr.position.z=.035;p5.add(scr);var st=new T.Mesh(new T.CylinderGeometry(.04,.04,.25,10),M(0x2f3640));st.position.y=-.45;p5.add(st);var sb=new T.Mesh(new T.BoxGeometry(.45,.04,.2),M(0x2f3640));sb.position.y=-.57;p5.add(sb);
+  var note=new T.Group();var nh=new T.Mesh(new T.SphereGeometry(.07,12,10),M(0x0f766e));nh.scale.set(1.2,.9,.9);note.add(nh);var ns=new T.Mesh(new T.CylinderGeometry(.015,.015,.3,8),M(0x0f766e));ns.position.set(.07,.15,0);note.add(ns);var nf=new T.Mesh(new T.BoxGeometry(.12,.04,.02),M(0x0f766e));nf.position.set(.12,.28,0);nf.rotation.z=-.4;note.add(nf);note.position.set(.62,.42,.1);p5.add(note);
+  props=[p1,p2,p3,p4,p5];
+  var names=['① 사진 6장','② 대본','③ 목소리','④ 캡컷 맞추기','⑤ 음악·자막'];
+  var caps=['① 플로우에서 다큐 사진 6장을 만듭니다','② 사진마다 한 문장씩 나레이션 대본을 정합니다','③ AI 스튜디오에서 문장마다 목소리를 만듭니다','④ 사진 길이를 목소리에 맞추고 천천히 확대합니다','⑤ 음악과 자막을 얹어 한 편으로 내보냅니다'];
+  var X=[-4,-2,0,2,4],labels=[];
+  props.forEach(function(p,i){p.position.set(X[i],Math.sin(i*.9)*.15,0);root.add(p);var l=label(names[i]);l.position.set(X[i],-.95,0);root.add(l);labels.push(l);});
+  var curve=new T.CatmullRomCurve3(X.map(function(x,i){return new T.Vector3(x,-.62+Math.sin(i*.9)*.15,.3);}));
+  var tube=new T.Mesh(new T.TubeGeometry(curve,80,.018,6,false),M(0xcfcac0));root.add(tube);
+  var dot=new T.Mesh(new T.SphereGeometry(.09,16,12),new T.MeshStandardMaterial({color:0x0f766e,emissive:0x0f766e,emissiveIntensity:.4}));root.add(dot);
+  s.onResize=function(a){s.cam.position.set(0,.9,Math.max(5.4,10.2/a*1.45));s.cam.lookAt(0,-.25,0);};
+  var capEl=document.getElementById('capA'),lastI=-1;
+  s.update=function(t){
+    var per=2.4,u=(t/per)%5,i=Math.floor(u),f=u-i;
+    var k=Math.min(1,(i+Math.min(1,f*1.6))/4);dot.position.copy(curve.getPoint(Math.min(.999,i/4+(i<4?Math.min(1,f*1.6)/4:0))));
+    props.forEach(function(p,j){var on=j===i;var sc=on?1.18:1;p.scale.lerp(new T.Vector3(sc,sc,sc),.12);p.rotation.y=Math.sin(t*.8+j)*.25+(on?Math.sin(t*2)*.08:0);p.position.y=Math.sin(j*.9)*.15+(on?.12+Math.sin(t*3)*.03:0);});
+    waves.forEach(function(w,j){w.material.opacity=i===2?.35+.5*Math.abs(Math.sin(t*4-j)):.25;});
+    head4.position.x=-.6+((t*.5)%1.2);
+    note.position.y=.42+Math.sin(t*3)*.06;
+    if(i!==lastI){lastI=i;capEl.textContent=caps[i];}
+  };
+  s.reset=function(){lastI=-1;};
+});
+
+// Scene B: timeline
+makeScene(document.getElementById('sceneB'),function(s){
+  var T=THREE,root=new T.Group();s.scene.add(root);
+  function M(c,o){return new T.MeshStandardMaterial(Object.assign({color:c,roughness:.6},o||{}));}
+  var nar=[.9,1.15,1.05,.95,1.2,.85];
+  var items=[];
+  var track=new T.Mesh(new T.BoxGeometry(11.4,.95,.05),M(0xe9e6df));track.position.set(0,0,-.06);root.add(track);
+  var track2=new T.Mesh(new T.BoxGeometry(11.4,.5,.05),M(0xe3efed));track2.position.set(0,-1.05,-.06);root.add(track2);
+  for(var i=0;i<7;i++){
+    var iv=i===5;var g=new T.Group();
+    if(iv){var pad=new T.Mesh(new T.BoxGeometry(1.3,.8,.06),M(0xf1cdbb));g.add(pad);var cam=new T.Group();var bd=new T.Mesh(new T.BoxGeometry(.5,.32,.3),M(0xa3452a));cam.add(bd);var ln=new T.Mesh(new T.CylinderGeometry(.11,.13,.2,16),M(0x3a2a24));ln.rotation.z=Math.PI/2;ln.position.x=.33;cam.add(ln);var vf=new T.Mesh(new T.BoxGeometry(.16,.1,.18),M(0x3a2a24));vf.position.set(-.12,.21,0);cam.add(vf);cam.position.z=.3;g.add(cam);g.userData={iv:true,cam:cam};}
+    else{var k=i>5?5:i;var fr=new T.Mesh(new T.BoxGeometry(1,.8,.08),M(0xffffff));g.add(fr);var ph=new T.Mesh(new T.PlaneGeometry(.92,.7),new T.MeshStandardMaterial({map:photoTex(k)}));ph.position.z=.045;g.add(ph);g.userData={k:k,ph:ph,fr:fr,need:nar[k]};
+      var nw=new T.Group();var n=Math.round(nar[k]*9);for(var j=0;j<n;j++){var b=new T.Mesh(new T.BoxGeometry(.07,.08+Math.abs(Math.sin(j*1.7+k))*.26,.06),M(0x0f766e));b.position.set(j*.11,0,0);nw.add(b);}nw.position.y=-1.05;g.add(nw);g.userData.nw=nw;}
+    root.add(g);items.push(g);
+  }
+  var ph=new T.Group();var bar=new T.Mesh(new T.BoxGeometry(.04,2.1,.04),M(0xe0453a));bar.position.y=-.5;ph.add(bar);var cap=new T.Mesh(new T.ConeGeometry(.11,.2,4),M(0xe0453a));cap.rotation.z=Math.PI;cap.position.y=.62;ph.add(cap);ph.position.z=.12;root.add(ph);
+  var lp=label('사진 줄'),ln2=label('나레이션 줄','#0f766e');lp.scale.set(1.5,.375,1);ln2.scale.set(1.5,.375,1);lp.position.set(-6.5,0,0);ln2.position.set(-6.5,-1.05,0);root.add(lp);root.add(ln2);
+  var tip=label('사진을 목소리 길이에 맞춰 늘리기','#0f766e');tip.scale.set(3.4,.85,1);tip.position.set(0,1.05,0);root.add(tip);
+  s.onResize=function(a){var d=Math.max(6.5,6.6/(.325*a)+.6);s.cam.position.set(1.2,.9,d);s.cam.lookAt(-.4,-.4,0);};
+  var capEl=document.getElementById('capB');var lastPh=-1;
+  function layout(stretch){var x=-5.5;items.forEach(function(g){var u=g.userData;var w=u.iv?1.3:(1+(Math.max(0,u.need-1)+.08)*stretch);u.cw=w;g.position.x=x+w/2;if(!u.iv){u.fr.scale.x=w;u.nw.position.x=-w/2+.1;}x+=w+.08;});return x;}
+  s.update=function(t){
+    var cyc=14,u=t%cyc,phase,stretch;
+    if(u<4){phase=0;stretch=0;}else if(u<6.5){phase=1;stretch=(u-4)/2.5;}else{phase=2;stretch=1;}
+    var end=layout(stretch);var start=-5.5;var px=phase===2?start+(end-start)*((u-6.5)/7.5):start;ph.position.x=px;
+    items.forEach(function(g){var d=g.userData;var inside=phase===2&&px>g.position.x-d.cw/2&&px<g.position.x+d.cw/2;
+      if(d.ph){var zz=inside?1+((px-(g.position.x-d.cw/2))/d.cw)*.12:1;d.ph.scale.set(d.cw*zz>d.cw?d.cw:d.cw,1,1);d.ph.material.map.repeat.set(1/zz,1/zz);d.ph.material.map.offset.set((1-1/zz)/2,(1-1/zz)/2);}
+      if(d.cam)d.cam.rotation.y=inside?Math.sin(t*6)*.35:0;
+      g.position.z=inside?.15:0;});
+    tip.material.opacity=phase===1?1:0;
+    if(phase!==lastPh){lastPh=phase;capEl.textContent=['① 사진은 처음에 모두 5초로 들어옵니다. 아래 나레이션이 더 긴 곳이 있습니다.','② 나레이션보다 짧은 사진은 오른쪽 끝을 끌어 늘립니다.','③ 재생하면 사진이 천천히 확대되고, 인터뷰 컷 동안은 나레이션이 비어 있습니다.'][phase];}
+  };
+  s.reset=function(){lastPh=-1;};
+});
+
+document.getElementById('guideBtn').onclick=function(){go(0,true);var c=document.getElementById('s0-guide');window.scrollTo({top:c.getBoundingClientRect().top+window.pageYOffset-125,behavior:'smooth'});};
+render();go(0,true);requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>

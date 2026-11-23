@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>캡컷 프로 200% 활용 · 2회차 — 비트 사진 릴 & 글자 뒤로 지나가는 사람</title>
+<style>
+:root{--pt:#1f6feb;--pt-soft:#eaf2ff;--ink:#1d2433;--sub:#5b6476;--line:#e4e7ec;--bg:#fbfbf9;--card:#ffffff;
+--set:#eef4ff;--set-l:#c9dafc;--warn:#fdf0f1;--warn-l:#f3c9cf;--more:#eef8f2;--more-l:#c5e6d1;--stuck:#f4f1fb;--stuck-l:#d9d0f0;--fs:20px}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;font-size:var(--fs);line-height:1.7;word-break:keep-all}
+.bar{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid var(--line)}
+.bar-top{display:flex;align-items:center;gap:12px;padding:10px 20px}
+.bar-top h1{font-size:1.05em;margin:0;flex:1}
+.bar-top h1 small{color:var(--sub);font-weight:500;font-size:.8em;margin-left:8px}
+.fsbtn{border:1px solid var(--line);background:#fff;border-radius:8px;padding:4px 12px;font-size:.8em;cursor:pointer;color:var(--ink)}
+.fsbtn:hover{border-color:var(--pt);color:var(--pt)}
+.tabs{display:flex;gap:4px;padding:0 16px;overflow-x:auto}
+.tab{border:none;background:none;padding:10px 14px;font-size:.82em;color:var(--sub);cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap;font-family:inherit}
+.tab b{color:var(--pt);margin-right:6px}
+.tab.on{color:var(--ink);font-weight:700;border-bottom-color:var(--pt)}
+.wrap{display:grid;grid-template-columns:1fr 230px;gap:24px;max-width:1280px;margin:0 auto;padding:24px 20px 40px}
+.side{position:sticky;top:118px;align-self:start;border-left:1px solid var(--line);padding-left:14px}
+.side p{font-size:.7em;color:var(--sub);margin:0 0 6px;letter-spacing:.05em}
+.side a{display:block;font-size:.75em;color:var(--sub);text-decoration:none;padding:5px 0;line-height:1.4;cursor:pointer}
+.side a:hover{color:var(--pt)}
+.step{display:none}.step.on{display:block}
+.step-head{margin-bottom:18px}
+.step-head .no{color:var(--pt);font-weight:700;font-size:.8em;letter-spacing:.08em}
+.step-head h2{margin:2px 0 6px;font-size:1.45em}
+.step-head p{margin:0;color:var(--sub)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(420px,1fr));gap:18px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;scroll-margin-top:130px}
+.card.wide{grid-column:1/-1}
+.card h3{margin:0 0 10px;font-size:1.08em;display:flex;align-items:center;gap:10px}
+.card h3 .n{display:inline-flex;width:30px;height:30px;border-radius:50%;background:var(--pt-soft);color:var(--pt);font-size:.75em;align-items:center;justify-content:center;flex:none}
+.card ol,.card ul{margin:6px 0;padding-left:1.3em}.card li{margin:4px 0}
+.tag{display:inline-block;font-size:.68em;padding:1px 9px;border-radius:20px;border:1px solid var(--line);color:var(--sub);vertical-align:middle;margin-left:4px}
+.tag.must{border-color:var(--pt);color:var(--pt)}
+.tag.pro{border-color:#8a63d2;color:#6c45b8}
+.box{border-radius:10px;padding:12px 16px;margin:12px 0;font-size:.9em;border:1px solid}
+.box b.t{display:block;font-size:.85em;margin-bottom:2px}
+.box.set{background:var(--set);border-color:var(--set-l)}.box.set b.t{color:#2457c5}
+.box.warn{background:var(--warn);border-color:var(--warn-l)}.box.warn b.t{color:#b4384b}
+.box.more{background:var(--more);border-color:var(--more-l)}.box.more b.t{color:#25834d}
+.box.stuck{background:var(--stuck);border-color:var(--stuck-l)}.box.stuck b.t{color:#6a4fb5}
+.kbd{display:inline-block;border:1px solid #cfd4dc;border-bottom-width:2px;border-radius:6px;padding:0 7px;font-size:.8em;background:#fff;font-family:inherit}
+.shot{margin:12px 0 4px;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#111}
+.shot img{display:block;width:100%;cursor:zoom-in}
+.card.big{grid-column:1/-1}
+.card.big .shot img{cursor:zoom-out;width:auto;max-width:100%;margin:0 auto}
+.shot img{max-width:100%}
+.cap{font-size:.75em;color:var(--sub);margin:2px 0 8px}
+.prompt{position:relative;background:#f6f7f9;border:1px solid var(--line);border-radius:10px;padding:12px 14px 12px 14px;margin:8px 0;font-size:.88em}
+.prompt .lab{font-size:.75em;color:var(--pt);font-weight:700;display:block}
+.copy{position:absolute;top:8px;right:8px;border:1px solid var(--line);background:#fff;border-radius:8px;font-size:.7em;padding:3px 10px;cursor:pointer;font-family:inherit}
+.copy.done{border-color:var(--pt);color:var(--pt)}
+.prompt p{margin:0;padding-right:70px}
+table{border-collapse:collapse;width:100%;font-size:.85em;margin:8px 0}
+th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+th{background:#f6f7f9;font-weight:600}
+a.lk{color:var(--pt);word-break:break-all}
+.svgbox{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px;margin:10px 0}
+.check li{list-style:none;margin-left:-1.2em}
+.check li::before{content:"□ ";color:var(--pt)}
+.foot{position:sticky;bottom:0;z-index:15;background:#fff;border-top:1px solid var(--line);display:flex;justify-content:space-between;padding:10px 20px}
+.foot button{border:1px solid var(--line);background:#fff;border-radius:10px;padding:8px 18px;font-size:.8em;cursor:pointer;font-family:inherit;color:var(--ink)}
+.foot button.nx{background:var(--pt);border-color:var(--pt);color:#fff}
+.foot button:disabled{opacity:.35;cursor:default}
+@media(max-width:900px){.wrap{grid-template-columns:1fr}.side{display:none}.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M1 1L8 5L1 9" fill="none" stroke="#9aa3b2" stroke-width="1.6"/></marker></defs></svg>
+<div class="bar">
+  <div class="bar-top">
+    <h1>캡컷 프로 200% 활용 · 2회차<small>비트 사진 릴 + 글자 뒤로 지나가는 사람</small></h1>
+    <button class="fsbtn" onclick="fs(-2)">가−</button><button class="fsbtn" onclick="fs(2)">가+</button>
+  </div>
+  <div class="tabs" id="tabs"></div>
+</div>
+
+<div class="wrap">
+<main id="main">
+
+<!-- STEP 0 -->
+<section class="step" data-title="오늘 만들 것">
+  <div class="step-head"><div class="no">STEP 0</div><h2>오늘 만들 영상 두 편</h2>
+  <p>지난 시간에 못 한 "비트에 맞춘 연말 사진 릴"을 먼저 끝내고, 이어서 "글자 뒤로 사람이 지나가는 타이틀"을 만듭니다.</p></div>
+  <div class="grid">
+    <div class="card wide" id="s0-flow" data-nav="오늘 흐름 한눈에">
+      <h3><span class="n">1</span>오늘 흐름 한눈에</h3>
+      <div class="svgbox">
+      <svg viewBox="0 0 1000 210" width="100%" role="img" aria-label="재료 모으기, 비트 사진 릴, 글자 뒤 인물 타이틀, 저장과 로그아웃 순서">
+        
+        <g font-family="inherit" text-anchor="middle">
+          <rect x="10" y="40" width="210" height="120" rx="14" fill="#eef4ff" stroke="#c9dafc"/>
+          <text x="115" y="80" font-size="15" fill="#1f6feb" font-weight="700">STEP 1</text>
+          <text x="115" y="108" font-size="20" fill="#1d2433" font-weight="700">재료 모으기</text>
+          <text x="115" y="136" font-size="14" fill="#5b6476">사진 · 걷는 사람 영상</text>
+          <line x1="225" y1="100" x2="260" y2="100" stroke="#9aa3b2" stroke-width="2" marker-end="url(#ar)"/>
+          <rect x="265" y="40" width="230" height="120" rx="14" fill="#fff" stroke="#1f6feb" stroke-width="2"/>
+          <text x="380" y="80" font-size="15" fill="#1f6feb" font-weight="700">STEP 2 · 작품 ①</text>
+          <text x="380" y="108" font-size="20" fill="#1d2433" font-weight="700">비트 사진 릴</text>
+          <text x="380" y="136" font-size="14" fill="#5b6476">음악 박자에 맞춰 사진 넘기기</text>
+          <line x1="500" y1="100" x2="535" y2="100" stroke="#9aa3b2" stroke-width="2" marker-end="url(#ar)"/>
+          <rect x="540" y="40" width="250" height="120" rx="14" fill="#fff" stroke="#1f6feb" stroke-width="2"/>
+          <text x="665" y="80" font-size="15" fill="#1f6feb" font-weight="700">STEP 3 · 작품 ②</text>
+          <text x="665" y="108" font-size="20" fill="#1d2433" font-weight="700">글자 뒤 인물 타이틀</text>
+          <text x="665" y="136" font-size="14" fill="#5b6476">배경 · 글자 · 사람 3층 쌓기</text>
+          <line x1="795" y1="100" x2="830" y2="100" stroke="#9aa3b2" stroke-width="2" marker-end="url(#ar)"/>
+          <rect x="835" y="40" width="155" height="120" rx="14" fill="#eef8f2" stroke="#c5e6d1"/>
+          <text x="912" y="80" font-size="15" fill="#25834d" font-weight="700">STEP 4</text>
+          <text x="912" y="108" font-size="20" fill="#1d2433" font-weight="700">저장·정리</text>
+          <text x="912" y="136" font-size="14" fill="#5b6476">업로드·로그아웃</text>
+        </g>
+      </svg>
+      </div>
+      <p class="cap">화면 캡처는 누르면 크게 볼 수 있습니다.</p>
+      <p>두 작품 모두 <b>유료(프로) 기능</b>을 씁니다. 사진 릴은 <b>프로 음원·프로 전환·프로 텍스트 템플릿</b>, 인물 타이틀은 <b>동영상 배경 자동 삭제</b>가 핵심입니다.</p>
+    </div>
+
+    <div class="card" id="s0-ready" data-nav="시작 전 준비">
+      <h3><span class="n">2</span>시작 전 준비 <span class="tag must">필수</span></h3>
+      <ul class="check">
+        <li>캡컷 PC 프로그램을 열고 <b>내 프로 계정으로 로그인</b> (왼쪽 위에 <b>Pro</b> 표시 확인)</li>
+        <li>설정 → 저장 위치가 <b>D드라이브 내 폴더</b>로 되어 있는지 확인</li>
+        <li>설정 → <b>프록시</b>(편집용 가벼운 사본) 켜져 있는지 확인</li>
+        <li>D드라이브 내 폴더 안에 <b>「2회차 재료」</b> 폴더 하나 만들기</li>
+      </ul>
+      <div class="box warn"><b class="t">공용 PC 주의</b>내려받은 파일이 "다운로드" 폴더에 쌓이면 다음 사람이 봅니다. 받은 재료는 D드라이브 내 폴더로 옮겨 두고, 수업이 끝나면 꼭 로그아웃합니다.</div>
+    </div>
+
+    <div class="card" id="s0-home" data-nav="캡컷 홈 화면">
+      <h3><span class="n">3</span>캡컷 홈 화면 다시 보기</h3>
+      <div class="shot"><img src="img01.jpg" alt="캡컷 PC 홈 화면: 프로젝트 만들기, Omni 에이전트, AI 동영상, AI 이미지"></div>
+      <p class="cap">홈 화면 맨 위 「프로젝트 만들기」로 새 작업을 시작합니다. 아래에는 Omni 에이전트, AI 동영상, AI 이미지 같은 AI 도구가 모여 있습니다.</p>
+    </div>
+  </div>
+</section>
+
+<!-- STEP 1 -->
+<section class="step" data-title="재료 모으기">
+  <div class="step-head"><div class="no">STEP 1</div><h2>재료 모으기</h2>
+  <p>사진은 세 가지 방법 중 하나로, 걷는 사람 영상은 아래 목록에서 하나를 골라 받습니다.</p></div>
+  <div class="grid">
+    <div class="card wide" id="s1-three" data-nav="사진 구하는 3가지 길">
+      <h3><span class="n">1</span>연말 사진 구하는 3가지 길</h3>
+      <table>
+        <tr><th>방법</th><th>어디서</th><th>좋은 점</th><th>주의</th></tr>
+        <tr><td><b>A. 직접 만들기</b> <span class="tag pro">프로</span></td><td>캡컷 미디어 → 생성 → AI 이미지</td><td>내가 원하는 장면 그대로</td><td>모델마다 크레딧이 다름 (아래 2번 카드)</td></tr>
+        <tr><td><b>B. 캡컷 라이브러리</b></td><td>캡컷 미디어 → 라이브러리 → 「크리스마스와 새해」</td><td>프로그램 안에서 바로, 영상도 있음</td><td>남들도 많이 씀</td></tr>
+        <tr><td><b>C. 무료 사진 사이트</b></td><td><a class="lk" href="https://www.pexels.com/ko-kr/" target="_blank" rel="noopener">펙셀스(Pexels)</a> · <a class="lk" href="https://pixabay.com/ko/" target="_blank" rel="noopener">픽사베이(Pixabay)</a></td><td>실제 사진이라 자연스러움</td><td>영어 검색어가 더 잘 나옴</td></tr>
+      </table>
+      <p>사진은 <b>6~8장</b>이면 충분합니다. 섞어서 써도 됩니다.</p>
+    </div>
+
+    <div class="card" id="s1-gen" data-nav="A. AI 이미지로 만들기">
+      <h3><span class="n">2</span>A. AI 이미지로 만들기 <span class="tag pro">프로</span></h3>
+      <ol>
+        <li>새 프로젝트 → 왼쪽 <b>생성</b> → <b>AI 이미지</b></li>
+        <li><b>모델</b>을 누르고 고르기</li>
+        <li><b>설정</b>을 <b>2K · 16:9</b>로 맞추기</li>
+        <li>아래 프롬프트(그림 주문서)를 붙여 넣고 <b>생성</b></li>
+        <li>나온 4장 중 마음에 드는 것의 <b>＋</b>를 눌러 담기</li>
+      </ol>
+      <div class="shot"><img src="img02.jpg" alt="캡컷 AI 이미지 모델 목록"></div>
+      <p class="cap">모델 목록. 보라색 보석 표시가 붙은 것은 프로 전용 모델입니다.</p>
+      <div class="box set"><b class="t">어떤 모델을 고를까</b>
+        <ul>
+          <li><b>Seedream 5.0</b>(보석 표시): 강사 프로 계정에서는 <b>크레딧 숫자가 표시되지 않았습니다.</b> 오늘 실습 추천.</li>
+          <li><b>Seedream 4.3</b>: 생성 버튼에 <b>Free</b> 표시. 무료로 넉넉히 연습할 때.</li>
+          <li><b>Seedream 5.5</b>: 한 번 생성에 <b>76크레딧</b>이 표시됐습니다. 오늘은 쓰지 않습니다.</li>
+        </ul>
+      </div>
+      <div class="shot"><img src="img03.jpg" alt="Seedream 5.5 선택 시 필요한 크레딧 76 표시"></div>
+      <p class="cap">Seedream 5.5를 고르면 아래에 「필요한 크레딧 계산액 76」이 뜹니다. 생성 버튼 위 숫자를 꼭 보고 누르세요.</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div><div class="shot"><img src="img04.jpg" alt="Seedream 5.0 선택 화면: 크레딧 숫자 없음"></div><p class="cap">Seedream 5.0: 크레딧 숫자가 안 뜸</p></div>
+        <div><div class="shot"><img src="img05.jpg" alt="Seedream 4.3 선택 화면: Free 표시"></div><p class="cap">Seedream 4.3: 생성 버튼에 Free</p></div>
+      </div>
+      <div class="box warn"><b class="t">크레딧은 계정마다 다릅니다</b>화면 오른쪽 위 ✦ 숫자가 내 남은 크레딧입니다. 생성 전에 버튼 위에 숫자가 뜨는지 먼저 확인하세요.</div>
+    </div>
+
+    <div class="card" id="s1-prompt" data-nav="연말 사진 프롬프트 6개">
+      <h3><span class="n">3</span>복사해서 쓰는 연말 사진 프롬프트</h3>
+      <p style="margin-top:0">원하는 것만 골라 쓰세요. 6장을 다 만들면 바로 릴 한 편이 됩니다.</p>
+      <div class="prompt"><span class="lab">① 눈 오는 골목 카페</span><button class="copy">복사</button><p>눈이 내리는 겨울밤, 전구 장식이 반짝이는 골목길 작은 카페 앞, 따뜻한 노란 창문 불빛, 사람 없는 거리, 시네마틱 와이드 샷, 얕은 심도, 16:9</p></div>
+      <div class="prompt"><span class="lab">② 창가의 핫초코</span><button class="copy">복사</button><p>창가 원목 테이블 위 마시멜로가 올라간 핫초코 머그잔과 작은 촛불, 창밖에 눈이 내리는 풍경, 따뜻한 주황빛 조명, 클로즈업, 배경 흐림</p></div>
+      <div class="prompt"><span class="lab">③ 트리 앞 선물 상자</span><button class="copy">복사</button><p>크리스마스 트리 아래 빨간 리본으로 포장한 선물 상자 여러 개, 금색 전구 보케가 반짝이는 배경, 포근한 거실, 정면 로우 앵글, 고급 광고 사진 느낌</p></div>
+      <div class="prompt"><span class="lab">④ 새해 불꽃놀이</span><button class="copy">복사</button><p>새해 첫날 밤 강 위로 터지는 화려한 불꽃놀이, 물에 비친 도시 야경, 장노출 사진 느낌, 와이드 샷, 선명하고 화려한 색감</p></div>
+      <div class="prompt"><span class="lab">⑤ 연말 식탁</span><button class="copy">복사</button><p>연말 가족 저녁 식탁 위 따뜻한 음식과 와인잔, 건배하는 손들만 보이는 장면, 테이블 위 촛불과 솔방울 장식, 따뜻한 색감, 위에서 비스듬히 내려다본 앵글</p></div>
+      <div class="prompt"><span class="lab">⑥ 2027 금색 풍선</span><button class="copy">복사</button><p>어두운 배경 앞에 떠 있는 금색 숫자 풍선 "2027", 주변에 흩날리는 반짝이 종이 꽃가루, 스튜디오 조명, 정면 샷, 축하 분위기</p></div>
+      <div class="box more"><b class="t">한 걸음 더</b>프롬프트 끝에 <b>"같은 색감과 조명으로"</b>를 붙이고 첫 장을 참고 이미지(＋ 버튼)로 넣으면 6장의 분위기가 하나로 맞춰집니다.</div>
+    </div>
+
+    <div class="card" id="s1-lib" data-nav="B. 캡컷 라이브러리">
+      <h3><span class="n">4</span>B. 캡컷 라이브러리에서 가져오기</h3>
+      <ol><li>미디어 → 왼쪽 <b>라이브러리</b> → <b>크리스마스와 새해</b></li><li>마음에 드는 것의 <b>↓</b>(내려받기) 누르기</li><li>내려받은 뒤 타임라인으로 끌어 놓기</li></ol>
+      <div class="shot"><img src="img06.jpg" alt="캡컷 라이브러리 크리스마스와 새해 영상 목록"></div>
+      <p class="cap">불꽃놀이, 눈, 새해 인사 영상이 이미 준비돼 있습니다. 사진 대신 짧은 영상을 섞어도 좋습니다.</p>
+    </div>
+
+    <div class="card" id="s1-pexels" data-nav="C. 펙셀스·픽사베이">
+      <h3><span class="n">5</span>C. 펙셀스·픽사베이에서 받기</h3>
+      <ol>
+        <li><a class="lk" href="https://www.pexels.com/ko-kr/" target="_blank" rel="noopener">pexels.com</a> 접속 (회원가입 없이도 받을 수 있습니다)</li>
+        <li>검색창에 영어로 검색 → 아래 검색어 추천</li>
+        <li>사진을 누르고 <b>무료 다운로드</b> 옆 <b>∨</b> → <b>큰 사이즈</b> 선택</li>
+        <li>받은 파일을 D드라이브 「2회차 재료」 폴더로 옮기기</li>
+      </ol>
+      <table><tr><th>찾는 장면</th><th>검색어</th></tr>
+        <tr><td>밤거리 크리스마스</td><td>christmas street night</td></tr>
+        <tr><td>반짝이는 전구 배경</td><td>christmas lights bokeh</td></tr>
+        <tr><td>새해 불꽃놀이</td><td>new year fireworks</td></tr>
+        <tr><td>포근한 연말 식탁</td><td>cozy christmas dinner</td></tr>
+        <tr><td>선물 포장</td><td>gift wrapping</td></tr></table>
+      <div class="box set"><b class="t">저작권</b>두 사이트 모두 무료로 쓸 수 있고 출처 표시도 꼭 하지 않아도 됩니다. 다만 사진 속 사람·상표가 크게 나오는 사진을 광고에 쓸 때는 조심합니다.</div>
+    </div>
+
+    <div class="card wide" id="s1-walk" data-nav="걷는 사람 영상 고르기">
+      <h3><span class="n">6</span>걷는 사람 영상 고르기 (작품 ②용) <span class="tag must">필수</span></h3>
+      <p style="margin-top:0">글자 뒤로 사람이 지나가려면 아무 영상이나 되지 않습니다. 아래 4가지를 모두 갖춘 영상이어야 합니다.</p>
+      <div class="svgbox">
+      <svg viewBox="0 0 1000 150" width="100%" role="img" aria-label="좋은 영상의 조건 네 가지">
+        <g font-family="inherit" text-anchor="middle">
+          <rect x="10" y="15" width="230" height="120" rx="12" fill="#eef4ff" stroke="#c9dafc"/>
+          <text x="125" y="62" font-size="34">📷</text><text x="125" y="100" font-size="18" font-weight="700" fill="#1d2433">카메라 고정</text><text x="125" y="122" font-size="13" fill="#5b6476">배경이 움직이지 않음</text>
+          <rect x="255" y="15" width="230" height="120" rx="12" fill="#eef4ff" stroke="#c9dafc"/>
+          <text x="370" y="62" font-size="34">🚶</text><text x="370" y="100" font-size="18" font-weight="700" fill="#1d2433">옆모습</text><text x="370" y="122" font-size="13" fill="#5b6476">뒷모습·앞모습 X</text>
+          <rect x="500" y="15" width="230" height="120" rx="12" fill="#eef4ff" stroke="#c9dafc"/>
+          <text x="615" y="62" font-size="34">➡️</text><text x="615" y="100" font-size="18" font-weight="700" fill="#1d2433">한 방향으로 쭉</text><text x="615" y="122" font-size="13" fill="#5b6476">멈추거나 돌지 않음</text>
+          <rect x="745" y="15" width="245" height="120" rx="12" fill="#eef4ff" stroke="#c9dafc"/>
+          <text x="867" y="62" font-size="34">⏱️</text><text x="867" y="100" font-size="18" font-weight="700" fill="#1d2433">일정한 걸음</text><text x="867" y="122" font-size="13" fill="#5b6476">빨라졌다 느려졌다 X</text>
+        </g>
+      </svg>
+      </div>
+      <table>
+        <tr><th>영상</th><th>장면</th><th>방향</th><th>화질</th><th>추천</th></tr>
+        <tr><td><b>강사 견본 ①</b><br><a class="lk" href="https://flow.google.com/shared/video/a1da38be-ebc5-4a62-8419-ace9b036b970" target="_blank" rel="noopener">구글 플로우 공유 링크</a></td><td>벽돌 카페 앞을 걷는 남자 (AI로 만든 영상)</td><td>왼쪽 → 오른쪽</td><td>360p, 15초</td><td><b>오늘 시연 영상</b></td></tr>
+        <tr><td><b>강사 견본 ②</b><br><a class="lk" href="https://flow.google.com/shared/video/de95dbf1-89e7-488e-9a9e-0113311bde88" target="_blank" rel="noopener">구글 플로우 공유 링크</a></td><td>민트색 벽 앞을 걷는 남자 (AI로 만든 영상)</td><td>왼쪽 → 오른쪽</td><td>360p, 15초</td><td>벽이 단순해서 글자 넣기 쉬움</td></tr>
+        <tr><td><b>펙셀스 ①</b><br><a class="lk" href="https://www.pexels.com/video/8126439/" target="_blank" rel="noopener">pexels.com/video/8126439</a></td><td>노란 벽·빨간 문 앞을 지나가는 남자</td><td>왼쪽 → 오른쪽</td><td>1080p</td><td>걸음이 가장 고름</td></tr>
+        <tr><td><b>펙셀스 ②</b><br><a class="lk" href="https://www.pexels.com/video/6951582/" target="_blank" rel="noopener">pexels.com/video/6951582</a></td><td>보라색 벽 앞, 스케이트보드를 든 여자</td><td>왼쪽 → 오른쪽</td><td>1080p</td><td>끝까지 지나가 화면 밖으로</td></tr>
+        <tr><td><b>펙셀스 ③</b><br><a class="lk" href="https://www.pexels.com/video/5899455/" target="_blank" rel="noopener">pexels.com/video/5899455</a></td><td>어두운 셔터 앞, 꽃을 든 여자</td><td>오른쪽 → 왼쪽</td><td>1080p</td><td>반대 방향 연습용</td></tr>
+      </table>
+      <div class="box set"><b class="t">강사 견본 받는 법 (구글 플로우 공유 링크)</b>링크를 열면 영상 아래에 <b>다운로드</b> 버튼이 있습니다. 영상 설명 글에는 이 영상을 만든 <b>프롬프트</b>가, 아래 작은 그림에는 <b>시작 이미지</b>가 함께 보입니다. 어떻게 만들었는지 그대로 볼 수 있어요.</div>
+      <div class="box warn"><b class="t">화질 차이</b>강사 견본은 360p라 배경을 지울 때 사람 테두리가 조금 뭉개질 수 있습니다. 결과물을 깔끔하게 만들고 싶으면 펙셀스 영상을 <b>1920×1080</b>으로 받으세요 (무료 다운로드 옆 ∨ → Full HD).</div>
+      <div class="box more"><b class="t">한 걸음 더: 내 휴대폰으로 직접 찍기</b>휴대폰을 벽에 기대거나 삼각대에 고정하고, 가족에게 화면 왼쪽 끝에서 오른쪽 끝까지 <b>옆으로</b> 천천히 걸어 달라고 하세요. 가로로 찍고 10초면 충분합니다.</div>
+    </div>
+  </div>
+</section>
+
+<!-- STEP 2 -->
+<section class="step" data-title="작품 ① 비트 사진 릴">
+  <div class="step-head"><div class="no">STEP 2 · 작품 ①</div><h2>비트에 맞춰 넘어가는 연말 사진 릴</h2>
+  <p>음악의 "쿵" 하는 박자마다 사진이 바뀌는 15~20초 영상입니다. 같이 1편을 만들고, 시간이 남으면 템플릿으로 1편 더 만듭니다.</p></div>
+  <div class="grid">
+    <div class="card" id="s2-new" data-nav="새 프로젝트·사진 넣기">
+      <h3><span class="n">1</span>새 프로젝트 만들고 사진 넣기 <span class="tag must">필수</span></h3>
+      <ol>
+        <li>홈 → <b>프로젝트 만들기</b></li>
+        <li><b>가져오기</b> → <b>장치에서</b> → 「2회차 재료」 폴더의 사진을 <span class="kbd">Ctrl</span> 누른 채 여러 장 선택 → 열기</li>
+        <li>미디어 창에서 사진을 모두 선택(<span class="kbd">Ctrl</span>+<span class="kbd">A</span>)해서 타임라인으로 끌어 놓기</li>
+        <li>타임라인 위 프로젝트 이름(맨 위 가운데)을 두 번 눌러 <b>「연말 릴_내이름」</b>으로 바꾸기</li>
+      </ol>
+      <div class="shot"><img src="img07.jpg" alt="가져오기 메뉴: 장치에서, 라이브러리에서"></div>
+      <p class="cap">가져오기를 누르면 「장치에서」(내 컴퓨터)와 「라이브러리에서」(캡컷에 저장된 것)가 나옵니다.</p>
+      <div class="box set"><b class="t">화면 비율</b>사진을 처음 넣으면 첫 사진 비율을 따라갑니다. 오른쪽 플레이어 아래 <b>비율</b>을 눌러 <b>16:9</b>로 맞춰 주세요.</div>
+    </div>
+
+    <div class="card" id="s2-music" data-nav="프로 음원 넣기">
+      <h3><span class="n">2</span>음원 넣기 <span class="tag pro">프로</span></h3>
+      <ol>
+        <li>위쪽 메뉴 <b>오디오</b> → 왼쪽 <b>음악</b></li>
+        <li>검색창에 <b>christmas</b> 또는 <b>new year</b> 입력 → <span class="kbd">Enter</span></li>
+        <li>곡 이름을 눌러 미리 듣고, 마음에 들면 <b>↓</b>(내려받기) → 타임라인 사진 아래로 끌어 놓기</li>
+        <li>음악 시작을 0초로 맞추기 (음악 클립을 맨 앞으로 끌기)</li>
+      </ol>
+      <div class="shot"><img src="img08.jpg" alt="오디오 음악 검색 결과: christmas"></div>
+      <p class="cap">「christmas」로 검색한 화면. 1분 안팎의 짧은 곡이 릴에 쓰기 좋습니다.</p>
+      <div class="box more"><b class="t">고르는 요령</b>"쿵·쿵·쿵" 박자가 또렷한 곡이 비트 맞추기가 쉽습니다. 잔잔한 피아노곡은 박자 표시가 적게 나옵니다.</div>
+    </div>
+
+    <div class="card" id="s2-beat" data-nav="비트 표시 켜기">
+      <h3><span class="n">3</span>음악에 비트(박자) 표시 찍기 <span class="tag must">필수</span></h3>
+      <ol>
+        <li>타임라인에서 <b>음악 클립</b>을 한 번 누르기</li>
+        <li>타임라인 위 도구 모음에 생긴 <b>「자동 비트 표시」</b> 버튼 누르기 (하트 모양 옆 아이콘, 마우스를 올리면 이름이 보입니다)</li>
+        <li>음악 클립 위쪽 테두리에 <b>청록색 작은 네모</b>가 일정한 간격으로 생깁니다. 이게 박자 위치입니다</li>
+      </ol>
+      <div class="shot"><img src="img09.jpg" alt="음악 클립 위에 청록색 비트 표시가 생긴 타임라인"></div>
+      <p class="cap">음악 클립 위 청록색 네모들이 자동으로 찍힌 비트 표시입니다.</p>
+      <div class="svgbox">
+      <svg viewBox="0 0 600 140" width="100%" role="img" aria-label="음악 비트 표시에 맞춰 사진 끝을 붙이는 모습">
+        <g font-family="inherit">
+          <rect x="20" y="20" width="110" height="40" rx="6" fill="#dbe7ff" stroke="#1f6feb"/><text x="75" y="46" font-size="14" text-anchor="middle" fill="#1d2433">사진 1</text>
+          <rect x="132" y="20" width="110" height="40" rx="6" fill="#dbe7ff" stroke="#1f6feb"/><text x="187" y="46" font-size="14" text-anchor="middle" fill="#1d2433">사진 2</text>
+          <rect x="244" y="20" width="110" height="40" rx="6" fill="#dbe7ff" stroke="#1f6feb"/><text x="299" y="46" font-size="14" text-anchor="middle" fill="#1d2433">사진 3</text>
+          <rect x="356" y="20" width="110" height="40" rx="6" fill="#dbe7ff" stroke="#1f6feb"/><text x="411" y="46" font-size="14" text-anchor="middle" fill="#1d2433">사진 4</text>
+          <rect x="20" y="84" width="560" height="30" rx="6" fill="#1d3b6e" stroke="#1f6feb"/><text x="520" y="104" font-size="13" fill="#fff">음악</text>
+          <g fill="#19b8c4"><rect x="126" y="78" width="10" height="10"/><rect x="238" y="78" width="10" height="10"/><rect x="350" y="78" width="10" height="10"/><rect x="462" y="78" width="10" height="10"/><rect x="574" y="78" width="10" height="10"/></g>
+          <g stroke="#19b8c4" stroke-dasharray="3 3"><line x1="131" y1="20" x2="131" y2="78"/><line x1="243" y1="20" x2="243" y2="78"/><line x1="355" y1="20" x2="355" y2="78"/><line x1="467" y1="20" x2="467" y2="78"/></g>
+        </g>
+      </svg>
+      </div>
+      <p class="cap">사진의 끝을 청록색 비트 표시에 딱 붙이면, 박자마다 사진이 바뀝니다.</p>
+      <div class="box stuck"><b class="t">막힐 때</b>버튼이 안 보이면 음악 클립을 먼저 눌렀는지 확인하세요. 표시가 너무 띄엄띄엄하면 박자가 또렷한 다른 곡으로 바꿔 봅니다. 한 번 더 누르면 표시가 사라집니다.</div>
+    </div>
+
+    <div class="card" id="s2-cut" data-nav="박자에 맞춰 자르기">
+      <h3><span class="n">4</span>박자에 맞춰 사진 길이 맞추기 <span class="tag must">필수</span></h3>
+      <ol>
+        <li>사진 1의 <b>오른쪽 끝</b>을 잡고 첫 번째 비트 표시까지 끌기 (자석처럼 착 붙습니다)</li>
+        <li>사진 2, 3… 차례로 같은 방법으로 맞추기</li>
+        <li>마지막 사진 끝에 맞춰 음악도 자르기: 재생 헤드를 끝에 두고 음악 클립 선택 → <span class="kbd">Ctrl</span>+<span class="kbd">B</span>(분할) → 뒤쪽 조각 <span class="kbd">Delete</span></li>
+        <li><span class="kbd">Space</span>로 재생해서 박자마다 사진이 바뀌는지 확인</li>
+      </ol>
+      <div class="box set"><b class="t">자석 기능</b>타임라인 위 도구 중 자석 모양(스냅)이 켜져 있어야 비트 표시에 착 붙습니다.</div>
+      <div class="box more"><b class="t">한 걸음 더: 에디트 파일럿에게 맡기기</b>오른쪽 아래 <b>EditPilot</b>에 "모든 사진 길이를 음악 비트에 맞춰 줘"라고 써 보세요. 지난 시간처럼 한 번에 바뀌는지 확인하고, 안 맞는 곳만 손으로 고칩니다.</div>
+    </div>
+
+    <div class="card" id="s2-trans" data-nav="프로 전환 넣기">
+      <h3><span class="n">5</span>프로 전환(장면 넘김 효과) 넣기 <span class="tag pro">프로</span></h3>
+      <ol>
+        <li>위쪽 메뉴 <b>전환</b></li>
+        <li>보석 표시가 있는 전환을 미리 보고, 사진과 사진 <b>사이</b>로 끌어 놓기</li>
+        <li>오른쪽 패널에서 <b>길이</b>를 0.3~0.5초로 짧게 (박자가 살아납니다)</li>
+        <li><b>모두에 적용</b>을 누르면 모든 사진 사이에 같은 전환이 들어갑니다</li>
+      </ol>
+      <div class="box stuck"><b class="t">막힐 때</b>전환이 들어가지 않으면 두 사진 사이에 틈이 없는지(딱 붙어 있는지) 확인하세요.</div>
+    </div>
+
+    <div class="card" id="s2-zoom" data-nav="키프레임 줌 인">
+      <h3><span class="n">6</span>키프레임(움직임 표시점)으로 천천히 다가가기</h3>
+      <ol>
+        <li>사진 1을 누르고, 재생 헤드를 사진 <b>맨 앞</b>에 두기</li>
+        <li>오른쪽 <b>동영상 → 기본 → 확대</b> 옆 ◇를 눌러 <b>100%</b>에 점 찍기</li>
+        <li>재생 헤드를 사진 <b>맨 뒤</b>로 옮기고, 확대를 <b>115%</b>로 바꾸기 (점이 자동으로 하나 더 생깁니다)</li>
+        <li>사진 1을 선택한 채 <span class="kbd">Ctrl</span>+<span class="kbd">Shift</span>+<span class="kbd">C</span>(특성 복사) → 나머지 사진을 모두 선택하고 <span class="kbd">Ctrl</span>+<span class="kbd">Shift</span>+<span class="kbd">V</span>(특성 붙여넣기)</li>
+      </ol>
+      <div class="box set"><b class="t">특성 복사가 뭐였죠?</b>지난 시간 별표 세 개! 사진 자체가 아니라 <b>사진에 걸어 둔 움직임·효과만</b> 복사해서 다른 사진에 똑같이 입히는 기능입니다.</div>
+    </div>
+
+    <div class="card" id="s2-text" data-nav="프로 텍스트 템플릿">
+      <h3><span class="n">7</span>프로 텍스트 템플릿으로 연말 인사 넣기 <span class="tag pro">프로</span></h3>
+      <ol>
+        <li>위쪽 메뉴 <b>텍스트</b> → <b>텍스트 템플릿</b></li>
+        <li>검색에 <b>Christmas</b> 또는 <b>Happy New Year</b></li>
+        <li>마음에 드는 템플릿을 마지막 사진 위 트랙으로 끌어 놓기</li>
+        <li>글자를 두 번 눌러 내 문구로 바꾸기 (예: <b>2026, 고마웠어요</b>)</li>
+      </ol>
+      <div class="box more"><b class="t">한 걸음 더: 마무리 효과</b>음악 클립을 누르고 오른쪽 오디오 패널에서 <b>페이드 아웃</b>을 1~2초 주면 끝이 자연스럽습니다.</div><div class="shot"><img src="img10.jpg" alt="음악 클립 선택 시 오른쪽 패널: 볼륨, 페이드 인, 페이드 아웃, 음량 노멀라이즈"></div><div class="cap" style="margin-bottom:0">음악을 누르면 오른쪽에 볼륨·페이드 인·페이드 아웃이 보입니다.</div>
+    </div>
+
+    <div class="card" id="s2-tpl" data-nav="한 걸음 더: 프로 템플릿">
+      <h3><span class="n">8</span>한 걸음 더: 프로 템플릿으로 1편 더 <span class="tag">선택</span></h3>
+      <ol>
+        <li>홈 → 왼쪽 <b>템플릿</b> → 검색 <b>연말</b> 또는 <b>Christmas</b></li>
+        <li>보석 표시 템플릿 → <b>템플릿 사용</b></li>
+        <li>자리마다 내 사진을 바꿔 끼우고 → 한 군데(글자나 사진 하나)는 내 손으로 고치기</li>
+      </ol>
+      <p>손으로 만든 1편과 템플릿 1편을 나란히 놓고 비교해 보세요. 어디가 더 "내 것" 같나요?</p>
+    </div>
+  </div>
+</section>
+
+<!-- STEP 3 -->
+<section class="step" data-title="작품 ② 글자 뒤 인물">
+  <div class="step-head"><div class="no">STEP 3 · 작품 ②</div><h2>글자 뒤로 사람이 지나가는 타이틀</h2>
+  <p>큰 제목 글자 <b>앞</b>으로 사람이 걸어 지나가는 영상입니다. 같은 영상을 두 번 깔고, 위쪽 영상에서 배경을 지우는 게 핵심입니다.</p></div>
+  <div class="grid">
+    <div class="card wide" id="s3-idea" data-nav="원리: 3층 쌓기">
+      <h3><span class="n">1</span>원리: 3층으로 쌓기</h3>
+      <div class="svgbox">
+      <svg viewBox="0 0 1000 260" width="100%" role="img" aria-label="맨 위 사람만 남긴 영상, 가운데 글자, 맨 아래 원래 영상">
+        <g font-family="inherit">
+          <g transform="translate(40,20)">
+            <polygon points="60,0 360,0 300,50 0,50" fill="#eef8f2" stroke="#25834d"/>
+            <text x="180" y="32" font-size="16" text-anchor="middle" fill="#1d2433" font-weight="700">3층 · 사람만 남긴 영상</text>
+            <polygon points="60,75 360,75 300,125 0,125" fill="#eef4ff" stroke="#1f6feb"/>
+            <text x="180" y="107" font-size="16" text-anchor="middle" fill="#1d2433" font-weight="700">2층 · 큰 글자 COFFEE</text>
+            <polygon points="60,150 360,150 300,200 0,200" fill="#f6f7f9" stroke="#9aa3b2"/>
+            <text x="180" y="182" font-size="16" text-anchor="middle" fill="#1d2433" font-weight="700">1층 · 원래 영상(배경)</text>
+          </g>
+          <line x1="440" y1="125" x2="500" y2="125" stroke="#9aa3b2" stroke-width="2" marker-end="url(#ar)"/>
+          <text x="520" y="90" font-size="17" fill="#1d2433" font-weight="700">위에서 내려다보면</text>
+          <text x="520" y="122" font-size="15" fill="#5b6476">배경 위에 글자가 있고,</text>
+          <text x="520" y="148" font-size="15" fill="#5b6476">그 위를 사람이 덮고 지나갑니다.</text>
+          <text x="520" y="186" font-size="15" fill="#1f6feb">→ 사람이 글자 "앞"을 걷는 것처럼 보임</text>
+        </g>
+      </svg>
+      </div>
+      <div class="shot"><img src="img11.jpg" alt="완성 예시: COFFEE 글자 앞으로 남자가 지나감"></div>
+      <p class="cap">완성 예시 (강사 견본 ① 영상). 남자가 글자 F와 E 사이를 가리며 지나갑니다.</p>
+    </div>
+
+    <div class="card" id="s3-put" data-nav="영상 넣고 복제하기">
+      <h3><span class="n">2</span>영상 넣고 똑같이 하나 더 깔기 <span class="tag must">필수</span></h3>
+      <div class="box set"><b class="t">실습 영상 받기 (하나 골라 받으세요)</b>
+        <ul>
+          <li>강사 견본 ① 벽돌 카페 (왼→오): <a class="lk" href="https://flow.google.com/shared/video/a1da38be-ebc5-4a62-8419-ace9b036b970" target="_blank" rel="noopener">플로우 링크</a></li>
+          <li>강사 견본 ② 민트색 벽 (왼→오): <a class="lk" href="https://flow.google.com/shared/video/de95dbf1-89e7-488e-9a9e-0113311bde88" target="_blank" rel="noopener">플로우 링크</a></li>
+          <li>펙셀스 ① 노란 벽·빨간 문 (왼→오): <a class="lk" href="https://www.pexels.com/video/8126439/" target="_blank" rel="noopener">pexels.com/video/8126439</a></li>
+          <li>펙셀스 ② 보라색 벽 (왼→오): <a class="lk" href="https://www.pexels.com/video/6951582/" target="_blank" rel="noopener">pexels.com/video/6951582</a></li>
+          <li>펙셀스 ③ 셔터 앞 (오→왼): <a class="lk" href="https://www.pexels.com/video/5899455/" target="_blank" rel="noopener">pexels.com/video/5899455</a></li>
+        </ul>
+        펙셀스는 「무료 다운로드」 옆 ∨ → <b>Full HD(1920×1080)</b>로 받으세요.</div>
+      
+      <ol>
+        <li>새 프로젝트 → 걷는 영상 가져오기 → 타임라인으로 끌어 놓기 (1층)</li>
+        <li>타임라인의 영상을 누르고 <span class="kbd">Ctrl</span>+<span class="kbd">C</span> → <span class="kbd">Ctrl</span>+<span class="kbd">V</span></li>
+        <li>같은 영상이 <b>위쪽 트랙(층)</b>에 하나 더 생깁니다. 시작점이 <b>0초로 딱 맞는지</b> 확인</li>
+        <li>위쪽 영상 트랙 왼쪽의 <b>스피커</b>를 눌러 소리 끄기 (소리가 두 번 겹치지 않게)</li>
+      </ol>
+      <div class="shot"><img src="img12.jpg" alt="같은 영상이 두 줄로 겹쳐진 타임라인"></div>
+      <p class="cap">같은 영상이 두 줄. 시작점이 정확히 같아야 사람이 어긋나지 않습니다.</p>
+      <div class="box stuck"><b class="t">막힐 때</b>붙여 넣은 영상이 옆으로 이어 붙었다면 <span class="kbd">Ctrl</span>+<span class="kbd">Z</span>로 취소하고, 재생 헤드를 0초에 둔 다음 다시 붙여 넣으세요. 또는 영상을 위 트랙으로 끌어 올려도 됩니다.</div>
+    </div>
+
+    <div class="card" id="s3-bg" data-nav="배경 자동 삭제">
+      <h3><span class="n">3</span>위쪽 영상의 배경 지우기 <span class="tag pro">프로</span></h3>
+      <ol>
+        <li><b>위쪽</b> 영상을 누르기 (아래쪽 아님!)</li>
+        <li>오른쪽 패널 <b>동영상 → 배경 제거</b></li>
+        <li><b>자동 삭제</b> 체크 (보석 표시 = 프로 기능)</li>
+        <li>「처리 중 ○○%」가 끝날 때까지 기다리기 (15초 영상 기준 수십 초)</li>
+      </ol>
+      <div class="shot"><img src="img13.jpg" alt="동영상 배경 제거 탭: 자동 삭제, 사용자 지정 삭제, 크로마 키"></div>
+      <p class="cap">배경 제거 탭. 「자동 삭제」 옆 보석 표시가 프로 기능이라는 뜻입니다.</p>
+      <div class="box warn"><b class="t">지금은 달라 보이지 않아요</b>배경을 지워도 아래에 같은 영상이 깔려 있어서 화면은 그대로입니다. 정상입니다! 글자를 넣으면 차이가 보입니다.</div>
+    </div>
+
+    <div class="card" id="s3-title" data-nav="큰 제목 넣기">
+      <h3><span class="n">4</span>큰 제목 글자 넣기 <span class="tag must">필수</span></h3>
+      <ol>
+        <li>위쪽 메뉴 <b>텍스트</b> → <b>기본 텍스트</b>를 타임라인으로 끌어 놓기
+          <br><span class="cap">또는 텍스트 템플릿에서 보석 표시가 있는 큰 타이틀을 골라도 좋습니다.</span></li>
+        <li>오른쪽 텍스트 칸에 제목 입력 (예: <b>COFFEE</b>, <b>WINTER</b>, <b>2026</b>)</li>
+        <li><b>글꼴 크기</b> 40 안팎, <b>굵게(B)</b> 켜기, 굵은 글꼴 고르기</li>
+        <li>글자 클립 끝을 끌어 영상 길이(15초)만큼 늘리기</li>
+      </ol>
+      <div class="shot"><img src="img14.jpg" alt="텍스트 입력과 글꼴 크기, 굵게 설정"></div>
+      <div class="box set"><b class="t">짧고 굵은 영어 단어가 잘 보여요</b>글자가 두껍고 클수록 사람이 가리는 모습이 잘 보입니다. 한글은 굵은 고딕 계열을 고르세요.</div>
+    </div>
+
+    <div class="card" id="s3-order" data-nav="글자를 가운데 층으로">
+      <h3><span class="n">5</span>글자를 두 영상 사이로 옮기기 <span class="tag must">필수</span></h3>
+      <p style="margin-top:0">처음에는 글자가 맨 위에 생겨서 사람 <b>위에</b> 덮여 보입니다.</p>
+      <div class="shot"><img src="img15.jpg" alt="글자 트랙이 맨 위에 있는 상태"></div>
+      <p class="cap">글자(빨간 클립)가 맨 위 → 사람보다 앞에 보임</p>
+      <ol>
+        <li>글자 클립을 잡고 <b>두 영상 줄 사이</b>로 끌어 내리기</li>
+        <li>순서가 <b>위: 배경 지운 영상 / 가운데: 글자 / 아래: 원래 영상</b>인지 확인</li>
+      </ol>
+      <div class="shot"><img src="img16.jpg" alt="완성된 3층 타임라인과 미리보기"></div>
+      <p class="cap">완성된 순서. 오른쪽 미리보기에서 사람이 글자 앞으로 지나갑니다.</p>
+      <div class="box stuck"><b class="t">막힐 때: 글자가 사이로 안 들어가요</b>타임라인 빈 곳을 한 번 눌러 아무것도 선택하지 않으면 가운데에 <b>세부 정보</b>가 보입니다. 여기서 <b>레이어 배치</b>가 「켜기」인지 확인하세요. 꺼져 있으면 「수정하기」로 켭니다.</div>
+    </div>
+
+    <div class="card" id="s3-check" data-nav="자리 맞추기·확인">
+      <h3><span class="n">6</span>글자 자리 맞추고 확인하기</h3>
+      <ul>
+        <li>글자는 <b>사람의 허리~가슴 높이</b>에 두세요. 너무 위에 있으면 사람 머리 위로 그냥 보입니다.</li>
+        <li>사람이 <b>지나가는 길 위</b>에 글자를 두세요. 사람이 안 지나가는 곳은 가려지지 않습니다.</li>
+        <li><span class="kbd">Space</span>로 재생하며 사람이 글자를 가리는 순간을 확인합니다.</li>
+      </ul>
+      <div class="box stuck"><b class="t">막힐 때</b>
+        <ul>
+          <li><b>사람 테두리가 지글거려요</b> → 영상 화질이 낮아서입니다. 1080p 영상으로 바꿔 보세요.</li>
+          <li><b>글자가 사람 앞에 그대로 보여요</b> → 배경 지운 쪽이 위쪽 영상인지, 글자가 가운데인지 다시 확인.</li>
+          <li><b>사람이 두 명처럼 어긋나 보여요</b> → 위아래 영상 시작점이 다릅니다. 둘 다 0초로 맞추세요.</li>
+        </ul></div>
+    </div>
+
+    <div class="card" id="s3-sfx" data-nav="프로 효과음">
+      <h3><span class="n">7</span>프로 효과음으로 마무리 <span class="tag pro">프로</span></h3>
+      <ol>
+        <li><b>오디오 → 효과음</b> → 검색 <b>whoosh</b>(휙 지나가는 소리)</li>
+        <li>사람이 글자 한가운데를 지나는 순간에 맞춰 넣기</li>
+        <li>글자 클립을 누르고 <b>애니메이션 → 시작</b>에서 나타나는 효과를 하나 골라 첫 1초에 넣기</li>
+      </ol>
+    </div>
+
+    <div class="card" id="s3-more" data-nav="한 걸음 더">
+      <h3><span class="n">8</span>한 걸음 더 <span class="tag">선택</span></h3>
+      <div class="box more"><b class="t">① 사람이 지나가며 글자가 "드러나게"</b>
+        글자 클립 → 동영상(텍스트) 패널의 <b>마스크 → 선형</b>을 넣고, 마스크 경계가 사람 등 뒤를 따라가도록 <b>2~3초마다 키프레임</b>을 찍습니다. 사람이 지나간 자리부터 글자가 나타납니다. 글자가 반대쪽부터 나오면 마스크 <b>각도를 90° ↔ 270°</b>로 바꿉니다.</div>
+      <div class="box more"><b class="t">② 사람에게만 효과 주기</b>위쪽(배경 지운) 영상에만 <b>필터 → 흑백</b>을 넣으면 사람만 흑백, 배경은 컬러가 됩니다.</div>
+      <div class="box more"><b class="t">③ 반대 방향으로 1편 더</b>펙셀스 ③(오른쪽 → 왼쪽)으로 같은 순서를 해 보세요. 방법은 똑같습니다.</div>
+      <div class="box more"><b class="t">④ 걷는 영상을 AI로 직접 만들 때</b>
+        <ul>
+          <li>영상 만들기 전에 <b>시작·끝 이미지를 내 눈으로 먼저 확인</b> (방향, 자세, 배경). 이미지 단계에서 고치면 크레딧이 들지 않습니다.</li>
+          <li>구글 플로우는 <b>시작+끝 이미지를 같이 쓰면 최대 10초</b>, 15초는 시작 이미지만 됩니다.</li>
+          <li>AI 영상은 걸음이 완벽히 일정하지 않습니다. 중간에 느려지거나 끝에 빨라질 수 있어요.</li>
+        </ul></div>
+    </div>
+  </div>
+</section>
+
+<!-- STEP 4 -->
+<section class="step" data-title="저장·마무리">
+  <div class="step-head"><div class="no">STEP 4</div><h2>내보내고, 올리고, 로그아웃</h2>
+  <p>공용 PC라서 이 순서를 꼭 지킵니다.</p></div>
+  <div class="grid">
+    <div class="card" id="s4-export" data-nav="내보내기">
+      <h3><span class="n">1</span>영상 파일로 내보내기</h3>
+      <ol>
+        <li>오른쪽 위 <b>내보내기</b></li>
+        <li>이름 정하기, 해상도 <b>1080p</b>, 저장 위치 <b>D드라이브 내 폴더</b></li>
+        <li>내보내기 → 끝나면 폴더에서 재생해 확인</li>
+        <li>휴대폰으로 보내려면 카카오톡 「나와의 채팅」에 파일 올리기</li>
+      </ol>
+    </div>
+    <div class="card" id="s4-upload" data-nav="스페이스에 업로드">
+      <h3><span class="n">2</span>프로젝트를 내 공간(스페이스)에 올리기 <span class="tag must">필수</span></h3>
+      <ol>
+        <li>편집 창 오른쪽 위 ✕로 닫고 홈으로</li>
+        <li>프로젝트 썸네일 오른쪽 아래 <b>⋯</b> → <b>업로드</b></li>
+        <li>내 공간 고르기 → <b>업로드</b></li>
+      </ol>
+      <div class="shot"><img src="img17.jpg" alt="프로젝트 더보기 메뉴: 업로드, 이름 변경, 복제, 삭제"></div>
+      <div class="shot"><img src="img18.jpg" alt="업로드할 공간 고르기"></div>
+      <p class="cap">유료 계정은 재료(사진·영상)까지 같이 올라가서, 집에서 로그인하면 그대로 이어서 편집할 수 있습니다.</p>
+    </div>
+    <div class="card" id="s4-out" data-nav="로그아웃">
+      <h3><span class="n">3</span>로그아웃 <span class="tag must">필수</span></h3>
+      <ul class="check">
+        <li>홈 왼쪽 위 내 프로필 → <b>로그아웃</b></li>
+        <li>다운로드 폴더에 남은 재료 파일 정리</li>
+        <li>브라우저(펙셀스 등)에서도 로그인했다면 로그아웃</li>
+      </ul>
+      <div class="box warn"><b class="t">왜 꼭?</b>프로 계정의 크레딧은 많지 않습니다. 로그인한 채로 두면 다음 사람이 내 크레딧을 쓸 수 있어요.</div>
+    </div>
+    <div class="card" id="s4-review" data-nav="오늘 배운 유료 기능">
+      <h3><span class="n">4</span>오늘 쓴 유료 기능 정리</h3>
+      <table>
+        <tr><th>기능</th><th>어디서</th><th>어디에 썼나</th></tr>
+        <tr><td>AI 이미지 (시드림)</td><td>미디어 → 생성</td><td>연말 사진 만들기</td></tr>
+        <tr><td>프로 음원</td><td>오디오 → 음악</td><td>비트 릴 배경 음악</td></tr>
+        <tr><td>프로 전환</td><td>전환</td><td>사진 사이 넘김</td></tr>
+        <tr><td>프로 텍스트 템플릿</td><td>텍스트 → 텍스트 템플릿</td><td>연말 인사, 큰 타이틀</td></tr>
+        <tr><td>동영상 배경 자동 삭제</td><td>동영상 → 배경 제거</td><td>사람만 남기기</td></tr>
+        <tr><td>프로 효과음</td><td>오디오 → 효과음</td><td>휙 지나가는 소리</td></tr>
+      </table>
+      <div class="box more"><b class="t">집에서 이어 하기</b>오늘 만든 두 편 중 하나를 골라, 내 사진·내가 찍은 걷는 영상으로 한 편 더 만들어 보세요.</div>
+    </div>
+  </div>
+</section>
+
+</main>
+<aside class="side"><p>이 STEP의 카드</p><div id="sidelist"></div></aside>
+</div>
+
+<div class="foot"><button id="pv">← 이전 STEP</button><button id="nx" class="nx">다음 STEP →</button></div>
+
+<script>
+(function(){
+  var steps=[].slice.call(document.querySelectorAll('.step'));
+  var tabs=document.getElementById('tabs'),side=document.getElementById('sidelist');
+  var cur=0;
+  steps.forEach(function(s,i){var b=document.createElement('button');b.className='tab';b.innerHTML='<b>STEP '+i+'</b>'+s.dataset.title;b.onclick=function(){go(i)};tabs.appendChild(b);});
+  function top(){try{window.scrollTo({top:0,behavior:'auto'})}catch(e){window.scrollTo(0,0)}}
+  function go(i){cur=i;steps.forEach(function(s,k){s.classList.toggle('on',k===i)});
+    [].slice.call(tabs.children).forEach(function(t,k){t.classList.toggle('on',k===i)});
+    side.innerHTML='';[].slice.call(steps[i].querySelectorAll('.card[data-nav]')).forEach(function(c){var a=document.createElement('a');a.textContent=c.dataset.nav;a.onclick=function(){var y=c.getBoundingClientRect().top+window.pageYOffset-125;window.scrollTo(0,y)};side.appendChild(a)});
+    document.getElementById('pv').disabled=i===0;document.getElementById('nx').disabled=i===steps.length-1;top();}
+  document.getElementById('pv').onclick=function(){if(cur>0)go(cur-1)};
+  document.getElementById('nx').onclick=function(){if(cur<steps.length-1)go(cur+1)};
+  [].slice.call(document.querySelectorAll('.shot img')).forEach(function(im){im.title='누르면 크게/작게 보입니다';im.onclick=function(){var c=im.closest('.card');if(c&&!c.classList.contains('wide'))c.classList.toggle('big')}});
+  go(0);
+  window.fs=function(d){var v=parseInt(getComputedStyle(document.documentElement).getPropertyValue('--fs'))||20;v=Math.max(16,Math.min(30,v+d));document.documentElement.style.setProperty('--fs',v+'px')};
+  [].slice.call(document.querySelectorAll('.copy')).forEach(function(b){b.onclick=function(){var t=b.parentNode.querySelector('p').innerText;
+    function ok(){b.textContent='복사됨';b.classList.add('done');setTimeout(function(){b.textContent='복사';b.classList.remove('done')},1500)}
+    function fb(){var ta=document.createElement('textarea');ta.value=t;ta.style.position='absolute';ta.style.left='-9999px';document.body.appendChild(ta);ta.select();try{document.execCommand('copy')}catch(e){}document.body.removeChild(ta);ok()}
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(ok,fb)}else fb()}});
+})();
+</script>
+</body>
+</html>

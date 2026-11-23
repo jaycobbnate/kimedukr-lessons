@@ -1,0 +1,289 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>내 홈페이지 만들어 공개하기 — STEP 가이드</title><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Noto+Serif+KR:wght@600;700&family=Instrument+Serif&display=swap" rel="stylesheet"><style>
+:root{--bg:#F5F6F3;--paper:#fff;--line:#E2E4DE;--line-soft:#EDEFE9;--ink:#14171A;--muted:#5C636A;
+--point:#0E6B7E;--deep:#084754;--soft:#E6F0F2;--sand:#F1EEE6;--alert:#8A4B2A;--alert-bg:#FAF3EC;--alert-line:#E4CDB6;
+--code:#1C2226;--ok:#2E7D5B;--fs:20px}
+*{box-sizing:border-box;margin:0;padding:0}
+html{font-size:var(--fs);scroll-behavior:smooth}
+body{font-family:"Noto Sans KR","Malgun Gothic",sans-serif;background:var(--bg);color:var(--ink);line-height:1.75;font-size:1rem;-webkit-font-smoothing:antialiased}
+a{color:var(--point)}
+code{font-family:Consolas,monospace;background:var(--soft);color:var(--deep);padding:.05em .35em;border-radius:3px;font-size:.9em}
+:focus-visible{outline:2px solid var(--point);outline-offset:2px}
+/* header */
+.top{position:fixed;top:0;left:0;right:0;background:rgba(245,246,243,.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);z-index:50}
+.bar{max-width:1400px;margin:0 auto;padding:.5rem 1.4rem .1rem;display:flex;align-items:center;gap:1rem}
+.brand{display:flex;align-items:baseline;gap:.5rem;white-space:nowrap}
+.brand .ttl{font-family:"Noto Serif KR",serif;font-size:.92rem;font-weight:700}
+.brand .sub{font-size:.72rem;color:var(--muted)}
+.tools{margin-left:auto;display:flex;gap:.45rem;align-items:center}
+.tools button{border:1px solid var(--line);background:var(--paper);padding:.26rem .55rem;border-radius:6px;cursor:pointer;font-family:inherit;font-size:.76rem;color:var(--muted);line-height:1.2}
+.tools button:hover{border-color:var(--point);color:var(--point)}
+.prog{font-size:.72rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.progbar{height:2px;background:var(--line);width:64px;border-radius:1px;overflow:hidden}
+.progbar i{display:block;height:100%;background:var(--point);width:0;transition:width .35s}
+.rail{max-width:1400px;margin:0 auto;padding:0 1.4rem;display:flex;overflow-x:auto;scrollbar-width:none}
+.rail::-webkit-scrollbar{display:none}
+.tab{flex:none;border:0;background:none;cursor:pointer;font-family:inherit;padding:.42rem .75rem .5rem;display:flex;align-items:baseline;gap:.38rem;color:var(--muted);border-bottom:2px solid transparent}
+.tab:hover{color:var(--ink)}
+.tab .n{font-family:"Instrument Serif",serif;font-size:1rem;line-height:1;opacity:.55}
+.tab .lb{font-size:.78rem;white-space:nowrap}
+.tab.on{color:var(--point);border-bottom-color:var(--point)}
+.tab.on .n{opacity:1}.tab.on .lb{font-weight:700}
+.tab.done{color:#8B9298}
+/* layout */
+main{max-width:1400px;margin:0 auto;padding:7rem 1.4rem 5rem}
+.screen{display:none}
+.screen.on{display:block;animation:fade .18s ease}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.shead{display:flex;gap:1.4rem;align-items:flex-start;padding-bottom:1.1rem;margin-bottom:2rem;border-bottom:2px solid var(--ink)}
+.snum{font-family:"Instrument Serif",serif;font-size:4.2rem;line-height:.8;color:var(--point);flex:none}
+.stxt h1{font-family:"Noto Serif KR",serif;font-size:1.7rem;line-height:1.3;letter-spacing:-.02em;margin-bottom:.6rem}
+.why-line,.res-line{font-size:.95rem;margin:.25rem 0;max-width:80ch}
+.why-line b,.res-line b{display:inline-block;min-width:2.6em;font-size:.78rem;color:#fff;background:var(--point);padding:.05em .5em;border-radius:4px;margin-right:.5em;text-align:center;vertical-align:.1em}
+.res-line b{background:var(--muted)}
+.shead.cover{border-bottom:1px solid var(--ink);margin-bottom:1.6rem}
+.shead.cover h1{font-size:2.6rem;line-height:1.25;max-width:22ch;margin-bottom:.9rem}
+.sub{font-size:.92rem;color:var(--muted);line-height:1.7}
+.hero{margin:0 0 2.4rem}
+.hero svg{width:100%;max-width:860px;height:auto;display:block}
+.stack{display:flex;flex-direction:column;gap:2.2rem}
+/* 프롬프트 2단 */
+.pblock{display:grid;grid-template-columns:minmax(280px,400px) minmax(0,1fr);gap:1.6rem;align-items:start;background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:1.4rem}
+.pblock .why>*:first-child{margin-top:0}
+.pblock .why h2{font-family:"Noto Serif KR",serif;font-size:1.25rem;line-height:1.4;margin-bottom:.6rem;border:0;padding:0}
+.pblock .why p{font-size:.95rem;margin:.5rem 0}
+.pbox{position:relative;background:var(--code);border-radius:10px;padding:2.3rem 1.15rem 1.15rem}
+.pbox pre{white-space:pre-wrap;font-family:inherit;font-size:.88rem;line-height:1.8;color:#E8EDEF}
+.pbox .lb{position:absolute;top:.7rem;left:1.15rem;color:#9FB4BB;font-size:.7rem;letter-spacing:.04em}
+.copy{position:absolute;top:.6rem;right:.7rem;border:1px solid #3B454B;background:#2A3238;color:#CBD5D9;padding:.28rem .75rem;border-radius:6px;font-family:inherit;font-size:.74rem;cursor:pointer}
+.copy:hover{background:var(--point);border-color:var(--point);color:#fff}
+.copy.done{background:var(--ok);border-color:var(--ok);color:#fff}
+/* 카드 */
+.card{background:none;padding:0;min-width:0}
+.card h2{font-family:"Noto Serif KR",serif;font-size:1.18rem;line-height:1.4;margin-bottom:.7rem;padding-top:.8rem;border-top:2px solid var(--ink)}
+.card p{margin:.5rem 0;max-width:78ch}
+.card ul,.card ol{margin:.5rem 0 .5rem 1.35rem;max-width:78ch}
+.card li{margin:.28rem 0}
+.card li::marker{color:var(--point)}
+.card.warn{background:var(--alert-bg);border-left:3px solid var(--alert-line);border-radius:0 10px 10px 0;padding:1.1rem 1.25rem}
+.card.warn h2{border-top:0;padding-top:0;color:var(--alert)}
+.quote{background:var(--soft);border-radius:9px;padding:.8rem 1rem;margin:.7rem 0;font-size:.95rem;max-width:78ch}
+.tree{font-family:Consolas,monospace;font-size:.82rem;background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:.85rem 1.1rem;white-space:pre;overflow-x:auto;line-height:1.65;margin:.7rem 0}
+table{width:100%;border-collapse:collapse;font-size:.87rem;margin:.7rem 0;max-width:900px}
+th,td{border-bottom:1px solid var(--line);padding:.5rem .7rem .5rem 0;text-align:left;vertical-align:top}
+th{font-weight:700;font-size:.8rem;color:var(--muted);border-bottom:1px solid var(--ink)}
+.fig{margin:.9rem 0}
+.fig img{width:100%;max-width:660px;display:block;border:1px solid var(--line);border-radius:8px}
+.fig img.tall{max-width:330px}
+.fig .cap-t{font-size:.78rem;color:var(--muted);margin-top:.45rem}
+.cap{border:1px dashed #C2C6BE;border-radius:8px;padding:1rem;text-align:center;color:#8C9198;font-size:.82rem;background:rgba(255,255,255,.5);margin:.8rem 0;max-width:660px}
+/* 하단 이동 */
+.cp{margin-top:2.6rem;padding-top:1.1rem;border-top:2px solid var(--ink);display:flex;gap:1rem;align-items:center;flex-wrap:wrap}
+.cp .chk{display:flex;gap:.6rem;align-items:center;font-size:.95rem}
+.cp .chk b{color:var(--ok)}
+.cp .nav{margin-left:auto;display:flex;gap:.5rem}
+.cp button{border:1px solid var(--line);background:var(--paper);padding:.45rem 1rem;border-radius:8px;cursor:pointer;font-family:inherit;font-size:.85rem;color:var(--muted)}
+.cp button:hover{border-color:var(--point);color:var(--point)}
+.cp button.next{background:var(--point);color:#fff;border-color:var(--point);font-weight:700}
+@media (max-width:1000px){
+  .pblock{grid-template-columns:minmax(0,1fr)}
+  .shead{gap:.9rem}.snum{font-size:2.8rem}
+  .shead.cover h1{font-size:1.8rem}
+  table{display:block;overflow-x:auto}
+  .bar{padding:.5rem .9rem .1rem}
+  .brand .sub,.prog,.progbar{display:none}
+  .rail{padding:0 .9rem}
+  .tab{padding:.4rem .5rem .45rem}
+}
+@media print{.top{display:none}main{padding-top:0}.screen{display:block!important;page-break-after:always}.copy,.cp .nav{display:none}
+.pbox{background:#F4F4F1;border:1px solid #ccc}.pbox pre{color:#000}.pbox .lb{color:#666}}
+</style></head><body><div class="top"><div class="bar"><div class="brand"><span class="ttl">내 홈페이지 만들어 공개하기</span><span class="sub">AI Worker</span></div><div class="tools"><span class="prog" id="prog">0 / 0</span><span class="progbar"><i id="progbar"></i></span><button onclick="fs(-2)">가－</button><button onclick="fs(2)">가＋</button></div></div><div class="rail" id="tabs"></div></div><main id="main"><section class="screen intro" data-num="" data-title="시작"><div class="shead cover"><div class="stxt"><h1>내 홈페이지 만들어 공개하기</h1><p class="sub">[AI Worker] AI 전환 대응 영상 콘텐츠 제작 실무 워크플로우 과정<br>교육생 배포자료 · 2026-09-11 기준 · 강사 김충효 (Ai.b.Lab)</p></div></div><div class="hero">
+<svg viewBox="0 0 860 400" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="흩어진 영상이 하나의 주소로 모이는 그림">
+<defs><marker id="hx" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#9AA3A8"/></marker>
+<clipPath id="scr"><rect x="394" y="94" width="436" height="252" rx="8"/></clipPath></defs>
+<g stroke="#C9CFD2" stroke-width="1.5" fill="#fff">
+<g transform="rotate(-8 96 96)"><rect x="46" y="70" width="100" height="62" rx="5"/></g>
+<g transform="rotate(6 150 176)"><rect x="100" y="150" width="100" height="62" rx="5"/></g>
+<g transform="rotate(-4 78 256)"><rect x="28" y="230" width="100" height="62" rx="5"/></g>
+<g transform="rotate(9 176 306)"><rect x="126" y="280" width="100" height="62" rx="5"/></g></g>
+<g fill="#B4BBBF">
+<g transform="rotate(-8 96 96)"><path d="M84 90 l22 12 -22 12 z"/></g>
+<g transform="rotate(6 150 176)"><path d="M138 170 l22 12 -22 12 z"/></g>
+<g transform="rotate(-4 78 256)"><path d="M66 250 l22 12 -22 12 z"/></g>
+<g transform="rotate(9 176 306)"><path d="M164 300 l22 12 -22 12 z"/></g></g>
+<text x="30" y="380" font-family="Noto Sans KR, sans-serif" font-size="15" fill="#6C7378">흩어져 있던 영상 · 유튜브 · Padlet</text>
+<g stroke="#9AA3A8" stroke-width="1.5" fill="none" marker-end="url(#hx)">
+<path d="M215 100 C 290 118, 320 140, 372 152"/><path d="M228 178 C 288 184, 320 186, 372 190"/>
+<path d="M158 266 C 250 262, 306 246, 372 226"/><path d="M252 314 C 300 302, 330 286, 374 262"/></g>
+<rect x="392" y="62" width="440" height="286" rx="10" fill="#fff" stroke="#0E6B7E" stroke-width="2"/>
+<line x1="392" y1="92" x2="832" y2="92" stroke="#E2E4DE" stroke-width="1.5"/>
+<g fill="#D5DADD"><circle cx="410" cy="77" r="4"/><circle cx="424" cy="77" r="4"/><circle cx="438" cy="77" r="4"/></g>
+<rect x="456" y="69" width="250" height="16" rx="8" fill="#F1F3F0"/>
+<text x="466" y="81" font-family="Consolas, monospace" font-size="10.5" fill="#0E6B7E">내이름-portfolio.grok.me</text>
+<g clip-path="url(#scr)">
+<rect x="394" y="94" width="436" height="252" fill="#fff"/>
+<rect x="392" y="92" width="440" height="96" fill="#E6F0F2"/>
+<rect x="416" y="112" width="150" height="13" rx="2" fill="#0E6B7E"/>
+<rect x="416" y="133" width="96" height="8" rx="2" fill="#9FB9C0"/>
+<rect x="416" y="150" width="120" height="8" rx="2" fill="#C2D3D8"/>
+<circle cx="742" cy="140" r="30" fill="#fff" stroke="#0E6B7E" stroke-width="1.5"/>
+<path d="M734 130 l18 10 -18 10 z" fill="#0E6B7E"/>
+<g fill="#F1F3F0" stroke="#E2E4DE"><rect x="416" y="208" width="122" height="72" rx="4"/><rect x="552" y="208" width="122" height="72" rx="4"/><rect x="688" y="208" width="122" height="72" rx="4"/></g>
+<g fill="#C9CFD2"><path d="M466 236 l16 9 -16 9 z"/><path d="M602 236 l16 9 -16 9 z"/><path d="M738 236 l16 9 -16 9 z"/></g>
+<rect x="416" y="192" width="60" height="7" rx="2" fill="#B4BBBF"/>
+<g fill="#F7F8F6" stroke="#EDEFE9"><rect x="416" y="292" width="122" height="60" rx="4"/><rect x="552" y="292" width="122" height="60" rx="4"/><rect x="688" y="292" width="122" height="60" rx="4"/></g></g>
+<text x="392" y="380" font-family="Noto Sans KR, sans-serif" font-size="15" fill="#0E6B7E" font-weight="700">나를 설명하는 주소 하나</text>
+</svg></div><div class="stack"><div class="card"><h2>세션 타당성 블록</h2><table><tr><th>구분</th><th>내용</th></tr><tr><td>① 공식 단원명</td><td>[시간표상 공식 단원명 — 강사 확인]</td></tr><tr><td>② 오늘 실제 수업 내용</td><td>지금까지 만든 영상·유튜브·Padlet 결과물을 한 페이지짜리 홈페이지로 묶어 인터넷에 공개한다. 그록 Build에서 소개 글과 디자인 방향을 먼저 정한 뒤 사이트를 만들고, grok.me 주소로 게시한 다음 같은 파일을 Vercel에도 올린다</td></tr><tr><td>③ 연결 근거 (쉬운 말)</td><td>지금까지 만든 영상은 여기저기 흩어져 있다. 오늘은 그것을 나를 설명하는 주소 하나로 묶는다. 영상 제작의 마지막 단계는 &quot;보여 주기&quot;다</td></tr><tr><td>④ 연결 근거 (전문용어)</td><td>NCS 영상콘텐츠 제작 — 결과물 배포·홍보 능력단위 연계. 콘텐츠 정리(소개 글) → 시각 방향 설정(디자인 가이드) → 생성형 AI 구현 → HITL 검수 → 게시·정적 호스팅 배포 전 주기 수행</td></tr><tr><td>⑤ 오늘 결과물</td><td>내 소개 글 · 디자인 가이드 · 홈페이지 · 공개 주소 2개(grok.me, vercel.app) · 정리 파일(ZIP, txt)</td></tr></table></div><div class="card"><h2>오늘 무엇을 하나</h2><p>지금까지 영상을 만들어 유튜브에 올리고 Padlet에 정리했습니다. 그런데 그것들이 여기저기 흩어져 있습니다.</p><p>오늘은 그 결과물을 <b>한 페이지짜리 홈페이지</b>로 묶습니다. 그리고 인터넷에 공개해서, 주소만 보내면 누구나 볼 수 있게 만듭니다.</p><p>코드는 한 줄도 쓰지 않습니다. 그록에게 말로 시킵니다.</p><p>### 오늘 받게 될 것</p><ul><li>내 이름으로 된 인터넷 주소 (<code>이름.grok.me</code>)</li><li>같은 홈페이지의 두 번째 주소 (<code>이름.vercel.app</code>)</li><li>내 컴퓨터에 저장된 홈페이지 파일</li></ul><p>### 전체 흐름</p><div class="pbox"><span class="lb">붙여넣기</span><button class="copy" onclick="cp(this)">복사</button><pre>STEP 1  주소 모으기
+   ↓
+STEP 2  그록에게 규칙 알려주기
+   ↓
+STEP 3  내 소개 글 만들기
+   ↓
+STEP 4  사이트 분위기 정하기
+   ↓
+STEP 5  사이트 만들기
+   ↓
+STEP 6  고치기
+   ↓
+STEP 7  게시하기 — 내 주소가 생긴다
+   ↓
+STEP 8  파일 받기
+   ↓
+STEP 9  Vercel에도 올리기 — 주소 하나 더</pre></div><p>앞의 STEP 1~4는 <b>재료를 만드는 단계</b>입니다. 여기서 제대로 준비해야 STEP 5에서 좋은 결과가 나옵니다.</p></div></div><div class="cp"><span class="nav"><button class="next" onclick="go(1)">다음 →</button></span></div></section><section class="screen" data-num="1" data-title="주소 모으기"><div class="shead"><span class="snum">1</span><div class="stxt"><h1>주소 모으기</h1><p class="why-line"><b>왜</b> 그록에게 줄 주소가 있어야 시작합니다.</p><p class="res-line"><b>결과</b> 메모장에 주소 네 줄</p></div></div><div class="stack"><div class="card"><p>메모장을 열고 아래를 그대로 붙여넣은 다음 빈칸을 채웁니다.</p><div class="tree">이름:
+유튜브 채널:
+대표 영상 2~4개 주소:
+Padlet:</div></div><div class="card"><h2>주소 가져오는 법</h2><p><b>유튜브 채널</b> — 내 채널을 열고 주소창을 복사합니다.</p><p><b>대표 영상</b> — 홈페이지에 걸고 싶은 영상을 열고 주소창을 복사합니다. 2개에서 4개 사이면 됩니다. 제목도 같이 적어두면 좋습니다.</p><p><b>Padlet</b> — 내 보드 우측 위 <b>공유</b> → <b>보드 링크 복사</b></p></div><div class="card"><h2>Padlet 공유 설정 확인</h2><p>Padlet 공유 화면에서 세 가지를 확인합니다.</p><table><tr><th>항목</th><th>이렇게</th></tr><tr><td>비밀번호 필수</td><td>끔</td></tr><tr><td>방문자가 로그인해야 함</td><td>꺼짐</td></tr><tr><td>링크가 있는 방문자</td><td>읽기 전용</td></tr></table><p>앞의 두 개가 켜져 있으면 남이 링크를 눌러도 안 열립니다.</p><p>세 번째를 <b>읽기 전용</b>으로 두는 이유는, &quot;작성자&quot;로 두면 링크를 아는 사람이 내 보드에 글을 쓸 수 있기 때문입니다.</p><div class="cap">[화면 캡처 자리] Padlet 공유 화면 — 권한과 프라이버시 옵션</div></div><div class="card"><h2>사진</h2><p>프로필 사진이나 작품 캡처가 있으면 바탕화면에 모아둡니다. 파일 이름은 영어로 바꿔둡니다.</p><ul><li><code>profile.jpg</code> — 내 사진</li><li><code>work01.jpg</code>, <code>work02.jpg</code> — 작품 캡처</li></ul><p><b>없어도 괜찮습니다.</b> 그록이 물어보고, 없다고 하면 자리만 잡아두고 진행합니다.</p></div></div><div class="cp"><span class="chk"><input type="checkbox" id="c1"><label for="c1"><b>✅ 체크포인트 1</b> 메모장에 주소 네 줄이 채워져 있다.</label></span><span class="nav"><button onclick="go(0)">← 이전</button><button class="next" onclick="go(2)">다음 →</button></span></div></section><section class="screen" data-num="2" data-title="그록에게 규칙 알려주기"><div class="shead"><span class="snum">2</span><div class="stxt"><h1>그록에게 규칙 알려주기</h1><p class="why-line"><b>왜</b> 맨 처음에 한 번만 넣어두면, 뒤에서 짧게 시켜도 알아듣습니다. 모르는 게 있으면 그록이 먼저 물어봅니다.</p><p class="res-line"><b>결과</b> &quot;네, 준비됐습니다&quot;</p></div></div><div class="stack"><div class="pblock"><div class="why"><h2>맨 처음 한 번만 붙여넣습니다</h2><p>그록(grok.com)을 열고 <b>Build 모드</b>를 선택합니다. 새 대화를 시작하고 아래를 붙여넣습니다.</p><div class="cap">[화면 캡처 자리] 그록 입력창 — Build 모드 선택</div></div><div class="pbox"><span class="lb">붙여넣기</span><button class="copy" onclick="cp(this)">복사</button><pre>너는 나와 함께 내 홈페이지를 만드는 조수다.
+나는 AI로 영상을 만드는 사람이고, 만든 것들을
+한 페이지짜리 홈페이지로 묶어 인터넷에 공개하려고 한다.
+컴퓨터를 잘 다루지 못하니 쉬운 말로 하나씩 진행한다.
+
+[진행]
+- 내가 순서대로 지시를 보낸다. 시킨 것만 하고 멈춰라.
+- 앞서가서 다음 단계를 미리 하지 마라.
+
+[모르면 물어라]
+- 정보가 모자라면 지어내지 말고 나에게 물어라.
+- 한 번에 한두 가지만, 예시를 붙여서 물어라.
+  예: &quot;유튜브 주소를 알려 주세요. youtube.com/@아이디 형태입니다&quot;
+- 사진이 없으면 물어보고, 없다고 하면
+  빈 자리만 잡아 두고 계속 진행해라.
+
+[지어내지 마라]
+- 이름, 주소, 영상 제목은 내가 준 것만 쓴다.
+- 유튜브 채널이나 Padlet을 못 읽으면
+  못 읽었다고 말하고 나에게 물어라.
+
+[말하는 법]
+- 어려운 말에는 괄호로 쉬운 설명을 붙여라.
+- 코드를 길게 보여주지 말고 결과 화면으로 보여줘라.
+
+준비됐으면 &quot;네, 준비됐습니다&quot;라고만 답하고 기다려라.</pre></div></div><div class="card"><p><b>&quot;네, 준비됐습니다&quot;가 뜨면 성공입니다.</b> 다른 말을 길게 하거나 벌써 홈페이지를 만들기 시작하면, 새 대화를 열고 다시 붙여넣습니다.</p></div></div><div class="cp"><span class="chk"><input type="checkbox" id="c2"><label for="c2"><b>✅ 체크포인트 2</b> &quot;네, 준비됐습니다&quot;를 확인했다.</label></span><span class="nav"><button onclick="go(1)">← 이전</button><button class="next" onclick="go(3)">다음 →</button></span></div></section><section class="screen" data-num="3" data-title="내 소개 글 만들기"><div class="shead"><span class="snum">3</span><div class="stxt"><h1>내 소개 글 만들기</h1><p class="why-line"><b>왜</b> 사진과 영상이 있어도 글이 없으면 홈페이지를 못 만듭니다. 직접 쓰면 막막하니 주소만 주고 그록이 쓰게 합니다.</p><p class="res-line"><b>결과</b> 첫 화면 문장 · 소개 3문장 · 작품 설명</p></div></div><div class="stack"><div class="pblock"><div class="why"><h2>주소를 옮겨 적고 붙여넣습니다</h2><p>STEP 1에서 채운 메모장 내용을 옮겨 넣습니다.</p><p><b>미리 생각해 둔 계획이 있으면</b> 맨 위 빈칸에 붙여넣습니다. 다른 AI와 나눈 대화, 손으로 쓴 메모 무엇이든 좋습니다. 없으면 그 칸은 비워 두고 주소만 채우면 됩니다.</p></div><div class="pbox"><span class="lb">붙여넣기</span><button class="copy" onclick="cp(this)">복사</button><pre>내 홈페이지에 넣을 글을 써 줘.
+
+이 홈페이지 목적:
+(취업·출강 포트폴리오 / 내 활동 알리기 / 작품 모아두기 / 기타)
+
+미리 생각해 둔 계획이 있으면 여기에:
+
+
+이름:
+유튜브 채널:
+대표 영상 2~4개 주소:
+Padlet:
+
+목적에 맞게 써 줘. 채널을 못 읽으면 지어내지 말고 물어봐.
+&#x27;첫 화면 문장 / 소개 3문장 / 작품 설명&#x27;으로 정리해 줘.</pre></div></div><div class="card"><h2>목적을 먼저 정하는 이유</h2><p>취업·출강용인지, 내 활동을 알리는 용도인지에 따라 글의 방향이 달라집니다. 이게 정해져야 나중에 사이트 모양도 거기에 맞게 나옵니다.</p><p>괄호 안에서 골라 적으면 됩니다. 다 아니면 &quot;기타&quot; 자리에 적습니다.</p></div><div class="card"><h2>여기서는 글만 만듭니다</h2><p>사진은 STEP 5에서 넣습니다. 지금 사진을 찾을 필요 없습니다.</p></div><div class="card warn"><h2>⚠ 나온 글은 꼭 읽어보세요</h2><p>그록이 유튜브 채널을 못 읽었으면 <b>비슷한 영상 제목을 지어냈을 수 있습니다.</b></p><p>내가 만들지 않은 제목이 섞여 있으면 이렇게 말하면 됩니다.</p><div class="tree">&#x27;○○○&#x27;은 제 영상이 아닙니다. 빼 주세요.</div></div><div class="card"><h2>마음에 안 들면</h2><p>말로 하면 됩니다.</p><ul><li>&quot;더 짧게&quot;</li><li>&quot;너무 딱딱하다, 편하게&quot;</li><li>&quot;AI 강사 말고 영상 만드는 사람으로&quot;</li></ul></div></div><div class="cp"><span class="chk"><input type="checkbox" id="c3"><label for="c3"><b>✅ 체크포인트 3</b> 내 소개 글이 나왔고, 가짜 영상 제목이 없는지 확인했다.</label></span><span class="nav"><button onclick="go(2)">← 이전</button><button class="next" onclick="go(4)">다음 →</button></span></div></section><section class="screen" data-num="4" data-title="사이트 분위기 정하기"><div class="shead"><span class="snum">4</span><div class="stxt"><h1>사이트 분위기 정하기</h1><p class="why-line"><b>왜</b> &quot;예쁘게 만들어 줘&quot;라고 하면 AI가 제멋대로 만듭니다. 마음에 드는 홈페이지 사진을 보여주고 &quot;이 느낌&quot;이라고 말해야 합니다.</p><p class="res-line"><b>결과</b> 디자인 가이드 5줄</p></div></div><div class="stack"><div class="card"><h2>먼저 핀터레스트에서 캡처합니다</h2><p>Pinterest에서 아래 단어로 검색해 마음에 드는 홈페이지 화면을 캡처합니다.</p><div class="tree">portfolio website
+personal brand website
+creative portfolio</div><p><b>결이 비슷한 것끼리 고르세요.</b> 밝은 것과 어두운 것을 섞으면 AI가 평균을 내서 어중간한 화면이 나옵니다.</p><p><b>확인법</b> — 배경 밝기, 글자 크기, 사진 크기. 셋 중 둘 이상이 같은 방향이면 됩니다.</p></div><div class="pblock"><div class="why"><h2>캡처를 첨부하고 붙여넣습니다</h2></div><div class="pbox"><span class="lb">붙여넣기</span><button class="copy" onclick="cp(this)">복사</button><pre>첨부한 사진은 내가 마음에 드는 홈페이지야.
+이걸 내 홈페이지 디자인 가이드로 5줄 이내로 정리해 줘.
+
+색, 글자, 여백, 사진 배치, 전체 느낌 순으로.
+&quot;깔끔하게&quot; 같은 뭉뚱그린 말 말고 구체적으로.
+
+결이 다른 사진이 섞여 있으면 먼저 말해 줘.</pre></div></div><div class="card"><h2>마지막 줄이 안전장치입니다</h2><p>결이 다른 캡처를 섞어 왔으면 그록이 먼저 알려줍니다.</p><div class="quote">&quot;1번과 2번은 밝고 여백이 많은데 3번은 어둡습니다. 섞을까요, 3번을 뺄까요?&quot;</div><p>이때 하나를 빼거나, 일부러 섞겠다고 말하면 됩니다.</p><p><b>나온 5줄은 그대로 둡니다.</b> 같은 대화 안에 있으니 다음 STEP에서 알아서 씁니다.</p></div></div><div class="cp"><span class="chk"><input type="checkbox" id="c4"><label for="c4"><b>✅ 체크포인트 4</b> 디자인 가이드 5줄이 나왔다.</label></span><span class="nav"><button onclick="go(3)">← 이전</button><button class="next" onclick="go(5)">다음 →</button></span></div></section><section class="screen" data-num="5" data-title="사이트 만들기"><div class="shead"><span class="snum">5</span><div class="stxt"><h1>사이트 만들기</h1><p class="why-line"><b>왜</b> 앞에서 만든 글과 디자인 가이드로 실제 홈페이지를 만듭니다.</p><p class="res-line"><b>결과</b> 화면에 보이는 홈페이지</p></div></div><div class="stack"><div class="pblock"><div class="why"><h2>사진을 먼저 올립니다</h2><p>프로필 사진, 작품 캡처가 있으면 대화창에 올립니다. 없으면 그냥 넘어갑니다.</p><p><b>중요한 사진은 한 장씩 올리면서 말해 주면</b> 자리가 덜 틀립니다.</p></div><div class="pbox"><span class="lb">붙여넣기</span><button class="copy" onclick="cp(this)">복사</button><pre>이 사진은 맨 위 큰 배경에 써 줘.</pre></div></div><div class="card"><p>한꺼번에 여러 장 올리면 그록이 짐작해서 배치하니까 자리가 바뀔 수 있습니다.</p></div><div class="pblock"><div class="why"><h2>홈페이지 만들기</h2></div><div class="pbox"><span class="lb">붙여넣기</span><button class="copy" onclick="cp(this)">복사</button><pre>지금까지 만든 글과 디자인 가이드로
+한 페이지짜리 홈페이지를 만들어 줘.
+
+순서: 첫 화면 → 소개 → 작품 → 유튜브·Padlet 버튼
+
+첨부한 사진을 넣고, 없는 자리는 비워 둬.
+주소는 내가 준 것만 써.
+휴대폰에서도 깨지지 않게.
+
+한 번에 완성해 줘.</pre></div></div><div class="card"><h2>짧아도 되는 이유</h2><p>기획서와 디자인 가이드가 <b>같은 대화 안에</b> 이미 있습니다. 그래서 &quot;지금까지 만든&quot;이라고만 해도 알아듣습니다.</p></div><div class="card warn"><h2>⚠ 첫 결과가 마음에 안 들어도 정상입니다</h2><p>한 번에 완벽하게 나오지 않습니다. 다음 STEP에서 고칩니다.</p></div></div><div class="cp"><span class="chk"><input type="checkbox" id="c5"><label for="c5"><b>✅ 체크포인트 5</b> 오른쪽에 홈페이지 화면이 나타났다.</label></span><span class="nav"><button onclick="go(4)">← 이전</button><button class="next" onclick="go(6)">다음 →</button></span></div></section><section class="screen" data-num="6" data-title="고치기"><div class="shead"><span class="snum">6</span><div class="stxt"><h1>고치기</h1><p class="why-line"><b>왜</b> 첫 결과는 초안입니다. 눈으로 보고 고칩니다.</p><p class="res-line"><b>결과</b> 다듬어진 홈페이지</p></div></div><div class="stack"><div class="pblock"><div class="why"><h2>세 가지만 확인합니다</h2></div><div class="pbox"><span class="lb">붙여넣기</span><button class="copy" onclick="cp(this)">복사</button><pre>세 가지만 확인해서 고쳐 줘.
+
+1. 내 이름과 주소가 맞는지
+2. 사진이 제대로 들어갔는지
+3. 휴대폰 화면에서 글자가 잘리지 않는지
+
+고친 것만 한 줄씩 알려 줘.</pre></div></div><div class="card"><h2>영상 제목을 꼭 눌러보세요</h2><p>화면에 뜬 영상이 <b>진짜 내 영상인지</b> 확인합니다. 그록이 채널을 못 읽었으면 비슷한 제목을 지어냈을 수 있습니다.</p></div><div class="card"><h2>사진이 이상하면 이렇게 말하세요</h2><p>파일 이름을 몰라도 됩니다. <b>보이는 대로</b> 말하면 알아듣습니다.</p><ul><li>&quot;맨 위 큰 사진을 바꿔줘&quot;</li><li>&quot;두 번째 사진이 잘려 보여&quot;</li><li>&quot;세 번째 칸 사진을 첫 번째로 옮겨줘&quot;</li><li>&quot;내 얼굴 사진이 너무 작아&quot;</li></ul><p>몇 번째인지만 세어서 말하면 됩니다.</p></div><div class="card"><h2>디자인이 마음에 안 들면</h2><ul><li>&quot;글자가 너무 작다&quot;</li><li>&quot;작품 칸을 더 크게&quot;</li><li>&quot;색이 너무 튄다&quot;</li><li>&quot;첫 화면 사진이 잘린다&quot;</li></ul></div><div class="card"><h2>고칠 때 다른 데가 망가지면</h2><p>한 줄을 덧붙입니다.</p><div class="tree">나머지는 건드리지 마.</div></div></div><div class="cp"><span class="chk"><input type="checkbox" id="c6"><label for="c6"><b>✅ 체크포인트 6</b> 이름·주소·사진이 다 맞고, 휴대폰 화면도 확인했다.</label></span><span class="nav"><button onclick="go(5)">← 이전</button><button class="next" onclick="go(7)">다음 →</button></span></div></section><section class="screen" data-num="7" data-title="게시하기"><div class="shead"><span class="snum">7</span><div class="stxt"><h1>게시하기</h1><p class="why-line"><b>왜</b> 지금까지는 그록 안에서만 보입니다. 게시해야 남이 볼 수 있습니다.</p><p class="res-line"><b>결과</b> <code>이름.grok.me</code> 주소</p></div></div><div class="stack"><div class="card"><p>미리보기 위 <b>게시</b> 버튼을 누르면 게시 창이 열립니다.</p><div class="fig"><img class="" src="img01.png" alt=""><div class="cap-t">그록 Build 게시 창 — URL·액세스·앱 커버·게시 버튼</div></div><table><tr><th>칸</th><th>무엇을 하나</th></tr><tr><td>웹사이트 URL</td><td>무작위 이름이 붙어 있습니다. 오른쪽 <b>연필</b>을 눌러 <code>내이름-portfolio</code> 같은 영어 이름으로 바꿉니다</td></tr><tr><td>액세스</td><td><b>링크가 있는 누구나</b>로 둡니다. 그래야 카톡으로 보낸 사람이 볼 수 있습니다</td></tr><tr><td>앱 커버</td><td>카톡으로 링크를 보낼 때 뜨는 대표 이미지입니다. 그록이 자동으로 만듭니다</td></tr><tr><td>X 배너</td><td>안 써도 됩니다</td></tr><tr><td><b>게시</b></td><td>검은 버튼. 누르면 공개됩니다</td></tr></table></div><div class="card"><h2>주소 이름 규칙</h2><p>영어와 숫자, 하이픈(-)만 됩니다. 이미 쓰는 이름이면 빨간 글씨가 뜨니 뒤에 숫자를 붙입니다.</p><div class="quote"><b>글자가 안 써지면 한/영 키를 확인하세요.</b> 한글 상태에서는 아예 입력이 안 되어 키보드가 고장 난 것처럼 보입니다.</div></div><div class="card"><h2>게시 후</h2><p>주소를 복사해 <b>스마트폰으로 열어봅니다.</b> 사진과 링크가 다 나오면 성공입니다.</p></div><div class="card warn"><h2>⚠ 고친 뒤에는 다시 게시</h2><p>미리보기에서 고쳐도 공개된 사이트는 그대로입니다. <b>게시 버튼을 다시 눌러야</b> 바뀝니다.</p></div></div><div class="cp"><span class="chk"><input type="checkbox" id="c7"><label for="c7"><b>✅ 체크포인트 7</b> 내 주소가 생겼고, 휴대폰에서 열린다.</label></span><span class="nav"><button onclick="go(6)">← 이전</button><button class="next" onclick="go(8)">다음 →</button></span></div></section><section class="screen" data-num="8" data-title="파일 받기"><div class="shead"><span class="snum">8</span><div class="stxt"><h1>파일 받기</h1><p class="why-line"><b>왜</b> 그록에만 두면 그록 안에서만 삽니다. 파일로 받아두면 어디든 올릴 수 있고, 나중에 다른 AI로도 다시 만들 수 있습니다.</p><p class="res-line"><b>결과</b> ZIP 하나, txt 하나</p></div></div><div class="stack"><div class="pblock"><div class="why"><h2>두 가지를 한 번에 받습니다</h2></div><div class="pbox"><span class="lb">붙여넣기</span><button class="copy" onclick="cp(this)">복사</button><pre>두 가지를 만들어 줘.
+
+1. 이 홈페이지를 내 컴퓨터로 받을 수 있게 ZIP 파일로
+   사진이 안 딸려오면 사진을 HTML 안에 넣은 파일 하나로
+
+2. 지금까지 만든 걸 txt 파일 하나로 정리
+   내 소개 글, 디자인 가이드, 사이트 구조,
+   사진 파일 이름, 유튜브·Padlet 주소 전부
+   다른 AI가 이것만 보고 똑같이 만들 수 있게</pre></div></div><div class="card"><h2>ZIP은 열어서 확인합니다</h2><p>받은 파일을 압축 풀고 <code>index.html</code>을 더블클릭합니다. 브라우저가 열리면서 홈페이지가 보입니다.</p><p><b>사진이 다 보이면 성공입니다.</b> 회색 네모나 깨진 그림이 보이면 사진이 안 딸려온 겁니다. 그때는 1번의 두 번째 줄을 다시 보냅니다.</p></div><div class="card"><h2>txt는 훑어만 봅니다</h2><p>내 이름과 주소가 제대로 적혀 있으면 됩니다.</p><p>이 파일이 오늘의 <b>보험</b>입니다. 그록 대화가 사라져도, 나중에 다른 AI를 쓰게 돼도, 이 파일만 있으면 똑같이 만들 수 있습니다.</p></div></div><div class="cp"><span class="chk"><input type="checkbox" id="c8"><label for="c8"><b>✅ 체크포인트 8</b> ZIP을 열었을 때 사진이 다 보인다.</label></span><span class="nav"><button onclick="go(7)">← 이전</button><button class="next" onclick="go(9)">다음 →</button></span></div></section><section class="screen" data-num="9" data-title="Vercel에도 올리기"><div class="shead"><span class="snum">9</span><div class="stxt"><h1>Vercel에도 올리기</h1><p class="why-line"><b>왜</b> 같은 파일을 다른 곳에도 올려봅니다. 주소가 하나 더 생기고, 그록 밖에서도 사이트가 산다는 걸 확인합니다.</p><p class="res-line"><b>결과</b> <code>이름.vercel.app</code> 주소</p></div></div><div class="stack"><div class="card"><p>프롬프트가 없습니다. 마우스로만 합니다.</p></div><div class="card"><h2>순서</h2><ol><li><code>vercel.com</code> 접속 → 회원가입/로그인 (구글 계정으로 간단히 가능)</li><li>오른쪽 위 검은 <b>Add New</b> 버튼 → <b>Project</b></li><li>&quot;Let&#x27;s build something new&quot; 화면이 열립니다</li><li><b>ZIP 파일을 이 화면에 그대로 끌어다 놓습니다</b></li><li>프로젝트 이름 입력 (영어) → <b>Deploy</b></li><li>1~2분 기다리면 주소가 나옵니다</li><li>스마트폰으로 열어 확인합니다</li></ol><div class="fig"><img class="" src="img02.png" alt=""><div class="cap-t">Vercel Add New → Project 화면</div></div><div class="fig"><img class="tall" src="img03.png" alt=""><div class="cap-t">ZIP을 끌어다 놓을 때 나타나는 점선 박스</div></div></div><div class="card"><h2>압축을 풀지 않습니다</h2><p>ZIP 그대로 던지면 Vercel이 알아서 처리합니다.</p></div><div class="card"><h2>고치고 싶으면</h2><p>Vercel은 새로 올릴 때마다 <b>새 주소</b>가 생깁니다. 그록에서 고친 뒤 ZIP을 다시 받아 올리면 됩니다.</p></div></div><div class="cp"><span class="chk"><input type="checkbox" id="c9"><label for="c9"><b>✅ 체크포인트 9</b> 주소 두 개가 생겼고, 둘 다 휴대폰에서 열린다.</label></span><span class="nav"><button onclick="go(8)">← 이전</button><button class="next" onclick="go(10)">다음 →</button></span></div></section><section class="screen" data-num="A" data-title="Netlify에도 올려보기"><div class="shead"><span class="snum">A</span><div class="stxt"><h1>Netlify에도 올려보기</h1></div></div><div class="stack"><div class="card"><p>Vercel 말고 Netlify라는 곳에도 올릴 수 있습니다. <b>시간이 남으면</b> 해보세요.</p></div><div class="card"><h2>순서</h2><ol><li><code>netlify.com</code> 가입/로그인</li><li>&quot;Deploy your first project&quot; 화면이 나옵니다</li><li><b>화면 맨 아래로 스크롤</b> → <b>Upload your project files</b> 영역</li><li>여기에 <b>ZIP 파일을 끌어다 놓습니다</b></li><li>주소가 나옵니다</li></ol><div class="fig"><img class="" src="img04.png" alt=""><div class="cap-t">Netlify 첫 배포 화면 — 맨 아래 Upload 영역</div></div></div><div class="card warn"><h2>⚠ 위쪽 AI 채팅창에 넣지 마세요</h2><p>화면 위쪽에 &quot;Start building with an AI agent&quot;라는 채팅창이 있습니다. 여기에 ZIP을 떨어뜨리면 <b>배포가 아니라 &quot;이 파일로 새로 만들어 줘&quot;가 되고 AI 크레딧을 씁니다.</b></p><p>파일이 채팅창에 붙었으면 오른쪽 <b>X</b>로 떼어내고, 반드시 <b>맨 아래 Upload 영역</b>에 놓습니다.</p><div class="fig"><img class="tall" src="img05.png" alt=""><div class="cap-t">ZIP이 위쪽 AI 채팅창에 붙은 상태</div></div></div><div class="card"><h2>배포 후 두 가지</h2><p><b>① Make public</b> — 배포 직후 사이트 이름 옆에 <b>Private</b> 자물쇠가 붙어 있습니다. 이 상태면 나만 보입니다. 하늘색 <b>Make public</b> 버튼을 눌러야 남이 열 수 있습니다.</p><p><b>② 주소 이름 바꾸기</b> — 기본 주소가 무작위 이름입니다. <b>Project configuration → General → Change project name</b>에서 바꿉니다.</p><div class="fig"><img class="" src="img06.png" alt=""><div class="cap-t">Change project name — 초록 체크</div></div></div><div class="card"><h2>Netlify의 장점</h2><p>고친 파일을 <b>다시 끌어다 놓으면 같은 주소가 유지됩니다.</b> Vercel은 올릴 때마다 새 주소가 생기는데, Netlify는 주소가 그대로입니다.</p></div></div><div class="cp"><span class="nav"><button onclick="go(9)">← 이전</button><button class="next" onclick="go(11)">다음 →</button></span></div></section><section class="screen" data-num="B" data-title="Netlify 가입이 막혔을 때"><div class="shead"><span class="snum">B</span><div class="stxt"><h1>Netlify 가입이 막혔을 때</h1></div></div><div class="stack"><div class="card"><p>한 교실에서 여러 명이 동시에 가입하면 Netlify가 <b>자동으로 계정을 정지</b>시키는 경우가 있습니다. 같은 인터넷 회선에서 여러 계정이 한꺼번에 만들어지니 기계가 스팸으로 오해하는 겁니다.</p><p><b>내 잘못이 아닙니다.</b> Netlify 공식 게시판에도 같은 신고가 계속 올라오고 있습니다.</p></div><div class="card"><h2>당장은 넘어갑니다</h2><p>이미 만든 grok.me 주소와 Vercel 주소는 그대로 있습니다. Netlify는 안 해도 오늘 목표는 달성한 겁니다.</p></div><div class="pblock"><div class="why"><h2>복구 신청하는 법</h2><p><code>answers.netlify.com</code>에 접속합니다. 포럼 계정을 따로 만들어야 합니다(구글 계정으로 가능).</p><p><b>New Topic</b> → 카테고리 <b>Support</b> 선택</p><p>제목:</p><div class="tree">Account suspended immediately after signup - false positive</div><p>본문:</p></div><div class="pbox"><span class="lb">붙여넣기</span><button class="copy" onclick="cp(this)">복사</button><pre>Hello Netlify Support,
+
+My account was suspended immediately after signup.
+I am a student in a web publishing class. Several people
+signed up from the same classroom network at the same time,
+which may have triggered the automated spam filter.
+
+I have not uploaded any spam or malicious content.
+Could you please review and restore my account?
+
+Account email: (본인 이메일)
+
+Thank you.</pre></div></div><div class="card"><p><b>&quot;같은 교실에서 동시에 가입했다&quot;는 문장이 중요합니다.</b> 오탐 판단 근거가 됩니다.</p><p>답변까지 며칠 걸립니다. 급하지 않으면 그냥 두셔도 됩니다.</p></div></div><div class="cp"><span class="nav"><button onclick="go(10)">← 이전</button><button class="next" onclick="go(12)">다음 →</button></span></div></section><section class="screen" data-num="C" data-title="Google AI Studio로도 만들어보기"><div class="shead"><span class="snum">C</span><div class="stxt"><h1>Google AI Studio로도 만들어보기</h1></div></div><div class="stack"><div class="card"><p>같은 재료로 다른 AI는 어떻게 만드는지 비교해볼 수 있습니다.</p></div><div class="card warn"><h2>⚠ 먼저 알아둘 것 — 사진이 제대로 안 들어갑니다</h2><p>AI Studio는 <b>사진을 자기 마음대로 바꾸거나 없는 그림을 지어내는 문제</b>가 있습니다. 구글 개발자 게시판에도 같은 신고가 1년 가까이 쌓여 있고 아직 해결되지 않았습니다.</p><p>파일을 올려도 화면에 안 나타나거나, 엉뚱한 인터넷 사진이 들어갑니다. <b>내가 잘못해서 그런 게 아닙니다.</b></p><p>그래서 AI Studio는 <b>글과 배치를 비교해보는 용도</b>로만 쓰는 것을 권합니다.</p></div><div class="pblock"><div class="why"><h2>순서</h2><ol><li><code>aistudio.google.com</code> 접속 → <b>Build</b> 선택 → 새 프로젝트</li><li>STEP 8에서 받은 <b>txt 파일을 첨부</b>합니다</li><li>아래를 붙여넣습니다</li></ol></div><div class="pbox"><span class="lb">붙여넣기</span><button class="copy" onclick="cp(this)">복사</button><pre>첨부한 txt 파일대로 한 페이지짜리 홈페이지를 만들어 줘.
+
+주소는 파일에 적힌 것만 써.
+새 이미지를 만들거나 인터넷 사진을 가져오지 마.
+휴대폰에서도 깨지지 않게.</pre></div></div><div class="card"><ol><li><b>Export → Download ZIP</b>으로 받습니다</li></ol></div><div class="card"><h2>사진을 넣어보려면</h2><p><b>사진은 대화창이 아니라 파일 목록에 올려야 합니다.</b> 대화창에 올린 사진은 AI가 보기만 하고 프로젝트에는 들어가지 않습니다.</p><p>왼쪽 파일 목록에서 <code>assets</code> 폴더를 만들고 거기에 업로드한 다음 이렇게 시킵니다.</p><div class="tree">assets 폴더에 있는 hero.jpg를 맨 위 배경으로 써.
+파일 이름을 바꾸지 말고 그대로 써.
+새 이미지를 만들거나 인터넷 사진을 넣지 마.</div><p>파일 이름은 영어로 짓습니다. 한글이나 띄어쓰기가 있으면 실패합니다.</p></div><div class="card"><h2>사진을 바꿨는데 화면이 그대로일 때</h2><p><b>브라우저가 옛날 사진을 기억하고 있어서입니다.</b></p><p>같은 이름의 파일을 새 것으로 바꿔 올리면, 브라우저는 &quot;그 사진 이미 갖고 있는데?&quot; 하고 저장해둔 옛날 것을 보여줍니다. 파일은 바뀌었는데 화면만 안 바뀐 겁니다.</p><p><b>해결 순서</b></p><p>① 미리보기 화면에서 <code>Ctrl + Shift + R</code>을 누릅니다. 저장된 것을 버리고 새로 받아옵니다.</p><p>② 그래도 그대로면 <b>파일 이름을 바꿔서</b> 올립니다. <code>hero.jpg</code> → <code>hero2.jpg</code>로 바꾸고 &quot;assets 폴더의 hero2.jpg를 써&quot;라고 시킵니다. 이름이 다르니 브라우저가 새 파일로 인식합니다. 이게 제일 확실합니다.</p><p>③ 그래도 안 되면 코드를 확인합니다.</p><div class="tree">지금 맨 위 사진의 경로가 코드에 어떻게 적혀 있어?</div><p><code>assets/hero.jpg</code>가 아니라 <code>https://...</code> 같은 인터넷 주소가 나오면, 애초에 내 파일을 안 쓰고 있던 겁니다. 파일을 아무리 바꿔도 화면이 안 바뀌는 게 당연합니다.</p></div><div class="card"><h2>그래도 안 되면 — 그록으로 가져가기</h2><p>AI Studio에서 받은 ZIP을 그록에 올리고 사진을 넣어달라고 하면 됩니다. 그록은 사진이 제대로 들어갑니다.</p><div class="tree">첨부한 ZIP은 다른 AI로 만든 홈페이지야.
+사진 자리에 첨부한 사진들을 알맞게 넣어 줘.
+글과 배치는 건드리지 마.</div><p><b>AI Studio가 못 한 것을 그록이 마무리하는 방식</b>입니다.</p></div></div><div class="cp"><span class="nav"><button onclick="go(11)">← 이전</button><button class="next" onclick="go(13)">다음 →</button></span></div></section><section class="screen" data-num="D" data-title="나중에 해볼 것"><div class="shead"><span class="snum">D</span><div class="stxt"><h1>나중에 해볼 것</h1></div></div><div class="stack"><div class="card"><h2>내 도메인 붙이기</h2><p><code>이름.grok.me</code> 대신 <code>kimedu.kr</code> 같은 내 주소를 붙일 수 있습니다. 그록 Build, Vercel, Netlify 모두 지원합니다.</p><p>도메인 값이 연 1~2만 원 정도 들고, 산 곳에서 주소 설정을 한 번 해주면 됩니다. 반영까지 몇 분에서 하루 정도 걸립니다.</p></div><div class="card"><h2>사진 더 넣기</h2><p>오늘 사진 없이 넘어간 자리가 있으면, 나중에 그록 대화에 다시 들어가 사진을 올리고 &quot;여기에 넣어줘&quot;라고 하면 됩니다. 고친 뒤 <b>게시 버튼을 다시 누르는 것</b>을 잊지 마세요.</p></div><div class="card"><h2>계속 고치기</h2><p>그록 대화를 즐겨찾기 해두면 언제든 다시 들어가 고칠 수 있습니다. 대화가 사라져도 STEP 8의 txt 파일이 있으면 처음부터 다시 만들 수 있습니다.</p></div></div><div class="cp"><span class="nav"><button onclick="go(12)">← 이전</button><button class="next" onclick="go(14)">다음 →</button></span></div></section><section class="screen" data-num="" data-title="오늘 기억할 다섯 가지"><div class="shead"><span class="snum"></span><div class="stxt"><h1>오늘 기억할 다섯 가지</h1></div></div><div class="stack"><div class="card"><ol><li>홈페이지를 만들기 전에 <b>글부터</b> 만든다.</li><li>&quot;예쁘게&quot;라고 하지 말고 <b>마음에 드는 화면을 보여준다.</b></li><li>AI는 모르는 것을 <b>지어낸다.</b> 영상 제목과 주소는 꼭 확인한다.</li><li>첫 결과는 초안이다. <b>보고 고치는 게 정상</b>이다.</li><li>고친 뒤에는 <b>다시 게시</b>해야 바뀐다.</li></ol></div></div><div class="cp"><span class="nav"><button onclick="go(13)">← 이전</button><button class="next" onclick="go(0)">처음으로</button></span></div></section></main><script>
+const screens=[...document.querySelectorAll('.screen')];
+const tabs=document.getElementById('tabs');
+const LABELS=[["", "시작"], ["1", "주소 모으기"], ["2", "그록에게 규칙 알려주기"], ["3", "내 소개 글 만들기"], ["4", "사이트 분위기 정하기"], ["5", "사이트 만들기"], ["6", "고치기"], ["7", "게시하기"], ["8", "파일 받기"], ["9", "Vercel에도 올리기"], ["A", "Netlify에도 올려보기"], ["B", "Netlify 가입이 막혔을 때"], ["C", "Google AI Studio로도 만들어보기"], ["D", "나중에 해볼 것"], ["", "오늘 기억할 다섯 가지"]];
+screens.forEach((s,i)=>{
+  const b=document.createElement('button');b.className='tab';
+  const [n,lb]=LABELS[i];
+  b.innerHTML='<span class="n">'+(n!==''?n:'·')+'</span><span class="lb">'+lb+'</span>';
+  b.onclick=()=>go(i);tabs.appendChild(b);
+});
+let cur=0;
+function go(i){
+  cur=i;
+  screens.forEach((s,k)=>s.classList.toggle('on',k===i));
+  [...tabs.children].forEach((b,k)=>{b.classList.toggle('on',k===i);b.classList.toggle('done',k<i);});
+  window.scrollTo({top:0});
+  tabs.children[i].scrollIntoView({inline:'nearest',block:'nearest'});
+}
+function fs(d){const r=document.documentElement;const c=parseFloat(getComputedStyle(r).getPropertyValue('--fs'));
+  r.style.setProperty('--fs',Math.min(30,Math.max(16,c+d))+'px');pad();}
+function cpFlash(b,t,ok){b.textContent=t;b.classList.toggle('done',ok);setTimeout(()=>{b.textContent='복사';b.classList.remove('done');},1600);}
+function cpFallback(btn,t){
+  const ta=document.createElement('textarea');ta.value=t;ta.setAttribute('readonly','');
+  ta.style.cssText='position:fixed;top:0;left:0;width:1px;height:1px;opacity:0';
+  document.body.appendChild(ta);ta.select();ta.setSelectionRange(0,t.length);
+  let ok=false;try{ok=document.execCommand('copy')}catch(e){ok=false}
+  document.body.removeChild(ta);
+  if(ok){cpFlash(btn,'복사됨',true);}
+  else{const pre=btn.parentElement.querySelector('pre');const r=document.createRange();r.selectNodeContents(pre);
+    const s=window.getSelection();s.removeAllRanges();s.addRange(r);cpFlash(btn,'Ctrl+C',false);}
+}
+function cp(btn){const t=btn.parentElement.querySelector('pre').innerText;
+  if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(t).then(()=>cpFlash(btn,'복사됨',true)).catch(()=>cpFallback(btn,t));}
+  else{cpFallback(btn,t);}}
+const boxes=[...document.querySelectorAll('.cp input')];
+function prog(){const d=boxes.filter(b=>b.checked).length;
+  document.getElementById('prog').textContent=d+' / '+boxes.length;
+  document.getElementById('progbar').style.width=(boxes.length?d/boxes.length*100:0)+'%';}
+boxes.forEach(b=>b.addEventListener('change',prog));prog();
+function pad(){const t=document.querySelector('.top').offsetHeight;
+  document.getElementById('main').style.paddingTop=(t+32)+'px';}
+window.addEventListener('resize',pad);pad();go(0);
+document.addEventListener('keydown',e=>{if(e.target.tagName==='INPUT')return;
+  if(e.key==='ArrowRight'&&cur<screens.length-1)go(cur+1);
+  if(e.key==='ArrowLeft'&&cur>0)go(cur-1);});
+</script></body></html>

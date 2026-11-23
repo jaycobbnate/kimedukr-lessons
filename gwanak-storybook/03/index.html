@@ -1,0 +1,933 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>그림책 플립북 만들기</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+:root{
+  --bg:#FBFAF7; --card:#FFFFFF; --line:#E6E2DA; --line2:#EFECE6;
+  --ink:#24262B; --sub:#5E626B; --mute:#8C9099;
+  --point:#1F7A8C; --point-soft:#E6F2F4; --point-deep:#155E6C;
+  --set:#EEF4FB; --set-line:#C9DBEF; --set-ink:#2C5A8A;
+  --warn:#FBEFF1; --warn-line:#EFCBD2; --warn-ink:#9A3B4E;
+  --more:#EEF7F0; --more-line:#C8E3CF; --more-ink:#2E6B41;
+  --fs:20px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink)}
+body{font-family:Pretendard,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;font-size:var(--fs);line-height:1.7;word-break:keep-all}
+button{font-family:inherit;cursor:pointer}
+
+/* 상단바 */
+.topbar{position:sticky;top:0;z-index:30;background:rgba(251,250,247,.96);backdrop-filter:blur(6px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1280px;margin:0 auto;padding:14px 20px 0;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.brand{display:flex;flex-direction:column;flex:1;min-width:240px}
+.brand small{color:var(--point);font-weight:700;font-size:.72em;letter-spacing:.04em}
+.brand b{font-size:1.15em;letter-spacing:-.01em}
+.fontctl{display:flex;align-items:center;gap:6px}
+.fontctl span{font-size:.75em;color:var(--sub);margin-right:4px}
+.fontctl button{border:1px solid var(--line);background:#fff;border-radius:10px;min-width:44px;height:40px;font-size:.85em;color:var(--ink)}
+.fontctl button:hover{border-color:var(--point);color:var(--point)}
+.tabs{max-width:1280px;margin:0 auto;padding:10px 20px 0;display:flex;gap:4px;overflow-x:auto;scrollbar-width:thin}
+.tab{flex:0 0 auto;border:0;background:transparent;padding:10px 14px 12px;font-size:.82em;color:var(--sub);border-bottom:3px solid transparent;white-space:nowrap}
+.tab .n{display:inline-block;font-weight:800;color:var(--mute);margin-right:6px}
+.tab:hover{color:var(--ink)}
+.tab.on{color:var(--point-deep);border-bottom-color:var(--point);font-weight:700}
+.tab.on .n{color:var(--point)}
+.tab .grp{font-size:.8em;color:var(--mute);margin-left:4px}
+
+/* 본문 레이아웃 */
+.wrap{max-width:1280px;margin:0 auto;padding:28px 20px 40px;display:grid;grid-template-columns:minmax(0,1fr) 240px;gap:28px}
+.side{position:sticky;top:132px;align-self:start;border:1px solid var(--line);background:#fff;border-radius:16px;padding:16px}
+.side h4{margin:0 0 8px;font-size:.72em;color:var(--mute);letter-spacing:.06em}
+.side a{display:block;text-decoration:none;color:var(--sub);font-size:.78em;padding:8px 10px;border-radius:10px;line-height:1.4}
+.side a:hover{background:var(--point-soft);color:var(--point-deep)}
+.side a.cur{background:var(--point-soft);color:var(--point-deep);font-weight:700}
+
+.step{display:none}
+.step.on{display:block}
+.step-head{margin-bottom:22px}
+.step-head .tag{display:inline-block;font-size:.72em;font-weight:700;color:var(--point);background:var(--point-soft);padding:4px 12px;border-radius:999px;margin-bottom:8px}
+.step-head h2{margin:0 0 6px;font-size:1.6em;letter-spacing:-.02em;line-height:1.35}
+.step-head p{margin:0;color:var(--sub)}
+
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px 24px;scroll-margin-top:140px}
+.card.wide{grid-column:1/-1}
+.card h3{margin:0 0 12px;font-size:1.08em;display:flex;align-items:center;gap:10px;line-height:1.4}
+.card h3 .ic{flex:0 0 auto;width:32px;height:32px;border-radius:10px;background:var(--point-soft);color:var(--point);display:grid;place-items:center;font-size:.8em;font-weight:800}
+.card.set{background:var(--set);border-color:var(--set-line)} .card.set h3{color:var(--set-ink)} .card.set h3 .ic{background:#fff;color:var(--set-ink)}
+.card.warn{background:var(--warn);border-color:var(--warn-line)} .card.warn h3{color:var(--warn-ink)} .card.warn h3 .ic{background:#fff;color:var(--warn-ink)}
+.card.more{background:var(--more);border-color:var(--more-line)} .card.more h3{color:var(--more-ink)} .card.more h3 .ic{background:#fff;color:var(--more-ink)}
+.card p{margin:0 0 10px}
+.card p:last-child{margin-bottom:0}
+
+ol.flow{margin:0;padding:0;list-style:none;counter-reset:f}
+ol.flow li{counter-increment:f;position:relative;padding:0 0 12px 46px}
+ol.flow li:last-child{padding-bottom:0}
+ol.flow li::before{content:counter(f);position:absolute;left:0;top:2px;width:30px;height:30px;border-radius:50%;background:var(--point);color:#fff;font-size:.72em;font-weight:800;display:grid;place-items:center}
+ol.flow li::after{content:"";position:absolute;left:14px;top:36px;bottom:4px;width:2px;background:var(--line2)}
+ol.flow li:last-child::after{display:none}
+ul.dot{margin:0;padding-left:1.1em}
+ul.dot li{margin-bottom:6px}
+.btn{display:inline-block;padding:1px 10px;border-radius:8px;background:#fff;border:1px solid var(--line);font-weight:700;font-size:.9em;white-space:nowrap}
+.card.set .btn,.card.warn .btn,.card.more .btn{border-color:rgba(0,0,0,.08)}
+.btn.p{background:var(--point);border-color:var(--point);color:#fff}
+.en{color:var(--mute);font-size:.82em}
+kbd{font-family:inherit;font-size:.82em;border:1px solid var(--line);border-bottom-width:3px;border-radius:6px;padding:0 7px;background:#fff}
+.val{font-weight:800;color:var(--point-deep);background:var(--point-soft);padding:0 8px;border-radius:6px}
+
+table.t{width:100%;border-collapse:collapse;font-size:.88em}
+table.t th,table.t td{border-bottom:1px solid var(--line2);padding:10px 8px;text-align:left;vertical-align:top}
+table.t th{color:var(--sub);font-weight:700;background:#FAF9F6}
+
+/* 도식 */
+.diagram{display:flex;align-items:stretch;gap:10px;flex-wrap:wrap}
+.node{flex:1;min-width:130px;border:1px solid var(--line);border-radius:14px;padding:14px 12px;background:#fff;text-align:center}
+.node b{display:block;font-size:.95em}
+.node span{display:block;font-size:.75em;color:var(--sub);line-height:1.5;margin-top:4px}
+.node .k{font-size:.68em;font-weight:800;color:var(--point);letter-spacing:.06em}
+.node.m{border-color:var(--set-line);background:var(--set)}
+.node.h{border-color:var(--more-line);background:var(--more)}
+.arrow{display:grid;place-items:center;color:var(--point);font-weight:800;font-size:1.1em}
+
+/* 3D 무대 */
+.stage{position:relative;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:linear-gradient(180deg,#F3F6F7,#FBFAF7)}
+.stage canvas{display:block;width:100%;height:100%}
+.stage-box{height:400px}
+.stage-cap{position:absolute;left:16px;top:14px;background:rgba(255,255,255,.92);border:1px solid var(--line);border-radius:12px;padding:6px 14px;font-size:.8em;font-weight:700;color:var(--point-deep)}
+.ctl{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;align-items:center}
+.ctl button{border:1px solid var(--line);background:#fff;border-radius:12px;padding:8px 16px;font-size:.8em;color:var(--ink)}
+.ctl button:hover{border-color:var(--point);color:var(--point)}
+.ctl button.on{background:var(--point);border-color:var(--point);color:#fff}
+.ctl .sp{flex:1}
+.ctl .note{font-size:.75em;color:var(--mute)}
+
+.thumbs{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}
+.thumbs figure{margin:0}
+.thumbs img{width:100%;aspect-ratio:896/1200;object-fit:cover;border-radius:10px;border:1px solid var(--line);display:block}
+.thumbs figcaption{font-size:.68em;color:var(--sub);text-align:center;margin-top:4px;word-break:break-all}
+@media (max-width:720px){.thumbs{grid-template-columns:repeat(3,1fr)}}
+/* 하단 이동 */
+.pager{position:sticky;bottom:0;z-index:20;background:rgba(251,250,247,.96);border-top:1px solid var(--line);backdrop-filter:blur(6px)}
+.pager-in{max-width:1280px;margin:0 auto;padding:12px 20px;display:flex;gap:12px;align-items:center}
+.pager button{border:1px solid var(--line);background:#fff;border-radius:12px;padding:10px 20px;font-size:.85em;color:var(--ink)}
+.pager button.next{background:var(--point);border-color:var(--point);color:#fff;font-weight:700}
+.pager button:disabled{opacity:.35;cursor:default}
+.pager .where{flex:1;text-align:center;font-size:.78em;color:var(--sub)}
+
+.check{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.check div{border:1px solid var(--line);border-radius:14px;padding:14px;background:#fff;font-size:.88em}
+.check b{display:block;color:var(--point-deep)}
+
+@media (max-width:1000px){
+  .wrap{grid-template-columns:1fr}
+  .side{display:none}
+}
+@media (max-width:720px){
+  :root{--fs:18px}
+  .grid,.check{grid-template-columns:1fr}
+  .stage-box{height:300px}
+  table.t th,table.t td{padding:8px 6px}
+  .t4 tr{display:grid;grid-template-columns:minmax(90px,auto) 1fr}
+  .card{padding:18px 16px}
+  .btn{white-space:normal}
+  .arrow{transform:rotate(90deg);width:100%}
+  .diagram{flex-direction:column}
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-in">
+    <div class="brand">
+      <small>[관악] AI 완성 내 인생 동화책 · 출판 실습</small>
+      <b>그림 6장으로 넘겨 보는 그림책 만들기</b>
+    </div>
+    <div class="fontctl" aria-label="글자 크기">
+      <span>글자</span>
+      <button type="button" data-fs="-2" aria-label="글자 작게">가−</button>
+      <button type="button" data-fs="0" aria-label="기본 크기">기본</button>
+      <button type="button" data-fs="2" aria-label="글자 크게">가+</button>
+    </div>
+  </div>
+  <nav class="tabs" id="tabs" aria-label="실습 단계"></nav>
+</header>
+
+<div class="wrap">
+<main id="main">
+
+<!-- STEP 0 -->
+<section class="step" data-title="전체 흐름" data-grp="">
+  <div class="step-head">
+    <span class="tag">STEP 0 · 오늘 만들 것</span>
+    <h2>그림 6장 → PDF 한 권 → 손으로 넘기는 온라인 그림책</h2>
+    <p>미리캔버스에서 그림을 책 페이지로 묶고, 헤이진에 올려 링크 하나로 가족에게 보냅니다.</p>
+  </div>
+  <div class="grid">
+    <div class="card wide" id="s0-scene">
+      <h3><span class="ic">3D</span>한눈에 보는 전체 과정</h3>
+      <div class="stage stage-box" id="stageFlow"><div class="stage-cap" id="flowCap">① 그림 6장 준비</div></div>
+      <div class="ctl" id="flowCtl">
+        <button type="button" data-act="play" class="on">⏸ 멈춤</button>
+        <button type="button" data-act="restart">↺ 처음부터</button>
+        <span class="sp"></span>
+        <button type="button" data-jump="0">① 그림</button>
+        <button type="button" data-jump="1">② 미리캔버스</button>
+        <button type="button" data-jump="2">③ PDF</button>
+        <button type="button" data-jump="3">④ 플립북</button>
+      </div>
+    </div>
+
+    <div class="card wide" id="s0-map">
+      <h3><span class="ic">↗</span>과정 도식</h3>
+      <div class="diagram">
+        <div class="node"><span class="k">준비</span><b>그림 6장</b><span>896×1200<br>01~06 순서</span></div>
+        <div class="arrow">→</div>
+        <div class="node m"><span class="k">미리캔버스</span><b>3:4 캔버스 6쪽</b><span>그림을 배경으로<br>STEP 1~3</span></div>
+        <div class="arrow">→</div>
+        <div class="node m"><span class="k">미리캔버스</span><b>PDF (웹용)</b><span>슬라이드쇼로 점검<br>STEP 4</span></div>
+        <div class="arrow">→</div>
+        <div class="node h"><span class="k">헤이진</span><b>플립북</b><span>올리고 책 효과<br>STEP 5~6</span></div>
+        <div class="arrow">→</div>
+        <div class="node h"><span class="k">헤이진</span><b>링크 · QR</b><span>카톡으로 공유<br>STEP 7</span></div>
+      </div>
+    </div>
+
+    <div class="card wide" id="s0-book">
+      <h3><span class="ic">📖</span>오늘의 예시 책 — 「느려도 괜찮아」 6장</h3>
+      <div class="thumbs"><figure><img alt="01_표지" src=""><figcaption>01_표지.jpg</figcaption></figure><figure><img alt="02_등장인물" src=""><figcaption>02_등장인물.jpg</figcaption></figure><figure><img alt="03_출발" src=""><figcaption>03_출발.jpg</figcaption></figure><figure><img alt="04_낮잠" src=""><figcaption>04_낮잠.jpg</figcaption></figure><figure><img alt="05_엉금엉금" src=""><figcaption>05_엉금엉금.jpg</figcaption></figure><figure><img alt="06_결승선" src=""><figcaption>06_결승선.jpg</figcaption></figure></div>
+      <p class="en" style="margin-top:10px">모두 896×1200 · 이 순서대로 1쪽~6쪽에 넣습니다.</p>
+    </div>
+
+    <div class="card" id="s0-ready">
+      <h3><span class="ic">✓</span>준비물</h3>
+      <ul class="dot">
+        <li>지난 시간에 만든 <b>그림 6장</b> (1K · 3:4 = <span class="val">896×1200</span>)</li>
+        <li>파일 이름을 <b>01, 02 … 06</b>으로 바꿔 두기</li>
+        <li>구글 · 네이버 · 카카오 중 쓰시는 계정 하나</li>
+        <li>PC 크롬 권장 (휴대폰도 되지만 화면이 좁아요)</li>
+      </ul>
+    </div>
+
+    <div class="card set" id="s0-name">
+      <h3><span class="ic">i</span>파일 이름, 왜 바꾸나요?</h3>
+      <p>미리캔버스 업로드 목록은 순서가 섞여 보일 수 있어요. 이름 앞에 번호가 있으면 <b>몇 쪽 그림인지</b> 바로 알 수 있습니다.</p>
+      <p class="en">예: 01_표지.jpg · 02_등장인물.jpg · … · 06_결승선.jpg</p>
+    </div>
+
+    <div class="card more wide" id="s0-more">
+      <h3><span class="ic">+</span>한 걸음 더 — 6장을 어떻게 나눌까?</h3>
+      <p>플립북은 <b>1쪽(표지)이 혼자</b> 나오고, 그다음부터 두 쪽씩 펼쳐집니다. 6장이면 <b>표지 · 펼침 2개 · 마지막 1쪽</b> 모양이 돼요.</p>
+      <p>펼침면을 꽉 채우고 싶다면 <b>표지 1 + 본문 4 + 뒤표지 1</b>로 기획해 보세요. 뒤표지에는 "지은이 · 그린이 · 만든 날"을 넣으면 진짜 책 같아집니다.</p>
+    </div>
+  </div>
+</section>
+
+<!-- STEP 1 -->
+<section class="step" data-title="미리캔버스 가입" data-grp="미리캔버스">
+  <div class="step-head">
+    <span class="tag">STEP 1 · 미리캔버스</span>
+    <h2>미리캔버스 회원가입</h2>
+    <p>이미 쓰고 계시면 로그인만 하고 STEP 2로 넘어가세요.</p>
+  </div>
+  <div class="grid">
+    <div class="card" id="s1-how">
+      <h3><span class="ic">1</span>가입 순서</h3>
+      <ol class="flow">
+        <li>주소창에 <b>miricanvas.com</b> 입력</li>
+        <li>오른쪽 위 <span class="btn p">회원가입</span> 클릭</li>
+        <li>쓰시는 계정 버튼 하나 고르기</li>
+        <li>계정 창에서 로그인 → 가입 완료</li>
+      </ol>
+    </div>
+    <div class="card" id="s1-btns">
+      <h3><span class="ic">2</span>가입 창에 보이는 버튼</h3>
+      <table class="t">
+        <tr><th>큰 버튼</th><td><span class="btn">NAVER로 가입</span><br><span class="btn">Google로 가입</span><br><span class="btn">이메일로 가입</span></td></tr>
+        <tr><th>다른 방법</th><td>카카오 · 페이스북 · 웨일 · 애플 아이콘</td></tr>
+      </table>
+    </div>
+    <div class="card warn" id="s1-warn">
+      <h3><span class="ic">!</span>막힐 때</h3>
+      <ul class="dot">
+        <li><b>로그인했는데 "새로 가입" 화면이 떠요</b> → 처음 가입한 버튼이 아닌 다른 버튼을 누른 거예요. 다른 계정 버튼으로 다시 시도하세요.</li>
+        <li><b>네이버로 가입했는데 다른 메일 주소가 보여요</b> → 네이버에 등록된 '연락처 이메일'로 가입되기 때문이에요. 정상입니다.</li>
+        <li><b>이메일로 가입했어요</b> → 메일함의 인증 메일에서 '이메일 인증하기'를 눌러 주세요.</li>
+      </ul>
+    </div>
+    <div class="card set" id="s1-memo">
+      <h3><span class="ic">✎</span>꼭 메모해 두세요</h3>
+      <p>"나는 <b>____</b> 버튼으로 가입했다."</p>
+      <p>다음 수업에서 로그인할 때 가장 많이 헷갈리는 부분입니다. 휴대폰 메모장에 한 줄 적어 두세요.</p>
+    </div>
+  </div>
+</section>
+
+<!-- STEP 2 -->
+<section class="step" data-title="3:4 캔버스" data-grp="미리캔버스">
+  <div class="step-head">
+    <span class="tag">STEP 2 · 미리캔버스</span>
+    <h2>그림과 똑같은 크기의 캔버스 열기</h2>
+    <p>그림 크기와 캔버스 크기가 같으면 배경으로 넣을 때 하나도 잘리지 않아요.</p>
+  </div>
+  <div class="grid">
+    <div class="card" id="s2-how">
+      <h3><span class="ic">1</span>캔버스 만들기</h3>
+      <ol class="flow">
+        <li>로그인 후 오른쪽 위 <span class="btn p">새 디자인 만들기</span></li>
+        <li>새 탭에 편집 화면이 열리고 <b>"무엇을 만들어야 하나요?"</b> 창이 떠요</li>
+        <li>창 왼쪽 맨 아래 <span class="btn">직접 입력</span></li>
+        <li>가로 <span class="val">896</span> · 세로 <span class="val">1200</span> · 단위 <span class="val">px</span></li>
+        <li>아래 <span class="btn p">새 디자인 만들기</span></li>
+      </ol>
+    </div>
+    <div class="card set" id="s2-check">
+      <h3><span class="ic">✓</span>제대로 됐는지 확인</h3>
+      <p>화면 위쪽 가운데 제목 옆에 <span class="btn">896×1200 px</span> 이 보이면 성공입니다.</p>
+      <p>가로·세로 칸 사이의 <b>자물쇠</b>는 비율 잠금이에요. 숫자를 직접 다 넣을 땐 그대로 두셔도 됩니다.</p>
+    </div>
+    <div class="card warn" id="s2-warn">
+      <h3><span class="ic">!</span>막힐 때</h3>
+      <ul class="dot">
+        <li><b>"무엇을 만들어야 하나요?" 창을 닫아 버렸어요</b> → 위쪽 크기 표시(<span class="btn">1536×2048 px ∨</span> 같은 글자) 클릭 → 맨 위 <span class="btn">직접 입력</span>을 펼쳐 숫자 입력 → <span class="btn p">적용</span></li>
+        <li><b>처음 보는 크기로 열렸어요</b> → 새 디자인은 <b>최근에 썼던 크기</b>로 열릴 수 있어요. 위 방법으로 896×1200으로 바꾸세요.</li>
+        <li><b>숫자가 이상하게 바뀌어요</b> → 칸을 세 번 클릭해 전부 선택한 뒤 다시 입력하세요.</li>
+      </ul>
+    </div>
+    <div class="card more" id="s2-more">
+      <h3><span class="ic">+</span>한 걸음 더 — 왜 896×1200?</h3>
+      <p>오늘 예시 그림(1K · 3:4)의 실제 크기가 896×1200이에요. 정확한 3:4는 900×1200이지만, <b>그림 크기 그대로</b> 넣는 게 가장 깔끔해요.</p>
+      <p>다른 크기로 만든 그림이라면 <b>그림 파일의 가로·세로 숫자를 그대로</b> 입력하면 됩니다. (윈도우: 파일 우클릭 → 속성 → 자세히)</p>
+    </div>
+  </div>
+</section>
+
+<!-- STEP 3 -->
+<section class="step" data-title="그림 넣기" data-grp="미리캔버스">
+  <div class="step-head">
+    <span class="tag">STEP 3 · 미리캔버스</span>
+    <h2>그림 6장을 올리고, 한 장씩 배경으로</h2>
+    <p>페이지 6개를 만든 뒤 각 페이지에 그림 한 장씩 꽉 채웁니다.</p>
+  </div>
+  <div class="grid">
+    <div class="card" id="s3-up">
+      <h3><span class="ic">1</span>그림 올리기</h3>
+      <ol class="flow">
+        <li>왼쪽 세로 메뉴에서 <span class="btn">업로드</span></li>
+        <li>파란 <span class="btn p">업로드</span> 버튼</li>
+        <li>01~06 그림을 <b>한 번에</b> 선택 (<kbd>Ctrl</kbd> 누른 채 클릭, 또는 01 클릭 후 <kbd>Shift</kbd>+06 클릭)</li>
+        <li>왼쪽 '파일' 목록 맨 앞에 그림이 보이면 완료</li>
+      </ol>
+    </div>
+    <div class="card" id="s3-page">
+      <h3><span class="ic">2</span>페이지 6개 만들기</h3>
+      <ol class="flow">
+        <li>캔버스 아래 <span class="btn">+ 페이지 추가</span>를 5번</li>
+        <li>왼쪽 위 번호가 <b>1 ~ 6</b>까지 생기면 완료</li>
+      </ol>
+      <p class="en">페이지 위쪽 아이콘: ∧∨ 순서 이동 · + 추가 · 복제 · 휴지통 삭제</p>
+    </div>
+    <div class="card wide" id="s3-bg">
+      <h3><span class="ic">3</span>그림을 배경으로 — 6번 반복</h3>
+      <ol class="flow">
+        <li><b>1쪽</b>을 클릭해 고르기 (파란 테두리 = 지금 고른 쪽, 그림은 이 쪽에 들어가요)</li>
+        <li>왼쪽 목록에서 <b>01 그림</b> 클릭 → 캔버스 가운데 작게 들어와요</li>
+        <li>들어온 그림 위에서 <b>마우스 오른쪽</b> 클릭</li>
+        <li>메뉴에서 <span class="btn p">배경으로 만들기</span> → 페이지에 꽉 차요</li>
+        <li>2쪽 ← 02 그림 … 6쪽 ← 06 그림까지 반복</li>
+      </ol>
+    </div>
+    <div class="card warn" id="s3-warn">
+      <h3><span class="ic">!</span>막힐 때</h3>
+      <ul class="dot">
+        <li><b>오른쪽에 "AI 편집 시작하기" 창이 떠요</b> → X로 닫고 계속하세요.</li>
+        <li><b>그림이 작게만 있어요</b> → 아직 배경이 아니에요. 오른쪽 클릭 → 배경으로 만들기.</li>
+        <li><b>엉뚱한 그림을 배경으로 넣었어요</b> → 배경을 클릭하면 왼쪽에 '사진 배경'이 뜨고, <span class="btn">배경 빼내기</span>로 꺼낼 수 있어요.</li>
+        <li><b>쪽 순서가 바뀌었어요</b> → 페이지 위 ∧∨ 화살표로 옮기세요.</li>
+        <li><b>목록에서 내 그림 찾기 어려워요</b> → 최근에 올린 그림이 맨 앞에 와요. 위쪽 '업로드 검색' 칸에 파일 이름을 넣어도 돼요.</li>
+        <li><b>그림이 안 올라가요</b> → jpg · png만 돼요. <b>webp</b> 파일은 그림판에서 열어 jpg로 다시 저장하세요.</li>
+      </ul>
+    </div>
+    <div class="card more" id="s3-more">
+      <h3><span class="ic">+</span>한 걸음 더</h3>
+      <ul class="dot">
+        <li>그림을 고른 뒤 <kbd>B</kbd> 키 하나면 바로 배경이 돼요.</li>
+        <li>표지에 제목을 올리고 싶으면 왼쪽 <span class="btn">텍스트</span>로 글자를 얹으세요. 배경 위에 떠 있어서 나중에 고치기 쉬워요.</li>
+        <li>글자가 그림에 묻히면 글자 뒤에 반투명 흰 도형을 깔아 보세요.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- STEP 4 -->
+<section class="step" data-title="확인 & PDF" data-grp="미리캔버스">
+  <div class="step-head">
+    <span class="tag">STEP 4 · 미리캔버스</span>
+    <h2>슬라이드쇼로 넘겨 보고, PDF로 저장</h2>
+    <p>저장 버튼은 없어요. 작업 내용은 자동으로 저장됩니다.</p>
+  </div>
+  <div class="grid">
+    <div class="card" id="s4-show">
+      <h3><span class="ic">1</span>슬라이드쇼로 점검</h3>
+      <ol class="flow">
+        <li>먼저 <b>1쪽을 클릭</b> (슬라이드쇼는 지금 고른 쪽부터 시작해요)</li>
+        <li>오른쪽 위 <span class="btn">···</span> → <span class="btn">슬라이드쇼 보기</span></li>
+        <li>키보드 <kbd>→</kbd> 다음 쪽 · <kbd>←</kbd> 이전 쪽 · <kbd>Esc</kbd> 나오기</li>
+      </ol>
+    </div>
+    <div class="card" id="s4-title">
+      <h3><span class="ic">2</span>제목 붙이기</h3>
+      <p>위쪽 가운데 <b>"제목을 입력해주세요."</b>를 눌러 책 제목을 적어 두세요.</p>
+      <p class="en">다운로드 파일 이름과 내 드라이브에서 찾기 쉬워져요.</p>
+    </div>
+    <div class="card wide" id="s4-check">
+      <h3><span class="ic">✓</span>넘겨 보며 3가지만 확인</h3>
+      <div class="check">
+        <div><b>순서</b>1쪽이 표지, 6쪽이 마지막 장면인가요?</div>
+        <div><b>잘림</b>그림이 페이지에 꽉 차고 흰 틈이 없나요?</div>
+        <div><b>빈 쪽</b>그림 없는 흰 페이지가 남아 있지 않나요?</div>
+      </div>
+    </div>
+    <div class="card" id="s4-pdf">
+      <h3><span class="ic">3</span>PDF로 내보내기</h3>
+      <ol class="flow">
+        <li>오른쪽 위 <span class="btn p">다운로드</span></li>
+        <li>'파일 형식' 칸을 눌러 <span class="btn">PDF (웹용)</span> 선택</li>
+        <li>'페이지 선택'이 <b>모든 페이지 (1~6)</b>, '다운로드 정보'가 <b>6 페이지</b>인지 확인</li>
+        <li><span class="btn p">고해상도 다운로드</span></li>
+      </ol>
+    </div>
+    <div class="card warn" id="s4-warn">
+      <h3><span class="ic">!</span>막힐 때</h3>
+      <ul class="dot">
+        <li><b>다운로드가 안 돼요</b> → 주소창 오른쪽의 팝업 차단 표시를 눌러 허용한 뒤 다시 시도하세요.</li>
+        <li><b>파일이 어디 갔는지 모르겠어요</b> → 크롬 오른쪽 위 ⬇ 아이콘, 또는 '다운로드' 폴더를 보세요.</li>
+        <li><b>1 페이지로 나와요</b> → 페이지가 정말 6개인지, 빈 페이지를 지웠는지 확인하세요.</li>
+      </ul>
+    </div>
+    <div class="card more wide" id="s4-more">
+      <h3><span class="ic">+</span>한 걸음 더 — 웹용과 인쇄용, 뭐가 달라요?</h3>
+      <table class="t">
+        <tr><th>PDF (웹용)</th><td>문서·화면용. 가볍고 빠르게 올라가요. <b>플립북엔 이걸로 충분</b></td></tr>
+        <tr><th>PDF (인쇄용)</th><td>벡터를 포함한 인쇄용 파일. 집 프린터로 뽑을 때. 파일이 커요</td></tr>
+      </table>
+      <p style="margin-top:10px">인쇄용이 안 받아지면 웹용부터 받아 보세요. 그림책처럼 그림만 있는 책은 눈으로 보기에 차이가 거의 없습니다.</p>
+    </div>
+  </div>
+</section>
+
+<!-- STEP 5 -->
+<section class="step" data-title="헤이진 가입·업로드" data-grp="헤이진">
+  <div class="step-head">
+    <span class="tag">STEP 5 · 헤이진 Heyzine</span>
+    <h2>헤이진에 가입하고 PDF 올리기</h2>
+    <p>헤이진은 PDF를 책장 넘기는 온라인 책으로 바꿔 주는 무료 사이트예요. 영어 사이트라 번역부터 켭니다.</p>
+  </div>
+  <div class="grid">
+    <div class="card set" id="s5-tr">
+      <h3><span class="ic">가</span>먼저, 한국어로 번역하기</h3>
+      <ol class="flow">
+        <li><b>heyzine.com</b> 접속</li>
+        <li>화면 빈 곳에서 <b>마우스 오른쪽</b> 클릭</li>
+        <li><span class="btn">한국어(으)로 번역</span></li>
+      </ol>
+      <p class="en">헤이진 언어 메뉴에는 한국어가 없어요. 아래 설명엔 영어 원래 이름도 함께 적었습니다.</p>
+    </div>
+    <div class="card" id="s5-join">
+      <h3><span class="ic">1</span>가입하기</h3>
+      <ol class="flow">
+        <li>오른쪽 위 <span class="btn p">Sign Up</span> <span class="en">(가입)</span></li>
+        <li><span class="btn">Sign Up with google</span> 에 내 계정이 보이면 클릭</li>
+        <li>또는 Email · Password 두 번 입력 → 약관 체크 → Register</li>
+        <li><b>Dashboard</b> <span class="en">(내 책장)</span> 화면이 나오면 완료</li>
+      </ol>
+    </div>
+    <div class="card" id="s5-up">
+      <h3><span class="ic">2</span>PDF 올리기</h3>
+      <ol class="flow">
+        <li>위쪽 <span class="btn">New flipbook</span> <span class="en">(새 플립북)</span></li>
+        <li>"Drag &amp; Drop a File" 창에 PDF를 끌어다 놓거나</li>
+        <li><span class="btn p">Browse File</span> → 다운로드 폴더의 PDF 선택</li>
+        <li>변환이 끝나면 책 모양 미리보기가 나와요</li>
+      </ol>
+    </div>
+    <div class="card warn" id="s5-warn">
+      <h3><span class="ic">!</span>꼭 가입 먼저!</h3>
+      <ul class="dot">
+        <li>가입하지 않고 첫 화면에서 바로 올린 책은 <b>1주일 뒤 자동 삭제</b>돼요.</li>
+        <li>가입한 계정의 책은 최소 1년 유지, 계속 보는 사람이 있으면 그대로 남아요.</li>
+        <li>번역을 켜면 버튼 이름이 우리말로 바뀌어요. 헷갈리면 번역을 끄고 영어 이름을 찾으세요.</li>
+      </ul>
+    </div>
+    <div class="card more wide" id="s5-more">
+      <h3><span class="ic">+</span>한 걸음 더 — 무료로 몇 권까지?</h3>
+      <table class="t">
+        <tr><th>무료 (Basic)</th><td>플립북 <b>5권</b> · 쪽수 제한 없음 · 저장공간 1GB · 광고 없음 · 비밀번호 걸기 가능</td></tr>
+        <tr><th>표시</th><td>책 화면 구석에 'Powered by Heyzine' 작은 로고가 나와요 (유료면 지울 수 있음)</td></tr>
+        <tr><th>유료</th><td>Standard 연 $59부터 권수 제한 없음</td></tr>
+      </table>
+      <p style="margin-top:10px">대시보드 오른쪽 위에 <span class="btn">○ out of 5 free flipbooks in use</span>로 몇 권 썼는지 보여요.</p>
+    </div>
+  </div>
+</section>
+
+<!-- STEP 6 -->
+<section class="step" data-title="책 효과" data-grp="헤이진">
+  <div class="step-head">
+    <span class="tag">STEP 6 · 헤이진 Heyzine</span>
+    <h2>책장 넘기는 느낌 고르기</h2>
+    <p>같은 PDF도 효과에 따라 잡지처럼, 하드커버 책처럼, 한 장씩 크게 넘어갑니다.</p>
+  </div>
+  <div class="grid">
+    <div class="card wide" id="s6-demo">
+      <h3><span class="ic">3D</span>효과 비교 미리보기</h3>
+      <div class="stage stage-box" id="stageFlip"><div class="stage-cap" id="flipCap">Magazine · 종이가 휘며 넘어가요</div></div>
+      <div class="ctl" id="flipCtl">
+        <button type="button" data-act="play" class="on">⏸ 멈춤</button>
+        <span class="sp"></span>
+        <button type="button" data-mode="mag" class="on">Magazine</button>
+        <button type="button" data-mode="book">Book</button>
+        <button type="button" data-mode="single">한 장씩 (single page)</button>
+      </div>
+    </div>
+    <div class="card" id="s6-how">
+      <h3><span class="ic">1</span>효과 바꾸는 곳</h3>
+      <ol class="flow">
+        <li>대시보드에서 책 표지 클릭 → <span class="btn">Editor</span> <span class="en">(편집)</span></li>
+        <li>왼쪽 STYLE 아래 <span class="btn">Page Effect</span></li>
+        <li>맨 위 칸을 눌러 효과 고르기</li>
+        <li><span class="btn">Close</span> → 왼쪽 위 <span class="btn p">Save</span> <span class="en">(저장)</span></li>
+      </ol>
+    </div>
+    <div class="card" id="s6-list">
+      <h3><span class="ic">2</span>고를 수 있는 효과 8가지</h3>
+      <table class="t">
+        <tr><th>Magazine</th><td>잡지처럼 휘며 넘김 (기본)</td></tr>
+        <tr><th>Book</th><td>두께감 있는 하드커버 책</td></tr>
+        <tr><th>Slider</th><td>옆으로 밀어 넘기기</td></tr>
+        <tr><th>Cards</th><td>쪽마다 카드처럼 뒤집기</td></tr>
+        <tr><th>그 밖에</th><td>Album · Notebook · Coverflow · One page — 직접 골라 미리보기로 비교해 보세요</td></tr>
+      </table>
+    </div>
+    <div class="card set" id="s6-opt">
+      <h3><span class="ic">⚙</span>같은 창의 설정들</h3>
+      <ul class="dot">
+        <li><b>Sound on page turn</b> — 넘길 때 종이 소리</li>
+        <li><b>Pages edges</b> — 책 옆면 두께 표시</li>
+        <li><b>Right-To-Left read</b> — 오른쪽부터 읽기 (우리 책은 끄기)</li>
+        <li><b>Page disposition</b> — Adaptative(자동) · Always double page(항상 두 쪽) · Always single page(항상 한 쪽)</li>
+      </ul>
+    </div>
+    <div class="card more" id="s6-more">
+      <h3><span class="ic">+</span>한 걸음 더 — 동화책 추천 조합</h3>
+      <ul class="dot">
+        <li><b>책다운 느낌</b>: Book + Pages edges 켜기</li>
+        <li><b>휴대폰으로 볼 가족이 많다면</b>: Magazine + <b>Always single page</b> → 한 장씩 크게 보여요</li>
+        <li>왼쪽 STYLE의 <b>Background Audio</b>로 잔잔한 배경음, <b>Background</b>로 바탕색도 바꿀 수 있어요</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- STEP 7 -->
+<section class="step" data-title="공유 & 관리" data-grp="헤이진">
+  <div class="step-head">
+    <span class="tag">STEP 7 · 헤이진 Heyzine</span>
+    <h2>링크와 QR로 우리 가족에게 보내기</h2>
+    <p>내용을 고쳐도 링크와 QR은 그대로예요. 한 번 보내면 끝입니다.</p>
+  </div>
+  <div class="grid">
+    <div class="card" id="s7-link">
+      <h3><span class="ic">1</span>링크로 카톡 보내기</h3>
+      <ol class="flow">
+        <li>대시보드에서 책 표지 클릭 → <span class="btn">Share</span> <span class="en">(공유)</span></li>
+        <li>첫 탭 <b>Link</b>의 Reader link 확인</li>
+        <li>아래 <span class="btn p">Copy link</span> <span class="en">(링크 복사)</span></li>
+        <li>카톡 대화창에 붙여넣기 → 보내기</li>
+      </ol>
+      <p class="en">카드 메뉴의 Copy link를 눌러도 바로 복사돼요.</p>
+    </div>
+    <div class="card" id="s7-qr">
+      <h3><span class="ic">2</span>QR 코드 받기</h3>
+      <ol class="flow">
+        <li>Share 창 위쪽 <span class="btn">QR code</span> 탭</li>
+        <li><span class="btn">Download image</span> → 그림 파일로 저장</li>
+        <li>출판 책 뒤표지 · 안내문 · 명함에 붙이기</li>
+      </ol>
+      <p class="en">QR 색·로고 바꾸기는 유료 기능이에요.</p>
+    </div>
+    <div class="card set wide" id="s7-tabs">
+      <h3><span class="ic">i</span>Share 창의 탭 6개</h3>
+      <table class="t t4">
+        <tr><th>Link</th><td>책 주소 복사</td><th>Social</th><td>페이스북 · X · 왓츠앱 등 바로 공유</td></tr>
+        <tr><th>Email / Image</th><td>표지 그림에 링크를 단 이미지</td><th>QR code</th><td>QR 그림 저장 · 복사</td></tr>
+        <tr><th>Web / Embed</th><td>블로그 · 홈페이지에 책 넣는 코드</td><th>Download</th><td>오프라인 파일 (유료)</td></tr>
+      </table>
+    </div>
+    <div class="card warn" id="s7-warn">
+      <h3><span class="ic">!</span>관리할 때 주의</h3>
+      <ul class="dot">
+        <li>무료는 <b>5권까지</b>. 지우려면 카드 메뉴 Delete → 휴지통 → 한 번 더 Delete 해야 완전히 지워져요.</li>
+        <li>지운 책의 링크는 더 이상 열리지 않아요. 가족에게 보낸 책은 신중하게!</li>
+        <li>링크를 아는 사람만 볼 수 있어요. 검색으로 남이 찾을 수는 없습니다.</li>
+      </ul>
+    </div>
+    <div class="card more" id="s7-more">
+      <h3><span class="ic">+</span>한 걸음 더 — 5권이 꽉 찼다면</h3>
+      <ul class="dot">
+        <li>안 쓰는 책을 골라 카드 메뉴 <span class="btn">Delete</span> → 휴지통에서 한 번 더 Delete 해야 <b>자리가 하나 비어요</b>. 그 책을 받은 분이 있다면 링크가 열리지 않으니 먼저 확인!</li>
+        <li>편집 화면의 <span class="btn">Replace PDF</span>(링크는 그대로 두고 PDF만 바꾸기)는 <b>유료 플랜 기능</b>이에요.</li>
+        <li><b>연습·확인용이라면 로그인 없이</b>: 로그아웃한 상태로 heyzine.com 첫 화면에 PDF를 끌어다 놓으면 5권에 포함되지 않아요. 책 효과 고르기와 링크 공유도 됩니다. 단, <b>1주일 뒤 자동 삭제</b>되니 가족에게 오래 보여 줄 책은 꼭 내 계정에 올리세요.</li>
+        <li><span class="btn">Password protect</span>로 비밀번호를 걸면 가족만 볼 수 있어요.</li>
+        <li>Web / Embed 코드를 블로그에 붙이면 글 안에서 책이 바로 넘어갑니다.</li>
+      </ul>
+    </div>
+    <div class="card wide" id="s7-done">
+      <h3><span class="ic">★</span>오늘의 완성 체크</h3>
+      <div class="check">
+        <div><b>미리캔버스</b>896×1200 · 6쪽 · PDF(웹용) 저장</div>
+        <div><b>헤이진</b>가입 계정에 올리고 책 효과 저장</div>
+        <div><b>공유</b>링크를 내 카톡(나와의 채팅)에 보내 열어 보기</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<aside class="side" aria-label="이 단계 카드 목록">
+  <h4 id="sideTitle">이 STEP 카드</h4>
+  <nav id="sideList"></nav>
+</aside>
+</div>
+
+<footer class="pager">
+  <div class="pager-in">
+    <button type="button" id="prevBtn">← 이전</button>
+    <div class="where" id="where"></div>
+    <button type="button" id="nextBtn" class="next">다음 →</button>
+  </div>
+</footer>
+
+<script>window.PB_IMGS=["img01.jpg", "img02.jpg", "img03.jpg", "img04.jpg", "img05.jpg", "img06.jpg"];</script>
+<script>
+(function(){
+  /* ---------- 글자 크기 ---------- */
+  var base = 20, fs = base;
+  try{ var saved = parseInt(localStorage.getItem('pbFs'),10); if(saved) fs = saved; }catch(e){}
+  function applyFs(){ document.documentElement.style.setProperty('--fs', fs+'px'); try{localStorage.setItem('pbFs',fs);}catch(e){} }
+  if(window.innerWidth > 720) applyFs();
+  document.querySelectorAll('.fontctl button').forEach(function(b){
+    b.addEventListener('click',function(){
+      var d = parseInt(b.dataset.fs,10);
+      fs = d===0 ? base : Math.max(16, Math.min(30, fs+d));
+      applyFs();
+    });
+  });
+
+  /* ---------- STEP 탭 ---------- */
+  var steps = Array.prototype.slice.call(document.querySelectorAll('.step'));
+  var tabs = document.getElementById('tabs');
+  var cur = 0;
+  steps.forEach(function(s,i){
+    var b = document.createElement('button');
+    b.type='button'; b.className='tab';
+    b.innerHTML = '<span class="n">'+i+'</span>'+s.dataset.title+(s.dataset.grp?'<span class="grp">'+s.dataset.grp+'</span>':'');
+    b.addEventListener('click',function(){ go(i,true); });
+    tabs.appendChild(b);
+  });
+  var sideList = document.getElementById('sideList');
+  function buildSide(){
+    sideList.innerHTML='';
+    steps[cur].querySelectorAll('.card[id]').forEach(function(c){
+      var a = document.createElement('a');
+      a.href='#'+c.id;
+      var h = c.querySelector('h3').cloneNode(true); var ic=h.querySelector('.ic'); if(ic) ic.remove();
+      a.textContent = h.textContent.trim();
+      a.addEventListener('click',function(e){ e.preventDefault(); var hd=document.querySelector('.topbar').offsetHeight; window.scrollTo({top: c.getBoundingClientRect().top + window.pageYOffset - hd - 12, behavior:'smooth'}); });
+      sideList.appendChild(a);
+    });
+    document.getElementById('sideTitle').textContent = 'STEP '+cur+' · '+steps[cur].dataset.title;
+  }
+  function go(i,scroll){
+    cur = Math.max(0,Math.min(steps.length-1,i));
+    steps.forEach(function(s,k){ s.classList.toggle('on',k===cur); });
+    tabs.querySelectorAll('.tab').forEach(function(t,k){ t.classList.toggle('on',k===cur); if(k===cur){ tabs.scrollLeft = t.offsetLeft - (tabs.clientWidth - t.offsetWidth)/2; } });
+    document.getElementById('prevBtn').disabled = cur===0;
+    var nb = document.getElementById('nextBtn');
+    nb.disabled = cur===steps.length-1;
+    nb.textContent = cur<steps.length-1 ? ('다음 · '+steps[cur+1].dataset.title+' →') : '마지막 STEP';
+    document.getElementById('where').textContent = 'STEP '+cur+' / '+(steps.length-1);
+    buildSide();
+    if(scroll) window.scrollTo({top:0,behavior:'smooth'});
+    if(window.__stages) window.__stages.forEach(function(st){ st.visible = st.el.offsetParent !== null; if(st.visible) st.resize(); });
+  }
+  document.getElementById('prevBtn').addEventListener('click',function(){ go(cur-1,true); });
+  document.getElementById('nextBtn').addEventListener('click',function(){ go(cur+1,true); });
+
+  /* 사이드 메뉴 현재 카드 표시 */
+  if('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(es){
+      es.forEach(function(e){
+        if(e.isIntersecting){
+          sideList.querySelectorAll('a').forEach(function(a){ a.classList.toggle('cur', a.getAttribute('href')==='#'+e.target.id); });
+        }
+      });
+    },{rootMargin:'-30% 0px -60% 0px'});
+    document.querySelectorAll('.card[id]').forEach(function(c){ io.observe(c); });
+  }
+
+  document.querySelectorAll('.thumbs img').forEach(function(im,i){ if(window.PB_IMGS&&window.PB_IMGS[i]) im.src=window.PB_IMGS[i]; });
+  go(0,false);
+
+  /* ---------- three.js 공통 ---------- */
+  window.__stages = [];
+  if(typeof THREE === 'undefined') return;
+
+  var PAL = ['#F6C9B8','#BFDDE4','#CFE3C2','#E8D3EE','#F3E2A9','#C7CFEF'];
+  var LABEL = ['표지','등장인물','출발','낮잠','엉금엉금','결승선'];
+  var IMGS = window.PB_IMGS || [];
+  function pageTex(i, extra){
+    if(IMGS[i%6]){ var tx = new THREE.TextureLoader().load(IMGS[i%6]); tx.anisotropy=4; return tx; }
+    var c = document.createElement('canvas'); c.width=300; c.height=400;
+    var g = c.getContext('2d');
+    g.fillStyle = PAL[i%6]; g.fillRect(0,0,300,400);
+    g.fillStyle = 'rgba(255,255,255,.55)';
+    g.beginPath(); g.arc(150,170,78,0,Math.PI*2); g.fill();
+    g.fillStyle = 'rgba(36,38,43,.18)';
+    g.beginPath(); g.moveTo(40,330); g.quadraticCurveTo(150,250,260,330); g.lineTo(260,400); g.lineTo(40,400); g.fill();
+    g.fillStyle = '#24262B'; g.font = 'bold 88px Pretendard, sans-serif'; g.textAlign='center'; g.textBaseline='middle';
+    g.fillText(String(i+1).padStart(2,'0'),150,172);
+    g.font = 'bold 30px Pretendard, sans-serif'; g.fillStyle='#24262B';
+    g.fillText(extra || LABEL[i],150,360);
+    var t = new THREE.CanvasTexture(c); t.anisotropy = 4; return t;
+  }
+  function labelTex(text, bg, fg, w, h){
+    var c = document.createElement('canvas'); c.width=w||256; c.height=h||96;
+    var g = c.getContext('2d');
+    g.fillStyle = bg; roundRect(g,0,0,c.width,c.height,22); g.fill();
+    g.fillStyle = fg; g.font='bold '+Math.round(c.height*.42)+'px Pretendard, sans-serif'; g.textAlign='center'; g.textBaseline='middle';
+    g.fillText(text,c.width/2,c.height/2+2);
+    return new THREE.CanvasTexture(c);
+  }
+  function roundRect(g,x,y,w,h,r){ g.beginPath(); g.moveTo(x+r,y); g.arcTo(x+w,y,x+w,y+h,r); g.arcTo(x+w,y+h,x,y+h,r); g.arcTo(x,y+h,x,y,r); g.arcTo(x,y,x+w,y,r); g.closePath(); }
+  var ease = function(t){ t=Math.max(0,Math.min(1,t)); return t<.5 ? 4*t*t*t : 1-Math.pow(-2*t+2,3)/2; };
+  var lerp = function(a,b,t){ return a+(b-a)*t; };
+
+  function makeStage(el){
+    var renderer = new THREE.WebGLRenderer({antialias:true, alpha:true});
+    renderer.setPixelRatio(Math.min(2, window.devicePixelRatio||1));
+    el.insertBefore(renderer.domElement, el.firstChild);
+    var scene = new THREE.Scene();
+    var cam = new THREE.PerspectiveCamera(38,1,1,40);
+    scene.add(new THREE.AmbientLight(0xffffff,.78));
+    var dl = new THREE.DirectionalLight(0xffffff,.55); dl.position.set(3,6,8); scene.add(dl);
+    var st = {el:el, renderer:renderer, scene:scene, cam:cam, visible:true,
+      resize:function(){ var w=el.clientWidth, h=el.clientHeight; if(!w||!h) return; renderer.setSize(w,h,false); cam.aspect=w/h; cam.updateProjectionMatrix(); }};
+    if('ResizeObserver' in window){ new ResizeObserver(function(){ st.resize(); }).observe(el); }
+    st.resize();
+    window.__stages.push(st);
+    return st;
+  }
+
+  /* ---------- 장면 1: 전체 흐름 ---------- */
+  (function(){
+    var el = document.getElementById('stageFlow');
+    var S = makeStage(el); var scene=S.scene, cam=S.cam;
+    cam.position.set(0,1.0,6.6); cam.lookAt(0,.15,0);
+    var W=1.2, H=1.6;
+    var geo = new THREE.PlaneGeometry(W,H);
+    var pages=[];
+    for(var i=0;i<6;i++){
+      var m = new THREE.Mesh(geo, new THREE.MeshLambertMaterial({map:pageTex(i), side:THREE.DoubleSide}));
+      scene.add(m); pages.push(m);
+    }
+    // 캔버스 틀 (미리캔버스)
+    var frame = new THREE.Mesh(new THREE.PlaneGeometry(W+.24,H+.24), new THREE.MeshBasicMaterial({color:0xBFD9E8, transparent:true, opacity:0}));
+    frame.position.set(0,0,-.05); scene.add(frame);
+    // PDF 라벨
+    var pdf = new THREE.Mesh(new THREE.PlaneGeometry(1.1,.42), new THREE.MeshBasicMaterial({map:labelTex('PDF','#C94B5B','#fff'), transparent:true, opacity:0}));
+    scene.add(pdf);
+    var mc = new THREE.Mesh(new THREE.PlaneGeometry(2.2,.5), new THREE.MeshBasicMaterial({map:labelTex('미리캔버스','#2C5A8A','#fff',440,100), transparent:true, opacity:0}));
+    mc.position.set(0,1.5,.6); scene.add(mc);
+    var hz = new THREE.Mesh(new THREE.PlaneGeometry(2.2,.5), new THREE.MeshBasicMaterial({map:labelTex('헤이진 플립북','#2E6B41','#fff',440,100), transparent:true, opacity:0}));
+    hz.position.set(0,1.6,.6); scene.add(hz);
+    [mc,hz,pdf].forEach(function(o){ o.material.depthTest=false; o.renderOrder=10; });
+    // 책 표지 등판
+    var spine = new THREE.Mesh(new THREE.BoxGeometry(.06,H+.04,.06), new THREE.MeshLambertMaterial({color:0x8a6f55}));
+    spine.visible=false; scene.add(spine);
+
+    var scatter=[[-3.0,.9,-.6,-.2],[-1.8,-.8,.2,.18],[-.6,1.0,-.3,-.1],[.7,-.85,.1,.16],[1.9,.85,-.4,-.18],[3.0,-.7,.2,.22]];
+    var cap = document.getElementById('flowCap');
+    var CAPS=['① 그림 6장 준비 (896×1200)','② 미리캔버스: 3:4 캔버스 6쪽에 배경으로','③ PDF (웹용) 한 파일로 저장','④ 헤이진: 책장 넘기는 플립북 완성'];
+    var T=16, t=0, playing=true, last=performance.now();
+    function setPage(p, x,y,z, ry, rz, op){ p.position.set(x,y,z); p.rotation.set(0,ry,rz); }
+    function frameAt(tt){
+      var ph = tt/T*4; var stage = Math.min(3,Math.floor(ph));
+      cap.textContent = CAPS[stage];
+      // 0: scatter wobble   1: one by one into canvas grid   2: stack into pdf   3: book flips
+      var a = ease((ph-1)/0.8); // into grid
+      var b = ease((ph-2)/0.6); // stack
+      var c = (ph-3);           // book
+      mc.material.opacity = (ph>.9 && ph<2.1) ? Math.min(1,(ph-.9)*4, (2.1-ph)*4) : 0;
+      pdf.material.opacity = (ph>2.2 && ph<3.1) ? Math.min(1,(ph-2.2)*4,(3.1-ph)*6) : 0;
+      hz.material.opacity = ph>3.05 ? Math.min(1,(ph-3.05)*4) : 0;
+      frame.material.opacity = 0;
+      spine.visible = ph>=3;
+      for(var i=0;i<6;i++){
+        var p=pages[i], s=scatter[i];
+        var wob = Math.sin(tt*1.6+i)*.06;
+        var gx = (i%3-1)*1.55, gy = i<3 ? .9 : -.95;
+        if(ph<1){ setPage(p,s[0],s[1]+wob,s[2],0,s[3]); p.scale.set(.85,.85,1); }
+        else if(ph<2){
+          var ai = ease((ph-1-i*.1)/0.5);
+          setPage(p, lerp(s[0],gx,ai), lerp(s[1],gy,ai)*.82, lerp(s[2],0,ai), 0, lerp(s[3],0,ai));
+          var sc = lerp(.85,.78,ai); p.scale.set(sc,sc,1);
+        }
+        else if(ph<3){
+          setPage(p, lerp(gx,0,b), lerp(gy*.82,-.15,b), lerp(0,(5-i)*.06,b), 0, lerp(0,(i-2.5)*.03,b));
+          var sc2=lerp(.78,1,b); p.scale.set(sc2,sc2,1);
+          pdf.position.set(0,-.15-H*.5-.1,.6);
+        }
+        else{
+          // 책: 오른쪽 더미에서 왼쪽으로 한 장씩 넘김 (등판 x=0)
+          var flipStart = i*0.14, prog = ease((c - flipStart)/0.22);
+          var ang = -Math.PI*prog;
+          p.scale.set(1,1,1);
+          p.rotation.set(0,ang,0);
+          var zr = lerp((6-i)*.05, (i+1)*.05, prog);
+          p.position.set(Math.cos(ang)*W/2, -.05, zr + Math.sin(Math.PI*prog)*W/2);
+        }
+      }
+      spine.position.set(0,-.05,0);
+      // 카메라 살짝
+      cam.position.x = Math.sin(tt*.25)*.6; cam.lookAt(0,.15,0);
+    }
+    function loop(now){
+      var dt=(now-last)/1000; last=now;
+      if(playing && S.visible) t=(t+dt)%T;
+      if(S.visible){ frameAt(t); S.renderer.render(scene,cam); }
+      requestAnimationFrame(loop);
+    }
+    requestAnimationFrame(loop);
+    var ctl=document.getElementById('flowCtl');
+    var pb=ctl.querySelector('[data-act=play]');
+    pb.addEventListener('click',function(){ playing=!playing; pb.textContent=playing?'⏸ 멈춤':'▶ 재생'; pb.classList.toggle('on',playing); });
+    ctl.querySelector('[data-act=restart]').addEventListener('click',function(){ t=0; });
+    ctl.querySelectorAll('[data-jump]').forEach(function(b){ b.addEventListener('click',function(){ t=parseInt(b.dataset.jump,10)*T/4+ (b.dataset.jump==='0'?0:.2*T/4); }); });
+  })();
+
+  /* ---------- 장면 2: 넘김 효과 비교 ---------- */
+  (function(){
+    var el = document.getElementById('stageFlip');
+    var S = makeStage(el); var scene=S.scene, cam=S.cam;
+    cam.position.set(0,1.2,4.3); cam.lookAt(0,0,0);
+    var W=1.35, H=1.8, SEG=24;
+    var group = new THREE.Group(); scene.add(group);
+    var shadow = new THREE.Mesh(new THREE.PlaneGeometry(W*2.6,H*1.25), new THREE.MeshBasicMaterial({color:0x000000, transparent:true, opacity:.06}));
+    shadow.position.set(0,-.02,-.08); scene.add(shadow);
+    // 왼쪽 고정, 오른쪽 고정, 넘어가는 한 장(앞/뒤)
+    function pagePlane(tex){ var g=new THREE.PlaneGeometry(W,H,SEG,1); g.translate(W/2,0,0); return new THREE.Mesh(g,new THREE.MeshLambertMaterial({map:tex,side:THREE.FrontSide})); }
+    var texs=[], backs=[]; for(var i=0;i<6;i++){ texs.push(pageTex(i)); var bt=pageTex(i); bt.wrapS=THREE.RepeatWrapping; bt.repeat.x=-1; bt.offset.x=1; backs.push(bt); }
+    var lg=new THREE.PlaneGeometry(W,H); lg.translate(-W/2,0,0); var leftP=new THREE.Mesh(lg,new THREE.MeshLambertMaterial({map:texs[0], polygonOffset:true, polygonOffsetFactor:2, polygonOffsetUnits:2})); scene.add(leftP);
+    var rightP = pagePlane(texs[2]); scene.add(rightP);
+    rightP.material.polygonOffset=true; rightP.material.polygonOffsetFactor=2; rightP.material.polygonOffsetUnits=2;
+    var flipF = pagePlane(texs[1]);   // 앞면(오른쪽에 있을 때 보임)
+    var flipB = pagePlane(texs[1]);   // 뒷면
+    flipB.material = new THREE.MeshLambertMaterial({map:backs[1], side:THREE.BackSide});
+    var flipper = new THREE.Group(); flipper.add(flipF); flipper.add(flipB); scene.add(flipper);
+    var edgeL = new THREE.Mesh(new THREE.BoxGeometry(W,H,.08), new THREE.MeshLambertMaterial({color:0xEDE7DB}));
+    var edgeR = edgeL.clone(); scene.add(edgeL); scene.add(edgeR);
+    var cover = new THREE.Mesh(new THREE.BoxGeometry(W*2+.12,H+.12,.04), new THREE.MeshLambertMaterial({color:0x6E5B4A}));
+    scene.add(cover);
+    var base0 = flipF.geometry.attributes.position.array.slice();
+
+    var mode='mag', t=0, playing=true, last=performance.now(), idx=0;
+    var cap=document.getElementById('flipCap');
+    var CAP={mag:'Magazine · 종이가 휘며 넘어가요', book:'Book · 두꺼운 하드커버처럼 반듯하게', single:'한 장씩 (Always single page) · 한 쪽을 크게'};
+    function bend(geom, amt){
+      var p=geom.attributes.position.array;
+      for(var k=0;k<p.length;k+=3){
+        var x=base0[k]; var u=x/W;
+        p[k]=x - amt*.18*u*u*W; p[k+2]=amt*Math.sin(u*Math.PI*.9)*.38;
+      }
+      geom.attributes.position.needsUpdate=true; geom.computeVertexNormals();
+    }
+    function setTex(){
+      var a=(idx*2)%6;
+      leftP.material.map=texs[(a+5)%6]; rightP.material.map=texs[(a+2)%6];
+      flipF.material.map=texs[a]; flipB.material.map=backs[(a+1)%6];
+      [leftP,rightP,flipF,flipB].forEach(function(m){m.material.needsUpdate=true;});
+    }
+    setTex();
+    function layout(){
+      var single = mode==='single', book = mode==='book';
+      cover.visible = book; edgeL.visible = edgeR.visible = book;
+      leftP.visible = !single;
+      var z0 = book ? .14 : 0;
+      leftP.position.set(0,0,z0); rightP.position.set(0,0,z0); flipper.position.set(0,0,z0+.05);
+      edgeL.position.set(-W/2,0,.03); edgeR.position.set(W/2,0,.03);
+      cover.position.set(0,0,-.06);
+      shadow.position.z = book ? -.12 : -.1;
+      if(single){ rightP.position.x=-W/2; flipper.position.x=-W/2; }
+      shadow.scale.x = single?.55:1;
+    }
+    layout();
+    function frame(dt){
+      var D=2.6; // 한 번 넘기는 주기
+      var p = Math.min(1,(t%D)/1.7);
+      var e = ease(p);
+      if(mode==='single'){
+        // 한 장 크게: 제자리에서 옆으로 밀리며 다음 장
+        bend(flipF.geometry,0); flipB.geometry=flipF.geometry;
+        flipper.rotation.y=0;
+        flipper.position.x = -W/2 - e*W*1.6; flipper.position.z = .05;
+        flipF.material.opacity=1;
+        rightP.material.map = texs[(idx+1)%6]; rightP.material.needsUpdate=true;
+        flipF.material.map = texs[idx%6]; flipF.material.needsUpdate=true;
+        flipper.rotation.z = -e*.08;
+      }else{
+        flipper.rotation.z=0;
+        flipper.rotation.y = -Math.PI*e;
+        var amt = mode==='mag' ? Math.sin(e*Math.PI)*1.0 : 0;
+        bend(flipF.geometry, amt); flipB.geometry = flipF.geometry;
+        flipper.position.y = mode==='book' ? Math.sin(e*Math.PI)*.04 : 0;
+        flipper.position.z = (mode==='book'?.14:0) + .05 + Math.sin(e*Math.PI)*.08;
+      }
+      group.rotation.y=0;
+      cam.position.x = Math.sin(performance.now()/4000)*.5; cam.lookAt(0,0,0);
+    }
+    var prevCycle=0;
+    function loop(now){
+      var dt=(now-last)/1000; last=now;
+      if(playing && S.visible){
+        t+=dt;
+        var cyc=Math.floor(t/2.6);
+        if(cyc!==prevCycle){ prevCycle=cyc; idx++; if(mode!=='single') setTex(); }
+      }
+      if(S.visible){ frame(dt); S.renderer.render(scene,cam); }
+      requestAnimationFrame(loop);
+    }
+    requestAnimationFrame(loop);
+    var ctl=document.getElementById('flipCtl');
+    var pb=ctl.querySelector('[data-act=play]');
+    pb.addEventListener('click',function(){ playing=!playing; pb.textContent=playing?'⏸ 멈춤':'▶ 재생'; pb.classList.toggle('on',playing); });
+    ctl.querySelectorAll('[data-mode]').forEach(function(b){
+      b.addEventListener('click',function(){
+        mode=b.dataset.mode; t=0; prevCycle=0;
+        ctl.querySelectorAll('[data-mode]').forEach(function(x){x.classList.toggle('on',x===b);});
+        cap.textContent=CAP[mode]; layout(); setTex();
+      });
+    });
+  })();
+
+  go(cur,false);
+})();
+</script>
+</body>
+</html>

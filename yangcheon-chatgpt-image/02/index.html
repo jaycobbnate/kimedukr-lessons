@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>챗GPT 이미지 200% 활용 · 내 캐릭터 만들고 움직이기</title><style>
+:root{--fs:20px;--ac:#1f7a72;--ac2:#e7f3f1;--ac3:#cfe7e3;--ln:#e3e6ea;--tx:#22272e;--mu:#5d6670;--bg:#fbfaf7}
+*{box-sizing:border-box}
+html{font-size:var(--fs)}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;line-height:1.75;word-break:keep-all}
+.top{padding:1.4rem 1.2rem .6rem;max-width:1240px;margin:0 auto}
+.top h1{margin:0;font-size:1.55rem;line-height:1.35}
+.top p{margin:.3rem 0 0;color:var(--mu);font-size:.9rem}
+.bar{position:sticky;top:0;z-index:5;background:rgba(251,250,247,.97);border-bottom:1px solid var(--ln)}
+.bar-in{max-width:1240px;margin:0 auto;padding:.5rem 1.2rem;display:flex;gap:.6rem;align-items:center}
+.tabs{display:flex;flex-wrap:wrap;gap:.35rem;flex:1}
+.tab{font-size:.8rem;padding:.3rem .75rem;border:1px solid var(--ln);border-radius:999px;color:var(--tx);text-decoration:none;background:#fff;white-space:nowrap}
+.tab.t2{border-color:var(--ac3)}
+.tab.on{background:var(--ac);border-color:var(--ac);color:#fff}
+.zoom{display:flex;gap:.3rem}
+.zoom button{font-size:.8rem;padding:.3rem .6rem;border:1px solid var(--ln);background:#fff;border-radius:8px;cursor:pointer;color:var(--tx)}
+.wrap{max-width:1240px;margin:0 auto;padding:1rem 1.2rem 0;display:grid;grid-template-columns:minmax(0,1fr) 250px;gap:1.6rem;align-items:start}
+.side{position:sticky;top:7.5rem;font-size:.78rem;border-left:1px solid var(--ln);padding-left:1rem}
+.side .st{font-weight:600;color:var(--ac);margin-bottom:.4rem;line-height:1.4}
+.side a{display:block;color:var(--mu);text-decoration:none;padding:.25rem 0;line-height:1.45}
+.side a.on{color:var(--tx);font-weight:600}
+.step{margin-bottom:1.2rem}.step.hide{display:none}
+.step-h{display:flex;align-items:center;gap:.7rem;border-bottom:2px solid var(--ac);padding-bottom:.4rem;margin-bottom:1rem}
+.step-h h2{margin:0;font-size:1.35rem;line-height:1.4}
+.part{font-size:.75rem;background:var(--ac2);color:var(--ac);border-radius:6px;padding:.1rem .5rem;font-weight:600}
+.card{background:#fff;border:1px solid var(--ln);border-radius:14px;padding:1.2rem 1.4rem;margin-bottom:1rem;scroll-margin-top:7rem}
+.tag{display:inline-block;font-size:.7rem;font-weight:700;border-radius:6px;padding:.05rem .5rem;margin-right:.55rem;vertical-align:.15em}.t-req{background:var(--ac);color:#fff}.t-opt{background:#eef0f3;color:#5d6670;border:1px solid #d5dbe1}.card.opt{background:#fdfdfc}
+.card h3{margin:0 0 .7rem;font-size:1.1rem;color:var(--ac)}
+.card p{margin:.5rem 0}
+.b{border-radius:10px;padding:.8rem 1.1rem;margin:.9rem 0;border:1px solid var(--ln)}
+.b p:first-of-type{margin-top:.2rem}.b>*:last-child{margin-bottom:0}
+.b-lab{font-size:.78rem;font-weight:700;letter-spacing:.02em;margin-bottom:.2rem}
+.b-easy{background:var(--ac2);border-color:var(--ac3)}.b-easy .b-lab{color:var(--ac)}
+.b-say{background:#fff;border:none;border-left:3px solid var(--ac3);border-radius:0;padding-left:1.1rem}.b-say .b-lab{color:var(--mu)}
+.b-set{background:#f1f5fa;border-color:#dbe5f0}.b-set .b-lab{color:#3c5d82}
+.b-warn{background:#fcf1f2;border-color:#f1d6da}.b-warn .b-lab{color:#a1404f}
+.b-tip{background:#f3f2fb;border-color:#e0ddf3}.b-tip .b-lab{color:#5a4fa0}
+.b-more{background:#eff7ef;border-color:#d6ead6}.b-more .b-lab{color:#3b7a3e}
+.b-check{background:#fff;border-color:var(--ac3)}.b-check .b-lab{color:var(--ac)}
+.b-check ul{list-style:none;padding-left:0}.b-check li{padding-left:1.6rem;position:relative}.b-check li:before{content:"";position:absolute;left:.2rem;top:.45em;width:.8em;height:.8em;border:1.5px solid var(--ac);border-radius:4px}
+.b-example{background:#f6f6f4}.b-example .b-lab{color:var(--mu)}
+.b-prompt{background:#f7f8f9}
+.b-head{display:flex;justify-content:space-between;align-items:center;gap:.6rem}
+.b-prompt .b-lab{color:var(--tx)}
+.copy{font-size:.75rem;padding:.25rem .8rem;border:1px solid var(--ac);background:#fff;color:var(--ac);border-radius:8px;cursor:pointer}
+.copy.ok{background:var(--ac);color:#fff}
+pre{white-space:pre-wrap;font-family:inherit;font-size:.92rem;margin:.5rem 0 .2rem;background:#fff;border:1px solid var(--ln);border-radius:8px;padding:.8rem 1rem;line-height:1.7}
+.hint{font-size:.72rem;color:var(--mu);margin:.2rem 0 0}
+table{border-collapse:collapse;width:100%;font-size:.9rem;margin:.4rem 0}
+th,td{border-bottom:1px solid var(--ln);padding:.45rem .6rem;text-align:left;vertical-align:top}
+th{color:var(--mu);font-weight:600;font-size:.8rem}
+ul,ol{padding-left:1.4rem}li{margin:.2rem 0}
+.shot{margin:1rem 0;text-align:center}.shot img{max-width:min(100%,640px);max-height:440px;width:auto;height:auto;border:1px solid var(--ln);border-radius:10px;background:#fff}.shot figcaption{font-size:.78rem;color:var(--mu);margin-top:.35rem}
+.diagram{margin:1rem 0;background:#fff;border:1px solid var(--ln);border-radius:12px;padding:1rem}
+.diagram svg{width:100%;height:auto;display:block}
+.d-box{fill:#fff;stroke:#cfd5dc;stroke-width:1.5}
+.d-soft{fill:#f2f4f6;stroke:#d5dbe1}
+.d-key{fill:var(--ac2);stroke:var(--ac);stroke-width:1.5}
+.d-key2{fill:#f4faf9;stroke:var(--ac);stroke-width:1.5;stroke-dasharray:6 4}
+.d-keyline{fill:#fff;stroke:var(--ac);stroke-width:3}
+.d-t{font-size:22px;font-weight:700;fill:var(--tx);text-anchor:middle}
+.d-s{font-size:18px;fill:var(--mu);text-anchor:middle}
+.d-s2{font-size:15px;fill:var(--mu);text-anchor:middle}
+.d-s3{font-size:18px;fill:var(--mu)}
+.d-h{font-size:20px;font-weight:700;fill:var(--ac)}
+.d-l{text-anchor:start}
+.d-ar{stroke:#8a939c;stroke-width:2;marker-end:url(#ar)}
+.d-ln{stroke:#b5bdc5;stroke-width:1.5;fill:none}
+.d-fig{fill:#7fb8b0}
+.d-cam{fill:#5d6670}
+.d-c1{fill:#f2d16b}.d-c2{fill:#f3e6cc;stroke:#d9c9a8}
+.d-dot{fill:#b5bdc5}.d-dotk{fill:var(--ac)}
+.d-bgcol{fill:#dbe9f5}
+.d-black{fill:#222}.d-white{fill:#fff}
+.d-check{fill:url(#chk);stroke:#cfd5dc}
+.d-sticker{fill:none;stroke:var(--ac);stroke-width:2;stroke-dasharray:5 4}
+.foot{position:sticky;bottom:0;z-index:4;background:rgba(251,250,247,.97);border-top:1px solid var(--ln);margin-top:1rem}
+.foot-in{max-width:1240px;margin:0 auto;padding:.5rem 1.2rem;display:flex;justify-content:space-between;gap:.6rem}
+.foot button{font-size:.85rem;padding:.4rem 1.1rem;border:1px solid var(--ln);background:#fff;border-radius:10px;cursor:pointer;color:var(--tx)}
+.foot button:disabled{opacity:.35;cursor:default}
+.foot button.nx{border-color:var(--ac);color:var(--ac)}
+.foot span{font-size:.8rem;color:var(--mu);align-self:center}
+@media(max-width:980px){.wrap{grid-template-columns:1fr}.side{display:none}}
+</style></head><body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#8a939c" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></marker>
+<pattern id="chk" width="20" height="20" patternUnits="userSpaceOnUse"><rect width="20" height="20" fill="#fff"/><rect width="10" height="10" fill="#e6e9ec"/><rect x="10" y="10" width="10" height="10" fill="#e6e9ec"/></pattern>
+</defs></svg>
+<div class="top"><h1>챗GPT 이미지 200% 활용 · 내 캐릭터 만들고 움직이기</h1><p>그림 주문 기본기 · 캐릭터 시트 · GPT 이미지 2.6 GIF · 투명 움직이는 스티커</p></div>
+<nav class="bar"><div class="bar-in"><div class="tabs"><a class="tab" href="javascript:void(0)" data-s="s0">오늘 흐름</a><a class="tab" href="javascript:void(0)" data-s="s1">1 기획서</a><a class="tab" href="javascript:void(0)" data-s="s2">2 첫 그림</a><a class="tab" href="javascript:void(0)" data-s="s3">3 뷰·샷·앵글</a><a class="tab" href="javascript:void(0)" data-s="s4">4 캐릭터 시트</a><a class="tab t2" href="javascript:void(0)" data-s="s5">5 2.6 소식</a><a class="tab t2" href="javascript:void(0)" data-s="s6">6 @이름 저장</a><a class="tab t2" href="javascript:void(0)" data-s="s7">7 GIF</a><a class="tab t2" href="javascript:void(0)" data-s="s8">8 투명 스티커</a><a class="tab" href="javascript:void(0)" data-s="s9">마무리</a></div>
+<div class="zoom"><button id="zm" aria-label="글자 작게">가-</button><button id="zp" aria-label="글자 크게">가+</button></div></div></nav>
+<div class="wrap"><main><section class="step" id="s0"><header class="step-h"><h2>오늘 무엇을 하나요</h2></header><article class="card" id="s0c0" data-title="오늘의 약속" data-tag="필수"><h3><span class="tag t-req">필수</span>오늘의 약속</h3><div class="b b-easy"><div class="b-lab">쉽게 말하면</div><p>오늘은 <strong>선생님 캐릭터를 하나 정하고</strong>, 그 캐릭터를 <strong>여러 각도로 그려 보고</strong>, 마지막에는 <strong>움직이는 스티커</strong>로 만듭니다.</p></div>
+<div class="b b-say"><div class="b-lab">설명</div><p>선생님들, 지난 시간에는 여러 이미지 사이트를 둘러보고, 배경 지우기(누끼)랑 그림 일부만 고치기(인페인팅), 그리고 슬래시(/) 명령어까지 해 봤죠.</p>
+<p>오늘부터는 진짜 <strong>"내 것"</strong> 을 만듭니다. 제가 만든 캐릭터 <strong>「몰라」</strong> 를 먼저 보여 드릴 텐데, 그건 "이렇게 하면 되는구나" 하고 <strong>참고만</strong> 하시고요, 선생님들은 <strong>선생님 캐릭터</strong>를 만드시는 거예요.</p>
+<p>오늘 정한 캐릭터는 앞으로 광고 모델도 되고, 굿즈도 되고, 인스타툰 주인공도 되고, 동화책 주인공도 됩니다. 그러니까 오늘이 제일 중요해요. 대신 어렵지 않게, 하나씩 같이 갑니다.</p></div></article><article class="card" id="s0c1" data-title="수업은 늘 이 순서로 갑니다" data-tag="필수"><h3><span class="tag t-req">필수</span>수업은 늘 이 순서로 갑니다</h3><figure class="diagram"><svg viewBox="0 0 900 170" role="img" aria-label="수업 진행 순서: 선생님 시연, 같이 실습, 내 캐릭터로"><rect x="20" y="40" width="240" height="90" rx="14" class="d-box"/><text x="140" y="80" class="d-t">① 보기</text><text x="140" y="108" class="d-s">강사 캐릭터 몰라로</text><rect x="330" y="40" width="240" height="90" rx="14" class="d-box"/><text x="450" y="80" class="d-t">② 복붙 + 질문에 답</text><text x="450" y="108" class="d-s">AI가 묻고 나는 골라요</text><rect x="640" y="40" width="240" height="90" rx="14" class="d-key"/><text x="760" y="80" class="d-t">③ 내 캐릭터로</text><text x="760" y="108" class="d-s">내 것으로 바꿔요</text><line x1="264" y1="85" x2="322" y2="85" class="d-ar"/><line x1="574" y1="85" x2="632" y2="85" class="d-ar"/></svg></figure>
+<div class="b b-say"><div class="b-lab">설명</div><p>모든 STEP은 똑같습니다. 제가 몰라로 먼저 보여 드리고, 선생님들은 프롬프트(AI에게 하는 주문 글)를 <strong>복사 버튼으로 복붙</strong>만 하세요. 그러면 챗GPT가 바로 그리지 않고 <strong>선생님한테 먼저 질문</strong>을 해요. 보기 3개 중에 [추천]이 붙어 있으니 모르겠으면 추천 고르시면 됩니다. 이걸 <strong>역질문</strong>이라고 해요. 방향은 챗GPT가 잡아 주고, 고르는 건 선생님이 하는 거예요.</p></div>
+<div class="b b-set"><div class="b-lab">카드 제목 앞 표시</div><p><strong>필수</strong> = 수업 시간에 꼭 같이 해요 · <strong>선택</strong> = 시간이 남거나 집에서 해 보세요. 초록 <strong>빨리 끝났다면</strong> 상자도 모두 선택이에요.</p></div></article><article class="card" id="s0c2" data-title="오늘 전체 지도" data-tag="필수"><h3><span class="tag t-req">필수</span>오늘 전체 지도</h3><figure class="diagram"><svg viewBox="0 0 900 420" role="img" aria-label="오늘 전체 흐름: 1부 내 캐릭터 만들기 네 단계, 2부 내 캐릭터 움직이기 네 단계"><rect x="20" y="20" width="420" height="44" rx="10" class="d-key"/><text x="230" y="48" class="d-t">1부 · 내 캐릭터 만들기</text><rect x="460" y="20" width="420" height="44" rx="10" class="d-key2"/><text x="670" y="48" class="d-t">2부 · 내 캐릭터 움직이기</text><g><rect x="20" y="84" width="420" height="62" rx="10" class="d-box"/><text x="230" y="112" class="d-t">1. 캐릭터 기획서</text><text x="230" y="134" class="d-s">AI가 질문, 나는 대답</text></g><g><rect x="20" y="166" width="420" height="62" rx="10" class="d-box"/><text x="230" y="194" class="d-t">2. 첫 그림 + 화풍 고르기</text><text x="230" y="216" class="d-s">4칸 비교 → 하나 선택</text></g><g><rect x="20" y="248" width="420" height="62" rx="10" class="d-box"/><text x="230" y="276" class="d-t">3. 샷 · 앵글 · 조명 · 톤앤매너</text><text x="230" y="298" class="d-s">9칸 비교표</text></g><g><rect x="20" y="330" width="420" height="62" rx="10" class="d-box"/><text x="230" y="358" class="d-t">4. 캐릭터 시트</text><text x="230" y="380" class="d-s">앞 · 옆 · 뒤 + 표정</text></g><g><rect x="460" y="84" width="420" height="62" rx="10" class="d-box"/><text x="670" y="112" class="d-t">5. GPT 이미지 2.6 소식</text><text x="670" y="134" class="d-s">움직이는 그림이 생겼어요</text></g><g><rect x="460" y="166" width="420" height="62" rx="10" class="d-box"/><text x="670" y="194" class="d-t">6. 내 캐릭터 @이름 저장</text><text x="670" y="216" class="d-s">이름만 부르면 등장</text></g><g><rect x="460" y="248" width="420" height="62" rx="10" class="d-box"/><text x="670" y="276" class="d-t">7. 내 캐릭터 GIF</text><text x="670" y="298" class="d-s">동작 하나, 반복 재생</text></g><g><rect x="460" y="330" width="420" height="62" rx="10" class="d-box"/><text x="670" y="358" class="d-t">8. 투명 움직이는 스티커</text><text x="670" y="380" class="d-s">알파 매트 + GIF</text></g><line x1="230" y1="146" x2="230" y2="162" class="d-ar"/><line x1="230" y1="228" x2="230" y2="244" class="d-ar"/><line x1="230" y1="310" x2="230" y2="326" class="d-ar"/><line x1="670" y1="146" x2="670" y2="162" class="d-ar"/><line x1="670" y1="228" x2="670" y2="244" class="d-ar"/><line x1="670" y1="310" x2="670" y2="326" class="d-ar"/><path d="M440 361 H450 V115 H456" class="d-ar" fill="none"/></svg></figure></article><article class="card" id="s0c3" data-title="오늘 챙길 것" data-tag="필수"><h3><span class="tag t-req">필수</span>오늘 챙길 것</h3><div class="b b-set"><div class="b-lab">준비 확인</div><ul>
+<li>챗GPT <strong>플러스</strong> 계정으로 로그인 (공용 PC는 지난 시간처럼 <strong>크롬 프로필</strong>을 새로 만들어서 로그인하세요)</li>
+<li>챗GPT 왼쪽 위 모델 선택에서 생각하는(추론) 모델 말고 <strong>기본 모델</strong>이어도 괜찮아요</li>
+<li>오늘 만든 그림은 <strong>바탕화면에 "내 캐릭터" 폴더</strong>를 하나 만들어서 계속 모아 두세요</li>
+</ul></div>
+<div class="b b-warn"><div class="b-lab">수업 끝날 때 꼭</div><p>공용 PC라서, 끝나면 크롬 프로필 관리에서 <strong>내 프로필을 삭제</strong>하고 가세요. 내 그림 파일은 그 전에 <strong>메일이나 클라우드로 보내 두기</strong>!</p></div></article></section><section class="step" id="s1"><header class="step-h"><span class="part">1부</span><h2>STEP 1 · 내 캐릭터 기획서</h2></header><article class="card" id="s1c0" data-title="캐릭터 기획서가 뭐예요?" data-tag="필수"><h3><span class="tag t-req">필수</span>캐릭터 기획서가 뭐예요?</h3><div class="b b-easy"><div class="b-lab">쉽게 말하면</div><p>캐릭터의 <strong>주민등록증</strong>이에요. 이름, 누구에게 보여 줄지, 성격, 대표 색, 말투를 한 장에 적어 둡니다. 오늘은 <strong>강사 캐릭터를 먼저 보고</strong>, 그다음에 <strong>내 캐릭터</strong>를 만들어요.</p></div>
+<div class="b b-say"><div class="b-lab">설명</div><p>선생님들, 캐릭터를 그림부터 그리면 매번 다르게 나와요. 오늘은 귀엽고 내일은 무섭고. 왜 그러냐면 AI가 "이 캐릭터가 어떤 애인지" 모르기 때문이에요.</p>
+<p>그래서 그림보다 <strong>글이 먼저</strong>입니다. 이 캐릭터가 누구인지 글로 딱 정해 두면, 앞으로 광고를 만들든 동화책을 만들든 이 기획서만 붙여 넣으면 같은 캐릭터가 나와요.</p>
+<p>그런데 백지에서 "캐릭터 만들어 보세요" 하면 막막하잖아요. 그래서 오늘은 제가 실제로 만든 캐릭터를 먼저 보여 드릴 거예요. 저도 처음부터 혼자 만든 게 아니라, <strong>이미 있는 캐릭터를 참고</strong>해서 만들었어요. 그 과정을 그대로 따라 하시면 됩니다.</p></div></article><article class="card" id="s1c1" data-title="① 보기 · 강사는 이렇게 만들었어요" data-tag="필수"><h3><span class="tag t-req">필수</span>① 보기 · 강사는 이렇게 만들었어요</h3><div class="b b-say"><div class="b-lab">설명</div><p>올여름에 나라에서 하는 AI 경진대회에 <strong>「알고」</strong> 라는 공식 캐릭터가 있었어요. "알고의 친구를 찾습니다"라는 캐릭터 공모전이 열렸고, 저도 거기 냈어요.</p>
+<p>저는 알고를 <strong>참고만</strong> 했어요. 알고가 2등신(머리가 몸만큼 큰 비율)이고, 말랑말랑한 3D 질감이니까 그건 맞췄어요. 같은 세계에 사는 친구처럼 보여야 하니까요. 그런데 <strong>동물, 색깔, 성격, 이야기는 전부 제 것</strong>으로 새로 만들었어요. 그게 「몰라」예요.</p>
+<p>알고가 "AI로 해 보자!" 하고 뛰어드는 친구라면, 몰라는 "나도 될까?" 하고 갸웃하다가 결국 해내는 곰이에요. 바로 여기 계신 선생님들 마음이죠. 그래서 가슴의 반달이 처음엔 희미하게 빛나다가, 하나씩 알게 될 때마다 조금씩 밝아져요.</p></div>
+<figure class="diagram"><svg viewBox="0 0 900 300" role="img" aria-label="참고 캐릭터 알고에서 비율과 질감만 맞추고, 동물 색 성격 이야기는 새로 만들어 몰라가 되었다"><rect x="20" y="40" width="230" height="220" rx="14" class="d-box"/><text x="135" y="95" class="d-t">참고 캐릭터</text><text x="135" y="130" class="d-s">알고</text><text x="135" y="170" class="d-s2">공식 캐릭터</text><text x="135" y="195" class="d-s2">(베끼지 않고 보기만)</text><line x1="256" y1="150" x2="324" y2="150" class="d-ar"/><rect x="330" y="40" width="240" height="100" rx="12" class="d-soft"/><text x="450" y="80" class="d-t">맞춘 것</text><text x="450" y="112" class="d-s">2등신 비율 · 말랑한 3D</text><rect x="330" y="160" width="240" height="100" rx="12" class="d-keyline"/><text x="450" y="200" class="d-t">새로 만든 것</text><text x="450" y="232" class="d-s">동물 · 색 · 성격 · 이야기</text><line x1="576" y1="150" x2="644" y2="150" class="d-ar"/><rect x="650" y="40" width="230" height="220" rx="14" class="d-key"/><text x="765" y="95" class="d-t">내 캐릭터</text><text x="765" y="130" class="d-s">몰라</text><text x="765" y="170" class="d-s2">반달가슴곰</text><text x="765" y="195" class="d-s2">"나도 될까?"</text></svg></figure>
+<div class="b b-example"><div class="b-lab">강사 기획서 · 몰라</div><table>
+<thead>
+<tr>
+<th>칸</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>이름</td>
+<td>몰라 ("알고"의 짝꿍 이름 — 아직 잘 몰라)</td>
+</tr>
+<tr>
+<td>참고한 캐릭터</td>
+<td>알고 (비율과 질감만 맞춤)</td>
+</tr>
+<tr>
+<td>누구에게</td>
+<td>AI를 처음 배우는 사람들</td>
+</tr>
+<tr>
+<td>성격 3단어</td>
+<td>순둥이 · 갸웃갸웃 · 끝내 해내는</td>
+</tr>
+<tr>
+<td>대표 색</td>
+<td>다크 초코브라운, 크림색(가슴 반달)</td>
+</tr>
+<tr>
+<td>말투</td>
+<td>"음… 몰라? 그러니까 알려 줘!" / "나도 해 봤어!"</td>
+</tr>
+<tr>
+<td>생김새 한 줄</td>
+<td>통통한 2등신 반달가슴곰, 꿀색 큰 눈, 볼터치, 말랑한 3D 털</td>
+</tr>
+<tr>
+<td>꼭 지킬 특징</td>
+<td>가슴의 은은하게 빛나는 반달 · 머리 위 새싹 한 잎 · 꿀색 눈</td>
+</tr>
+<tr>
+<td>이야기 한 줄</td>
+<td>하나씩 알게 될 때마다 가슴의 반달이 조금씩 밝아진다</td>
+</tr>
+</tbody>
+</table></div>
+<div class="b b-warn"><div class="b-lab">참고와 베끼기는 달라요</div><p>참고해도 되는 것: <strong>비율, 질감, 분위기</strong> 같은 "느낌".
+베끼면 안 되는 것: <strong>얼굴 생김새, 이름, 로고, 옷 디자인</strong> 같은 "그 캐릭터만의 것". 남의 캐릭터를 닮게 만들면 나중에 굿즈로 팔 수 없어요.</p></div></article><article class="card" id="s1c2" data-title="② 같이 하기 · 복붙하고 질문에 답하기" data-tag="필수"><h3><span class="tag t-req">필수</span>② 같이 하기 · 복붙하고 질문에 답하기</h3><div class="b b-say"><div class="b-lab">설명</div><p>이제 선생님들 차례예요. 챗GPT <strong>새 채팅</strong>을 여시고, 아래 프롬프트를 <strong>복사 버튼</strong> 눌러서 그대로 붙여 넣으세요. 대괄호 [ ] 두 군데만 바꾸시면 돼요.</p>
+<p>이 프롬프트의 비밀은, 챗GPT가 바로 만들지 않고 <strong>선생님한테 먼저 질문</strong>을 한다는 거예요. 이걸 <strong>역질문</strong>(AI가 거꾸로 나에게 묻기)이라고 해요. 질문마다 보기 3개가 <strong>누를 수 있는 버튼</strong>으로 나오고, 추천은 미리 골라져 있어요. 마음에 드는 걸 누르고 <strong>선택하기</strong> 버튼만 누르면 다음 질문으로 넘어가요. 모르겠으면 <strong>그냥 선택하기만 누르셔도 됩니다.</strong> 입력창에 "추천으로 할게"라고 써도 돼요.</p>
+<p>참고할 캐릭터는 아무거나 좋아요. 좋아하는 캐릭터, 우리 동네 마스코트, 어릴 때 보던 만화. <strong>비율이나 느낌만</strong> 참고하는 거예요.</p></div>
+<div class="b b-prompt"><div class="b-head"><span class="b-lab">프롬프트 · 캐릭터 기획 역질문</span><button class="copy" data-t="p1">복사</button></div><pre id="p1">너는 캐릭터 기획 도우미야. 나는 그림을 잘 못 그리지만, AI로 내 캐릭터를 하나 만들어서 광고, 굿즈, SNS, 그림책에 계속 쓰고 싶어.
+
+내 소재: [내 가게·일 / 우리 동네·가족 / 취미·반려동물 중 하나 + 한 줄 설명]
+참고하고 싶은 캐릭터나 느낌: [예: 둥글둥글한 곰돌이 인형 느낌 / 없으면 &quot;없음&quot;]
+
+바로 기획서를 만들지 말고, 먼저 나에게 질문을 해 줘.
+- 질문은 한 번에 하나씩, 모두 3개.
+- 질문마다 보기 3개(①②③)를 주고, 네가 추천하는 것 하나에 [추천]이라고 표시해 줘.
+- 쉬운 말로 물어봐 줘.
+- 참고 캐릭터는 비율·질감·분위기만 빌리고, 생김새·이름은 겹치지 않게 해 줘.
+
+3개를 다 대답하면 아래 표로 &#x27;캐릭터 기획서&#x27;를 정리해 줘.
+이름 / 참고한 것 / 누구에게 / 성격 3단어 / 대표 색 2개 / 말투(대사 2줄) / 생김새 한 줄 / 꼭 지킬 특징 3가지 / 이야기 한 줄</pre><p class="hint">[ ] 안은 내 것으로 바꿔 쓰세요</p></div>
+<figure class="shot"><img src="img01.jpg" alt="실제 화면 · 보기를 누르고 「선택하기」 (추천은 미리 골라져 있어요)"><figcaption>실제 화면 · 보기를 누르고 「선택하기」 (추천은 미리 골라져 있어요)</figcaption></figure></article><article class="card" id="s1c3" data-title="③ 내 캐릭터로 · 기획서 다듬고 저장하기" data-tag="필수"><h3><span class="tag t-req">필수</span>③ 내 캐릭터로 · 기획서 다듬고 저장하기</h3><div class="b b-say"><div class="b-lab">설명</div><p>세 개 대답하고 나면 표가 나오죠. 마음에 안 드는 칸은 그냥 말로 고치세요. "이름을 더 귀엽게 3개만 다시", "대표 색을 하늘색으로". </p>
+<p>다 됐으면 이 표를 <strong>복사해서 메모장에 저장</strong>하세요. 파일 이름은 "내 캐릭터 기획서". 오늘 내내, 그리고 앞으로 8주 내내 씁니다.</p></div>
+<div class="b b-tip"><div class="b-lab">표 위에 사진이 붙어 나오면</div><p>챗GPT가 인터넷에서 비슷한 사진을 "분위기 참고용"으로 붙여 줄 때가 있어요. <strong>그냥 무시하세요.</strong> 우리가 쓸 건 아래 표예요.</p></div>
+<div class="b b-check"><div class="b-lab">이것만 확인</div><ul>
+<li>이름이 <strong>부르기 쉬운가요?</strong> (두세 글자면 최고)</li>
+<li>꼭 지킬 특징 3가지가 <strong>눈에 보이는 것</strong>인가요? (모자, 무늬, 색깔처럼)</li>
+<li>참고한 캐릭터와 <strong>얼굴·이름이 겹치지 않나요?</strong></li>
+</ul></div>
+<div class="b b-tip"><div class="b-lab">막힐 때</div><ul>
+<li>소재를 못 고르겠으면: <strong>"요즘 내가 제일 자주 보는 것"</strong> 으로 하세요. 우리 집 강아지, 매일 가는 공원 비둘기, 우리 가게 대표 메뉴도 캐릭터가 돼요.</li>
+<li>질문에 대답하기 어려우면: <strong>[추천] 붙은 걸 고르세요.</strong> 그래도 어려우면 "네가 골라 줘"라고 쓰셔도 돼요.</li>
+</ul></div>
+<div class="b b-more"><div class="b-lab">빨리 끝났다면 (선택)</div><ul>
+<li><strong>캐릭터 자기소개 듣기</strong>: "이 캐릭터가 되어서 손님에게 30초 자기소개를 해 줘. 기획서의 말투 그대로." → 말투가 어색하면 기획서를 고쳐요.</li>
+<li><strong>짝꿍 캐릭터 하나 더</strong>: 몰라가 알고의 짝꿍인 것처럼, "내 캐릭터의 단짝 친구를 기획해 줘. 같은 역질문 방식으로 3개만 물어봐." 나중에 인스타툰에서 둘이 대화할 수 있어요.</li>
+</ul></div></article></section><section class="step" id="s2"><header class="step-h"><span class="part">1부</span><h2>STEP 2 · 첫 그림 + 화풍 고르기</h2></header><article class="card" id="s2c0" data-title="화풍부터 정해요" data-tag="필수"><h3><span class="tag t-req">필수</span>화풍부터 정해요</h3><div class="b b-easy"><div class="b-lab">쉽게 말하면</div><p><strong>화풍</strong>은 그림 그리는 방식이에요. 같은 캐릭터도 수채화로 그리면 그림책 같고, 3D로 그리면 애니메이션 같아요. 챗GPT가 <strong>질문으로 방향을 잡아 주고</strong>, 4가지를 한 번에 그려 주면 <strong>고르기만</strong> 합니다.</p></div>
+<div class="b b-say"><div class="b-lab">설명</div><p>선생님들, 화풍을 말로 고르면 어려워요. "수채화가 좋을까, 3D가 좋을까?" 머릿속으로는 몰라요. 그래서 먼저 챗GPT가 "이 캐릭터 주로 어디에 쓰실 거예요?" 이런 걸 물어보고, 거기에 맞는 화풍 4개를 <strong>한 장에 4칸</strong>으로 그려 줘요. 이걸 <strong>그리드</strong>(칸 나누기)라고 해요.</p>
+<p>4칸을 보시고 "아, 이거다" 하는 거 하나 고르시면, 그걸로 <strong>기준 그림</strong>을 한 장 크게 뽑아요. 저는 이걸 <strong>앵커</strong>(배를 고정하는 닻)라고 불러요. 앞으로 그림을 만들 때마다 이 그림을 붙여서 "이 친구 그대로" 하고 시키는 거예요. 닻이 있어야 배가 안 떠내려가잖아요.</p>
+<p>제 몰라는 알고랑 같은 세계 친구라서 말랑한 3D로 했지만, 선생님 캐릭터는 <strong>수채화든 색연필이든 클레이든 픽셀이든</strong> 다 좋아요. 정답이 없어요. 챗GPT가 선생님 대답을 보고 서로 다른 화풍 4가지를 골라 줘요.</p>
+<p>그런데 하나 미리 말씀드릴게요. 제가 해 보니까 "말랑한 인형 느낌"을 골랐더니 <strong>4칸이 거의 똑같이</strong> 나왔어요. 이름표만 "3D", "플랫", "수채"라고 붙어 있고 그림은 비슷해요. 챗GPT 그림은 원래 예쁜데 <strong>"거기서 거기"</strong> 로 나오는 버릇이 있거든요. 그럴 땐 <strong>화풍 이름을 콕 집어서</strong> 다시 시키시면 확 달라집니다.</p></div>
+<figure class="diagram"><svg viewBox="0 0 900 260" role="img" aria-label="역질문으로 방향을 잡고 화풍 4칸을 비교한 뒤 하나를 골라 기준 그림 앵커를 만든다"><rect x="20" y="80" width="150" height="100" rx="12" class="d-box"/><text x="95" y="125" class="d-t">역질문</text><text x="95" y="152" class="d-s">어디에 쓸까?</text><line x1="176" y1="130" x2="214" y2="130" class="d-ar"/><rect x="220" y="20" width="260" height="220" rx="12" class="d-box"/><rect x="238" y="38" width="105" height="85" rx="8" class="d-soft"/><text x="290" y="86" class="d-s">화풍 ①</text><rect x="357" y="38" width="105" height="85" rx="8" class="d-keyline"/><text x="409" y="86" class="d-s">화풍 ②</text><rect x="238" y="137" width="105" height="85" rx="8" class="d-soft"/><text x="290" y="185" class="d-s">화풍 ③</text><rect x="357" y="137" width="105" height="85" rx="8" class="d-soft"/><text x="409" y="185" class="d-s">화풍 ④</text><line x1="486" y1="130" x2="544" y2="130" class="d-ar"/><rect x="550" y="80" width="130" height="100" rx="12" class="d-box"/><text x="615" y="125" class="d-t">고르기</text><text x="615" y="152" class="d-s">"이거다!"</text><line x1="686" y1="130" x2="714" y2="130" class="d-ar"/><rect x="720" y="40" width="160" height="180" rx="12" class="d-key"/><text x="800" y="115" class="d-t">기준 그림</text><text x="800" y="145" class="d-s">(앵커)</text><text x="800" y="175" class="d-s2">정면 · 전신 · 흰 배경</text></svg></figure></article><article class="card opt" id="s2c1" data-title="① 보기 · 강사 몰라로 먼저" data-tag="선택"><h3><span class="tag t-opt">선택</span>① 보기 · 강사 몰라로 먼저</h3><div class="b b-prompt"><div class="b-head"><span class="b-lab">프롬프트 · 강사 시연 · 몰라 화풍 4칸</span><button class="copy" data-t="p2">복사</button></div><pre id="p2">[몰라 기획서 붙여 넣기]
+
+이 캐릭터의 화풍을 정하고 싶어. 바로 그리지 말고 먼저 나에게 질문 2개를 해 줘.
+질문마다 보기 3개를 주고 추천 하나에 [추천] 표시.
+내가 다 고르면, 내 대답에 맞는 화풍 4가지를 골라서
+한 장에 2×2, 4칸 그리드로 그려 줘.
+네 칸 모두 같은 자세(정면, 전신, 서 있는 모습), 흰 배경, 글자 없이, 칸마다 화풍만 다르게.</pre><p class="hint">[ ] 안은 내 것으로 바꿔 쓰세요</p></div></article><article class="card" id="s2c2" data-title="② 같이 하기 · 복붙하고 질문에 답하기" data-tag="필수"><h3><span class="tag t-req">필수</span>② 같이 하기 · 복붙하고 질문에 답하기</h3><div class="b b-say"><div class="b-lab">설명</div><p>똑같이 해 볼게요. 아까 저장한 <strong>내 기획서</strong>를 맨 앞에 붙여 넣고, 그 아래 주문을 그대로 붙이세요. 챗GPT가 질문 2개를 할 거예요. 답하면 4칸이 나옵니다.</p></div>
+<div class="b b-prompt"><div class="b-head"><span class="b-lab">프롬프트 · 화풍 역질문 + 4칸 비교</span><button class="copy" data-t="p3">복사</button></div><pre id="p3">[내 캐릭터 기획서 붙여 넣기]
+
+이 캐릭터의 화풍을 정하고 싶어. 바로 그리지 말고 먼저 나에게 질문 2개를 해 줘.
+(예: 주로 어디에 쓸지, 어떤 느낌이 좋은지)
+질문마다 보기 3개를 주고 추천 하나에 [추천] 표시.
+내가 다 고르면, 내 대답에 맞는 화풍 4가지를 골라서
+한 장에 2×2, 4칸 그리드로 그려 줘.
+4가지는 눈에 확 띄게 달라야 해. (예: 수채화 / 2D 플랫 / 색연필 / 3D처럼 재료가 다른 것)
+네 칸 모두 같은 자세(정면, 전신, 서 있는 모습), 흰 배경, 칸마다 화풍만 다르게.
+칸 아래에 화풍 이름을 작게 써 줘.</pre><p class="hint">[ ] 안은 내 것으로 바꿔 쓰세요</p></div>
+<figure class="shot"><img src="img02.jpg" alt="실제 결과 ① · 이름표만 다르고 그림은 거의 같아요"><figcaption>실제 결과 ① · 이름표만 다르고 그림은 거의 같아요</figcaption></figure>
+<figure class="shot"><img src="img03.jpg" alt="실제 결과 ② · 화풍 이름을 콕 집어 다시 시켰더니 확 달라졌어요"><figcaption>실제 결과 ② · 화풍 이름을 콕 집어 다시 시켰더니 확 달라졌어요</figcaption></figure></article><article class="card" id="s2c3" data-title="③ 내 캐릭터로 · 기준 그림(앵커) 뽑기" data-tag="필수"><h3><span class="tag t-req">필수</span>③ 내 캐릭터로 · 기준 그림(앵커) 뽑기</h3><div class="b b-prompt"><div class="b-head"><span class="b-lab">프롬프트 · 기준 그림 한 장</span><button class="copy" data-t="p4">복사</button></div><pre id="p4">방금 그림에서 [ 몇 ]번 칸 화풍이 좋아.
+그 화풍으로 이 캐릭터를 한 장 크게 그려 줘.
+정면, 머리부터 발끝까지 전신, 차렷 자세, 흰 배경, 그림자 살짝, 글자 없이.</pre><p class="hint">[ ] 안은 내 것으로 바꿔 쓰세요</p></div>
+<div class="b b-say"><div class="b-lab">설명</div><p>나왔으면 그림을 눌러서 <strong>다운로드</strong> 하세요. 파일 이름은 "앵커_이름". 예를 들면 "앵커_몰라". 이게 오늘부터 선생님 캐릭터의 <strong>얼굴</strong>입니다.</p></div>
+<div class="b b-check"><div class="b-lab">이것만 확인</div><ul>
+<li>기획서의 <strong>꼭 지킬 특징 3가지</strong>가 그림에 다 있나요?</li>
+<li>손가락, 눈이 이상하지 않나요? 이상하면 지난 시간에 배운 <strong>인페인팅</strong>(그 부분만 칠해서 고치기)으로 고쳐요.</li>
+</ul></div>
+<div class="b b-tip"><div class="b-lab">막힐 때</div><ul>
+<li><strong>4칸이 다 비슷하게 나오면</strong> (자주 그래요!): "네 칸이 너무 비슷해. 생김새는 그대로, 화풍만 눈에 확 띄게 다르게. 1칸 수채화 그림책 / 2칸 굵은 선의 2D 플랫 / 3칸 색연필 손그림 / 4칸 픽셀 아트" 처럼 <strong>화풍 이름을 콕 집어서</strong> 다시 시키세요.</li>
+<li>질문 없이 바로 그림이 나오면: 괜찮아요, 그대로 4칸에서 고르시면 됩니다.</li>
+<li>4칸이 아니라 1장만 나오면: <strong>"한 장 안에 4칸으로 나눠서"</strong> 를 다시 써 주세요.</li>
+<li>다 마음에 안 들면: "<strong>수채화 계열로만 4가지 변형</strong> 다시"처럼 마음에 드는 쪽 하나로 4칸을 다시 뽑아요.</li>
+</ul></div>
+<div class="b b-more"><div class="b-lab">빨리 끝났다면 (선택)</div><ul>
+<li><strong>우리 동네 배경 정하기</strong>: "이 캐릭터가 사는 곳을 그려 줘. [목동 아파트 단지 앞 작은 빵집]. 캐릭터 없이 배경만, 같은 화풍." → 다음 STEP에서 배경으로 써요.</li>
+<li><strong>화풍 섞기</strong>: "1칸 수채화 + 3칸 플랫을 반반 섞은 화풍으로"처럼 두 개를 섞어 보세요. 나만의 화풍이 나옵니다.</li>
+</ul></div></article></section><section class="step" id="s3"><header class="step-h"><span class="part">1부</span><h2>STEP 3 · 샷 · 앵글 · 조명 · 톤앤매너</h2></header><article class="card" id="s3c0" data-title="그림을 &quot;정확하게&quot; 주문하는 말" data-tag="필수"><h3><span class="tag t-req">필수</span>그림을 &quot;정확하게&quot; 주문하는 말</h3><div class="b b-easy"><div class="b-lab">쉽게 말하면</div><p>사진관 사장님처럼 말하면 AI가 알아들어요. <strong>얼마나 가까이(샷)</strong>, <strong>어디서 찍나(앵글)</strong>, <strong>어느 쪽에서 보나(뷰)</strong>, <strong>빛은 어떻게(조명)</strong>, <strong>전체 느낌은(톤앤매너)</strong>.</p></div>
+<div class="b b-say"><div class="b-lab">설명</div><p>선생님들, 지난 시간에 제가 그랬죠. AI한테 제일 정확하게 시키는 방법은 <strong>정확한 용어</strong>를 쓰는 거라고. "좀 멋있게 찍어 줘" 하면 AI도 뭐가 멋있는지 몰라요. 그런데 "로우 앵글로" 하면 딱 알아들어요.</p>
+<p>외울 필요 없어요. 오늘은 그냥 <strong>눈으로 9칸을 보고</strong>, "아, 로우 앵글은 이런 느낌이구나" 하고 느끼시면 됩니다. 이 비교표가 선생님 캐릭터의 <strong>사진 견본집</strong>이 돼요.</p></div></article><article class="card" id="s3c1" data-title="샷 · 앵글 · 뷰, 그림으로 보기" data-tag="필수"><h3><span class="tag t-req">필수</span>샷 · 앵글 · 뷰, 그림으로 보기</h3><figure class="diagram"><svg viewBox="0 0 900 540" role="img" aria-label="샷은 거리, 앵글은 카메라 높이, 뷰는 보는 방향"><text x="20" y="34" class="d-h">샷 = 얼마나 가까이</text><rect x="20" y="50" width="270" height="150" rx="10" class="d-box"/><circle cx="155" cy="125" r="55" class="d-fig"/><text x="155" y="225" class="d-s">클로즈업 · 얼굴 가득</text><rect x="315" y="50" width="270" height="150" rx="10" class="d-box"/><circle cx="450" cy="100" r="28" class="d-fig"/><rect x="415" y="130" width="70" height="70" rx="12" class="d-fig"/><text x="450" y="225" class="d-s">미디엄 · 허리 위</text><rect x="610" y="50" width="270" height="150" rx="10" class="d-box"/><circle cx="745" cy="85" r="16" class="d-fig"/><rect x="727" y="103" width="36" height="50" rx="8" class="d-fig"/><rect x="730" y="155" width="12" height="30" class="d-fig"/><rect x="748" y="155" width="12" height="30" class="d-fig"/><text x="745" y="225" class="d-s">풀샷 · 머리~발끝</text><text x="20" y="282" class="d-h">앵글 = 카메라 높이</text><circle cx="450" cy="400" r="22" class="d-fig"/><rect x="425" y="424" width="50" height="70" rx="10" class="d-fig"/><rect x="620" y="270" width="60" height="38" rx="6" class="d-cam"/><text x="700" y="295" class="d-s d-l">하이 · 내려다봄</text><text x="700" y="318" class="d-s2 d-l">작고 귀여워 보여요</text><rect x="620" y="380" width="60" height="38" rx="6" class="d-cam"/><text x="700" y="405" class="d-s d-l">눈높이 · 편안함</text><rect x="620" y="470" width="60" height="38" rx="6" class="d-cam"/><text x="700" y="495" class="d-s d-l">로우 · 올려다봄</text><text x="700" y="518" class="d-s2 d-l">크고 당당해 보여요</text><line x1="616" y1="295" x2="478" y2="390" class="d-ln"/><line x1="616" y1="399" x2="478" y2="402" class="d-ln"/><line x1="616" y1="485" x2="478" y2="420" class="d-ln"/><text x="20" y="330" class="d-h">뷰 = 어느 쪽에서</text><text x="40" y="370" class="d-s3">앞모습 · 옆모습 · 뒷모습</text><text x="40" y="400" class="d-s3">→ STEP 4 캐릭터 시트에서</text></svg></figure></article><article class="card opt" id="s3c2" data-title="조명과 톤앤매너" data-tag="선택"><h3><span class="tag t-opt">선택</span>조명과 톤앤매너</h3><div class="b b-say"><div class="b-lab">설명</div><p><strong>조명</strong>은 빛이에요. 자연광은 창가에서 찍은 편안한 느낌, 역광은 뒤에서 해가 비춰서 테두리가 반짝이는 감성 느낌, 스튜디오 조명은 광고 사진처럼 깨끗한 느낌이에요.</p>
+<p><strong>톤앤매너</strong>는 말이 어렵죠. 쉽게 말하면 <strong>전체 분위기 + 말투</strong>예요. 같은 몰라라도 "따뜻한 동네 도서관" 느낌이랑 "세련된 IT 회사 광고" 느낌은 색도 다르고 빛도 다르고 표정도 다르죠. 그게 톤앤매너예요. 기획서에 적은 성격이랑 대표 색이 바로 톤앤매너의 재료입니다.</p></div>
+<div class="b b-set"><div class="b-lab">그림 주문 6요소 + 1 (외우지 말고 보고 쓰기)</div><table>
+<thead>
+<tr>
+<th>요소</th>
+<th>고르는 말</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>대상</td>
+<td>내 캐릭터 이름 + 무엇을 하나</td>
+</tr>
+<tr>
+<td>구도</td>
+<td>가운데 / 3분할(한쪽에 비켜 세우기)</td>
+</tr>
+<tr>
+<td>샷</td>
+<td>클로즈업 / 미디엄 / 풀샷</td>
+</tr>
+<tr>
+<td>앵글</td>
+<td>눈높이 / 로우 / 하이 / 탑뷰(바로 위)</td>
+</tr>
+<tr>
+<td>조명</td>
+<td>자연광 / 역광 / 스튜디오 / 밤 네온</td>
+</tr>
+<tr>
+<td>화풍</td>
+<td>STEP 2에서 고른 것</td>
+</tr>
+<tr>
+<td>톤앤매너</td>
+<td>따뜻한 / 세련된 / 발랄한 / 차분한 …</td>
+</tr>
+</tbody>
+</table></div></article><article class="card" id="s3c3" data-title="① 보기 → ② 같이 하기 · 9칸 비교표" data-tag="필수"><h3><span class="tag t-req">필수</span>① 보기 → ② 같이 하기 · 9칸 비교표</h3><div class="b b-say"><div class="b-lab">설명</div><p>제가 몰라로 먼저 해 볼게요. 이번에도 챗GPT가 먼저 "이 캐릭터가 어디에 있으면 좋을까요?" 하고 배경을 물어봐요. 고르면 9칸이 나와요. 윗줄은 샷, 가운데 줄은 앵글, 아랫줄은 조명. 같은 몰라인데 느낌이 완전히 다르죠.</p>
+<p>이제 선생님들 차례예요. 아까 다운로드한 <strong>기준 그림(앵커)을 첨부</strong>하시고, 아래 프롬프트를 붙여 넣으세요. 첨부는 입력창 왼쪽 <strong>+ → 사진 및 파일 추가</strong>예요.</p></div>
+<div class="b b-prompt"><div class="b-head"><span class="b-lab">프롬프트 · 배경 역질문 + 9칸 비교표</span><button class="copy" data-t="p5">복사</button></div><pre id="p5">첨부한 내 캐릭터 [이름]으로 &#x27;사진 견본집&#x27; 9칸을 만들고 싶어.
+바로 그리지 말고, 먼저 배경을 정하게 질문 1개만 해 줘.
+(내 캐릭터가 어디에 있으면 어울릴지 보기 3개, 추천 하나에 [추천] 표시)
+
+내가 고르면, 첨부한 캐릭터를 그대로(얼굴, 색, 옷, 비율 바꾸지 말 것) 써서
+한 장에 3×3, 9칸 그리드를 만들어 줘. 칸마다 아래에 작은 한글 이름표.
+
+윗줄(샷): 클로즈업 / 미디엄 샷 / 풀샷 — 모두 눈높이, 자연광
+가운데 줄(앵글): 로우 앵글 / 하이 앵글 / 탑뷰 — 모두 미디엄 샷
+아랫줄(조명): 역광 노을 / 스튜디오 조명 / 밤 네온 — 모두 미디엄 샷
+배경은 고른 곳 하나로 통일, 화풍은 첨부 그림과 같게.</pre><p class="hint">[ ] 안은 내 것으로 바꿔 쓰세요</p></div>
+<figure class="shot"><img src="img04.jpg" alt="실제 결과 · 몰라 사진 견본집 9칸 (숲속 산책길)"><figcaption>실제 결과 · 몰라 사진 견본집 9칸 (숲속 산책길)</figcaption></figure></article><article class="card opt" id="s3c4" data-title="③ 내 캐릭터로 · 톤앤매너 고르기" data-tag="선택"><h3><span class="tag t-opt">선택</span>③ 내 캐릭터로 · 톤앤매너 고르기</h3><div class="b b-prompt"><div class="b-head"><span class="b-lab">프롬프트 · 톤앤매너 역질문 + 2칸 비교</span><button class="copy" data-t="p6">복사</button></div><pre id="p6">첨부한 [이름]의 톤앤매너(전체 분위기)를 정하고 싶어.
+바로 그리지 말고 질문 2개를 해 줘.
+(이 캐릭터로 제일 먼저 광고하고 싶은 것 / 원하는 분위기 — 보기 3개씩, [추천] 표시)
+
+내가 고르면, 내 대답에 맞는 서로 다른 톤앤매너 2가지를 정해서
+같은 장면을 좌우 2칸으로 그려 줘. 미디엄 샷, 눈높이.
+칸 아래에 톤앤매너 이름을 한 줄로.
+얼굴, 옷, 대표 색은 두 칸 모두 그대로.</pre><p class="hint">[ ] 안은 내 것으로 바꿔 쓰세요</p></div>
+<div class="b b-say"><div class="b-lab">설명</div><p>두 칸 중에 내 캐릭터랑 더 맞는 쪽을 고르시고, 기획서 맨 아래에 한 줄 적어 두세요. "톤앤매너: 따뜻한 동네 느낌". 이게 다음 시간 광고 만들 때 바로 쓰여요.</p></div>
+<div class="b b-tip"><div class="b-lab">막힐 때</div><ul>
+<li>9칸이 다 다른 캐릭터로 나오면: 프롬프트 맨 앞에 <strong>"첨부한 캐릭터와 똑같은 캐릭터로"</strong> 를 한 번 더 쓰고, 새 채팅에서 다시 하세요.</li>
+<li>이름표 글자가 깨지면: 이름표는 무시하셔도 돼요. 칸 순서만 기억하면 됩니다.</li>
+<li>9칸이 너무 많으면: <strong>윗줄 3칸만</strong> 먼저 해 보세요.</li>
+</ul></div>
+<div class="b b-more"><div class="b-lab">빨리 끝났다면 (선택)</div><ul>
+<li><strong>구도 연습</strong>: "같은 캐릭터를 3분할 구도로, 화면 오른쪽 1/3에 세우고 왼쪽은 넓게 비워 줘. 나중에 글자 넣을 자리." → 광고 만들 때 그대로 씁니다.</li>
+<li><strong>슬래시 명령어 다시 쓰기</strong>: 지난 시간에 배운 슬래시(/) 명령어 중 하나를 골라 내 캐릭터에 써 보세요. 결과를 9칸 표와 비교해 보세요.</li>
+</ul></div></article></section><section class="step" id="s4"><header class="step-h"><span class="part">1부</span><h2>STEP 4 · 캐릭터 시트</h2></header><article class="card" id="s4c0" data-title="캐릭터 시트가 뭐예요?" data-tag="필수"><h3><span class="tag t-req">필수</span>캐릭터 시트가 뭐예요?</h3><div class="b b-easy"><div class="b-lab">쉽게 말하면</div><p>캐릭터의 <strong>설정표</strong>예요. 앞모습, 옆모습, 뒷모습, 표정을 한 장에 모아 둔 것. 이 한 장만 있으면 AI가 어느 방향에서 그려도 같은 캐릭터를 그려요.</p></div>
+<div class="b b-say"><div class="b-lab">설명</div><p>선생님들, 앵커는 앞모습 한 장이잖아요. 그런데 동화책 만들다 보면 뒤돌아선 장면도 나오고, 옆으로 걸어가는 장면도 나와요. 그때 AI는 뒷모습을 본 적이 없으니까 마음대로 그려요. 새싹이 사라지고 무늬가 바뀌고.</p>
+<p>그래서 <strong>앞·옆·뒤</strong>를 미리 정해 두는 거예요. 이걸 <strong>뷰</strong>라고 했죠. 그리고 기쁜 얼굴, 놀란 얼굴, 시무룩한 얼굴도 미리 정해 두면 인스타툰 만들 때 아주 편해요.</p>
+<p>제가 공모전에 낼 때도 <strong>정면·측면·후면</strong>이 필수였어요. 캐릭터를 만드는 사람들은 다 이걸 만들어요.</p></div>
+<figure class="diagram"><svg viewBox="0 0 900 330" role="img" aria-label="캐릭터 시트 배치: 위에 앞 옆 뒤 전신, 아래에 표정 세 개와 대표 색"><rect x="20" y="20" width="860" height="290" rx="14" class="d-key"/><rect x="50" y="45" width="240" height="150" rx="10" class="d-box"/><text x="170" y="125" class="d-t">앞모습</text><rect x="330" y="45" width="240" height="150" rx="10" class="d-box"/><text x="450" y="125" class="d-t">옆모습</text><rect x="610" y="45" width="240" height="150" rx="10" class="d-box"/><text x="730" y="125" class="d-t">뒷모습</text><rect x="50" y="215" width="150" height="75" rx="10" class="d-box"/><text x="125" y="258" class="d-s">표정 1</text><rect x="220" y="215" width="150" height="75" rx="10" class="d-box"/><text x="295" y="258" class="d-s">표정 2</text><rect x="390" y="215" width="150" height="75" rx="10" class="d-box"/><text x="465" y="258" class="d-s">표정 3</text><circle cx="640" cy="252" r="26" class="d-c1"/><circle cx="705" cy="252" r="26" class="d-c2"/><text x="800" y="258" class="d-s">대표 색</text></svg></figure></article><article class="card" id="s4c1" data-title="① 보기 → ② 같이 하기 · 시트 만들기" data-tag="필수"><h3><span class="tag t-req">필수</span>① 보기 → ② 같이 하기 · 시트 만들기</h3><div class="b b-say"><div class="b-lab">설명</div><p>이번에도 챗GPT가 먼저 물어봐요. "이 캐릭터 성격이면 표정은 이 세 개가 어울려요" 하고 추천해 줘요. 몰라는 "갸웃(몰라?)", "반짝(알았다!)", "뿌듯(해냈어!)" 이렇게 골랐어요. 선생님 캐릭터 성격에 맞게 고르세요.</p></div>
+<div class="b b-prompt"><div class="b-head"><span class="b-lab">프롬프트 · 표정 역질문 + 캐릭터 시트</span><button class="copy" data-t="p7">복사</button></div><pre id="p7">첨부한 내 캐릭터 [이름]으로 캐릭터 시트(설정표)를 만들고 싶어.
+바로 그리지 말고 질문 2개를 해 줘.
+1) 이 캐릭터 성격에 어울리는 대표 표정 3개 (보기 3세트, [추천] 표시)
+2) 손에 드는 소품을 넣을지 (보기 3개, [추천] 표시)
+
+내가 고르면 시트 한 장을 그려 줘. 가로형, 흰 배경.
+위쪽: 전신 앞모습 / 옆모습 / 뒷모습 — 같은 크기, 같은 차렷 자세로 나란히
+아래쪽: 고른 표정 3개 (얼굴 크게)
+오른쪽 아래: 대표 색 2개를 동그라미로
+얼굴, 색, 옷, 소품, 몸 비율은 첨부 그림과 똑같이.
+꼭 지킬 특징: [특징 1], [특징 2], [특징 3]
+그림 말고 설명 글자는 넣지 말 것.</pre><p class="hint">[ ] 안은 내 것으로 바꿔 쓰세요</p></div>
+<figure class="shot"><img src="img05.jpg" alt="실제 결과 · 몰라 캐릭터 시트 (앞·옆·뒤 + 표정 3개)"><figcaption>실제 결과 · 몰라 캐릭터 시트 (앞·옆·뒤 + 표정 3개)</figcaption></figure>
+<div class="b b-say"><div class="b-lab">설명</div><p>나오면 <strong>세 가지만</strong> 보세요. 얼굴이 같나, 색이 같나, 옷이랑 소품이 같나. 이 세 개가 맞으면 합격이에요. 하나라도 틀리면 그 부분만 인페인팅으로 고치거나, "뒷모습에 새싹이 빠졌어. 다시" 이렇게 말로 고치세요.</p>
+<p>합격한 시트는 다운로드해서 "시트_이름"으로 저장하세요. <strong>이 시트가 1부의 최종 작품</strong>이고, 2부에서 바로 씁니다.</p></div></article><article class="card opt" id="s4c2" data-title="③ 내 캐릭터로 · 표정 늘리기" data-tag="선택"><h3><span class="tag t-opt">선택</span>③ 내 캐릭터로 · 표정 늘리기</h3><div class="b b-prompt"><div class="b-head"><span class="b-lab">프롬프트 · 표정 6종</span><button class="copy" data-t="p8">복사</button></div><pre id="p8">첨부한 캐릭터 시트의 [이름] 얼굴로, 얼굴만 크게 2×3, 6칸 표정 모음을 그려 줘.
+기쁨 / 화남 / 슬픔 / 놀람 / 졸림 / 윙크
+얼굴 생김새와 색은 그대로, 흰 배경, 글자 없이.</pre><p class="hint">[ ] 안은 내 것으로 바꿔 쓰세요</p></div>
+<div class="b b-check"><div class="b-lab">이것만 확인</div><ul>
+<li>앞·옆·뒤 세 장이 <strong>같은 키, 같은 크기</strong>인가요?</li>
+<li>뒷모습에도 <strong>꼭 지킬 특징</strong>(새싹, 꼬리, 모자 같은 것)이 있나요?</li>
+</ul></div>
+<div class="b b-tip"><div class="b-lab">막힐 때</div><ul>
+<li>한 장에 다 안 나오고 엉키면: 두 번에 나눠요. 먼저 <strong>"앞·옆·뒤 전신 3개만"</strong>, 다음에 <strong>"표정 3개만"</strong>.</li>
+<li>옆모습이 앞모습처럼 나오면: <strong>"완전한 옆모습, 코끝이 오른쪽을 향하게"</strong> 라고 콕 집어 주세요.</li>
+</ul></div>
+<div class="b b-more"><div class="b-lab">빨리 끝났다면 (선택)</div><ul>
+<li><strong>포즈 시트</strong>: "같은 캐릭터로 기본 포즈 6개: 손 흔들기 / 뛰기 / 앉기 / 가리키기 / 엄지척 / 인사하기, 2×3칸, 흰 배경." → 광고, 스티커 만들 때 그대로 씁니다.</li>
+<li><strong>계절 옷 갈아입히기</strong>: "시트의 캐릭터에게 겨울 옷(목도리, 털모자)을 입힌 앞모습 한 장. 대표 색은 유지." 연말 홍보에 바로 쓸 수 있어요.</li>
+</ul></div></article></section><section class="step" id="s5"><header class="step-h"><span class="part">2부</span><h2>STEP 5 · GPT 이미지 2.6 소식</h2></header><article class="card" id="s5c0" data-title="11월 4일, 그림이 움직이기 시작했어요" data-tag="필수"><h3><span class="tag t-req">필수</span>11월 4일, 그림이 움직이기 시작했어요</h3><div class="b b-easy"><div class="b-lab">쉽게 말하면</div><p>챗GPT 이미지가 <strong>2.6</strong>으로 올라가면서 두 가지가 새로 생겼어요. ① <strong>움직이는 그림(GIF)</strong> ② <strong>내 캐릭터를 이름으로 저장해 두고 부르기(@이름)</strong>.</p></div>
+<div class="b b-say"><div class="b-lab">설명</div><p>선생님들, 챗GPT 이미지가 정말 빨리 바뀌어요. 올해 4월에 2.0이 나와서 한글 글씨를 잘 쓰게 됐고, 9월에 2.5가 나와서 손그림이나 표시로 고치는 게 쉬워졌죠. 지난 시간에 아레나에서 1등 하던 게 바로 2.5였고요.</p>
+<p>그런데 지난주, <strong>11월 4일에 2.6</strong>이 나왔어요. 가장 큰 변화는 그림이 <strong>움직인다</strong>는 거예요. 글로 주문하거나 사진 한 장을 올리면 계속 반복해서 움직이는 <strong>GIF</strong>(짧게 반복되는 움직이는 그림 파일)를 만들어 줘요. 속도도 조절할 수 있고요. 그리고 자주 쓰는 캐릭터를 <strong>이름 붙여서 저장</strong>해 두고, 다른 대화에서 <strong>@이름</strong>만 쓰면 불러올 수 있어요.</p>
+<p>우리가 1부에서 캐릭터를 만든 이유가 바로 이거예요. 이제 이 캐릭터를 저장하고, 움직이게 할 거예요.</p></div>
+<figure class="diagram"><svg viewBox="0 0 900 230" role="img" aria-label="챗GPT 이미지 변화: 2025년 12월 1.5, 2026년 4월 2.0, 9월 2.5, 11월 4일 2.6"><line x1="60" y1="110" x2="840" y2="110" class="d-ln"/><circle cx="100" cy="110" r="12" class="d-dot"/><text x="100" y="70" class="d-t">1.5</text><text x="100" y="150" class="d-s">2025.12</text><text x="100" y="178" class="d-s2">빨라짐 · 부분 수정</text><circle cx="340" cy="110" r="12" class="d-dot"/><text x="340" y="70" class="d-t">2.0</text><text x="340" y="150" class="d-s">2026.4</text><text x="340" y="178" class="d-s2">한글 글씨 · 레이아웃</text><circle cx="580" cy="110" r="12" class="d-dot"/><text x="580" y="70" class="d-t">2.5</text><text x="580" y="150" class="d-s">2026.9</text><text x="580" y="178" class="d-s2">손그림 · 표시해서 고치기</text><circle cx="800" cy="110" r="16" class="d-dotk"/><text x="800" y="70" class="d-t">2.6</text><text x="800" y="150" class="d-s">2026.11.4</text><text x="800" y="178" class="d-s2">GIF · @이름 저장</text></svg></figure></article><article class="card" id="s5c1" data-title="내 화면에서 확인하기" data-tag="필수"><h3><span class="tag t-req">필수</span>내 화면에서 확인하기</h3><div class="b b-say"><div class="b-lab">설명</div><p>챗GPT를 <strong>Chat</strong> 모드로 열면, GIF 기능이 열린 분은 이렇게 <strong>"ChatGPT로 GIF 만들기"</strong> 안내 창이 떠요. <strong>사용해 보기</strong>를 누르면 입력창에 "다음 내용으로 GIF를 만들어줘."가 자동으로 들어가요. 그 뒤에 내용만 이어 쓰면 됩니다.</p>
+<p>안내 창이 안 떴어도 괜찮아요. 입력창에 그냥 "GIF를 만들어 줘"라고 쓰면 돼요.</p></div>
+<figure class="shot"><img src="img06.jpg" alt="GIF 기능 안내 창 · 「사용해 보기」를 누르면 시작"><figcaption>GIF 기능 안내 창 · 「사용해 보기」를 누르면 시작</figcaption></figure>
+<figure class="shot"><img src="img07.jpg" alt="「사용해 보기」를 누르면 입력창에 자동으로 들어가는 문장"><figcaption>「사용해 보기」를 누르면 입력창에 자동으로 들어가는 문장</figcaption></figure></article><article class="card opt" id="s5c2" data-title="2.6에서 달라진 점 한눈에" data-tag="선택"><h3><span class="tag t-opt">선택</span>2.6에서 달라진 점 한눈에</h3><div class="b b-set"><div class="b-lab">무엇이 새로 생겼나</div><table>
+<thead>
+<tr>
+<th>새 기능</th>
+<th>쉽게 말하면</th>
+<th>오늘 실습</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GIF 만들기</td>
+<td>글이나 사진 한 장 → 반복해서 움직이는 그림</td>
+<td>STEP 7, 8</td>
+</tr>
+<tr>
+<td>재생 속도 조절</td>
+<td>GIF 왼쪽 아래 <strong>1×</strong> 버튼 → 0.25배~2배</td>
+<td>STEP 7</td>
+</tr>
+<tr>
+<td>투명 배경 GIF</td>
+<td>배경 없이 캐릭터만 움직이는 스티커</td>
+<td>STEP 8</td>
+</tr>
+<tr>
+<td>참조 이미지 저장</td>
+<td>캐릭터를 이름 붙여 저장 → <strong>@이름</strong>으로 부르기</td>
+<td>STEP 6</td>
+</tr>
+</tbody>
+</table></div>
+<div class="b b-warn"><div class="b-lab">알아 둘 것</div><ul>
+<li>새 기능은 <strong>사람마다 순서대로</strong> 열리고 있어요. 내 화면에 아직 안 보일 수 있어요. 그럴 땐 옆 분 화면을 같이 보시고, 집에서 며칠 뒤 다시 해 보세요.</li>
+<li>GIF는 정지 그림보다 <strong>조금 더 오래</strong> 걸려요. "GIF 생성 중" 점무늬가 차오르는 동안 기다리시면 돼요.</li>
+<li>GIF는 규칙이 조금 더 엄격해서, 실제 사람 사진은 잘 안 될 수 있어요. 우리는 <strong>캐릭터</strong>라서 괜찮습니다.</li>
+<li>내가 직접 올린 움직이는 GIF는 챗GPT에서 고칠 수 없어요.</li>
+</ul></div></article></section><section class="step" id="s6"><header class="step-h"><span class="part">2부</span><h2>STEP 6 · 내 캐릭터 @이름으로 저장</h2></header><article class="card" id="s6c0" data-title="이름만 부르면 나와요" data-tag="필수"><h3><span class="tag t-req">필수</span>이름만 부르면 나와요</h3><div class="b b-easy"><div class="b-lab">쉽게 말하면</div><p>캐릭터 시트를 <strong>이름 붙여 저장</strong>해 두면, 다음부터는 그림을 첨부할 필요 없이 <strong>@몰라</strong> 라고만 쓰면 돼요.</p></div>
+<div class="b b-say"><div class="b-lab">설명</div><p>선생님들, 지금까지는 매번 그림을 첨부했죠. 파일 찾고, 올리고, 귀찮잖아요. 그리고 공용 PC면 파일이 없어질 수도 있고요.</p>
+<p>이제는 시트를 한 번 저장해 두면, 새 채팅에서도 <strong>골뱅이(@) + 이름</strong>만 쓰면 돼요. 카톡에서 친구 이름 부르듯이요. 앞으로 우리 수업 내내 이걸로 캐릭터를 부릅니다.</p></div>
+<figure class="diagram"><svg viewBox="0 0 900 260" role="img" aria-label="캐릭터 시트를 @이름으로 한 번 저장하면 여러 대화에서 불러 쓴다"><rect x="20" y="70" width="200" height="110" rx="12" class="d-key"/><text x="120" y="118" class="d-t">캐릭터 시트</text><text x="120" y="146" class="d-s">파일로 첨부해 저장</text><line x1="226" y1="125" x2="294" y2="125" class="d-ar"/><rect x="300" y="85" width="170" height="80" rx="40" class="d-key2"/><text x="385" y="132" class="d-t">@몰라</text><line x1="474" y1="125" x2="560" y2="45" class="d-ar"/><line x1="474" y1="125" x2="560" y2="125" class="d-ar"/><line x1="474" y1="125" x2="560" y2="205" class="d-ar"/><rect x="566" y="20" width="314" height="52" rx="10" class="d-box"/><text x="723" y="52" class="d-s">새 대화 · 광고 사진</text><rect x="566" y="100" width="314" height="52" rx="10" class="d-box"/><text x="723" y="132" class="d-s">새 대화 · 인스타툰</text><rect x="566" y="180" width="314" height="52" rx="10" class="d-box"/><text x="723" y="212" class="d-s">새 대화 · 움직이는 GIF</text></svg></figure></article><article class="card" id="s6c1" data-title="꼭 &quot;파일을 첨부&quot;해서 저장하세요" data-tag="필수"><h3><span class="tag t-req">필수</span>꼭 &quot;파일을 첨부&quot;해서 저장하세요</h3><div class="b b-warn"><div class="b-lab">직접 해 보니</div><p>챗GPT 안에서 만든 그림을 가리키며 "저 그림 저장해 줘"라고 하면 <strong>저장이 안 되는 경우가 있었어요.</strong> 그래서 순서를 이렇게 지키세요.</p>
+<ol>
+<li>캐릭터 시트를 <strong>다운로드</strong> (내 컴퓨터에 파일로)</li>
+<li><strong>새 채팅</strong>을 열고 <strong>+ → 사진 및 파일 추가</strong>로 그 파일을 <strong>첨부</strong></li>
+<li>그다음에 "참조 이미지로 저장해 줘. 이름은 ○○"</li>
+</ol></div>
+<figure class="shot"><img src="img08.jpg" alt="입력창 왼쪽 + 버튼 → 「사진 및 파일 추가」"><figcaption>입력창 왼쪽 + 버튼 → 「사진 및 파일 추가」</figcaption></figure></article><article class="card" id="s6c2" data-title="① 보기 → ② 같이 하기 · 저장하기" data-tag="필수"><h3><span class="tag t-req">필수</span>① 보기 → ② 같이 하기 · 저장하기</h3><div class="b b-prompt"><div class="b-head"><span class="b-lab">프롬프트 · 참조 이미지로 저장</span><button class="copy" data-t="p9">복사</button></div><pre id="p9">(캐릭터 시트 파일을 첨부하고)
+이 그림을 참조 이미지로 저장해 줘. 이름은 [몰라]로 해 줘.</pre><p class="hint">[ ] 안은 내 것으로 바꿔 쓰세요</p></div>
+<div class="b b-say"><div class="b-lab">설명</div><p>저장은 <strong>생각보다 오래</strong> 걸려요. 그동안 다음 설명을 들으시면 됩니다. "참조 이미지 저장 완료"라는 초록 표시가 뜨면 끝난 거예요.</p></div>
+<figure class="shot"><img src="img09.jpg" alt="파일을 첨부해서 저장 요청 → 「참조 이미지 저장 완료」"><figcaption>파일을 첨부해서 저장 요청 → 「참조 이미지 저장 완료」</figcaption></figure>
+<figure class="shot"><img src="img10.jpg" alt="새 채팅에서 @를 치면 「참조 이미지」에 저장한 이름이 떠요"><figcaption>새 채팅에서 @를 치면 「참조 이미지」에 저장한 이름이 떠요</figcaption></figure>
+<div class="b b-say"><div class="b-lab">설명</div><p>저장됐다고 나오면, <strong>또 새 채팅</strong>을 열어서 불러 보세요. 입력창에 @를 치면 저장한 이름이 뜰 거예요. 이번에도 바로 그리지 말고 챗GPT가 장면 아이디어를 물어보게 할게요.</p></div>
+<div class="b b-prompt"><div class="b-head"><span class="b-lab">프롬프트 · @이름 불러서 장면 역질문</span><button class="copy" data-t="p10">복사</button></div><pre id="p10">@[몰라] 로 첫 장면을 하나 그리고 싶어.
+바로 그리지 말고, 이 캐릭터 성격에 어울리는 장면 아이디어 3개를 보기로 줘. 추천 하나에 [추천] 표시.
+내가 고르면 그 장면을 그려 줘. 샷·앵글·조명도 장면에 맞게 골라서 그림 아래에 한 줄로 알려 줘.</pre><p class="hint">[ ] 안은 내 것으로 바꿔 쓰세요</p></div></article><article class="card opt" id="s6c3" data-title="③ 내 캐릭터로 · 불러서 한 장 더" data-tag="선택"><h3><span class="tag t-opt">선택</span>③ 내 캐릭터로 · 불러서 한 장 더</h3><div class="b b-say"><div class="b-lab">설명</div><p>그림 아래에 챗GPT가 "미디엄 샷, 로우 앵글, 노을 역광"처럼 어떤 말을 썼는지 알려 줄 거예요. 1부에서 배운 말이죠? 이번엔 그중 <strong>하나만 바꿔서</strong> 다시 주문해 보세요. "같은 장면, 하이 앵글로". 이게 오늘 배운 거 다 쓰는 연습이에요.</p></div>
+<div class="b b-tip"><div class="b-lab">막힐 때</div><ul>
+<li>@를 쳐도 이름이 안 뜨면: 아직 내 계정에 기능이 안 열린 거예요. 걱정 마시고 지금처럼 <strong>시트를 첨부</strong>해서 하시면 똑같이 됩니다.</li>
+<li>"저장하지 못했다"고 나오면: 그림을 <strong>다운로드한 파일로 다시 첨부</strong>해서 요청하세요.</li>
+<li>다른 캐릭터처럼 나오면: 앵커 대신 <strong>캐릭터 시트</strong>를 저장했는지 확인하세요. 시트가 정보가 더 많아요.</li>
+</ul></div>
+<div class="b b-more"><div class="b-lab">빨리 끝났다면 (선택)</div><ul>
+<li><strong>배경도 저장하기</strong>: STEP 2에서 그린 우리 동네 배경을 "[우리 동네]"로 저장해 보세요. "@몰라 가 @우리 동네 에서…" 처럼 둘 다 부를 수 있어요.</li>
+<li><strong>친구 캐릭터 만나기</strong>: 옆 분 캐릭터 그림을 받아서 저장하고 "@몰라 와 @[친구 캐릭터] 가 같이 사진 찍는 장면".</li>
+</ul></div></article></section><section class="step" id="s7"><header class="step-h"><span class="part">2부</span><h2>STEP 7 · 내 캐릭터 GIF</h2></header><article class="card" id="s7c0" data-title="움직이는 그림, 이렇게 주문해요" data-tag="필수"><h3><span class="tag t-req">필수</span>움직이는 그림, 이렇게 주문해요</h3><div class="b b-easy"><div class="b-lab">쉽게 말하면</div><p><strong>동작은 딱 하나</strong>, <strong>처음 자세로 돌아오게</strong>, <strong>카메라는 고정</strong>. 이 세 가지만 지키면 자연스럽게 반복돼요.</p></div>
+<div class="b b-say"><div class="b-lab">설명</div><p>GIF는 <strong>계속 반복</strong>되잖아요. 그런데 손을 흔들다가 다른 자세로 끝나면, 다시 처음으로 돌아갈 때 "툭" 하고 튀어요. 그래서 <strong>"처음 자세로 돌아오게"</strong> 를 꼭 써야 해요. 이걸 <strong>루프</strong>(끊김 없는 반복)라고 해요.</p>
+<p>그리고 카메라가 움직이면 정신없어요. <strong>카메라는 고정</strong>. 배경도 복잡하면 깨지기 쉬우니까 <strong>단색 배경</strong>으로 하세요. 동작은 욕심내지 말고 <strong>딱 하나</strong>.</p></div>
+<figure class="diagram"><svg viewBox="0 0 900 230" role="img" aria-label="루프: 처음 자세에서 동작을 하고 다시 처음 자세로 돌아오면 끊김 없이 반복된다"><rect x="40" y="70" width="220" height="90" rx="12" class="d-key"/><text x="150" y="112" class="d-t">처음 자세</text><text x="150" y="138" class="d-s">차렷</text><line x1="266" y1="115" x2="334" y2="115" class="d-ar"/><rect x="340" y="70" width="220" height="90" rx="12" class="d-box"/><text x="450" y="112" class="d-t">동작 하나</text><text x="450" y="138" class="d-s">손 흔들기</text><line x1="566" y1="115" x2="634" y2="115" class="d-ar"/><rect x="640" y="70" width="220" height="90" rx="12" class="d-key"/><text x="750" y="112" class="d-t">다시 처음 자세</text><text x="750" y="138" class="d-s">차렷</text><path d="M750 164 V200 H150 V166" class="d-ar" fill="none"/><text x="450" y="222" class="d-s2">끝이 처음과 같아야 툭 튀지 않아요</text></svg></figure></article><article class="card" id="s7c1" data-title="① 보기 · 강사 몰라로 먼저" data-tag="필수"><h3><span class="tag t-req">필수</span>① 보기 · 강사 몰라로 먼저</h3><div class="b b-say"><div class="b-lab">설명</div><p>제가 몰라로 먼저 해 볼게요. 손 흔드는 GIF예요. 잠깐 기다리면 나와요. 나오면 GIF <strong>왼쪽 아래 1× 버튼</strong>을 눌러 보세요. <strong>0.25배부터 2배까지</strong> 속도를 바꿀 수 있어요.</p></div>
+<div class="b b-prompt"><div class="b-head"><span class="b-lab">프롬프트 · 강사 시연 · 몰라 손 흔들기 GIF</span><button class="copy" data-t="p11">복사</button></div><pre id="p11">다음 내용으로 GIF를 만들어줘. 통통한 2등신 반달가슴곰 캐릭터 &#x27;몰라&#x27;(다크 초코브라운 털, 꿀색 큰 눈, 볼터치, 가슴에 은은하게 빛나는 크림색 반달 무늬, 머리 위 작은 초록 새싹 한 잎, 말랑한 3D 질감)가 정면을 보고 서서 한 손을 흔들며 웃다가 처음 차렷 자세로 돌아오는 짧은 반복 GIF. 카메라 고정, 풀샷, 배경은 연한 크림색 단색, 글자 없이.</pre><p class="hint">[ ] 안은 내 것으로 바꿔 쓰세요</p></div>
+<figure class="shot"><img src="img11.jpg" alt="실제로 만든 몰라 GIF · 왼쪽 아래 1× 버튼으로 속도 조절"><figcaption>실제로 만든 몰라 GIF · 왼쪽 아래 1× 버튼으로 속도 조절</figcaption></figure></article><article class="card" id="s7c2" data-title="② 같이 하기 · 동작 역질문 + GIF" data-tag="필수"><h3><span class="tag t-req">필수</span>② 같이 하기 · 동작 역질문 + GIF</h3><div class="b b-say"><div class="b-lab">설명</div><p>이제 선생님 캐릭터 차례예요. 어떤 동작을 시킬지 모르겠죠? 그래서 이번에도 챗GPT가 먼저 물어봐요. 기획서에 적은 <strong>성격</strong>을 보고 어울리는 동작을 추천해 줘요. 느긋한 애는 하품을, 활발한 애는 점프를. 이게 캐릭터가 <strong>살아 있는</strong> 느낌을 줘요.</p></div>
+<div class="b b-prompt"><div class="b-head"><span class="b-lab">프롬프트 · 동작 역질문 + GIF</span><button class="copy" data-t="p12">복사</button></div><pre id="p12">@[이름] (또는 시트 첨부) 로 짧은 반복 GIF를 만들고 싶어.
+바로 만들지 말고 질문 2개를 해 줘.
+1) 이 캐릭터 성격에 어울리는 동작 (보기 3개, [추천] 표시)
+2) 배경색 (대표 색과 어울리는 연한 단색 보기 3개, [추천] 표시)
+
+내가 고르면 GIF를 만들어 줘.
+동작 하나만, 끝은 처음 자세로 돌아오게, 카메라 고정, 풀샷, 글자 없이.</pre><p class="hint">[ ] 안은 내 것으로 바꿔 쓰세요</p></div>
+<div class="b b-set"><div class="b-lab">성격으로 동작 고르기 (챗GPT 추천과 비교해 보세요)</div><table>
+<thead>
+<tr>
+<th>성격</th>
+<th>이런 동작</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>느긋함</td>
+<td>기지개 켜고 하품</td>
+</tr>
+<tr>
+<td>활발함</td>
+<td>제자리 콩콩 점프</td>
+</tr>
+<tr>
+<td>수줍음</td>
+<td>볼 빨개지며 고개 숙이기</td>
+</tr>
+<tr>
+<td>다정함</td>
+<td>두 손 모아 하트</td>
+</tr>
+<tr>
+<td>갸웃갸웃(몰라)</td>
+<td>고개 갸웃 → 반짝 깨닫기</td>
+</tr>
+<tr>
+<td>장사꾼</td>
+<td>상품 내밀며 윙크</td>
+</tr>
+</tbody>
+</table></div></article><article class="card opt" id="s7c3" data-title="③ 내 캐릭터로 · 속도 맞추고 저장" data-tag="선택"><h3><span class="tag t-opt">선택</span>③ 내 캐릭터로 · 속도 맞추고 저장</h3><div class="b b-say"><div class="b-lab">설명</div><p>나오면 <strong>1× 버튼</strong>으로 속도를 맞춰 보세요. 너무 빠르면 0.75배, 너무 느리면 1.25배. 마음에 드는 속도로 정하고, 오른쪽 아래 버튼으로 내려받으세요.</p>
+<p>마음에 안 드는 부분은 말로 고치시면 돼요. "손을 더 크게 흔들어", "웃는 얼굴이 더 밝게". 다만 매번 <strong>새로 만드는 것</strong>이라 그림이 조금씩 달라질 수 있어요.</p></div>
+<div class="b b-tip"><div class="b-lab">막힐 때</div><ul>
+<li>GIF가 아니라 정지 그림이 나오면: 프롬프트 맨 앞에 <strong>"다음 내용으로 GIF를 만들어줘."</strong> 를 쓰세요. 그래도 안 되면 아직 기능이 안 열린 거예요.</li>
+<li>움직임이 이상하면: 동작을 더 쉽게 바꾸세요. "점프" → "고개 끄덕이기"처럼 <strong>작은 동작</strong>이 잘 돼요.</li>
+<li>캐릭터가 달라지면: @이름 대신 <strong>시트를 첨부</strong>하고 "이 캐릭터 그대로"를 넣어 보세요.</li>
+</ul></div>
+<div class="b b-more"><div class="b-lab">빨리 끝났다면 (선택)</div><ul>
+<li><strong>인사 GIF 세트</strong>: "안녕 / 고마워 / 미안 / 축하해" 4가지 동작을 하나씩 만들어 보세요. 카톡 이모티콘처럼요.</li>
+<li><strong>장면 GIF</strong>: 단색 배경 대신 "창문 밖에 눈이 내리는" 처럼 배경이 조금 움직이는 GIF. 연말 인사 카드로 딱이에요.</li>
+<li><strong>속도 비교</strong>: 같은 GIF를 0.5배, 2배로 보고 느낌을 비교해 보세요. 느리면 다정하고, 빠르면 신나 보여요.</li>
+</ul></div></article></section><section class="step" id="s8"><header class="step-h"><span class="part">2부</span><h2>STEP 8 · 알파 매트로 투명 움직이는 스티커</h2></header><article class="card" id="s8c0" data-title="알파 매트, 다시 한 번" data-tag="필수"><h3><span class="tag t-req">필수</span>알파 매트, 다시 한 번</h3><div class="b b-easy"><div class="b-lab">쉽게 말하면</div><p><strong>알파 매트</strong>는 "여기는 남기고, 여기는 투명하게"를 <strong>흰색·검은색으로 표시한 지도</strong>예요. 흰 부분은 남고, 검은 부분은 사라져요. 그래서 배경 없는 그림(투명 PNG)이 돼요.</p></div>
+<div class="b b-say"><div class="b-lab">설명</div><p>지난 시간에 그림 메뉴에서 <strong>배경 제거</strong> 눌렀을 때, 잠깐 검게 나왔다가 배경이 사라졌죠? 그게 알파 매트예요. 캐릭터는 하얗게, 배경은 까맣게 칠해서 "까만 데는 지워라" 하는 거예요.</p>
+<p>배경이 없으면 뭐가 좋냐면요, <strong>어디 위에든 올릴 수 있어요</strong>. 카톡 채팅방 위, 블로그 글 위, 가게 포스터 위. 거기다 움직이기까지 하면? <strong>움직이는 스티커</strong>가 되는 거예요. 오늘의 마지막 작품입니다.</p></div>
+<figure class="diagram"><svg viewBox="0 0 900 300" role="img" aria-label="원본 그림과 흑백 알파 매트가 합쳐져 투명 PNG가 되고, 이것을 움직이면 투명 스티커 GIF가 된다"><rect x="20" y="60" width="170" height="170" rx="12" class="d-bgcol"/><circle cx="105" cy="130" r="32" class="d-fig"/><rect x="80" y="160" width="50" height="50" rx="10" class="d-fig"/><text x="105" y="258" class="d-s">원본 그림</text><text x="215" y="150" class="d-t">+</text><rect x="240" y="60" width="170" height="170" rx="12" class="d-black"/><circle cx="325" cy="130" r="32" class="d-white"/><rect x="300" y="160" width="50" height="50" rx="10" class="d-white"/><text x="325" y="258" class="d-s">알파 매트</text><line x1="416" y1="145" x2="474" y2="145" class="d-ar"/><rect x="480" y="60" width="170" height="170" rx="12" class="d-check"/><circle cx="565" cy="130" r="32" class="d-fig"/><rect x="540" y="160" width="50" height="50" rx="10" class="d-fig"/><text x="565" y="258" class="d-s">투명 PNG</text><line x1="656" y1="145" x2="714" y2="145" class="d-ar"/><rect x="720" y="60" width="170" height="170" rx="12" class="d-key"/><circle cx="805" cy="125" r="32" class="d-fig"/><rect x="780" y="155" width="50" height="50" rx="10" class="d-fig"/><circle cx="805" cy="125" r="40" class="d-sticker"/><text x="805" y="258" class="d-s">움직이는 스티커</text><text x="325" y="40" class="d-s2">흰색 = 남김 · 검은색 = 투명</text></svg></figure></article><article class="card opt" id="s8c1" data-title="흰 테두리를 꼭 넣는 이유" data-tag="선택"><h3><span class="tag t-opt">선택</span>흰 테두리를 꼭 넣는 이유</h3><div class="b b-say"><div class="b-lab">설명</div><p>여기서 꿀팁 하나. GIF는 <strong>반만 투명한 것</strong>을 못 해요. 완전히 보이거나, 완전히 안 보이거나 둘 중 하나예요. 그래서 캐릭터 가장자리가 계단처럼 <strong>삐죽삐죽</strong> 깨질 수 있어요.</p>
+<p>그걸 감추는 방법이 <strong>두꺼운 흰 테두리</strong>예요. 문구점 스티커 보면 그림 둘레에 하얀 테두리 있잖아요. 그걸 넣으면 가장자리가 깔끔해 보이고, 진짜 스티커처럼 보여요. 이건 다음다음 시간 <strong>굿즈(스티커) 만들기</strong>에도 그대로 씁니다.</p></div></article><article class="card" id="s8c2" data-title="① 보기 · 강사 몰라로 먼저" data-tag="필수"><h3><span class="tag t-req">필수</span>① 보기 · 강사 몰라로 먼저</h3><div class="b b-say"><div class="b-lab">설명</div><p>제가 해 보니까요, "투명 배경 스티커로 만들어 줘" 하면 챗GPT가 <strong>배경 없이 흰 테두리 두른 GIF</strong>를 바로 만들어 줬어요. 아래 그림이 실제 결과예요. 캐릭터 둘레만 남고 바깥은 투명해요. 지난 시간에 배운 <strong>알파 매트</strong>를 챗GPT가 알아서 해 준 거예요.</p></div>
+<div class="b b-prompt"><div class="b-head"><span class="b-lab">프롬프트 · 강사 시연 · GIF 채팅에서 이어서</span><button class="copy" data-t="p13">복사</button></div><pre id="p13">방금 만든 몰라를 투명 배경 PNG 스티커로 만들어 줘. 정면 풀샷, 캐릭터 둘레에 두꺼운 흰색 스티커 테두리, 배경은 완전히 투명, 글자 없이.</pre><p class="hint">[ ] 안은 내 것으로 바꿔 쓰세요</p></div>
+<figure class="shot"><img src="img12.jpg" alt="실제 결과 · 흰 스티커 테두리 + 투명 배경"><figcaption>실제 결과 · 흰 스티커 테두리 + 투명 배경</figcaption></figure></article><article class="card" id="s8c3" data-title="② 같이 하기 · 쓸 곳 역질문 + 투명 스티커 GIF" data-tag="필수"><h3><span class="tag t-req">필수</span>② 같이 하기 · 쓸 곳 역질문 + 투명 스티커 GIF</h3><div class="b b-say"><div class="b-lab">설명</div><p><strong>새 채팅</strong>에서 <strong>@이름</strong>으로 바로 하셔도 되고, STEP 7 채팅에서 이어서 하셔도 돼요. 둘 다 해 봤는데 둘 다 투명하게 잘 나왔어요. 챗GPT가 "이 스티커 어디에 쓰실 거예요?"를 먼저 물어봐요. 카톡이냐, 블로그냐, 포스터냐에 따라 크기랑 동작이 달라지거든요.</p></div>
+<div class="b b-prompt"><div class="b-head"><span class="b-lab">프롬프트 · 쓸 곳 역질문 + 투명 스티커 GIF</span><button class="copy" data-t="p14">복사</button></div><pre id="p14">방금 만든 내 캐릭터로 &#x27;움직이는 투명 스티커&#x27;를 만들고 싶어.
+바로 만들지 말고 질문 2개를 해 줘.
+1) 이 스티커를 어디에 쓸지 (카톡 / 블로그 / 포스터 등 보기 3개, [추천] 표시)
+2) 스티커 동작 (작고 반복하기 쉬운 동작 보기 3개, [추천] 표시)
+
+내가 고르면 GIF로 만들어 줘.
+배경은 완전히 투명, 캐릭터 둘레에 두꺼운 흰색 스티커 테두리,
+동작 하나, 처음 자세로 돌아오게, 카메라 고정, 글자 없이.</pre><p class="hint">[ ] 안은 내 것으로 바꿔 쓰세요</p></div>
+<figure class="shot"><img src="img13.jpg" alt="실제 결과 · 새 채팅에서 @몰라로 만든 투명 스티커 GIF (바둑판 = 투명)"><figcaption>실제 결과 · 새 채팅에서 @몰라로 만든 투명 스티커 GIF (바둑판 = 투명)</figcaption></figure></article><article class="card" id="s8c4" data-title="③ 내 캐릭터로 · 투명한지 확인하기" data-tag="필수"><h3><span class="tag t-req">필수</span>③ 내 캐릭터로 · 투명한지 확인하기</h3><div class="b b-say"><div class="b-lab">설명</div><p>다 되면 <strong>확인</strong>을 해 봐야죠. 내려받은 GIF를 카톡 "나와의 채팅"에 보내 보거나, 색깔 있는 바탕 위에 올려 보세요. 캐릭터 둘레에 하얀 네모가 안 보이고 캐릭터만 움직이면 <strong>성공</strong>입니다.</p></div>
+<div class="b b-warn"><div class="b-lab">배경이 투명하게 안 나오면 · 다른 방법</div><ol>
+<li>정지 그림으로 먼저 스티커를 만들고, 그림을 눌러 위쪽 메뉴의 <strong>배경 제거</strong>(알파 매트)로 <strong>투명 PNG</strong>를 받아요.</li>
+<li><strong>새 채팅</strong>에서 그 PNG를 <strong>첨부</strong>하고 "이 그림을 움직이는 반복 GIF로 새로 만들어 줘. 배경은 투명 그대로, 흰 테두리 유지."</li>
+<li>그래도 안 되면 <strong>투명 PNG 스티커</strong>(안 움직이지만 어디든 올라감)와 <strong>흰 배경 GIF</strong>(움직이지만 흰 바탕) 두 개로 나눠 가지세요. 흰 바탕 블로그나 카톡 말풍선에서는 티가 안 나요.</li>
+</ol></div>
+<div class="b b-tip"><div class="b-lab">막힐 때</div><ul>
+<li>배경 제거 메뉴가 안 보이면: 그림을 <strong>한 번 눌러서 크게 연</strong> 다음 위쪽 메뉴를 보세요.</li>
+<li>흰 테두리까지 지워지면: 프롬프트에 <strong>"흰 테두리는 캐릭터의 일부"</strong> 라고 써 주세요.</li>
+</ul></div>
+<div class="b b-more"><div class="b-lab">빨리 끝났다면 (선택)</div><ul>
+<li><strong>스티커 세트 4종</strong>: STEP 7의 인사 동작 4가지를 모두 투명 스티커 GIF로. 나만의 움직이는 이모티콘 세트가 됩니다.</li>
+<li><strong>포스터 위에 올리기</strong>: 미리캔버스나 캔바에 GIF를 올려서 연말 인사 카드 한 장. 캐릭터만 움직이는 카드가 돼요.</li>
+</ul></div></article></section><section class="step" id="s9"><header class="step-h"><h2>오늘 만든 것 · 집에서 복습</h2></header><article class="card" id="s9c0" data-title="오늘 내 폴더에 있어야 할 것" data-tag="필수"><h3><span class="tag t-req">필수</span>오늘 내 폴더에 있어야 할 것</h3><div class="b b-check"><div class="b-lab">내 캐릭터 폴더 확인</div><ul>
+<li>내 캐릭터 기획서 (메모장)</li>
+<li>화풍 4칸 비교 + 기준 그림(앵커)</li>
+<li>9칸 비교표 + 톤앤매너 2칸</li>
+<li><strong>캐릭터 시트</strong> ← 오늘의 최종 작품</li>
+<li>성격 동작 GIF</li>
+<li>투명 움직이는 스티커 (또는 투명 PNG + 흰 배경 GIF)</li>
+</ul></div>
+<div class="b b-say"><div class="b-lab">설명</div><p>선생님들, 고생 많으셨어요. 오늘 만든 것 중에 <strong>제일 중요한 건 캐릭터 시트</strong>예요. 이게 있으면 나머지는 언제든 다시 만들 수 있어요. 꼭 메일이나 클라우드에 보내 두세요.</p>
+<p>다음 시간에는 이 캐릭터가 <strong>광고 모델</strong>로 데뷔합니다. 내 캐릭터가 우리 가게 광고에 나오고, 인스타그램 크기, 세로 크기에 맞게 옷을 갈아입어요. 오늘 정한 <strong>톤앤매너</strong>가 거기서 바로 쓰여요.</p></div></article><article class="card opt" id="s9c1" data-title="집에서 해 볼 것" data-tag="선택"><h3><span class="tag t-opt">선택</span>집에서 해 볼 것</h3><div class="b b-more"><div class="b-lab">집에서 한 걸음 더</div><ul>
+<li>오늘 못 끝낸 STEP의 <strong>"빨리 끝났다면"</strong> 미션 하나 해 보기</li>
+<li><strong>@이름</strong>으로 캐릭터 불러서, 오늘 하루 있었던 일 한 장면 그려 보기 ("@버터 가 비 오는 날 우산 쓰고 빵 배달하는 장면")</li>
+<li>다음 시간 준비: 내 캐릭터를 <strong>광고하고 싶은 것</strong> 하나 정해 오기 (우리 가게 메뉴, 동네 행사, 내 취미 모임 등)</li>
+</ul></div>
+<div class="b b-set"><div class="b-lab">오늘 배운 말 정리</div><table>
+<thead>
+<tr>
+<th>말</th>
+<th>뜻</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>프롬프트</td>
+<td>AI에게 하는 주문 글</td>
+</tr>
+<tr>
+<td>그리드</td>
+<td>한 장을 여러 칸으로 나누기</td>
+</tr>
+<tr>
+<td>앵커(기준 그림)</td>
+<td>캐릭터를 고정하는 기준 한 장</td>
+</tr>
+<tr>
+<td>샷 / 앵글 / 뷰</td>
+<td>얼마나 가까이 / 카메라 높이 / 보는 방향</td>
+</tr>
+<tr>
+<td>톤앤매너</td>
+<td>전체 분위기 + 말투</td>
+</tr>
+<tr>
+<td>캐릭터 시트</td>
+<td>앞·옆·뒤·표정을 모은 설정표</td>
+</tr>
+<tr>
+<td>GIF / 루프</td>
+<td>반복해서 움직이는 그림 / 끊김 없는 반복</td>
+</tr>
+<tr>
+<td>알파 매트</td>
+<td>남길 곳은 흰색, 지울 곳은 검은색으로 표시한 지도</td>
+</tr>
+<tr>
+<td>투명 PNG</td>
+<td>배경이 없는 그림 파일</td>
+</tr>
+</tbody>
+</table></div></article></section></main><aside class="side" id="side"></aside></div>
+<div class="foot"><div class="foot-in"><button id="pv">← 이전 STEP</button><span id="pos"></span><button class="nx" id="nx">다음 STEP →</button></div></div>
+<script>
+const secs=[...document.querySelectorAll('.step')];
+const tabs=[...document.querySelectorAll('.tab')];
+const side=document.getElementById('side');
+const bar=document.querySelector('.bar');
+let cur=null;
+function barH(){return bar.getBoundingClientRect().height+12;}
+function goY(y,smooth){window.scrollTo({top:Math.max(0,y),behavior:smooth?'smooth':'auto'});}
+function showStep(id,keepTop){
+ cur=id;
+ secs.forEach(x=>x.classList.toggle('hide',x.id!==id));
+ tabs.forEach(t=>t.classList.toggle('on',t.dataset.s===id));
+ const s=document.getElementById(id);const cards=[...s.querySelectorAll('.card')];
+ side.innerHTML='<div class="st">'+s.querySelector('h2').textContent+'</div>'+cards.map(c=>'<a href="javascript:void(0)" data-c="'+c.id+'">'+(c.dataset.tag?'<b style="font-size:.85em;color:'+(c.dataset.tag=='필수'?'var(--ac)':'#8a939c')+'">'+c.dataset.tag+'</b> ':'')+c.dataset.title+'</a>').join('');
+ side.querySelectorAll('a').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();const el=document.getElementById(a.dataset.c);goY(el.getBoundingClientRect().top+window.scrollY-barH(),true);}));
+ const i=secs.indexOf(s);
+ document.getElementById('pos').textContent=(i+1)+' / '+secs.length;
+ document.getElementById('pv').disabled=i===0;document.getElementById('nx').disabled=i===secs.length-1;
+ if(!keepTop){const w=document.querySelector('.wrap');goY(w.getBoundingClientRect().top+window.scrollY-barH(),false);}
+ onScroll();
+}
+function onScroll(){if(!cur)return;const y=barH()+40;let c=null;
+ document.getElementById(cur).querySelectorAll('.card').forEach(k=>{if(k.getBoundingClientRect().top<y)c=k.id;});
+ if(!c){const f=document.getElementById(cur).querySelector('.card');c=f&&f.id;}
+ side.querySelectorAll('a').forEach(a=>a.classList.toggle('on',a.dataset.c===c));}
+addEventListener('scroll',onScroll,{passive:true});
+tabs.forEach(t=>t.addEventListener('click',e=>{e.preventDefault();showStep(t.dataset.s);}));
+function go(d){const i=secs.findIndex(s=>s.id===cur)+d;if(i>=0&&i<secs.length)showStep(secs[i].id);}
+document.getElementById('pv').onclick=()=>go(-1);document.getElementById('nx').onclick=()=>go(1);
+let fs=20;function z(d){fs=Math.min(30,Math.max(16,fs+d));document.documentElement.style.setProperty('--fs',fs+'px');}
+document.getElementById('zm').onclick=()=>z(-2);document.getElementById('zp').onclick=()=>z(2);
+document.querySelectorAll('.copy').forEach(b=>b.onclick=()=>{const t=document.getElementById(b.dataset.t).textContent;
+ const done=()=>{b.textContent='복사됨';b.classList.add('ok');setTimeout(()=>{b.textContent='복사';b.classList.remove('ok')},1600)};
+ const fb=()=>{const a=document.createElement('textarea');a.value=t;a.style.position='absolute';a.style.left='-9999px';document.body.appendChild(a);a.select();try{document.execCommand('copy')}catch(e){}a.remove();done();};
+ try{navigator.clipboard.writeText(t).then(done,fb)}catch(e){fb()}});
+showStep(secs[0].id,true);
+</script></body></html>

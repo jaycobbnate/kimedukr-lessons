@@ -1,0 +1,970 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>클로드로 상품 1개 완성하기</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+:root{--pt:#0E7C6B;--pt-d:#085A4D;--pt-50:#EAF5F2;--pt-100:#C7E7DF;--bg:#FBFBF8;--card:#fff;--line:#E4E2DB;--tx:#24231F;--tx2:#5E5C56;--tx3:#8E8C85;
+--set:#EEF3FA;--set-b:#C9D8EE;--set-t:#284873;--warn:#FBEFF1;--warn-b:#EBC9D0;--warn-t:#7A2E3D;--adv:#F2EFFA;--adv-b:#D7CFEE;--adv-t:#4A3B85;--fs:20px}
+*{box-sizing:border-box}
+html{font-size:var(--fs)}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:Pretendard,"Noto Sans KR",sans-serif;line-height:1.7;word-break:keep-all}
+.top{position:sticky;top:0;z-index:20;background:#FBFBF8;border-bottom:1px solid var(--line)}
+.bar{display:flex;align-items:center;gap:12px;padding:10px 20px}
+.bar h1{font-size:1rem;margin:0;font-weight:700}
+.bar h1 small{color:var(--tx3);font-weight:500;margin-left:6px;font-size:.75rem}
+.zoom{margin-left:auto;display:flex;gap:6px}
+.zoom button{border:1px solid var(--line);background:#fff;border-radius:8px;padding:4px 12px;font:inherit;font-size:.8rem;cursor:pointer;color:var(--tx2)}
+.tabs{display:flex;gap:4px;padding:0 16px;overflow-x:auto}
+.tab{border:0;background:none;font:inherit;font-size:.82rem;padding:10px 14px;color:var(--tx2);cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap}
+.tab.on{color:var(--pt-d);border-bottom-color:var(--pt);font-weight:700}
+.wrap{display:grid;grid-template-columns:minmax(0,1fr) 230px;gap:28px;max-width:1240px;margin:0 auto;padding:24px 20px 40px}
+.side{position:sticky;top:120px;align-self:start;border-left:1px solid var(--line);padding-left:16px}
+.side .h{font-size:.7rem;color:var(--tx3);font-weight:700;margin-bottom:6px}
+.side a{display:block;font-size:.75rem;color:var(--tx2);text-decoration:none;padding:5px 0;line-height:1.4}
+.side a:hover{color:var(--pt)}
+.step{display:none}.step.on{display:block}
+.eyebrow{font-size:.75rem;color:var(--pt);font-weight:700;letter-spacing:.5px}
+h2{font-size:1.55rem;margin:2px 0 6px;line-height:1.35}
+.lead{color:var(--tx2);margin:0 0 18px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin:0 0 16px;scroll-margin-top:130px}
+.card h3{font-size:1.08rem;margin:0 0 10px;display:flex;align-items:center;gap:8px}
+.card h3 .b{font-size:.68rem;background:var(--pt-50);color:var(--pt-d);border:1px solid var(--pt-100);padding:1px 8px;border-radius:20px;font-weight:700}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+ol,ul{margin:6px 0 6px 1.2em;padding:0}li{margin:4px 0}
+.box{border-radius:10px;padding:12px 16px;margin:12px 0;font-size:.92rem}
+.box b:first-child{display:block;margin-bottom:2px}
+.box.set{background:var(--set);border:1px solid var(--set-b);color:var(--set-t)}
+.box.warn{background:var(--warn);border:1px solid var(--warn-b);color:var(--warn-t)}
+.box.adv{background:var(--adv);border:1px solid var(--adv-b);color:var(--adv-t)}
+.box.key{background:var(--pt-50);border:1px solid var(--pt-100);color:var(--pt-d)}
+.prompt{position:relative;background:#F6F6F2;border:1px solid var(--line);border-radius:10px;padding:14px 16px 14px;margin:10px 0;white-space:pre-wrap;font-size:.86rem;line-height:1.65;font-family:Pretendard,monospace}
+.prompt .lbl{display:block;font-size:.7rem;color:var(--tx3);font-weight:700;margin-bottom:6px}
+.cp{position:absolute;top:10px;right:10px;border:1px solid var(--pt);background:#fff;color:var(--pt-d);border-radius:8px;font:inherit;font-size:.72rem;padding:3px 12px;cursor:pointer}
+.cp.done{background:var(--pt);color:#fff}
+table{width:100%;border-collapse:collapse;font-size:.85rem;margin:8px 0}
+th,td{border-bottom:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+th{color:var(--tx2);background:#FAFAF7}
+.who{display:inline-block;font-size:.68rem;font-weight:700;border-radius:20px;padding:1px 9px}
+.who.ai{background:var(--pt-50);color:var(--pt-d);border:1px solid var(--pt-100)}
+.who.hu{background:#F1EFEA;color:#4A4842;border:1px solid #D9D6CC}
+.scene{position:relative;height:340px;border-radius:12px;overflow:hidden;background:linear-gradient(#FDFDFB,#F1F4F2);border:1px solid var(--line)}
+.scene canvas{display:block;width:100%;height:100%}
+.ctrl{display:flex;gap:8px;align-items:center;margin-top:10px;flex-wrap:wrap}
+.ctrl button{border:1px solid var(--line);background:#fff;border-radius:8px;font:inherit;font-size:.78rem;padding:5px 14px;cursor:pointer;color:var(--tx2)}
+.ctrl button.on{border-color:var(--pt);color:var(--pt-d);font-weight:700}
+.cap{font-size:.85rem;color:var(--pt-d);font-weight:600;margin-left:6px}
+.nav{position:sticky;bottom:0;display:flex;justify-content:space-between;padding:12px 0;background:linear-gradient(transparent,var(--bg) 30%)}
+.nav button{border:1px solid var(--pt);background:#fff;color:var(--pt-d);border-radius:10px;font:inherit;font-size:.85rem;padding:8px 20px;cursor:pointer}
+.nav button.next{background:var(--pt);color:#fff}
+.chk li{list-style:none;margin-left:-1.2em}
+.chk li::before{content:"☐ ";color:var(--pt)}
+.spt{position:absolute;left:0;right:0;text-align:center;color:#F4EFE6;opacity:0;transform:translateY(18px);transition:opacity .8s,transform .8s;letter-spacing:-.3px;line-height:1.15}
+.spt.on{opacity:1;transform:none}
+.sp-brand{top:9%;font-size:7.2cqw;font-weight:600;letter-spacing:.35em;color:#C9B79C}
+.sp-h1{top:30%;font-size:13.3cqw;font-weight:800}
+.sp-h2{top:57%;font-size:5.8cqw;font-weight:400;color:#D8D2C6;line-height:1.5}
+.sp-price{top:69%;font-size:10.5cqw;font-weight:700}
+.sp-cta{top:82%;font-size:5.3cqw;color:#C9B79C;letter-spacing:.2em}
+.sp-bar{position:absolute;left:50%;top:52%;width:0;height:2px;background:#C9B79C;transform:translateX(-50%);transition:width 1s}
+.sp-bar.on{width:38%}
+#spWrap,#sp2Wrap{container-type:inline-size}
+.fsbox:fullscreen{width:100vw!important;height:100vh;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px}
+.fsbox:fullscreen>div:first-child{width:auto!important;height:calc(100vh - 70px);aspect-ratio:9/16;border-radius:0}
+.fsbox:fullscreen .vbar{width:auto!important;background:rgba(255,255,255,.08);padding:8px 12px;border-radius:12px}
+.fsbox:fullscreen .vbar label{color:#ccc}
+.fsbox.big{width:min(calc((100vh - 240px) * 9 / 16),100%)!important;scroll-margin-top:120px}
+.fsbox.big>div:first-child{width:100%!important}
+.dl{display:inline-block;padding:12px 20px;border-radius:10px;background:var(--pt);color:#fff!important;font-weight:700;text-decoration:none}.dl2{background:#fff;color:var(--pt)!important;border:1px solid var(--pt)}
+.vbar{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:8px}
+.vbar button{border:1px solid var(--line);background:#fff;border-radius:8px;font:inherit;font-size:.8rem;padding:6px 12px;cursor:pointer;color:var(--tx2)}
+.vbar button.pb{background:var(--pt);color:#fff;border-color:var(--pt);font-weight:700}
+.vbar label{font-size:.78rem;color:var(--tx3);display:flex;align-items:center;gap:6px}
+.vbar input[type=range]{width:90px;accent-color:var(--pt)}
+.sp2img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transform:scale(1.05);transition:opacity 1.2s}
+.sp2img.on{opacity:1;animation:kb 4.5s linear forwards}
+@keyframes kb{from{transform:scale(1.05) translate(0,0)}to{transform:scale(1.18) translate(-2%,-2%)}}
+.sp2shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.35) 0%,rgba(0,0,0,0) 35%,rgba(0,0,0,0) 55%,rgba(0,0,0,.65) 100%)}
+.sp2-brand{top:7%;font-size:6.7cqw;font-weight:600;letter-spacing:.35em;color:#fff}
+.sp2-h1{top:14%;font-size:11.7cqw;font-weight:800;color:#fff;text-shadow:0 2px 12px rgba(0,0,0,.5)}
+.sp2-h2{top:72%;font-size:5.6cqw;font-weight:400;color:#F1EDE4;line-height:1.5;text-shadow:0 1px 8px rgba(0,0,0,.6)}
+.sp2-price{top:81%;font-size:10cqw;font-weight:700;color:#fff;text-shadow:0 2px 10px rgba(0,0,0,.6)}
+.sp2-cta{top:91%;font-size:4.7cqw;color:#E8DCC3;letter-spacing:.2em}
+.rm{position:relative;display:grid;grid-template-columns:repeat(8,1fr);gap:0 6px;padding:4px 0 6px}
+.rm-phase{grid-row:1;border-top:2px solid var(--pt-100);margin:0 4px 14px;text-align:center}
+.rm-phase span{display:inline-block;transform:translateY(-55%);background:var(--card);padding:0 8px;font-size:.68rem;font-weight:700;color:var(--pt);letter-spacing:.06em}
+.rm-node::before{content:"";position:absolute;top:25px;left:-3px;right:-3px;height:2px;background:var(--pt-100);z-index:0}
+.rm-node:first-of-type::before{left:50%}
+.rm-node:last-of-type::before{right:50%}
+.rm-node.key::before,.rm-node.key+.rm-node::before{background:var(--pt)}
+.rm-node{grid-row:2;position:relative;display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;background:none;border:0;cursor:pointer;font:inherit;color:var(--tx);padding:0 2px}
+.rm-node i{font-style:normal;display:flex;align-items:center;justify-content:center;width:52px;height:52px;border-radius:50%;background:#fff;border:2px solid var(--pt-100);color:var(--pt-d);font-weight:800;font-size:.95rem;position:relative;z-index:1;transition:transform .2s,box-shadow .2s}
+.rm-node b{font-size:.82rem;font-weight:700;line-height:1.3}
+.rm-node em{font-style:normal;font-size:.68rem;color:var(--tx3);line-height:1.45}
+.rm-node:hover i{transform:translateY(-3px);box-shadow:0 6px 16px rgba(14,124,107,.18)}
+.rm-node.key i{background:var(--pt);border-color:var(--pt);color:#fff}
+.rm-node.star i{background:#fff;border:2px dashed #C9A86A;color:#A07E3F}
+.rm-out{margin-top:16px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:#FCFCFA}
+.rm-out-h{font-size:.72rem;font-weight:700;color:var(--tx3);margin-bottom:8px;letter-spacing:.04em}
+.rm-chips{display:flex;flex-wrap:wrap;gap:6px}
+.rm-chips span{font-size:.76rem;background:var(--pt-50);color:var(--pt-d);border:1px solid var(--pt-100);border-radius:20px;padding:3px 11px}
+.rm-legend{display:flex;gap:16px;justify-content:flex-end;margin-top:10px;font-size:.7rem;color:var(--tx3)}
+.rm-legend .lg{display:inline-block;width:11px;height:11px;border-radius:50%;border:2px solid var(--pt-100);background:#fff;margin-right:5px;vertical-align:-1px}
+.rm-legend .lg.key{background:var(--pt);border-color:var(--pt)}
+.rm-legend .lg.star{border:2px dashed #C9A86A}
+@media(max-width:900px){.rm{grid-template-columns:repeat(4,1fr);gap:18px 6px}.rm-phase,.rm-node::before{display:none}.rm-node{grid-row:auto}}
+h4.sub{font-size:.95rem;color:var(--pt-d);margin:18px 0 8px;padding-left:10px;border-left:3px solid var(--pt)}
+h4.sub:first-of-type{margin-top:4px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.pr{border:1px solid var(--line);border-radius:10px;padding:12px 14px;background:#FCFCFA;display:flex;flex-direction:column;gap:4px}
+.pr-n{width:26px;height:26px;border-radius:50%;background:var(--pt);color:#fff;font-weight:800;font-size:.8rem;display:flex;align-items:center;justify-content:center}
+.pr b{font-size:.92rem}.pr span{font-size:.8rem;color:var(--tx2);line-height:1.55}
+table.order td:first-child{font-weight:800;color:var(--pt-d);text-align:center}
+table.order tr.k td{background:var(--pt-50)}
+table.order td{font-size:.8rem}
+@media(max-width:900px){.grid3{grid-template-columns:1fr}}
+@media(max-width:900px){.wrap{grid-template-columns:1fr}.side{display:none}.grid2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="top">
+  <div class="bar"><h1>클로드로 상품 1개 완성하기<small>라임하임어패럴 실습 교안</small></h1>
+    <div class="zoom"><button onclick="zoom(-1)">가 −</button><button onclick="zoom(1)">가 +</button></div></div>
+  <div class="tabs" id="tabs"></div>
+</div>
+
+<div class="wrap">
+<main id="main">
+
+<!-- GUIDE -->
+<section class="step" data-title="수업 안내">
+  <div class="eyebrow">OVERVIEW</div>
+  <h2>오늘 수업 한눈에 보기</h2>
+  <p class="lead">무엇을, 어떤 순서로 배우고, 끝나면 무엇이 남는지 먼저 봅니다.</p>
+  <div class="card" id="g-map" data-nav="오늘의 로드맵">
+    <h3>오늘의 로드맵</h3>
+    <p style="margin:0 0 14px;color:var(--tx2);font-size:.92rem">기초를 다지고 → 상품 하나를 만들고 → 등록 자료로 바꾸고 → 알리는 순서로 갑니다. 단계를 누르면 해당 화면으로 이동합니다.</p>
+    <div class="rm">
+      <div class="rm-phase" style="grid-column:1/2"><span>기초</span></div>
+      <div class="rm-phase" style="grid-column:2/5"><span>상품 1개 만들기</span></div>
+      <div class="rm-phase" style="grid-column:5/6"><span>등록 준비</span></div>
+      <div class="rm-phase" style="grid-column:6/8"><span>알리기</span></div>
+      <div class="rm-phase" style="grid-column:8/9"><span>정리</span></div>
+            <button class="rm-node" data-tab="2"><i>0.5</i><b>클로드 알기</b><em>웹·앱·코워크 차이<br>시키는 법 공식</em></button>
+      <button class="rm-node" data-tab="3"><i>1</i><b>작업방</b><em>전용 프로젝트<br>+ 규칙 넣기</em></button>
+      <button class="rm-node" data-tab="4"><i>2</i><b>사진 점검</b><em>빠진 컷 찾기</em></button>
+      <button class="rm-node key" data-tab="5"><i>3</i><b>상품정보</b><em>상품명·옵션·상세<br>원본 대조</em></button>
+      <button class="rm-node key" data-tab="6"><i>4</i><b>카페24</b><em>붙여넣기표<br>일괄등록 엑셀</em></button>
+      <button class="rm-node" data-tab="7"><i>5</i><b>홍보·응대</b><em>인스타·블로그<br>문의 답변</em></button>
+      <button class="rm-node star" data-tab="8"><i>★</i><b>영상 예시</b><em>15초 홍보 모션</em></button>
+      <button class="rm-node" data-tab="9"><i>6</i><b>정리</b><em>내일부터 쓰는 순서</em></button>
+    </div>
+    <div class="rm-out">
+      <div class="rm-out-h">오늘 끝나면 손에 남는 것</div>
+      <div class="rm-chips"><span>「라임하임 상품등록」 프로젝트</span><span>데님 1개 완성 등록 자료</span><span>카페24 붙여넣기표</span><span>일괄등록 엑셀 (Pro)</span><span>홍보 글·응대 문구</span><span>프롬프트 카드</span></div>
+    </div>
+    <div class="rm-legend"><span><i class="lg key"></i>핵심 단계</span><span><i class="lg star"></i>보너스</span><span><i class="lg"></i>기본 단계</span></div>
+  </div>
+
+  <div class="card" id="g-intro" data-nav="시작 전에 · 수업 안내">
+    <h3>시작 전에 · 오늘 수업 안내</h3>
+
+    <h4 class="sub">왜 이 수업인가</h4>
+    <p>지금 라임하임어패럴의 상품 등록은 <b>ERP 엑셀을 보면서 카페24 화면에 한 칸씩 손으로 옮기는 일</b>입니다. 상품명을 새로 짓고, 사이즈별로 나뉜 줄을 옵션으로 합치고, 소재 표기를 손님용으로 고치고, 상세페이지 문구와 사이즈표를 쓰고, 홍보 글과 문의 답변까지 따로 씁니다. 상품 하나에 손이 여러 번 갑니다.</p>
+    <p>오늘은 이 과정 중 <b>"옮기고, 정리하고, 쓰는 일"을 클로드에게 맡기고</b>, 사람은 <b>원본과 맞는지 확인하고 등록 버튼을 누르는 일</b>에 집중하는 방법을 배웁니다.</p>
+
+    <h4 class="sub">오늘의 원칙 세 가지</h4>
+    <div class="grid3">
+      <div class="pr"><div class="pr-n">1</div><b>원본은 사람이 쥔다</b><span>가격·소재·치수는 ERP 원본과 실측만 믿습니다. 클로드는 자료가 없으면 그럴듯하게 지어냅니다.</span></div>
+      <div class="pr"><div class="pr-n">2</div><b>규칙은 한 번만 쓴다</b><span>상품명 짓는 법, 말투, 배송 문구를 프로젝트에 한 번 넣어 두면 누가 시켜도 같은 형식으로 나옵니다.</span></div>
+      <div class="pr"><div class="pr-n">3</div><b>마지막 손은 사람</b><span>카페24 자동 등록은 별도 개발이 필요합니다. 오늘은 등록 직전까지 준비하고, 등록은 직접 합니다.</span></div>
+    </div>
+
+    <h4 class="sub">오늘 쓰는 도구</h4>
+    <table>
+      <tr><th style="width:22%">도구</th><th>무엇에 쓰나</th><th style="width:22%">필요한 계정</th></tr>
+      <tr><td>클로드 웹·앱 <b>프로젝트</b></td><td>규칙을 넣은 전용 작업방. 상품 1개를 처음부터 끝까지</td><td>무료 가능</td></tr>
+      <tr><td>클로드 <b>코워크</b></td><td>PC 폴더째 맡겨서 여러 상품을 카페24 엑셀로 한 번에</td><td>Pro 이상</td></tr>
+      <tr><td>카페24 관리자</td><td>완성된 자료를 등록 (오늘은 메뉴 위치만 확인)</td><td>업체 계정</td></tr>
+      <tr><td>실습 자료 폴더</td><td>업체에서 보내 주신 실제 상품 5개의 사진·ERP 엑셀·카페24 양식</td><td>-</td></tr>
+    </table>
+
+    <h4 class="sub">배우는 순서</h4>
+    <table class="order">
+      <tr><th style="width:7%">순서</th><th style="width:15%">단계</th><th>배우는 것</th><th style="width:24%">직접 해 보는 것</th><th style="width:18%">손에 남는 것</th><th style="width:10%">요청서</th></tr>
+      <tr><td>0.5</td><td><b>클로드 알기</b></td><td>웹·앱·코워크의 차이, 무료·Pro 차이, 화면 보는 법, 시키는 법 네 칸 공식</td><td>"몇 시야?" 비교, 나쁜 예·좋은 예</td><td>시키는 법 공식</td><td>-</td></tr>
+      <tr><td>1</td><td><b>작업방</b></td><td>프로젝트 만들기, 지침에 회사 규칙 넣기</td><td>「라임하임 상품등록」 만들기</td><td>전용 프로젝트</td><td>2-1</td></tr>
+      <tr><td>2</td><td><b>사진 점검</b></td><td>상세페이지에 필요한 컷, 휴대폰 촬영 기준</td><td>데님 사진 6장 점검</td><td>다음 촬영 목록</td><td>1-1~1-3</td></tr>
+      <tr class="k"><td>3</td><td><b>상품정보</b></td><td>사진+ERP로 상품명·검색어·옵션·카테고리·상세 문구·사이즈표 만들기, <b>원본 대조</b></td><td>데님 등록 자료 완성, 함정 질문</td><td>상품 1개 등록 자료</td><td>2-2, 3-1~4-3</td></tr>
+      <tr class="k"><td>4</td><td><b>카페24</b></td><td>카페24 칸에 맞춘 붙여넣기표, 등록 후 점검·수정, 일괄등록 엑셀</td><td>붙여넣기표 받기 / 코워크로 5개 변환 (Pro)</td><td>붙여넣기표 · 일괄 엑셀</td><td>5-1~5-4</td></tr>
+      <tr><td>5</td><td><b>홍보·응대</b></td><td>검색 키워드 다듬기, 인스타·블로그 글, 문의·교환·반품 답변</td><td>홍보 글·답변 3종 만들고 저장</td><td>홍보·응대 문구</td><td>6-1~6-3</td></tr>
+      <tr><td>★</td><td><b>영상 예시</b></td><td>클로드로 만드는 15초 홍보 모션</td><td>예시 재생 (만들기는 선택)</td><td>-</td><td>-</td></tr>
+      <tr><td>6</td><td><b>정리</b></td><td>내일부터 쓰는 상품 1개 완성 순서, 재고 파악 활용</td><td>순서표 확인, 질의응답</td><td>업무 순서표</td><td>-</td></tr>
+    </table>
+    <p style="font-size:.8rem;color:var(--tx3);margin-top:6px">요청서: 업체에서 보내 주신 「단계별 교육 요청 사항」 18개 항목 번호입니다. 모두 포함되어 있습니다.</p>
+  </div>
+
+</section>
+
+<!-- STEP 0 -->
+<section class="step" data-title="시작">
+  <div class="eyebrow">STEP 0</div>
+  <h2>출발 준비</h2>
+  <p class="lead">상품 하나를 사진에서 카페24 등록 직전까지 클로드로 끝까지 완성합니다.</p>
+
+  <div class="card" id="s0-flow" data-nav="전체 흐름 보기">
+    <h3>전체 흐름 한눈에</h3>
+    <div class="scene" id="scene"></div>
+    <div class="ctrl">
+      <button id="bPlay" class="on">▶ 재생</button><button id="bPause">❚❚ 멈춤</button>
+      <button data-go="0">1 작업방</button><button data-go="1">2 사진</button><button data-go="2">3 상품정보</button><button data-go="3">4 카페24</button><button data-go="4">5 홍보</button><button data-go="5">6 정리</button>
+      <span class="cap" id="cap"></span>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="card" id="s0-yes" data-nav="되는 것 / 안 되는 것">
+      <h3>되는 것과 안 되는 것</h3>
+      <table><tr><th>클로드가 해 주는 것</th><th>사람이 하는 것</th></tr>
+      <tr><td>사진 점검, 빠진 컷 찾기</td><td>사진 찍기</td></tr>
+      <tr><td>상품명·검색어·옵션 정리</td><td>원본과 맞는지 확인</td></tr>
+      <tr><td>상세 문구·사이즈표 틀</td><td>실측 재기</td></tr>
+      <tr><td>카페24 칸에 맞춘 자료·엑셀</td><td>카페24에 등록·업로드</td></tr></table>
+      <div class="box warn"><b>자동 업로드는 안 됩니다</b>카페24에 자동으로 올리려면 별도 개발 연동이 필요합니다. 오늘은 등록 직전까지 준비하는 방법을 배웁니다.</div>
+    </div>
+    <div class="card" id="s0-ready" data-nav="실습 준비">
+      <h3>실습 준비</h3>
+      <ol>
+        <li>클로드(claude.ai)에 로그인합니다.</li>
+        <li>아래 버튼으로 <b>실습 자료</b>(zip)를 내려받아 바탕화면에 압축을 풉니다.
+          <div style="display:flex;flex-wrap:wrap;gap:10px;margin:12px 0 4px">
+            <a class="dl" href="https://drive.google.com/file/d/1lCgLNVwivHsCU7rPzEjpUMqSz59PYr3G/view?usp=sharing" target="_blank" rel="noopener">⬇ 실습 자료 내려받기 (구글 드라이브)</a>
+            <a class="dl dl2" href="data:text/markdown;charset=utf-8;base64,IyDrnbzsnoTtlZjsnoTslrTtjKjrn7Qg7IOB7ZKI65Ox66GdIOq3nOy5mQoK64SI64qUIOudvOyehO2VmOyehOyWtO2MqOuftCjsl6zshLEg7J2Y66WYIOyHvO2VkeuqsCwg7Lm07Y6YMjQg7Jq07JiBKeydmCDsg4Htkojrk7HroZ0g64u064u5IOuztOyhsOuLpC4K7IOB7ZKIIOyCrOynhOqzvCBFUlAg7JeR7IWAIOyekOujjOulvCDrsJvsnLzrqbQg7JWE656YIOq3nOy5meuMgOuhnCDsg4HtkojsoJXrs7Trpbwg66eM65Og64ukLgoKIyMgMS4g67CY65Oc7IucIOyngO2CrCDqsoMKLSDqsIDqsqnCt+yGjOyerMK37Zi87Jqp66Wgwrfsm5DsgrDsp4DCt+yEuO2DgeuwqeuyleydgCAqKkVSUCDsm5Drs7gg6rCS66eMKiog7JO064ukLiDsl4bsnLzrqbQg7KeA7Ja064K07KeAIOunkOqzoCDjgIztmZXsnbgg7ZWE7JqU44CN65286rOgIOyTtOuLpC4KLSDsi6TsuKEo7Ja06rmowrfqsIDsirTCt+y0neyepcK37ZeI66asIOuTsSnsnYAg7J6Q66OM7JeQIOyXhuycvOuptCAqKuyIq+yekOulvCDrp4zrk6Tsp4Ag66eQ6rOgKiog67mI7Lm4ICsg44CM7Iuk7LihIO2VhOyalOOAjeuhnCDrkZTri6QuCi0g7IKs7KeE7JeQ7IScIOuztOydtOuKlCDqsoMo7IOJ6rCQwrftlY/Ct+uUlO2FjOydvCnqs7wgRVJQIOuCtOyaqeydtCDri6TrpbTrqbQg65Sw66GcIO2RnOyLnO2VnOuLpC4KLSDqsrDqs7wg66eI7KeA66eJ7JeQIO2VreyDgSDjgIzsm5Drs7gg64yA7KGw7ZGc44CNKO2VreuqqSAvIEVSUCDsm5Drs7ggLyDsnpHshLEg6rKw6rO8IC8g7J287LmYIOyXrOu2gCnrpbwg67aZ7J2464ukLgoKIyMgMi4g7IOB7ZKI66qFIOq3nOy5mQotIO2YleyLnTogW+2VteyLrCDtirnsp5VdICsgW+yGjOyerMK365SU7YWM7J28XSArIFvtkojrqqldCi0gMjXsnpAg7J2064K0LCDtirnsiJjrrLjsnpDCt+qzvOyepSDtkZztmIQo7LWc6rOgLCAx65OxLCDsmYTtjJAg65OxKSDquIjsp4AKLSBFUlAg7L2U65Oc66qFKOyYiDogZW5kODM4NzYsIEJCWSwgcG4sIFNLLCBOQiwgQUMp7J2AIOyDge2SiOuqheyXkCDrhKPsp4Ag7JWK64qU64ukCi0g7JiIOiDjgIzsiqTsm6jsnbTrk5wg67Cw7IOJIOuyqO2LsOuTnCDtirjroIzsuZjsvZTtirjjgI0sIOOAjOyKpO2MkCDrtoDsuKDsu7cg642w64uYIO2MrOy4oOOAjQoKIyMgMy4g6rKA7IOJ7Ja0Ci0gMTDqsJwg7J2064K0LCDsibztkZzroZwg6rWs67aECi0g7ZKI66qp66qFIC8g7IaM7J6sIC8g7ZWPIC8g7IOJ7IOBIC8g6rOE7KCIIC8g7L2U65SUIOyDge2ZqSDsiJzsnLzroZwg6rOg66W06rKMCgojIyA0LiDsubTthYzqs6DrpqwKLSDsubTtjpgyNCDsg4HtkojrtoTrpZjrpbwg44CM64yA67aE66WYID4g7KSR67aE66WY44CN66GcIOy2lOyynOunjCDtlZzri6QgKOyYiDog7Yys7LigID4g642w64uYKS4g7Iuk7KCcIOu2hOulmCDrsojtmLjripQg6rSA66as7J6Q7JeQ7IScIOqzoOuluOuLpC4KCiMjIDUuIOyYteyFmAotIEVSUOyXkOyEnCDsgqzsnbTspojCt+y7rOufrOuzhOuhnCDspITsnbQg64KY64mY7Ja0IOyeiOycvOuptCDsg4HtkoggMeqwnOuhnCDtlansuZjqs6Ag7Ji17IWY7Jy866GcIOygleumrO2VnOuLpAotIOy5tO2OmDI0IO2RnOq4sDog7IOJ7IOBe+uyoOydtOyngH0gLyDsgqzsnbTspoh7U3xNfEx9Ci0g7IOJ7IOB7J2AIO2VnOq4gOuhnCDsk7Tri6QgKEJFSUdF4oaS67Kg7J207KeALCBCTFVF4oaS67iU66OoLCBCUk9XTuKGkuu4jOudvOyatCwgTkFWWeKGkuuEpOydtOu5hCwgSVZPUlnihpLslYTsnbTrs7TrpqwsIEJMQUNL4oaS67iU656ZKQotIEVSUCDsmKTtg4Ao7JiIOiBOQVlZKeuKlCDrsJTroZzsnqHqs6Ag64yA7KGw7ZGc7JeQIO2RnOyLnO2VnOuLpAoKIyMgNi4g7IaM7J6swrfshLjtg4Eg7ZGc6riwCi0g44CM7Y+066as7JeQ7Iqk7YSwOTAs66m0MTAs44CNIOKGkiDjgIztj7Trpqzsl5DsiqTthLAgOTAlLCDrqbQgMTAl44CNCi0g6rKJ6rCQwrfslYjqsJDsnbQg7J6I7Jy866m0IOuCmOuIhOyWtCDsk7Tri6QKLSDshLjtg4E6IOuTnOudvOydtCDihpIg44CM65Oc65287J207YG066as64udIOq2jOyepeOAjSwg7IaQ7IS47YOBIOKGkiDjgIzssKzrrLwg64uo64+FIOyGkOyEuO2DgeOAjQoKIyMgNy4g7IOB7IS47Y6Y7J207KeAIOusuOq1rCDqtazshLEgKOyInOyEnCDqs6DsoJUpCjEuIO2VnCDspIQg7IaM6rCcICgyMOyekCDrgrTsmbgpCjIuIOydtCDsg4HtkojsnZgg7Y+s7J247Yq4IDPqsIDsp4AKMy4g7L2U65SUIOygnOyViCAy6rCA7KeACjQuIOyCrOydtOymiO2RnCAo7Iuk7LihIO2VhOyalCDsubgg7ZGc7IucKQo1LiDshozsnqzCt+yEuO2DgSDslYjrgrQKNi4g67Cw7IahwrfqtZDtmZgg7JWI64K0ICjslYTrnpgg6rOg7KCVIOusuOq1rCkKCiMjIDguIOuwsOyGocK36rWQ7ZmYIOqzoOyglSDrrLjqtawKLSDrsLDshqE6IOqysOygnCDtmZXsnbgg7ZuEIOyYgeyXheydvCDquLDspIAgMn4z7J28IOydtOuCtCDstpzqs6DrkKnri4jri6QuCi0g6rWQ7ZmYwrfrsJjtkog6IOyImOuguSDtm4QgN+ydvCDsnbTrgrQg6rCA64ql7ZWY66mwLCDssKnsmqnCt+yEuO2DgcK37YOdIOygnOqxsCDsi5wg67aI6rCA7ZWp64uI64ukLgotIOuqqOuLiO2EsCDtmZjqsr3sl5Ag65Sw6528IOyLpOygnCDsg4nsg4Hqs7wg7LCo7J206rCAIOyeiOydhCDsiJgg7J6I7Iq164uI64ukLgotIOyLpOy4oeydgCDsnqzripQg67Cp67KV7JeQIOuUsOudvCAxfjNjbSDssKjsnbTqsIAg7J6I7J2EIOyImCDsnojsirXri4jri6QuCgojIyA5LiDrp5DtiKwKLSAzMH41MOuMgCDsl6zshLEg6rOg6rCdIOuMgOyDgSwg7LCo67aE7ZWY6rOgIOqzoOq4ieyKpOufveqyjAotIOOAjH7tlbTsmpTjgI3ssrQsIOydtOuqqOyngCDsgqzsmqkg6riI7KeACg==" download="라임하임_상품등록_규칙.md">⬇ 규칙 파일(.md) 받기</a>
+          </div>
+          <span style="font-size:.85em;color:#666">드라이브 화면이 열리면 오른쪽 위 「다운로드」를 누릅니다. 규칙 파일은 압축을 푼 폴더 안에 넣어 두세요(코워크 실습용).</span></li>
+        <li>폴더 안에 사진 32장, ERP 엑셀, 카페24 양식이 있는지 확인합니다.</li>
+      </ol>
+      <div class="box set"><b>용어</b>ERP(회사의 상품·재고 관리 프로그램)에서 뽑은 엑셀이 오늘의 「원본」입니다.</div>
+    </div>
+  </div>
+</section>
+
+<!-- STEP 0.5 -->
+<section class="step" data-title="클로드 알기">
+  <div class="eyebrow">STEP 0.5 · 기초</div>
+  <h2>클로드 제대로 알고 시작하기</h2>
+  <p class="lead">처음이신 분은 여기서 손으로 다섯 번 해 보고 갑니다. 이미 쓰시는 분은 「1 작업방」으로 바로 가셔도 되고, 수업 뒤에 이 페이지로 돌아와 복습하셔도 됩니다.</p>
+
+  <div class="card" id="s05-what" data-nav="클로드는 어떤 직원인가">
+    <h3>클로드는 어떤 직원인가</h3>
+    <div class="box key"><b>쉽게 말하면</b>클로드는 <b>내가 준 것만 아는, 아주 똑똑한 신입 직원</b>입니다. 우리 회사 사정도, 내 컴퓨터 안도 모릅니다. 대신 자료를 주고 또박또박 시키면 글·표·파일을 빠르게 만들어 줍니다.</div>
+    <table>
+      <tr><th style="width:30%">그래서</th><th>이렇게 됩니다</th></tr>
+      <tr><td>자료를 안 주면</td><td>그럴듯하게 <b>지어냅니다</b> (가격·소재·치수까지). 그래서 ERP 원본을 꼭 줍니다.</td></tr>
+      <tr><td>규칙을 안 정하면</td><td>매번 다른 형식으로 나옵니다. 그래서 「프로젝트 지침」에 규칙을 넣습니다.</td></tr>
+      <tr><td>사람이 안 보면</td><td>틀린 것도 자신 있게 씁니다. 그래서 마지막 확인은 사람이 합니다.</td></tr>
+    </table>
+  </div>
+
+  <div class="card" id="s05-face" data-nav="세 얼굴: 웹·앱·코워크">
+    <h3>클로드의 세 얼굴</h3>
+    <svg viewBox="0 0 900 300" width="100%" style="display:block;margin:6px 0 10px" role="img" aria-label="웹·데스크톱 앱·코워크 비교 그림">
+      <defs><marker id="a05" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M2 1L8 5L2 9" fill="none" stroke="#8E8C85" stroke-width="1.6"/></marker></defs>
+      <g font-family="Pretendard,sans-serif">
+        <rect x="10" y="20" width="270" height="250" rx="14" fill="#fff" stroke="#E4E2DB"/>
+        <text x="30" y="52" font-size="18" font-weight="700" fill="#24231F">① 웹 (claude.ai)</text>
+        <rect x="30" y="70" width="230" height="140" rx="8" fill="#F6F6F2" stroke="#D9D6CC"/>
+        <rect x="30" y="70" width="60" height="140" rx="8" fill="#ECEBE5"/>
+        <rect x="100" y="170" width="150" height="28" rx="6" fill="#fff" stroke="#0E7C6B"/><text x="110" y="189" font-size="12" fill="#8E8C85">메시지 입력…</text>
+        <text x="40" y="95" font-size="11" fill="#5E5C56">새 채팅</text><text x="40" y="115" font-size="11" fill="#5E5C56">프로젝트</text><text x="40" y="135" font-size="11" fill="#5E5C56">최근 대화</text>
+        <text x="30" y="240" font-size="13" fill="#5E5C56">브라우저에서 대화 · 첨부 · 프로젝트</text><text x="30" y="260" font-size="13" fill="#0E7C6B" font-weight="700">무료 ○ · Pro ○</text>
+
+        <rect x="315" y="20" width="270" height="250" rx="14" fill="#fff" stroke="#E4E2DB"/>
+        <text x="335" y="52" font-size="18" font-weight="700" fill="#24231F">② 데스크톱 앱</text>
+        <rect x="335" y="70" width="230" height="140" rx="8" fill="#F6F6F2" stroke="#D9D6CC"/>
+        <rect x="335" y="70" width="60" height="140" rx="8" fill="#ECEBE5"/>
+        <text x="345" y="95" font-size="11" fill="#5E5C56">채팅</text><text x="345" y="115" font-size="11" fill="#0E7C6B" font-weight="700">코워크</text><text x="345" y="135" font-size="11" fill="#5E5C56">코드</text>
+        <rect x="405" y="170" width="150" height="28" rx="6" fill="#fff" stroke="#0E7C6B"/><text x="415" y="189" font-size="12" fill="#8E8C85">메시지 입력…</text>
+        <text x="335" y="240" font-size="13" fill="#5E5C56">PC에 설치, 웹과 같은 대화·프로젝트</text><text x="335" y="260" font-size="13" fill="#0E7C6B" font-weight="700">무료 ○ · Pro ○ (채팅만)</text>
+
+        <rect x="620" y="20" width="270" height="250" rx="14" fill="#F6FBF9" stroke="#9FD3C6"/>
+        <text x="640" y="52" font-size="18" font-weight="700" fill="#085A4D">③ 코워크 (앱 안)</text>
+        <rect x="640" y="70" width="100" height="110" rx="8" fill="#fff" stroke="#D9D6CC" stroke-dasharray="5 4"/>
+        <text x="652" y="92" font-size="11" fill="#8E8C85">내 PC 폴더</text><text x="652" y="112" font-size="11" fill="#4A4842">· 사진</text><text x="652" y="130" font-size="11" fill="#4A4842">· ERP 엑셀</text><text x="652" y="148" font-size="11" fill="#4A4842">· 규칙.md</text>
+        <line x1="742" y1="125" x2="770" y2="125" stroke="#8E8C85" stroke-width="1.4" marker-end="url(#a05)"/>
+        <rect x="775" y="105" width="56" height="40" rx="8" fill="#0E7C6B"/><text x="803" y="130" text-anchor="middle" font-size="12" fill="#fff" font-weight="700">클로드</text>
+        <line x1="803" y1="147" x2="803" y2="168" stroke="#0E7C6B" stroke-width="1.4" marker-end="url(#a05)"/>
+        <rect x="760" y="172" width="90" height="30" rx="6" fill="#E7F4F1" stroke="#9FD3C6"/><text x="805" y="192" text-anchor="middle" font-size="11" fill="#085A4D">결과 파일 저장</text>
+        <text x="640" y="240" font-size="13" fill="#5E5C56">폴더를 열어 주면 파일을 직접 다룸</text><text x="640" y="260" font-size="13" fill="#7A2E3D" font-weight="700">무료 × · Pro ○</text>
+      </g>
+    </svg>
+    <table>
+      <tr><th style="width:18%"></th><th>① 웹</th><th>② 데스크톱 앱</th><th>③ 코워크</th></tr>
+      <tr><td>어디서</td><td>브라우저 claude.ai</td><td>PC에 설치한 프로그램</td><td>데스크톱 앱 왼쪽의 「코워크」</td></tr>
+      <tr><td>클로드가 보는 것</td><td>내가 첨부한 파일</td><td>내가 첨부한 파일</td><td><b>내가 열어 준 폴더 전체</b></td></tr>
+      <tr><td>결과</td><td>대화창에 글·표, 파일은 내려받기</td><td>같음</td><td><b>폴더에 파일로 바로 저장</b></td></tr>
+      <tr><td>프로젝트</td><td>○</td><td>○ (웹과 같은 것이 보임)</td><td>프로젝트 대신 폴더 + 규칙.md</td></tr>
+      <tr><td>요금</td><td>무료 ○ / Pro ○</td><td>무료 ○ / Pro ○</td><td>Pro 이상</td></tr>
+      <tr><td>오늘 쓰는 곳</td><td>STEP 1~3, 5</td><td>웹 대신 써도 됨</td><td>STEP 4-B</td></tr>
+    </table>
+    <h3 style="margin-top:14px">데스크톱 앱을 쓰는 이유</h3>
+    <table>
+      <tr><th style="width:30%">앱에만 있는 것</th><th>무엇</th><th style="width:16%">요금</th></tr>
+      <tr><td><b>코워크</b></td><td>내 PC 폴더를 열어 주고 파일을 직접 다루게 함 (오늘 B안)</td><td>Pro 이상</td></tr>
+      <tr><td><b>코드</b></td><td>폴더를 열고 프로그램을 만들거나 돌리게 함. 코워크보다 한 단계 기술적</td><td>Pro 이상</td></tr>
+      <tr><td><b>예약 작업</b></td><td>정해진 시간에 알아서 돌림 (예: 매일 아침 문의 정리)</td><td>Pro 이상</td></tr>
+      <tr><td><b>내 PC 프로그램 연결</b></td><td>PC에 깔린 도구를 클로드가 쓰게 붙임</td><td>Pro 이상</td></tr>
+      <tr><td>채팅</td><td>웹과 같음. 탭 없이 바로 열리고 단축키로 부를 수 있는 정도</td><td>무료 ○</td></tr>
+    </table>
+    <div class="box key"><b>한 줄로</b>앱의 존재 이유는 <b>"내 컴퓨터 안에서 일한다"</b>입니다. 웹은 브라우저 안에 갇혀 있어 내 폴더·프로그램·시계를 못 만지고, 앱은 PC에 깔려 있어 만질 수 있습니다. 무료 계정이면 웹으로 하셔도 똑같습니다.</div>
+    <div class="box set"><b>헷갈리는 것 하나</b>데스크톱 앱을 깔았다고 코워크가 되는 게 아닙니다. 앱 안에서 「코워크」를 고르고 폴더를 열어 줘야 하고, 그건 Pro 이상에서만 됩니다. 앱의 「채팅」은 무료도 됩니다.</div>
+  </div>
+
+  <div class="card" id="s05-plan" data-nav="무료 · Pro 상세 비교">
+    <h3>무료 계정과 Pro, 자세히</h3>
+    <table>
+      <tr><th style="width:30%"></th><th>무료</th><th>Pro (월 결제)</th></tr>
+      <tr><td>웹·앱 채팅</td><td>○</td><td>○</td></tr>
+      <tr><td>사진·엑셀·PDF 첨부</td><td>○ (한 대화 20개까지)</td><td>○ (한 대화 20개까지)</td></tr>
+      <tr><td>프로젝트</td><td>○ 5개까지</td><td>○ 제한 없음</td></tr>
+      <tr><td>하루 사용량</td><td>적음. 사진 여러 장 넣고 몇 번 주고받으면 잠시 막힐 수 있음</td><td>훨씬 많음</td></tr>
+      <tr><td>코워크 (폴더 연결)</td><td><b>×</b></td><td>○</td></tr>
+      <tr><td>크롬 확장(브라우저 대신 조작)</td><td>×</td><td>○</td></tr>
+      <tr><td>오늘 수업</td><td>상품 1개 완성 가능</td><td>+ 폴더째 여러 상품</td></tr>
+    </table>
+    <div class="box warn"><b>사용량이 막히면</b>"사용량 한도에 도달했습니다"가 뜹니다. 몇 시간 뒤 풀립니다. 수업 중엔 옆 사람과 2인 1조로 계속합니다. 사진은 한 번에 2~3장만 넣으면 덜 막힙니다.</div>
+  </div>
+
+  <div class="card" id="s05-ui" data-nav="화면 보는 법 (채팅창)">
+    <h3>화면 보는 법 · 채팅창</h3>
+    <svg viewBox="0 0 900 330" width="100%" style="display:block;margin:6px 0 10px" role="img" aria-label="채팅 화면 구성">
+      <g font-family="Pretendard,sans-serif">
+        <rect x="10" y="10" width="880" height="310" rx="12" fill="#F6F6F2" stroke="#D9D6CC"/>
+        <rect x="10" y="10" width="190" height="310" rx="12" fill="#ECEBE5"/>
+        <rect x="26" y="30" width="158" height="30" rx="8" fill="#fff" stroke="#D9D6CC"/><text x="40" y="50" font-size="13" fill="#24231F">＋ 새 채팅</text>
+        <text x="30" y="90" font-size="13" fill="#0E7C6B" font-weight="700">프로젝트</text>
+        <text x="30" y="118" font-size="12" fill="#5E5C56">최근 대화</text>
+        <rect x="30" y="128" width="150" height="20" rx="4" fill="#fff"/><rect x="30" y="152" width="150" height="20" rx="4" fill="#fff"/>
+        <circle cx="30" cy="295" r="9" fill="#0E7C6B"/><text x="46" y="299" font-size="12" fill="#5E5C56">내 계정 · 설정</text>
+        <rect x="230" y="40" width="520" height="40" rx="10" fill="#fff" stroke="#E4E2DB"/><text x="244" y="65" font-size="12" fill="#5E5C56">나: 이 사진들 점검해 줘 … 📎 5233_main.jpg 외 5</text>
+        <rect x="230" y="92" width="620" height="110" rx="10" fill="#fff" stroke="#E4E2DB"/><text x="244" y="116" font-size="12" fill="#24231F">클로드: 사진 6장을 확인했어요. 컷 구성은 …</text>
+        <rect x="244" y="130" width="120" height="14" rx="3" fill="#F1EFEA"/><rect x="244" y="150" width="200" height="14" rx="3" fill="#F1EFEA"/>
+        <rect x="244" y="176" width="60" height="18" rx="5" fill="#E7F4F1" stroke="#9FD3C6"/><text x="252" y="189" font-size="10" fill="#085A4D">복사</text>
+        <rect x="230" y="230" width="640" height="70" rx="12" fill="#fff" stroke="#0E7C6B" stroke-width="1.5"/>
+        <text x="248" y="258" font-size="13" fill="#8E8C85">여기에 시킬 말을 적습니다…</text>
+        <rect x="244" y="270" width="26" height="22" rx="6" fill="#F1EFEA"/><text x="251" y="286" font-size="13" fill="#24231F">＋</text>
+        <rect x="278" y="270" width="90" height="22" rx="6" fill="#F1EFEA"/><text x="288" y="285" font-size="11" fill="#5E5C56">모델 선택 ▾</text>
+        <rect x="830" y="266" width="30" height="28" rx="8" fill="#0E7C6B"/><text x="845" y="286" text-anchor="middle" font-size="14" fill="#fff">↑</text>
+        <g font-size="12" font-weight="700" fill="#D85A30">
+          <text x="206" y="50">①</text><text x="206" y="90">②</text><text x="206" y="250">③</text><text x="238" y="316">④</text><text x="372" y="316">⑤</text><text x="815" y="316">⑥</text><text x="310" y="190">⑦</text>
+        </g>
+      </g>
+    </svg>
+    <table>
+      <tr><td style="width:8%"><b>①</b></td><td><b>새 채팅</b> — 새 일을 시작할 때. 전 대화와 섞이지 않게 상품마다 새로 엽니다.</td></tr>
+      <tr><td><b>②</b></td><td><b>프로젝트</b> — 규칙과 자료를 넣어 둔 전용 작업방 목록. 오늘 「라임하임 상품등록」을 여기에 만듭니다.</td></tr>
+      <tr><td><b>③</b></td><td><b>입력창</b> — 시킬 말을 적는 곳. 줄바꿈은 Shift+Enter, 보내기는 Enter.</td></tr>
+      <tr><td><b>④</b></td><td><b>＋ 첨부</b> — 사진·엑셀·PDF를 올립니다. 파일을 입력창에 끌어다 놓아도 됩니다.</td></tr>
+      <tr><td><b>⑤</b></td><td><b>모델 선택</b> — 오늘은 기본값 그대로 둡니다. (상위 모델은 설계용, 기본 모델은 반복 작업용)</td></tr>
+      <tr><td><b>⑥</b></td><td><b>보내기</b></td></tr>
+      <tr><td><b>⑦</b></td><td><b>답변 아래 복사·내려받기</b> — 표는 복사해서 엑셀에, 파일은 내려받기. <b>내려받아야 내 것</b>이 됩니다.</td></tr>
+    </table>
+    <div class="box set"><b>실제 화면</b>버전에 따라 위치가 조금 다를 수 있습니다. 같은 이름의 메뉴를 찾으시면 됩니다.</div>
+  </div>
+
+  <div class="card" id="s05-ask" data-nav="시키는 법 공식 (복사)">
+    <h3>시키는 법 공식 · 네 칸만 채우면 됩니다</h3>
+    <table>
+      <tr><th style="width:16%">칸</th><th>적을 것</th><th style="width:40%">예</th></tr>
+      <tr><td>[상황]</td><td>나는 누구고, 무슨 일을 하는지</td><td>여성 의류 쇼핑몰 상품등록 담당</td></tr>
+      <tr><td>[목적]</td><td>이 결과를 어디에 쓸지</td><td>카페24에 올릴 상세페이지 문구</td></tr>
+      <tr><td>[요청]</td><td>정확히 무엇을 만들지, 몇 개</td><td>상품명 후보 3개, 검색어 10개</td></tr>
+      <tr><td>[조건]</td><td>형식·분량·말투·하지 말 것</td><td>25자 이내, 과장 금지, 표로</td></tr>
+    </table>
+    <div class="grid2">
+      <div><div class="prompt" style="border-color:#EBC9D0"><span class="lbl">이렇게 시키면 (나쁜 예)</span>이 바지 상품명 지어 줘</div></div>
+      <div><div class="prompt"><span class="lbl">이렇게 시키면 (좋은 예)</span><button class="cp">복사</button>[상황] 나는 여성 의류 쇼핑몰(카페24)의 상품등록 담당이야.
+[목적] 손님이 검색해서 찾기 쉬운 상품명을 카페24에 올리려고 해.
+[요청] 첨부한 사진의 바지 상품명 후보 3개를 만들고, 그중 추천 1개와 이유를 써 줘.
+[조건] 25자 이내, 「최고·완판」 같은 과장 금지, 소재·핏·품목이 들어가게, 표로 정리.</div></div>
+    </div>
+    <div class="box key"><b>왜 네 칸인가</b>클로드는 내가 준 것만 압니다. 상황과 목적을 안 주면 아무 쇼핑몰이나 상상해서 답합니다. 오늘 교안의 복사 버튼 문장은 전부 이 네 칸으로 짜여 있어요. 집에서 직접 쓸 때도 네 칸만 지키면 됩니다.</div>
+    <h3 style="margin-top:14px">이어서 시키기 · 고쳐 달라고 하기</h3>
+    <p>한 번에 완벽하게 나오지 않습니다. 같은 대화에서 <b>바뀐 부분만</b> 다시 시킵니다.</p>
+<div class="prompt"><span class="lbl">고치기</span><button class="cp">복사</button>2번 후보가 좋아. 거기서 「스판」을 앞으로 옮기고, 비슷한 느낌으로 2개 더 만들어 줘. 나머지는 그대로.</div>
+  </div>
+
+  <div class="card" id="s05-attach" data-nav="첨부하는 법">
+    <h3>첨부하는 법 · 사진과 엑셀</h3>
+    <table>
+      <tr><th style="width:26%">무엇을</th><th>어떻게</th><th style="width:30%">주의</th></tr>
+      <tr><td>사진 (jpg·png)</td><td>＋ 버튼 또는 끌어다 놓기. 여러 장 한 번에 가능</td><td>한 대화 20개까지. 상품 하나는 보통 4~6장</td></tr>
+      <tr><td>엑셀 (xlsx)</td><td>파일째 첨부하거나, 해당 줄만 복사해 입력창에 붙여넣기</td><td>줄만 붙여넣는 게 빠르고 정확</td></tr>
+      <tr><td>PDF·워드</td><td>파일째 첨부</td><td>내용이 그림이면 못 읽을 수 있음</td></tr>
+      <tr><td>화면 캡처</td><td>캡처 후 입력창에 Ctrl+V</td><td>오류 메시지 물어볼 때 유용</td></tr>
+    </table>
+    <p style="font-size:.9rem;color:var(--tx2)">첨부한 파일은 <b>그 대화 안에서만</b> 기억됩니다. 새 대화를 열면 다시 첨부해야 합니다. 매번 쓰는 자료는 프로젝트의 「파일」에 올려 두면 됩니다.</p>
+  </div>
+
+  <div class="card" id="s05-project" data-nav="프로젝트 화면과 쓰는 법">
+    <h3>프로젝트(전용 작업방) 화면과 쓰는 법</h3>
+    <svg viewBox="0 0 900 260" width="100%" style="display:block;margin:6px 0 10px" role="img" aria-label="프로젝트 화면 구성">
+      <g font-family="Pretendard,sans-serif">
+        <rect x="10" y="10" width="880" height="240" rx="12" fill="#F6F6F2" stroke="#D9D6CC"/>
+        <text x="30" y="44" font-size="18" font-weight="700" fill="#24231F">라임하임 상품등록</text>
+        <rect x="30" y="60" width="560" height="44" rx="10" fill="#fff" stroke="#0E7C6B" stroke-width="1.5"/><text x="46" y="87" font-size="13" fill="#8E8C85">이 프로젝트에서 새 대화 시작…</text>
+        <text x="30" y="132" font-size="12" fill="#5E5C56">이 프로젝트의 대화</text>
+        <rect x="30" y="142" width="560" height="26" rx="6" fill="#fff" stroke="#E4E2DB"/><text x="44" y="159" font-size="12" fill="#24231F">5233 데님 상품정보</text>
+        <rect x="30" y="174" width="560" height="26" rx="6" fill="#fff" stroke="#E4E2DB"/><text x="44" y="191" font-size="12" fill="#24231F">83876 트렌치 상품정보</text>
+        <rect x="620" y="30" width="250" height="90" rx="10" fill="#fff" stroke="#9FD3C6"/>
+        <text x="636" y="54" font-size="13" font-weight="700" fill="#085A4D">지침</text><text x="636" y="76" font-size="11" fill="#5E5C56">너는 라임하임어패럴의 상품등록…</text><text x="636" y="94" font-size="11" fill="#5E5C56">가격·소재는 ERP 원본만…</text>
+        <rect x="620" y="134" width="250" height="100" rx="10" fill="#fff" stroke="#9FD3C6"/>
+        <text x="636" y="158" font-size="13" font-weight="700" fill="#085A4D">파일 (프로젝트 지식)</text>
+        <text x="636" y="180" font-size="11" fill="#5E5C56">📄 배송·교환 안내.txt</text><text x="636" y="198" font-size="11" fill="#5E5C56">📄 사이즈표 형식.txt</text><text x="636" y="216" font-size="11" fill="#5E5C56">📄 고객응대 모음.txt</text>
+        <g font-size="12" font-weight="700" fill="#D85A30"><text x="600" y="86">①</text><text x="876" y="50">②</text><text x="876" y="154">③</text><text x="600" y="160">④</text></g>
+      </g>
+    </svg>
+    <table>
+      <tr><td style="width:8%"><b>①</b></td><td><b>프로젝트 안의 입력창</b> — 여기서 시작한 대화만 지침과 파일이 적용됩니다. 왼쪽 「새 채팅」으로 열면 적용 안 됩니다.</td></tr>
+      <tr><td><b>②</b></td><td><b>지침</b> — 이 방에서 항상 지킬 규칙. 벽에 붙인 사규. 오늘 규칙 문서를 여기 붙입니다.</td></tr>
+      <tr><td><b>③</b></td><td><b>파일</b> — 자주 쓰는 자료 서랍. 올려 두면 매번 첨부 안 해도 됩니다. 사이즈표 형식, 고객응대 모음 등.</td></tr>
+      <tr><td><b>④</b></td><td><b>이 프로젝트의 대화 목록</b> — 상품마다 대화 하나. 나중에 찾기 쉽게 상품번호를 제목에.</td></tr>
+    </table>
+    <ol>
+      <li>왼쪽 메뉴 「프로젝트」 → 「새 프로젝트」 → 이름 「라임하임 상품등록」</li>
+      <li>오른쪽 「지침」 열기 → 규칙 붙여넣기 → 저장</li>
+      <li>「파일」에 자주 쓰는 자료 올리기 (오늘은 생략 가능)</li>
+      <li>프로젝트 안 입력창에서 새 대화 시작</li>
+    </ol>
+    <p style="font-size:.9rem;color:var(--tx2)">웹에서 만든 프로젝트는 데스크톱 앱에서도 같은 계정이면 그대로 보입니다. 지침은 언제든 고칠 수 있고, 고친 다음 대화부터 적용됩니다.</p>
+  </div>
+
+  <div class="card" id="s05-cowork" data-nav="코워크 화면과 쓰는 법">
+    <h3>코워크 화면과 쓰는 법 <span class="b">Pro 계정</span></h3>
+    <svg viewBox="0 0 900 250" width="100%" style="display:block;margin:6px 0 10px" role="img" aria-label="코워크 화면 구성">
+      <g font-family="Pretendard,sans-serif">
+        <rect x="10" y="10" width="880" height="230" rx="12" fill="#F6F6F2" stroke="#D9D6CC"/>
+        <rect x="10" y="10" width="170" height="230" rx="12" fill="#ECEBE5"/>
+        <text x="30" y="46" font-size="13" fill="#5E5C56">채팅</text><rect x="22" y="58" width="146" height="26" rx="6" fill="#0E7C6B"/><text x="30" y="76" font-size="13" fill="#fff" font-weight="700">코워크</text><text x="30" y="110" font-size="13" fill="#5E5C56">코드</text>
+        <rect x="210" y="30" width="300" height="34" rx="8" fill="#fff" stroke="#9FD3C6"/><text x="224" y="52" font-size="12" fill="#085A4D">📁 바탕화면\라임하임_실습자료  ▾</text>
+        <rect x="210" y="80" width="430" height="60" rx="10" fill="#fff" stroke="#E4E2DB"/><text x="224" y="104" font-size="12" fill="#24231F">클로드: 폴더를 읽었어요. 사진 32장, ERP 엑셀, 양식 1개, 규칙.md</text><text x="224" y="124" font-size="12" fill="#24231F">규칙.md를 먼저 읽고 시작할게요.</text>
+        <rect x="210" y="160" width="430" height="56" rx="12" fill="#fff" stroke="#0E7C6B" stroke-width="1.5"/><text x="226" y="192" font-size="13" fill="#8E8C85">폴더의 규칙.md를 먼저 읽고 … 엑셀로 만들어 줘</text>
+        <rect x="670" y="40" width="200" height="120" rx="10" fill="#fff" stroke="#D97440"/>
+        <text x="686" y="66" font-size="12" font-weight="700" fill="#24231F">폴더 접근을 허용할까요?</text><text x="686" y="88" font-size="11" fill="#5E5C56">라임하임_실습자료</text>
+        <rect x="686" y="110" width="70" height="26" rx="6" fill="#0E7C6B"/><text x="721" y="128" text-anchor="middle" font-size="11" fill="#fff">허용</text>
+        <rect x="766" y="110" width="70" height="26" rx="6" fill="#F1EFEA"/><text x="801" y="128" text-anchor="middle" font-size="11" fill="#5E5C56">거부</text>
+        <g font-size="12" font-weight="700" fill="#D85A30"><text x="186" y="76">①</text><text x="520" y="52">②</text><text x="650" y="66">③</text><text x="650" y="192">④</text></g>
+      </g>
+    </svg>
+    <table>
+      <tr><td style="width:8%"><b>①</b></td><td>데스크톱 앱 왼쪽에서 <b>코워크</b>를 고릅니다. (채팅으로 시작한 대화는 중간에 코워크로 못 바꿉니다. 새로 엽니다.)</td></tr>
+      <tr><td><b>②</b></td><td><b>폴더 선택</b> — 바탕화면의 실습 자료 폴더를 고릅니다. 이 폴더 안만 봅니다.</td></tr>
+      <tr><td><b>③</b></td><td><b>접근 허용 창</b> — 처음 열 때 뜹니다. 「허용」. 정상 화면입니다.</td></tr>
+      <tr><td><b>④</b></td><td><b>시키기</b> — 첫 줄에 「폴더의 규칙.md를 먼저 읽고 그대로 따라 줘」를 붙입니다. 결과 파일은 폴더에 생기니 탐색기에서 확인합니다.</td></tr>
+    </table>
+    <div class="box set"><b>승인 창이 자꾸 뜨면</b>파일을 만들거나 고칠 때마다 "진행할까요?"를 묻는 것이 기본(수동 승인)입니다. 안전한 설정이니 수업에서는 그대로 두고 하나씩 「허용」합니다.</div>
+  </div>
+
+  <div class="card" id="s05-lab" data-nav="손 실습 5개">
+    <h3>손 실습 5개</h3>
+    <table>
+      <tr><th style="width:6%">#</th><th style="width:24%">실습</th><th>하는 법</th><th style="width:28%">느낄 것</th></tr>
+      <tr><td>1</td><td>몇 시야?</td><td>채팅에 「지금 몇 시야? 내 바탕화면에 무슨 폴더 있어?」. Pro는 코워크에도 같은 말 (새 대화)</td><td>채팅은 시계도 내 PC도 모름. 코워크는 폴더를 읽음</td></tr>
+      <tr><td>2</td><td>나쁜 예 vs 좋은 예</td><td>위 「시키는 법 공식」의 나쁜 예를 먼저, 새 대화에서 좋은 예를 보내기 (사진 1장 첨부)</td><td>네 칸을 주면 결과가 달라짐</td></tr>
+      <tr><td>3</td><td>첨부</td><td>사진 1장 끌어다 놓고 「이 사진에서 보이는 옷의 색·핏·디테일을 5줄로」</td><td>사진을 실제로 봄</td></tr>
+      <tr><td>4</td><td>고치기</td><td>이어서 「3번째 줄만 더 짧게. 나머지 그대로」</td><td>바뀐 부분만 시키면 됨</td></tr>
+      <tr><td>5</td><td>프로젝트</td><td>STEP 1로 넘어가서 프로젝트 만들고, 같은 사진 질문을 프로젝트 안에서 다시</td><td>규칙이 적용되면 말투·형식이 바뀜</td></tr>
+    </table>
+<div class="prompt"><span class="lbl">실습 1</span><button class="cp">복사</button>지금 몇 시야? 그리고 내 컴퓨터 바탕화면에 어떤 폴더가 있어?</div>
+<div class="prompt"><span class="lbl">실습 3</span><button class="cp">복사</button>[상황] 나는 여성 의류 쇼핑몰 상품등록 담당이야.
+[요청] 첨부한 사진에서 보이는 옷의 색·핏·디테일을 5줄로 적어 줘.
+[조건] 사진에 안 보이는 건 추측하지 말고 「사진으로 확인 불가」라고 써.</div>
+  </div>
+
+  <div class="card" id="s05-faq" data-nav="막힘 사전">
+    <h3>막힘 사전</h3>
+    <table>
+      <tr><th style="width:34%">이런 화면·상황</th><th>원인</th><th style="width:30%">이렇게</th></tr>
+      <tr><td>"사용량 한도에 도달했습니다"</td><td>무료 계정 사용량 소진</td><td>몇 시간 뒤 풀림. 2인 1조로</td></tr>
+      <tr><td>첨부가 안 올라감</td><td>한 대화 20개 한도, 또는 파일이 너무 큼</td><td>새 대화, 사진 2~3장씩</td></tr>
+      <tr><td>규칙대로 안 나옴</td><td>프로젝트 밖에서 대화를 엶</td><td>프로젝트 안 입력창에서 새 대화</td></tr>
+      <tr><td>앱과 웹에 프로젝트가 다르게 보임</td><td>다른 계정으로 로그인</td><td>같은 이메일로 로그인</td></tr>
+      <tr><td>코워크 메뉴가 없음</td><td>무료 계정이거나 앱이 오래됨</td><td>Pro 확인, 앱 업데이트</td></tr>
+      <tr><td>"폴더 접근 허용" 창</td><td>처음 폴더를 열 때 정상 안내</td><td>허용</td></tr>
+      <tr><td>"폴더를 찾을 수 없음"</td><td>폴더를 옮기거나 이름을 바꿈</td><td>폴더 칩 눌러 다시 선택</td></tr>
+      <tr><td>채팅 중간에 코워크로 바꾸고 싶음</td><td>시작할 때 정해짐</td><td>코워크로 새 대화</td></tr>
+      <tr><td>결과가 매번 조금 다름</td><td>정상</td><td>규칙을 더 구체적으로, 좋은 결과는 규칙에 예시로</td></tr>
+      <tr><td>치수·가격을 그럴듯하게 씀</td><td>자료를 안 줌</td><td>ERP 원본 주고 「없으면 확인 필요」 조건</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- STEP 1 -->
+<section class="step" data-title="1 작업방">
+  <div class="eyebrow">STEP 1</div>
+  <h2>우리 회사 전용 작업방 만들기</h2>
+  <p class="lead">규칙을 한 번 넣어 두면, 누가 시켜도 같은 형식으로 나옵니다.</p>
+
+  <div class="card" id="s1-make" data-nav="프로젝트 만들기">
+    <h3>프로젝트(전용 작업방) 만들기</h3>
+    <ol>
+      <li>클로드 왼쪽 메뉴에서 <b>프로젝트</b>를 누릅니다.</li>
+      <li><b>새 프로젝트</b> → 이름: <b>라임하임 상품등록</b></li>
+      <li>프로젝트 화면 오른쪽의 <b>지침</b>(클로드가 항상 지킬 규칙)을 눌러 아래 규칙을 붙여넣고 저장합니다.</li>
+      <li>앞으로 상품 작업은 <b>이 프로젝트 안에서</b> 새 대화를 열어 합니다.</li>
+    </ol>
+  </div>
+
+  <div class="card" id="s1-rule" data-nav="규칙 문서 (복사)">
+    <h3>지침에 붙여넣을 규칙 <span class="b">복사</span></h3>
+<div class="prompt"><span class="lbl">라임하임 상품등록 규칙</span><button class="cp">복사</button>너는 라임하임어패럴(여성 의류 쇼핑몰, 카페24 운영)의 상품등록 담당 보조다.
+상품 사진과 ERP 엑셀 자료를 받으면 아래 규칙대로 상품정보를 만든다.
+
+[반드시 지킬 것]
+- 가격·소재·혼용률·원산지·세탁방법은 ERP 원본 값만 쓴다. 없으면 지어내지 말고 「확인 필요」라고 쓴다.
+- 실측(어깨·가슴·총장·허리 등)은 자료에 없으면 숫자를 만들지 말고 빈칸 + 「실측 필요」로 둔다.
+- 사진에서 보이는 것과 ERP 내용이 다르면 따로 표시한다.
+- 결과 마지막에 항상 「원본 대조표」(항목 / ERP 원본 / 작성 결과 / 일치 여부)를 붙인다.
+
+[상품명] [핵심 특징]+[소재·디테일]+[품목], 25자 이내, 과장 표현 금지, ERP 코드명(end83876, pn, SK, NB, AC 등)은 넣지 않는다.
+[검색어] 10개 이내, 쉼표 구분, 품목/소재/핏/색상/계절/코디 상황을 고르게.
+[옵션] 사이즈·컬러별로 나뉜 줄은 상품 1개로 합친다. 표기: 색상{베이지} / 사이즈{S|M|L}. 색상은 한글로. ERP 오타는 바로잡고 대조표에 표시.
+[소재] 「폴리에스터90,면10,」 → 「폴리에스터 90%, 면 10%」. 겉감·안감 구분.
+[세탁] 드라이 → 드라이클리닝 권장 / 손세탁 → 찬물 단독 손세탁.
+[상세페이지 순서] 한 줄 소개 → 포인트 3가지 → 코디 제안 2가지 → 사이즈표 → 소재·세탁 → 배송·교환 안내.
+[배송·교환 고정 문구]
+- 결제 확인 후 영업일 기준 2~3일 이내 출고됩니다.
+- 수령 후 7일 이내 교환·반품 가능하며, 착용·세탁·택 제거 시 불가합니다.
+- 모니터 환경에 따라 실제 색상과 차이가 있을 수 있습니다.
+- 실측은 재는 방법에 따라 1~3cm 차이가 있을 수 있습니다.
+[말투] 30~50대 여성 고객 대상, 차분하고 고급스럽게, 「~해요」체, 이모지 금지.</div>
+    <div class="box adv"><b>한 걸음 더</b>우리 몰에서 자주 쓰는 표현이나 쓰지 않는 단어를 규칙 맨 아래에 직접 한 줄 추가해 보세요. 예) 「"여리여리" 같은 표현은 쓰지 않는다」</div>
+  </div>
+</section>
+
+<!-- STEP 2 -->
+<section class="step" data-title="2 사진">
+  <div class="eyebrow">STEP 2</div>
+  <h2>사진 점검하기</h2>
+  <p class="lead">잘 찍은 사진은 보정하지 않습니다. 대신 상세페이지에 빠진 컷을 찾습니다.</p>
+
+  <div class="grid2">
+    <div class="card" id="s2-cut" data-nav="필요한 컷 체크리스트">
+      <h3>상품별로 필요한 컷</h3>
+      <ul class="chk"><li>전체 앞 · 뒤 · 옆</li><li>착용 컷 (코디 2가지 이상)</li><li>컬러별 컷</li><li>디테일 (단추·주머니·배색)</li><li>원단 클로즈업</li><li>라벨·택 (소재 표기)</li></ul>
+    </div>
+    <div class="card" id="s2-phone" data-nav="휴대폰 촬영 기준">
+      <h3>휴대폰으로 찍을 때</h3>
+      <ul><li><b>배경</b> 흰 벽·밝은 바닥, 소품 최소화</li><li><b>조명</b> 오전 창가 자연광, 플래시 끄기</li><li><b>구도</b> 세로 3:4, 상품이 화면의 70%</li><li><b>파일</b> JPG, 긴 변 1,000px 이상, 상품번호로 이름 붙이기</li></ul>
+    </div>
+  </div>
+
+  <div class="card" id="s2-check" data-nav="사진 점검 시키기 (복사)">
+    <h3>실습 · 사진 점검 시키기</h3>
+    <p>실습 폴더 <b>3_request_C_photos</b>에서 데님(5233) 사진 6장을 첨부하고 아래 문장을 붙여넣습니다.</p>
+<div class="prompt"><span class="lbl">사진 점검</span><button class="cp">복사</button>첨부한 사진은 「5233 스판 부츠컷 데님 팬츠」 상품 사진이야.
+쇼핑몰 상세페이지를 만들 때 기준으로 점검해 줘.
+
+1. 사진별로 어떤 컷인지 표로 정리 (앞/뒤/옆/착용/디테일/원단/라벨)
+2. 상세페이지에 꼭 필요한데 빠진 컷
+3. 대표 이미지(목록에 보이는 첫 사진)로 가장 좋은 사진 1장과 이유
+4. 다음 촬영 때 추가로 찍을 컷 목록 (휴대폰 촬영 팁 포함)</div>
+    <div class="box set"><b>확인 포인트</b>클로드가 「원단 클로즈업」, 「라벨」 컷이 없다고 짚어 주면 맞게 본 것입니다.</div>
+    <div class="box adv"><b>한 걸음 더</b>제미나이에서 대표 사진을 넣고 「이 옷 색과 모양은 그대로 두고, 가을 카페 배경의 인스타그램용 이미지로 만들어 줘」라고 해 보세요. 원본 상품 사진은 바꾸지 않고, 홍보용 이미지만 만듭니다.</div>
+  </div>
+</section>
+
+<!-- STEP 3 -->
+<section class="step" data-title="3 상품정보">
+  <div class="eyebrow">STEP 3 · 핵심</div>
+  <h2>상품정보와 상세페이지 만들기</h2>
+  <p class="lead">사진과 ERP 원본을 함께 주고, 결과를 반드시 원본과 대조합니다.</p>
+
+  <div class="card" id="s3-data" data-nav="실습 데이터 (복사)">
+    <h3>실습 데이터 · 데님 ERP 원본</h3>
+    <p>ERP 엑셀에서 해당 상품 줄을 복사한 것과 같습니다.</p>
+<div class="prompt"><span class="lbl">ERP 원본 (5233)</span><button class="cp">복사</button>바코드	판매가	상품명	원산지	세탁방법	칼라	사이즈	겉감
+CCF26OPN300BL0M	119000	5233스판27부츠컷 데님pn	China	드라이	BLUE	M	면60,폴리28,레이첼9,스판3,
+CCF26OPN300BL0L	119000	5233스판27부츠컷 데님pn	China	드라이	BLUE	L	면60,폴리28,레이첼9,스판3,
+CCF26OPN300BL0S	119000	5233스판27부츠컷 데님pn	China	드라이	BLUE	S	면60,폴리28,레이첼9,스판3,</div>
+  </div>
+
+  <div class="card" id="s3-make" data-nav="상품정보 만들기 (복사)">
+    <h3>실습 · 상품정보 한 번에 만들기</h3>
+    <p>STEP 2 대화에 이어서, 위 ERP 원본을 붙여넣고 아래 문장을 보냅니다.</p>
+<div class="prompt"><span class="lbl">상품정보 + 상세페이지</span><button class="cp">복사</button>위 ERP 원본과 앞에서 본 사진으로 이 상품의 등록 자료를 만들어 줘. 프로젝트 규칙을 그대로 따라.
+
+1. 상품명 (후보 3개 + 추천 1개)
+2. 상품 요약설명 1줄
+3. 검색어 10개
+4. 옵션 (카페24 표기)
+5. 카페24 상품분류 추천 (대분류 > 중분류, 예: 팬츠 > 데님) — 실제 분류는 관리자에서 고름
+6. 소재·세탁·원산지
+7. 상세페이지 문구 (규칙의 순서대로)
+8. 사이즈표 (실측 없으면 「실측 필요」)
+9. 원본 대조표</div>
+  </div>
+
+  <div class="grid2">
+    <div class="card" id="s3-check" data-nav="원본 대조하기">
+      <h3>사람이 확인할 것 <span class="who hu">사람</span></h3>
+      <ul class="chk"><li>판매가 119,000원 그대로인가?</li><li>세 줄(S·M·L)이 옵션 하나로 합쳐졌나?</li><li>소재 4가지와 비율이 원본과 같은가?</li><li>「레이첼」을 어떻게 처리했나? (오타일 수 있음)</li><li>사이즈표에 숫자가 들어갔다면 → 지어낸 숫자</li></ul>
+    </div>
+    <div class="card" id="s3-trap" data-nav="AI가 지어내는지 확인">
+      <h3>AI가 지어내는지 확인 <span class="b">한 걸음 더</span></h3>
+<div class="prompt"><span class="lbl">함정 질문</span><button class="cp">복사</button>이 바지의 허리단면, 엉덩이단면, 총장을 cm로 알려 줘.</div>
+      <p style="font-size:.85rem;color:var(--tx2)">숫자를 바로 말하면 규칙이 안 지켜진 것입니다. 「실측 필요」라고 답하면 잘 지킨 것입니다.</p>
+    </div>
+  </div>
+
+  <div class="card" id="s3-mobile" data-nav="모바일에서 보기 (복사)">
+    <h3>상세페이지를 휴대폰 화면처럼 보기</h3>
+<div class="prompt"><span class="lbl">모바일 미리보기</span><button class="cp">복사</button>위 상세페이지 문구를 휴대폰 화면 폭(360px)에 맞춘 HTML(웹페이지 형태) 미리보기로 만들어 줘.
+글자는 크게, 문단은 짧게, 사이즈표는 표로. 사진 자리는 회색 상자로 표시해 줘.</div>
+    <div class="box set"><b>확인 포인트</b>휴대폰에서 한 화면에 글이 너무 길지 않은지, 사이즈표가 잘 보이는지 봅니다.</div>
+  </div>
+</section>
+
+<!-- STEP 4 -->
+<section class="step" data-title="4 카페24">
+  <div class="eyebrow">STEP 4 · 핵심</div>
+  <h2>카페24 등록 자료 만들기</h2>
+  <p class="lead">카페24 화면 칸에 그대로 붙여넣을 수 있게 받습니다. 등록 버튼은 사람이 누릅니다.</p>
+
+  <div class="card" id="s4-paste" data-nav="A · 붙여넣기표 (복사)">
+    <h3>A · 상품 1개 — 칸별 붙여넣기표 <span class="b">전원</span></h3>
+<div class="prompt"><span class="lbl">붙여넣기표</span><button class="cp">복사</button>지금까지 만든 내용을 카페24 관리자 「상품등록」 화면에 그대로 붙여넣을 수 있게 정리해 줘.
+표로: [카페24 칸 이름 | 넣을 내용]
+칸: 상품명 / 상품 요약설명 / 판매가 / 소비자가 / 검색어 / 옵션 / 상품소재 / 상세설명 / 진열상태(진열 안 함) / 판매상태(판매 안 함)
+확인이 필요한 칸은 내용 앞에 [확인] 표시.</div>
+    <table><tr><th>카페24에서 넣는 곳</th><th>메뉴</th></tr>
+      <tr><td>새 상품 등록</td><td>관리자 › 상품 › 상품등록</td></tr>
+      <tr><td>등록한 상품 고치기</td><td>관리자 › 상품 › 상품목록 › 해당 상품 클릭</td></tr></table>
+    <div class="box warn"><b>처음엔 「진열 안 함」으로</b>저장 후 화면을 확인하고 나서 진열·판매로 바꾸면, 손님에게 잘못된 정보가 보이지 않습니다.</div>
+  </div>
+
+  <div class="card" id="s4-err" data-nav="등록 후 점검 · 오류 났을 때 (복사)">
+    <h3>등록 후 점검 · 오류가 났을 때</h3>
+    <ul class="chk"><li>상품목록에서 저장됐는지 확인</li><li>「미리보기」로 손님 화면에서 사진·가격·옵션 확인</li><li>휴대폰으로도 한 번 열어 보기</li><li>이상 없으면 진열함·판매함으로 변경</li></ul>
+    <p>오류 메시지가 뜨면 화면을 캡처해서 클로드에 붙여넣습니다.</p>
+<div class="prompt"><span class="lbl">오류 해결</span><button class="cp">복사</button>카페24 상품등록에서 이런 오류가 떴어. (캡처 첨부)
+1. 무슨 뜻인지 쉽게 설명
+2. 어느 칸을 어떻게 고치면 되는지
+3. 고친 뒤 다시 확인할 것</div>
+  </div>
+
+  <div class="card" id="s4-fix" data-nav="등록 후 고칠 때 (복사)">
+    <h3>등록 후 고칠 때</h3>
+<div class="prompt"><span class="lbl">수정 요청</span><button class="cp">복사</button>상세설명에서 「코디 제안」 부분만 출근룩 느낌으로 다시 써 줘. 나머지는 그대로 두고, 바뀐 부분만 보여 줘.</div>
+    <p style="font-size:.85rem;color:var(--tx2)">바뀐 부분만 받아서 상품목록 › 해당 상품에서 그 칸만 고칩니다.</p>
+  </div>
+
+  <div class="card" id="s4-cowork" data-nav="B · 코워크로 5개 한 번에 (복사)">
+    <h3>B · 여러 상품 한 번에 — 코워크 <span class="b">Pro 계정</span></h3>
+    <p>코워크는 클로드 데스크톱 앱에서 <b>내 PC 폴더를 직접 열어 일하는 기능</b>입니다.</p>
+    <ol>
+      <li>클로드 데스크톱 앱 실행 → 코워크 선택</li>
+      <li>바탕화면의 <b>실습 자료 폴더</b>를 연결</li>
+      <li>규칙 문서(라임하임_상품등록_규칙.md)를 폴더에 넣어 두기</li>
+      <li>아래 문장 보내기</li>
+    </ol>
+<div class="prompt"><span class="lbl">일괄등록 엑셀</span><button class="cp">복사</button>폴더의 「라임하임_상품등록_규칙.md」를 먼저 읽고 그대로 따라 줘.
+2_request_B_ERP_product_excel의 ERP 엑셀에 있는 상품 5개를
+1_request_A_cafe24_original_form의 카페24 일괄등록 양식에 맞춰 새 엑셀로 만들어 줘.
+
+- 사이즈·컬러별 여러 줄은 상품 1개로 합치고 옵션으로
+- 이미지 칸에는 3_request_C_photos의 사진 파일명을 넣기 (photo_match_table.xlsx 참고)
+- 진열·판매 상태는 N
+- 별도 시트에 원본 대조표
+파일 이름: 카페24_일괄등록_완성.xlsx</div>
+    <div class="box set"><b>확인 포인트</b>데님 세 줄이 「사이즈{S|M|L}」 한 줄로, 가방 세 줄이 「색상{아이보리|블랙|브라운}」 한 줄로 합쳐졌는지 봅니다.</div>
+    <div class="box key"><b>업로드는 업체에서</b>사진은 관리자 › 디자인 › 파일업로더로 먼저 올리고, 엑셀은 관리자 › 상품 › 상품등록 › 엑셀 등록에서 올립니다.</div>
+  </div>
+</section>
+
+<!-- STEP 5 -->
+<section class="step" data-title="5 홍보">
+  <div class="eyebrow">STEP 5</div>
+  <h2>홍보 글과 고객 응대 문구</h2>
+  <p class="lead">같은 상품 정보로 여러 글을 만들고, 프로젝트에 저장해 두고 꺼내 씁니다.</p>
+
+  <div class="card" id="s5-sns" data-nav="인스타·블로그 (복사)">
+    <h3>인스타그램 · 블로그 글</h3>
+<div class="prompt"><span class="lbl">홍보 글</span><button class="cp">복사</button>이 데님 팬츠로 홍보 글을 만들어 줘.
+0. 먼저 손님이 검색할 때 잘 걸리도록 상품명과 검색어 10개를 다듬어 줘 (손님이 실제로 치는 말 기준, 바꾼 이유 한 줄씩)
+1. 인스타그램: 3줄 이내 + 해시태그 10개
+2. 블로그: 제목 3개 + 본문 (가을 코디 2가지 중심, 400자)
+3. 이벤트 안내: 신상품 첫 구매 고객 대상 (혜택 칸은 [혜택 입력]으로 비워 두기)</div>
+  </div>
+
+  <div class="card" id="s5-cs" data-nav="고객 응대 문구 (복사)">
+    <h3>문의 · 교환 · 반품 답변</h3>
+<div class="prompt"><span class="lbl">고객 응대</span><button class="cp">복사</button>쇼핑몰 고객 게시판 답변 문구를 만들어 줘. 정중하고 짧게.
+1. 사이즈 문의: 「키 162cm인데 M 맞을까요?」 (실측이 없으면 실측 확인 후 안내한다고 답하기)
+2. 교환 요청: 「사이즈가 작아서 L로 바꾸고 싶어요」
+3. 반품 요청: 「색이 화면과 달라요」
+규칙의 배송·교환 문구를 기준으로.</div>
+    <div class="box set"><b>저장해 두기</b>마음에 드는 답변은 프로젝트 화면 오른쪽 <b>파일</b>(프로젝트 지식)에 「고객응대 모음」으로 올려 두면 다음에 같은 말투로 만들어 줍니다.</div>
+    <div class="box adv"><b>한 걸음 더</b>「신상품 입고 안내 문자를 70자 이내로 3가지 버전으로 만들어 줘」</div>
+  </div>
+
+  <div class="card" id="s5-video" data-nav="사이드 · 홍보 영상 만들기 (복사)">
+    <h3>사이드 · 글자가 움직이는 홍보 영상 <span class="b">한 걸음 더</span></h3>
+    <p>클로드는 영상 파일을 직접 만들지는 못하지만, <b>글자와 입체 장면이 움직이는 웹페이지</b>는 만듭니다. 그걸 화면 녹화하면 인스타그램 릴스용 영상이 됩니다.</p>
+    <table><tr><th style="width:10%">순서</th><th>할 일</th></tr>
+      <tr><td>1</td><td>브랜드 정체성 한 장 만들기 → 프로젝트 「파일」에 저장</td></tr>
+      <tr><td>2</td><td>상품 하나로 15초 타이포 모션(글자 애니메이션) 웹페이지 받기 → 내려받아 브라우저로 열기</td></tr>
+      <tr><td>3</td><td>화면 녹화 (윈도우: Win+Alt+R, 또는 캡컷 화면 녹화) → 9:16으로 잘라 업로드</td></tr></table>
+<div class="prompt"><span class="lbl">① 브랜드 정체성</span><button class="cp">복사</button>[상황] 나는 라임하임어패럴(30~50대 여성 의류 쇼핑몰) 담당자야.
+[목적] 앞으로 모든 홍보물에 같은 느낌을 유지하려고 해.
+[요청] 우리 브랜드 정체성을 한 장으로 정리해 줘: 한 줄 슬로건, 톤(형용사 5개), 메인 색 2개·보조 색 1개(색상 코드), 글꼴 느낌(고딕/명조, 굵기), 쓰는 말투, 쓰지 않는 표현.
+[조건] 첨부한 상품 사진들의 색감과 분위기를 근거로. 표로 정리.</div>
+<div class="prompt"><span class="lbl">② 타이포 모션 웹페이지</span><button class="cp">복사</button>[상황] 위 브랜드 정체성과 「스판 부츠컷 데님 팬츠」 상품정보를 쓸 거야.
+[목적] 인스타그램 릴스에 올릴 15초 홍보 영상을 화면 녹화로 만들려고 해.
+[요청] 세로 9:16 화면에서 글자가 순서대로 나타나는 타이포 모션 웹페이지(HTML 파일 하나)를 만들어 줘. 배경은 three.js로 은은하게 움직이는 입체 장면.
+[조건] 순서: 브랜드명 → 한 줄 카피 → 상품명·소재 → 가격 → NEW ARRIVAL. 브랜드 색 사용, 글자는 크게, 자동 재생, 15초 안에 끝나기, 외부 파일은 three.js 하나만.</div>
+    <div class="box set"><b>예시 보기</b>바로 다음 「★ 홍보 영상 예시」 탭에서 15초 예시 두 가지(글자+입체, 실제 사진)를 재생해 볼 수 있습니다.</div>
+  </div>
+</section>
+
+<!-- STEP SPECIAL -->
+<section class="step" data-title="★ 홍보 영상 예시">
+  <div class="eyebrow">SPECIAL · 한 걸음 더</div>
+  <h2>클로드가 만든 15초 홍보 영상</h2>
+  <p class="lead">STEP 5 「사이드 · 홍보 영상 만들기」의 프롬프트 두 개로 나온 결과물입니다. 글자·입체 장면·음악까지 전부 클로드가 쓴 코드 하나로 움직입니다.</p>
+
+  <div class="card" id="sp-demo" data-nav="예시 재생">
+    <h3>예시 · 스판 부츠컷 데님 팬츠 <span class="b">9:16 · 15초</span></h3>
+    <div style="display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap">
+      <div class="fsbox" id="spBox" style="flex:0 0 auto;width:min(360px,100%)">
+      <div id="spWrap" style="position:relative;width:min(360px,100%);aspect-ratio:9/16;background:#0f1b2d;border-radius:14px;overflow:hidden;flex:0 0 auto;font-family:Pretendard,'Noto Sans KR',sans-serif">
+        <canvas id="spC" style="position:absolute;inset:0;width:100%;height:100%"></canvas>
+        <div class="spt sp-brand">LIMEHEIM</div>
+        <div class="spt sp-h1">가을의 선,<br>부드럽게</div>
+        <div class="sp-bar" id="spBar"></div>
+        <div class="spt sp-h2">스판 부츠컷 데님 팬츠<br>면 60% · 편안한 신축</div>
+        <div class="spt sp-price">119,000원</div>
+        <div class="spt sp-cta">NEW ARRIVAL · S M L</div>
+        <div id="spSnd" style="position:absolute;top:10px;right:12px;font-size:.75rem;color:#fff;opacity:0;transition:opacity .5s">🔊 소리 켜짐</div>
+      </div>
+      <div class="vbar" style="width:min(360px,100%)">
+        <button id="spPlay" class="pb">▶ 재생</button><button id="spStopBtn">⏹ 멈춤</button><button id="spSoundBtn">🔇 소리</button>
+        <button class="fsb" data-box="spBox">⛶ 전체 화면</button>
+        <label>음량 <input type="range" id="spVol" min="0" max="100" value="30"></label>
+      </div>
+      </div>
+      <div style="flex:1;min-width:240px">
+        <table>
+          <tr><th style="width:30%">보이는 것</th><th>클로드가 한 일</th></tr>
+          <tr><td>글자 순서</td><td>브랜드 → 카피 → 상품·소재 → 가격 → 안내, 1.2~1.6초 간격으로 등장</td></tr>
+          <tr><td>뒤의 리본</td><td>three.js(입체 그림 도구)로 브랜드 색 리본 7개가 천천히 회전</td></tr>
+          <tr><td>음악</td><td>파일 없이 브라우저가 직접 연주하는 밝은 마림바풍 아르페지오(저작권 걱정 없음). 기본은 꺼짐</td></tr>
+          <tr><td>영상으로</td><td>화면 녹화(Win+Alt+R 또는 캡컷) → 9:16으로 잘라 인스타그램 릴스</td></tr>
+        </table>
+        <div class="box key"><b>왜 이게 되나</b>클로드는 글·표만이 아니라 <b>움직이는 웹페이지 코드</b>도 씁니다. 디자이너 없이 상품마다 15초 영상 틀을 바꿔 쓸 수 있어요. 브랜드 정체성을 프로젝트 「파일」에 넣어 두면 색과 말투가 매번 같게 나옵니다.</div>
+        <div class="box adv"><b>해 보기</b>STEP 5의 ①②번 프롬프트를 그대로 보내고, 상품만 바꿔 보세요. 결과 HTML을 내려받아 더블클릭하면 브라우저에서 바로 재생됩니다.</div>
+      </div>
+    </div>
+  </div>
+  <div class="card" id="sp-photo" data-nav="예시 2 · 실제 사진 버전">
+    <h3>예시 2 · 실제 상품 사진 버전 <span class="b">9:16 · 15초</span></h3>
+    <p>라임하임에서 보내 주신 데님 사진 4장이 천천히 움직이며 바뀌고, 그 위에 글자가 얹힙니다. 보정 없이 원본 사진 그대로입니다.</p>
+    <div style="display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap">
+      <div class="fsbox" id="sp2Box" style="flex:0 0 auto;width:min(360px,100%)">
+      <div id="sp2Wrap" style="position:relative;width:min(360px,100%);aspect-ratio:9/16;background:#111;border-radius:14px;overflow:hidden;flex:0 0 auto;font-family:Pretendard,'Noto Sans KR',sans-serif">
+        <img class="sp2img" src="img01.jpg" alt=""><img class="sp2img" src="img02.jpg" alt=""><img class="sp2img" src="img03.jpg" alt=""><img class="sp2img" src="img04.jpg" alt="">
+        <div class="sp2shade"></div>
+        <div class="spt sp2-brand">LIMEHEIM</div>
+        <div class="spt sp2-h1">가을의 선,<br>부드럽게</div>
+        <div class="spt sp2-h2">스판 부츠컷 데님 팬츠<br>면 60% · 편안한 신축</div>
+        <div class="spt sp2-price">119,000원</div>
+        <div class="spt sp2-cta">NEW ARRIVAL · S M L</div>
+        <div id="sp2Snd" style="position:absolute;top:10px;right:12px;font-size:.75rem;color:#fff;opacity:0;transition:opacity .5s">🔊 소리 켜짐</div>
+      </div>
+      <div class="vbar" style="width:min(360px,100%)">
+        <button id="sp2Play" class="pb">▶ 재생</button><button id="sp2StopBtn">⏹ 멈춤</button><button id="sp2SoundBtn">🔇 소리</button>
+        <button class="fsb" data-box="sp2Box">⛶ 전체 화면</button>
+        <label>음량 <input type="range" id="sp2Vol" min="0" max="100" value="30"></label>
+      </div>
+      </div>
+      <div style="flex:1;min-width:240px">
+        <table>
+          <tr><th style="width:30%">보이는 것</th><th>클로드가 한 일</th></tr>
+          <tr><td>사진 4장</td><td>3.5초마다 바뀌며 천천히 확대·이동 (켄 번즈 효과)</td></tr>
+          <tr><td>글자</td><td>사진 위에 반투명 그림자를 깔고, 예시 1과 같은 순서로 등장</td></tr>
+          <tr><td>만드는 법</td><td>STEP 5 ② 프롬프트에 「첨부한 사진 4장을 배경으로」 한 줄만 추가</td></tr>
+        </table>
+        <div class="box set"><b>소리</b>기본은 꺼져 있습니다. 「🔇 소리」를 누르면 켜지고, 「음량」으로 조절합니다. 채팅창 미리보기에서는 소리가 막힐 수 있으니 내려받아 크롬으로 여세요.</div>
+        <div class="box key"><b>둘 중 뭘 쓰나</b>예시 1(글자+입체)은 브랜드 느낌, 예시 2(사진)는 상품 판매용입니다. 릴스에는 사진 버전이 반응이 좋습니다.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STEP 6 -->
+<section class="step" data-title="6 정리">
+  <div class="eyebrow">STEP 6</div>
+  <h2>상품 1개 완성 순서</h2>
+  <p class="lead">내일부터 이 순서대로 하시면 됩니다.</p>
+
+  <div class="card" id="s6-order" data-nav="완성 순서">
+    <h3>내일부터 쓰는 순서</h3>
+    <table>
+      <tr><th>순서</th><th>할 일</th><th>누가</th></tr>
+      <tr><td>1</td><td>체크리스트대로 사진 찍기</td><td><span class="who hu">사람</span></td></tr>
+      <tr><td>2</td><td>「라임하임 상품등록」 프로젝트에서 새 대화 → 사진 점검</td><td><span class="who ai">AI</span></td></tr>
+      <tr><td>3</td><td>ERP 줄 붙여넣고 상품정보·상세 만들기</td><td><span class="who ai">AI</span></td></tr>
+      <tr><td>4</td><td>원본 대조, 실측 입력</td><td><span class="who hu">사람</span></td></tr>
+      <tr><td>5</td><td>붙여넣기표 받아 카페24에 「진열 안 함」으로 등록</td><td><span class="who ai">AI</span> → <span class="who hu">사람</span></td></tr>
+      <tr><td>6</td><td>화면 확인 후 진열·판매로 변경, 홍보 글 올리기</td><td><span class="who hu">사람</span></td></tr>
+    </table>
+  </div>
+
+  <div class="card" id="s6-more" data-nav="이렇게도 쓸 수 있어요 (복사)">
+    <h3>이렇게도 쓸 수 있어요 · 재고 파악</h3>
+<div class="prompt"><span class="lbl">재고·품절 정리</span><button class="cp">복사</button>첨부한 ERP 엑셀에서 상품별·사이즈별 수량을 표로 정리하고,
+수량이 1개 이하인 품목을 「품절 임박」으로 따로 뽑아 줘.</div>
+  </div>
+
+  <div class="card" id="s6-faq" data-nav="자주 묻는 질문">
+    <h3>자주 묻는 질문</h3>
+    <p><b>Q. 카페24에 자동으로 올라가게는 안 되나요?</b><br>카페24 개발자 연동이 필요한 작업이라 별도 개발이 있어야 합니다. 오늘 방법으로 등록 직전까지 준비 시간을 줄일 수 있습니다.</p>
+    <p><b>Q. 무료 계정도 되나요?</b><br>프로젝트는 무료 계정도 5개까지 만들 수 있습니다. 다만 사용량이 적어 사진을 많이 넣으면 잠시 막힐 수 있습니다. 여러 상품을 폴더째 처리하는 코워크는 유료(Pro 이상)입니다.</p>
+    <p><b>Q. 결과가 매번 조금씩 달라요.</b><br>정상입니다. 규칙(지침)을 구체적으로 적을수록 결과가 비슷해집니다. 마음에 드는 결과는 규칙에 예시로 추가해 두세요.</p>
+  </div>
+</section>
+
+<div class="nav"><button id="prev">← 이전</button><button id="next" class="next">다음 →</button></div>
+</main>
+<aside class="side"><div class="h">이 STEP의 내용</div><div id="sidelist"></div></aside>
+</div>
+
+<script>
+var fs=20;function zoom(d){fs=Math.max(16,Math.min(28,fs+d*2));document.documentElement.style.setProperty('--fs',fs+'px')}
+var steps=[].slice.call(document.querySelectorAll('.step')),tabs=document.getElementById('tabs'),cur=0;
+steps.forEach(function(s,i){var b=document.createElement('button');b.className='tab';b.textContent=s.dataset.title;b.onclick=function(){show(i)};tabs.appendChild(b)});
+function show(i){cur=i;steps.forEach(function(s,j){s.classList.toggle('on',j===i)});[].forEach.call(tabs.children,function(t,j){t.classList.toggle('on',j===i)});
+ var sl=document.getElementById('sidelist');sl.innerHTML='';[].forEach.call(steps[i].querySelectorAll('[data-nav]'),function(c){var a=document.createElement('a');a.href='#'+c.id;a.textContent=c.dataset.nav;a.onclick=function(e){e.preventDefault();c.scrollIntoView({behavior:'smooth',block:'start'})};sl.appendChild(a)});
+ document.getElementById('prev').style.visibility=i?'visible':'hidden';var n=document.getElementById('next');n.style.visibility=i<steps.length-1?'visible':'hidden';
+ var top=document.querySelector('.top');window.scrollTo({top:0,behavior:'smooth'})}
+document.getElementById('prev').onclick=function(){if(cur>0)show(cur-1)};document.getElementById('next').onclick=function(){if(cur<steps.length-1)show(cur+1)};
+[].forEach.call(document.querySelectorAll('.cp'),function(b){b.onclick=function(){var p=b.parentNode.cloneNode(true);[].forEach.call(p.querySelectorAll('.cp,.lbl'),function(x){x.remove()});var t=p.textContent.replace(/^\s+/,'');
+ function ok(){b.textContent='복사됨';b.classList.add('done');setTimeout(function(){b.textContent='복사';b.classList.remove('done')},1500)}
+ if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(ok,function(){fb(t);ok()})}else{fb(t);ok()}}});
+function fb(t){var ta=document.createElement('textarea');ta.value=t;ta.style.position='absolute';ta.style.left='-9999px';document.body.appendChild(ta);ta.select();try{document.execCommand('copy')}catch(e){}ta.remove()}
+[].forEach.call(document.querySelectorAll('.rm-node'),function(n){n.onclick=function(){show(+n.dataset.tab)}});
+show(0);
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+ if(!window.THREE)return;var el=document.getElementById('scene');if(!el)return;
+ var W=el.clientWidth||800,H=el.clientHeight||340;
+ var r=new THREE.WebGLRenderer({antialias:true,alpha:true});r.setPixelRatio(Math.min(2,window.devicePixelRatio||1));r.setSize(W,H);el.appendChild(r.domElement);
+ var sc=new THREE.Scene(),cam=new THREE.PerspectiveCamera(38,W/H,.1,100);cam.position.set(0,5.2,11);cam.lookAt(0,0,0);
+ sc.add(new THREE.HemisphereLight(0xffffff,0xdfe7e4,.9));var dl=new THREE.DirectionalLight(0xffffff,.7);dl.position.set(4,8,6);sc.add(dl);
+ function M(c){return new THREE.MeshStandardMaterial({color:c,roughness:.55,metalness:.05})}
+ var G=0x0E7C6B,L=0x9FD3C6,N=0xD9D6CC,D=0x4A4842,W2=0xffffff;
+ var floor=new THREE.Mesh(new THREE.CylinderGeometry(7.2,7.2,.12,64),M(0xEEF3F0));floor.position.y=-.9;sc.add(floor);
+ var props=[],labels=['1 작업방 만들기 — 규칙을 넣은 전용 방','2 사진 점검 — 빠진 컷 찾기','3 상품정보 — 상품명·옵션·상세 문구','4 카페24 — 붙여넣기표·일괄 엑셀','5 홍보 — 인스타·블로그·응대 문구','6 정리 — 사람이 확인하고 등록'];
+ function add(g){g.userData.base=g.position.y;sc.add(g);props.push(g)}
+ // 1 house (작업방)
+ var g=new THREE.Group();var b=new THREE.Mesh(new THREE.BoxGeometry(1.2,.9,1.1),M(W2));g.add(b);var roof=new THREE.Mesh(new THREE.ConeGeometry(1,.7,4),M(G));roof.position.y=.8;roof.rotation.y=Math.PI/4;g.add(roof);var door=new THREE.Mesh(new THREE.BoxGeometry(.3,.5,.05),M(L));door.position.set(0,-.2,.57);g.add(door);add(g);
+ // 2 camera
+ g=new THREE.Group();var body=new THREE.Mesh(new THREE.BoxGeometry(1.4,.9,.6),M(D));g.add(body);var lens=new THREE.Mesh(new THREE.CylinderGeometry(.32,.32,.4,32),M(G));lens.rotation.x=Math.PI/2;lens.position.z=.45;g.add(lens);var glass=new THREE.Mesh(new THREE.CylinderGeometry(.2,.2,.05,32),M(L));glass.rotation.x=Math.PI/2;glass.position.z=.67;g.add(glass);var top=new THREE.Mesh(new THREE.BoxGeometry(.4,.2,.4),M(D));top.position.set(-.35,.55,0);g.add(top);add(g);
+ // 3 tag (상품정보)
+ g=new THREE.Group();var tag=new THREE.Mesh(new THREE.BoxGeometry(1,1.3,.1),M(W2));g.add(tag);var hole=new THREE.Mesh(new THREE.TorusGeometry(.12,.04,12,24),M(G));hole.position.set(0,.45,.06);g.add(hole);for(var i=0;i<3;i++){var ln=new THREE.Mesh(new THREE.BoxGeometry(.6-i*.1,.07,.02),M(i?N:G));ln.position.set(0,.05-i*.22,.06);g.add(ln)}var str=new THREE.Mesh(new THREE.TorusGeometry(.35,.02,8,24,Math.PI),M(D));str.position.set(0,.8,0);g.add(str);add(g);
+ // 4 cart
+ g=new THREE.Group();var bas=new THREE.Mesh(new THREE.BoxGeometry(1.4,.7,.9),M(G));bas.position.y=.1;g.add(bas);var box=new THREE.Mesh(new THREE.BoxGeometry(.6,.45,.5),M(0xE8D6B3));box.position.set(-.2,.6,0);g.add(box);[[-.5,.4],[.5,.4],[-.5,-.4],[.5,-.4]].forEach(function(p){var w=new THREE.Mesh(new THREE.CylinderGeometry(.13,.13,.1,20),M(D));w.rotation.x=Math.PI/2;w.position.set(p[0],-.38,p[1]);g.add(w)});var h=new THREE.Mesh(new THREE.BoxGeometry(.08,.6,.08),M(D));h.position.set(.75,.55,0);g.add(h);add(g);
+ // 5 megaphone
+ g=new THREE.Group();var cone=new THREE.Mesh(new THREE.CylinderGeometry(.55,.18,1.3,32,1,true),M(G));cone.material.side=THREE.DoubleSide;cone.rotation.z=Math.PI/2;g.add(cone);var hd=new THREE.Mesh(new THREE.BoxGeometry(.18,.5,.18),M(D));hd.position.set(.45,-.35,0);g.add(hd);add(g);
+ // 6 check
+ g=new THREE.Group();var c1=new THREE.Mesh(new THREE.BoxGeometry(.25,.6,.25),M(G));c1.rotation.z=Math.PI/4;c1.position.set(-.25,-.1,0);g.add(c1);var c2=new THREE.Mesh(new THREE.BoxGeometry(.25,1.2,.25),M(G));c2.rotation.z=-Math.PI/5;c2.position.set(.25,.15,0);g.add(c2);var base=new THREE.Mesh(new THREE.CylinderGeometry(.7,.7,.12,40),M(L));base.position.y=-.55;g.add(base);add(g);
+ props.forEach(function(p,i){var a=-Math.PI/2+i*(Math.PI*2/6);p.position.set(Math.cos(a)*4.6,0,Math.sin(a)*4.6*.75);p.userData.base=0});
+ var ring=new THREE.Mesh(new THREE.TorusGeometry(.9,.05,10,48),M(G));ring.rotation.x=Math.PI/2;ring.position.y=-.8;sc.add(ring);
+ var playing=true,act=0,t0=0,cap=document.getElementById('cap');
+ function setAct(i){act=i;t0=performance.now();cap.textContent=labels[i];[].forEach.call(document.querySelectorAll('[data-go]'),function(b,j){b.classList.toggle('on',j===i)})}
+ document.getElementById('bPlay').onclick=function(){playing=true;this.classList.add('on');document.getElementById('bPause').classList.remove('on')};
+ document.getElementById('bPause').onclick=function(){playing=false;this.classList.add('on');document.getElementById('bPlay').classList.remove('on')};
+ [].forEach.call(document.querySelectorAll('[data-go]'),function(b){b.onclick=function(){setAct(+b.dataset.go);playing=false;document.getElementById('bPause').classList.add('on');document.getElementById('bPlay').classList.remove('on')}});
+ setAct(0);var last=performance.now();
+ function loop(now){requestAnimationFrame(loop);var dt=(now-last)/1000;last=now;
+  if(playing&&now-t0>2600)setAct((act+1)%6);
+  props.forEach(function(p,i){var on=i===act;var ty=on?.7:0;p.position.y+=(ty-p.position.y)*.12;p.rotation.y+=on?dt*1.2:dt*.15;var s=on?1.25:1;p.scale.x+=(s-p.scale.x)*.12;p.scale.y=p.scale.z=p.scale.x});
+  var tp=props[act].position;ring.position.x+=(tp.x-ring.position.x)*.15;ring.position.z+=(tp.z-ring.position.z)*.15;
+  r.render(sc,cam)}
+ requestAnimationFrame(loop);
+ window.addEventListener('resize',function(){var w=el.clientWidth,h=el.clientHeight;if(!w)return;r.setSize(w,h);cam.aspect=w/h;cam.updateProjectionMatrix()});
+ new MutationObserver(function(){var w=el.clientWidth;if(w){r.setSize(w,el.clientHeight);cam.aspect=w/el.clientHeight;cam.updateProjectionMatrix()}}).observe(document.querySelector('.step'),{attributes:true});
+})();
+</script>
+
+<script>
+(function(){
+ if(!window.THREE)return;
+ var wrap=document.getElementById('spWrap'),cv=document.getElementById('spC'),btn=document.getElementById('spPlay');if(!wrap)return;
+ var r=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true});var sc=new THREE.Scene(),cam=new THREE.PerspectiveCamera(45,9/16,.1,100);cam.position.z=9;
+ function size(){var w=wrap.clientWidth,h=wrap.clientHeight;if(!w)return;r.setSize(w,h,false);cam.aspect=w/h;cam.updateProjectionMatrix()}size();window.addEventListener('resize',size);
+ new MutationObserver(size).observe(wrap.closest('.step'),{attributes:true});
+ sc.add(new THREE.AmbientLight(0xffffff,.5));var dl=new THREE.DirectionalLight(0xfff2dc,1);dl.position.set(3,5,4);sc.add(dl);
+ var ribbons=[];for(var i=0;i<7;i++){var t=new THREE.Mesh(new THREE.TorusGeometry(2.2+i*.55,.035,8,120,Math.PI*1.3),new THREE.MeshStandardMaterial({color:i%2?0x3b5a8a:0xC9B79C,roughness:.6,transparent:true,opacity:0}));t.rotation.set(Math.random()*6,Math.random()*6,0);t.position.y=-1+Math.random()*2;sc.add(t);ribbons.push(t)}
+ var n=300,arr=new Float32Array(n*3);for(var i=0;i<n*3;i++)arr[i]=(Math.random()-.5)*14;var pg=new THREE.BufferGeometry();pg.setAttribute('position',new THREE.BufferAttribute(arr,3));var dust=new THREE.Points(pg,new THREE.PointsMaterial({color:0xC9B79C,size:.035,transparent:true,opacity:.55}));sc.add(dust);
+ var t0=null,ac=null,timers=[];
+ var els={b:wrap.querySelector('.sp-brand'),h1:wrap.querySelector('.sp-h1'),bar:document.getElementById('spBar'),h2:wrap.querySelector('.sp-h2'),p:wrap.querySelector('.sp-price'),c:wrap.querySelector('.sp-cta')};
+ window.spMusic=function(onok){try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();if(ac.state==='suspended')ac.resume();window.spStop();
+  var master=ac.createGain();master.gain.value=0;master.connect(ac.destination);
+  var now=ac.currentTime;var v=.5*(window.spVol==null?.3:window.spVol);master.gain.setValueAtTime(0,now);master.gain.linearRampToValueAtTime(v,now+.8);master.gain.setValueAtTime(v,now+13);master.gain.linearRampToValueAtTime(0,now+15.5);
+  var hi=ac.createBiquadFilter();hi.type='lowpass';hi.frequency.value=2600;hi.connect(master);
+  var chords=[[261.63,329.63,392,523.25],[196,246.94,293.66,392],[220,261.63,329.63,440],[174.61,220,261.63,349.23]];var pat=[0,1,2,3,2,1,0,2,1,3,2,1,0,1,2,3];var nodes=[];
+  function pluck(f,st,g0,dur){var o=ac.createOscillator();o.type='triangle';o.frequency.value=f;var g=ac.createGain();g.gain.setValueAtTime(0,st);g.gain.linearRampToValueAtTime(g0,st+.012);g.gain.exponentialRampToValueAtTime(.0005,st+dur);o.connect(g);g.connect(hi);o.start(st);o.stop(st+dur+.05);nodes.push(o)}
+  chords.forEach(function(ch,ci){for(var i=0;i<16;i++){var st=now+ci*4+i*.25;pluck(ch[pat[i]]*2,st,.22,.5);if(i%4==0)pluck(ch[pat[i]]*4,st,.07,.35)}
+    ch.slice(0,3).forEach(function(f){var o=ac.createOscillator();o.type='sine';o.frequency.value=f;var g=ac.createGain();var st=now+ci*4;g.gain.setValueAtTime(0,st);g.gain.linearRampToValueAtTime(.09,st+.6);g.gain.setValueAtTime(.09,st+3.4);g.gain.linearRampToValueAtTime(0,st+4);o.connect(g);g.connect(hi);o.start(st);o.stop(st+4.1);nodes.push(o)})});
+  window.spNodes={master:master,nodes:nodes,t:now};if(onok)onok();
+ }catch(e){}};
+ window.spSetVol=function(x){window.spVol=x;try{if(window.spNodes&&ac){var m=window.spNodes.master,el=ac.currentTime-window.spNodes.t;if(el>.8&&el<13){m.gain.cancelScheduledValues(ac.currentTime);m.gain.setValueAtTime(.5*x,ac.currentTime);m.gain.setValueAtTime(.5*x,window.spNodes.t+13);m.gain.linearRampToValueAtTime(0,window.spNodes.t+15.5)}}}catch(e){}};
+ window.spStop=function(){try{if(window.spNodes){var m=window.spNodes.master;m.gain.cancelScheduledValues(ac.currentTime);m.gain.setValueAtTime(m.gain.value,ac.currentTime);m.gain.linearRampToValueAtTime(0,ac.currentTime+.3);window.spNodes.nodes.forEach(function(o){try{o.stop(ac.currentTime+.35)}catch(e){}});window.spNodes=null}}catch(e){}};
+ function play(){btn.textContent='↻ 다시';Object.keys(els).forEach(function(k){els[k].classList.remove('on')});timers.forEach(clearTimeout);timers=[];t0=performance.now();
+  [['b',400],['h1',1400],['bar',2600],['h2',3400],['p',5200],['c',6800]].forEach(function(x){timers.push(setTimeout(function(){els[x[0]].classList.add('on')},x[1]))});
+  timers.push(setTimeout(function(){btn.textContent='▶ 재생';document.getElementById('spSnd').style.opacity=0},16000));if(window.spSoundOn)window.spMusic(function(){document.getElementById('spSnd').style.opacity=1})}
+ btn.onclick=play;
+ window.spSyncSound=function(){[].forEach.call(document.querySelectorAll('#spSoundBtn,#sp2SoundBtn'),function(b){b.textContent=window.spSoundOn?'🔊 소리':'🔇 소리'})};var sb=document.getElementById('spSoundBtn'),st=document.getElementById('spStopBtn'),vol=document.getElementById('spVol');window.spVol=.3;if(sb)sb.onclick=function(){window.spSoundOn=!window.spSoundOn;window.spSyncSound();if(!window.spSoundOn)window.spStop();else if(t0&&performance.now()-t0<12000)window.spMusic(function(){document.getElementById('spSnd').style.opacity=1})};if(vol)vol.oninput=function(){window.spSetVol(vol.value/100);var o=document.getElementById('sp2Vol');if(o)o.value=vol.value};if(st)st.onclick=function(){window.spStop();timers.forEach(clearTimeout);t0=null;Object.keys(els).forEach(function(k){els[k].classList.remove('on')});btn.textContent='▶ 재생';document.getElementById('spSnd').style.opacity=0};
+ (function loop(){requestAnimationFrame(loop);var t=t0?(performance.now()-t0)/1000:0;ribbons.forEach(function(rb,i){rb.rotation.x+=.0025+i*.0004;rb.rotation.y+=.0018;rb.material.opacity=t0?Math.min(.55,t*.25):.2});dust.rotation.y+=.0008;cam.position.x=Math.sin(performance.now()/4000)*.6;cam.lookAt(0,0,0);r.render(sc,cam)})();
+})();
+</script>
+
+<script>
+(function(){
+ var w=document.getElementById('sp2Wrap');if(!w)return;var btn=document.getElementById('sp2Play'),imgs=[].slice.call(w.querySelectorAll('.sp2img')),timers=[];
+ var els={b:w.querySelector('.sp2-brand'),h1:w.querySelector('.sp2-h1'),h2:w.querySelector('.sp2-h2'),p:w.querySelector('.sp2-price'),c:w.querySelector('.sp2-cta')};
+ imgs[0].classList.add('on');
+ function play(){btn.textContent='↻ 다시';timers.forEach(clearTimeout);timers=[];Object.keys(els).forEach(function(k){els[k].classList.remove('on')});
+  imgs.forEach(function(im,i){im.classList.remove('on');void im.offsetWidth;timers.push(setTimeout(function(){imgs.forEach(function(x){x.classList.remove('on')});im.classList.add('on')},i*3500))});
+  [['b',500],['h1',1300],['h2',4200],['p',7500],['c',10500]].forEach(function(x){timers.push(setTimeout(function(){els[x[0]].classList.add('on')},x[1]))});
+  timers.push(setTimeout(function(){btn.textContent='▶ 재생';document.getElementById('sp2Snd').style.opacity=0},16000));
+  if(window.spSoundOn&&window.spMusic)window.spMusic(function(){document.getElementById('sp2Snd').style.opacity=1})}
+ btn.onclick=play;
+ var st=document.getElementById('sp2StopBtn'),sb=document.getElementById('sp2SoundBtn'),vol=document.getElementById('sp2Vol');if(st)st.onclick=function(){window.spStop();timers.forEach(clearTimeout);Object.keys(els).forEach(function(k){els[k].classList.remove('on')});imgs.forEach(function(x){x.classList.remove('on')});imgs[0].classList.add('on');btn.textContent='▶ 재생';document.getElementById('sp2Snd').style.opacity=0};if(sb)sb.onclick=function(){window.spSoundOn=!window.spSoundOn;if(window.spSyncSound)window.spSyncSound();if(!window.spSoundOn)window.spStop()};if(vol)vol.oninput=function(){if(window.spSetVol)window.spSetVol(vol.value/100);var o=document.getElementById('spVol');if(o)o.value=vol.value};
+})();
+</script>
+
+<script>
+(function(){
+ function rs(){window.dispatchEvent(new Event('resize'))}
+ function setBtn(box,on){var b=document.querySelector('.fsb[data-box="'+box.id+'"]');if(b)b.textContent=on?'✕ 작게 보기':'⛶ 전체 화면'}
+ function big(box){box.classList.add('big');setBtn(box,true);rs();setTimeout(function(){box.scrollIntoView({block:'start'})},50)}
+ [].forEach.call(document.querySelectorAll('.fsb'),function(b){b.onclick=function(){var box=document.getElementById(b.dataset.box);
+  var fe=document.fullscreenElement||document.webkitFullscreenElement;
+  if(fe){(document.exitFullscreen||document.webkitExitFullscreen).call(document);return}
+  if(box.classList.contains('big')){box.classList.remove('big');setBtn(box,false);rs();return}
+  var f=box.requestFullscreen||box.webkitRequestFullscreen;
+  if(!f||document.fullscreenEnabled===false){big(box);return}
+  try{var pr=f.call(box);if(pr&&pr.then)pr.then(null,function(){big(box)})}catch(e){big(box)}}});
+ function chg(){var fe=document.fullscreenElement||document.webkitFullscreenElement;[].forEach.call(document.querySelectorAll('.fsbox'),function(x){if(!x.classList.contains('big'))setBtn(x,fe===x)});setTimeout(rs,60)}
+ document.addEventListener('fullscreenchange',chg);document.addEventListener('webkitfullscreenchange',chg);
+ document.addEventListener('keydown',function(e){if(e.key==='Escape')[].forEach.call(document.querySelectorAll('.fsbox.big'),function(x){x.classList.remove('big');setBtn(x,false);rs()})});
+})();
+</script>
+</body>
+</html>

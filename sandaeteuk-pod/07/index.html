@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>소리 나는 그림책 플립북</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+:root{
+  --bg:#FBFAF7; --card:#FFFFFF; --line:#E6E2DA; --line2:#EFECE6;
+  --ink:#24262B; --sub:#5E626B; --mute:#8C9099;
+  --point:#1F7A8C; --point-soft:#E6F2F4; --point-deep:#155E6C;
+  --set:#EEF4FB; --set-line:#C9DBEF; --set-ink:#2C5A8A;
+  --warn:#FBEFF1; --warn-line:#EFCBD2; --warn-ink:#9A3B4E;
+  --more:#EEF7F0; --more-line:#C8E3CF; --more-ink:#2E6B41;
+  --fs:20px;
+}
+*{box-sizing:border-box}
+html{font-size:var(--fs)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Pretendard,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;line-height:1.7;word-break:keep-all}
+button{font-family:inherit;cursor:pointer}
+code{font-family:inherit;background:var(--line2);padding:.05rem .35rem;border-radius:4px;font-size:.88em}
+
+.topbar{position:sticky;top:0;z-index:30;background:rgba(251,250,247,.97);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1280px;margin:0 auto;padding:.6rem 1rem .2rem;display:flex;align-items:center;gap:.8rem;flex-wrap:wrap}
+.topbar h1{flex:1;min-width:12rem;margin:0;font-size:1.05rem;color:var(--point-deep)}
+.topbar h1 small{display:block;font-size:.68rem;color:var(--mute);font-weight:500}
+.fsbtn{display:flex;gap:.3rem}
+.fsbtn button{font-size:.78rem;padding:.2rem .7rem;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:6px}
+.fsbtn button:hover{border-color:var(--point);color:var(--point)}
+.tabs{max-width:1280px;margin:0 auto;padding:0 1rem;display:flex;gap:.1rem;overflow-x:auto}
+.tabs button{white-space:nowrap;font-size:.76rem;padding:.5rem .7rem;border:0;border-bottom:3px solid transparent;background:none;color:var(--sub)}
+.tabs button.on{color:var(--point);border-bottom-color:var(--point);font-weight:700}
+
+.wrap{max-width:1280px;margin:0 auto;padding:1.3rem 1rem 0;display:grid;grid-template-columns:1fr 13rem;gap:1.3rem;align-items:start}
+.step{display:none}.step.on{display:block}
+.step-head{margin-bottom:1rem}
+.step-head .no{font-size:.72rem;font-weight:700;color:var(--point);letter-spacing:.05em}
+.step-head h2{margin:.1rem 0 .3rem;font-size:1.45rem;line-height:1.4;color:var(--point-deep)}
+.step-head p{margin:0;color:var(--sub)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(19rem,1fr));gap:1rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:1.1rem 1.2rem;scroll-margin-top:7rem;min-width:0}
+.card.wide{grid-column:1/-1}
+.card h3{margin:0 0 .5rem;font-size:1.05rem;color:var(--point-deep)}
+.card p{margin:.35rem 0}
+.card ol,.card ul{margin:.3rem 0;padding-left:1.2rem}
+.card li{margin:.3rem 0}
+.box-set{background:var(--set);border-color:var(--set-line)}.box-set h3{color:var(--set-ink)}
+.box-warn{background:var(--warn);border-color:var(--warn-line)}.box-warn h3{color:var(--warn-ink)}
+.box-more{background:var(--more);border-color:var(--more-line)}.box-more h3{color:var(--more-ink)}
+.tag{display:inline-block;font-size:.7rem;font-weight:700;padding:.05rem .5rem;border-radius:5px;margin-right:.35rem;vertical-align:.12rem}
+.t-help{background:var(--warn-line);color:var(--warn-ink)}
+.t-more{background:var(--more-line);color:var(--more-ink)}
+.t-set{background:var(--set-line);color:var(--set-ink)}
+.meta{font-size:.8rem;color:var(--mute)}
+.kbd{display:inline-block;font-weight:700;color:var(--point-deep);background:var(--point-soft);border:1px solid #cfe5e9;border-radius:5px;padding:0 .4rem;font-size:.9em}
+
+table{width:100%;border-collapse:collapse;font-size:.86rem}
+.tablewrap{overflow-x:auto}
+th{background:var(--point-soft);color:var(--point-deep);text-align:left;padding:.45rem .6rem;font-weight:700;border-bottom:1px solid #cfe5e9}
+td{padding:.45rem .6rem;border-bottom:1px solid var(--line2);vertical-align:top}
+.sn{color:var(--point);font-weight:700}.sm{color:var(--more-ink);font-weight:700}
+
+.prompt{position:relative;background:#F6F8F9;border:1px solid var(--line);border-radius:10px;padding:.8rem 1rem;font-size:.82rem;white-space:pre-wrap;line-height:1.65;margin:.5rem 0}
+.copy{position:absolute;top:.5rem;right:.5rem;font-size:.7rem;padding:.15rem .6rem;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--sub)}
+.copy.done{color:var(--more-ink);border-color:var(--more-line)}
+
+.shot{margin:.6rem 0 0;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#fff;cursor:zoom-in}
+.shot img{display:block;width:100%;height:auto}
+.shot figcaption{font-size:.72rem;color:var(--sub);padding:.35rem .7rem;border-top:1px solid var(--line2);background:#FCFCFB}
+.card.zoom{grid-column:1/-1}
+.card.zoom .shot{cursor:zoom-out}
+.shots{display:grid;grid-template-columns:repeat(auto-fit,minmax(14rem,1fr));gap:.7rem}
+
+.flow{display:flex;flex-wrap:wrap;gap:.5rem;align-items:stretch}
+.flow .n{flex:1;min-width:8.5rem;border:1px solid var(--line);border-radius:10px;padding:.6rem .7rem;font-size:.82rem;background:#fff;text-align:center}
+.flow .n b{display:block;color:var(--point-deep);font-size:.88rem}
+.flow .a{align-self:center;color:var(--point);font-weight:700}
+.flow .n.tts{background:var(--point-soft);border-color:#cfe5e9}
+.flow .n.bgm{background:var(--more);border-color:var(--more-line)}
+
+.stage{position:relative;width:100%;height:340px;border-radius:10px;overflow:hidden;background:linear-gradient(#F4F2EC,#FBFAF7);border:1px solid var(--line)}
+.stage canvas{display:block}
+.ctrl{display:flex;flex-wrap:wrap;gap:.4rem;align-items:center;margin-top:.6rem}
+.ctrl button{font-size:.78rem;padding:.3rem .8rem;border:1px solid var(--line);border-radius:7px;background:#fff;color:var(--ink)}
+.ctrl button.main{background:var(--point);border-color:var(--point);color:#fff}
+.ctrl .now{flex:1;min-width:12rem;font-size:.8rem;color:var(--sub);text-align:right}
+
+.check label{display:flex;gap:.7rem;align-items:flex-start;padding:.5rem 0;border-bottom:1px dashed var(--line);cursor:pointer}
+.check label:last-child{border-bottom:0}
+.check input{width:1.05rem;height:1.05rem;margin-top:.35rem;accent-color:var(--point);flex:none}
+.check input:checked+span{color:var(--mute);text-decoration:line-through}
+.progress{height:8px;background:var(--line);border-radius:4px;overflow:hidden;margin:.4rem 0 .7rem}
+.progress i{display:block;height:100%;width:0;background:var(--point);transition:width .25s}
+
+.side{position:sticky;top:6.6rem;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:.8rem .9rem}
+.side summary{font-size:.72rem;color:var(--mute);font-weight:700;margin-bottom:.4rem;cursor:pointer}
+.side a{display:block;font-size:.78rem;color:var(--ink);text-decoration:none;padding:.3rem .5rem;border-radius:6px;line-height:1.45}
+.side a:hover{background:var(--point-soft);color:var(--point)}
+
+.bottom{position:sticky;bottom:0;z-index:20;background:linear-gradient(to top,var(--bg) 70%,rgba(251,250,247,0));padding:1rem 1rem .8rem;margin-top:1.2rem}
+.bottom-in{max-width:1280px;margin:0 auto;display:flex;justify-content:space-between;gap:.8rem}
+.bottom button{font-size:.85rem;padding:.5rem 1.1rem;border-radius:8px;border:1px solid var(--line);background:#fff;color:var(--ink)}
+.bottom button.next{background:var(--point);border-color:var(--point);color:#fff}
+.bottom button:disabled{opacity:.35;cursor:default}
+footer{max-width:1280px;margin:0 auto;padding:0 1rem 1.2rem;font-size:.7rem;color:var(--mute)}
+@media(max-width:880px){
+  .wrap{grid-template-columns:1fr}
+  .side{position:static;order:-1}
+  .grid{grid-template-columns:1fr}
+  .flow .a{width:100%;text-align:center;transform:rotate(90deg)}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-in">
+    <h1>소리 나는 그림책 플립북 만들기<small>산대특 생성형AI 일러스트 전자책 POD 디지털 출판 편집 실무 · 출판편집제작 및 플랫폼출간</small></h1>
+    <div class="fsbtn"><button type="button" data-fs="-1">가-</button><button type="button" data-fs="0">기본</button><button type="button" data-fs="1">가+</button></div>
+  </div>
+  <nav class="tabs" id="tabs"></nav>
+</div>
+
+<div class="wrap">
+<main>
+
+<!-- STEP 0 -->
+<section class="step" data-title="전체 흐름">
+  <div class="step-head"><div class="no">STEP 0</div><h2>오늘 완성할 것: 소리가 나는 8쪽 그림책</h2>
+  <p>앞·뒤표지는 AI 나레이션, 본문은 배경음악. 책장을 넘기면 소리가 바뀌는 플립북을 출간합니다.</p></div>
+  <div class="grid">
+    <div class="card wide" id="s0-3d">
+      <h3>소리 지도 미리 보기</h3>
+      <div class="stage" id="stage0"></div>
+      <div class="ctrl" data-for="stage0">
+        <button type="button" class="main" data-act="play">❚❚ 멈춤</button>
+        <button type="button" data-act="next">다음 장 →</button>
+        <button type="button" data-act="reset">⟲ 처음으로</button>
+        <span class="now">1쪽 · 제목 나레이션</span>
+      </div>
+    </div>
+    <div class="card wide" id="s0-flow">
+      <h3>작업 순서</h3>
+      <div class="flow">
+        <div class="n"><b>미리캔버스</b>8쪽 → 웹용 PDF</div><div class="a">→</div>
+        <div class="n tts"><b>AI 스튜디오 TTS</b>제목·맺음 2줄 → WAV</div><div class="a">→</div>
+        <div class="n tts"><b>Convertio</b>WAV → MP3</div><div class="a">+</div>
+        <div class="n bgm"><b>Pixabay</b>배경음악 MP3</div><div class="a">→</div>
+        <div class="n"><b>헤이진</b>Book 효과 + 쪽별 Background Audio</div><div class="a">→</div>
+        <div class="n"><b>Share</b>링크·QR → 패들렛</div>
+      </div>
+    </div>
+    <div class="card" id="s0-map">
+      <h3>소리 지도</h3>
+      <div class="tablewrap"><table>
+        <tr><th>쪽</th><th>소리</th><th>파일</th></tr>
+        <tr><td>1 앞표지</td><td class="sn">제목 나레이션</td><td><code>01_제목.mp3</code></td></tr>
+        <tr><td>2~7 본문</td><td class="sm">배경음악 (반복)</td><td><code>02_배경.mp3</code></td></tr>
+        <tr><td>8 뒷표지</td><td class="sn">맺음 나레이션</td><td><code>08_맺음.mp3</code></td></tr>
+      </table></div>
+    </div>
+    <div class="card box-set" id="s0-ready">
+      <h3><span class="tag t-set">준비물</span>시작 전에 확인</h3>
+      <ul>
+        <li>미리캔버스에 완성한 <b>8쪽</b> 그림책</li>
+        <li>구글 계정 (AI 스튜디오·헤이진 로그인)</li>
+        <li>교과목 A에서 쓴 원고 (제목, 이야기 요약)</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- STEP 1 -->
+<section class="step" data-title="PDF 받기">
+  <div class="step-head"><div class="no">STEP 1</div><h2>미리캔버스 완성본 → 웹용 PDF</h2><p>플립북에 올릴 PDF를 받습니다. 쪽 수와 순서가 소리 지도와 맞아야 합니다.</p></div>
+  <div class="grid">
+    <div class="card" id="s1-do">
+      <h3>순서</h3>
+      <ol>
+        <li>그림책 디자인 열기 → 페이지 목록에서 <b>8쪽</b>인지 확인</li>
+        <li><b>1쪽을 먼저 선택</b>한 뒤 <span class="kbd">슬라이드쇼</span> (선택한 쪽부터 시작) → 순서·오타·빠진 글자 확인</li>
+        <li><span class="kbd">다운로드</span> → <span class="kbd">PDF(웹용)</span> → 페이지가 <b>모든 페이지(1~8)</b>인지 확인</li>
+        <li>파일 이름을 <code>책제목_플립북.pdf</code>로 바꿔 두기</li>
+      </ol>
+    </div>
+    <div class="card box-set" id="s1-license">
+      <h3><span class="tag t-set">라이선스</span>미리캔버스로 출간해도 되나요?</h3>
+      <p>네. 라이선스 계약 <b>제7조 10호</b>가 전자책·인쇄 출판물의 <b>표지와 내지</b> 디자인을 허용합니다.</p>
+      <ul>
+        <li>편집은 반드시 <b>미리캔버스 에디터 안에서</b></li>
+        <li>디자인 요소를 잘라내 다른 프로그램에서 쓰지 않기 (제9조 10호)</li>
+        <li>작업 파일은 지우지 말고 보관 (제13조 8호)</li>
+      </ul>
+    </div>
+    <div class="card box-set" id="s1-pages">
+      <h3><span class="tag t-set">설정</span>왜 8쪽인가요?</h3>
+      <p>헤이진 <b>Book</b> 효과는 1쪽을 홀로, 그다음은 <b>2·3 / 4·5 / 6·7</b> 펼침면으로 보여 줍니다. 8쪽이면 뒷표지가 마지막에 <b>홀로</b> 섭니다.</p>
+      <p>7쪽(앞표지·캐릭터 소개·기·승·전·결·뒷표지)이면 뒷표지가 6쪽 옆에 붙어 버리므로, 뒷표지 앞에 <b>판권면 1쪽</b>을 넣어 8쪽으로 맞춥니다.</p>
+    </div>
+    <div class="card box-warn" id="s1-help">
+      <h3><span class="tag t-help">막힐 때</span>PDF가 안 받아져요</h3>
+      <p>인쇄용 PDF가 오래 걸리거나 실패하면, 플립북용은 <b>웹용 PDF</b>로 충분합니다.</p>
+    </div>
+    <div class="card box-more" id="s1-more">
+      <h3><span class="tag t-more">한 걸음 더</span>파일을 두 갈래로 관리</h3>
+      <p>종이책(POD) 원고는 <b>인쇄용 PDF</b>로 따로 받아 두고, 플립북은 <b>웹용 PDF</b>로 나눠 관리합니다. STEP 7에서 종이책 뒷표지에 QR을 넣을 때 인쇄용을 다시 씁니다.</p>
+    </div>
+  </div>
+</section>
+
+<!-- STEP 2 -->
+<section class="step" data-title="나레이션 원고">
+  <div class="step-head"><div class="no">STEP 2</div><h2>나레이션 원고 두 줄 쓰기</h2><p>TTS에 넣을 문장은 앞표지 한 줄, 뒷표지 한 줄뿐입니다.</p></div>
+  <div class="grid">
+    <div class="card" id="s2-lines">
+      <h3>문장 예시</h3>
+      <div class="tablewrap"><table>
+        <tr><th>쪽</th><th>문장</th></tr>
+        <tr><td>1 앞표지</td><td>토끼와 거북이. … 느려도 괜찮아.</td></tr>
+        <tr><td>8 뒷표지</td><td>느려도 괜찮아. 끝까지 가는 게 중요하니까. 글과 그림, ○○○.</td></tr>
+      </table></div>
+      <p class="meta">마침표와 말줄임(…)은 쉬는 박자가 됩니다. <b>글·그림</b>처럼 가운뎃점이 든 말은 TTS가 어색하게 읽을 수 있어 <b>글과 그림</b>으로 풀어 씁니다.</p>
+    </div>
+    <div class="card wide" id="s2-prompt">
+      <h3>맺음말 3안 받기 (지피티 프로젝트 또는 제미나이)</h3>
+<div class="prompt"><button type="button" class="copy">복사</button>너는 유아 그림책 전문 편집자야.
+아래 원고 요약을 읽고, 뒷표지에 들어갈 '맺음 나레이션' 3안을 써 줘.
+
+[조건]
+- 소리 내어 읽었을 때 5초 안팎 (20~35자)
+- 교훈을 직접 설명하지 말고 여운이 남게
+- 마지막 문장은 짧게 끊어서, 책을 덮는 느낌
+- 각 안마다 어울리는 목소리 톤을 한 줄로 덧붙이기 (예: 따뜻하고 느리게)
+
+[원고 요약]
+(교과목 A에서 쓴 이야기 요약 붙여 넣기)</div>
+    </div>
+    <div class="card box-more" id="s2-more">
+      <h3><span class="tag t-more">한 걸음 더</span>귀로 고르기</h3>
+      <p>3안을 STEP 3에서 실제로 들어 보고 고릅니다. 글로 읽기 좋은 문장과 <b>소리로 듣기 좋은 문장</b>은 다릅니다.</p>
+    </div>
+  </div>
+</section>
+
+<!-- STEP 3 -->
+<section class="step" data-title="TTS 만들기">
+  <div class="step-head"><div class="no">STEP 3</div><h2>구글 AI 스튜디오로 나레이션 만들기</h2><p>Gemini 3.8 Flash TTS로 제목·맺음 나레이션을 같은 목소리로 만들고 WAV로 받습니다.</p></div>
+  <div class="grid">
+    <div class="card" id="s3-1">
+      <h3>① 접속하고 Playground 열기</h3>
+      <ol><li><b>aistudio.google.com</b> → <span class="kbd">Get started</span> → 구글 로그인</li><li>왼쪽 <span class="kbd">EXPLORE › Playground</span></li></ol>
+      <div class="shots">
+        <figure class="shot"><img src="img01.webp" alt="AI 스튜디오 첫 화면"><figcaption>스샷 1 · 첫 화면의 Get started</figcaption></figure>
+        <figure class="shot"><img src="img02.webp" alt="AI 스튜디오 홈"><figcaption>스샷 2 · 왼쪽 Playground</figcaption></figure>
+      </div>
+    </div>
+    <div class="card" id="s3-2">
+      <h3>② TTS 모델 고르기</h3>
+      <ol><li>오른쪽 <span class="kbd">Run settings</span>의 모델 이름 클릭</li><li><span class="kbd">Model selection</span> → <span class="kbd">Audio</span> 탭 → <b>Gemini 3.8 Flash TTS</b></li></ol>
+      <div class="shots">
+        <figure class="shot"><img src="img03.webp" alt="Playground"><figcaption>스샷 3 · Run settings의 모델 이름</figcaption></figure>
+        <figure class="shot"><img src="img04.webp" alt="모델 선택 Audio"><figcaption>스샷 4 · Audio 탭의 Gemini 3.8 Flash TTS</figcaption></figure>
+      </div>
+    </div>
+    <div class="card" id="s3-3">
+      <h3>③ 새 대화 만들기</h3>
+      <p><b>Turn text into natural-sounding speech</b> 화면에서 <span class="kbd">Create new dialog</span>를 누릅니다.</p>
+      <div class="shots">
+        <figure class="shot"><img src="img05.webp" alt="TTS 첫 화면"><figcaption>스샷 5 · TTS 시작 화면</figcaption></figure>
+        <figure class="shot"><img src="img06.webp" alt="Create new dialog"><figcaption>스샷 6 · Create new dialog</figcaption></figure>
+      </div>
+    </div>
+    <div class="card" id="s3-4">
+      <h3>④ 목소리 고르기</h3>
+      <ol>
+        <li><span class="kbd">Speaker 1</span> 클릭 → <span class="kbd">Speaker settings</span></li>
+        <li><b>Language</b> 필터를 한국어로, Gender·Pitch·Style·Use case로 좁히기</li>
+        <li>▶로 들어 보고 결정 → <b>목소리 이름을 메모</b></li>
+      </ol>
+      <figure class="shot"><img src="img07.webp" alt="Speaker settings"><figcaption>스샷 7 · 2,000개 넘는 목소리 검색과 필터</figcaption></figure>
+    </div>
+    <div class="card" id="s3-5">
+      <h3>⑤ Style 정하고 문장 넣기</h3>
+      <p><span class="kbd">Style</span>에서 Whisper·Friendly·<b>Narration</b>·Promote 중 고르거나, 위 칸에 직접 묘사합니다.</p>
+<div class="prompt"><button type="button" class="copy">복사</button>그림책 표지를 아이에게 읽어 주는 따뜻한 동화 구연가. 천천히, 제목은 또박또박, 부제 앞에서 한 박자 쉬고 마지막은 부드럽게 내려 끝낸다.</div>
+      <figure class="shot"><img src="img08.webp" alt="Style 목록"><figcaption>스샷 8 · Style 목록과 직접 묘사 칸</figcaption></figure>
+    </div>
+    <div class="card" id="s3-6">
+      <h3>⑥ Temperature → Run → WAV 저장</h3>
+      <ol>
+        <li><span class="kbd">Model settings › Temperature</span> <b>1.5</b>: 높일수록 표현이 풍부, 낮출수록 안정</li>
+        <li><span class="kbd">Run</span> → 들어 보고 다운로드 → <code>01_제목.wav</code></li>
+        <li>같은 목소리로 맺음 문장 → <code>08_맺음.wav</code></li>
+      </ol>
+      <figure class="shot"><img src="img09.webp" alt="Temperature"><figcaption>스샷 9 · Temperature 1.5</figcaption></figure>
+    </div>
+    <div class="card box-more" id="s3-more">
+      <h3><span class="tag t-more">한 걸음 더</span>표현 태그와 두 목소리</h3>
+      <ul>
+        <li><span class="kbd">+ Expression</span>: <code>&lt;gasp&gt;</code> <code>&lt;laugh&gt;</code> breath, chuckle 같은 태그로 숨소리·웃음 넣기. 태그가 영어라 한국어 문장에서 자연스러운지 꼭 들어 보기</li>
+        <li><span class="kbd">+ Add speech block</span>과 <b>Speaker 2</b>로 두 목소리 대화 만들기 (한 대화에 화자 2명까지)</li>
+      </ul>
+      <figure class="shot"><img src="img10.webp" alt="Expression"><figcaption>스샷 10 · + Expression 태그 목록</figcaption></figure>
+    </div>
+    <div class="card box-warn" id="s3-help">
+      <h3><span class="tag t-help">막힐 때</span>목소리가 이상해요</h3>
+      <ul>
+        <li>영어 억양이 나오면 <b>Language 필터를 한국어</b>로 바꿔 다시 고르기</li>
+        <li>같은 문장인데 매번 느낌이 다르면 Temperature를 <b>1</b>로 낮추기</li>
+        <li>앞·뒤표지 목소리가 달라졌다면 메모한 목소리 이름으로 다시 선택</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- STEP 4 -->
+<section class="step" data-title="MP3 변환">
+  <div class="step-head"><div class="no">STEP 4</div><h2>Convertio로 WAV → MP3</h2><p>WAV는 용량이 커서 플립북이 늦게 열립니다. MP3로 바꿔 가볍게 만듭니다.</p></div>
+  <div class="grid">
+    <div class="card" id="s4-do">
+      <h3>순서</h3>
+      <ol>
+        <li>구글에서 <b>convertio</b> 검색 → <span class="kbd">Convertio — File Converter</span> 또는 <span class="kbd">Online Audio Converter</span></li>
+        <li>위 메뉴 <span class="kbd">변환 → 오디오 변환기</span></li>
+        <li><span class="kbd">파일 선택</span> → <code>01_제목.wav</code>, <code>08_맺음.wav</code> 두 개 함께 올리기</li>
+        <li>출력 형식 <b>MP3</b> → <span class="kbd">변환</span> → 다운로드</li>
+        <li>파일 이름 <code>01_제목.mp3</code>, <code>08_맺음.mp3</code>로 정리</li>
+      </ol>
+    </div>
+    <div class="card" id="s4-shots">
+      <h3>화면</h3>
+      <figure class="shot"><img src="img11.webp" alt="구글 검색 convertio"><figcaption>스샷 11 · 구글 검색 결과</figcaption></figure>
+      <figure class="shot"><img src="img12.webp" alt="Convertio 오디오 변환기"><figcaption>스샷 12 · 변환 → 오디오 변환기</figcaption></figure>
+    </div>
+    <div class="card box-warn" id="s4-help">
+      <h3><span class="tag t-help">막힐 때</span>변환이 막혀요</h3>
+      <p>무료 변환 횟수 제한에 걸리면 강사가 안내하는 다른 변환 사이트를 씁니다. 파일 이름 규칙은 그대로 지킵니다.</p>
+    </div>
+  </div>
+</section>
+
+<!-- STEP 5 -->
+<section class="step" data-title="배경음악">
+  <div class="step-head"><div class="no">STEP 5</div><h2>Pixabay 배경음악 받기 (2~7쪽)</h2><p>본문에 깔릴 배경음악 한 곡을 고릅니다. Pixabay 음원은 MP3로 받아져 변환이 필요 없습니다.</p></div>
+  <div class="grid">
+    <div class="card" id="s5-do">
+      <h3>순서</h3>
+      <ol>
+        <li><b>pixabay.com</b> → 상단 <span class="kbd">음악(Music)</span></li>
+        <li>검색어: <code>children story</code> <code>lullaby</code> <code>fairy tale</code> <code>music box</code> <code>acoustic gentle</code></li>
+        <li>미리 듣기 → 이야기 분위기에 맞는 곡 → <span class="kbd">다운로드</span> (로그인을 요구할 수 있음)</li>
+        <li>파일 이름 <code>02_배경.mp3</code></li>
+      </ol>
+    </div>
+    <div class="card box-set" id="s5-license">
+      <h3><span class="tag t-set">라이선스</span>Pixabay 음원, 출간에 써도 되나요?</h3>
+      <p>네. Pixabay 콘텐츠 라이선스 요약(2026.10.23 확인) 기준입니다.</p>
+      <ul>
+        <li>무료 사용, <b>출처 표기 의무 없음</b></li>
+        <li>새 작품에 넣어 쓰기 가능 → 그림책 플립북 배경음악 OK</li>
+        <li>금지: 음원을 <b>그대로 단독으로</b> 판매·배포, 상표·브랜드명으로 사용, 오해를 부르는 사용</li>
+        <li>제3자 권리 확인 책임은 사용자에게 있음</li>
+      </ul>
+    </div>
+    <div class="card box-more" id="s5-more">
+      <h3><span class="tag t-more">한 걸음 더</span>구간마다 다른 음악</h3>
+      <p>기·승·전·결 구간에 곡을 따로 넣습니다. 예) 2~3쪽 경쾌하게 / 4~5쪽 느긋하게 / 6~7쪽 긴장감 있게.</p>
+      <p>판권면에 <b>"배경음악: Pixabay ○○○(작곡자)"</b>를 적어 두면 출처 관리가 깔끔합니다.</p>
+    </div>
+  </div>
+</section>
+
+<!-- STEP 6 -->
+<section class="step" data-title="헤이진 소리">
+  <div class="step-head"><div class="no">STEP 6</div><h2>헤이진 플립북 + 쪽별 Background Audio</h2><p>PDF를 올려 Book 효과를 주고, 쪽마다 소리를 지정합니다.</p></div>
+  <div class="grid">
+    <div class="card" id="s6-up">
+      <h3>① 업로드하고 Editor 열기</h3>
+      <ol>
+        <li><b>heyzine.com</b> 로그인 → STEP 1의 PDF 업로드 → 제목 입력</li>
+        <li>대시보드 카드 메뉴 → <span class="kbd">Editor</span></li>
+        <li>왼쪽 <span class="kbd">STYLE › Page Effect</span> → <b>Book</b></li>
+      </ol>
+      <figure class="shot"><img src="img13.webp" alt="헤이진 카드 메뉴"><figcaption>스샷 13 · 카드 메뉴 (Editor · Preview · Share)</figcaption></figure>
+    </div>
+    <div class="card" id="s6-audio">
+      <h3>② Background Audio</h3>
+      <ol>
+        <li>왼쪽 <span class="kbd">STYLE › Background Audio</span></li>
+        <li><span class="kbd">Library</span> 탭: MP3 세 개 올리기</li>
+        <li><span class="kbd">Flipbook audio</span> 탭: <b>Audio</b> 목록에서 파일 → <span class="kbd">Add</span> → <b>Start / End</b> → <b>Options</b>(▾)</li>
+        <li><span class="kbd">Close</span> → 위쪽 <span class="kbd">Save</span></li>
+      </ol>
+      <figure class="shot"><img src="img14.webp" alt="Background Audio 창"><figcaption>스샷 14 · Flipbook audio 탭의 Start · End</figcaption></figure>
+    </div>
+    <div class="card wide" id="s6-map">
+      <h3>세 줄로 넣기</h3>
+      <div class="tablewrap"><table>
+        <tr><th>Audio</th><th>Start</th><th>End</th><th>Options</th></tr>
+        <tr><td class="sn">01_제목</td><td>page 1</td><td>page 1</td><td>반복 끄기</td></tr>
+        <tr><td class="sm">02_배경</td><td>page 2</td><td>page 7</td><td>반복 켜기, 볼륨 낮게</td></tr>
+        <tr><td class="sn">08_맺음</td><td>page 8</td><td>page 8</td><td>반복 끄기</td></tr>
+      </table></div>
+      <p class="meta">7쪽 책에 판권면을 넣지 않았다면 배경음악 End를 page 6, 맺음을 page 7로 바꿉니다.</p>
+      <div class="stage" id="stage6" style="margin-top:.8rem"></div>
+      <div class="ctrl" data-for="stage6">
+        <button type="button" class="main" data-act="play">❚❚ 멈춤</button>
+        <button type="button" data-act="next">다음 장 →</button>
+        <button type="button" data-act="reset">⟲ 처음으로</button>
+        <span class="now">1쪽 · 제목 나레이션</span>
+      </div>
+    </div>
+    <div class="card box-warn" id="s6-help">
+      <h3><span class="tag t-help">막힐 때</span>소리가 안 나요</h3>
+      <ul>
+        <li><b>Save</b>를 눌렀는지 확인 (Close만 누르면 반영이 안 될 수 있음)</li>
+        <li>처음 열 때 소리가 없으면 화면을 한 번 클릭·터치. 브라우저가 사용자 동작 전 자동 재생을 막습니다</li>
+        <li>파일이 목록에 없으면 Library 탭에 올라갔는지 확인</li>
+        <li>헤이진은 한국어 메뉴가 없습니다. 크롬 번역을 켜면 버튼 이름이 바뀌니, 교안의 <b>영어 메뉴 이름</b>과 같이 보며 찾습니다</li>
+      </ul>
+    </div>
+    <div class="card box-more" id="s6-more">
+      <h3><span class="tag t-more">한 걸음 더</span>확인은 Preview로</h3>
+      <p>카드 메뉴 <span class="kbd">Preview</span>로 1쪽부터 끝까지 넘기며, 쪽이 바뀔 때 소리가 정확히 바뀌는지 확인합니다. 배경음악이 나레이션보다 크면 Options에서 볼륨을 낮춥니다.</p>
+    </div>
+  </div>
+</section>
+
+<!-- STEP 7 -->
+<section class="step" data-title="공유·제출">
+  <div class="step-head"><div class="no">STEP 7</div><h2>공유·제출과 출간 마무리</h2><p>링크와 QR로 공유하고 패들렛에 제출합니다.</p></div>
+  <div class="grid">
+    <div class="card" id="s7-do">
+      <h3>순서</h3>
+      <ol>
+        <li>카드 메뉴 <span class="kbd">Share</span> → <b>Link</b> 복사, <b>QR code</b> 다운로드</li>
+        <li>패들렛 「생성형AI 일러스트 전자책 POD 디지털 출판 편집 실무」 본인 섹션에 <b>링크 + QR 이미지</b> 올리기</li>
+        <li>휴대폰으로 QR을 찍어 소리까지 나오는지 최종 확인</li>
+      </ol>
+    </div>
+    <div class="card box-more" id="s7-qr">
+      <h3><span class="tag t-more">한 걸음 더</span>종이책과 전자책 연결</h3>
+      <p>방금 받은 QR을 미리캔버스 <b>뒷표지</b>에 넣어 <b>POD 인쇄용 PDF</b>를 다시 받습니다. 종이책 독자는 뒷표지 QR로 <b>소리 나는 전자책</b>을 엽니다. 플립북 자체는 QR 없는 버전이어도 괜찮습니다.</p>
+    </div>
+    <div class="card box-warn" id="s7-limit">
+      <h3><span class="tag t-help">알아 둘 제한</span>헤이진 무료 플랜</h3>
+      <ul>
+        <li>플립북 <b>5권</b>까지 (삭제하면 휴지통을 거쳐 완전 삭제)</li>
+        <li><b>Replace PDF</b>(링크 유지한 채 PDF 교체)는 유료</li>
+        <li>로그인 없이 만든 플립북은 <b>1주 뒤 삭제</b> → 반드시 로그인 후 작업</li>
+        <li>여러 계정으로 5권 제한을 피하는 방법은 약관 위반이라 쓰지 않습니다</li>
+      </ul>
+    </div>
+    <div class="card wide" id="s7-check">
+      <h3>제출 체크리스트 <span class="meta" id="cnt">0 / 8</span></h3>
+      <div class="progress"><i id="bar"></i></div>
+      <div class="check" id="checklist">
+        <label><input type="checkbox"><span>미리캔버스 8쪽을 웹용 PDF로 받았다</span></label>
+        <label><input type="checkbox"><span>제목·맺음 나레이션을 같은 목소리로 만들었다 (WAV)</span></label>
+        <label><input type="checkbox"><span>Convertio로 MP3 두 개를 만들었다</span></label>
+        <label><input type="checkbox"><span>Pixabay 배경음악 MP3를 받았다</span></label>
+        <label><input type="checkbox"><span>헤이진에 Book 효과를 적용했다</span></label>
+        <label><input type="checkbox"><span>Background Audio 세 줄(1쪽·2~7쪽·8쪽)을 넣고 Save 했다</span></label>
+        <label><input type="checkbox"><span>Preview와 휴대폰 QR로 소리를 확인했다</span></label>
+        <label><input type="checkbox"><span>패들렛에 링크와 QR을 올렸다</span></label>
+      </div>
+    </div>
+    <div class="card wide" id="s7-src">
+      <h3>출처</h3>
+      <ul class="meta">
+        <li>미리캔버스 라이선스 계약 (시행 2023.9.11) · help.miricanvas.com/hc/ko/articles/22476200417945</li>
+        <li>Pixabay Content License Summary · pixabay.com/service/license-summary/</li>
+        <li>Heyzine, Make an interactive PDF (Background Audio) · heyzine.com/how-to/make-an-interactive-pdf/</li>
+        <li>구글 AI 스튜디오·Convertio·헤이진 화면: 강사 실습 화면 (2026.10)</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+</main>
+<details class="side" id="sidebox" open><summary>이 STEP의 카드</summary><div id="sidelist"></div></details>
+</div>
+
+<div class="bottom"><div class="bottom-in"><button type="button" id="prev">← 이전 STEP</button><button type="button" id="next" class="next">다음 STEP →</button></div></div>
+<footer>에이비랩(AB Lab) 김충효 · 김에듀 · 산대특 POD반 출판편집제작 및 플랫폼출간</footer>
+
+<script>
+(function(){
+  /* ---------- STEP 탭 ---------- */
+  var steps=[].slice.call(document.querySelectorAll('.step')),tabs=document.getElementById('tabs'),side=document.getElementById('sidelist'),cur=0;
+  steps.forEach(function(s,i){var b=document.createElement('button');b.type='button';b.textContent='STEP '+i+' '+s.dataset.title;b.onclick=function(){show(i,true)};tabs.appendChild(b)});
+  function goTo(el){var top=el.getBoundingClientRect().top+window.pageYOffset-document.querySelector('.topbar').offsetHeight-12;window.scrollTo({top:Math.max(0,top),behavior:'smooth'})}
+  function show(i,scroll){
+    cur=i;
+    steps.forEach(function(s,k){s.classList.toggle('on',k===i)});
+    [].forEach.call(tabs.children,function(b,k){b.classList.toggle('on',k===i)});
+    side.innerHTML='';
+    [].forEach.call(steps[i].querySelectorAll('.card'),function(c){
+      var h=c.querySelector('h3');if(!h||!c.id)return;
+      var a=document.createElement('a');a.href='#'+c.id;
+      var t=h.querySelector('.tag');
+      a.textContent=(t?t.textContent+' · ':'')+[].filter.call(h.childNodes,function(n){return n!==t&&!(n.classList&&n.classList.contains('meta'))}).map(function(n){return n.textContent}).join('').trim();
+      a.onclick=function(e){e.preventDefault();goTo(c)};
+      side.appendChild(a);
+    });
+    document.getElementById('prev').disabled=i===0;
+    document.getElementById('next').disabled=i===steps.length-1;
+    if(scroll)goTo(steps[i]);
+    var tb=tabs.children[i];tabs.scrollLeft=tb.offsetLeft-tabs.clientWidth/2+tb.offsetWidth/2;
+    initStages();
+    window.dispatchEvent(new Event('resize'));
+  }
+  document.getElementById('prev').onclick=function(){if(cur>0)show(cur-1,true)};
+  document.getElementById('next').onclick=function(){if(cur<steps.length-1)show(cur+1,true)};
+
+  /* ---------- 글자 크기 ---------- */
+  var base=20,size=base;
+  [].forEach.call(document.querySelectorAll('.fsbtn button'),function(b){b.onclick=function(){var d=+b.dataset.fs;size=d===0?base:Math.min(28,Math.max(16,size+d*2));document.documentElement.style.setProperty('--fs',size+'px')}});
+
+  /* ---------- 스샷 크게 보기 ---------- */
+  [].forEach.call(document.querySelectorAll('.shot'),function(f){f.onclick=function(){var c=f.closest('.card');c.classList.toggle('zoom');}});
+
+  /* ---------- 복사 ---------- */
+  [].forEach.call(document.querySelectorAll('.copy'),function(b){b.onclick=function(){
+    var cl=b.parentNode.cloneNode(true);var bt=cl.querySelector('.copy');if(bt)bt.remove();var t=cl.textContent.trim();
+    function ok(){b.textContent='복사됨';b.classList.add('done');setTimeout(function(){b.textContent='복사';b.classList.remove('done')},1500)}
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(ok,fb)}else fb();
+    function fb(){var ta=document.createElement('textarea');ta.value=t;ta.style.position='absolute';ta.style.left='-9999px';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');ok()}catch(e){}document.body.removeChild(ta)}
+  }});
+
+  /* ---------- 체크리스트 ---------- */
+  var boxes=document.querySelectorAll('#checklist input');
+  function upd(){var n=[].filter.call(boxes,function(x){return x.checked}).length;document.getElementById('cnt').textContent=n+' / '+boxes.length;document.getElementById('bar').style.width=(n/boxes.length*100)+'%'}
+  [].forEach.call(boxes,function(x){x.onchange=upd});
+
+  /* ---------- three.js 소리 지도 책 ---------- */
+  var stages={};
+  var AUDIO=function(p){return p===1?{k:'tts',t:'제목 나레이션',f:'01_제목.mp3'}:p===8?{k:'tts',t:'맺음 나레이션',f:'08_맺음.mp3'}:{k:'bgm',t:'배경음악 (2~7쪽 반복)',f:'02_배경.mp3'}};
+  var LABEL=function(p){return p===1?'앞표지':p===8?'뒷표지':'본문'};
+
+  function pageTex(p){
+    var c=document.createElement('canvas');c.width=512;c.height=720;var g=c.getContext('2d');var a=AUDIO(p);
+    g.fillStyle='#FFFFFF';g.fillRect(0,0,512,720);
+    g.fillStyle=a.k==='tts'?'#E6F2F4':'#EEF7F0';g.fillRect(24,24,464,672);
+    g.strokeStyle=a.k==='tts'?'#1F7A8C':'#2E6B41';g.lineWidth=6;g.strokeRect(24,24,464,672);
+    g.fillStyle='#24262B';g.textAlign='center';
+    g.font='800 150px Pretendard, sans-serif';g.fillText(p,256,300);
+    g.font='700 54px Pretendard, sans-serif';g.fillText(LABEL(p),256,390);
+    g.fillStyle=a.k==='tts'?'#1F7A8C':'#2E6B41';
+    g.font='700 44px Pretendard, sans-serif';g.fillText(a.k==='tts'?'● 나레이션':'♪ 배경음악',256,520);
+    g.font='500 32px Pretendard, sans-serif';g.fillStyle='#5E626B';g.fillText(a.f,256,580);
+    var t=new THREE.CanvasTexture(c);t.anisotropy=4;return t;
+  }
+  function backTex(){
+    var c=document.createElement('canvas');c.width=64;c.height=90;var g=c.getContext('2d');g.fillStyle='#F3F0E9';g.fillRect(0,0,64,90);return new THREE.CanvasTexture(c);
+  }
+  var SP=[{p:1,l:'1쪽'},{p:2,l:'2·3쪽'},{p:4,l:'4·5쪽'},{p:6,l:'6·7쪽'},{p:8,l:'8쪽'}];
+  function build(id){
+    var el=document.getElementById(id);if(!el||!window.THREE)return null;
+    var W=el.clientWidth,H=el.clientHeight;
+    var renderer=new THREE.WebGLRenderer({antialias:true,alpha:true});
+    renderer.setPixelRatio(Math.min(2,window.devicePixelRatio||1));renderer.setSize(W,H);el.appendChild(renderer.domElement);
+    var scene=new THREE.Scene();
+    var cam=new THREE.PerspectiveCamera(36,W/H,1,40);cam.position.set(0,1.1,7.6);cam.lookAt(0,0.3,0);
+    scene.add(new THREE.AmbientLight(0xffffff,.85));var dl=new THREE.DirectionalLight(0xffffff,.45);dl.position.set(2,4,6);scene.add(dl);
+    var PW=2.3,PH=3.2,GAP=0.06;
+    var base=new THREE.Mesh(new THREE.BoxGeometry(PW*2+0.5,PH+0.4,0.12),new THREE.MeshLambertMaterial({color:0xDCD6CA}));
+    base.position.set(0,0,-0.2);scene.add(base);
+    var leaves=[];
+    for(var j=0;j<4;j++){
+      var grp=new THREE.Group();
+      var front=new THREE.Mesh(new THREE.PlaneGeometry(PW,PH),new THREE.MeshLambertMaterial({map:pageTex(2*j+1)}));
+      front.position.x=PW/2;
+      var back=new THREE.Mesh(new THREE.PlaneGeometry(PW,PH),new THREE.MeshLambertMaterial({map:pageTex(2*j+2)}));
+      back.position.set(PW/2,0,-0.015);back.rotation.y=Math.PI;
+      grp.add(front);grp.add(back);
+      grp.userData={from:0,to:0,t:1};
+      grp.position.z=(3-j)*GAP;
+      scene.add(grp);leaves.push(grp);
+    }
+    var bc=document.createElement('canvas');bc.width=1024;bc.height=160;
+    var badge=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(bc),transparent:true,depthTest:false}));
+    badge.scale.set(4.2,0.66,1);badge.position.set(0,2.15,0.6);badge.renderOrder=10;scene.add(badge);
+    var rings=[];for(var i=0;i<3;i++){var rg=new THREE.Mesh(new THREE.RingGeometry(0.22,0.27,40),new THREE.MeshBasicMaterial({color:0x1F7A8C,transparent:true,opacity:.6,depthTest:false}));rg.position.set(2.85,1.25,0.7);rg.renderOrder=11;scene.add(rg);rings.push(rg)}
+    var st={el:el,renderer:renderer,scene:scene,cam:cam,leaves:leaves,badge:badge,badgeCanvas:bc,rings:rings,s:0,playing:true,timer:0,clock:new THREE.Clock(),GAP:GAP};
+    st.ctrl=document.querySelector('.ctrl[data-for="'+id+'"]');
+    return st;
+  }
+  function badgeTex(st){
+    var c=st.badgeCanvas,g=c.getContext('2d');var sp=SP[st.s],a=AUDIO(sp.p);
+    g.clearRect(0,0,1024,160);
+    g.fillStyle=a.k==='tts'?'#1F7A8C':'#2E6B41';
+    var r=40,w=1000,h=120,x=12,y=20;
+    g.beginPath();g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);g.arcTo(x+w,y+h,x,y+h,r);g.arcTo(x,y+h,x,y,r);g.arcTo(x,y,x+w,y,r);g.fill();
+    g.fillStyle='#fff';g.textAlign='center';g.font='700 56px Pretendard, sans-serif';
+    g.fillText((a.k==='tts'?'● ':'♪ ')+sp.l+' · '+a.t,512,100);
+    st.badge.material.map.needsUpdate=true;
+  }
+  function setNow(st){var sp=SP[st.s],a=AUDIO(sp.p);st.ctrl.querySelector('.now').textContent=sp.l+' · '+a.t+' ('+a.f+')';badgeTex(st);
+    var col=a.k==='tts'?0x1F7A8C:0x2E6B41;st.rings.forEach(function(r){r.material.color.setHex(col)});}
+  function flipTo(st,s){
+    st.s=s;
+    st.leaves.forEach(function(L,j){var want=j<s?Math.PI:0;var u=L.userData;if(u.to!==want){u.from=-L.rotation.y;u.to=want;u.t=0;}});
+    setNow(st);
+  }
+  function next(st){flipTo(st,st.s>=4?0:st.s+1)}
+  function tick(st,dt){
+    st.leaves.forEach(function(L,j){
+      var u=L.userData;
+      if(u.t<1){u.t=Math.min(1,u.t+dt/0.9);}
+      var e=u.t<.5?2*u.t*u.t:1-Math.pow(-2*u.t+2,2)/2;
+      var ang=u.from+(u.to-u.from)*e;
+      L.rotation.y=-ang;
+      var f=ang/Math.PI;
+      var zR=(3-j)*st.GAP,zL=j*st.GAP+0.02;
+      L.position.z=zR+(zL-zR)*f+Math.sin(f*Math.PI)*0.35;
+    });
+    if(st.playing){st.timer+=dt;if(st.timer>2.4){st.timer=0;next(st)}}
+    var tt=st.clock.elapsedTime;
+    st.rings.forEach(function(r,k){var ph=((tt*0.8+k/3)%1);var s=st.playing?1+ph*2.2:1;r.scale.set(s,s,1);r.material.opacity=st.playing?(1-ph)*.6:.25;});
+  }
+  function bind(st){
+    [].forEach.call(st.ctrl.querySelectorAll('button'),function(b){b.onclick=function(){
+      var a=b.dataset.act;
+      if(a==='play'){st.playing=!st.playing;b.textContent=st.playing?'❚❚ 멈춤':'▶ 재생';st.timer=0}
+      if(a==='next'){next(st);st.timer=0}
+      if(a==='reset'){flipTo(st,1);st.timer=0}
+    }});
+  }
+  function initStages(){
+    ['stage0','stage6'].forEach(function(id){
+      var el=document.getElementById(id);if(!el||stages[id])return;
+      if(!el.offsetParent)return;
+      var st=build(id);if(!st)return;stages[id]=st;bind(st);setNow(st);
+    });
+  }
+  function loop(){
+    requestAnimationFrame(loop);
+    Object.keys(stages).forEach(function(id){
+      var st=stages[id];var dt=Math.min(.05,st.clock.getDelta());
+      if(!st.el.offsetParent)return;
+      tick(st,dt);st.renderer.render(st.scene,st.cam);
+    });
+  }
+  window.addEventListener('resize',function(){Object.keys(stages).forEach(function(id){var st=stages[id];var W=st.el.clientWidth,H=st.el.clientHeight;if(!W)return;st.renderer.setSize(W,H);st.cam.aspect=W/H;st.cam.updateProjectionMatrix()})});
+
+  if(window.innerWidth<=880){document.getElementById('sidebox').removeAttribute('open')}
+  var start=function(){show(0,false);loop()};
+  if(document.fonts&&document.fonts.ready){document.fonts.ready.then(start,start)}else start();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>샷 · 무브 · 팝업 — 구글 플로우 실전 100분</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F6F8FA;--paper:#fff;--line:#DCE3EA;--ink:#1B2530;--ink2:#5A6B7C;--ac:#0E7C86;--ac2:#E3F3F4;--acl:#B7DEE1;
+--set:#EEF2F7;--warn:#FFF3EC;--warnl:#F5D3BF;--ext:#F3EEFB;--extl:#D8CBF0;--fs:20px}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans KR","Noto Sans KR",sans-serif;font-size:var(--fs);line-height:1.55;font-weight:400}
+body.big{--fs:24px}
+.nav{position:sticky;top:0;z-index:9;background:#fff;border-bottom:1px solid var(--line)}
+.nav-in{max-width:1360px;margin:0 auto;padding:8px 24px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.brand{font-weight:600;color:var(--ac);font-size:.78em;border-right:1px solid var(--line);padding-right:12px}
+.tabs{display:flex;gap:2px;flex:1;flex-wrap:wrap}
+.tab{border:none;border-bottom:3px solid transparent;background:none;padding:8px 10px;font-size:.74em;cursor:pointer;color:var(--ink2);font-family:inherit;font-weight:600}
+.tab.active{color:var(--ac);border-bottom-color:var(--ac)}
+.fb{border:1px solid var(--line);background:#fff;border-radius:6px;padding:4px 10px;font-size:.74em;cursor:pointer;font-family:inherit}
+.step{display:none;max-width:1360px;margin:0 auto;padding:24px 24px 30px}.step.active{display:block}
+.head{display:grid;grid-template-columns:auto 1fr auto;gap:18px;align-items:end;border-bottom:3px solid var(--ac);padding-bottom:12px;margin-bottom:18px}
+.head .lab{font-size:.72em;color:var(--ac);font-weight:600;letter-spacing:.06em}
+.head h1{margin:0;font-size:1.5em;font-weight:600;letter-spacing:-.01em}
+.head .goal{margin:4px 0 0;color:var(--ink2);font-size:.9em;font-weight:300}
+.head .time{font-size:1.6em;font-weight:300;color:var(--ac)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(380px,1fr));gap:14px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:16px 18px}
+.wide{grid-column:1/-1}
+.card h2{margin:0 0 8px;font-size:1em;font-weight:600;display:flex;align-items:center;gap:8px}
+.card h2 .tag{font-size:.7em;font-weight:600;color:#fff;background:var(--ac);border-radius:4px;padding:1px 7px}
+.card p{margin:5px 0}.card ul,.card ol{margin:5px 0;padding-left:1.25em}.card li{margin:3px 0}
+.set{background:var(--set)}.warn{background:var(--warn);border-color:var(--warnl)}.ext{background:var(--ext);border-color:var(--extl)}.key{background:var(--ac2);border-color:var(--acl)}
+details{border-top:1px dashed var(--line);margin-top:10px;padding-top:6px}
+summary{cursor:pointer;color:var(--ac);font-weight:600;font-size:.85em;list-style:none}
+summary::before{content:"＋ ";}details[open] summary::before{content:"－ ";}
+details p{font-size:.92em;color:var(--ink2)}
+.fig{background:#fff;border:1px solid var(--line);border-radius:6px;padding:8px;margin:8px 0}
+.fig svg{width:100%;height:auto;display:block}
+.fig .cap{font-size:.78em;color:var(--ink2);margin-top:4px}
+.pr{position:relative;background:#F9FBFC;border:1px solid var(--line);border-radius:6px;padding:10px 92px 10px 12px;margin:6px 0;font-size:.86em;line-height:1.5}
+.pr .en{font-weight:600}.pr .ko{display:block;color:var(--ink2);margin-top:3px;font-weight:300}.pr .w{display:block;font-size:.85em;color:var(--ac);margin-top:3px}
+.pr .k{color:var(--ac);font-weight:600;background:var(--ac2);border-radius:3px;padding:0 4px}
+.pr .st{display:inline-block;font-size:.75em;font-weight:600;color:#fff;background:var(--ink2);border-radius:4px;padding:0 7px;margin-bottom:4px}
+.copy{position:absolute;top:8px;right:8px;border:1px solid var(--acl);background:#fff;color:var(--ac);border-radius:4px;padding:2px 9px;font-size:.75em;cursor:pointer;font-family:inherit}
+.copy.done{background:var(--ac);color:#fff}
+table{width:100%;border-collapse:collapse;font-size:.86em;background:#fff}
+th,td{border-bottom:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}th{color:var(--ac);font-weight:600;border-bottom:2px solid var(--ac)}
+.tbl{overflow-x:auto}
+.mono{font-family:"IBM Plex Mono",monospace;font-size:.9em}
+.foot{max-width:1360px;margin:0 auto;padding:0 24px 50px;display:flex;justify-content:space-between;gap:12px}
+.foot button{border:1px solid var(--line);background:#fff;border-radius:6px;padding:10px 16px;font-size:.82em;cursor:pointer;font-family:inherit;max-width:48%}
+.foot button:disabled{opacity:.3}
+.ok{color:#1E7F4F;font-weight:600}.no{color:#B4382E;font-weight:600}
+.lead{font-size:1.15em;font-weight:600;color:var(--ac)}
+.nav-in{flex-wrap:nowrap}
+.tabs{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;min-width:0}
+.tabs::-webkit-scrollbar{display:none}
+.tab{white-space:nowrap;flex:0 0 auto}
+.fb{flex:0 0 auto;color:#222;font-family:"Noto Sans KR","IBM Plex Sans KR","Malgun Gothic",sans-serif;min-width:48px}
+@media (max-width:900px){
+ .nav-in{flex-wrap:wrap;padding:6px 12px;gap:6px}
+ .brand{flex:1;border:none;padding:0;font-size:.7em}
+ .tabs{order:3;flex:0 0 100%}
+ .tab{font-size:.68em}
+ .fb{font-size:.68em;padding:3px 8px}
+ .grid{grid-template-columns:1fr}
+ .step{padding:18px 12px 24px}
+ .pr{padding-right:14px;padding-top:36px}
+}
+</style></head>
+<body>
+<div class="nav"><div class="nav-in"><div class="brand">일원 · AI 영상제작 · 구글 플로우</div><div class="tabs" id="tabs"></div><button class="fb" id="fontbtn" type="button">가+</button></div></div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><marker id="m" markerUnits="userSpaceOnUse" markerWidth="16" markerHeight="16" refX="12" refY="8" orient="auto"><path d="M0,0 L16,8 L0,16 z" fill="#E07A3F"/></marker></defs></svg>
+<div id="app"></div>
+<div class="foot"><button id="prev" type="button">←</button><button id="next" type="button">→</button></div>
+<script>
+const AC="#0E7C86",INK="#1B2530",G="#DCE3EA",OR="#E07A3F";
+const defs="";
+const svg=(w,h,i)=>`<svg viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg">${defs}${i}</svg>`;
+const T=(x,y,t,s=13,c=INK,w=400,a="middle")=>`<text x="${x}" y="${y}" font-size="${s}" fill="${c}" font-weight="${w}" text-anchor="${a}" font-family="IBM Plex Sans KR,sans-serif">${t}</text>`;
+const ar=(a,b,c,d,col=OR)=>`<line x1="${a}" y1="${b}" x2="${c}" y2="${d}" stroke="${col}" stroke-width="3" marker-end="url(#m)"/>`;
+const grid=(w,h)=>{let s="";for(let x=20;x<w;x+=20)s+=`<line x1="${x}" y1="0" x2="${x}" y2="${h}" stroke="${G}" stroke-width=".6"/>`;for(let y=20;y<h;y+=20)s+=`<line x1="0" y1="${y}" x2="${w}" y2="${y}" stroke="${G}" stroke-width=".6"/>`;return s};
+const camI=(x,y,r=0)=>`<g transform="translate(${x} ${y}) rotate(${r})"><rect x="-16" y="-10" width="32" height="20" rx="3" fill="none" stroke="${AC}" stroke-width="2.5"/><path d="M16 -5 L26 -10 L26 10 L16 5 z" fill="none" stroke="${AC}" stroke-width="2.5"/><circle cx="-4" cy="0" r="5" fill="none" stroke="${AC}" stroke-width="2.5"/></g>`;
+const cup=(x,y,s=1)=>`<g transform="translate(${x} ${y}) scale(${s})"><path d="M-14 -10 L-11 14 L11 14 L14 -10 z" fill="none" stroke="${INK}" stroke-width="2.5"/><path d="M14 -4 q12 2 0 12" fill="none" stroke="${INK}" stroke-width="2.5"/><line x1="-16" y1="-10" x2="16" y2="-10" stroke="${INK}" stroke-width="2.5"/></g>`;
+const S={};
+const mv=(name,inner)=>svg(240,130,grid(240,130)+inner+T(120,16,name,12,AC,600));
+S.push=mv("push in",camI(50,70)+ar(80,70,140,70)+cup(195,70));
+S.dolly=mv("dolly out",camI(130,70)+ar(105,70,45,70)+cup(195,70));
+S.pan=mv("pan L→R",cup(60,80,.8)+cup(180,80,.8)+camI(120,50)+`<path d="M95 40 A30 30 0 0 1 145 40" fill="none" stroke="${OR}" stroke-width="3" marker-end="url(#m)"/>`);
+S.orbit=mv("orbit",cup(120,80)+`<ellipse cx="120" cy="75" rx="75" ry="28" fill="none" stroke="${OR}" stroke-width="3" stroke-dasharray="6 5"/>`+camI(45,75));
+S.tilt=mv("tilt up",cup(195,80)+camI(60,80)+`<path d="M90 100 A40 40 0 0 1 90 50" fill="none" stroke="${OR}" stroke-width="3" marker-end="url(#m)"/>`);
+S.track=mv("tracking",cup(90,85)+ar(105,85,160,85,INK)+camI(90,40)+ar(115,40,175,40));
+S.crane=mv("crane up",cup(150,85)+camI(70,95)+ar(70,75,70,30));
+S.zoom=mv("zoom (lens)",camI(50,70)+cup(195,70)+`<rect x="165" y="45" width="60" height="55" fill="none" stroke="${OR}" stroke-width="2.5"/><rect x="178" y="55" width="34" height="35" fill="none" stroke="${OR}" stroke-width="2.5"/>`);
+S.pvz=svg(720,190,grid(720,190)+T(180,30,"push in · 카메라 이동",14,AC,600)+T(540,30,"zoom · 초점거리 변화",14,AC,600)+cup(180,120,1.6)+`<rect x="60" y="60" width="70" height="60" fill="none" stroke="${INK}" stroke-width="1.5" opacity=".5"/><rect x="250" y="80" width="40" height="40" fill="none" stroke="${INK}" stroke-width="1.5" opacity=".5"/>`+T(180,170,"배경 물체 간 거리가 변한다 (시차 발생)",12,INK)+cup(540,120,1.6)+`<rect x="420" y="60" width="70" height="60" fill="none" stroke="${INK}" stroke-width="1.5" opacity=".5"/><rect x="600" y="60" width="70" height="60" fill="none" stroke="${INK}" stroke-width="1.5" opacity=".5"/>`+T(540,170,"모든 것이 같은 비율로 커진다 (시차 없음)",12,INK)+`<line x1="360" y1="15" x2="360" y2="180" stroke="${G}" stroke-width="2"/>`);
+S.map=svg(720,120,grid(720,120)+[["T2V","무브 변수 8종",30],["T2I","앵글 확정 3장",205],["I2V","샷×무브 결합",380],["팝업","메뉴판 이미지→재현",555]].map(([a,b,x],i)=>`<rect x="${x}" y="25" width="140" height="70" rx="4" fill="${i==3?AC:'#fff'}" stroke="${AC}" stroke-width="2"/>`+T(x+70,55,a,18,i==3?"#fff":AC,600)+T(x+70,80,b,12,i==3?"#fff":INK)).join("")+ar(172,60,203,60)+ar(347,60,378,60)+ar(522,60,553,60));
+S.shots=svg(720,200,grid(720,200)+[["WS",110,.9,"잔 + 테이블 + 카페"],["MS",360,1.8,"잔 + 손·접시"],["CU",610,3.6,"잔 표면 · 거품"]].map(([n,x,s,d])=>`<rect x="${x-90}" y="20" width="180" height="120" fill="#fff" stroke="${INK}" stroke-width="1.5"/><clipPath id="k${x}"><rect x="${x-90}" y="20" width="180" height="120"/></clipPath><g clip-path="url(#k${x})">${cup(x,90+(s-1)*15,s)}</g>`+T(x,165,n,15,AC,600)+T(x,185,d,12)).join(""));
+S.angles=svg(720,210,grid(720,210)+`<line x1="40" y1="170" x2="680" y2="170" stroke="${INK}" stroke-width="1.5"/>`+cup(360,155,1.6)+camI(110,165)+T(110,195,"low — 위엄",12,AC,600)+camI(250,110)+T(250,95,"eye level",12,AC,600)+camI(600,55)+T(600,40,"high — 관찰",12,AC,600)+camI(360,30,90)+T(400,30,"top-down 90°",12,AC,600)+ar(140,160,300,140)+ar(575,70,420,125)+ar(360,55,360,120)+`<line x1="40" y1="170" x2="40" y2="30" stroke="${G}" stroke-width="1"/>`+T(32,40,"높이",10,INK,400,"end"));
+S.ar=svg(720,180,grid(720,180)+`<rect x="30" y="30" width="230" height="130" fill="#fff" stroke="${AC}" stroke-width="2.5"/><rect x="320" y="15" width="85" height="150" fill="#fff" stroke="${AC}" stroke-width="2.5"/><rect x="460" y="15" width="230" height="150" fill="none" stroke="${G}" stroke-width="1.5" stroke-dasharray="5 4"/>`+T(145,100,"16:9",26,AC,600)+T(145,130,"영상 · 이미지 둘 다",11)+T(362,95,"9:16",20,AC,600)+T(362,120,"영상 · 이미지",10)+T(575,85,"1:1 · 4:3 · 3:4",16,INK,600)+T(575,110,"이미지만 가능",12)+T(575,135,"→ 영상으로 못 잇는다",12,OR,600));
+S.blocks=svg(720,100,grid(720,100)+[["subject","피사체"],["shot size","샷"],["angle","앵글"],["light / mood","조명"]].map(([a,b],i)=>`<rect x="${20+i*175}" y="18" width="160" height="64" fill="${i==2?AC:'#fff'}" stroke="${AC}" stroke-width="2"/>`+T(100+i*175,45,a,15,i==2?"#fff":AC,600)+T(100+i*175,68,b,12,i==2?"#fff":INK)).join(""));
+S.match=svg(720,210,grid(720,210)+[["WS 16:9",45],["CU 9:16",105],["top-down 16:9",165]].map(([n,y])=>`<rect x="30" y="${y-20}" width="170" height="40" fill="${AC}"/>`+T(115,y+5,n,14,"#fff",600)).join("")+[["dolly in · orbit",45],["subtle push in · tilt",105],["orbit · crane up",165]].map(([n,y])=>`<rect x="500" y="${y-20}" width="200" height="40" fill="#fff" stroke="${AC}" stroke-width="2"/>`+T(600,y+5,n,13,INK,600)).join("")+ar(205,45,495,45)+ar(205,105,495,105)+ar(205,165,495,165)+T(360,30,"어울리는 무브",11,AC,600)+`<line x1="205" y1="105" x2="495" y2="45" stroke="${G}" stroke-width="2" stroke-dasharray="4 4"/>`+T(360,80,"점선 = 피할 조합 (CU에 orbit)",10,OR));
+S.i2v=svg(720,130,grid(720,130)+`<rect x="20" y="20" width="330" height="90" fill="#fff" stroke="#B4382E" stroke-width="2"/><rect x="370" y="20" width="330" height="90" fill="#fff" stroke="#1E7F4F" stroke-width="2"/>`+T(185,48,"이미지가 이미 말한 것",14,"#B4382E",600)+T(185,75,"subject · outfit · place · time",13,INK)+T(185,98,"→ 프롬프트에서 삭제",11)+T(535,48,"이미지가 말 못 하는 것",14,"#1E7F4F",600)+T(535,75,"move · speed · sound · micro-action",13,INK)+T(535,98,"→ 이것만 쓴다",11));
+S.pop=svg(720,200,grid(720,200)+`<rect x="40" y="140" width="640" height="10" fill="#fff" stroke="${INK}" stroke-width="1.5"/>`+T(360,175,"flat printed menu (paper)",12)+[["① rim — 그릇 두께",150],["② contact shadow — 접지 그림자",380],["③ parallax — 앞뒤 어긋남",600]].map(([n,x],i)=>`<ellipse cx="${x}" cy="140" rx="60" ry="9" fill="${INK}" opacity="${i==1?.35:.15}"/><ellipse cx="${x+(i==2?12:0)}" cy="${100}" rx="58" ry="20" fill="#fff" stroke="${AC}" stroke-width="3"/>${i==0?`<ellipse cx="${x}" cy="100" rx="58" ry="20" fill="none" stroke="${AC}" stroke-width="3" transform="translate(0 6)"/>`:''}${i==2?`<ellipse cx="${x-12}" cy="104" rx="58" ry="20" fill="none" stroke="${AC}" stroke-width="1.5" stroke-dasharray="4 4"/>`:''}`+T(x,45,n,13,INK,600)).join("")+ar(380,125,380,138,INK));
+S.anat=svg(720,100,grid(720,100)+[["angle",1],["subject",0],["move",0],["transition",1],["sound",0]].map(([n,f],i)=>`<rect x="${20+i*138}" y="18" width="126" height="60" fill="${f?AC:'#fff'}" stroke="${AC}" stroke-width="2"/>`+T(83+i*138,53,n,15,f?"#fff":INK,600)).join(""));
+S.omni=svg(720,120,grid(720,120)+`<rect x="20" y="25" width="200" height="70" fill="#fff" stroke="${AC}" stroke-width="2"/><rect x="260" y="25" width="200" height="70" fill="#fff" stroke="${AC}" stroke-width="2"/><rect x="500" y="25" width="200" height="70" fill="${AC}"/>`+T(120,52,"1차 생성",15,AC,600)+T(120,78,"Veo 3.1 · 360p",11)+T(360,52,"말로 고치기",15,AC,600)+T(360,78,"Omni Flash · 대화형",11)+T(600,52,"확정",15,"#fff",600)+T(600,78,"9:16 or 16:9 · 다운로드",11,"#fff")+ar(225,60,255,60)+ar(465,60,495,60));
+/* 추가: 메뉴판 이미지 → 팝업 2단계 */
+S.menu=svg(720,190,grid(720,190)+`<rect x="30" y="35" width="290" height="115" fill="#fff" stroke="${INK}" stroke-width="2"/>`+[0,1,2].map(i=>`<rect x="${52+i*92}" y="58" width="70" height="50" fill="#E3F3F4" stroke="${AC}" stroke-width="1.5"/><line x1="${52+i*92}" y1="125" x2="${122+i*92}" y2="125" stroke="${INK}" stroke-width="3"/>`).join("")+T(175,175,"① 이미지 생성: 평평한 메뉴판 (음식 사진 인쇄)",13,AC,600)+ar(330,92,392,92)+`<rect x="400" y="120" width="290" height="10" fill="#fff" stroke="${INK}" stroke-width="1.5"/>`+[0,1,2].map(i=>`<ellipse cx="${448+i*97}" cy="120" rx="30" ry="6" fill="${INK}" opacity=".25"/><ellipse cx="${448+i*97}" cy="${78-(i%2)*10}" rx="30" ry="12" fill="#fff" stroke="${AC}" stroke-width="3"/>`).join("")+T(545,175,"② 프레임→동영상: 사진이 입체로 솟음",13,AC,600)+T(360,22,"메뉴판 이미지가 없으면 솟을 재료가 없습니다",12,OR,600));
+
+/* 카드 헬퍼 (P에 단계 라벨 st 추가) */
+const P=(en,ko,w,st)=>`<div class="pr">${st?`<span class="st">${st}</span><br>`:""}<span class="en">${en}</span><button class="copy" type="button">복사</button><span class="ko">${ko}</span>${w?`<span class="w">${w}</span>`:""}</div>`;
+const card=(h,body,cls="",wide=false,tag="")=>`<div class="card ${cls}${wide?" wide":""}"><h2>${tag?`<span class="tag">${tag}</span>`:""}${h}</h2>${body}</div>`;
+const fig=(s,c)=>`<div class="fig">${s}${c?`<div class="cap">${c}</div>`:""}</div>`;
+const more=(t,body)=>`<details><summary>${t}</summary>${body}</details>`;
+/* ===== STEP 1 (카페·제품) — 원본 유지 ===== */
+const BASE=[["카페","A ceramic latte cup on a wooden cafe counter, morning window light, steam rising.","나무 카운터 위 세라믹 라떼 잔. 아침 창빛, 김이 오른다."],
+["디저트","A slice of strawberry cake on a white plate, marble table, soft studio light.","흰 접시 위 딸기 케이크 한 조각. 대리석 테이블, 부드러운 스튜디오 조명."],
+["바리스타","A barista in an apron pours milk into a cup behind the counter, warm cafe interior.","앞치마 바리스타가 카운터 뒤에서 잔에 우유를 붓는다. 따뜻한 카페 내부."]];
+const MOVES=[
+["push","push in","Camera slowly pushes in toward the subject.","피사체를 향해 천천히 전진.","push in = 카메라 물리 이동 · slowly = 속도 변수 (기본값 없음, 안 쓰면 빠르다)","피사체를 '중요하게' 만든다. 제품 컷 기본값."],
+["dolly","dolly out","Camera slowly dollies out, revealing the whole scene.","천천히 후진, 주변 전체 노출.","revealing = 후진의 목적. 목적어가 있으면 프레이밍이 안정된다","공간 소개, 엔딩."],
+["pan","pan","Camera pans slowly from left to right across the scene.","장면을 가로질러 좌→우 패닝.","across the scene = 팬의 경로. 경로 없는 팬은 흔들린다","여러 제품을 훑을 때."],
+["orbit","orbit","Camera orbits 90 degrees around the subject, keeping it centered.","피사체 중심으로 90° 궤도, 중앙 유지.","keeping it centered = 프레임 이탈 방지 · 90 = 8초에 맞는 각도","제품 360° 쇼케이스의 절반. 팝업에서 재사용."],
+["tilt","tilt up","Camera tilts up slowly from the bottom to the top of the subject.","피사체 아래에서 위까지 천천히 틸트업.","from A to B = 시작·끝 지정","세로 제품(병·잔)의 리빌."],
+["track","tracking","The subject moves across the scene; camera tracks alongside at the same speed.","피사체가 이동, 카메라가 같은 속도로 병행.","same speed = 상대속도 0. 없으면 카메라가 앞선다","움직이는 피사체 전용 — 3번 바리스타 문장을 고른 분만. 잔·케이크는 스스로 움직이지 않아요."],
+["crane","crane up","Camera rises straight up, looking down at the subject.","수직 상승, 시선은 피사체.","looking down = 틸트 결합 명시. 없으면 천장을 본다","탑다운으로 '도착'하는 무브."],
+["zoom","zoom","Slow zoom in, lens only, camera stays fixed.","렌즈만 줌인, 카메라 고정.","lens only + stays fixed = 이중 명시. 하나만 쓰면 push in으로 해석","시차가 없어 평면적. 의도적으로 '감시 카메라 느낌'을 낼 때만."]];
+const step1=()=>{
+  let g=card("고정 문장 3종 — 하나 고르기",`<p>피사체 문장은 고정, 뒤의 카메라 문장만 교체. 아래 무브 문장은 전부 <b>the subject</b>로 써서 셋 중 무엇을 골라도 그대로 붙습니다. 텍스트→동영상 · Veo 3.1 <b>Lite</b> · 16:9 · <b>360p</b>.</p>`+BASE.map(([n,e,k])=>P(e+' <span class="k">+ camera</span>',k)).join("")+more("왜 문장을 고정하나",`<p>변수를 하나만 바꿔야 결과 차이를 그 변수 탓으로 돌릴 수 있습니다. 두 개를 바꾸면 원인을 못 가립니다. 무브 감각은 이 비교에서 나옵니다.</p>`),"key",true);
+  g+=card("필수 4",`<p>크레딧 관리상 직접 돌리는 건 이 넷. <b>push in · orbit · crane up · zoom</b>. 나머지 4는 확장 카드로 보고 집에서.</p>`+more("왜 이 넷인가",`<p>push vs zoom은 시차의 유무, orbit은 팝업 재사용, crane up은 탑다운 도착. 오늘 뒤 STEP에 직접 연결되는 무브만 골랐습니다.</p>`),"set");
+  g+=card("규칙 하나",`<p class="lead">카메라 지시는 문장당 하나.</p><p>두 무브를 한 문장에 넣으면 Veo는 평균을 냅니다. 결합은 씬빌더에서 클립을 이어서.</p>`,"set");
+  MOVES.forEach(([id,name,en,ko,w,use],i)=>{g+=card(name,fig(S[id])+P(en,ko,w)+`<p style="font-size:.9em;color:var(--ink2)">${use}</p>`,[0,3,6,7].includes(i)?"":"ext",false,[0,3,6,7].includes(i)?"필수":"확장")});
+  g+=card("push in vs zoom",fig(S.pvz)+more("왜 다른가",`<p>push in은 카메라가 이동하므로 앞 물체와 뒤 물체의 상대 위치가 변합니다(시차). zoom은 초점거리만 바뀌어 모든 것이 같은 비율로 확대됩니다. 사람 눈은 시차를 '입체'로 읽기 때문에 push in이 자연스럽고, zoom은 납작합니다.</p>`),"",true);
+  g+=card("더 돌려볼 것",P("Camera pushes in slowly, then holds for the last 2 seconds.","천천히 전진 후 마지막 2초 정지.","then holds = 순서 지시. Veo는 대략적 순서를 지킨다")+P("Camera orbits 90 degrees counter-clockwise, low angle, keeping the subject centered.","반시계 90° 궤도, 로우앵글, 중앙 유지.","orbit + angle 결합 — 앵글은 무브가 아니라 '위치'라 함께 써도 된다")+P("Handheld, slight natural shake, camera slowly pushes in.","핸드헬드, 미세한 흔들림, 천천히 전진.","handheld = 스타일 변수. 브이로그 톤")+P("Camera dollies out while the barista keeps pouring. Milk sound, no music.","바리스타가 계속 붓는 동안 후진.","3번 바리스타 문장 전용 · 피사체 동작 + 카메라 무브 동시 — 서로 다른 주체라 가능"),"ext",true);
+  g+=card("흔한 실패",`<div class="tbl"><table><tr><th>증상</th><th>원인</th><th>수정</th></tr><tr><td>제자리 떨림</td><td>무브 2개</td><td>하나로</td></tr><tr><td>피사체 이탈</td><td>keeping … centered 누락</td><td>추가</td></tr><tr><td>너무 빠름</td><td>slowly 누락</td><td>추가 (Veo 기본 속도는 빠르다)</td></tr></table></div>`,"warn");
+  return g;};
+
+/* ===== STEP 2 — 원본 유지 ===== */
+const step2=()=>{
+  let g=card("샷 사이즈 = 정보량",fig(S.shots)+`<div class="tbl"><table><tr><th></th><th>영문</th><th>프레임 안</th><th>용도</th></tr><tr><td>WS</td><td>wide shot</td><td>피사체 + 공간</td><td>맥락, 오프닝</td></tr><tr><td>MS</td><td>medium shot</td><td>피사체 + 주변 일부</td><td>동작, 사용 장면</td></tr><tr><td>CU</td><td>close-up</td><td>피사체 표면</td><td>질감, 디테일</td></tr></table></div>`,"",true);
+  g+=card("앵글 = 카메라 높이",fig(S.angles)+`<div class="tbl"><table><tr><th></th><th>영문</th><th>효과</th></tr><tr><td>아이레벨</td><td>eye level</td><td>중립</td></tr><tr><td>로우</td><td>low angle</td><td>제품이 '주인공'</td></tr><tr><td>하이</td><td>high angle</td><td>전체 배치 관찰</td></tr><tr><td>탑다운</td><td>top-down, 90°</td><td>메뉴·플랫레이·팝업</td></tr><tr><td>OTS</td><td>over-the-shoulder</td><td>사용자 시점</td></tr></table></div>`+more("왜 앵글이 인상을 바꾸나",`<p>사람은 올려다보는 대상을 크고 강하게, 내려다보는 대상을 작고 약하게 인식합니다. 카메라 높이는 이 인지 편향을 그대로 씁니다. 같은 잔이 로우앵글에선 '작품', 하이앵글에선 '배치 요소'가 됩니다.</p>`),"",true);
+  g+=card("비율 — 플로우의 제약",fig(S.ar)+`<p><b>영상은 16:9 · 9:16 두 개뿐.</b> 이미지는 5개지만, 영상으로 이을 이미지는 처음부터 둘 중 하나로.</p>`+more("왜 프롬프트에 비율을 쓰지 않나",`<p>모델은 프롬프트를 화면 '내용'으로 읽습니다. 비율은 캔버스 크기라 UI 버튼이 결정합니다. 글로 쓴 비율은 무시되거나 글자로 그려집니다.</p>`),"key");
+  g+=card("샷 × 앵글 조합 8",`<div class="tbl"><table><tr><th>조합</th><th>첫머리</th><th>장면</th></tr><tr><td>WS · eye</td><td>Wide shot, eye level.</td><td>카페 오프닝</td></tr><tr><td>WS · high</td><td>Wide shot, high angle.</td><td>테이블 전체 배치</td></tr><tr><td>MS · low</td><td>Medium shot, low angle.</td><td>제품 히어로</td></tr><tr><td>MS · OTS</td><td>Medium shot, over the shoulder.</td><td>주문·사용 장면</td></tr><tr><td>CU · eye</td><td>Close-up, eye level.</td><td>거품·질감</td></tr><tr><td>CU · low</td><td>Close-up, low angle.</td><td>병·잔 실루엣</td></tr><tr><td>top-down</td><td>Top-down view, 90 degrees.</td><td>메뉴, 플랫레이</td></tr><tr><td>top-down · 45°</td><td>High angle, 45 degrees.</td><td>음식 '먹음직' 각도</td></tr></table></div><p style="font-size:.9em;color:var(--ink2)">첫머리 = 샷+앵글. 모델은 앞 토큰에 더 가중치를 둡니다.</p>`,"",true);
+  return g;};
+
+/* ===== STEP 3 — ③ 제목만 수정 (메뉴판 이미지는 STEP 5에서 따로) ===== */
+const step3=()=>{
+  let g=card("4블록",fig(S.blocks)+`<p>이미지 생성 · <b>나노바나나 2</b> · 비율 버튼. 결과는 <b>에셋 저장</b>.</p>`,"key",true);
+  g+=card("직접 ① WS · 16:9",P("Wide shot, eye level. A ceramic latte cup on a wooden cafe counter, the whole counter and window visible, morning light, shallow crowd blur in the background.","와이드, 아이레벨. 나무 카운터 위 라떼 잔, 카운터와 창 전체, 아침 빛, 뒤 손님 흐림.","whole counter visible = WS 조건 · crowd blur = 배경 정보는 있되 흐리게"));
+  g+=card("직접 ② CU · 9:16",P("Close-up, eye level. The same latte cup, foam surface fills the frame, latte art visible, soft window light, shallow depth of field.","클로즈업. 같은 잔, 거품 표면이 프레임을 채움, 라떼아트, 창빛, 얕은 심도.","the same = ①과 연속성 (참조 이미지로 ① 첨부)"));
+  g+=card("직접 ③ 탑다운 · 16:9 (STEP 4 탑다운 무브용)",P("Top-down view, 90 degrees straight down. A Korean dessert cafe set on a light oak table: a plate of injeolmi bingsu, a cup of yuja tea with floating slices, three colorful tteok on a small wooden board, clean styling, soft daylight.","수직 탑다운. 연한 오크 테이블 위 한식 디저트 세트 — 인절미 빙수, 유자 슬라이스 띄운 유자차, 나무 보드 위 색 떡 세 개.","이 이미지는 테이블 위 실물 세트 — 메뉴판 팝업용 '종이 메뉴판' 이미지는 STEP 5에서 따로 만듭니다"));
+  g+=card("블록별 대체어",`<div class="tbl"><table><tr><th>블록</th><th>영문</th><th>뜻</th></tr><tr><td rowspan="4">subject</td><td>a ceramic latte cup</td><td>세라믹 라떼 잔</td></tr><tr><td>a slice of strawberry cake</td><td>딸기 케이크 조각</td></tr><tr><td>a bottle of cold brew with condensation</td><td>물방울 맺힌 콜드브루 병</td></tr><tr><td>a barista in an apron</td><td>앞치마 바리스타</td></tr><tr><td rowspan="3">shot</td><td>wide shot, whole counter visible</td><td>와이드</td></tr><tr><td>medium shot, cup and hands</td><td>미디엄</td></tr><tr><td>close-up, surface fills the frame</td><td>클로즈업</td></tr><tr><td rowspan="4">angle</td><td>eye level</td><td>눈높이</td></tr><tr><td>low angle, looking up</td><td>로우</td></tr><tr><td>high angle, 45 degrees</td><td>하이 45°</td></tr><tr><td>top-down view, 90 degrees straight down</td><td>탑다운</td></tr><tr><td rowspan="4">light</td><td>morning window light</td><td>아침 창빛</td></tr><tr><td>soft studio light, white background</td><td>스튜디오, 흰 배경</td></tr><tr><td>warm tungsten, evening</td><td>따뜻한 백열, 저녁</td></tr><tr><td>overcast, flat light, no shadows</td><td>흐림, 무그림자</td></tr></table></div>`,"",true);
+  g+=card("더 만들어볼 것",P("Medium shot, low angle. A bottle of cold brew with condensation on a black slate, backlit, dark background.","미디엄, 로우. 검은 슬레이트 위 물방울 맺힌 콜드브루 병, 역광, 어두운 배경.")+P("Wide shot, high angle. A cafe table set for two, two cups, a cake, a notebook, afternoon light through blinds.","와이드, 하이. 2인 테이블, 잔 둘·케이크·노트, 블라인드 사이 오후 빛.")+P("Close-up, low angle. A strawberry cake slice, the strawberry edge against soft light, macro.","클로즈업, 로우. 딸기 단면 가장자리가 빛에 걸림, 매크로.")+P("Medium shot, over the shoulder. A customer's shoulder in the foreground, the barista handing over a cup.","미디엄, OTS. 앞에 손님 어깨, 바리스타가 잔을 건넴."),"ext",true);
+  g+=card("주의",`<ul><li>3장 <b>다운로드 + 에셋 저장</b></li><li>①② 연속성: ②를 만들 때 ①을 <b>참조 이미지</b>로 첨부</li><li>③은 영상용이므로 16:9. 1:1로 만들면 영상으로 못 잇는다</li></ul>`+more("왜 앵글은 이미지에서 확정하나",`<p>영상 단계에서 앵글을 바꾸면 모델이 '유지할 것'과 '바꿀 것'을 구분 못 해 피사체가 변형됩니다. 정지 이미지에서 앵글을 고정하고, 영상에는 유지+무브만 지시합니다.</p>`),"warn");
+  return g;};
+
+/* ===== STEP 4 — 원본 유지 ===== */
+const step4=()=>{
+  let g=card("매칭",fig(S.match)+`<p>프레임→동영상 · STEP 3 이미지를 시작 프레임 · 비율은 이미지와 동일 · 360p.</p>`,"key",true);
+  g+=card("I2V 프롬프트 구성",fig(S.i2v)+more("왜 이미지 내용을 다시 쓰면 안 되나",`<p>모델은 이미지와 텍스트를 동시에 조건으로 받습니다. 텍스트가 이미지와 조금이라도 다르면 텍스트 쪽으로 재생성해 피사체가 변합니다. 이미지가 정답이면 텍스트는 이미지에 없는 정보만 가져야 합니다.</p>`),"",true);
+  g+=card("WS 이미지에",P("Camera slowly dollies in toward the cup. Steam drifts. Soft cafe ambience, no music.","천천히 전진. 김이 흐른다. 카페 환경음, 음악 없음.","no music = 안 쓰면 BGM이 붙어 편집 시 제거 불가")+P("Camera orbits slowly 90 degrees around the cup, keeping it centered. Distant chatter.","90° 궤도, 중앙 유지. 멀리 대화 소리.")+P("Camera holds for 2 seconds, then slowly pushes in. Cup clink, no music.","2초 정지 후 전진. 잔 부딪는 소리."));
+  g+=card("CU 이미지에",P("Very subtle push in. Foam slowly settles, a tiny bubble pops. Quiet.","아주 살짝 전진. 거품이 가라앉고 작은 기포가 터진다.","micro-action = 카메라 대신 피사체의 미세 동작. CU의 정석")+P("Camera does not move. Steam rises, light shifts slightly. No music.","카메라 정지. 김, 빛의 미세 변화.")+P("Camera tilts up very slowly from the rim to the foam surface.","테두리에서 거품 표면까지 아주 천천히 틸트업.")+more("왜 CU는 무브를 줄이나",`<p>클로즈업은 픽셀당 정보량이 커서 프레임 간 재생성 오차가 그대로 드러납니다. 카메라 이동량이 작을수록 재생성 범위가 줄어 질감이 유지됩니다.</p>`));
+  g+=card("탑다운 이미지에",P("Camera stays top-down and orbits slowly 45 degrees around the set. Steam from the tea. Soft cafe ambience, no music.","탑다운 유지, 45° 궤도. 차에서 김.","stays top-down = 수직 유지 명시 필수")+P("Camera stays top-down and rises slowly straight up, table edges appear.","탑다운 유지, 수직 상승, 테이블 가장자리 노출.")+P("Camera stays still. A spoon slowly scoops the bingsu; shaved ice glistens. Soft crunch.","정지. 숟가락이 빙수를 뜬다. 얼음 반짝.","광고형 — 카메라 고정 + 피사체 액션"));
+  g+=card("옴니플래시로 고치기",fig(S.omni)+`<p>1차 결과가 아쉬우면 새로 뽑지 않고 <b>대화형 수정</b>. 크레딧 절약의 핵심.</p>`+P("Make the camera move slower and keep the cup exactly centered.","카메라 더 느리게, 잔은 정확히 중앙.")+P("Keep everything, only add more steam.","다 유지하고 김만 더.")+P("Same shot, change the sound to rain outside the window.","같은 샷, 소리만 창밖 비로."),"key",true);
+  g+=card("실패 사례",`<div class="tbl"><table><tr><th>프롬프트</th><th>결과</th><th>수정</th></tr><tr><td>Camera orbits around the ceramic latte cup on the wooden counter.</td><td>잔 형태 변형</td><td>피사체 설명 삭제</td></tr><tr><td>Camera pushes in and orbits.</td><td>떨림</td><td>하나로</td></tr><tr><td>Camera moves. (CU)</td><td>거품 질감 붕괴</td><td>Very subtle push in.</td></tr><tr><td>Top-down. Camera orbits.</td><td>카메라가 옆으로 내려옴</td><td>stays top-down 추가</td></tr></table></div>`,"warn",true);
+  g+=card("이어붙이기",`<p><b>씬빌더</b>에서 클립 연장. 연장 프롬프트도 무브 하나: "Continues the same slow orbit." 앞 8초 orbit → 뒤 8초 "Now slowly pushes in." 이게 '돌면서 다가가기'의 정석.</p>`,"ext");
+  return g;};
+/* ===== STEP 5 — 수정: 메뉴판 원본 이미지부터 만들기 ===== */
+const IMG="이미지 ① 메뉴판 만들기 · 나노바나나 2 · 비율 16:9", VID="영상 ② 프레임→동영상 · ①을 시작 프레임 · 비율 16:9 · 360p";
+const step5=()=>{
+  let g=card("완성 영상 분석",`<ol><li>앵글 → <b>top-down</b></li><li>무브 → <b>slow orbit</b> (STEP 4 탑다운 ①)</li><li>추가 요소 → <b>팝업 전환</b>: 평면 메뉴에서 음식이 입체로</li></ol><p class="lead">기존 블록 + 전환 블록 하나.</p>`,"key");
+  g+=card("팝업 3조건",fig(S.pop)+more("왜 셋 다 필요한가",`<p>rim은 두께, contact shadow는 접지, parallax는 깊이. 사람 시각은 이 셋으로 '떠 있음'을 판단합니다. 하나라도 빠지면 모델은 가장 쉬운 해석인 '평면 확대'로 갑니다.</p>`),"",true);
+  g+=card("먼저 — 원본 이미지 = 평평한 메뉴판",fig(S.menu)+`<p>팝업 프롬프트는 전부 <b>"종이 메뉴판을 위에서 본 장면"</b>에서 시작합니다. 그래서 영상 전에 <b>메뉴판 이미지부터</b> 만들어야 해요. 솟아오를 재료는 메뉴판에 <b>인쇄된 음식 사진</b>입니다.</p><ul><li>STEP 3 ③(테이블 위 실물 세트)은 메뉴판이 아니라서 팝업의 시작 이미지로 쓸 수 없습니다</li><li>이미지 생성 → <b>비율 버튼 16:9</b>(릴스는 9:16) → 다운로드 + 에셋 저장</li><li>영상 비율은 <b>메뉴판 이미지 비율을 그대로</b> 따라갑니다 — 16:9 메뉴판이면 16:9 영상</li><li>아래 카드마다 <b>① 이미지 → ② 영상</b> 두 프롬프트가 한 쌍</li></ul>`,"warn",true);
+  g+=card("원본 — 한식 디저트 카페 메뉴판",
+    P("Top-down view, 90 degrees straight down. A printed Korean dessert cafe menu lying flat on a light oak table, showing flat printed photos of a bowl of injeolmi bingsu, a cup of yuja tea and three tteok on a wooden board. All menu text is in Korean Hangul: the title \"한식 디저트 카페\" and the items \"인절미 빙수 12,000원\", \"유자차 6,500원\", \"모둠 떡 8,000원\". Clean layout, soft daylight.","수직 탑다운. 연한 오크 테이블 위 평평한 한식 디저트 카페 메뉴판. 인절미 빙수·유자차·떡 세 개 사진 인쇄. 메뉴 글자는 전부 한글.","flat printed photos = 솟아오를 재료 · 한글은 큰따옴표 안에 그대로 — 나노바나나 2는 한글 메뉴판을 잘 씁니다",IMG)+
+    P("One by one, the bowl of injeolmi bingsu, the cup of yuja tea and the three tteok on a wooden board rise out of the paper as realistic 3D objects, each with a visible rim, a soft contact shadow and slight parallax. Steam rises from the tea. The camera stays top-down and orbits slowly 45 degrees. Items hover 3 cm above the menu. The printed Korean text on the menu stays unchanged. Soft cafe ambience, no music.","빙수·유자차·떡이 하나씩 종이에서 입체로 솟는다 — rim·접지 그림자·시차. 차에서 김. 탑다운 유지, 45° 궤도. 3cm 부양. 카페 환경음, 음악 없음.","메뉴판은 이미 이미지에 있으니 영상 프롬프트엔 '솟는 것'만 · one by one = 순차 · hover 3 cm = 그림자 조건",VID),"",true);
+  g+=card("5블록 해부",fig(S.anat)+`<div class="tbl"><table><tr><th>블록</th><th>원문</th><th>변경</th></tr><tr><td>angle</td><td>Top-down view</td><td class="no">고정</td></tr><tr><td>subject</td><td>메뉴판 이미지에 인쇄된 음식 (bingsu · yuja tea · tteok)</td><td class="ok">자유 — 메뉴판 이미지와 같은 말로</td></tr><tr><td>move</td><td>stays top-down and orbits slowly 45 degrees</td><td>crane up만 허용</td></tr><tr><td>transition</td><td>rise out of the paper … rim, contact shadow, parallax · hover 3 cm</td><td class="no">고정</td></tr><tr><td>sound</td><td>cafe ambience, no music</td><td class="ok">자유</td></tr></table></div>`,"",true);
+  g+=card("한식 변수",`<p>원본(양식)은 접시가 납작합니다. 한식은 <b>그릇 높이 · 국물 · 반찬 수</b>가 변수로 추가됩니다.</p><div class="tbl"><table><tr><th>변수</th><th>영문</th><th>이유</th></tr><tr><td>높은 그릇</td><td>tall bowl · brass bowl · earthen pot</td><td>팝업 높이가 산다</td></tr><tr><td>국물</td><td>steam · broth surface reflects light</td><td>입체감의 절반</td></tr><tr><td>반찬</td><td>small side dishes stay flat on the paper</td><td>메인만 띄운다</td></tr></table></div>`,"key");
+  g+=card("잘 듣는 것 / 흘려듣는 것",`<div class="tbl"><table><tr><th class="ok">잘 듣는다</th><th class="no">흘려듣는다</th></tr><tr><td>stays top-down, orbits slowly 45°</td><td>초 단위 타이밍 (0·3·6초)</td></tr><tr><td>rim · contact shadow · parallax</td><td>10개 이상 빽빽한 메뉴</td></tr><tr><td>음식 1~3개 지정</td><td>영상 속에서 새로 쓰는 한글</td></tr><tr><td>no music</td><td>가격 숫자</td></tr></table></div>`+more("왜 한글·숫자가 깨지나",`<p>영상 모델은 글자를 기호가 아닌 형태로 생성합니다. 영상 모델이 한글을 새로 쓰면 획이 무너지기 쉽습니다. 그래서 한글 메뉴는 <b>이미지(나노바나나 2)에서 미리 써 두고</b>, 영상에는 \"The printed Korean text on the menu stays unchanged.\"만 붙여 글자를 지키게 합니다. 그래도 흔들리면 카메라를 더 느리게.</p>`));
+  g+=card("변형 ① 국밥 (1개) — 첫 시도",
+    P("Top-down view, 90 degrees straight down. A printed gukbap restaurant menu lying flat on a stainless counter, showing a flat printed photo of a single bowl of pork gukbap. All menu text is in Korean Hangul: the title \"우리 국밥\" and the item \"돼지국밥 9,000원\". Clean layout, bright light.","스테인리스 카운터 위 평평한 국밥집 메뉴판, 국밥 한 그릇 사진 인쇄, 한글 메뉴.","",IMG)+
+    P("A single tall bowl of pork gukbap rises out of the paper as a realistic 3D object, broth surface reflecting light, thick steam, visible rim and contact shadow. Camera stays top-down and orbits slowly 45 degrees. Bowl hovers 3 cm. The printed Korean text on the menu stays unchanged. Kitchen sizzle, no music.","국밥 한 그릇만 솟는다. 국물 반사, 짙은 김.","단일 피사체 = 최고 안정. 여기서 먼저 성공해 보기",VID),"ext");
+  g+=card("변형 ② 한정식",
+    P("Top-down view, 90 degrees straight down. A printed hanjeongsik menu lying flat on a dark walnut table, showing flat printed photos of a brass bowl of rice, galbi-jjim in an earthen pot, a plate of jeon and six small side dishes. All menu text is in Korean Hangul: the title \"한정식\" and the items \"갈비찜 25,000원\", \"모둠전 15,000원\", \"공깃밥 1,000원\". Elegant layout, warm light.","진한 월넛 테이블 위 한정식 메뉴판. 놋그릇 밥·갈비찜 뚝배기·전·반찬 6개 사진 인쇄, 한글 메뉴.","",IMG)+
+    P("The brass bowl of rice, the earthen pot of galbi-jjim with steam and the plate of jeon rise out of the paper as realistic 3D objects with rims, contact shadows and parallax; the six small side dishes stay flat on the paper. Camera stays top-down and orbits slowly 45 degrees. Dishes hover 3 cm above the menu. The printed Korean text on the menu stays unchanged. Quiet dining room, no music.","밥·갈비찜·전만 솟고, 반찬 6개는 납작하게. 45° 궤도.","stay flat = 반찬 고정. 이 한 줄이 한정식 팝업의 성패",VID),"ext");
+  g+=card("변형 ③ 전통찻집",
+    P("Top-down view, 90 degrees straight down. A hand-written tea house menu on hanji paper lying flat on a wooden table, with small flat printed photos of a celadon teapot, two small cups and a plate of yakgwa. All menu text is in Korean Hangul brush lettering: the title \"전통찻집\" and the items \"녹차 7,000원\", \"약과 3,000원\". Soft light.","나무 테이블 위 한지 손글씨 찻집 메뉴. 청자 다관·잔 둘·약과 사진 인쇄, 한글 붓글씨 메뉴.","",IMG)+
+    P("The celadon teapot, the two small cups and the plate of yakgwa rise out of the paper as realistic 3D objects with rims, contact shadows and slight parallax. Thin steam from the teapot. Camera stays top-down and rises slowly straight up. Items hover 2 cm above the menu. The printed Korean text on the menu stays unchanged. Soft wind chime, no music.","다관·잔·약과가 솟는다. 수직 상승. 2cm.","작은 물건 = hover 2 cm · rises = crane up 버전",VID),"ext");
+  g+=card("변형 ④ 떡카페 9:16",
+    P("Vertical top-down view, 90 degrees straight down. A printed rice cake cafe menu lying flat on white marble, showing flat printed photos of three colorful tteok and a cup of sujeonggwa. All menu text is in Korean Hangul: the title \"떡카페\" and the items \"모둠 떡 8,000원\", \"수정과 5,000원\". Clean layout, soft daylight.","흰 대리석 위 떡카페 메뉴판, 세로. 색 떡 3단·수정과 사진 인쇄, 한글 메뉴. 비율 버튼 9:16.","","이미지 ① 메뉴판 만들기 · 나노바나나 2 · 비율 9:16")+
+    P("The stack of three colorful tteok and the cup of sujeonggwa with pine nuts rise out of the paper as realistic 3D objects with rims, contact shadows and parallax. Camera stays top-down and orbits slowly 30 degrees. Items hover 2 cm above the menu. The printed Korean text on the menu stays unchanged. Soft cafe ambience, no music.","떡 3단과 수정과가 솟는다. 30° 궤도.","30° = 세로는 회전 줄이기","영상 ② 프레임→동영상 · ①을 시작 프레임 · 비율 9:16 · 360p"),"ext");
+  g+=card("나만의 프롬프트",
+    P('Top-down view, 90 degrees straight down. A printed menu for <span class="k">[가게]</span> lying flat on a <span class="k">[테이블]</span>, showing flat printed photos of <span class="k">[메인 1~3, 그릇 명시]</span>. All menu text is in Korean Hangul: the title \"<span class="k">[가게 이름]</span>\" and the items \"<span class="k">[메뉴 이름 가격]</span>\". Clean layout, soft daylight.',"평평한 [가게] 메뉴판, [메인 1~3] 사진 인쇄, 한글 메뉴. 예: \"동네분식\" / \"떡볶이 5,000원\". 받아온 메뉴판 사진이 있으면 생략.","",IMG)+
+    P('<span class="k">[메인 1~3, ①과 같은 말]</span> rise out of the paper one by one as realistic 3D objects with visible rims, contact shadows and slight parallax; <span class="k">[반찬/소품]</span> stay flat. <span class="k">[김/반사]</span>. Camera stays top-down and slowly <span class="k">[orbits 45 degrees]</span>. Items hover 3 cm above the menu. The printed Korean text on the menu stays unchanged. <span class="k">[환경음]</span>, no music.',"①의 메뉴판을 시작 프레임으로. 수직 상승으로 바꾸려면 orbits 45 degrees 자리에 rises straight up.","[메인]은 ①과 ②에 같은 말 그대로 — 다르면 엉뚱한 음식이 솟음",VID)+
+    P("Make the dishes rise slower, one at a time, and keep the camera exactly top-down.","음식이 더 천천히 하나씩 솟게, 카메라는 정확히 탑다운 유지.","아쉬우면 옴니플래시 수정"),"key",true);
+  g+=card("실패 → 수정",`<div class="tbl"><table><tr><th>증상</th><th>누락</th></tr><tr><td>솟을 게 없음 · 엉뚱한 게 솟음</td><td>시작 이미지가 <b>메뉴판</b>인지, 음식 사진이 <b>인쇄</b>돼 있는지 → ①부터</td></tr><tr><td>커지기만 함</td><td>rim / shadow / parallax</td></tr><tr><td>동시에 솟음</td><td>one by one</td></tr><tr><td>카메라가 내려옴</td><td>stays top-down</td></tr><tr><td>반찬까지 뜸</td><td>stay flat</td></tr><tr><td>메뉴판에 영어가 나옴</td><td>이미지 프롬프트에 <b>All menu text is in Korean Hangul</b> + 큰따옴표 속 한글</td></tr><tr><td>영상에서 글자가 흔들림</td><td>The printed Korean text on the menu stays unchanged · 카메라 더 느리게</td></tr></table></div>`,"warn");
+  g+=card("릴스 규격으로",`<ul><li><b>메뉴판 이미지</b>를 비율 버튼 9:16으로 다시 만들기 → 영상도 9:16으로 → 같은 영상 프롬프트</li><li>훅: 첫 음식이 솟는 순간을 0초에</li><li>한글 메뉴명·가격은 메뉴판 이미지에 이미 들어 있음 → 캡컷은 컷 길이·세로 업로드만</li></ul>`,"ext");
+  return g;};
+
+const step0=()=>card("오늘의 파이프라인",fig(S.map)+`<p class="lead">앵글은 이미지에서, 무브는 영상에서.</p>`,"key",true)
+ +card("산출물",`<ol><li>샷×무브 영상 3편 (WS·CU·탑다운)</li><li>메뉴판 이미지 1장 → 팝업 영상 1편 + 나만의 프롬프트</li><li>옵션: 9:16 릴스 버전</li></ol>`)
+ +card("환경",`<ul><li>구글 AI Pro → labs.google/flow → 새 프로젝트</li><li>이미지 나노바나나 2 · 영상 Veo 3.1 Lite · <b>360p</b></li><li>생성물은 즉시 다운로드 + 에셋 저장</li></ul>`,"set")
+ +card("100분",`<div class="tbl"><table><tr><th>STEP</th><th>분</th><th>내용</th></tr><tr><td>1</td><td>12</td><td>무브 변수 — T2V (필수 4)</td></tr><tr><td>2</td><td>8</td><td>샷·앵글·비율</td></tr><tr><td>3</td><td>15</td><td>앵글 이미지 3장 — T2I</td></tr><tr><td>4</td><td>30</td><td>샷×무브 — I2V + 옴니플래시 수정</td></tr><tr><td>5</td><td>30</td><td>메뉴판 팝업 — 메뉴판 이미지 → 해부 → 한식 변형 → 릴스</td></tr><tr><td>6</td><td>5</td><td>정리</td></tr></table></div><p style="font-size:.9em;color:var(--ink2)">앞은 빠르게, 시간은 4·5에.</p>`,"",true)
+ +more("왜 정지 → 움직임 순서인가",`<p>영상은 이미지의 시간 확장입니다. 이미지가 틀리면 8초 내내 틀립니다. 앵글을 정지 단계에서 확정하고 무브만 얹는 것이 재생성 횟수를 가장 줄입니다.</p>`);
+const step6=()=>card("리뷰",`<p>메뉴판 영상 2~3편. 기준 하나: <b>떠 있나, 커졌나.</b></p>`)
+ +card("요약",`<ul><li>무브 = 단어. 문장 고정, 변수 하나.</li><li>앵글 7 · 비율은 버튼 · 영상은 16:9/9:16.</li><li>I2V = 무브·속도·소리·미세동작.</li><li>수정은 재생성이 아니라 옴니플래시.</li><li>팝업 = 메뉴판 이미지 먼저, 그다음 솟는 영상.</li><li>트렌드 = 기존 블록 + 전환 하나. 블록 단위로 읽고 바꾼다.</li><li>한글 메뉴는 이미지에서 미리 쓰고, 영상에선 글자 유지만 지시.</li></ul>`,"key")
+ +card("다음",`<p>못 간 STEP 이어서. 전환 두 개 추가: <b>분해·합체</b>, <b>소스 흘러내림</b>. 그리고 2클립 씬빌더 결합.</p>`,"ext");
+
+const STEPS=[["파이프라인","5","",step0],["무브 변수 8","12","같은 문장, 카메라 변수만 8종. 필수 4 직접, 확장 4 시연.",step1],["샷 · 앵글 · 비율","8","거리 3 × 높이 4. 비율은 버튼, 영상은 둘뿐.",step2],["앵글 확정 이미지","15","WS·CU·탑다운 3장. 4블록 조립.",step3],["샷 × 무브 결합","30","I2V 규칙과 매칭, 옴니플래시 수정.",step4],["메뉴판 팝업 재현","30","메뉴판 이미지 먼저 → 해부 → 한식 변형 4 → 나만의 것 → 릴스.",step5],["정리","5","",step6]];
+const app=document.getElementById('app'),tabs=document.getElementById('tabs');
+STEPS.forEach(([t,tm,goal,fn],i)=>{const s=document.createElement('section');s.className='step';
+ s.innerHTML=`<div class="head"><div><div class="lab">STEP ${i}</div><h1>${t}</h1>${goal?`<p class="goal">${goal}</p>`:""}</div><div></div><div class="time">${tm}<span style="font-size:.5em">분</span></div></div><div class="grid">${fn()}</div>`;
+ app.appendChild(s);const b=document.createElement('button');b.className='tab';b.type='button';b.textContent=i+' '+t;b.onclick=()=>go(i);tabs.appendChild(b);});
+const steps=[...document.querySelectorAll('.step')],prev=document.getElementById('prev'),next=document.getElementById('next');let cur=0;
+function go(i){cur=i;steps.forEach((s,j)=>s.classList.toggle('active',j===i));[...tabs.children].forEach((t,j)=>t.classList.toggle('active',j===i));prev.disabled=i===0;next.disabled=i===steps.length-1;prev.textContent=i>0?'← '+STEPS[i-1][0]:'←';next.textContent=i<steps.length-1?STEPS[i+1][0]+' →':'→';window.scrollTo(0,0);const at=tabs.children[i];if(at&&at.scrollIntoView)at.scrollIntoView({block:'nearest',inline:'center'});}
+prev.onclick=()=>cur>0&&go(cur-1);next.onclick=()=>cur<steps.length-1&&go(cur+1);
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'&&cur<steps.length-1)go(cur+1);if(e.key==='ArrowLeft'&&cur>0)go(cur-1);});
+document.getElementById('fontbtn').onclick=function(){document.body.classList.toggle('big');this.textContent=document.body.classList.contains('big')?'가-':'가+';};
+document.querySelectorAll('.copy').forEach(btn=>btn.onclick=()=>{const t=btn.parentNode.querySelector('.en').textContent.replace(/\s+/g,' ').trim();const done=()=>{btn.textContent='복사됨';btn.classList.add('done');setTimeout(()=>{btn.textContent='복사';btn.classList.remove('done')},1500)};if(navigator.clipboard)navigator.clipboard.writeText(t).then(done,()=>{fb(t);done()});else{fb(t);done()}});
+function fb(t){const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();try{document.execCommand('copy')}catch(e){}ta.remove()}
+go(0);
+</script></body></html>

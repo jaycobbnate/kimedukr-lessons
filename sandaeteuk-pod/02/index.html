@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI 동화책 기획 — 절차 단계 모범안</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --fs:20px;
+  --bg:#FCFCFA; --paper:#FFFFFF; --ink:#2A2826; --sub:#68645F; --line:#E5E2DC; --line2:#EFEDE8;
+  --accent:#A44E3C; --accent-soft:#F7ECE8;
+  --set:#EDF2F6; --set-line:#C9D7E2;
+  --warn:#F6EEF3; --warn-line:#E0CBD7;
+  --ext:#EEF3EC; --ext-line:#CADBC5;
+  --ok:#4F7A55; --no:#A44E3C;
+}
+*{box-sizing:border-box}
+html{font-size:var(--fs)}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;line-height:1.7;word-break:keep-all}
+h1,h2,h3{font-family:"Gowun Batang","Nanum Myeongjo",serif;line-height:1.35;margin:0}
+img{max-width:100%;display:block}
+button{font:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+
+/* ── 상단 (sticky) ── */
+.top{position:sticky;top:0;z-index:20;background:rgba(252,252,250,.97);border-bottom:1px solid var(--line)}
+.top-row{display:flex;align-items:center;gap:16px;max-width:1280px;margin:0 auto;padding:12px 24px 6px}
+.top-title{font-family:"Gowun Batang",serif;font-weight:700;font-size:1.05rem;flex:1}
+.top-title small{display:block;font-family:"Pretendard",sans-serif;font-weight:400;font-size:.7rem;color:var(--sub)}
+.zoom{display:flex;gap:6px;align-items:center}
+.zoom span{font-size:.7rem;color:var(--sub);margin-right:2px}
+.zoom button{border:1px solid var(--line);background:var(--paper);border-radius:8px;padding:2px 12px;font-size:.8rem}
+.tabs{display:flex;gap:4px;overflow-x:auto;max-width:1280px;margin:0 auto;padding:4px 24px 0;scrollbar-width:thin}
+.tab{flex:0 0 auto;border:0;background:none;padding:8px 14px 10px;font-size:.8rem;color:var(--sub);border-bottom:3px solid transparent;white-space:nowrap}
+.tab b{display:block;font-size:.62rem;font-weight:600;letter-spacing:.02em;color:#9A958F}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent);font-weight:600}
+.tab[aria-selected="true"] b{color:var(--accent)}
+
+/* ── 본문 레이아웃 ── */
+.wrap{max-width:1280px;margin:0 auto;padding:28px 24px 40px;display:grid;grid-template-columns:minmax(0,1fr) 240px;gap:32px;align-items:start}
+.side{position:sticky;top:132px;border-left:1px solid var(--line);padding:4px 0 4px 18px}
+.side p{margin:0 0 8px;font-size:.68rem;color:var(--sub)}
+.side a{display:block;color:var(--sub);text-decoration:none;font-size:.74rem;padding:6px 0 6px 10px;border-left:2px solid transparent;margin-left:-20px;line-height:1.45}
+.side a.on{color:var(--accent);border-left-color:var(--accent);font-weight:600}
+.step{display:none}
+.step.on{display:block}
+.step-head{margin-bottom:22px;padding-bottom:18px;border-bottom:1px solid var(--line)}
+.step-no{font-size:.72rem;color:var(--accent);font-weight:700;margin-bottom:4px}
+.step-head h2{font-size:1.7rem}
+.step-head .lead{margin:10px 0 0;font-size:1.02rem;color:var(--sub);max-width:46em}
+
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:22px 24px;scroll-margin-top:140px}
+.card.wide{grid-column:1 / -1}
+.card h3{font-size:1.08rem;margin-bottom:10px}
+.card p{margin:0 0 10px}
+.card p:last-child{margin-bottom:0}
+.term{color:var(--sub);font-size:.82em}
+
+.box{border-radius:10px;padding:16px 18px;border:1px solid}
+.box h3{font-family:"Pretendard",sans-serif;font-size:.86rem;font-weight:700;margin-bottom:6px}
+.box.set{background:var(--set);border-color:var(--set-line)}
+.box.set h3{color:#3D5A70}
+.box.warn{background:var(--warn);border-color:var(--warn-line)}
+.box.warn h3{color:#7D4566}
+.box.ext{background:var(--ext);border-color:var(--ext-line)}
+.box.ext h3{color:#46684A}
+.key{background:var(--accent-soft);border:1px solid #E8CFC6;border-left:5px solid var(--accent);border-radius:10px;padding:18px 20px;font-size:1.05rem}
+.key strong{color:var(--accent)}
+ul.clean{margin:4px 0 0;padding-left:1.1em}
+ul.clean li{margin:3px 0}
+
+figure{margin:0}
+figure img{border:1px solid var(--line2);border-radius:8px;background:#fff;width:auto;margin:0 auto}
+figcaption{font-size:.74rem;color:var(--sub);margin-top:8px;line-height:1.5}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
+.trio{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;align-items:start}
+.tag{display:inline-block;font-size:.66rem;font-weight:700;border-radius:99px;padding:1px 10px;margin-bottom:6px}
+.tag.no{background:#F3E3DF;color:var(--no)}
+.tag.ok{background:#E2EDE2;color:var(--ok)}
+.tag.mid{background:#ECEAE5;color:var(--sub)}
+
+/* 프롬프트 */
+.prompt{position:relative;background:#F7F6F3;border:1px solid var(--line);border-radius:10px;padding:42px 18px 16px;font-size:.8rem;line-height:1.65;white-space:pre-wrap;font-family:"Pretendard",sans-serif}
+.prompt .copy{position:absolute;top:10px;right:10px;border:1px solid var(--line);background:var(--paper);border-radius:8px;font-size:.66rem;padding:3px 10px}
+.prompt .copy.done{color:var(--ok);border-color:var(--ok)}
+.prompt-label{font-size:.72rem;color:var(--sub);margin:12px 0 6px;font-weight:600}
+
+/* 도식 공통 */
+.diagram{margin:6px 0 4px}
+.diagram svg{width:100%;height:auto;display:block}
+.dia-title{font-size:.74rem;color:var(--sub);font-weight:600;margin-bottom:8px}
+
+/* 도식1: 흐름 */
+.flow{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;align-items:stretch;counter-reset:f}
+.flow div{position:relative;border:1px solid var(--line);border-radius:10px;padding:12px 8px 12px;text-align:center;font-size:.74rem;line-height:1.4;background:#fff}
+.flow div b{display:block;font-size:1.1rem;font-family:"Gowun Batang",serif;color:#9A958F;margin-bottom:4px}
+.flow div:not(:last-child)::after{content:"";position:absolute;right:-9px;top:50%;width:10px;height:2px;background:#C9C5BF}
+.flow .prob{background:var(--warn);border-color:var(--warn-line)}
+.flow .prob b{color:#7D4566}
+.flow .sol{background:var(--accent-soft);border-color:#E3C3B8}
+.flow .sol b{color:var(--accent)}
+.flow .me{border:2px solid var(--accent)}
+.flow small{display:block;margin-top:4px;font-size:.62rem;color:var(--sub)}
+
+/* 도식2: 비교판 */
+table.cmp{width:100%;border-collapse:collapse;font-size:.78rem}
+table.cmp th,table.cmp td{border-bottom:1px solid var(--line2);padding:9px 8px;text-align:left;vertical-align:top}
+table.cmp th{font-weight:600;color:var(--sub);font-size:.72rem}
+table.cmp td.m{text-align:center;font-weight:700;width:46px}
+table.cmp td.m.s{color:var(--ok)} table.cmp td.m.d{color:var(--no)}
+
+/* 도식5: 세 칸 */
+.three{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.three div{border:2px dashed #CFCAC3;border-radius:10px;padding:14px;text-align:center}
+.three div b{display:block;font-size:.72rem;color:var(--accent);margin-bottom:6px}
+.three div span{font-size:.86rem}
+
+/* 도식6: 말로 되는/안 되는 */
+.split{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.split > div{border-radius:10px;padding:14px 16px;border:1px solid var(--line)}
+.split .yes{background:#F3F7F2}
+.split .nope{background:#FAF2F0}
+.split h4{margin:0 0 6px;font-size:.84rem}
+.split ul{margin:0;padding-left:1.1em;font-size:.82rem}
+.gauge{margin-top:14px}
+.gauge .bar{height:16px;border-radius:99px;background:#EEEBE6;overflow:hidden;display:flex}
+.gauge .bar i{display:block;height:100%}
+.gauge .lbl{display:flex;justify-content:space-between;font-size:.68rem;color:var(--sub);margin-top:4px}
+
+/* 하단 이동 (sticky) */
+.pager{position:sticky;bottom:0;z-index:15;background:rgba(252,252,250,.97);border-top:1px solid var(--line)}
+.pager-in{max-width:1280px;margin:0 auto;padding:10px 24px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.pager button{border:1px solid var(--line);background:var(--paper);border-radius:10px;padding:8px 18px;font-size:.8rem}
+.pager button.next{background:var(--accent);border-color:var(--accent);color:#fff}
+.pager button:disabled{opacity:.35;cursor:default}
+.pager .where{font-size:.72rem;color:var(--sub)}
+
+@media (max-width:1000px){
+  .wrap{grid-template-columns:1fr}
+  .side{display:none}
+  .flow{grid-template-columns:repeat(4,1fr)}
+  .flow div:nth-child(4)::after{display:none}
+}
+@media (max-width:720px){
+  :root{--fs:18px}
+  .grid,.pair,.split{grid-template-columns:1fr}
+  .trio{grid-template-columns:1fr 1fr}
+  .flow{grid-template-columns:repeat(2,1fr)}
+  .flow div::after{display:none}
+  .three{grid-template-columns:1fr}
+  .top-row,.tabs,.wrap,.pager-in{padding-left:14px;padding-right:14px}
+}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+
+/* 시작 화면 */
+.hero{padding:30px 0 34px;margin-bottom:24px;border-bottom:1px solid var(--line)}
+.hero-kicker{margin:0 0 12px;font-size:.78rem;color:var(--accent);font-weight:700}
+.hero-line{font-size:2.05rem;line-height:1.45;font-weight:700}
+.hero-line em{font-style:normal;color:var(--accent);border-bottom:3px solid #E8CFC6}
+.hero-sub{margin:16px 0 0;font-size:1.02rem;color:var(--sub)}
+.hero.small{padding:10px 0 6px;margin:0;border:0}
+.hero.small .hero-line{font-size:1.5rem}
+.road{display:grid;grid-template-columns:1fr 40px 1fr 40px 1fr;align-items:stretch}
+.road-item{border:1px solid var(--line);border-radius:12px;padding:18px;background:#fff}
+.road-item.hot{border:2px solid var(--accent);background:var(--accent-soft)}
+.road-item b{display:block;font-size:1rem;margin:6px 0 4px}
+.road-item p{margin:0;font-size:.82rem;color:var(--sub)}
+.road-no{display:inline-flex;width:30px;height:30px;border-radius:50%;background:var(--ink);color:#fff;align-items:center;justify-content:center;font-size:.8rem;font-weight:700}
+.road-item.hot .road-no{background:var(--accent)}
+.road-arrow{position:relative}
+.road-arrow::after{content:"";position:absolute;left:8px;right:8px;top:50%;height:2px;background:#C9C5BF}
+.words{list-style:none;margin:0;padding:0}
+.words li{padding:10px 0;border-bottom:1px solid var(--line2);font-size:.88rem;line-height:1.55}
+.words li:last-child{border:0}
+.ask{margin-top:14px!important;padding:12px 16px;border-left:3px solid var(--set-line);background:#F7F9FB;border-radius:0 8px 8px 0;font-size:.9rem;color:#3D5A70}
+/* 장면 카드 */
+.scene-no{font-size:.72rem;font-weight:700;color:var(--accent);margin-bottom:2px}
+.scene h3{font-size:1.3rem;margin-bottom:16px}
+.scene-body{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:28px;align-items:center}
+figure.big img{max-height:560px;width:100%;object-fit:contain}
+.pair.big2 figure img{max-height:620px;width:100%;object-fit:contain}
+.scene-text p{margin:0 0 12px}
+.scene-text ul{margin-bottom:14px}
+.scene-under{margin-top:20px;max-width:46em}
+.scene-under > p{margin:0 0 14px}
+.score{border:1px solid var(--line);border-radius:12px;padding:14px 18px;margin:0 0 14px;background:#FCFBF9}
+.score-title{margin:0 0 6px!important;font-size:.8rem;color:var(--sub);font-weight:600}
+.score-row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--line2);font-size:.9rem}
+.score-row:last-child{border:0}
+.score-row b.x{color:var(--no)} .score-row b.o{color:var(--ok)}
+img.mid-img{max-height:360px}
+ol.qs{margin:0 0 12px;padding-left:1.3em}
+ol.qs li{margin:4px 0}
+@media (max-width:1000px){.road{grid-template-columns:1fr;gap:10px}.road-arrow{display:none}}
+@media (max-width:720px){.scene-body{grid-template-columns:1fr}.hero-line{font-size:1.5rem}.pair.big2{grid-template-columns:1fr}}
+
+.band{display:flex;gap:18px;align-items:center;background:var(--accent-soft)!important;border-color:#E8CFC6!important}
+.band-no{flex:0 0 auto;background:var(--accent);color:#fff;border-radius:10px;padding:8px 14px;font-weight:700;font-size:.9rem}
+.band .band-t{margin:0 0 4px!important;font-size:1.2rem!important}
+.band p{margin:0!important;color:var(--sub);font-size:.9rem}
+.grid .band + .card{}
+.chip{display:inline-block;font-family:"Pretendard",sans-serif;font-size:.66rem;font-weight:700;border-radius:99px;padding:2px 10px;margin-right:6px;vertical-align:middle}
+.c-ask{background:#EDF2F6;color:#3D5A70}.c-ex{background:#F7ECE8;color:var(--accent)}.c-chk{background:#EEF3EC;color:#46684A}.c-pr{background:#F6EEF3;color:#7D4566}
+.pbox{margin-top:6px}.pbox + .pbox{margin-top:18px}
+.psit{margin:0 0 8px!important;font-size:.82rem;color:var(--sub)}
+.psit b{color:var(--ink)}
+.plang{margin:0 0 6px!important;font-size:.7rem;color:var(--sub);font-weight:600}
+.pko{margin-top:8px}.pko summary{cursor:pointer;font-size:.74rem;color:#3D5A70;font-weight:600;padding:4px 0}
+.prompt.ko{background:#F7F9FB}
+ul.chk{list-style:none;margin:0;padding:0}ul.chk li{padding:6px 0;border-bottom:1px solid var(--line2);font-size:.88rem}ul.chk li:last-child{border:0}
+ul.chk input{width:18px;height:18px;vertical-align:-3px;margin-right:8px;accent-color:var(--accent)}
+ul.asks{margin:0;padding:0;list-style:none}ul.asks li{position:relative;padding:7px 0 7px 26px;font-size:.88rem;border-bottom:1px solid var(--line2)}
+ul.asks li:before{content:"?";position:absolute;left:0;top:8px;width:18px;height:18px;border-radius:50%;background:#EDF2F6;color:#3D5A70;font-size:.66rem;font-weight:700;text-align:center;line-height:18px}
+.funnel{display:flex;flex-direction:column;align-items:center;gap:6px}
+.funnel div{width:var(--w);border:1px solid var(--line);background:#fff;border-radius:10px;padding:8px 14px;display:flex;align-items:baseline;gap:10px;font-size:.86rem}
+.funnel div b{font-family:"Gowun Batang",serif;color:var(--accent);font-size:1rem}
+.funnel div small{margin-left:auto;color:var(--sub);font-size:.7rem}
+.funnel .end{border:2px solid var(--accent);background:var(--accent-soft)}
+.note{font-size:.8rem;color:var(--sub);margin-top:12px!important}
+ol.steps{margin:0;padding-left:1.3em}ol.steps li{margin:6px 0}
+.chat{display:flex;flex-direction:column;gap:12px}
+.bub{max-width:78%;border-radius:14px;padding:12px 16px;position:relative}
+.bub p{margin:0!important;font-size:.84rem;line-height:1.65}
+.bub .who{display:block;font-size:.66rem;font-weight:700;margin-bottom:4px}
+.bub.u{align-self:flex-end;background:#EDF2F6;border:1px solid #C9D7E2}.bub.u .who{color:#3D5A70}
+.bub.a{align-self:flex-start;background:#fff;border:1px solid var(--line)}.bub.a .who{color:var(--accent)}
+.tip{display:inline-block;margin-top:8px;font-size:.66rem;background:#EEF3EC;color:#46684A;border-radius:99px;padding:2px 10px}
+.pages{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.page{border:1px solid var(--line);background:#FBF8F2;border-radius:10px;padding:16px;aspect-ratio:3/4;overflow:auto}
+.page h4{margin:4px 0 8px;font-family:"Gowun Batang",serif;font-size:.95rem}
+.page p{margin:0;font-size:.78rem;line-height:1.75}
+.page.back{aspect-ratio:auto;margin-top:14px}
+.pno{font-size:.64rem;color:var(--accent);font-weight:700}
+.sheetdia{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.sd{border:1px solid var(--line);border-radius:12px;padding:14px;background:#FCFBF9}
+.sd b{display:block;margin-bottom:8px}
+.sd small{display:block;margin-top:8px;color:var(--sub);font-size:.72rem}
+.sd-row{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.sd-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.sd i{font-style:normal;border:1px dashed #CFCAC3;border-radius:8px;padding:14px 4px;text-align:center;font-size:.7rem;color:var(--sub);background:#fff}
+.frame5{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.frame5 div{border:1px solid var(--line);border-radius:10px;padding:12px 8px;text-align:center;font-size:.8rem;background:#fff}
+.frame5 b{display:block;color:var(--accent);font-family:"Gowun Batang",serif}
+.frame5 small{display:block;font-size:.64rem;color:var(--sub)}
+.frame5 .hb{background:var(--accent-soft);border-color:#E3C3B8}
+.lay2{display:grid;grid-template-columns:1fr 2fr;gap:20px;align-items:end}
+.lay svg{width:100%;height:auto;display:block}
+.lay figcaption{font-size:.8rem;margin-top:10px;line-height:1.55}
+.ways{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.ways svg{width:100%;height:auto;border-radius:6px;display:block}
+.ways figcaption{font-size:.72rem;margin-top:6px;line-height:1.45}
+.proj{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.proj > div{border:1px solid var(--line);border-radius:12px;padding:16px;background:#FCFBF9}
+.proj b{display:block}.proj small{color:var(--sub);font-size:.72rem}.proj p{margin:8px 0 0!important;font-size:.84rem}
+figure.pd img{max-height:460px;width:auto;margin:0 auto 4px}
+.box.warn h4{margin:0 0 4px;font-size:.84rem;color:#7D4566}.box p{margin:0;font-size:.84rem}
+.box{margin-top:12px}
+.prompt.clamp{max-height:7.2em;overflow:hidden;-webkit-mask-image:linear-gradient(#000 70%,transparent)}
+.prompt.clamp.open{max-height:none;-webkit-mask-image:none}
+.more{border:0;background:none;color:#3D5A70;font-size:.72rem;font-weight:600;padding:4px 0;cursor:pointer}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch}.tw table{min-width:520px}
+@media (max-width:900px){.pages{grid-template-columns:1fr 1fr}.lay2,.proj,.sheetdia{grid-template-columns:1fr}.frame5{grid-template-columns:1fr 1fr}.ways{grid-template-columns:1fr 1fr}}
+@media (max-width:600px){.pages{grid-template-columns:1fr}.bub{max-width:92%}.band{flex-direction:column;align-items:flex-start}}
+</style></head><body>
+<header class="top"><div class="top-row"><div class="top-title">AI 동화책 기획 — 절차 단계 모범안<small>토끼와 자라로 끝까지 해 본 예시 · 내 결과와 비교하며 보세요</small></div>
+<div class="zoom" role="group" aria-label="글자 크기"><span>글자</span><button id="zDown" aria-label="글자 작게">가−</button><button id="zUp" aria-label="글자 크게">가+</button></div></div>
+<nav class="tabs" role="tablist" aria-label="단계 이동"><button class="tab" role="tab" data-i="0"><b>안내</b><span>시작</span></button><button class="tab" role="tab" data-i="1"><b>예시</b><span>모범 대화</span></button><button class="tab" role="tab" data-i="2"><b>0단계</b><span>사양</span></button><button class="tab" role="tab" data-i="3"><b>1단계</b><span>시놉시스</span></button><button class="tab" role="tab" data-i="4"><b>2단계</b><span>캐릭터</span></button><button class="tab" role="tab" data-i="5"><b>3단계</b><span>화풍</span></button><button class="tab" role="tab" data-i="6"><b>4단계</b><span>스토리보드</span></button><button class="tab" role="tab" data-i="7"><b>5단계</b><span>이야기</span></button><button class="tab" role="tab" data-i="8"><b>6단계</b><span>캐릭터 시트</span></button><button class="tab" role="tab" data-i="9"><b>7단계</b><span>장면 프롬프트</span></button><button class="tab" role="tab" data-i="10"><b>8단계</b><span>장면 생성</span></button><button class="tab" role="tab" data-i="11"><b>마무리</b><span>책 꾸미기</span></button><button class="tab" role="tab" data-i="12"><b>확장</b><span>다음 단계</span></button></nav></header>
+<div class="wrap"><main id="main"><section class="step" data-step="0">
+<div class="hero">
+  <p class="hero-kicker">AI 동화책 기획 · 모범안</p>
+  <h2 class="hero-line">AI와 질문을 주고받으며<br>동화 기획안 하나를 완성해요.</h2>
+  <p class="hero-sub">이 교안은 「토끼와 자라」로 끝까지 해 본 <b>모범안</b>이에요. 정답이 아니에요. 내 결과와 나란히 놓고 비교하는 용도예요.</p>
+</div>
+<div class="grid">
+<div class="card wide " id="t0a"><h3>절차 한눈에 보기 — 퍼널(깔때기)처럼 넓게 시작해서 좁혀 가요</h3>
+<div class="funnel">
+  <div style="--w:100%"><b>0</b> 기본 사양<small>누가 읽고, 몇 쪽, 어떤 비율</small></div>
+  <div style="--w:92%"><b>1</b> 시놉시스<small>이야기 전체 한 줄로</small></div>
+  <div style="--w:84%"><b>2</b> 캐릭터 설정<small>성격·말투·생김새</small></div>
+  <div style="--w:76%"><b>3</b> 화풍 선택<small>내용에 맞는 그림 규칙</small></div>
+  <div style="--w:68%"><b>4</b> 스토리보드<small>장면별 설계</small></div>
+  <div style="--w:60%"><b>5</b> 장면별 이야기<small>글 쪽 원고</small></div>
+  <div style="--w:52%"><b>6</b> 캐릭터 시트<small>생김새 고정</small></div>
+  <div style="--w:44%"><b>7</b> 장면 프롬프트<small>그림 주문서</small></div>
+  <div style="--w:36%" class="end"><b>8</b> 장면 생성<small>그림 완성</small></div>
+</div>
+<p class="note">앞 단계에서 만든 결과가 다음 단계의 재료가 돼요. 그래서 <b>그림은 맨 마지막</b>이에요.</p></div>
+<div class="card " id="t0b"><h3>비교하는 방법</h3>
+<ol class="steps">
+<li>내 대화 결과를 단계별로 옆에 띄워요.</li>
+<li>각 단계의 <b>비교 체크리스트</b>에 내 결과를 대 봐요.</li>
+<li>빠진 항목이 있으면 그 단계의 <b>복붙 프롬프트</b>를 내 대화창에 붙여 넣어 채워요.</li>
+<li>모범안과 다르게 결정한 곳은 "왜 다르게 했는지" 한 줄 적어요.</li>
+</ol></div>
+<div class="card " id="t0c"><h3>카드 보는 법</h3>
+<ul class="clean">
+<li><span class="chip c-ask">역질문</span> AI가 나에게 물어봐야 정상인 질문</li>
+<li><span class="chip c-ex">모범안</span> 토끼와 자라 결과</li>
+<li><span class="chip c-chk">비교</span> 내 결과에 이게 있나 체크</li>
+<li><span class="chip c-pr">복붙</span> 빠졌을 때 붙여 넣는 문장</li>
+</ul>
+<p class="note">그림 프롬프트는 <b>영어</b>(그림 AI에 넣는 문장), <b>한글</b>(뜻 확인용), <b>상황 설명</b> 세 가지로 보여 줘요.</p></div>
+<div class="card wide " id="t0d"><h3>결과물 받는 요령</h3>
+<div class="key">AI에게 프롬프트를 받을 때는 항상 <strong>"코드 블록으로 줘"</strong>라고 하세요. 복사가 쉬워지고, 설명 문장이 프롬프트에 섞이지 않아요. 받은 프롬프트는 <strong>다른 창(그림 AI)</strong>에 붙여 넣어 그림을 만들어요.</div></div>
+</div></section><section class="step" data-step="1">
+<div class="step-head"><div class="step-no">모범 대화</div><h2>이렇게 대화가 이어지면 좋아요</h2>
+<p class="lead">처음 질문 한 번으로 끝나는 게 아니라, AI가 묻고 내가 답하고, 내가 비틀면 AI가 따라오면서 기획안이 쌓여요. (실제 진행한 대화를 보기 좋게 다듬은 예시예요.)</p></div>
+<div class="grid">
+<div class="card wide " id="t1a"><h3>대화 흐름 예시 (토끼와 자라)</h3><div class="chat"><div class="bub u"><span class="who">나</span><p>나는 AI로 동화책 전자책(PDF)을 만들려고 한다. 처음이라 방법을 잘 모른다. 한 번에 한 단계만 다루고, 내가 정해야 할 것은 보기와 함께 먼저 질문해라. 그림은 이야기와 페이지가 정해지기 전까지 만들지 마라. 프롬프트는 코드 블록으로 줘라.<br>- 소재: 전래동화 1편<br>- 분량: 표지·목차·등장인물 + 본문 6장면 + 뒤표지<br>- 화풍: 너와 논의해서 결정</p></div><div class="bub a"><span class="who">AI</span><p>좋아요. 먼저 기본 사양 세 가지만 정할게요.<br>① 독자 연령: 4~6세 / 6~8세 / 8~10세 / 전연령<br>② 목적: 개인 소장 / 교육용 / 판매 / 테스트<br>③ 글과 그림 배치: 한 쪽에 같이 넣기 / 펼침면으로 나누기(왼쪽 글, 오른쪽 그림)<br>배치에 따라 그림 비율이 달라져서 먼저 정하는 게 좋아요.</p><span class="tip">한 단계만, 질문 3개, 보기 제공, 이유 한 줄</span></div><div class="bub u"><span class="who">나</span><p>전연령, 테스트용 일반 PDF, 글이랑 그림은 나눌게.</p></div><div class="bub a"><span class="who">AI</span><p>펼침면이면 그림 쪽을 꽉 채우는 세로 3:4가 어울려요. 그러면 총 16쪽, 새로 뽑는 그림은 본문 6장이에요. 마지막으로 두 가지만 더요.<br>① 그림 비율: 세로 3:4로 갈까요?<br>② 그림 도구: 제미나이 / 챗GPT / 기타</p><span class="tip">앞 답에서 따라오는 제작 질문을 바로 이어서</span></div><div class="bub u"><span class="who">나</span><p>3:4, 제미나이.</p></div><div class="bub a"><span class="who">AI</span><p>정리할게요. 전연령 / 테스트용 PDF / 펼침면 16쪽 / 그림 세로 3:4 / 제미나이. 맞으면 동화를 고를게요. 본문이 6장면이라 인물이 적고 장면마다 배경이 바뀌는 이야기가 좋아요. 후보: 토끼와 자라 / 금도끼 은도끼 / 해와 달이 된 오누이 / 아기 돼지 삼형제</p><span class="tip">결정 요약 → 확인 → 다음 단계</span></div><div class="bub u"><span class="who">나</span><p>토끼와 자라. 좀 꼬아봐. 블랙유머인데 위트 있고 재미있게.</p></div><div class="bub a"><span class="who">AI</span><p>용궁을 회사로 비틀어 볼게요. 실적에 쫓기는 영업부 자라 과장이 "당근 무제한" 채용 광고로 토끼를 데려오는데, 토끼는 "간은 빨래 중"이라며 퇴사해 버려요. 어른은 직장 풍자로, 아이는 토끼의 꾀로 웃어요. 잔인한 장면은 없어요. 이 방향으로 확정하면 캐릭터 설정으로 넘어갈게요.</p><span class="tip">사용자가 방향을 바꾸면 그대로 반영</span></div></div></div>
+<div class="card " id="t1b"><h3>좋은 대화의 신호</h3>
+<ul class="clean">
+<li>AI가 <b>한 번에 한 단계</b>만 다뤄요.</li>
+<li>질문은 <b>3개 이하</b>, 고를 수 있는 <b>보기</b>가 있어요.</li>
+<li>내 답을 <b>요약해서 확인</b>받고 넘어가요.</li>
+<li>내가 "꼬아봐", "따로 할 거야"처럼 바꾸면 <b>앞 결정까지 다시 계산</b>해요.</li>
+<li>그림은 <b>이야기가 정해진 뒤</b>에 만들어요.</li>
+</ul></div>
+<div class="card " id="t1c"><h3>나쁜 대화의 신호</h3>
+<ul class="clean">
+<li>답도 안 했는데 A부터 Z까지 <b>한꺼번에 다 설명</b>해요.</li>
+<li>질문을 <b>맨 끝에 몰아서</b> 해요.</li>
+<li>비율, 도구, 글꼴 같은 <b>제작 질문이 없어요</b>.</li>
+<li>단계 번호가 <b>앞뒤로 안 맞아요</b>.</li>
+<li>내가 말한 적 없는 내용이 나와요 — <b>다른 대화 기억이 섞인 것</b>. 프로젝트(작업 방)를 쓰면 줄어요.</li>
+</ul></div>
+<div class="card wide " id="t1d"><h3>이 대화가 끝나면 이런 결론이 나와요</h3><div class="tw"><table class="cmp"><tr><th>항목</th><th>결정</th></tr><tr><td>동화</td><td>토끼와 자라 → 「토끼와 자라 — 간은 별도 제출입니다」</td></tr><tr><td>독자·목적</td><td>전연령 / 테스트용 일반 PDF</td></tr><tr><td>판형</td><td>펼침면(왼쪽 글·오른쪽 그림), 총 16쪽, 그림 세로 3:4</td></tr><tr><td>그림 도구</td><td>제미나이</td></tr><tr><td>그림</td><td>본문 6장 (표지·등장인물은 본문 그림에서 잘라 쓰기)</td></tr><tr><td>톤</td><td>용궁 = 회사, 블랙유머지만 밝고 위트 있게</td></tr><tr><td>다음</td><td>캐릭터 → 화풍 → 스토리보드 → 글 → 캐릭터 시트 → 장면</td></tr></table></div></div>
+<div class="card wide " id="t1e"><h3>내 대화를 이렇게 시작하세요</h3><div class="pbox">
+  <p class="psit"><b>공통 시작 프롬프트</b> · 내 주제로 처음 시작할 때 (모든 수강생 공통)</p>
+  <div class="prompt"><button class="copy">복사</button>나는 AI로 동화책 전자책(PDF)을 만들려고 한다. 처음이라 방법을 잘 모른다.
+제작 절차를 단계별로 진행하되, 한 번에 한 단계만 다뤄라.
+각 단계에서 내가 정해야 할 것이 있으면 먼저 질문하고, 내 답을 요약해서 확인받은 뒤 다음 단계로 넘어가라.
+질문은 한 번에 3개 이하로, 고를 수 있는 보기를 함께 줘라.
+그림은 이야기와 페이지 구성이 확정되기 전까지 만들지 마라.
+프롬프트를 줄 때는 항상 코드 블록으로 줘라.
+
+[현재 정한 것]
+- 소재: (내 주제)
+- 분량: (예: 표지·목차·등장인물 + 본문 6장면 + 뒤표지)
+- 화풍: 아직 미정, 너와 논의해서 결정</div>
+</div></div>
+</div></section><section class="step" data-step="2"><div class="grid"><div class="band card wide"><span class="band-no">0단계</span><div><h3 class="band-t">기본 사양</h3><p>책의 크기와 쪽 수, 누가 읽는지를 먼저 정해요. 비율은 그림 다 뽑고 바꾸면 전부 다시 해야 해요.</p></div></div><div class="card " id="a0q"><h3><span class="chip c-ask">역질문</span> AI가 물어봐야 할 것</h3><ul class="asks"><li>독자 연령은?</li><li>책의 목적은?</li><li>글과 그림을 한 쪽에 넣을까, 나눌까?</li><li>그래서 그림 비율은?</li><li>그림은 어떤 도구로 만들까?</li></ul></div><div class="card wide " id="a0l"><h3>배치 방식부터 고르세요 — 그림 비율이 여기서 정해져요</h3>
+<div class="lay2">
+ <figure class="lay"><svg viewBox="0 0 300 400" role="img" aria-label="한 쪽에 정사각 그림을 위에, 글을 아래에 넣은 배치">
+  <rect x="1" y="1" width="298" height="398" rx="6" fill="#fff" stroke="#D8D4CE"/>
+  <rect x="30" y="30" width="240" height="240" rx="4" fill="#F1E6DA" stroke="#E0CFBE"/>
+  <text x="150" y="155" text-anchor="middle" font-size="18" fill="#9A7F67">그림 1:1</text>
+  <rect x="30" y="292" width="240" height="8" rx="4" fill="#C9C5BF"/><rect x="30" y="310" width="220" height="8" rx="4" fill="#C9C5BF"/>
+  <rect x="30" y="328" width="235" height="8" rx="4" fill="#C9C5BF"/><rect x="30" y="346" width="150" height="8" rx="4" fill="#C9C5BF"/>
+  <text x="150" y="388" text-anchor="middle" font-size="12" fill="#9A958F">글</text></svg>
+  <figcaption><b>① 한 쪽에 글 + 그림</b><br>3:4 쪽 안에 1:1 그림을 위에, 글은 아래에. 그림을 1:1로 뽑으면 글 자리가 자연스럽게 생겨요.</figcaption></figure>
+ <figure class="lay"><svg viewBox="0 0 600 400" role="img" aria-label="왼쪽 쪽은 글, 오른쪽 쪽은 그림으로 나눈 펼침면">
+  <rect x="1" y="1" width="298" height="398" rx="6" fill="#FBF8F2" stroke="#D8D4CE"/>
+  <rect x="301" y="1" width="298" height="398" rx="6" fill="#F1E6DA" stroke="#D8D4CE"/>
+  <rect x="50" y="140" width="200" height="9" rx="4" fill="#C9C5BF"/><rect x="50" y="162" width="180" height="9" rx="4" fill="#C9C5BF"/>
+  <rect x="50" y="184" width="195" height="9" rx="4" fill="#C9C5BF"/><rect x="50" y="206" width="120" height="9" rx="4" fill="#C9C5BF"/>
+  <text x="150" y="300" text-anchor="middle" font-size="16" fill="#9A958F">글 쪽 (짝수)</text>
+  <text x="450" y="205" text-anchor="middle" font-size="18" fill="#9A7F67">그림 3:4 (홀수)</text></svg>
+  <figcaption><b>② 글과 그림 나누기 (펼침면)</b><br>왼쪽 글, 오른쪽 그림. 그림은 3:4로 꽉 써요. 모범안 「토끼와 자라」가 이 방식이에요.</figcaption></figure>
+</div><p class="note">①이면 그림을 <b>정사각 1:1</b>로, ②면 <b>세로 3:4</b>로 뽑아요. 3단계 화풍 블록도 고른 쪽으로 쓰세요. 자세한 꾸미기는 "책 꾸미기" 탭에 있어요.</p></div><div class="card " id="a0e"><h3><span class="chip c-ex">모범안</span> 쪽 구성 (펼침면)</h3><div class="tw"><table class="cmp"><tr><th>쪽</th><th>내용</th></tr><tr><td>1</td><td>표지</td></tr><tr><td>2</td><td>목차 + 책 소개</td></tr><tr><td>3</td><td>등장인물</td></tr><tr><td>4~15</td><td>본문 6장면 (짝수 쪽 글 / 홀수 쪽 그림)</td></tr><tr><td>16</td><td>뒤표지</td></tr></table></div></div><div class="card " id="a0c"><h3><span class="chip c-chk">비교</span> 내 결과에 있나요?</h3><ul class="chk"><li><label><input type="checkbox"> 독자 연령</label></li><li><label><input type="checkbox"> 목적</label></li><li><label><input type="checkbox"> 글·그림 배치 방식</label></li><li><label><input type="checkbox"> 그림 비율</label></li><li><label><input type="checkbox"> 그림 도구</label></li><li><label><input type="checkbox"> 쪽 구성표</label></li><li><label><input type="checkbox"> 새로 뽑을 그림 장 수</label></li></ul></div><div class="card " id="a0p"><h3><span class="chip c-pr">복붙</span> 빠졌다면</h3><div class="pbox">
+  <p class="psit"><b>복붙 프롬프트</b> · 비율·도구를 안 물어봤을 때</p>
+  <div class="prompt"><button class="copy">복사</button>그림을 만들기 전에 정해야 할 제작 사양을 질문해라.
+글과 그림을 한 쪽에 넣을지 펼침면으로 나눌지, 그에 맞는 그림 비율(정사각·세로·가로), 그림 생성 도구, 편집 도구를 보기와 함께 물어봐라.</div>
+</div></div></div></section><section class="step" data-step="3"><div class="grid"><div class="band card wide"><span class="band-no">1단계</span><div><h3 class="band-t">시놉시스</h3><p>이야기 전체를 한눈에 정리해요. 원작 그대로 갈지, 비틀지도 여기서 정해요.</p></div></div><div class="card " id="a1q"><h3><span class="chip c-ask">역질문</span> AI가 물어봐야 할 것</h3><ul class="asks"><li>원작 그대로 갈까요, 비틀까요?</li><li>분위기는?</li><li>교훈은 원작대로?</li></ul></div><div class="card wide " id="a1e"><h3><span class="chip c-ex">모범안</span></h3><div class="tw"><table class="cmp"><tr><th>항목</th><th>내용</th></tr><tr><td>제목</td><td>토끼와 자라 — 간은 별도 제출입니다</td></tr><tr><td>한 줄 줄거리</td><td>실적에 쫓기는 용궁 영업부 자라 과장이 "당근 무제한" 채용 광고로 토끼를 꾀어 오지만, 토끼는 "간은 빨래 중"이라며 퇴사해 버린다.</td></tr><tr><td>비튼 점</td><td>용궁 = 회사. 어른은 직장 풍자로, 아이는 토끼의 꾀로 웃는다. 잔인한 장면 없음.</td></tr><tr><td>결말</td><td>용왕은 웃다가 배탈이 낫고, 자라는 실적 미달로 토끼네 옆집(육지 지점) 발령</td></tr><tr><td>교훈</td><td>작은 글씨는 꼭 읽자. 가장 좋은 약은 웃음.</td></tr></table></div></div><div class="card " id="a1c"><h3><span class="chip c-chk">비교</span> 내 결과에 있나요?</h3><ul class="chk"><li><label><input type="checkbox"> 제목</label></li><li><label><input type="checkbox"> 한 줄 줄거리</label></li><li><label><input type="checkbox"> 원작과 달라진 점 (또는 원작 유지 결정)</label></li><li><label><input type="checkbox"> 분위기</label></li><li><label><input type="checkbox"> 결말</label></li><li><label><input type="checkbox"> 교훈</label></li></ul></div><div class="card " id="a1p"><h3><span class="chip c-pr">복붙</span> 빠졌다면</h3><div class="pbox">
+  <p class="psit"><b>복붙 프롬프트</b> · 시놉시스가 길거나 흐릿할 때</p>
+  <div class="prompt"><button class="copy">복사</button>지금까지의 이야기를 아래 형식으로 다시 정리해라.
+제목 / 한 줄 줄거리(두 문장 이내) / 원작과 달라진 점 / 분위기 / 결말 / 교훈 한 줄</div>
+</div><div class="pbox">
+  <p class="psit"><b>복붙 프롬프트</b> · 원작을 비틀어 보고 싶을 때</p>
+  <div class="prompt"><button class="copy">복사</button>이 동화를 원작 줄거리는 살리되 현대적으로 비튼 버전 세 가지를 제안해라.
+각각 한 줄 줄거리, 웃음 포인트, 어른이 공감할 점, 아이가 좋아할 점을 적어라. 잔인한 장면은 넣지 마라.</div>
+</div></div></div></section><section class="step" data-step="4"><div class="grid"><div class="band card wide"><span class="band-no">2단계</span><div><h3 class="band-t">캐릭터 설정</h3><p>성격·역할·말투를 정해요. 외형 키워드는 나중에 그림 프롬프트로 그대로 써요.</p></div></div><div class="card wide " id="a2e"><h3><span class="chip c-ex">모범안</span></h3><div class="tw"><table class="cmp"><tr><th>인물</th><th>역할</th><th>성격·말투</th><th>외형 키워드</th></tr><tr><td>토끼</td><td>숲속 프리랜서, 주인공</td><td>눈치 빠르고 말재주 최고, 능청스러움</td><td>크림색 털, 한쪽 귀가 살짝 접힘, 작은 갈색 배낭</td></tr><tr><td>자라 과장</td><td>용궁 영업부 18년 차</td><td>성실하지만 실적에 쫓김, "영업은 발로 뛰는 거야"</td><td>올리브색 등껍질, 넥타이, 목에 건 사원증, 둥근 안경</td></tr><tr><td>용왕 회장님</td><td>용궁 회사 회장</td><td>통 크고 잘 웃음, 회식을 너무 좋아함</td><td>푸른 용, 금빛 곤룡포, 볼록한 배, 긴 수염</td></tr><tr><td>넙치 의원</td><td>용궁 의원</td><td>처방 근거는 늘 "옛날부터 그랬답니다"</td><td>납작한 몸, 두 눈이 한쪽에 몰림, 흰 가운, 청진기</td></tr></table></div></div><div class="card " id="a2c"><h3><span class="chip c-chk">비교</span> 내 결과에 있나요?</h3><ul class="chk"><li><label><input type="checkbox"> 인물 4명 이하</label></li><li><label><input type="checkbox"> 역할</label></li><li><label><input type="checkbox"> 성격</label></li><li><label><input type="checkbox"> 말투·말버릇</label></li><li><label><input type="checkbox"> 외형 키워드 (색·옷·소품·구별 특징)</label></li></ul></div><div class="card " id="a2p"><h3><span class="chip c-pr">복붙</span> 빠졌다면</h3><div class="pbox">
+  <p class="psit"><b>복붙 프롬프트</b> · 외형 키워드가 없을 때</p>
+  <div class="prompt"><button class="copy">복사</button>등장인물마다 그림을 그릴 때 바로 쓸 수 있는 외형 키워드를 정해라.
+색, 몸 비율, 옷, 소품, 다른 인물과 구별되는 특징을 인물당 4~5개씩 표로 적어라.</div>
+</div></div></div></section><section class="step" data-step="5"><div class="grid"><div class="band card wide"><span class="band-no">3단계</span><div><h3 class="band-t">화풍 선택</h3><p>이야기 분위기에 맞는 그림 스타일을 고르고 규칙으로 고정해요. "수채화" 한 단어로 끝내지 않아요.</p></div></div><div class="card " id="a3e"><h3><span class="chip c-ex">모범안</span> 후보 비교</h3><div class="tw"><table class="cmp"><tr><th>후보</th><th>장점</th><th>단점</th></tr><tr><td>A. 한국 전통 민화풍</td><td>전래동화 느낌</td><td>회사 풍자 소품과 안 어울림</td></tr><tr><td><b>B. 색연필 그림책풍 + 전통 소품 ✔</b></td><td>귀엽고 따뜻함, 사원증·현수막 같은 소품이 잘 보임</td><td>배경을 일부러 줄여야 함</td></tr><tr><td>C. 밝은 현대 만화풍</td><td>웃음이 빨리 전달됨</td><td>동화책 느낌이 약함</td></tr></table></div></div><div class="card " id="a3r"><h3><span class="chip c-ex">모범안</span> 화풍 규칙</h3><div class="tw"><table class="cmp"><tr><th>항목</th><th>규칙</th></tr><tr><td>재료</td><td>부드러운 색연필 + 아주 옅은 수채, 크림색 종이</td></tr><tr><td>선</td><td>가는 갈색 연필선, 살짝 손맛</td></tr><tr><td>색</td><td>흐린 따뜻한 색 + 포인트 하나(산호빛 빨강)</td></tr><tr><td>배경</td><td>단순하게, 용궁은 단청 기둥 한두 개로만</td></tr><tr><td>캐릭터</td><td>둥글고 귀엽게, 머리가 큰 편</td></tr><tr><td>빼기</td><td>진한 외곽선, 사진 같은 표현, 3D, 꽉 찬 배경</td></tr></table></div></div><div class="card " id="a3b"><h3>화풍 블록 — 펼침면용 (그림 세로 3:4, 모범안)</h3><div class="pbox">
+  <p class="psit"><b>화풍 블록</b> · 글·그림을 나누는 펼침면 방식일 때</p>
+  <p class="plang">영어 (그림 AI에 넣는 문장)</p>
+  <div class="prompt clamp"><button class="copy">복사</button>Children's picture book illustration, soft colored pencil with a very light watercolor wash, warm cream paper texture, thin warm-brown pencil outlines, muted warm palette with one coral-red accent, simple uncluttered background, rounded cute animal characters with slightly large heads, props drawn clearly, gentle witty humor, vertical 3:4 composition.
+Avoid: heavy black outlines, photorealism, 3D render, crowded background, oversaturated colors, text or letters in the image.</div>
+  <button class="more" type="button">전체 보기</button>
+  <details class="pko"><summary>한글로 보기</summary>
+  <div class="prompt ko"><button class="copy">복사</button>어린이 그림책 일러스트. 부드러운 색연필에 아주 옅은 수채를 얹은 느낌, 따뜻한 크림색 종이 질감, 가는 따뜻한 갈색 연필 외곽선, 흐리고 따뜻한 색 바탕에 산호빛 빨강 포인트 하나, 단순하고 깔끔한 배경, 머리가 살짝 큰 둥글고 귀여운 동물 캐릭터, 소품은 또렷하게, 잔잔하고 위트 있는 유머, 세로 3:4 구도.
+빼 줘: 진한 검은 외곽선, 사진 같은 표현, 3D 렌더, 꽉 찬 배경, 지나친 채도, 그림 속 글자.</div></details>
+</div></div><div class="card " id="a3b2"><h3>화풍 블록 — 한 쪽용 (그림 정사각 1:1)</h3><div class="pbox">
+  <p class="psit"><b>화풍 블록</b> · 한 쪽에 그림과 글을 같이 넣을 때</p>
+  <p class="plang">영어 (그림 AI에 넣는 문장)</p>
+  <div class="prompt clamp"><button class="copy">복사</button>Children's picture book illustration, soft colored pencil with a very light watercolor wash, warm cream paper texture, thin warm-brown pencil outlines, muted warm palette with one coral-red accent, simple uncluttered background, rounded cute animal characters with slightly large heads, props drawn clearly, gentle witty humor, square 1:1 composition.
+Avoid: heavy black outlines, photorealism, 3D render, crowded background, oversaturated colors, text or letters in the image.</div>
+  <button class="more" type="button">전체 보기</button>
+  <details class="pko"><summary>한글로 보기</summary>
+  <div class="prompt ko"><button class="copy">복사</button>어린이 그림책 일러스트. 부드러운 색연필에 아주 옅은 수채를 얹은 느낌, 따뜻한 크림색 종이 질감, 가는 따뜻한 갈색 연필 외곽선, 흐리고 따뜻한 색 바탕에 산호빛 빨강 포인트 하나, 단순하고 깔끔한 배경, 머리가 살짝 큰 둥글고 귀여운 동물 캐릭터, 소품은 또렷하게, 잔잔하고 위트 있는 유머, 정사각 1:1 구도.
+빼 줘: 진한 검은 외곽선, 사진 같은 표현, 3D 렌더, 꽉 찬 배경, 지나친 채도, 그림 속 글자.</div></details>
+</div></div><div class="card " id="a3c"><h3><span class="chip c-chk">비교</span> 내 결과에 있나요?</h3><ul class="chk"><li><label><input type="checkbox"> 후보 2개 이상 비교</label></li><li><label><input type="checkbox"> 재료</label></li><li><label><input type="checkbox"> 선</label></li><li><label><input type="checkbox"> 색</label></li><li><label><input type="checkbox"> 배경 밀도</label></li><li><label><input type="checkbox"> 빼야 할 것</label></li><li><label><input type="checkbox"> 복붙용 화풍 블록 (고정 문장)</label></li></ul></div><div class="card " id="a3p"><h3><span class="chip c-pr">복붙</span> 빠졌다면</h3><div class="pbox">
+  <p class="psit"><b>복붙 프롬프트</b> · 화풍을 한 단어로만 정했을 때</p>
+  <div class="prompt"><button class="copy">복사</button>내 이야기의 분위기에 맞는 그림책 화풍 후보 3개를 장단점과 함께 비교해라.
+내가 하나를 고르면, 그 화풍을 재료 / 선 / 색 / 배경 밀도 / 캐릭터 비례 / 빼야 할 것 여섯 항목의 규칙으로 정리하고,
+모든 그림 프롬프트에 그대로 붙일 영문 화풍 블록을 한글 번역과 함께 코드 블록으로 만들어라.</div>
+</div></div></div></section><section class="step" data-step="6"><div class="grid"><div class="band card wide"><span class="band-no">4단계</span><div><h3 class="band-t">스토리보드</h3><p>본문 6장면을 그림 기준으로 설계해요. 누가, 어디서, 무엇을, 어떤 감정으로, 어떤 구도로.</p></div></div><div class="card wide " id="a4e"><h3><span class="chip c-ex">모범안</span></h3><div class="tw"><table class="cmp"><tr><th>그림 쪽</th><th>장면</th><th>배경</th><th>등장</th><th>행동·감정</th><th>소품</th><th>구도</th></tr><tr><td>5</td><td>회장님의 진단서</td><td>용궁 회장실</td><td>용왕, 넙치</td><td>배 잡고 누운 용왕, 태연한 넙치</td><td>처방전</td><td>정면, 중간 거리</td></tr><tr><td>7</td><td>자라 과장 첫 육지 출장</td><td>바닷가 바위</td><td>자라</td><td>숨차서 헉헉, 결의</td><td>사원증, 넥타이</td><td>낮은 시점</td></tr><tr><td>9</td><td>꿈의 직장 용궁</td><td>숲속</td><td>자라, 토끼</td><td>전단지 내미는 자라, 귀 쫑긋 토끼</td><td>채용 전단지</td><td>두 인물 마주 봄</td></tr><tr><td>11</td><td>신입 사원 환영합니다</td><td>용궁 문 앞</td><td>토끼, 자라</td><td>웃음이 굳은 토끼</td><td>환영 현수막</td><td>넓은 시점</td></tr><tr><td>13</td><td>간은 오늘 빨래 중</td><td>용궁 회의실</td><td>토끼, 용왕, 자라</td><td>능청스러운 토끼, 멍한 용왕</td><td>손 내민 용왕</td><td>토끼 가까이</td></tr><tr><td>15</td><td>퇴사합니다</td><td>바닷가·숲 / 용궁</td><td>셋 다</td><td>도망치는 토끼, 웃는 용왕, 이삿짐 든 자라</td><td>이삿짐</td><td>위아래 화면 나누기</td></tr></table></div></div><div class="card " id="a4n"><h3>알아 두기</h3><div class="box warn"><h4>그림 속에 글자를 넣지 않아요</h4><p>AI는 글자를 자주 깨뜨려요. 처방전·전단지·현수막 문구는 그림이 아니라 <b>글 쪽 본문</b>에서 처리해요.</p></div></div><div class="card " id="a4c"><h3><span class="chip c-chk">비교</span> 내 결과에 있나요?</h3><ul class="chk"><li><label><input type="checkbox"> 장면 수 = 본문 쪽 수</label></li><li><label><input type="checkbox"> 배경</label></li><li><label><input type="checkbox"> 등장인물</label></li><li><label><input type="checkbox"> 행동·감정</label></li><li><label><input type="checkbox"> 핵심 소품</label></li><li><label><input type="checkbox"> 구도</label></li></ul></div><div class="card wide " id="a4p"><h3><span class="chip c-pr">복붙</span> 빠졌다면</h3><div class="pbox">
+  <p class="psit"><b>복붙 프롬프트</b> · 스토리보드가 줄거리 나열뿐일 때</p>
+  <div class="prompt"><button class="copy">복사</button>본문 장면을 그림 기준 스토리보드 표로 만들어라.
+칸은 쪽 / 장면 제목 / 배경 / 등장인물 / 행동과 감정 / 핵심 소품 / 구도(정면·옆·위·가까이·멀리).
+장면 수는 내 쪽 구성과 정확히 맞춰라.</div>
+</div></div></div></section><section class="step" data-step="7"><div class="grid"><div class="band card wide"><span class="band-no">5단계</span><div><h3 class="band-t">장면별 이야기</h3><p>글 쪽에 들어갈 본문과 대사를 써요. 쪽당 3~5문장, 대화문은 따옴표로.</p></div></div><div class="card wide " id="a5e"><h3><span class="chip c-ex">모범안</span> 글 쪽 6장</h3><div class="pages"><div class="page"><span class="pno">4쪽</span><h4>회장님의 진단서</h4><p>깊은 바닷속 용궁 회사. 용왕 회장님이 배를 움켜쥐고 누워 계셨어요.<br>"끙… 어제 회식이 너무 길었구나."<br>넙치 의원이 처방전을 쓱쓱 썼어요. "토끼 간 한 개. 하루 세 번."<br>"그게 왜 약이냐?" "옛날부터 그랬답니다."</p></div><div class="page"><span class="pno">6쪽</span><h4>자라 과장, 첫 육지 출장</h4><p>"이번 분기 실적은 토끼 간 한 개!"<br>자라 과장은 등껍질에 사원증을 달고 육지로 올라왔어요.<br>바다 밖은 처음이라 숨이 턱까지 찼지요.<br>"헉헉… 영업은 발로 뛰는 거야."</p></div><div class="page"><span class="pno">8쪽</span><h4>꿈의 직장 용궁</h4><p>숲속에서 토끼를 만난 자라 과장이 전단지를 내밀었어요.<br>"용궁 신입 사원 모집! 당근 무제한, 주 4일 근무, 바다 전망 사무실!"<br>토끼의 귀가 쫑긋 섰어요.<br>전단지 맨 아래 개미만 한 글씨는 아무도 읽지 않았어요. ※ 간은 별도 제출.</p></div><div class="page"><span class="pno">10쪽</span><h4>신입 사원 환영합니다</h4><p>토끼는 자라 등에 올라 바닷속으로 내려갔어요.<br>용궁 문 앞에 커다란 현수막이 걸려 있었어요.<br>"환영합니다! 신입 토끼님 (간 포함)"<br>토끼의 미소가 그대로 굳었어요.</p></div><div class="page"><span class="pno">12쪽</span><h4>간은 오늘 빨래 중</h4><p>회장님이 손을 내밀었어요. "자, 간을 내놓거라."<br>토끼는 눈을 동그랗게 떴어요.<br>"어머, 어쩌죠? 간은 오늘 아침에 깨끗이 빨아서 바위에 널어 두고 왔는데요."<br>용궁이 조용해졌어요. "…그럼 얼른 다녀오너라."</p></div><div class="page"><span class="pno">14쪽</span><h4>퇴사합니다</h4><p>육지에 닿자마자 토끼가 깡충 뛰어내렸어요. "과장님, 저 퇴사할게요!"<br>빈손으로 돌아온 자라의 보고를 들은 회장님은 배꼽을 잡고 웃었어요. 웃다 보니 배탈이 싹 나았지요.<br>그리고 자라 과장은… 실적 미달로 육지 지점에 발령받았어요.<br>새 사무실은 토끼네 바로 옆집이었답니다.</p></div></div><div class="page back"><span class="pno">16쪽 뒤표지</span><p>작은 글씨는 꼭 읽어 보세요. 그리고 가장 좋은 약은… 웃음이랍니다.</p></div></div><div class="card " id="a5c"><h3><span class="chip c-chk">비교</span> 내 결과에 있나요?</h3><ul class="chk"><li><label><input type="checkbox"> 쪽마다 본문 있음</label></li><li><label><input type="checkbox"> 쪽당 3~5문장</label></li><li><label><input type="checkbox"> 대화문</label></li><li><label><input type="checkbox"> 말투 통일 (~했어요)</label></li><li><label><input type="checkbox"> 인물 말버릇 반영</label></li><li><label><input type="checkbox"> 스토리보드와 장면 일치</label></li></ul></div><div class="card " id="a5p"><h3><span class="chip c-pr">복붙</span> 빠졌다면</h3><div class="pbox">
+  <p class="psit"><b>복붙 프롬프트</b> · 글이 너무 길거나 말투가 섞였을 때</p>
+  <div class="prompt"><button class="copy">복사</button>각 글 쪽의 본문을 3~5문장으로 줄여라. 문장은 짧게, 대화문은 따옴표로, 서술은 "~했어요" 체로 통일해라.
+캐릭터 설정의 말버릇을 대사에 반영하고, 스토리보드 장면과 내용이 어긋나는 곳이 있으면 표시해라.</div>
+</div></div></div></section><section class="step" data-step="8"><div class="grid"><div class="band card wide"><span class="band-no">6단계</span><div><h3 class="band-t">캐릭터 시트</h3><p>장면을 그리기 전에 주인공의 모습을 한 장씩 고정해요. 이 시트를 이후 모든 장면에 첨부해요.</p></div></div><div class="card wide " id="a6d"><h3>캐릭터 시트가 뭐예요?</h3>
+<div class="sheetdia">
+ <div class="sd"><b>턴어라운드</b><div class="sd-row"><i>정면</i><i>3/4</i><i>옆</i><i>뒤</i></div><small>어느 방향에서 봐도 같은 캐릭터</small></div>
+ <div class="sd"><b>표정 시트</b><div class="sd-grid"><i>기쁨</i><i>호기심</i><i>당황</i><i>능청</i><i>순진</i><i>웃음</i></div><small>어떤 감정이어도 같은 얼굴</small></div>
+</div>
+<p class="note">주연은 두 장씩, 조연은 정면 한 장이면 충분해요.</p></div><div class="card " id="a6r"><h3>토끼 — 턴어라운드</h3><div class="pbox">
+  <p class="psit"><b>그림 프롬프트</b> · 주인공 생김새를 네 방향으로 고정할 때</p>
+  <p class="plang">영어 (그림 AI에 넣는 문장)</p>
+  <div class="prompt clamp"><button class="copy">복사</button>Character turnaround sheet of a small rabbit: cream fur, one ear slightly folded, small brown backpack.
+Full body shown in four views side by side — front, three-quarter, side, back — same size and proportions in every view.
+Plain cream background, no text.
+Children's picture book illustration, soft colored pencil with a very light watercolor wash, warm cream paper texture, thin warm-brown pencil outlines, muted warm palette with one coral-red accent, simple uncluttered background, rounded cute animal characters with slightly large heads, props drawn clearly, gentle witty humor, vertical 3:4 composition.
+Avoid: heavy black outlines, photorealism, 3D render, crowded background, oversaturated colors, text or letters in the image.</div>
+  <button class="more" type="button">전체 보기</button>
+  <details class="pko"><summary>한글로 보기</summary>
+  <div class="prompt ko"><button class="copy">복사</button>작은 토끼의 캐릭터 턴어라운드 시트: 크림색 털, 한쪽 귀가 살짝 접힘, 작은 갈색 배낭.
+정면·3/4·옆·뒤 네 방향 전신을 나란히, 모든 칸에서 크기와 비율을 똑같이.
+무늬 없는 크림색 배경, 글자 없음.
+어린이 그림책 일러스트. 부드러운 색연필에 아주 옅은 수채를 얹은 느낌, 따뜻한 크림색 종이 질감, 가는 따뜻한 갈색 연필 외곽선, 흐리고 따뜻한 색 바탕에 산호빛 빨강 포인트 하나, 단순하고 깔끔한 배경, 머리가 살짝 큰 둥글고 귀여운 동물 캐릭터, 소품은 또렷하게, 잔잔하고 위트 있는 유머, 세로 3:4 구도.
+빼 줘: 진한 검은 외곽선, 사진 같은 표현, 3D 렌더, 꽉 찬 배경, 지나친 채도, 그림 속 글자.</div></details>
+</div></div><div class="card " id="a6s"><h3>토끼 — 표정 시트</h3><div class="pbox">
+  <p class="psit"><b>그림 프롬프트</b> · 이야기에 나오는 감정 6개를 미리 그려 둘 때</p>
+  <p class="plang">영어 (그림 AI에 넣는 문장)</p>
+  <div class="prompt clamp"><button class="copy">복사</button>Expression sheet of the same rabbit character (cream fur, one ear slightly folded).
+Six head-and-shoulders portraits in a 2x3 grid: happy, ear-perked curious, frozen smile, sly grin, wide-eyed innocent, laughing.
+Same character design in every portrait, plain cream background, no text.
+Children's picture book illustration, soft colored pencil with a very light watercolor wash, warm cream paper texture, thin warm-brown pencil outlines, muted warm palette with one coral-red accent, simple uncluttered background, rounded cute animal characters with slightly large heads, props drawn clearly, gentle witty humor, vertical 3:4 composition.
+Avoid: heavy black outlines, photorealism, 3D render, crowded background, oversaturated colors, text or letters in the image.</div>
+  <button class="more" type="button">전체 보기</button>
+  <details class="pko"><summary>한글로 보기</summary>
+  <div class="prompt ko"><button class="copy">복사</button>같은 토끼 캐릭터(크림색 털, 한쪽 귀가 살짝 접힘)의 표정 시트.
+2x3 칸에 어깨 위 얼굴 6개: 기쁨, 귀 쫑긋 호기심, 굳은 미소, 능청스러운 웃음, 눈 동그랗게 뜬 순진한 얼굴, 크게 웃음.
+모든 칸에서 생김새 동일, 무늬 없는 크림색 배경, 글자 없음.
+어린이 그림책 일러스트. 부드러운 색연필에 아주 옅은 수채를 얹은 느낌, 따뜻한 크림색 종이 질감, 가는 따뜻한 갈색 연필 외곽선, 흐리고 따뜻한 색 바탕에 산호빛 빨강 포인트 하나, 단순하고 깔끔한 배경, 머리가 살짝 큰 둥글고 귀여운 동물 캐릭터, 소품은 또렷하게, 잔잔하고 위트 있는 유머, 세로 3:4 구도.
+빼 줘: 진한 검은 외곽선, 사진 같은 표현, 3D 렌더, 꽉 찬 배경, 지나친 채도, 그림 속 글자.</div></details>
+</div></div><div class="card " id="a6t"><h3>자라 과장 — 턴어라운드</h3><div class="pbox">
+  <p class="psit"><b>그림 프롬프트</b> · 두 번째 주연 생김새 고정</p>
+  <p class="plang">영어 (그림 AI에 넣는 문장)</p>
+  <div class="prompt clamp"><button class="copy">복사</button>Character turnaround sheet of a turtle office worker: olive-green shell, necktie, ID badge on a lanyard, round glasses.
+Full body shown in four views side by side — front, three-quarter, side, back — same size and proportions in every view.
+Plain cream background, no text.
+Children's picture book illustration, soft colored pencil with a very light watercolor wash, warm cream paper texture, thin warm-brown pencil outlines, muted warm palette with one coral-red accent, simple uncluttered background, rounded cute animal characters with slightly large heads, props drawn clearly, gentle witty humor, vertical 3:4 composition.
+Avoid: heavy black outlines, photorealism, 3D render, crowded background, oversaturated colors, text or letters in the image.</div>
+  <button class="more" type="button">전체 보기</button>
+  <details class="pko"><summary>한글로 보기</summary>
+  <div class="prompt ko"><button class="copy">복사</button>자라 회사원의 캐릭터 턴어라운드 시트: 올리브색 등껍질, 넥타이, 목에 건 사원증, 둥근 안경.
+정면·3/4·옆·뒤 네 방향 전신을 나란히, 모든 칸에서 크기와 비율을 똑같이.
+무늬 없는 크림색 배경, 글자 없음.
+어린이 그림책 일러스트. 부드러운 색연필에 아주 옅은 수채를 얹은 느낌, 따뜻한 크림색 종이 질감, 가는 따뜻한 갈색 연필 외곽선, 흐리고 따뜻한 색 바탕에 산호빛 빨강 포인트 하나, 단순하고 깔끔한 배경, 머리가 살짝 큰 둥글고 귀여운 동물 캐릭터, 소품은 또렷하게, 잔잔하고 위트 있는 유머, 세로 3:4 구도.
+빼 줘: 진한 검은 외곽선, 사진 같은 표현, 3D 렌더, 꽉 찬 배경, 지나친 채도, 그림 속 글자.</div></details>
+</div></div><div class="card " id="a6u"><h3>자라 과장 — 표정 시트</h3><div class="pbox">
+  <p class="psit"><b>그림 프롬프트</b> · 자라의 감정 6개</p>
+  <p class="plang">영어 (그림 AI에 넣는 문장)</p>
+  <div class="prompt clamp"><button class="copy">복사</button>Expression sheet of the same turtle office worker (olive-green shell, necktie, ID badge, round glasses).
+Six head-and-shoulders portraits in a 2x3 grid: out of breath, confident, flustered, dazed, sulky, resigned smile.
+Same character design in every portrait, plain cream background, no text.
+Children's picture book illustration, soft colored pencil with a very light watercolor wash, warm cream paper texture, thin warm-brown pencil outlines, muted warm palette with one coral-red accent, simple uncluttered background, rounded cute animal characters with slightly large heads, props drawn clearly, gentle witty humor, vertical 3:4 composition.
+Avoid: heavy black outlines, photorealism, 3D render, crowded background, oversaturated colors, text or letters in the image.</div>
+  <button class="more" type="button">전체 보기</button>
+  <details class="pko"><summary>한글로 보기</summary>
+  <div class="prompt ko"><button class="copy">복사</button>같은 자라 회사원(올리브색 등껍질, 넥타이, 사원증, 둥근 안경)의 표정 시트.
+2x3 칸에 어깨 위 얼굴 6개: 숨차서 헉헉, 자신만만, 당황, 멍함, 시무룩, 체념한 미소.
+모든 칸에서 생김새 동일, 무늬 없는 크림색 배경, 글자 없음.
+어린이 그림책 일러스트. 부드러운 색연필에 아주 옅은 수채를 얹은 느낌, 따뜻한 크림색 종이 질감, 가는 따뜻한 갈색 연필 외곽선, 흐리고 따뜻한 색 바탕에 산호빛 빨강 포인트 하나, 단순하고 깔끔한 배경, 머리가 살짝 큰 둥글고 귀여운 동물 캐릭터, 소품은 또렷하게, 잔잔하고 위트 있는 유머, 세로 3:4 구도.
+빼 줘: 진한 검은 외곽선, 사진 같은 표현, 3D 렌더, 꽉 찬 배경, 지나친 채도, 그림 속 글자.</div></details>
+</div></div><div class="card wide " id="a6v"><h3>용왕 · 넙치 — 정면 한 장</h3><div class="pbox">
+  <p class="psit"><b>그림 프롬프트</b> · 조연은 정면 전신 한 장으로</p>
+  <p class="plang">영어 (그림 AI에 넣는 문장)</p>
+  <div class="prompt clamp"><button class="copy">복사</button>Two full-body front-view character designs side by side on a plain cream background, no text:
+Left — a blue dragon king in a golden royal robe with a round belly and a long beard.
+Right — a flatfish doctor with both eyes on one side, wearing a white coat and a stethoscope.
+Children's picture book illustration, soft colored pencil with a very light watercolor wash, warm cream paper texture, thin warm-brown pencil outlines, muted warm palette with one coral-red accent, simple uncluttered background, rounded cute animal characters with slightly large heads, props drawn clearly, gentle witty humor, vertical 3:4 composition.
+Avoid: heavy black outlines, photorealism, 3D render, crowded background, oversaturated colors, text or letters in the image.</div>
+  <button class="more" type="button">전체 보기</button>
+  <details class="pko"><summary>한글로 보기</summary>
+  <div class="prompt ko"><button class="copy">복사</button>무늬 없는 크림색 배경에 정면 전신 캐릭터 두 명을 나란히, 글자 없음:
+왼쪽 — 금빛 곤룡포를 입고 배가 볼록하며 수염이 긴 푸른 용왕.
+오른쪽 — 두 눈이 한쪽에 몰린 넙치 의원, 흰 가운과 청진기.
+어린이 그림책 일러스트. 부드러운 색연필에 아주 옅은 수채를 얹은 느낌, 따뜻한 크림색 종이 질감, 가는 따뜻한 갈색 연필 외곽선, 흐리고 따뜻한 색 바탕에 산호빛 빨강 포인트 하나, 단순하고 깔끔한 배경, 머리가 살짝 큰 둥글고 귀여운 동물 캐릭터, 소품은 또렷하게, 잔잔하고 위트 있는 유머, 세로 3:4 구도.
+빼 줘: 진한 검은 외곽선, 사진 같은 표현, 3D 렌더, 꽉 찬 배경, 지나친 채도, 그림 속 글자.</div></details>
+</div></div><div class="card " id="a6c"><h3><span class="chip c-chk">비교 · 검수</span></h3><ul class="chk"><li><label><input type="checkbox"> 주연 턴어라운드</label></li><li><label><input type="checkbox"> 주연 표정 시트</label></li><li><label><input type="checkbox"> 조연 정면</label></li><li><label><input type="checkbox"> 화풍 블록 포함</label></li><li><label><input type="checkbox"> 네 방향 비율이 같은가</label></li><li><label><input type="checkbox"> 특징(접힌 귀, 사원증)이 모든 칸에 있나</label></li></ul></div><div class="card " id="a6p"><h3><span class="chip c-pr">복붙</span> 빠졌다면</h3><div class="pbox">
+  <p class="psit"><b>복붙 프롬프트</b> · 캐릭터 시트 없이 바로 장면을 만들었을 때</p>
+  <div class="prompt"><button class="copy">복사</button>장면을 만들기 전에 주인공의 캐릭터 시트 프롬프트를 만들어라.
+턴어라운드 1장(정면·3/4·옆·뒤, 같은 비율, 무늬 없는 배경)과 표정 시트 1장(2x3, 이야기에 나오는 감정 6개)을 따로 만들고,
+두 프롬프트 모두 끝에 화풍 블록을 붙여라. 외형 키워드는 캐릭터 설정 표에서 그대로 가져와라.
+영어 프롬프트와 한글 번역을 각각 코드 블록으로 줘라.</div>
+</div></div></div></section><section class="step" data-step="9"><div class="grid"><div class="band card wide"><span class="band-no">7단계</span><div><h3 class="band-t">장면별 프롬프트</h3><p>스토리보드 6장면을 그림 주문서로 바꿔요. 모든 프롬프트는 같은 틀로 써요.</p></div></div><div class="card wide " id="a7f"><h3>프롬프트 틀 — 다섯 칸</h3>
+<div class="frame5"><div><b>①</b>첨부한 캐릭터 시트대로</div><div><b>②</b>장면<small>누가·어디서·무엇을·감정</small></div><div><b>③</b>구도</div><div><b>④</b>소품</div><div class="hb"><b>⑤</b>화풍 블록</div></div>
+<p class="note">아래 프롬프트는 화풍 블록까지 합친 <b>완성본</b>이에요. 통째로 복사해서 넣으면 돼요. (1:1 방식이면 마지막 줄 "vertical 3:4"만 "square 1:1"로)</p></div><div class="card " id="a7s0"><h3>5쪽 · 회장님의 진단서</h3><div class="pbox">
+  <p class="psit"><b>그림 프롬프트</b> · 용왕이 배를 잡고 눕고, 넙치가 태연하게 처방전을 든 장면</p>
+  <p class="plang">영어 (그림 AI에 넣는 문장)</p>
+  <div class="prompt clamp"><button class="copy">복사</button>Use the attached character sheets and keep the characters' designs exactly the same.
+Scene: In the Dragon King's office inside an underwater palace, the blue Dragon King in a golden robe lies on a cushion holding his round belly, groaning. Beside him, a flatfish doctor with both eyes on one side, wearing a white coat and stethoscope, calmly holds up a prescription paper.
+Composition: front view, medium distance, Dragon King on the left, doctor on the right.
+Props: a blank prescription paper, one painted dancheong-pattern pillar in the background.
+Children's picture book illustration, soft colored pencil with a very light watercolor wash, warm cream paper texture, thin warm-brown pencil outlines, muted warm palette with one coral-red accent, simple uncluttered background, rounded cute animal characters with slightly large heads, props drawn clearly, gentle witty humor, vertical 3:4 composition.
+Avoid: heavy black outlines, photorealism, 3D render, crowded background, oversaturated colors, text or letters in the image.</div>
+  <button class="more" type="button">전체 보기</button>
+  <details class="pko"><summary>한글로 보기</summary>
+  <div class="prompt ko"><button class="copy">복사</button>첨부한 캐릭터 시트의 생김새를 그대로 유지해라.
+장면: 바닷속 용궁의 회장실. 금빛 곤룡포를 입은 푸른 용왕이 방석에 누워 볼록한 배를 잡고 끙끙댄다. 옆에서 두 눈이 한쪽에 몰린 넙치 의원이 흰 가운에 청진기를 하고 태연하게 처방전을 들어 보인다.
+구도: 정면, 중간 거리, 용왕은 왼쪽, 의원은 오른쪽.
+소품: 글자 없는 처방전, 뒤쪽에 단청 무늬 기둥 하나.
+어린이 그림책 일러스트. 부드러운 색연필에 아주 옅은 수채를 얹은 느낌, 따뜻한 크림색 종이 질감, 가는 따뜻한 갈색 연필 외곽선, 흐리고 따뜻한 색 바탕에 산호빛 빨강 포인트 하나, 단순하고 깔끔한 배경, 머리가 살짝 큰 둥글고 귀여운 동물 캐릭터, 소품은 또렷하게, 잔잔하고 위트 있는 유머, 세로 3:4 구도.
+빼 줘: 진한 검은 외곽선, 사진 같은 표현, 3D 렌더, 꽉 찬 배경, 지나친 채도, 그림 속 글자.</div></details>
+</div></div><div class="card " id="a7s1"><h3>7쪽 · 자라 과장 첫 육지 출장</h3><div class="pbox">
+  <p class="psit"><b>그림 프롬프트</b> · 숨차지만 결의에 찬 자라가 처음 바위에 오르는 장면</p>
+  <p class="plang">영어 (그림 AI에 넣는 문장)</p>
+  <div class="prompt clamp"><button class="copy">복사</button>Use the attached character sheet and keep the turtle's design exactly the same.
+Scene: An olive-shelled turtle office worker wearing a necktie, round glasses and an ID badge on a lanyard climbs onto a seaside rock for the first time, out of breath but determined.
+Composition: low angle from the rock, turtle in the center, sea behind him.
+Props: ID badge, necktie fluttering in the wind.
+Children's picture book illustration, soft colored pencil with a very light watercolor wash, warm cream paper texture, thin warm-brown pencil outlines, muted warm palette with one coral-red accent, simple uncluttered background, rounded cute animal characters with slightly large heads, props drawn clearly, gentle witty humor, vertical 3:4 composition.
+Avoid: heavy black outlines, photorealism, 3D render, crowded background, oversaturated colors, text or letters in the image.</div>
+  <button class="more" type="button">전체 보기</button>
+  <details class="pko"><summary>한글로 보기</summary>
+  <div class="prompt ko"><button class="copy">복사</button>첨부한 캐릭터 시트의 자라 생김새를 그대로 유지해라.
+장면: 넥타이에 둥근 안경, 목에 사원증을 건 올리브색 등껍질의 자라 회사원이 처음으로 바닷가 바위에 오른다. 숨이 차지만 결의에 찬 얼굴.
+구도: 바위 아래에서 올려다보는 낮은 시점, 자라는 가운데, 뒤로 바다.
+소품: 사원증, 바람에 날리는 넥타이.
+어린이 그림책 일러스트. 부드러운 색연필에 아주 옅은 수채를 얹은 느낌, 따뜻한 크림색 종이 질감, 가는 따뜻한 갈색 연필 외곽선, 흐리고 따뜻한 색 바탕에 산호빛 빨강 포인트 하나, 단순하고 깔끔한 배경, 머리가 살짝 큰 둥글고 귀여운 동물 캐릭터, 소품은 또렷하게, 잔잔하고 위트 있는 유머, 세로 3:4 구도.
+빼 줘: 진한 검은 외곽선, 사진 같은 표현, 3D 렌더, 꽉 찬 배경, 지나친 채도, 그림 속 글자.</div></details>
+</div></div><div class="card " id="a7s2"><h3>9쪽 · 꿈의 직장 용궁</h3><div class="pbox">
+  <p class="psit"><b>그림 프롬프트</b> · 자라가 전단지를 내밀고 토끼 귀가 쫑긋 서는 장면</p>
+  <p class="plang">영어 (그림 AI에 넣는 문장)</p>
+  <div class="prompt clamp"><button class="copy">복사</button>Use the attached character sheets and keep both characters' designs exactly the same.
+Scene: In a quiet forest, the turtle office worker eagerly hands a recruitment flyer to the cream rabbit with one folded ear. The rabbit's ears perk up with curiosity.
+Composition: the two characters face each other, turtle on the left, rabbit on the right.
+Props: a flyer with simple drawings of carrots and a sea-view office, no readable text.
+Children's picture book illustration, soft colored pencil with a very light watercolor wash, warm cream paper texture, thin warm-brown pencil outlines, muted warm palette with one coral-red accent, simple uncluttered background, rounded cute animal characters with slightly large heads, props drawn clearly, gentle witty humor, vertical 3:4 composition.
+Avoid: heavy black outlines, photorealism, 3D render, crowded background, oversaturated colors, text or letters in the image.</div>
+  <button class="more" type="button">전체 보기</button>
+  <details class="pko"><summary>한글로 보기</summary>
+  <div class="prompt ko"><button class="copy">복사</button>첨부한 캐릭터 시트의 두 캐릭터 생김새를 그대로 유지해라.
+장면: 조용한 숲속. 자라 회사원이 한쪽 귀가 접힌 크림색 토끼에게 신이 나서 채용 전단지를 내민다. 토끼는 호기심에 귀가 쫑긋 선다.
+구도: 두 캐릭터가 마주 봄, 자라는 왼쪽, 토끼는 오른쪽.
+소품: 당근과 바다 전망 사무실이 간단히 그려진 전단지, 읽을 수 있는 글자 없음.
+어린이 그림책 일러스트. 부드러운 색연필에 아주 옅은 수채를 얹은 느낌, 따뜻한 크림색 종이 질감, 가는 따뜻한 갈색 연필 외곽선, 흐리고 따뜻한 색 바탕에 산호빛 빨강 포인트 하나, 단순하고 깔끔한 배경, 머리가 살짝 큰 둥글고 귀여운 동물 캐릭터, 소품은 또렷하게, 잔잔하고 위트 있는 유머, 세로 3:4 구도.
+빼 줘: 진한 검은 외곽선, 사진 같은 표현, 3D 렌더, 꽉 찬 배경, 지나친 채도, 그림 속 글자.</div></details>
+</div></div><div class="card " id="a7s3"><h3>11쪽 · 신입 사원 환영합니다</h3><div class="pbox">
+  <p class="psit"><b>그림 프롬프트</b> · 용궁 문 앞 현수막을 올려다보며 토끼 웃음이 굳는 장면</p>
+  <p class="plang">영어 (그림 AI에 넣는 문장)</p>
+  <div class="prompt clamp"><button class="copy">복사</button>Use the attached character sheets and keep both characters' designs exactly the same.
+Scene: At the gate of an underwater palace, the rabbit sits on the turtle's back looking up at a large welcome banner. The rabbit's smile is frozen.
+Composition: wide view, gate and banner above, rabbit and turtle small at the bottom.
+Props: a large festive banner with decorative patterns only, no readable text; small bubbles rising.
+Children's picture book illustration, soft colored pencil with a very light watercolor wash, warm cream paper texture, thin warm-brown pencil outlines, muted warm palette with one coral-red accent, simple uncluttered background, rounded cute animal characters with slightly large heads, props drawn clearly, gentle witty humor, vertical 3:4 composition.
+Avoid: heavy black outlines, photorealism, 3D render, crowded background, oversaturated colors, text or letters in the image.</div>
+  <button class="more" type="button">전체 보기</button>
+  <details class="pko"><summary>한글로 보기</summary>
+  <div class="prompt ko"><button class="copy">복사</button>첨부한 캐릭터 시트의 두 캐릭터 생김새를 그대로 유지해라.
+장면: 바닷속 용궁 문 앞. 자라 등에 탄 토끼가 커다란 환영 현수막을 올려다본다. 토끼의 미소가 그대로 굳어 있다.
+구도: 넓은 시점, 위에는 문과 현수막, 아래에 토끼와 자라가 작게.
+소품: 장식 무늬만 있는 큰 현수막(읽을 수 있는 글자 없음), 위로 올라가는 작은 물방울.
+어린이 그림책 일러스트. 부드러운 색연필에 아주 옅은 수채를 얹은 느낌, 따뜻한 크림색 종이 질감, 가는 따뜻한 갈색 연필 외곽선, 흐리고 따뜻한 색 바탕에 산호빛 빨강 포인트 하나, 단순하고 깔끔한 배경, 머리가 살짝 큰 둥글고 귀여운 동물 캐릭터, 소품은 또렷하게, 잔잔하고 위트 있는 유머, 세로 3:4 구도.
+빼 줘: 진한 검은 외곽선, 사진 같은 표현, 3D 렌더, 꽉 찬 배경, 지나친 채도, 그림 속 글자.</div></details>
+</div></div><div class="card " id="a7s4"><h3>13쪽 · 간은 오늘 빨래 중</h3><div class="pbox">
+  <p class="psit"><b>그림 프롬프트</b> · 손 내민 용왕 앞에서 토끼가 능청스럽게 둘러대는 장면</p>
+  <p class="plang">영어 (그림 AI에 넣는 문장)</p>
+  <div class="prompt clamp"><button class="copy">복사</button>Use the attached character sheets and keep all characters' designs exactly the same.
+Scene: In the palace meeting room, the Dragon King reaches out his open hand toward the rabbit. The rabbit makes a wide-eyed innocent face as if explaining something. The turtle stands behind, stunned.
+Composition: close on the rabbit in the foreground, Dragon King's hand entering from the right, turtle small in the background.
+Props: the Dragon King's open palm.
+Children's picture book illustration, soft colored pencil with a very light watercolor wash, warm cream paper texture, thin warm-brown pencil outlines, muted warm palette with one coral-red accent, simple uncluttered background, rounded cute animal characters with slightly large heads, props drawn clearly, gentle witty humor, vertical 3:4 composition.
+Avoid: heavy black outlines, photorealism, 3D render, crowded background, oversaturated colors, text or letters in the image.</div>
+  <button class="more" type="button">전체 보기</button>
+  <details class="pko"><summary>한글로 보기</summary>
+  <div class="prompt ko"><button class="copy">복사</button>첨부한 캐릭터 시트의 모든 캐릭터 생김새를 그대로 유지해라.
+장면: 용궁 회의실. 용왕이 토끼를 향해 손바닥을 내민다. 토끼는 눈을 동그랗게 뜨고 무언가 설명하는 순진한 얼굴. 뒤에서 자라가 멍하니 서 있다.
+구도: 앞쪽에 토끼를 가깝게, 오른쪽에서 용왕의 손이 들어옴, 뒤쪽에 자라가 작게.
+소품: 용왕의 펼친 손바닥.
+어린이 그림책 일러스트. 부드러운 색연필에 아주 옅은 수채를 얹은 느낌, 따뜻한 크림색 종이 질감, 가는 따뜻한 갈색 연필 외곽선, 흐리고 따뜻한 색 바탕에 산호빛 빨강 포인트 하나, 단순하고 깔끔한 배경, 머리가 살짝 큰 둥글고 귀여운 동물 캐릭터, 소품은 또렷하게, 잔잔하고 위트 있는 유머, 세로 3:4 구도.
+빼 줘: 진한 검은 외곽선, 사진 같은 표현, 3D 렌더, 꽉 찬 배경, 지나친 채도, 그림 속 글자.</div></details>
+</div></div><div class="card " id="a7s5"><h3>15쪽 · 퇴사합니다</h3><div class="pbox">
+  <p class="psit"><b>그림 프롬프트</b> · 위: 숲으로 도망치는 토끼 / 아래: 웃는 용왕과 이삿짐 든 자라</p>
+  <p class="plang">영어 (그림 AI에 넣는 문장)</p>
+  <div class="prompt clamp"><button class="copy">복사</button>Use the attached character sheets and keep all characters' designs exactly the same.
+Scene: A split picture. Top half: the rabbit happily hops away into the forest from the seashore, waving. Bottom half: the Dragon King laughs holding his belly, while the turtle carries moving boxes toward a small cottage next to the rabbit's burrow.
+Composition: two horizontal panels, top and bottom.
+Props: moving boxes, a small transfer letter with no readable text.
+Children's picture book illustration, soft colored pencil with a very light watercolor wash, warm cream paper texture, thin warm-brown pencil outlines, muted warm palette with one coral-red accent, simple uncluttered background, rounded cute animal characters with slightly large heads, props drawn clearly, gentle witty humor, vertical 3:4 composition.
+Avoid: heavy black outlines, photorealism, 3D render, crowded background, oversaturated colors, text or letters in the image.</div>
+  <button class="more" type="button">전체 보기</button>
+  <details class="pko"><summary>한글로 보기</summary>
+  <div class="prompt ko"><button class="copy">복사</button>첨부한 캐릭터 시트의 모든 캐릭터 생김새를 그대로 유지해라.
+장면: 위아래로 나눈 그림. 위: 토끼가 바닷가에서 숲으로 손을 흔들며 신나게 깡충 뛰어간다. 아래: 용왕이 배를 잡고 웃고, 자라는 이삿짐 상자를 들고 토끼 굴 옆 작은 집으로 간다.
+구도: 가로로 나눈 위아래 두 칸.
+소품: 이삿짐 상자, 읽을 수 있는 글자가 없는 작은 발령장.
+어린이 그림책 일러스트. 부드러운 색연필에 아주 옅은 수채를 얹은 느낌, 따뜻한 크림색 종이 질감, 가는 따뜻한 갈색 연필 외곽선, 흐리고 따뜻한 색 바탕에 산호빛 빨강 포인트 하나, 단순하고 깔끔한 배경, 머리가 살짝 큰 둥글고 귀여운 동물 캐릭터, 소품은 또렷하게, 잔잔하고 위트 있는 유머, 세로 3:4 구도.
+빼 줘: 진한 검은 외곽선, 사진 같은 표현, 3D 렌더, 꽉 찬 배경, 지나친 채도, 그림 속 글자.</div></details>
+</div></div><div class="card " id="a7c"><h3><span class="chip c-chk">비교</span> 내 결과에 있나요?</h3><ul class="chk"><li><label><input type="checkbox"> 6장면 모두 프롬프트</label></li><li><label><input type="checkbox"> 캐릭터 시트 첨부 지시</label></li><li><label><input type="checkbox"> 장면·구도·소품 칸</label></li><li><label><input type="checkbox"> 화풍 블록</label></li><li><label><input type="checkbox"> 그림 속 글자 금지</label></li></ul></div><div class="card " id="a7p"><h3><span class="chip c-pr">복붙</span> 빠졌다면</h3><div class="pbox">
+  <p class="psit"><b>복붙 프롬프트</b> · 장면 프롬프트가 제각각일 때</p>
+  <div class="prompt"><button class="copy">복사</button>스토리보드의 장면을 하나씩 그림 프롬프트로 바꿔라. 모든 프롬프트를 같은 틀로 써라.
+1. 첨부한 캐릭터 시트의 생김새를 그대로 유지하라는 문장
+2. 장면(누가, 어디서, 무엇을, 어떤 감정으로)
+3. 구도
+4. 소품
+5. 화풍 블록
+그림 속에는 글자를 넣지 말라는 조건을 모든 프롬프트에 넣어라. 영어 프롬프트와 한글 번역을 장면마다 각각 코드 블록으로 줘라.</div>
+</div></div></div></section><section class="step" data-step="10"><div class="grid"><div class="band card wide"><span class="band-no">8단계</span><div><h3 class="band-t">장면 생성</h3><p>캐릭터 시트를 첨부하고 장면 프롬프트를 넣어요. 장면마다 2~4장 뽑아서 골라요.</p></div></div><div class="card " id="a8o"><h3>순서</h3><ol class="steps"><li>그림 AI 새 창을 열어요.</li><li>그 장면에 나오는 인물의 캐릭터 시트만 첨부해요.</li><li>장면 프롬프트(+화풍 블록)를 붙여 넣어요.</li><li>2~4장 뽑아서 아래 검수표로 골라요.</li><li>안 맞으면 고쳐 달라고 해요.</li></ol></div><div class="card " id="a8c"><h3><span class="chip c-chk">검수</span></h3><ul class="chk"><li><label><input type="checkbox"> 캐릭터가 시트와 같다</label></li><li><label><input type="checkbox"> 화풍이 이전 장면과 같다</label></li><li><label><input type="checkbox"> 그림 속 글자가 없다</label></li><li><label><input type="checkbox"> 세로 3:4 비율</label></li><li><label><input type="checkbox"> 스토리보드 장면과 일치</label></li></ul></div><div class="card wide " id="a8p"><h3><span class="chip c-pr">복붙</span> 캐릭터가 달라졌다면</h3><div class="pbox">
+  <p class="psit"><b>복붙 프롬프트</b> · 생성된 그림의 캐릭터가 시트와 다를 때</p>
+  <div class="prompt"><button class="copy">복사</button>방금 그림의 캐릭터가 첨부한 캐릭터 시트와 다르다. 달라진 부분을 찾아서 적고,
+장면·구도·소품은 그대로 둔 채 캐릭터만 시트와 똑같이 다시 그려라.</div>
+</div></div></div></section><section class="step" data-step="11"><div class="step-head"><div class="step-no">책 꾸미기</div><h2>글과 그림을 쪽에 앉히기</h2>
+<p class="lead">기획안과 그림이 나오면 쪽으로 엮어요. 미리캔버스에서 모두 할 수 있어요.</p></div><div class="grid">
+<div class="card wide " id="t7a"><h3>두 가지 배치 방식</h3>
+<div class="lay2">
+ <figure class="lay"><svg viewBox="0 0 300 400" role="img" aria-label="한 쪽에 정사각 그림을 위에, 글을 아래에 넣은 배치">
+  <rect x="1" y="1" width="298" height="398" rx="6" fill="#fff" stroke="#D8D4CE"/>
+  <rect x="30" y="30" width="240" height="240" rx="4" fill="#F1E6DA" stroke="#E0CFBE"/>
+  <text x="150" y="155" text-anchor="middle" font-size="18" fill="#9A7F67">그림 1:1</text>
+  <rect x="30" y="292" width="240" height="8" rx="4" fill="#C9C5BF"/><rect x="30" y="310" width="220" height="8" rx="4" fill="#C9C5BF"/>
+  <rect x="30" y="328" width="235" height="8" rx="4" fill="#C9C5BF"/><rect x="30" y="346" width="150" height="8" rx="4" fill="#C9C5BF"/>
+  <text x="150" y="388" text-anchor="middle" font-size="12" fill="#9A958F">글</text></svg>
+  <figcaption><b>① 한 쪽에 글 + 그림</b><br>3:4 쪽 안에 1:1 그림을 위에, 글은 아래에. 그림을 1:1로 뽑으면 글 자리가 자연스럽게 생겨요.</figcaption></figure>
+ <figure class="lay"><svg viewBox="0 0 600 400" role="img" aria-label="왼쪽 쪽은 글, 오른쪽 쪽은 그림으로 나눈 펼침면">
+  <rect x="1" y="1" width="298" height="398" rx="6" fill="#FBF8F2" stroke="#D8D4CE"/>
+  <rect x="301" y="1" width="298" height="398" rx="6" fill="#F1E6DA" stroke="#D8D4CE"/>
+  <rect x="50" y="140" width="200" height="9" rx="4" fill="#C9C5BF"/><rect x="50" y="162" width="180" height="9" rx="4" fill="#C9C5BF"/>
+  <rect x="50" y="184" width="195" height="9" rx="4" fill="#C9C5BF"/><rect x="50" y="206" width="120" height="9" rx="4" fill="#C9C5BF"/>
+  <text x="150" y="300" text-anchor="middle" font-size="16" fill="#9A958F">글 쪽 (짝수)</text>
+  <text x="450" y="205" text-anchor="middle" font-size="18" fill="#9A7F67">그림 3:4 (홀수)</text></svg>
+  <figcaption><b>② 글과 그림 나누기 (펼침면)</b><br>왼쪽 글, 오른쪽 그림. 그림은 3:4로 꽉 써요. 모범안 「토끼와 자라」가 이 방식이에요.</figcaption></figure>
+</div></div>
+<div class="card wide " id="t7b"><h3>글자 크기와 간격 — 쪽 크기 150×200mm, 미리캔버스 캔버스 1500×2000px 기준</h3><div class="tw"><table class="cmp"><tr><th></th><th>① 한 쪽에 글+그림</th><th>② 글·그림 나누기</th></tr><tr><td>본문 크기</td><td>18~22pt (미리캔버스 약 65~80px)</td><td>20~26pt (약 70~90px)</td></tr><tr><td>제목 크기</td><td>28~36pt (약 100~125px)</td><td>32~44pt (약 115~155px)</td></tr><tr><td>행간</td><td>160~180%</td><td>170~190%</td></tr><tr><td>자간</td><td>0 ~ -2%</td><td>0 ~ -2%</td></tr><tr><td>글 위치</td><td>그림 아래, 좌우 여백 10% 이상</td><td>쪽 가운데 또는 위쪽 1/3, 위아래 여백 넉넉히</td></tr></table></div><p class="note">미리캔버스에서 "직접 입력"으로 캔버스를 1500×2000px로 만들면 위 px 값을 그대로 쓰면 돼요. 화면으로 읽는 전자책은 종이책보다 한두 단계 크게 잡아요. 다 만든 뒤 휴대폰으로 PDF를 열어 읽기 편한지 꼭 확인하세요.</p></div>
+<div class="card " id="t7c"><h3>안심하고 쓰기 좋은 글꼴</h3><div class="tw"><table class="cmp"><tr><th>글꼴</th><th>느낌</th><th>어울리는 곳</th></tr><tr><td>나눔스퀘어라운드</td><td>둥글고 친근</td><td>아이 대상 본문</td></tr><tr><td>고운돋움</td><td>부드럽고 손글씨 느낌</td><td>따뜻한 동화 본문</td></tr><tr><td>마루부리</td><td>단정한 명조</td><td>어른도 읽는 동화, 전통 느낌</td></tr><tr><td>Pretendard</td><td>깔끔한 고딕</td><td>목차·등장인물·제작 정보</td></tr></table></div><div class="box warn"><h4>쓰기 전에 라이선스 확인</h4><p>위 글꼴은 무료 공개 글꼴이지만, 쓰기 전에 배포처의 이용 범위를 확인하세요. 한국저작권위원회 <b>공유마당 안심글꼴</b>에서 확인된 글꼴을 쓰면 더 안전해요. 미리캔버스 안의 글꼴은 미리캔버스 약관 범위에서 쓰는 거예요.</p></div></div>
+<div class="card " id="t7d"><h3>그림을 쪽에 넣는 네 가지 방법</h3>
+<div class="ways">
+ <figure><svg viewBox="0 0 120 160"><rect width="120" height="160" fill="#E9DCC6"/><circle cx="60" cy="80" r="26" fill="#D3B79A"/></svg><figcaption><b>풀 이미지</b><br>가장자리까지 꽉. 몰입감 최고, 글은 다른 쪽에.</figcaption></figure>
+ <figure><svg viewBox="0 0 120 160"><rect width="120" height="160" fill="#fff" stroke="#D8D4CE"/><rect x="16" y="20" width="88" height="88" fill="#E9DCC6"/><circle cx="60" cy="64" r="20" fill="#D3B79A"/></svg><figcaption><b>흰 바탕에 여백 두고</b><br>깔끔하고 단정. 글을 아래에 넣기 쉬워요.</figcaption></figure>
+ <figure><svg viewBox="0 0 120 160"><defs><radialGradient id="vg"><stop offset="60%" stop-color="#E9DCC6"/><stop offset="100%" stop-color="#FBF8F2"/></radialGradient></defs><rect width="120" height="160" fill="#FBF8F2" stroke="#D8D4CE"/><ellipse cx="60" cy="70" rx="50" ry="55" fill="url(#vg)"/><circle cx="60" cy="70" r="20" fill="#D3B79A"/></svg><figcaption><b>가장자리 녹이기</b><br>그림이 종이에 스며든 느낌. 그림책다워요.</figcaption></figure>
+ <figure><svg viewBox="0 0 120 160"><rect width="120" height="160" fill="#F3E3DF"/><rect x="16" y="20" width="88" height="88" fill="#E9DCC6"/><circle cx="60" cy="64" r="20" fill="#D3B79A"/></svg><figcaption><b>배경색 깔기</b><br>그림의 주된 색을 연하게 바탕에. 장면 분위기 강조.</figcaption></figure>
+</div><p class="note">미리캔버스에서 그림을 <b>배경으로 설정</b>하면 풀 이미지, <b>프레임·여백</b>으로 흰 바탕 배치, <b>투명도·그라데이션</b>으로 가장자리 녹이기, <b>배경색</b>으로 색 깔기를 할 수 있어요.</p></div>
+<div class="card wide " id="t7e"><h3><span class="chip c-ex">모범안</span> 토끼와 자라에 적용하면</h3><div class="tw"><table class="cmp"><tr><th>쪽</th><th>설정</th></tr><tr><td>글 쪽</td><td>크림색 바탕, 고운돋움 약 80px(22pt), 행간 180%, 쪽 위쪽 1/3에 제목·본문</td></tr><tr><td>그림 쪽</td><td>3:4 풀 이미지</td></tr><tr><td>표지</td><td>7쪽 '용궁 도착' 그림을 잘라 쓰고, 제목은 마루부리 약 140px(40pt)</td></tr><tr><td>등장인물</td><td>캐릭터 시트에서 인물만 잘라 흰 바탕에 여백 두고 배치</td></tr></table></div></div>
+</div></section><section class="step" data-step="12"><div class="step-head"><div class="step-no">다음 단계</div><h2>이 절차를 동화책 기획 챗봇으로</h2>
+<p class="lead">한 편을 끝까지 해 봤으면, 이 과정을 일반화해서 지피티 프로젝트에 넣어요. 그러면 어떤 동화로도 같은 절차를 밟아 줘요.</p></div><div class="grid">
+<div class="card wide " id="t8a"><h3>프로젝트에 넣는 것</h3>
+<div class="proj"><div><b>지침 칸</b><small>짧은 행동 규칙</small><p>한 번에 한 단계 · 질문 3개 이하와 보기 · 요약 확인 후 진행 · 그림은 마지막 · 프롬프트는 코드 블록</p></div>
+<div><b>지식 파일 1개 (txt)</b><small>상세 절차</small><p>0~8단계 할 일 · 역질문 목록 · 산출물 양식 · 비교 체크리스트 · 화풍 블록 만드는 법</p></div></div>
+<p class="note">무료 계정은 프로젝트당 파일 5개까지라, 지식은 파일 하나로 묶어요.</p></div>
+<div class="card wide " id="t8b"><h3>검증: 다른 동화로 돌려 보기 — 「세 가지 소원」</h3>
+<figure class="pd"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Page_facing_130_illustration_from_Fairy_tales_of_Charles_Perrault_(Clarke,_1922).jpg?width=700" alt="1922년 Harry Clarke 삽화: 길고 검은 소시지가 꿈틀대며 여인에게 다가오는 장면" loading="lazy" onerror="if(!this.dataset.f){this.dataset.f=1;this.src='https://upload.wikimedia.org/wikipedia/commons/5/50/Page_facing_130_illustration_from_Fairy_tales_of_Charles_Perrault_(Clarke,_1922).jpg'}else{this.closest('figure').style.display='none'}">
+<figcaption>Harry Clarke, 「The Ridiculous Wishes」 삽화, 『The Fairy Tales of Charles Perrault』(1922). 퍼블릭 도메인. 출처: Wikimedia Commons</figcaption></figure>
+<p>소원 세 개를 얻은 나무꾼이 소시지를 바라는 바람에 한 개를 쓰고, 화가 나서 "그 소시지 코에나 붙어라!" 하는 바람에 또 하나, 떼어 내느라 마지막 하나를 써요. 인물이 적고 웃음 포인트가 확실해서 6장면에 딱 맞아요.</p>
+<div class="key">토끼와 자라로 만든 챗봇이 <strong>세 가지 소원에서도 같은 절차를 밟아 주면</strong>, 절차가 제대로 일반화된 거예요.</div></div>
+</div></section></main>
+<aside class="side" aria-label="이 화면의 카드 목록"><p id="sideTitle">이 화면 카드</p><div id="sideList"></div></aside></div>
+<nav class="pager" aria-label="앞뒤 이동"><div class="pager-in"><button id="prev">이전</button><span class="where" id="where"></span><button id="next" class="next">다음</button></div></nav>
+<script>
+(function(){
+  var steps=[].slice.call(document.querySelectorAll('.step'));
+  var tabs=[].slice.call(document.querySelectorAll('.tab'));
+  var side=document.getElementById('sideList');
+  var cur=0, obs=null;
+
+  function buildSide(sec){
+    side.innerHTML='';
+    var cards=[].slice.call(sec.querySelectorAll('.card[id]'));
+    var links=[];
+    cards.forEach(function(c){
+      var h=c.querySelector('h3');
+      if(!h) return;
+      var a=document.createElement('a');
+      a.href='#'+c.id; a.textContent=h.textContent.replace(/역질문|모범안|비교 · 검수|비교|복붙|검수/,'').trim()||h.textContent.trim();
+      a.addEventListener('click',function(e){e.preventDefault();c.scrollIntoView({behavior:'smooth',block:'start'});});
+      side.appendChild(a); links.push([c,a]);
+    });
+    if(obs) obs.disconnect();
+    if('IntersectionObserver' in window){
+      obs=new IntersectionObserver(function(es){
+        es.forEach(function(e){
+          if(e.isIntersecting){links.forEach(function(p){p[1].classList.toggle('on',p[0]===e.target);});}
+        });
+      },{rootMargin:'-140px 0px -55% 0px'});
+      links.forEach(function(p){obs.observe(p[0]);});
+    }
+  }
+
+  function show(i,scroll){
+    cur=Math.max(0,Math.min(steps.length-1,i));
+    steps.forEach(function(s,k){s.classList.toggle('on',k===cur);});
+    tabs.forEach(function(t,k){t.setAttribute('aria-selected',k===cur?'true':'false');});
+    tabs[cur].scrollIntoView({block:'nearest',inline:'center'});
+    buildSide(steps[cur]);
+    document.getElementById('prev').disabled=cur===0;
+    document.getElementById('next').disabled=cur===steps.length-1;
+    document.getElementById('where').textContent=(cur+1)+' / '+steps.length+'  '+tabs[cur].querySelector('b').textContent+' '+tabs[cur].querySelector('span').textContent;
+    if(scroll){var top=document.getElementById('main').getBoundingClientRect().top+window.pageYOffset-140;
+      if(window.pageYOffset>top) window.scrollTo(0,top);}
+  }
+
+  tabs.forEach(function(t){t.addEventListener('click',function(){show(+t.dataset.i,true);});});
+  document.getElementById('prev').addEventListener('click',function(){show(cur-1,true);});
+  document.getElementById('next').addEventListener('click',function(){show(cur+1,true);});
+
+  var fs=20;
+  function setFs(v){fs=Math.max(16,Math.min(28,v));document.documentElement.style.setProperty('--fs',fs+'px');}
+  document.getElementById('zUp').addEventListener('click',function(){setFs(fs+2);});
+  document.getElementById('zDown').addEventListener('click',function(){setFs(fs-2);});
+
+  [].slice.call(document.querySelectorAll('.prompt .copy')).forEach(function(b){
+    b.addEventListener('click',function(){
+      var txt=b.parentNode.textContent.replace(b.textContent,'').trim();
+      function ok(){b.textContent='복사됨';b.classList.add('done');setTimeout(function(){b.textContent='복사';b.classList.remove('done');},1600);}
+      if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(ok,fallback);}else fallback();
+      function fallback(){var t=document.createElement('textarea');t.value=txt;document.body.appendChild(t);t.select();try{document.execCommand('copy');ok();}catch(e){}document.body.removeChild(t);}
+    });
+  });
+
+  show(0,false);
+})();
+</script>
+<script>document.querySelectorAll('.more').forEach(function(b){b.addEventListener('click',function(){var p=b.previousElementSibling;p.classList.toggle('open');b.textContent=p.classList.contains('open')?'접기':'전체 보기';});});</script>
+</body></html>

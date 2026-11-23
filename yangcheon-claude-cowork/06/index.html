@@ -1,0 +1,926 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>8회차 · 나만의 블로그 사이트</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+:root{
+  --paper:#FAFAF8; --card:#FFFFFF; --line:#E3E5E9; --line-strong:#CDD1D8;
+  --ink:#1E2329; --muted:#5D6570; --accent:#1F4E9C; --accent-ink:#173B76; --accent-soft:#EEF3FB;
+  --warn:#B4232A; --warn-soft:#FBEFEF; --more:#1E6B47; --more-soft:#EDF6F1; --set:#5B4A9E; --set-soft:#F2F0FA;
+  --fs:20px; --radius:12px;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;font-size:var(--fs);line-height:1.7;word-break:keep-all;overflow-wrap:anywhere}
+a{color:var(--accent)}
+button{font:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+code,kbd{font-family:"D2Coding",Consolas,"SF Mono",monospace;font-size:.88em;background:#F1F3F6;border:1px solid var(--line);border-radius:6px;padding:0 .3em}
+
+/* 상단 */
+.top{position:sticky;top:0;z-index:20;background:rgba(250,250,248,.96);backdrop-filter:blur(6px);border-bottom:1px solid var(--line)}
+.top-in{max-width:1240px;margin:0 auto;padding:12px 18px 0}
+.titlebar{display:flex;align-items:center;gap:12px;justify-content:space-between}
+.titlebar h1{margin:0;font-size:1.05em;font-weight:700;letter-spacing:-.01em}
+.titlebar h1 span{color:var(--muted);font-weight:500}
+.fsbtn{display:flex;gap:6px}
+.fsbtn button{border:1px solid var(--line-strong);background:var(--card);border-radius:8px;padding:2px 12px;font-size:.8em;color:var(--ink)}
+.tabs{display:flex;gap:4px;overflow-x:auto;padding:10px 0 0;scrollbar-width:thin}
+.tabs button{flex:0 0 auto;border:1px solid transparent;border-bottom:none;background:none;color:var(--muted);padding:8px 14px;border-radius:10px 10px 0 0;font-size:.8em;font-weight:600;white-space:nowrap}
+.tabs button[aria-selected="true"]{background:var(--card);border-color:var(--line);color:var(--accent-ink);box-shadow:0 1px 0 var(--card)}
+.tabs button.next{border:1px dashed var(--line-strong);border-bottom:none;color:var(--set)}
+.progress{height:3px;background:var(--line)}
+.progress i{display:block;height:100%;width:0;background:var(--accent);transition:width .3s}
+
+/* 본문 */
+.wrap{max-width:1240px;margin:0 auto;padding:24px 18px 30px;display:grid;grid-template-columns:minmax(0,1fr) 230px;gap:28px;align-items:start}
+.step{display:block}
+.js .step{display:none}
+.js .step.on{display:block}
+.step-head{margin:0 0 18px}
+.step-head .kicker{color:var(--accent);font-weight:700;font-size:.8em}
+.step-head h2{margin:2px 0 6px;font-size:1.6em;line-height:1.3;letter-spacing:-.02em}
+.step-head p{margin:0;color:var(--muted);max-width:44em}
+.step.next-time .step-head h2::after{content:"다음 시간";margin-left:10px;font-size:.45em;vertical-align:middle;border:1px dashed var(--set);color:var(--set);border-radius:999px;padding:2px 10px;font-weight:600}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px 22px;scroll-margin-top:150px}
+.card.wide{grid-column:1/-1}
+.card.opt{border-style:dashed}
+.card header{display:flex;align-items:flex-start;gap:10px;margin:0 0 8px}
+.card .no{flex:0 0 auto;font-weight:700;color:var(--accent);font-size:.8em;border:1px solid var(--line-strong);border-radius:8px;padding:1px 8px;margin-top:4px}
+.card h3{margin:0;font-size:1.12em;line-height:1.4;flex:1}
+.badge{font-size:.62em;font-weight:600;border-radius:999px;padding:2px 9px;margin-left:6px;vertical-align:middle;white-space:nowrap}
+.badge.opt{border:1px dashed var(--more);color:var(--more)}
+.badge.alt{border:1px solid var(--line-strong);color:var(--muted)}
+.done{flex:0 0 auto;display:flex;align-items:center;gap:6px;font-size:.7em;color:var(--muted);margin-top:4px;cursor:pointer;user-select:none}
+.done input{width:20px;height:20px;accent-color:var(--accent)}
+.card.checked{border-color:#B9CBE8;background:#FCFDFF}
+.easy{margin:0 0 10px;padding:10px 14px;background:var(--accent-soft);border-radius:10px}
+.easy b{color:var(--accent-ink);margin-right:6px}
+.card ol,.card ul{margin:6px 0 8px;padding-left:1.3em}
+.card li{margin:4px 0}
+.ok{margin:10px 0 0;padding-left:28px;position:relative;font-weight:600;color:var(--accent-ink)}
+.ok::before{content:"";position:absolute;left:4px;top:.45em;width:14px;height:8px;border-left:3px solid var(--accent);border-bottom:3px solid var(--accent);transform:rotate(-45deg)}
+.box{margin:12px 0 0;padding:12px 16px;border-radius:10px;font-size:.92em}
+.box b.t{display:block;margin-bottom:2px}
+.box.warn{background:var(--warn-soft);color:#5E1418;border:1px solid #F0C9CB}
+.box.warn b.t{color:var(--warn)}
+.box.more{background:var(--more-soft);color:#133F2B;border:1px solid #CDE6D8}
+.box.more b.t{color:var(--more)}
+.box.set{background:var(--set-soft);color:#2E2452;border:1px solid #DCD6F2}
+.box.set b.t{color:var(--set)}
+.box.help{background:#F6F7F9;border:1px solid var(--line);color:var(--ink)}
+.prompt{position:relative;margin:12px 0 4px;border:1px solid var(--line-strong);border-radius:10px;background:#F7F8FA}
+.prompt .ph{display:flex;justify-content:space-between;align-items:center;padding:6px 8px 6px 14px;border-bottom:1px solid var(--line);font-size:.72em;color:var(--muted);font-weight:600}
+.prompt button{border:1px solid var(--accent);background:var(--card);color:var(--accent);border-radius:8px;padding:2px 12px;font-size:1em;font-weight:600}
+.prompt button.copied{background:var(--accent);color:#fff}
+.prompt pre{margin:0;padding:12px 14px;white-space:pre-wrap;font-family:inherit;font-size:.86em;line-height:1.65}
+table{border-collapse:collapse;width:100%;font-size:.88em;margin:8px 0}
+th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+th{background:#F5F6F8;font-weight:600}
+.tree{font-family:"D2Coding",Consolas,monospace;font-size:.82em;background:#F7F8FA;border:1px solid var(--line);border-radius:10px;padding:12px 14px;white-space:pre;overflow-x:auto;line-height:1.6}
+
+/* 3D 도식 */
+.scene{border:1px solid var(--line);border-radius:var(--radius);background:linear-gradient(#FFFFFF,#F4F6FA);overflow:hidden}
+.scene canvas{display:block;width:100%;height:340px}
+.scene .ctrl{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:10px 12px;border-top:1px solid var(--line);background:var(--card)}
+.scene .ctrl button{border:1px solid var(--line-strong);background:var(--card);border-radius:8px;padding:4px 12px;font-size:.78em;color:var(--ink)}
+.scene .ctrl button.on{border-color:var(--accent);color:var(--accent);font-weight:700}
+.scene .ctrl .cap{flex:1 1 100%;font-size:.82em;color:var(--muted);min-height:1.6em}
+.scene .fallback{padding:24px;color:var(--muted)}
+
+/* 오른쪽 카드 메뉴 */
+.side{position:sticky;top:150px;max-height:calc(100vh - 230px);overflow:auto;border-left:1px solid var(--line);padding:4px 0 4px 16px}
+.side h4{margin:0 0 8px;font-size:.72em;color:var(--muted);font-weight:600}
+.side a{display:block;text-decoration:none;color:var(--muted);font-size:.74em;line-height:1.45;padding:6px 8px;border-radius:8px}
+.side a:hover{background:#F1F3F6;color:var(--ink)}
+.side a.cur{color:var(--accent-ink);background:var(--accent-soft);font-weight:600}
+.side a.ck::after{content:" ✓";color:var(--accent)}
+
+/* 하단 버튼 줄 */
+.bottom{position:sticky;bottom:0;z-index:20;background:rgba(255,255,255,.97);border-top:1px solid var(--line)}
+.bottom-in{max-width:1240px;margin:0 auto;padding:8px 18px;display:flex;gap:8px;align-items:center;justify-content:space-between}
+.bottom button,.bottom select{border:1px solid var(--line-strong);background:var(--card);border-radius:10px;padding:6px 14px;font-size:.8em;color:var(--ink)}
+.bottom .mid{display:flex;gap:8px;flex:1;justify-content:center;min-width:0}
+.bottom select{max-width:44%;min-width:0}
+.bottom .help{border-color:var(--accent);color:var(--accent);font-weight:700}
+.bottom .go{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
+
+@media (max-width:980px){
+  .wrap{grid-template-columns:minmax(0,1fr)}
+  .side{display:none}
+  .grid{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:560px){
+  .wrap{padding:18px 16px 24px}
+  .card{padding:16px}
+  .scene canvas{height:260px}
+  .bottom select{max-width:38%}
+}
+@media (max-height:820px){
+  .tabs,.progress{display:none}
+  .top-in{padding-bottom:10px}
+  .card{scroll-margin-top:70px}
+  .side{top:80px;max-height:calc(100vh - 150px)}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="top-in">
+    <div class="titlebar">
+      <h1>클로드 데스크톱 심화 8회차 <span>나만의 블로그 사이트</span></h1>
+      <div class="fsbtn" role="group" aria-label="글자 크기">
+        <button type="button" data-fs="-1" aria-label="글자 작게">가−</button>
+        <button type="button" data-fs="1" aria-label="글자 크게">가+</button>
+      </div>
+    </div>
+    <nav class="tabs" role="tablist" aria-label="STEP"></nav>
+  </div>
+  <div class="progress"><i></i></div>
+</div>
+
+<div class="wrap">
+<main id="main">
+
+<!-- ================= STEP 0 ================= -->
+<section class="step" id="s0" data-tab="STEP 0 지도">
+  <div class="step-head">
+    <div class="kicker">STEP 0</div>
+    <h2>오늘의 지도</h2>
+    <p>옵시디언에서 쓴 메모가 인터넷에 내 블로그로 뜹니다. 오늘은 그 길을 처음부터 끝까지 한 번 걸어 봅니다.</p>
+  </div>
+  <div class="grid">
+    <article class="card wide" id="c0-1" data-title="0-1 세 친구 한눈에 보기">
+      <header><span class="no">0-1</span><h3>세 친구 한눈에 보기</h3></header>
+      <p class="easy"><b>쉽게 말하면</b>공책에 쓰고, 금고에 넣으면, 전광판이 알아서 바꿔 줍니다.</p>
+      <div class="scene" data-scene="flow"></div>
+      <table>
+        <tr><th>진짜 이름</th><th>쉽게 말하면</th><th>하는 일</th></tr>
+        <tr><td>옵시디언</td><td><b>공책</b></td><td>글(md)을 쓰고 고치는 곳. 내 컴퓨터 안에 있어요.</td></tr>
+        <tr><td>깃허브</td><td><b>금고</b></td><td>글을 넣어 두는 인터넷 보관함. 고친 기록이 다 남아서 되돌릴 수 있어요.</td></tr>
+        <tr><td>버셀</td><td><b>전광판</b></td><td>금고를 지켜보다가 글이 들어오면 블로그를 다시 띄워요.</td></tr>
+      </table>
+    </article>
+
+    <article class="card" id="c0-2" data-title="0-2 md는 원고, 블로그는 출판본">
+      <header><span class="no">0-2</span><h3>md는 원고, 블로그는 출판본</h3></header>
+      <p class="easy"><b>쉽게 말하면</b>우리는 원고(md)만 씁니다. 예쁜 블로그 모양(껍데기)은 미리 만들어 둔 틀이 입혀 줍니다.</p>
+      <ul>
+        <li><b>md</b>: 옵시디언에서 쓰는 글. 여러분이 만지는 건 이것뿐</li>
+        <li><b>틀(껍데기)</b>: 블로그 디자인과 "최신 글이 맨 위" 규칙. 이미 준비돼 있어요</li>
+        <li><b>버셀</b>: 둘을 합쳐 인터넷에 띄워요</li>
+      </ul>
+      <div class="box set"><b class="t">그래서 좋은 점</b>디자인이 매번 똑같이 깔끔하고, 새 글은 날짜를 보고 자동으로 맨 위에 와요.</div>
+    </article>
+
+    <article class="card" id="c0-3" data-title="0-3 시작 루틴">
+      <header><span class="no">0-3</span><h3>시작 루틴</h3><label class="done"><input type="checkbox">다 했어요</label></header>
+      <p class="easy"><b>쉽게 말하면</b>이 컴퓨터는 다른 반도 씁니다. 시작할 때 내 계정, 끝날 때 로그아웃.</p>
+      <ol>
+        <li>클로드 앱에서 로그아웃 → <b>내 계정으로 로그인</b></li>
+        <li>USB 꽂기 (없으면 오늘은 D: 드라이브)</li>
+        <li>휴대폰을 옆에 두기 — 오늘 인증번호가 메일·문자로 와요</li>
+      </ol>
+      <p class="ok">내 이름으로 클로드가 열려 있으면 준비 끝</p>
+    </article>
+  </div>
+</section>
+
+<!-- ================= STEP 1 ================= -->
+<section class="step" id="s1" data-tab="STEP 1 새 공책">
+  <div class="step-head">
+    <div class="kicker">STEP 1</div>
+    <h2>새 공책 만들기</h2>
+    <p>지난 시간에 배운 옵시디언·웹 클리퍼·CLAUDE.md를 새 폴더로 한 번 더 합니다. 깨끗한 공책에서 시작하면 헷갈리지 않아요.</p>
+  </div>
+  <div class="grid">
+    <article class="card wide" id="c1-0" data-title="1-0 왜 폴더를 나눌까">
+      <header><span class="no">1-0</span><h3>왜 폴더를 나눌까 — 부엌으로 생각하기</h3></header>
+      <p class="easy"><b>쉽게 말하면</b>장바구니 → 냉장고 칸 → 요리 → 식탁. 칸이 나뉘어 있어야 섞이지 않아요.</p>
+      <div class="scene" data-scene="kitchen"></div>
+      <table>
+        <tr><th>부엌</th><th>폴더</th><th>왜 따로 둘까</th></tr>
+        <tr><td>장바구니</td><td><code>inbox</code></td><td>긁어 온 남의 기사를 <b>원본 그대로</b> 둬요. "이 말 어디서 봤지?" 할 때 출처 증거가 돼요.</td></tr>
+        <tr><td>냉장고 칸</td><td><code>inbox/AI</code> 등</td><td>주제별 칸에 넣으면 꺼내 쓰기 쉬워요. "AI 칸에서 글 써 줘"처럼 시킬 수 있고, 칸 이름이 블로그 태그가 돼요.</td></tr>
+        <tr><td>요리</td><td><code>posts</code></td><td>재료로 만든 <b>내 글</b>. 남의 글과 섞이면 실수로 남의 기사를 올리게 돼요.</td></tr>
+        <tr><td>식탁</td><td>블로그</td><td>posts만 손님상에 나가요. 올리는 폴더가 딱 하나라 헷갈릴 일이 없어요.</td></tr>
+      </table>
+      <div class="box set"><b class="t">클로드에게도 좋아요</b>"정리는 inbox에서만, 글은 posts에만." 폴더가 곧 클로드의 업무 구역이 됩니다. 구역을 정해 주면 엉뚱한 파일을 건드리지 않아요.</div>
+      <div class="tree">blognote/          ← 새 공책 (옵시디언 보관함 = 클로드 프로젝트 폴더)
+├─ CLAUDE.md       ← 클로드가 제일 먼저 읽는 규칙
+├─ inbox/          ← 장바구니: 긁어 온 기사
+│   ├─ AI/         ← 냉장고 칸 ("정리"하면 생겨요)
+│   └─ 경제/
+└─ posts/          ← 요리: 내 블로그 글 (이것만 인터넷에)</div>
+    </article>
+
+    <article class="card" id="c1-1" data-title="1-1 새 폴더 만들기">
+      <header><span class="no">1-1</span><h3>새 폴더 만들기</h3><label class="done"><input type="checkbox">다 했어요</label></header>
+      <p class="easy"><b>쉽게 말하면</b>새 공책을 꺼내고 장바구니와 요리 칸을 만듭니다.</p>
+      <ol>
+        <li>USB(없으면 D:)에서 마우스 오른쪽 → <b>새로 만들기 → 폴더</b> → 이름 <code>blognote</code></li>
+        <li>blognote 안에 폴더 두 개: <code>inbox</code>, <code>posts</code></li>
+      </ol>
+      <p class="ok">blognote 안에 inbox, posts가 보이면 성공</p>
+      <div class="box help"><b class="t">이름은 영어로, 띄어쓰기 없이</b>한글이나 띄어쓰기는 프로그램마다 가끔 말썽을 부려요. 지난주 scrap 폴더는 그대로 두세요.</div>
+    </article>
+
+    <article class="card" id="c1-2" data-title="1-2 옵시디언에서 blognote 열기">
+      <header><span class="no">1-2</span><h3>옵시디언에서 blognote 열기</h3><label class="done"><input type="checkbox">다 했어요</label></header>
+      <p class="easy"><b>쉽게 말하면</b>옵시디언에게 "이제 이 공책을 쓸게" 하고 알려 줍니다.</p>
+      <ol>
+        <li>옵시디언 왼쪽 아래 <b>보관함 이름</b> 클릭 → <b>보관함 관리하기...</b> (처음 켠 분은 첫 화면이 바로 나와요)</li>
+        <li>버튼 세 개 중 <b>보관함 폴더 열기</b> → blognote 선택 → 폴더 선택</li>
+      </ol>
+      <div class="box warn"><b class="t">"새 보관함 생성"은 누르지 않아요</b>폴더는 1-1에서 이미 만들었어요. 이걸 누르면 엉뚱한 공책이 하나 더 생겨요.</div>
+      <p class="ok">왼쪽에 inbox, posts가 보이고 왼쪽 아래 이름이 blognote면 성공</p>
+    </article>
+
+    <article class="card" id="c1-3" data-title="1-3 웹 클리퍼를 새 공책에 연결">
+      <header><span class="no">1-3</span><h3>웹 클리퍼를 새 공책에 연결</h3><label class="done"><input type="checkbox">다 했어요</label></header>
+      <p class="easy"><b>쉽게 말하면</b>기사를 긁으면 장바구니(inbox)로 들어가게 주소를 적어 줍니다.</p>
+      <ol>
+        <li>크롬 오른쪽 위 옵시디언 웹 클리퍼 아이콘 → 톱니바퀴(설정)</li>
+        <li>왼쪽 <b>템플릿</b> 아래 <b>기본 템플릿</b> 클릭</li>
+        <li><b>노트</b> 칸이 <code>Clippings</code>면 지우고 <code>inbox</code> (지난주에 바꾼 분은 그대로)</li>
+        <li>같은 화면 <b>보관소</b> 칸이 비어 있으면 그대로, <code>scrap</code>이면 지우기</li>
+      </ol>
+      <div class="box warn"><b class="t">딱 다섯 글자만</b><code>inbox</code> 앞뒤에 빗금(/)이나 폴더 이름을 붙이지 않아요.</div>
+      <div class="box help">웹 클리퍼는 보관함을 "보관소"라고 불러요. 같은 말이에요.</div>
+    </article>
+
+    <article class="card" id="c1-4" data-title="1-4 클로드 프로젝트 「블로그 공책」">
+      <header><span class="no">1-4</span><h3>클로드 프로젝트 「블로그 공책」 만들기</h3><label class="done"><input type="checkbox">다 했어요</label></header>
+      <p class="easy"><b>쉽게 말하면</b>클로드에게 "오늘은 이 공책만 보고 일해" 하고 책상을 정해 줍니다.</p>
+      <ol>
+        <li>클로드 앱 왼쪽 <b>프로젝트</b> → <b>+</b> → <b>기존 폴더 사용</b> → blognote 선택</li>
+        <li>이름 <code>블로그 공책</code> → 만들기 → 폴더 접근 창이 뜨면 <b>허용</b></li>
+        <li>프로젝트 안 새 대화에 <code>지금 연결된 폴더에 뭐가 있어?</code></li>
+      </ol>
+      <p class="ok">클로드가 inbox, posts가 있다고 답하면 성공</p>
+      <div class="box warn"><b class="t">오늘은 전부 「블로그 공책」에서</b>지난주 「내 스크랩북」에서 하면 다른 공책에 써져요.</div>
+    </article>
+
+    <article class="card wide" id="c1-5" data-title="1-5 규칙 파일 CLAUDE.md">
+      <header><span class="no">1-5</span><h3>규칙 파일(CLAUDE.md) 만들기</h3><label class="done"><input type="checkbox">다 했어요</label></header>
+      <p class="easy"><b>쉽게 말하면</b>클로드가 출근하면 제일 먼저 읽는 "우리 집 규칙"을 붙여 둡니다. 이번엔 업무 구역까지 적어요.</p>
+      <div class="prompt"><div class="ph">「블로그 공책」 새 대화에 붙여 넣기<button type="button">복사</button></div><pre>[상황] 나는 관심 기사를 웹 클리퍼로 blognote/inbox 폴더에 모은다. 이 기사로 내 블로그 글을 쓸 거다.
+[요청] blognote 폴더 맨 위에 CLAUDE.md 파일을 만들어 줘. 내용은 아래 규칙.
+[폴더 구역]
+- inbox: 남의 기사 원본. 내용을 고치거나 지우지 않는다.
+- posts: 내 블로그 글만 둔다.
+[규칙]
+- 내가 "정리"라고 하면: inbox 폴더 바로 아래에 새로 들어온 파일만 대상으로, 주제를 보고 inbox 안의 주제 폴더(예: inbox/AI, inbox/경제)로 옮긴다. 주제 폴더는 5개를 넘지 않게 하고 이름은 띄어쓰기 없이 짓고, 이미 주제 폴더에 들어간 파일은 건드리지 않는다. 다 하면 무엇을 어디로 옮겼는지 한 줄씩 보여 준다.
+- 날짜와 시간은 한국 시간 기준.
+- 파일을 지우기 전에는 반드시 나에게 묻는다.</pre></div>
+      <p class="ok">옵시디언 왼쪽에 CLAUDE.md가 생기면 성공</p>
+      <div class="box set"><b class="t">"새로 들어온 파일만"이 핵심</b>이 말이 있어서 정리를 여러 번 해도 이미 정리한 기사가 다시 섞이지 않아요.</div>
+    </article>
+
+    <article class="card wide" id="c1-6" data-title="1-6 기사 긁기 → 정리">
+      <header><span class="no">1-6</span><h3>기사 긁어 오기 → "정리" 한 단어</h3><label class="done"><input type="checkbox">다 했어요</label></header>
+      <p class="easy"><b>쉽게 말하면</b>장바구니에 재료를 담고, 한 마디로 냉장고 칸에 나눠 넣어요.</p>
+      <ol>
+        <li>구글 뉴스에서 관심 기사 <b>1~2개</b>를 하나씩 열고 웹 클리퍼 → <b>Obsidian에 추가하기</b></li>
+        <li>처음 한 번은 크롬이 "Obsidian을 여시겠습니까?" 물어요 → <b>항상 허용</b> 체크 → 열기</li>
+        <li>「블로그 공책」 새 대화 → <code>정리</code></li>
+      </ol>
+      <p class="ok">클로드가 되묻지 않고 inbox 안에 주제 폴더를 만들어 기사를 옮기면 성공</p>
+      <div class="box help"><b class="t">기사가 Clippings 폴더로 갔다면</b>1-3을 다시 확인하고, 들어간 기사는 옵시디언에서 inbox로 끌어 옮기면 돼요.</div>
+      <div class="box more"><b class="t">한 걸음 더</b>기사 하나 더 긁고 <code>정리</code>를 또 해 보세요. 정리된 건 그대로, 새 기사만 칸에 들어가요.</div>
+    </article>
+  </div>
+</section>
+
+<!-- ================= STEP 2 ================= -->
+<section class="step" id="s2" data-tab="STEP 2 계정">
+  <div class="step-head">
+    <div class="kicker">STEP 2</div>
+    <h2>금고와 전광판 회원가입</h2>
+    <p>깃허브(금고)와 버셀(전광판)에 가입합니다. 숫자를 넣으라는 화면이 몇 번 나오니 휴대폰과 메일함을 옆에 두세요.</p>
+  </div>
+  <div class="grid">
+    <article class="card wide" id="c2-1" data-title="2-1 숫자를 넣는 순간">
+      <header><span class="no">2-1</span><h3>숫자(인증번호)를 넣는 순간</h3></header>
+      <p class="easy"><b>쉽게 말하면</b>"진짜 본인 맞아요?" 하고 묻는 거예요. 숫자는 전부 <b>내 메일이나 내 휴대폰</b>으로 와요.</p>
+      <table>
+        <tr><th>언제</th><th>무엇이</th><th>어디로</th></tr>
+        <tr><td>깃허브 가입 마지막</td><td>숫자 코드</td><td>가입한 이메일</td></tr>
+        <tr><td>교육장 컴퓨터에서 깃허브에 로그인할 때</td><td>기기 인증 코드 (처음 보는 컴퓨터라서 물어요)</td><td>깃허브 이메일</td></tr>
+        <tr><td>버셀을 이메일로 가입할 때</td><td>6자리 코드</td><td>이메일</td></tr>
+        <tr><td>버셀 가입 중 (일부 사람만)</td><td>문자 인증번호</td><td>휴대폰</td></tr>
+        <tr><td>버셀에 저장소 권한을 줄 때</td><td>비밀번호를 한 번 더 물을 수 있어요</td><td>깃허브 비밀번호</td></tr>
+      </table>
+      <div class="box warn"><b class="t">숫자와 비밀번호는 내 손으로만</b>옆 사람이나 강사에게 불러 주지 않아요. 메일이 안 오면 스팸함을 보고 1분 기다려요.</div>
+    </article>
+
+    <article class="card" id="c2-2" data-title="2-2 깃허브 가입">
+      <header><span class="no">2-2</span><h3>깃허브(금고) 가입</h3><label class="done"><input type="checkbox">다 했어요</label></header>
+      <ol>
+        <li><code>github.com</code> → <b>Sign up</b> (구글 계정이 있으면 <b>Continue with Google</b>이 빨라요)</li>
+        <li>이메일 → 비밀번호 → 아이디 (영어로 쉽게. 블로그 주소에 쓰일 수 있어요)</li>
+        <li>사람인지 확인하는 퍼즐이 나오면 풀기</li>
+        <li>이메일로 온 숫자 입력</li>
+        <li>질문(팀 규모 등)은 <b>Skip</b> 또는 아무거나</li>
+      </ol>
+      <p class="ok">깃허브 첫 화면(Dashboard)이 보이면 성공</p>
+      <div class="box help">2단계 인증은 집에서 천천히 켜도 돼요.</div>
+    </article>
+
+    <article class="card" id="c2-3" data-title="2-3 버셀 가입">
+      <header><span class="no">2-3</span><h3>버셀(전광판) 가입</h3><label class="done"><input type="checkbox">다 했어요</label></header>
+      <ol>
+        <li><code>vercel.com</code> → <b>Sign Up</b></li>
+        <li>요금제는 <b>Hobby</b>(무료, 개인용) → 이름 입력</li>
+        <li><b>Continue with GitHub</b> 선택 → 깃허브가 물으면 <b>Authorize</b></li>
+        <li>휴대폰 문자 인증이 나오면 번호 입력 (안 나오는 사람도 있어요)</li>
+      </ol>
+      <p class="ok">버셀 대시보드가 보이면 성공</p>
+      <div class="box set"><b class="t">깃허브로 가입하는 이유</b>금고와 전광판이 처음부터 연결돼서 나중이 편해요.</div>
+      <div class="box help"><b class="t">깃허브 가입에서 막혔다면</b>버셀만 이메일로 가입하고 계속 따라오세요. STEP 5-3 "버셀로 바로 올리기"로 갑니다.</div>
+    </article>
+  </div>
+</section>
+
+<!-- ================= STEP 3 ================= -->
+<section class="step" id="s3" data-tab="STEP 3 내 글">
+  <div class="step-head">
+    <div class="kicker">STEP 3</div>
+    <h2>내 글 쓰기</h2>
+    <p>장바구니의 기사로 클로드가 초안을 쓰고, 마무리 한 줄은 내가 씁니다. 그 한 줄이 있어야 내 블로그예요.</p>
+  </div>
+  <div class="grid">
+    <article class="card wide" id="c3-1" data-title="3-1 글쓰기 규칙 만들기">
+      <header><span class="no">3-1</span><h3>"글쓰기" 규칙 추가하기</h3><label class="done"><input type="checkbox">다 했어요</label></header>
+      <p class="easy"><b>쉽게 말하면</b>"글쓰기"라고만 하면 같은 모양으로 글이 나오게 레시피를 적어 둡니다. 규칙을 설계하는 일이라 똑똑한 모델(Opus)이 좋아요.</p>
+      <div class="prompt"><div class="ph">「블로그 공책」 새 대화 · 모델 Opus (안 보이면 기본)<button type="button">복사</button></div><pre>[상황] blognote 폴더의 inbox(주제 폴더 포함)에 웹 클리퍼로 모은 기사가 있다. 이 글들로 내 블로그를 만들 거다.
+[목적] 남의 기사 본문을 그대로 옮기지 않고, 내 말로 쓴 짧은 글만 블로그에 올리고 싶다.
+[요청] CLAUDE.md 맨 아래에 아래 "글쓰기" 규칙을 추가해 줘. 기존 내용은 지우지 마.
+[글쓰기 규칙]
+- 내가 "글쓰기"라고 하면: posts 글들의 source 주소와 겹치지 않는 inbox 기사(주제 폴더 안 포함) 1개를 골라 posts 폴더에 md 글 1개를 만든다.
+- 파일 이름: 날짜 + 짧은 제목 (예: 2026-10-19 노벨상 기사.md)
+- 맨 위 머리말은 반드시 이 모양:
+  ---
+  title: 글 제목
+  date: 지금 한국 시각(YYYY-MM-DD HH:mm, 예: 2026-10-19 19:40) — 시각은 컴퓨터에서 확인해서 적는다
+  tags: [그 기사가 들어 있던 주제 폴더 이름]
+  summary: 목록에 보일 한 줄 소개
+  source: 원문 주소
+  ---
+- 본문은 "## 한 줄 요약", "## 내 생각" 두 칸. 요약은 3줄 이내 내 말로. 내 생각 칸은 비워 두고 "(여기에 내 생각 한 줄)"이라고만 적는다.
+- 기사 문장을 길게 그대로 옮기지 않는다. 기사 사진·그림(![…])은 넣지 않는다.
+- title·summary에 콜론(:)이 들어가면 값 전체를 큰따옴표로 감싼다.</pre></div>
+      <p class="ok">CLAUDE.md 맨 아래에 "글쓰기" 규칙이 붙으면 성공</p>
+      <div class="box set"><b class="t">날짜에 시각까지 적는 이유</b>같은 날 두 편을 써도 나중에 쓴 글이 맨 위로 오게 하려고요.</div>
+    </article>
+
+    <article class="card" id="c3-2" data-title="3-2 글쓰기 한 단어">
+      <header><span class="no">3-2</span><h3>"글쓰기" 한 단어</h3><label class="done"><input type="checkbox">다 했어요</label></header>
+      <p class="easy"><b>쉽게 말하면</b>레시피가 있으니 주문은 한 단어면 돼요. 정해진 일이라 가벼운 모델(Sonnet)로 충분해요.</p>
+      <ol>
+        <li>「블로그 공책」 새 대화 → <code>글쓰기</code></li>
+      </ol>
+      <p class="ok">posts 폴더에 md 글 1개가 생기면 성공</p>
+      <div class="box help"><b class="t">클로드가 되물으면</b><code>CLAUDE.md 열어서 글쓰기 규칙 있는지 보여줘</code> → 없으면 3-1을 다시.</div>
+    </article>
+
+    <article class="card" id="c3-3" data-title="3-3 내 생각 한 줄">
+      <header><span class="no">3-3</span><h3>옵시디언에서 내 생각 한 줄</h3><label class="done"><input type="checkbox">다 했어요</label></header>
+      <p class="easy"><b>쉽게 말하면</b>AI는 초안, 마무리는 내 손. 이 한 줄이 블로그의 주인이 누군지 말해 줘요.</p>
+      <ol>
+        <li>옵시디언 posts 폴더 → 방금 생긴 글 클릭</li>
+        <li>"(여기에 내 생각 한 줄)"을 지우고 진짜 내 생각 쓰기</li>
+      </ol>
+      <div class="box help">맨 위 머리말이 표처럼 보여도 정상이에요. 그 부분은 건드리지 않아요. 저장 버튼 없이 자동 저장돼요.</div>
+      <div class="box more"><b class="t">한 걸음 더</b><code>글쓰기</code>를 두 번 더 해서 글 3개 만들기</div>
+    </article>
+  </div>
+</section>
+
+<!-- ================= STEP 4 ================= -->
+<section class="step" id="s4" data-tab="STEP 4 금고">
+  <div class="step-head">
+    <div class="kicker">STEP 4</div>
+    <h2>내 블로그 금고 만들기</h2>
+    <p>두 길이 있어요. <b>A. 클로드에게 맡기기</b>와 <b>B. 내 손으로</b>. 오늘 어느 길로 갈지는 수업에서 안내해요. 한 길이 막히면 다른 길로 가면 되고, 어느 길이든 STEP 5부터는 같아요.</p>
+  </div>
+  <div class="grid">
+    <article class="card wide" id="c4-0" data-title="4-0 클로드에게 열쇠를 맡길 때">
+      <header><span class="no">4-0</span><h3>클로드에게 금고 열쇠를 맡길 때</h3></header>
+      <p class="easy"><b>쉽게 말하면</b>클로드가 금고에 글을 넣으려면 이 컴퓨터에서 깃허브에 한 번 로그인해야 해요. 열쇠를 잠깐 맡기는 거예요.</p>
+      <div class="box warn"><b class="t">꼭 지킬 세 가지</b>
+        <ol style="margin:4px 0 0">
+          <li><b>비밀번호·토큰(깃허브 비밀 열쇠 글자)을 대화창에 붙여 넣지 않기</b> — 대화 기록에 남아요. 로그인은 브라우저 승인이나 짧은 코드로만.</li>
+          <li><b>로그인은 코드 탭에서만</b> — 채팅·코워크에서 토큰을 달라고 하면 거절하기.</li>
+          <li><b>끝나면 반드시 열쇠 돌려받기(STEP 7-1)</b> — 공용 컴퓨터라 안 지우면 다음 사람이 내 금고에 넣을 수 있어요.</li>
+        </ol>
+      </div>
+    </article>
+
+    <article class="card" id="c4a1" data-title="4-A1 코드 탭 열기">
+      <header><span class="no">A-1</span><h3>코드 탭 열기 <span class="badge alt">A 길</span></h3><label class="done"><input type="checkbox">다 했어요</label></header>
+      <ol>
+        <li>클로드 앱 위쪽 <b>코드</b> 탭 → 새 작업창 열기</li>
+        <li>폴더 선택에서 <b>blognote가 들어 있는 곳</b>을 고르기 (USB 맨 위를 권해요)</li>
+      </ol>
+      <div class="box help"><b class="t">왜 blognote 바깥을 고를까</b>금고의 사본(my-blog 폴더)을 blognote 옆에 만들기 위해서예요. 공책과 금고 사본이 나란히 놓여요.</div>
+      <p class="ok">폴더 칩에 USB 이름이 보이면 성공</p>
+    </article>
+
+    <article class="card" id="c4a2" data-title="4-A2 깃허브 로그인">
+      <header><span class="no">A-2</span><h3>깃허브 로그인 (열쇠 맡기기) <span class="badge alt">A 길</span></h3><label class="done"><input type="checkbox">다 했어요</label></header>
+      <div class="prompt"><div class="ph">코드 탭에 붙여 넣기<button type="button">복사</button></div><pre>[상황] 블로그 글을 깃허브에 올리려 한다. 여기는 여러 사람이 쓰는 공용 컴퓨터다.
+[요청] 이 컴퓨터에서 내 깃허브 계정에 로그인할 수 있게 도와줘.
+[조건] 비밀번호나 토큰을 대화창에 달라고 하지 마. 브라우저 승인이나 기기 코드 방식으로 해줘. 필요한 프로그램이 없으면 설치해도 되는지 먼저 물어봐.</pre></div>
+      <ul>
+        <li>브라우저에 깃허브 승인 화면이 뜨면 → <b>Authorize</b></li>
+        <li>화면에 짧은 코드(예: ABCD-1234)가 뜨면 → 열린 깃허브 페이지에 코드 입력 → <b>Continue</b> → <b>Authorize</b></li>
+      </ul>
+      <p class="ok">클로드가 로그인됐다며 내 깃허브 아이디를 말하면 성공</p>
+      <div class="box warn"><b class="t">토큰을 붙여 달라고 하면</b>하지 말고 B 길로 가요.</div>
+    </article>
+
+    <article class="card wide" id="c4a3" data-title="4-A3 금고 자동으로 만들기">
+      <header><span class="no">A-3</span><h3>금고(저장소) 자동으로 만들기 <span class="badge alt">A 길</span></h3><label class="done"><input type="checkbox">다 했어요</label></header>
+      <p class="easy"><b>쉽게 말하면</b>클로드가 <b>내 블로그 틀을 직접 만들고</b>, 내 글을 넣어서, <b>내 아이디</b>에 금고를 만듭니다. 받을 파일도 적을 아이디도 없어요 — 로그인한 내 계정에 자동으로 생겨요.</p>
+      <div class="prompt"><div class="ph">코드 탭에 붙여 넣기<button type="button">복사</button></div><pre>[요청] blognote 옆에 my-blog 폴더를 만들고, md 글을 블로그로 바꿔 주는 틀을 직접 만들어 줘.
+- build.js: posts 폴더의 md 글(맨 위 --- 머리말의 title, date, tags, summary)을 읽어 public 폴더에 index.html과 글마다 html을 만들기. node만 쓰고 다른 설치는 하지 마.
+- 최신 date가 맨 위, draft: true 글은 숨김, 글 페이지에는 "← 글 목록" 링크
+- 디자인은 style.css 한 파일로 분리. 흰 바탕, 큰 글자, 휴대폰에서도 잘 보이게
+- settings.md(blog_title, author, intro)를 읽어 제목과 소개 표시
+- vercel.json: {"framework": null, "buildCommand": "node build.js", "outputDirectory": "public"} / package.json의 build는 node build.js / .gitignore에 public
+- blognote/posts 안의 md 글을 my-blog/posts에 복사
+다 만들면 node build.js로 미리보기를 만들어 public/index.html을 브라우저로 열어 줘.
+잘 뜨면 지금 로그인한 내 깃허브 계정에 비공개(Private) 저장소 my-blog로 올려 줘.
+[조건] blognote의 inbox 파일은 절대 올리지 마. 다 하면 저장소 주소와 올린 파일 목록을 보여 줘.</pre></div>
+      <div class="box help"><b class="t">틀 만들다 막히면</b>단톡방의 <code>blog-template.zip</code>을 blognote 옆에 두고 <code>이 zip을 풀어서 my-blog로 쓰고 이어서 해줘</code></div>
+      <p class="ok">클로드가 github.com/<b>내아이디</b>/my-blog 주소와 올린 파일 목록을 보여 주면 성공</p>
+      <ul>
+        <li>그 주소를 열어 <b>Private</b> 표시와 posts 안의 내 글 확인</li>
+        <li>블로그 이름 바꾸기: <code>settings.md의 블로그 이름을 ○○○, 내 이름을 별명 ○○로 바꿔서 올려줘</code></li>
+      </ul>
+      <div class="box help">"이미 my-blog가 있다"고 하면 → <code>my-blog2로 만들어줘</code></div>
+    </article>
+
+    <article class="card" id="c4a4" data-title="4-A4 올리기 전에 미리보기">
+      <header><span class="no">A-4</span><h3>올리기 전에 내 눈으로 미리보기 <span class="badge alt">A 길</span></h3><label class="done"><input type="checkbox">다 했어요</label></header>
+      <p class="easy"><b>쉽게 말하면</b>전광판에 걸기 전에 내 컴퓨터에서 먼저 봅니다. AI가 만든 건 사람이 확인하고 내보내요.</p>
+      <div class="prompt"><div class="ph">코드 탭에 붙여 넣기<button type="button">복사</button></div><pre>my-blog 폴더에서 블로그 미리보기를 만들어 줘(node build.js). 다 되면 public/index.html을 브라우저로 열어 줘.</pre></div>
+      <p class="ok">내 블로그가 브라우저에 뜨고, 글을 눌렀다가 "← 글 목록"으로 돌아올 수 있으면 성공</p>
+      <div class="box help"><b class="t">미리보기가 안 만들어지면</b>이 컴퓨터에서 미리보기 프로그램이 안 도는 경우예요. 건너뛰고 STEP 5에서 전광판으로 바로 확인해요.</div>
+    </article>
+
+    <article class="card opt" id="c4a5" data-title="4-A5 디자인 바꾸기 (선택)">
+      <header><span class="no">A-5</span><h3>디자인이 별로면 바꾸기 <span class="badge opt">선택</span></h3><label class="done"><input type="checkbox">다 했어요</label></header>
+      <p class="easy"><b>쉽게 말하면</b>글(md)은 그대로 두고 <b>옷(style.css)만</b> 갈아입혀요.</p>
+      <div class="prompt"><div class="ph">코드 탭에 붙여 넣기 · [ ] 안은 하나 골라 바꾸기<button type="button">복사</button></div><pre>my-blog의 style.css만 고쳐서 [따뜻한 카페 / 깔끔한 신문 / 파스텔 / 다크 모드] 느낌으로 바꿔 줘.
+build.js, posts, settings.md는 건드리지 마. 바꾼 뒤 미리보기를 다시 만들어 브라우저로 열어 줘.</pre></div>
+      <ul>
+        <li>마음에 들 때까지 "색을 더 진하게", "글자를 더 크게"처럼 말로 고치기</li>
+        <li>마음에 들면 <code>바꾼 style.css를 깃허브에 올려 줘</code></li>
+      </ul>
+      <div class="box help"><b class="t">망가졌다면</b><code>style.css를 처음 상태로 되돌려 줘</code> — 금고에 기록이 남아 있어서 되돌릴 수 있어요.</div>
+    </article>
+
+    <article class="card wide" id="c4b0" data-title="4-B 내 손으로 하는 길">
+      <header><span class="no">B</span><h3>B. 내 손으로 하는 길 <span class="badge alt">A가 막혔을 때</span></h3></header>
+      <p class="easy"><b>쉽게 말하면</b>클로드 대신 내가 깃허브 웹사이트에서 직접 합니다. A를 끝낸 분은 STEP 5로 건너뛰세요.</p>
+    </article>
+
+    <article class="card" id="c4b1" data-title="4-B1 틀로 내 금고 만들기">
+      <header><span class="no">B-1</span><h3>틀로 내 금고 만들기 <span class="badge alt">B 길</span></h3><label class="done"><input type="checkbox">다 했어요</label></header>
+      <ol>
+        <li>단톡방의 <b>블로그 틀 주소</b> 열기</li>
+        <li>오른쪽 위 초록 <b>Use this template</b> → <b>Create a new repository</b></li>
+        <li>Repository name: <code>my-blog</code></li>
+        <li><b>Choose visibility</b> 버튼이 <b>Public</b>이에요 → 눌러서 <b>Private</b></li>
+        <li>맨 아래 <b>Create repository</b> → "Generating..." 화면이 잠깐 떠요 (안 넘어가면 Refresh)</li>
+      </ol>
+      <div class="box warn"><b class="t">기본값이 Public</b>꼭 Private으로 바꿔요.</div>
+      <p class="ok">왼쪽 위가 "내아이디 / my-blog"로 바뀌고 build.js, posts 등이 보이면 성공</p>
+    </article>
+
+    <article class="card" id="c4b2" data-title="4-B2 블로그 이름 바꾸기">
+      <header><span class="no">B-2</span><h3>블로그 이름 바꾸기 <span class="badge alt">B 길</span></h3><label class="done"><input type="checkbox">다 했어요</label></header>
+      <ol>
+        <li>파일 목록에서 <b>settings.md</b> → 오른쪽 위 <b>연필</b></li>
+        <li>세 줄만 고치기: <code>blog_title:</code> 블로그 이름 / <code>author:</code> <b>별명</b> / <code>intro:</code> 한 줄 소개</li>
+        <li><b>Commit changes...</b> → 창에서 한 번 더 <b>Commit changes</b></li>
+      </ol>
+      <div class="box warn"><b class="t">지우면 안 되는 것</b><code>blog_title:</code> 같은 앞 글자와 맨 위아래 <code>---</code></div>
+      <div class="box help">Commit은 "저장하고 금고에 넣기"예요.</div>
+    </article>
+
+    <article class="card wide" id="c4b3" data-title="4-B3 내 글 올리기">
+      <header><span class="no">B-3</span><h3>내 글 올리기 <span class="badge alt">B 길</span></h3><label class="done"><input type="checkbox">다 했어요</label></header>
+      <ol>
+        <li>파일 목록에서 <b>posts</b> 폴더를 눌러 <b>안으로 들어가기</b> (위쪽 경로가 my-blog / posts)</li>
+        <li>오른쪽 위 <b>Add file → Upload files</b></li>
+        <li>내 컴퓨터 blognote/posts의 <b>md 글</b>을 끌어다 놓기 → <b>Commit changes</b></li>
+      </ol>
+      <div class="box warn"><b class="t">올리는 건 posts의 내 글만</b>inbox 파일은 기사 본문이 통째로 들어 있어서 절대 올리지 않아요.</div>
+      <p class="ok">posts 안에 "첫 글.md"와 내 글이 같이 보이면 성공</p>
+      <div class="box help"><b class="t">내 글이 posts 밖에 올라갔다면</b>그 파일 → 연필 → 파일 이름 앞에 <code>posts/</code>를 붙여 Commit. 이름만 바꿔도 posts 안으로 옮겨져요.</div>
+    </article>
+  </div>
+</section>
+
+<!-- ================= STEP 5 ================= -->
+<section class="step" id="s5" data-tab="STEP 5 전광판">
+  <div class="step-head">
+    <div class="kicker">STEP 5</div>
+    <h2>전광판 켜기</h2>
+    <p>버셀이 금고를 지켜보게 연결하면, 인터넷 주소가 생기고 블로그가 뜹니다.</p>
+  </div>
+  <div class="grid">
+    <article class="card wide" id="c5-1" data-title="5-1 금고와 전광판 연결">
+      <header><span class="no">5-1</span><h3>금고와 전광판 연결하기</h3><label class="done"><input type="checkbox">다 했어요</label></header>
+      <ol>
+        <li>버셀 대시보드 오른쪽 위 <b>+ Create New → Project</b> (또는 주소창에 <code>vercel.com/new</code>)</li>
+        <li>아래 왼쪽 <b>Import Git Repository</b> 목록에서 <code>my-blog</code> 옆 <b>Import</b></li>
+        <li>설정 화면(Project Name, Application Preset: Other)은 <b>아무것도 바꾸지 않고</b> <b>Deploy</b></li>
+      </ol>
+      <p class="ok">30초쯤 뒤 Congratulations! 화면과 내 블로그 그림이 뜨면 성공</p>
+      <div class="box help"><b class="t">목록에 my-blog가 없다면</b>목록 아래 <b>Adjust GitHub App Permissions</b> → 새로 뜬 깃허브 창에서 <b>Only select repositories</b> → <b>Select repositories</b>에서 my-blog 검색해 클릭 → <b>Save</b>(처음이면 Install) → 버셀 화면 새로고침 → Import. 전부 말고 <b>my-blog 하나만</b> 허락하는 게 안전해요.</div>
+    </article>
+
+    <article class="card" id="c5-2" data-title="5-2 내 블로그 주소 받기">
+      <header><span class="no">5-2</span><h3>내 블로그 주소 받기</h3><label class="done"><input type="checkbox">다 했어요</label></header>
+      <ol>
+        <li>프로젝트 <b>Overview</b> → <b>Domains</b>에 보이는 <b>가장 짧은 주소</b> 복사</li>
+        <li>카톡 나에게 보내기 → <b>휴대폰으로 열어 보기</b></li>
+      </ol>
+      <p class="ok">로그인 안 한 휴대폰에서 내 글 목록이 보이면 성공</p>
+      <div class="box help">주소 뒤에 영어 단어와 숫자가 자동으로 붙어요(예: my-blog-olive-omega-21.vercel.app). 사람마다 달라요.</div>
+      <div class="box warn"><b class="t">블로그 주소는 누구나 볼 수 있어요</b>금고는 비공개지만 블로그는 공개예요. 전화번호·주소 같은 개인정보는 올리지 않아요. 긴 주소는 미리보기용이라 남이 열면 로그인 화면이 뜰 수 있어요.</div>
+    </article>
+
+    <article class="card" id="c5-3" data-title="5-3 버셀로 바로 올리기">
+      <header><span class="no">5-3</span><h3>깃허브가 막혔다면 — 버셀로 바로 올리기 <span class="badge alt">비상구</span></h3><label class="done"><input type="checkbox">다 했어요</label></header>
+      <p class="easy"><b>쉽게 말하면</b>금고를 건너뛰고 전광판에 직접 붙여요.</p>
+      <ol>
+        <li>단톡방의 <code>blog-template.zip</code> 받아서 압축 풀기</li>
+        <li>풀린 폴더의 posts에 내 md 글 넣기, settings.md를 메모장으로 열어 이름 세 줄 고치기 (내 이름은 <b>별명</b>으로)</li>
+        <li><code>vercel.com/drop</code>에 그 폴더를 통째로 끌어다 놓기 → 프로젝트 이름 <code>my-blog</code> → <b>Deploy</b></li>
+      </ol>
+      <div class="box help"><b class="t">"루트 페이지를 고르라"는 메뉴가 나오면</b>멈추고, 클로드에게 <code>압축 푼 블로그 틀 폴더에서 build.js를 실행해서 public 폴더를 만들어 줘</code> → 생긴 <b>public</b> 폴더만 끌어다 놓기</div>
+      <div class="box set"><b class="t">이 길의 차이</b>글을 고치면 다시 끌어다 놓아야 해요. 대시보드의 그 프로젝트 위에 놓으면 주소는 그대로예요. 깃허브를 연결하면 이 과정이 자동이 돼요.</div>
+    </article>
+  </div>
+</section>
+
+<!-- ================= STEP 6 ================= -->
+<section class="step" id="s6" data-tab="STEP 6 새 글">
+  <div class="step-head">
+    <div class="kicker">STEP 6</div>
+    <h2>새 글을 넣으면 맨 위에 뜬다</h2>
+    <p>오늘의 하이라이트. 기사 하나 긁고, 글 쓰고, 넣으면, 전광판이 알아서 바뀌는 걸 내 휴대폰으로 확인합니다.</p>
+  </div>
+  <div class="grid">
+    <article class="card wide" id="c6-1" data-title="6-1 한 바퀴 돌리기">
+      <header><span class="no">6-1</span><h3>한 바퀴 돌리기</h3><label class="done"><input type="checkbox">다 했어요</label></header>
+      <ol>
+        <li>기사 하나 더 웹 클리퍼로 긁기 (원하면 <code>정리</code>도)</li>
+        <li>「블로그 공책」에서 <code>글쓰기</code></li>
+        <li>옵시디언에서 내 생각 한 줄</li>
+        <li>금고에 넣기
+          <ul>
+            <li><b>A 길</b>: 코드 탭에 <code>blognote/posts의 새 글을 my-blog/posts에 복사하고 미리보기 열어줘</code> → 확인 → <code>깃허브에 올려줘</code></li>
+            <li><b>B 길</b>: 깃허브 my-blog → posts → Add file → Upload files → 새 글 → Commit</li>
+            <li><b>버셀로 바로 올린 분(5-3)</b>: 압축 푼 폴더의 posts에 새 글 넣기 → 버셀 대시보드의 my-blog 프로젝트 위에 폴더를 다시 끌어다 놓기</li>
+          </ul>
+        </li>
+        <li>30초~1분 기다리기 (버셀 대시보드에서 Building이 돌아가는 게 보여요)</li>
+        <li>휴대폰에서 내 블로그 <b>새로고침</b></li>
+      </ol>
+      <p class="ok">방금 쓴 글이 맨 위에 "최신" 표시로 뜨면 성공</p>
+      <div class="box set"><b class="t">지난주와 비교해 보세요</b>바탕화면에 쌓아 두던 자료가, 오늘은 내 이름이 걸린 블로그 글이 됐어요.</div>
+    </article>
+
+    <article class="card opt" id="c6-2" data-title="6-2 글 고치기 (선택)">
+      <header><span class="no">6-2</span><h3>글 고치기 <span class="badge opt">선택 · 깃허브 길</span></h3><label class="done"><input type="checkbox">다 했어요</label></header>
+      <ol>
+        <li>깃허브 posts → 내 글 → 연필 → 한 글자 고치기 → Commit</li>
+        <li>1분 뒤 블로그 새로고침</li>
+      </ol>
+      <div class="box help">고친 기록은 금고에 다 남아요. 파일 위 <b>History</b>에서 볼 수 있어요.</div>
+    </article>
+
+    <article class="card opt" id="c6-3" data-title="6-3 글 숨기기 (선택)">
+      <header><span class="no">6-3</span><h3>글 숨기기 <span class="badge opt">선택 · 깃허브 길</span></h3><label class="done"><input type="checkbox">다 했어요</label></header>
+      <p>글 맨 위 머리말에 <code>draft: true</code> 한 줄을 넣고 올리면 블로그에서 사라져요. 파일은 금고에 그대로 있어요.</p>
+    </article>
+  </div>
+</section>
+
+<!-- ================= STEP 7 ================= -->
+<section class="step" id="s7" data-tab="STEP 7 귀가">
+  <div class="step-head">
+    <div class="kicker">STEP 7</div>
+    <h2>열쇠 돌려받고 귀가</h2>
+    <p>오늘 가장 중요한 카드가 여기 있어요. 공용 컴퓨터에 내 열쇠를 두고 가지 않습니다.</p>
+  </div>
+  <div class="grid">
+    <article class="card wide" id="c7-1" data-title="7-1 깃허브 열쇠 돌려받기">
+      <header><span class="no">7-1</span><h3>깃허브 열쇠 돌려받기 (로그아웃)</h3><label class="done"><input type="checkbox">다 했어요</label></header>
+      <div class="box warn"><b class="t">A 길(클로드에게 맡기기)로 한 분은 절대 빼먹지 않기</b>안 하면 다음 반 사람이 내 금고에 글을 넣을 수 있어요. B 길로만 한 분은 3번부터 하면 돼요.</div>
+      <div class="prompt"><div class="ph">코드 탭에 붙여 넣기<button type="button">복사</button></div><pre>이 컴퓨터에서 깃허브 로그아웃을 하고, 저장된 깃허브 로그인 정보(인증 정보)를 모두 지워 줘. 지워졌는지 확인해서 결과를 보여 줘.</pre></div>
+      <ol>
+        <li>클로드가 "로그인된 계정 없음"을 보여 주면 1차 성공</li>
+        <li>한 번 더: 윈도우 시작 → <b>자격 증명 관리자</b> → <b>Windows 자격 증명</b> → <code>github</code>가 들어간 항목이 있으면 <b>제거</b></li>
+        <li>크롬에서 깃허브·버셀 로그아웃 (구글로 가입한 분은 구글도)</li>
+        <li>D: 드라이브에 만든 분은 blognote·my-blog 폴더를 USB로 복사한 뒤 D:에서 지우기</li>
+      </ol>
+      <div class="box help"><b class="t">크롬이 "비밀번호를 저장할까요?" 물으면</b><b>사용 안함</b>. 실수로 저장했다면 크롬 설정 → 비밀번호 관리자에서 지워요.</div>
+      <p class="ok">자격 증명 관리자에 github 항목이 없으면 완료</p>
+      <div class="box help">USB의 my-blog 폴더는 그대로 가져가도 돼요. 열쇠는 그 안에 없어요.</div>
+    </article>
+
+    <article class="card" id="c7-2" data-title="7-2 귀가 체크">
+      <header><span class="no">7-2</span><h3>귀가 체크</h3><label class="done"><input type="checkbox">다 했어요</label></header>
+      <ul style="list-style:none;padding-left:0">
+        <li>☐ 7-1 깃허브 열쇠 돌려받기</li>
+        <li>☐ 블로그 주소 카톡 나에게 보내기</li>
+        <li>☐ USB 안전하게 제거</li>
+        <li>☐ 클로드 로그아웃</li>
+        <li>☐ 크롬에서 깃허브·버셀·구글 로그아웃</li>
+      </ul>
+    </article>
+
+    <article class="card opt" id="c7-3" data-title="7-3 집에서 한 걸음 더">
+      <header><span class="no">7-3</span><h3>집에서 한 걸음 더 <span class="badge opt">선택</span></h3></header>
+      <table>
+        <tr><th>도전</th><th>방법</th></tr>
+        <tr><td>한 파일 블로그</td><td>코드 탭에 <code>my-blog에서 node build.js --single 실행해서 한 파일짜리 블로그 만들어줘</code> → blog-single.html 하나에 디자인과 내 그림까지 들어 있어 카톡·메일로 보내도 그대로 열려요. 그림은 base64(그림을 글자로 바꿔 파일 안에 넣는 방법)로 들어가요.</td></tr>
+        <tr><td>내 그림 넣기</td><td>my-blog에 <code>images</code> 폴더를 만들어 그림을 넣고, 글에 <code>![설명](images/그림.png)</code></td></tr>
+        <tr><td>완전 자동</td><td>옵시디언 플러그인 <b>Obsidian Git</b>을 집 컴퓨터에 깔면, 공책에 쓰기만 해도 몇 분마다 금고로 올라가요.</td></tr>
+      </table>
+    </article>
+  </div>
+</section>
+
+<!-- ================= STEP 8 ================= -->
+<section class="step next-time" id="s8" data-tab="다음 시간" data-next="1">
+  <div class="step-head">
+    <div class="kicker">STEP 8</div>
+    <h2>구글과 연결하기</h2>
+    <p>다음 시간에 할 내용이에요. 오늘은 무엇을 하게 될지만 미리 봐 두세요.</p>
+  </div>
+  <div class="grid">
+    <article class="card wide" id="c8-1" data-title="8 다음 시간 미리보기">
+      <header><span class="no">8</span><h3>다음 시간 미리보기</h3></header>
+      <p class="easy"><b>쉽게 말하면</b>클로드가 내 메일·일정·드라이브를 직접 다루게 연결해요. 오늘 만든 블로그도 메일로 보내 봐요.</p>
+      <table>
+        <tr><th>순서</th><th>할 일</th></tr>
+        <tr><td>1</td><td>구글 연결(지메일·캘린더·드라이브) 켜기</td></tr>
+        <tr><td>2</td><td>캘린더에 일정 넣기 → "이번 주 일정 정리해 줘"</td></tr>
+        <tr><td>3</td><td>드라이브에 내 글 올리기 → "내 드라이브에 뭐 있어?"</td></tr>
+        <tr><td>4</td><td>짝꿍에게 <b>블로그 주소 + 글 파일 첨부</b> 메일 보내기</td></tr>
+      </table>
+      <div class="box set"><b class="t">미리 해 오면 좋은 것</b>평소 쓰는 구글 계정 비밀번호 기억해 두기</div>
+    </article>
+  </div>
+</section>
+
+<!-- ================= 막힘 사전 ================= -->
+<section class="step" id="s9" data-tab="막힘 사전">
+  <div class="step-head">
+    <div class="kicker">도움말</div>
+    <h2>막힘 사전</h2>
+    <p>이런 화면이 나오면 당황하지 말고 여기서 찾아보세요.</p>
+  </div>
+  <div class="grid">
+    <article class="card wide" id="c9-1" data-title="공책·클로드에서 막힐 때">
+      <header><span class="no">?</span><h3>공책·클로드에서 막힐 때</h3></header>
+      <table>
+        <tr><th>이런 화면</th><th>왜</th><th>이렇게</th></tr>
+        <tr><td>클로드가 "폴더가 비어 있다", "폴더를 찾을 수 없다"</td><td>폴더 연결이 풀렸어요 (USB를 뺐다 꽂았거나 자리를 옮김)</td><td>입력창 근처 폴더 이름을 눌러 blognote를 다시 선택. 안 되면 새 대화</td></tr>
+        <tr><td>옵시디언에 inbox가 안 보임</td><td>다른 공책이 열려 있어요</td><td>왼쪽 아래 보관함 이름 → 보관함 관리하기 → 보관함 폴더 열기 → blognote</td></tr>
+        <tr><td>기사가 Clippings 폴더로 감</td><td>웹 클리퍼 노트 칸이 그대로예요</td><td>1-3 다시. 들어간 기사는 inbox로 끌어 옮기기</td></tr>
+        <tr><td>클리핑 버튼을 눌러도 아무 일 없음</td><td>보관소 이름이 다르거나 옵시디언 문제</td><td>옵시디언을 닫고 다시 클리핑(자동으로 열려요). 그래도 안 되면 웹 클리퍼 설정에서 레거시 모드 켜기</td></tr>
+        <tr><td><code>정리</code>했더니 이미 정리한 기사까지 옮겨짐</td><td>규칙에 "새로 들어온 파일만"이 빠졌어요</td><td><code>CLAUDE.md의 정리 규칙 보여줘</code> → 1-5 규칙으로 고쳐 달라고 하기</td></tr>
+        <tr><td><code>글쓰기</code> 했더니 클로드가 되물음</td><td>규칙이 안 들어갔어요</td><td><code>CLAUDE.md 열어서 글쓰기 규칙 있는지 보여줘</code> → 없으면 3-1 다시</td></tr>
+        <tr><td>옵시디언 머리말 칸이 빨갛게 표시됨</td><td>제목이나 소개에 콜론(:)이 들어갔어요</td><td>그 값 전체를 큰따옴표 " "로 감싸기</td></tr>
+      </table>
+    </article>
+    <article class="card wide" id="c9-2" data-title="금고·전광판에서 막힐 때">
+      <header><span class="no">?</span><h3>금고·전광판에서 막힐 때</h3></header>
+      <table>
+        <tr><th>이런 화면</th><th>왜</th><th>이렇게</th></tr>
+        <tr><td>깃허브 메일 코드가 안 옴</td><td>스팸함이나 지연</td><td>스팸함 확인 → 1분 뒤 Resend. 그래도 안 되면 5-3</td></tr>
+        <tr><td>"Device verification" 숫자 입력 화면</td><td>처음 쓰는 컴퓨터라 본인 확인</td><td>깃허브 가입 메일의 숫자 입력</td></tr>
+        <tr><td>깃허브가 비밀번호를 다시 물음 (Confirm access)</td><td>중요한 설정이라 한 번 더 확인</td><td>깃허브 비밀번호 입력</td></tr>
+        <tr><td>Use this template 버튼이 없음</td><td>로그인이 안 됐어요</td><td>깃허브 로그인 확인 후 틀 주소 다시 열기</td></tr>
+        <tr><td>클로드가 토큰을 붙여 달라고 함</td><td>로그인 방식이 달라요</td><td>붙여 넣지 말고 B 길(4-B)로</td></tr>
+        <tr><td>버셀 목록에 my-blog가 없음</td><td>버셀이 그 금고를 볼 권한이 없어요</td><td>5-1의 "목록에 my-blog가 없다면" 순서대로</td></tr>
+        <tr><td>버셀 배포가 빨간색(Error)</td><td>파일이 빠졌거나 설정을 바꿨어요</td><td>my-blog에 build.js, vercel.json, package.json이 있는지 확인 → 버셀에서 Redeploy</td></tr>
+        <tr><td>블로그에 "내 블로그가 생겼어요"만 있고 내 글이 없음</td><td>글이 posts 밖에 올라갔어요</td><td>4-B3의 방법으로 파일 이름 앞에 <code>posts/</code> 붙이기</td></tr>
+        <tr><td>새 글이 맨 위가 아님</td><td>날짜가 없거나 모양이 달라요</td><td>글 맨 위 <code>date: 2026-10-19 19:40</code> 모양 확인</td></tr>
+        <tr><td>새 글을 올렸는데 블로그가 그대로</td><td>아직 만드는 중</td><td>1~2분 뒤 새로고침. 버셀 대시보드에서 Ready 확인</td></tr>
+        <tr><td>블로그에 ---, title: 같은 글자가 보임</td><td>맨 위 <code>---</code> 앞에 빈 줄이나 공백이 있어요</td><td>파일 첫 줄이 공백 없이 <code>---</code>가 되게 고치기</td></tr>
+        <tr><td>버셀 문자 인증 실패</td><td>일부 번호가 막히는 경우가 있어요</td><td>버셀을 이메일로 가입 → 5-3</td></tr>
+      </table>
+    </article>
+  </div>
+</section>
+
+</main>
+<aside class="side" aria-label="이 STEP의 카드"><h4>이 STEP의 카드</h4><div id="sidelist"></div></aside>
+</div>
+
+<div class="bottom">
+  <div class="bottom-in">
+    <button type="button" id="prev">이전</button>
+    <div class="mid">
+      <select id="selStep" aria-label="STEP 고르기"></select>
+      <button type="button" class="help" id="helpBtn" aria-label="막힘 사전">?</button>
+      <select id="selCard" aria-label="카드 고르기"></select>
+    </div>
+    <button type="button" class="go" id="next">다음</button>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+  document.documentElement.classList.add('js');
+  var store={get:function(k){try{return localStorage.getItem(k)}catch(e){return null}},set:function(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+  var steps=[].slice.call(document.querySelectorAll('.step'));
+  var tabs=document.querySelector('.tabs'), selStep=document.getElementById('selStep'), selCard=document.getElementById('selCard'), side=document.getElementById('sidelist');
+  var cur=0;
+
+  steps.forEach(function(s,i){
+    var b=document.createElement('button');b.type='button';b.setAttribute('role','tab');b.textContent=s.dataset.tab;
+    if(s.dataset.next)b.classList.add('next');
+    b.onclick=function(){show(i,true)};tabs.appendChild(b);
+    var o=document.createElement('option');o.value=i;o.textContent=s.dataset.tab;selStep.appendChild(o);
+  });
+
+  // 글자 크기
+  var fs=parseInt(store.get('d8-fs')||'20',10);
+  function setFs(v){fs=Math.max(18,Math.min(28,v));document.documentElement.style.setProperty('--fs',fs+'px');store.set('d8-fs',fs)}
+  setFs(fs);
+  document.querySelectorAll('[data-fs]').forEach(function(b){b.onclick=function(){setFs(fs+2*parseInt(b.dataset.fs,10))}});
+
+  // 체크
+  document.querySelectorAll('.done input').forEach(function(cb){
+    var card=cb.closest('.card'),k='d8-ck-'+card.id;
+    cb.checked=store.get(k)==='1';card.classList.toggle('checked',cb.checked);
+    cb.onchange=function(){store.set(k,cb.checked?'1':'0');card.classList.toggle('checked',cb.checked);buildSide();progress()};
+  });
+
+  // 복사
+  document.querySelectorAll('.prompt button').forEach(function(b){
+    b.onclick=function(){
+      var t=b.closest('.prompt').querySelector('pre').innerText;
+      var done=function(){b.textContent='복사됨';b.classList.add('copied');setTimeout(function(){b.textContent='복사';b.classList.remove('copied')},1600)};
+      if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(done,function(){fallback(t);done()})}else{fallback(t);done()}
+    };
+  });
+  function fallback(t){var ta=document.createElement('textarea');ta.value=t;ta.style.position='absolute';ta.style.left='-9999px';document.body.appendChild(ta);ta.select();try{document.execCommand('copy')}catch(e){}document.body.removeChild(ta)}
+
+  function cards(){return [].slice.call(steps[cur].querySelectorAll('.card'))}
+  function buildSide(){
+    side.innerHTML='';selCard.innerHTML='';
+    cards().forEach(function(c){
+      var a=document.createElement('a');a.href='#'+c.id;a.textContent=c.dataset.title;a.dataset.id=c.id;
+      if(c.classList.contains('checked'))a.classList.add('ck');
+      a.onclick=function(e){e.preventDefault();jump(c)};side.appendChild(a);
+      var o=document.createElement('option');o.value=c.id;o.textContent=c.dataset.title;selCard.appendChild(o);
+    });
+  }
+  function jump(c){c.scrollIntoView({behavior:'smooth',block:'start'})}
+  selCard.onchange=function(){var c=document.getElementById(selCard.value);if(c)jump(c)};
+  selStep.onchange=function(){show(parseInt(selStep.value,10),true)};
+  document.getElementById('prev').onclick=function(){if(cur>0)show(cur-1,true)};
+  document.getElementById('next').onclick=function(){if(cur<steps.length-1)show(cur+1,true)};
+  document.getElementById('helpBtn').onclick=function(){show(steps.length-1,true)};
+
+  function progress(){
+    var all=document.querySelectorAll('.done input'),n=0;all.forEach(function(x){if(x.checked)n++});
+    document.querySelector('.progress i').style.width=(all.length?n/all.length*100:0)+'%';
+  }
+  function show(i,scroll){
+    cur=i;
+    steps.forEach(function(s,j){s.classList.toggle('on',j===i)});
+    [].forEach.call(tabs.children,function(b,j){b.setAttribute('aria-selected',j===i?'true':'false')});
+    selStep.value=i;buildSide();store.set('d8-step',i);
+    document.getElementById('prev').disabled=i===0;document.getElementById('next').disabled=i===steps.length-1;
+    if(scroll){var m=document.getElementById('main');var y=m.getBoundingClientRect().top+window.pageYOffset-80;window.scrollTo({top:Math.max(0,y),behavior:'smooth'})}
+    initScenes(steps[i]);
+  }
+  // 지금 보는 카드 표시
+  var ticking=false;
+  window.addEventListener('scroll',function(){if(ticking)return;ticking=true;requestAnimationFrame(function(){ticking=false;
+    var best=null;cards().forEach(function(c){var r=c.getBoundingClientRect();if(r.top<window.innerHeight*0.45)best=c});
+    if(!best)best=cards()[0];
+    side.querySelectorAll('a').forEach(function(a){a.classList.toggle('cur',best&&a.dataset.id===best.id)});
+    if(best)selCard.value=best.id;
+  })},{passive:true});
+
+  // ===== three.js 도식 =====
+  var SCENES={
+    flow:{stations:[
+      {label:'공책',sub:'옵시디언 · 내 글(md)',color:0x2E7D6B,cap:'① 공책: 옵시디언에서 내 생각 한 줄을 더해 글(md)을 완성해요.'},
+      {label:'금고',sub:'깃허브 · my-blog',color:0x1F4E9C,cap:'② 금고: 글을 깃허브 posts 폴더에 넣어요. 클로드에게 맡기거나 내 손으로.'},
+      {label:'전광판',sub:'버셀 · 내 블로그 주소',color:0x5B4A9E,cap:'③ 전광판: 버셀이 금고를 지켜보다가 30초 안에 새 글을 맨 위에 띄워요.'}
+    ],item:'새 글'},
+    kitchen:{stations:[
+      {label:'장바구니',sub:'inbox · 남의 기사',color:0x8A6D3B,cap:'장바구니(inbox): 웹 클리퍼로 긁은 기사가 원본 그대로 들어와요.'},
+      {label:'냉장고 칸',sub:'inbox/AI · 주제별',color:0x2E7D6B,cap:'냉장고 칸: "정리" 한 마디면 주제 폴더로 나눠 들어가요.'},
+      {label:'요리',sub:'posts · 내 글',color:0x1F4E9C,cap:'요리(posts): "글쓰기"로 기사가 내 말로 쓴 글이 돼요.'},
+      {label:'식탁',sub:'블로그 · 공개',color:0x5B4A9E,cap:'식탁(블로그): posts의 글만 손님상(인터넷)에 나가요.'}
+    ],item:'기사'}
+  };
+  function textSprite(text,sub,color){
+    var c=document.createElement('canvas');c.width=512;c.height=sub?220:140;var g=c.getContext('2d');
+    g.textAlign='center';g.fillStyle=color||'#1E2329';g.font='700 76px Pretendard, "Malgun Gothic", sans-serif';g.fillText(text,256,90);
+    if(sub){g.fillStyle='#5D6570';g.font='500 40px Pretendard, "Malgun Gothic", sans-serif';g.fillText(sub,256,170)}
+    var t=new THREE.CanvasTexture(c);t.minFilter=THREE.LinearFilter;
+    var s=new THREE.Sprite(new THREE.SpriteMaterial({map:t,transparent:true,depthTest:false}));s.scale.set(2.4,2.4*c.height/512,1);return s;
+  }
+  function initScenes(sec){
+    sec.querySelectorAll('.scene').forEach(function(el){if(el.dataset.ready)return;el.dataset.ready='1';build(el,SCENES[el.dataset.scene])});
+  }
+  function build(el,cfg){
+    var canvas=document.createElement('canvas');el.appendChild(canvas);
+    var ctrl=document.createElement('div');ctrl.className='ctrl';el.appendChild(ctrl);
+    var gl=null;try{gl=window.THREE&&(canvas.getContext('webgl')||canvas.getContext('experimental-webgl'))}catch(e){}
+    if(!gl){canvas.remove();var f=document.createElement('div');f.className='fallback';f.textContent=cfg.stations.map(function(s){return s.label}).join('  ▶  ');el.insertBefore(f,ctrl);return}
+    var renderer=new THREE.WebGLRenderer({canvas:canvas,antialias:true});renderer.setClearColor(0xF6F8FB,1);
+    renderer.setPixelRatio(Math.min(2,window.devicePixelRatio||1));
+    var scene=new THREE.Scene();
+    var cam=new THREE.PerspectiveCamera(38,1,0.1,100);
+    scene.add(new THREE.HemisphereLight(0xffffff,0xdfe5ee,0.9));
+    var dl=new THREE.DirectionalLight(0xffffff,0.7);dl.position.set(3,6,5);scene.add(dl);
+    var floor=new THREE.Mesh(new THREE.CircleGeometry(40,64),new THREE.MeshLambertMaterial({color:0xEEF1F6}));floor.rotation.x=-Math.PI/2;floor.position.y=-0.01;scene.add(floor);
+    var n=cfg.stations.length,gap=n>3?2.6:3.2,x0=-(n-1)*gap/2,boxes=[],labels=[];
+    cfg.stations.forEach(function(st,i){
+      var grp=new THREE.Group();grp.position.x=x0+i*gap;
+      var mat=new THREE.MeshLambertMaterial({color:st.color,transparent:true,opacity:0.92});
+      var geo=new THREE.BoxGeometry(1.5,1.0,1.1);var m=new THREE.Mesh(geo,mat);m.position.y=0.5;grp.add(m);
+      var edges=new THREE.LineSegments(new THREE.EdgesGeometry(geo),new THREE.LineBasicMaterial({color:0xffffff,transparent:true,opacity:0.6}));edges.position.y=0.5;grp.add(edges);
+      var lab=textSprite(st.label,st.sub);lab.position.set(0,2.05,0);lab.userData.base=lab.scale.clone();labels.push(lab);grp.add(lab);
+      var no=textSprite(String(i+1),null,'#ffffff');no.scale.set(1.1,0.3,1);no.position.set(0,0.55,0.6);grp.add(no);
+      scene.add(grp);boxes.push({grp:grp,mesh:m,mat:mat,base:st.color});
+      if(i<n-1){var a=new THREE.Mesh(new THREE.CylinderGeometry(0.03,0.03,gap-1.6,8),new THREE.MeshBasicMaterial({color:0xB8C0CC}));a.rotation.z=Math.PI/2;a.position.set(x0+i*gap+gap/2,0.5,0);scene.add(a);
+        var cone=new THREE.Mesh(new THREE.ConeGeometry(0.09,0.22,12),new THREE.MeshBasicMaterial({color:0xB8C0CC}));cone.rotation.z=-Math.PI/2;cone.position.set(x0+i*gap+gap-0.8,0.5,0);scene.add(cone)}
+    });
+    var item=new THREE.Group();
+    var paper=new THREE.Mesh(new THREE.BoxGeometry(0.5,0.06,0.62),new THREE.MeshLambertMaterial({color:0xFFFFFF}));item.add(paper);
+    var line=new THREE.Mesh(new THREE.BoxGeometry(0.34,0.07,0.05),new THREE.MeshBasicMaterial({color:0x1F4E9C}));line.position.z=-0.12;item.add(line);
+    var line2=line.clone();line2.position.z=0.02;item.add(line2);
+    var tag=textSprite(cfg.item,null,'#1F4E9C');tag.scale.set(1.5,0.41,1);tag.position.y=0.36;item.add(tag);
+    scene.add(item);
+
+    var playing=!window.matchMedia('(prefers-reduced-motion: reduce)').matches, t=0, target=null, stage=0;
+    var cap=document.createElement('div');cap.className='cap';
+    var bp=document.createElement('button');bp.type='button';
+    function setBp(){bp.textContent=playing?'멈춤':'재생';bp.setAttribute('aria-pressed',playing?'true':'false')}
+    bp.onclick=function(){playing=!playing;target=null;setBp()};setBp();ctrl.appendChild(bp);
+    var sb=[];
+    cfg.stations.forEach(function(st,i){var b=document.createElement('button');b.type='button';b.textContent=(i+1)+' '+st.label;b.onclick=function(){playing=false;setBp();target=i};ctrl.appendChild(b);sb.push(b)});
+    var br=document.createElement('button');br.type='button';br.textContent='처음부터';br.onclick=function(){t=0;target=null;playing=true;setBp()};ctrl.appendChild(br);
+    ctrl.appendChild(cap);
+
+    function size(){var w=canvas.clientWidth||600,h=canvas.clientHeight||340;renderer.setSize(w,h,false);cam.aspect=w/h;cam.updateProjectionMatrix();
+      var span=(n-1)*gap+2.6;var tv=Math.tan(cam.fov*Math.PI/360);var dist=Math.max(span/(2*tv*cam.aspect)*1.15,3.6/(2*tv)*1.3,6);
+      cam.position.set(0,dist*0.38,dist);cam.lookAt(0,1.0,0);
+      var k=cam.aspect<1.4?1.75:1;labels.forEach(function(l){l.scale.set(l.userData.base.x*k,l.userData.base.y*k,1);l.position.y=cam.aspect<1.4?2.5:2.05})}
+    size();window.addEventListener('resize',size);
+    var per=2.2,total=n*per,last=performance.now();
+    function frame(now){
+      requestAnimationFrame(frame);
+      if(!el.offsetParent)return;
+      var dt=Math.max(0,Math.min(0.05,(now-last)/1000));last=now;
+      if(target!==null){var goal=target*per+per*0.5;t+= (goal-t)*Math.min(1,dt*4)}
+      else if(playing){t=(t+dt)%total}
+      if(!(t>=0))t=0;var pos=t/per,i=Math.max(0,Math.min(n-1,Math.floor(pos))),f=pos-i;
+      var hop=f<0.55?0:(f-0.55)/0.45; hop=hop*hop*(3-2*hop);
+      var xa=x0+i*gap,xb=i<n-1?x0+(i+1)*gap:xa;
+      item.position.x=xa+(xb-xa)*(i<n-1?hop:0);
+      item.position.y=1.45+Math.sin(hop*Math.PI)*0.35+Math.sin(now/500)*0.03;
+      item.rotation.y=Math.sin(now/1400)*0.25;
+      var active=i<n-1&&hop>0.5?i+1:i;
+      if(active!==stage){stage=active}
+      boxes.forEach(function(b,j){var on=j===stage;b.mesh.scale.y+=((on?1.18:1)-b.mesh.scale.y)*0.15;b.mesh.position.y=0.5*b.mesh.scale.y;b.mat.opacity=on?1:0.55});
+      sb.forEach(function(b,j){b.classList.toggle('on',j===stage)});
+      cap.textContent=cfg.stations[stage].cap;
+      scene.rotation.y=Math.sin(now/6000)*0.08;
+      renderer.render(scene,cam);
+    }
+    requestAnimationFrame(frame);
+  }
+
+  var start=parseInt(store.get('d8-step')||'0',10);if(!(start>=0&&start<steps.length))start=0;
+  show(start,false);progress();
+})();
+</script>
+</body>
+</html>

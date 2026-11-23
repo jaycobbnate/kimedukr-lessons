@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>챗GPT 이미지 200% 활용 · 1. 그림 주문 기본기와 내 캐릭터 기획</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+:root{--fs:20px;--pt:#3157D5;--pt-soft:#EEF2FD;--ink:#1F2430;--sub:#5B6273;--line:#E3E6EC;--bg:#FAFAF7;
+--set:#EEF3FF;--set-b:#C9D6FA;--warn:#FDF0F0;--warn-b:#F2CACA;--ext:#ECF7F0;--ext-b:#BFE3CB;--help:#F3F0FB;--help-b:#D7CEF0;}
+*{box-sizing:border-box}
+html{font-size:var(--fs)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Pretendard,"Malgun Gothic","Apple SD Gothic Neo",sans-serif;line-height:1.7;word-break:keep-all}
+.top{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid var(--line)}
+.bar{display:flex;align-items:center;gap:.8rem;padding:.55rem 1.2rem;max-width:1320px;margin:0 auto}
+.bar .t{flex:1;font-weight:700;font-size:.9rem}
+.bar .t small{display:block;font-weight:500;color:var(--sub);font-size:.72rem}
+.fsb{border:1px solid var(--line);background:#fff;border-radius:8px;padding:.15rem .6rem;font:inherit;font-size:.8rem;cursor:pointer;color:var(--ink)}
+.tabs{display:flex;gap:.3rem;overflow-x:auto;padding:0 1.2rem .5rem;max-width:1320px;margin:0 auto;scrollbar-width:thin}
+.tab{flex:none;border:1px solid var(--line);background:#fff;border-radius:999px;padding:.25rem .85rem;font:inherit;font-size:.78rem;cursor:pointer;color:var(--sub);white-space:nowrap}
+.tab b{color:var(--pt);margin-right:.25rem}
+.tab.on{background:var(--pt);border-color:var(--pt);color:#fff}
+.tab.on b{color:#fff}
+.wrap{max-width:1320px;margin:0 auto;padding:1.2rem;display:grid;grid-template-columns:1fr 240px;gap:1.4rem;align-items:start}
+.side{position:sticky;top:7.2rem;background:#fff;border:1px solid var(--line);border-radius:14px;padding:.8rem}
+.side h4{margin:0 0 .4rem;font-size:.72rem;color:var(--sub);font-weight:600}
+.side a{display:block;font-size:.76rem;color:var(--ink);text-decoration:none;padding:.3rem .5rem;border-radius:8px;line-height:1.4}
+.side a:hover{background:var(--pt-soft)}
+.side a.on{background:var(--pt-soft);color:var(--pt);font-weight:700}
+.panel{display:none}
+.panel.on{display:block}
+.head{margin:0 0 1rem}
+.head .no{display:inline-block;font-size:.75rem;font-weight:700;color:var(--pt);background:var(--pt-soft);border-radius:999px;padding:.05rem .7rem}
+.head h1{margin:.3rem 0 .2rem;font-size:1.55rem;line-height:1.35}
+.head p{margin:0;color:var(--sub)}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:1.1rem 1.25rem;scroll-margin-top:7.5rem;min-width:0}
+.card.full{grid-column:1/-1}
+.card h2{margin:0 0 .6rem;font-size:1.08rem;display:flex;gap:.5rem;align-items:baseline;line-height:1.4}
+.card h2 .k{color:var(--pt);font-size:.95rem}
+.card p{margin:.4rem 0}
+.card ul,.card ol{margin:.4rem 0;padding-left:1.3rem}
+.card li{margin:.2rem 0}
+.muted{color:var(--sub);font-size:.85rem}
+.box{border:1px solid;border-radius:12px;padding:.7rem .95rem;margin:.7rem 0;font-size:.92rem}
+.box b.l{display:block;font-size:.78rem;margin-bottom:.15rem}
+.box.set{background:var(--set);border-color:var(--set-b)} .box.set b.l{color:#2D4FC2}
+.box.warn{background:var(--warn);border-color:var(--warn-b)} .box.warn b.l{color:#B33A3A}
+.box.ext{background:var(--ext);border-color:var(--ext-b)} .box.ext b.l{color:#237A47}
+.box.help{background:var(--help);border-color:var(--help-b)} .box.help b.l{color:#5B42A8}
+table{width:100%;border-collapse:collapse;font-size:.88rem;margin:.5rem 0}
+th,td{border-bottom:1px solid var(--line);padding:.45rem .5rem;text-align:left;vertical-align:top}
+th{background:#F5F6F9;font-weight:700;font-size:.82rem}
+td.hl{color:var(--pt);font-weight:700}
+.prompt{position:relative;background:#F7F8FB;border:1px solid var(--line);border-radius:12px;margin:.6rem 0}
+.prompt .pl{display:flex;justify-content:space-between;align-items:center;padding:.4rem .8rem;border-bottom:1px solid var(--line);font-size:.78rem;color:var(--sub);font-weight:600}
+.prompt pre{margin:0;padding:.75rem .9rem;white-space:pre-wrap;font-family:inherit;font-size:.86rem;line-height:1.65;max-height:none}
+.cp{border:1px solid var(--pt);background:#fff;color:var(--pt);border-radius:8px;padding:.1rem .7rem;font:inherit;font-size:.76rem;cursor:pointer;font-weight:700}
+.cp.ok{background:var(--pt);color:#fff}
+.steps{counter-reset:s;list-style:none;padding:0!important}
+.steps li{counter-increment:s;position:relative;padding-left:2.1rem;margin:.45rem 0}
+.steps li::before{content:counter(s);position:absolute;left:0;top:.15rem;width:1.5rem;height:1.5rem;border-radius:50%;background:var(--pt-soft);color:var(--pt);font-weight:700;font-size:.75rem;display:flex;align-items:center;justify-content:center}
+.chips{display:flex;flex-wrap:wrap;gap:.35rem;margin:.4rem 0}
+.chip{border:1px solid var(--line);border-radius:999px;padding:.05rem .65rem;font-size:.8rem;background:#fff}
+.friend{display:grid;grid-template-columns:200px 1fr;gap:1rem;align-items:start}
+.friend img{width:100%;border-radius:14px;border:1px solid var(--line);display:block}
+.dl{display:inline-block;margin-top:.5rem;border:1px solid var(--pt);color:var(--pt);background:#fff;border-radius:8px;padding:.15rem .75rem;font-size:.78rem;font-weight:700;text-decoration:none;cursor:pointer;font-family:inherit}
+.dl.solid{background:var(--pt);color:#fff}
+svg{max-width:100%;height:auto;display:block;margin:.4rem auto}
+svg text{font-family:Pretendard,"Malgun Gothic",sans-serif}
+.lineup{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem}
+.lineup img{width:100%;border-radius:12px;border:1px solid var(--line)}
+.lineup div{text-align:center;font-size:.82rem;color:var(--sub)}
+.check li{list-style:none;margin-left:-1.3rem}
+.check li::before{content:"☐ ";color:var(--pt)}
+.foot{position:sticky;bottom:0;z-index:15;background:#fff;border-top:1px solid var(--line)}
+.foot .in{max-width:1320px;margin:0 auto;padding:.5rem 1.2rem;display:flex;justify-content:space-between;align-items:center;gap:1rem}
+.nb{border:1px solid var(--line);background:#fff;border-radius:10px;padding:.3rem 1rem;font:inherit;font-size:.82rem;cursor:pointer}
+.nb.n{background:var(--pt);color:#fff;border-color:var(--pt)}
+.nb:disabled{opacity:.35;cursor:default}
+.credit{text-align:center;color:var(--sub);font-size:.72rem;padding:1.2rem 0 .6rem}
+@media(max-width:980px){.wrap{grid-template-columns:1fr}.side{display:none}.grid{grid-template-columns:1fr}.friend{grid-template-columns:1fr}.friend img{max-width:260px}}
+</style>
+</head>
+<body>
+<div class="top">
+ <div class="bar">
+  <div class="t">챗GPT 이미지 200% 활용 · 1. 그림 주문 기본기와 내 캐릭터 기획<small>양천구 평생학습관 · 내 IP(콘텐츠·캐릭터) 기획부터 판매 등록까지</small></div>
+  <button class="fsb" onclick="fs(-2)">가 −</button><button class="fsb" onclick="fs(2)">가 +</button>
+ </div>
+ <nav class="tabs" id="tabs"></nav>
+</div>
+
+<div class="wrap">
+<main id="main">
+
+<!-- ============ 시작 ============ -->
+<section class="panel" data-tab="시작하기" data-no="0">
+<div class="head"><span class="no">시작하기</span><h1>캐릭터 하나로 8주를 갑니다</h1><p>오늘은 그림을 정확히 주문하는 말을 배우고, 8주 내내 쓸 내 캐릭터를 정해요.</p></div>
+<div class="grid">
+
+<div class="card full" id="c-map"><h2><span class="k">①</span>8주 전체 지도</h2>
+<p>캐릭터 <b>하나</b>를 만들어 매주 다른 곳에 써요. 이렇게 하나를 여러 곳에 쓰는 방식을 <b>원소스 멀티유즈</b>(하나의 재료를 여러 상품으로)라고 해요.</p>
+<svg viewBox="0 0 980 300" role="img" aria-label="8주 과정 지도">
+<defs><marker id="ar" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#9AA3B5"/></marker></defs>
+<circle cx="490" cy="150" r="62" fill="#3157D5"/><text x="490" y="143" text-anchor="middle" fill="#fff" font-size="19" font-weight="700">내 캐릭터</text><text x="490" y="168" text-anchor="middle" fill="#fff" font-size="15">IP 1개</text>
+<g font-size="15" text-anchor="middle">
+<rect x="20" y="20" width="190" height="70" rx="14" fill="#EEF2FD" stroke="#3157D5" stroke-width="2"/><text x="115" y="50" font-weight="700" fill="#3157D5">1 오늘</text><text x="115" y="74" fill="#1F2430">기본기 · 캐릭터 기획</text>
+<rect x="260" y="20" width="190" height="70" rx="14" fill="#fff" stroke="#D5DAE3"/><text x="355" y="50" font-weight="700">2 광고 이미지</text><text x="355" y="74" fill="#5B6273">캐릭터가 광고 모델</text>
+<rect x="530" y="20" width="190" height="70" rx="14" fill="#fff" stroke="#D5DAE3"/><text x="625" y="50" font-weight="700">3 굿즈</text><text x="625" y="74" fill="#5B6273">스티커 · 키링 · 머그</text>
+<rect x="770" y="20" width="190" height="70" rx="14" fill="#fff" stroke="#D5DAE3"/><text x="865" y="50" font-weight="700">4 카드뉴스</text><text x="865" y="74" fill="#5B6273">알려 주는 5장</text>
+<rect x="770" y="210" width="190" height="70" rx="14" fill="#fff" stroke="#D5DAE3"/><text x="865" y="240" font-weight="700">5 인스타툰</text><text x="865" y="264" fill="#5B6273">이야기하는 4컷</text>
+<rect x="530" y="210" width="190" height="70" rx="14" fill="#fff" stroke="#D5DAE3"/><text x="625" y="240" font-weight="700">6 동화책</text><text x="625" y="264" fill="#5B6273">장면 6컷 · 표지</text>
+<rect x="260" y="210" width="190" height="70" rx="14" fill="#fff" stroke="#D5DAE3"/><text x="355" y="240" font-weight="700">7 오디오북</text><text x="355" y="264" fill="#5B6273">읽어 주는 책 · 판매처 가입</text>
+<rect x="20" y="210" width="190" height="70" rx="14" fill="#fff" stroke="#D5DAE3"/><text x="115" y="240" font-weight="700">8 판매 등록</text><text x="115" y="264" fill="#5B6273">마플샵 · 크티</text>
+</g>
+<g stroke="#9AA3B5" stroke-width="2" fill="none" marker-end="url(#ar)">
+<path d="M212 55 H254"/><path d="M452 55 H524"/><path d="M722 55 H764"/><path d="M865 92 V204"/><path d="M768 245 H726"/><path d="M528 245 H456"/><path d="M258 245 H216"/>
+</g>
+<g stroke="#C9D6FA" stroke-width="2" stroke-dasharray="5 5"><path d="M440 118 L380 92"/><path d="M540 118 L600 92"/><path d="M440 182 L380 208"/><path d="M540 182 L600 208"/></g>
+</svg>
+</div>
+
+<div class="card full" id="c-today"><h2><span class="k">②</span>오늘의 흐름</h2>
+<p>처음부터 "만들어 보세요"하면 막막하죠. 그래서 <b>먼저 강사와 같은 캐릭터로 끝까지 한 바퀴</b> 따라 하고, 그다음 <b>같은 방법으로 내 캐릭터</b>를 만들어요.</p>
+<svg viewBox="0 0 980 230" role="img" aria-label="오늘의 흐름">
+<defs><marker id="ar2" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3157D5"/></marker></defs>
+<rect x="10" y="10" width="960" height="95" rx="16" fill="#EEF2FD"/>
+<text x="30" y="40" font-size="15" font-weight="700" fill="#3157D5">따라 하기 · 알고의 친구로</text>
+<g font-size="15" text-anchor="middle">
+<rect x="30" y="52" width="150" height="40" rx="10" fill="#fff" stroke="#C9D6FA"/><text x="105" y="77">잘 만든 IP 보기</text>
+<rect x="215" y="52" width="150" height="40" rx="10" fill="#fff" stroke="#C9D6FA"/><text x="290" y="77">프로젝트 만들기</text>
+<rect x="400" y="52" width="150" height="40" rx="10" fill="#fff" stroke="#C9D6FA"/><text x="475" y="77">6요소 · 9칸 비교</text>
+<rect x="585" y="52" width="150" height="40" rx="10" fill="#fff" stroke="#C9D6FA"/><text x="660" y="77">IP 기획서</text>
+<rect x="770" y="52" width="180" height="40" rx="10" fill="#3157D5"/><text x="860" y="77" fill="#fff" font-weight="700">캐릭터 시트</text>
+</g>
+<g stroke="#3157D5" stroke-width="2" marker-end="url(#ar2)"><path d="M182 72 H209"/><path d="M367 72 H394"/><path d="M552 72 H579"/><path d="M737 72 H764"/></g>
+<rect x="10" y="125" width="960" height="95" rx="16" fill="#ECF7F0"/>
+<text x="30" y="155" font-size="15" font-weight="700" fill="#237A47">혼자 하기 · 내 캐릭터로</text>
+<g font-size="15" text-anchor="middle">
+<rect x="30" y="167" width="220" height="40" rx="10" fill="#fff" stroke="#BFE3CB"/><text x="140" y="192">소재 고르기</text>
+<rect x="290" y="167" width="260" height="40" rx="10" fill="#fff" stroke="#BFE3CB"/><text x="420" y="192">AI가 묻고 내가 답하는 기획</text>
+<rect x="590" y="167" width="160" height="40" rx="10" fill="#fff" stroke="#BFE3CB"/><text x="670" y="192">기획서 완성</text>
+<rect x="790" y="167" width="160" height="40" rx="10" fill="#237A47"/><text x="870" y="192" fill="#fff" font-weight="700">정면 그림 1장</text>
+</g>
+<g stroke="#237A47" stroke-width="2" marker-end="url(#ar2)"><path d="M252 187 H284"/><path d="M552 187 H584"/><path d="M752 187 H784"/></g>
+</svg>
+<div class="box set"><b class="l">오늘 가지고 갈 것</b>알고 친구로 만든 9칸 비교 그림 · 기획서 · 캐릭터 시트, 그리고 <b>내 캐릭터 기획서와 정면 그림 1장</b></div>
+</div>
+
+<div class="card full" id="c-why"><h2><span class="k">③</span>왜 챗GPT로 하나요?</h2>
+<p>그림 AI는 많아요. 이 과정은 <b>챗GPT 유료 계정을 기본</b>으로 하고, 다른 도구는 비교하거나 대신 쓰는 용도로 둡니다.</p>
+<table>
+<tr><th>도구</th><th>이 과정에서 역할</th><th>좋은 점</th><th>아쉬운 점</th></tr>
+<tr><td class="hl">챗GPT (유료)</td><td><b>기본 도구</b></td><td>그림이 매끄럽고 예뻐요. 대화로 "여기만 고쳐 줘"가 잘 돼요.</td><td>많이 배운 그림체가 정해져 있어 대충 주문하면 결과가 비슷비슷해져요. 그래서 오늘 <b>6요소로 정확히 주문</b>하는 법을 배워요.</td></tr>
+<tr><td>구글 플로우</td><td>비교용 · 준비 못 했을 때 대신</td><td>그림을 넉넉하게 만들어 볼 수 있어요.</td><td>같은 주문이어도 그림의 고급스러움은 아쉬울 때가 있어요.</td></tr>
+<tr><td>메타 AI</td><td>보조</td><td>무료로 그림 만들기까지 돼요.</td><td>무료 서비스는 조건이 언제 바뀔지 몰라요.</td></tr>
+<tr><td>미드저니</td><td>참고</td><td>가장 심미적인(보기 좋은) 그림이 나와요.</td><td>별도 유료라 이번 과정에서는 쓰지 않아요.</td></tr>
+</table>
+<div class="box set"><b class="l">원래 작업 순서</b>미드저니로 <b>앵커</b>(기준이 되는 첫 그림)를 먼저 뽑고, 챗GPT로 고치고 넓혀 가는 게 가장 예쁘게 나와요. 오늘 보여 드리는 알고 친구 3종도 미드저니로 만든 그림이에요. 다만 도구를 두 개 결제하면 부담이 커서, 이번 과정은 <b>챗GPT 하나로</b> 구성했어요.</div>
+</div>
+
+<div class="card full" id="c-plan"><h2><span class="k">④</span>내 요금제로 무엇이 되나요?</h2>
+<table>
+<tr><th>항목</th><th>무료</th><th>유료 (플러스 등)</th></tr>
+<tr><td>프로젝트 (대화·파일을 묶는 방)</td><td>만들 수 있어요. 프로젝트 하나에 파일 <b>5개</b>까지</td><td>프로젝트 하나에 파일 <b>25개</b>까지 (플러스)</td></tr>
+<tr><td>파일 올리기</td><td><b>하루 3개</b> (그림 1장도 1개로 셈)</td><td>3시간에 80개까지</td></tr>
+<tr><td>그림 만들기</td><td colspan="2">공식으로 정해진 장수는 없어요. 무료는 하루 두세 장 정도라는 이야기가 많아 실습이 어렵고, 유료는 수업하기에 충분해요.</td></tr>
+</table>
+<p class="muted">출처: 오픈AI 도움말(파일 올리기) · 오픈AI 발표(프로젝트 파일 수), 2026년 11월 확인. 사용자가 몰리는 시간에는 한도가 줄 수 있어요.</p>
+<div class="box help"><b class="l">무료 계정이라 올릴 파일이 많을 때</b>여러 파일을 <b>압축 파일(ZIP) 하나</b>로 묶어 올리면 1개로 셈해요. 다만 압축 속 그림은 직접 올린 그림만큼 참고가 잘 안 될 수 있어요. 오늘은 STEP 2의 <b>「세 친구 한 장」</b> 그림을 쓰면 1개로 해결돼요.</div>
+</div>
+
+</div></section>
+
+<!-- ============ STEP 1 ============ -->
+<section class="panel" data-tab="잘 만든 IP 보기" data-no="1">
+<div class="head"><span class="no">STEP 1</span><h1>잘 만든 캐릭터는 이렇게 생겼어요</h1><p>맨땅에서 시작하지 않아요. 실제로 쓰이는 공식 캐릭터 가이드를 견본으로 봅니다.</p></div>
+<div class="grid">
+
+<div class="card" id="c-ip"><h2><span class="k">①</span>IP가 뭐예요?</h2>
+<p><b>IP</b>(지식재산)는 원래 "머리로 만든 재산"이라는 뜻이에요. 이 수업에서는 <b>내 캐릭터와 그 캐릭터의 이야기</b>를 말해요.</p>
+<p>그림 한 장은 한 번 쓰고 끝나지만, IP는 광고·굿즈·만화·책으로 계속 넓혀 쓸 수 있어요. 그래서 처음에 <b>설정을 잘 정해 두는 것</b>이 중요해요.</p>
+</div>
+
+<div class="card" id="c-algo-dl"><h2><span class="k">②</span>견본 내려받기 · 알고 가이드</h2>
+<p><b>알고</b>는 「모두의 AI를 위한 전국민 AI 경진대회」 공식 캐릭터(흰 호랑이)예요. 대회 누리집에 캐릭터 소개 및 가이드라인 PDF가 공개되어 있어요.</p>
+<ol class="steps"><li>아래 단추로 누리집을 열어요.</li><li>「참고자료 다운로드」의 <b>알고 캐릭터 소개 및 가이드라인 (PDF)</b>를 눌러 저장해요.</li></ol>
+<a class="dl solid" href="https://aichallenge4all.or.kr/event/algo-friends" target="_blank" rel="noopener">알고 가이드 받으러 가기 ↗</a>
+<p class="muted">캐릭터 공모 접수는 끝났어요. 오늘은 공개된 가이드를 공부 자료로만 써요.</p>
+</div>
+
+<div class="card full" id="c-anatomy"><h2><span class="k">③</span>가이드 속을 열어 보면</h2>
+<p>알고 가이드는 이런 순서로 되어 있어요. 오늘 우리가 만들 것과 8주 동안 만들 것이 다 들어 있어요.</p>
+<svg viewBox="0 0 980 250" role="img" aria-label="캐릭터 가이드 구성">
+<g font-size="15" text-anchor="middle">
+<rect x="10" y="20" width="175" height="110" rx="14" fill="#fff" stroke="#D5DAE3"/><text x="97" y="55" font-weight="700">탄생 이야기</text><text x="97" y="82" fill="#5B6273">어떻게 태어났나</text><text x="97" y="104" fill="#5B6273">세계관</text>
+<rect x="205" y="20" width="175" height="110" rx="14" fill="#EEF2FD" stroke="#3157D5" stroke-width="2"/><text x="292" y="55" font-weight="700" fill="#3157D5">프로필</text><text x="292" y="82">이름 뜻 · 성격</text><text x="292" y="104">역할 · 좋아하는 것</text>
+<rect x="400" y="20" width="175" height="110" rx="14" fill="#EEF2FD" stroke="#3157D5" stroke-width="2"/><text x="487" y="55" font-weight="700" fill="#3157D5">디자인 포인트</text><text x="487" y="82">안테나 · 눈 · 무늬</text><text x="487" y="104">비율 1:1:0.5</text>
+<rect x="595" y="20" width="175" height="110" rx="14" fill="#EEF2FD" stroke="#3157D5" stroke-width="2"/><text x="682" y="55" font-weight="700" fill="#3157D5">포즈 · 표정</text><text x="682" y="82">앞 · 옆 · 뒤</text><text x="682" y="104">표정 10가지</text>
+<rect x="790" y="20" width="175" height="110" rx="14" fill="#FDF0F0" stroke="#E3A5A5"/><text x="877" y="55" font-weight="700" fill="#B33A3A">금지 규정</text><text x="877" y="82">색 · 비율 · 얼굴</text><text x="877" y="104">바꾸면 안 돼요</text>
+</g>
+<path d="M205 150 H770" stroke="#3157D5" stroke-width="3"/><text x="487" y="178" text-anchor="middle" font-size="15" fill="#3157D5" font-weight="700">오늘 만드는 것 = IP 기획서 + 캐릭터 시트</text>
+<rect x="10" y="195" width="955" height="45" rx="12" fill="#ECF7F0"/><text x="487" y="224" text-anchor="middle" font-size="15" fill="#237A47">활용 예시(마우스패드 · 티셔츠 · 물병 · 키링) → 3주차 굿즈에서 우리도 만들어요</text>
+</svg>
+</div>
+
+<div class="card" id="c-profile"><h2><span class="k">④</span>알고 프로필 살펴보기</h2>
+<table>
+<tr><th>항목</th><th>알고</th></tr>
+<tr><td>이름 뜻</td><td>알고리즘(AI의 계산 방법) + "알다". 두 가지 뜻이 겹쳐요.</td></tr>
+<tr><td>성격</td><td>활발하고 열정적, 궁금한 건 못 참는 초긍정 행동파</td></tr>
+<tr><td>역할</td><td>AI를 쉽고 재미있게 안내하는 친구</td></tr>
+<tr><td>좋아하는 것</td><td>AI와 관련된 모든 것</td></tr>
+<tr><td>해시태그</td><td>#긍정왕 #AI덕후 #허당미 …</td></tr>
+</table>
+<p class="muted">이름에 뜻이 겹치고, 성격이 해시태그 몇 개로 딱 정리돼요. 우리 기획서도 이렇게 만들어요.</p>
+</div>
+
+<div class="card" id="c-rules"><h2><span class="k">⑤</span>"금지 규정"이 왜 필요할까요?</h2>
+<p>그림 AI는 매번 <b>조금씩 다르게</b> 그려요. 그래서 "이건 절대 바꾸지 마"라는 목록이 있어야 8주 동안 같은 캐릭터로 보여요.</p>
+<ul><li>비율(머리 · 몸 · 다리 크기)을 바꾸지 않기</li><li>색을 바꾸지 않기</li><li>눈 · 코 · 입 모양을 바꾸지 않기</li><li>꼭 들어가는 요소(알고는 안테나와 배의 화면)를 빼지 않기</li><li>흐릿한 저화질 그림 쓰지 않기</li></ul>
+<div class="box set"><b class="l">우리에게는</b>이 목록이 곧 챗GPT에게 주는 <b>"꼭 지킬 것"</b>이 돼요. STEP 5 기획서에 넣어요.</div>
+</div>
+
+<div class="card full" id="c-copy"><h2><span class="k">⑥</span>저작권 약속</h2>
+<div class="box warn"><b class="l">알고는 그리지 않아요</b>알고는 한국정보통신기술협회(TTA)의 저작권 캐릭터예요. 가이드는 <b>보고 배우는 견본</b>으로만 쓰고, 알고를 그리거나 굿즈로 팔지 않아요. 우리는 <b>알고의 친구</b>를 새로 만들어요. 남의 캐릭터 · 로고 · 유명인을 쓰지 않는 건 8주 내내, 판매 등록 때까지 지키는 약속이에요.</div>
+</div>
+
+</div></section>
+
+<!-- ============ STEP 2 ============ -->
+<section class="panel" data-tab="알고의 친구들" data-no="2">
+<div class="head"><span class="no">STEP 2</span><h1>오늘 같이 만들 알고의 친구들</h1><p>알고 곁에 친구 셋이 있다면? 역할이 다른 세 친구로 세계관을 만들어 봤어요.</p></div>
+<div class="grid">
+
+<div class="card full" id="c-world"><h2><span class="k">①</span>세 친구의 관계</h2>
+<svg viewBox="0 0 980 270" role="img" aria-label="알고와 세 친구의 관계도">
+<g stroke="#C9D0DC" stroke-width="2"><path d="M490 135 L170 135"/><path d="M490 135 L810 70"/><path d="M490 135 L810 205"/></g>
+<circle cx="490" cy="135" r="62" fill="#fff" stroke="#3157D5" stroke-width="3"/><text x="490" y="130" text-anchor="middle" font-size="20" font-weight="700" fill="#3157D5">알고</text><text x="490" y="155" text-anchor="middle" font-size="14" fill="#5B6273">AI 안내자 호랑이</text>
+<g font-size="15">
+<rect x="20" y="95" width="230" height="80" rx="16" fill="#FDF0F0" stroke="#E3A5A5"/><text x="135" y="128" text-anchor="middle" font-weight="700">곶감</text><text x="135" y="153" text-anchor="middle" fill="#B33A3A">알고의 라이벌</text>
+<rect x="730" y="30" width="230" height="80" rx="16" fill="#F3F0FB" stroke="#D7CEF0"/><text x="845" y="63" text-anchor="middle" font-weight="700">반달가슴곰</text><text x="845" y="88" text-anchor="middle" fill="#5B42A8">늘 궁금한 걸 물어봐요</text>
+<rect x="730" y="165" width="230" height="80" rx="16" fill="#ECF7F0" stroke="#BFE3CB"/><text x="845" y="198" text-anchor="middle" font-weight="700">반딧불이</text><text x="845" y="223" text-anchor="middle" fill="#237A47">정보를 찾아 줘요</text>
+</g>
+<text x="330" y="125" text-anchor="middle" font-size="13" fill="#5B6273">"호랑이는 곶감이 무섭대"</text>
+<text x="650" y="88" text-anchor="middle" font-size="13" fill="#5B6273">질문 →</text>
+<text x="650" y="200" text-anchor="middle" font-size="13" fill="#5B6273">← 답 찾기</text>
+</svg>
+<p>곰이 묻고, 반딧불이가 찾고, 알고가 "AI로 해 보자!"를 외치면, 곶감이 "내가 먼저 할 거야!"하고 끼어들어요. <b>역할이 다르면 이야기가 저절로 생겨요.</b> 5주차 인스타툰, 6주차 동화책이 이 관계에서 나와요.</p>
+</div>
+
+<div class="card full" id="c-gam"><h2><span class="k">②</span>곶감 · 알고의 라이벌</h2>
+<div class="friend"><div><img id="img-gam" data-img="gam" alt="곶감 캐릭터"><a class="dl" download="알고친구_곶감.jpg" data-img="gam" href="#">그림 내려받기</a></div>
+<div><p>옛이야기 「호랑이와 곶감」에서 호랑이는 곶감이 무서워 도망갔죠. 그래서 <b>호랑이 알고가 유일하게 긴장하는 상대</b>예요.</p>
+<div class="chips"><span class="chip">하얀 분이 낀 주황 몸</span><span class="chip">갈색 꼭지 잎</span><span class="chip">파란 구슬 안테나</span><span class="chip">짙은 눈썹</span><span class="chip">짧은 팔다리</span></div>
+<p class="muted">머리의 파란 구슬은 알고의 안테나와 같은 색이에요. "같은 세계에 사는 친구"라는 표시예요.</p>
+<div class="box set"><b class="l">오늘 따라 하기 주인공</b>STEP 4~6은 곶감으로 같이 해요. 곰과 반딧불이는 같은 방법으로 해 보는 연습용이에요.</div></div></div>
+</div>
+
+<div class="card" id="c-bear"><h2><span class="k">③</span>반달가슴곰 · 질문쟁이</h2>
+<div class="friend"><div><img data-img="bear" alt="반달가슴곰 캐릭터"><a class="dl" download="알고친구_반달곰.jpg" data-img="bear" href="#">그림 내려받기</a></div>
+<div><p>살짝 벌린 입, 동그란 눈. 어리둥절한 얼굴로 <b>늘 궁금한 걸 물어봐요.</b></p><div class="chips"><span class="chip">검은 털</span><span class="chip">가슴 초승달</span><span class="chip">머리 새싹</span><span class="chip">분홍 볼</span></div></div></div>
+</div>
+
+<div class="card" id="c-firefly"><h2><span class="k">④</span>반딧불이 · 정보 찾기 담당</h2>
+<div class="friend"><div><img data-img="firefly" alt="반딧불이 캐릭터"><a class="dl" download="알고친구_반딧불이.jpg" data-img="firefly" href="#">그림 내려받기</a></div>
+<div><p>어두운 곳을 밝히듯 <b>필요한 정보를 찾아 줘요.</b> 빛나는 배는 알고의 화면과 짝을 이뤄요.</p><div class="chips"><span class="chip">남색 몸</span><span class="chip">노랗게 빛나는 배</span><span class="chip">빛나는 더듬이</span><span class="chip">하늘색 날개</span></div></div></div>
+</div>
+
+<div class="card full" id="c-lineup"><h2><span class="k">⑤</span>세 친구 한 장 (무료 계정 추천)</h2>
+<div class="lineup"><div><img data-img="gam" alt=""><br>곶감</div><div><img data-img="bear" alt=""><br>반달가슴곰</div><div><img data-img="firefly" alt=""><br>반딧불이</div></div>
+<button class="dl solid" onclick="lineup()">세 친구를 한 장으로 내려받기</button> <span class="muted" id="lumsg"></span>
+<p class="muted">무료 계정은 하루 3개까지만 올릴 수 있어요. 세 친구를 한 장으로 합친 그림을 올리면 1개로 끝나요.</p>
+<div class="box help"><b class="l">내려받기가 안 될 때</b>그림 위에서 마우스 오른쪽 단추 → <b>이미지를 다른 이름으로 저장</b>을 누르세요. 휴대폰은 그림을 길게 누르면 저장할 수 있어요.</div>
+</div>
+
+<div class="card full" id="c-style"><h2><span class="k">⑥</span>세 친구가 "한 가족"처럼 보이는 이유</h2>
+<p>종류는 달라도 <b>화풍(그림 스타일)을 똑같이</b> 맞췄어요. 내 캐릭터를 여러 명 만들 때도 이 공통 규칙을 정해 두면 돼요.</p>
+<table><tr><th>공통 규칙</th><th>세 친구 모두</th></tr>
+<tr><td>몸 비율</td><td>2등신(머리와 몸이 거의 같은 크기), 통통한 몸</td></tr>
+<tr><td>질감</td><td>부드러운 털 · 말랑한 피규어 느낌의 3D</td></tr>
+<tr><td>얼굴</td><td>동그랗게 반짝이는 눈, 분홍 볼</td></tr>
+<tr><td>사진 찍듯</td><td>정면, 머리부터 발끝까지, 단색 배경, 바닥에 연한 그림자</td></tr>
+</table>
+</div>
+
+</div></section>
+
+<!-- ============ STEP 3 ============ -->
+<section class="panel" data-tab="챗GPT 프로젝트" data-no="3">
+<div class="head"><span class="no">STEP 3</span><h1>챗GPT 프로젝트에 캐릭터 방 만들기</h1><p>8주 동안 같은 캐릭터를 쓰려면, 기준 그림과 설정을 한곳에 모아 두는 게 좋아요.</p></div>
+<div class="grid">
+
+<div class="card" id="c-what"><h2><span class="k">①</span>프로젝트가 뭐예요?</h2>
+<p>대화 · 파일 · 지침(챗GPT에게 주는 고정 안내문)을 <b>한 폴더에 묶는 방</b>이에요.</p>
+<ul><li>방 안의 대화는 올려 둔 파일과 지침을 늘 참고해요.</li><li>매번 "이 캐릭터는요…" 하고 설명을 다시 하지 않아도 돼요.</li><li>무료 계정도 만들 수 있어요.</li></ul>
+<svg viewBox="0 0 440 170" role="img" aria-label="프로젝트 구조">
+<rect x="10" y="10" width="420" height="150" rx="16" fill="#EEF2FD" stroke="#3157D5" stroke-width="2"/><text x="30" y="40" font-size="16" font-weight="700" fill="#3157D5">프로젝트 · 알고 친구들</text>
+<g font-size="14" text-anchor="middle"><rect x="30" y="58" width="120" height="85" rx="10" fill="#fff" stroke="#C9D6FA"/><text x="90" y="92" font-weight="700">지침</text><text x="90" y="116" fill="#5B6273">고정 안내문</text>
+<rect x="160" y="58" width="120" height="85" rx="10" fill="#fff" stroke="#C9D6FA"/><text x="220" y="92" font-weight="700">파일</text><text x="220" y="116" fill="#5B6273">친구 그림 · 가이드</text>
+<rect x="290" y="58" width="120" height="85" rx="10" fill="#fff" stroke="#C9D6FA"/><text x="350" y="92" font-weight="700">대화들</text><text x="350" y="116" fill="#5B6273">9칸 · 기획서 · 시트</text></g>
+</svg>
+</div>
+
+<div class="card" id="c-make"><h2><span class="k">②</span>만드는 순서</h2>
+<ol class="steps">
+<li>챗GPT 왼쪽 메뉴에서 <b>프로젝트</b> → <b>새 프로젝트</b>를 눌러요.</li>
+<li>이름에 <b>알고 친구들</b>이라고 쓰고 만들어요.</li>
+<li>프로젝트 화면의 <b>파일 추가</b>로 세 친구 그림(또는 「세 친구 한 장」)을 올려요. 알고 가이드 PDF는 올려도 되고 안 올려도 돼요.</li>
+<li><b>지침</b>(설정)을 열어 아래 ③의 글을 붙여 넣고 저장해요.</li>
+<li>이제 프로젝트 <b>안에서</b> 새 대화를 시작해요.</li>
+</ol>
+<p class="muted">화면 이름은 업데이트에 따라 조금 다를 수 있어요.</p>
+<div class="box help"><b class="l">무료 계정이라면 (하루 3개)</b>프로젝트 파일 올리기는 건너뛰고, 지침만 붙여 넣으세요. 그림은 대화창에 「세 친구 한 장」 <b>1개만</b> 첨부해요. 남은 2개는 STEP 7에서 내 사진이나 내 캐릭터 그림에 써요.</div>
+<p class="muted">그림을 따라 그리게 할 때는 대화창에 직접 첨부하는 쪽이 더 정확해요.</p>
+</div>
+
+<div class="card full" id="c-inst"><h2><span class="k">③</span>프로젝트 지침 (복사해서 붙여 넣기)</h2>
+<div class="prompt"><div class="pl">지침 · 알고 친구들<button class="cp">복사</button></div><pre>너는 나와 함께 캐릭터를 만드는 '캐릭터 디자인 파트너'야.
+이 프로젝트에서는 '알고의 친구들' 캐릭터 3종을 다룬다.
+
+[세계관]
+- 알고: 전국민 AI 경진대회 공식 캐릭터(흰 호랑이). 저작권이 있으므로 알고 자체는 절대 그리지 않는다.
+- 곶감: 알고의 라이벌. 하얀 분이 낀 주황색 곶감 몸, 머리에 갈색 꼭지 잎, 꼭지 위에 파란 구슬 안테나, 짙은 눈썹, 짧은 갈색 팔다리.
+- 반달가슴곰: 늘 궁금한 걸 물어보는 친구. 복슬복슬한 검은 털, 가슴에 크림색 초승달, 머리에 연두색 새싹, 동그란 갈색 눈.
+- 반딧불이: 정보를 찾아 주는 친구. 매끈한 남색 몸, 노랗게 빛나는 배, 끝이 빛나는 더듬이, 하늘색 날개.
+
+[그림 규칙]
+- 공통 화풍: 2등신, 통통한 몸, 부드러운 털·말랑한 피규어 느낌의 3D, 동그랗게 반짝이는 눈, 분홍 볼.
+- 첨부한 친구 그림의 비율·색·질감·필수 요소를 그대로 지킨다. 내가 바꾸라고 한 것만 바꾼다.
+- 그림 안에는 글자를 넣지 않는다. 번호가 필요하면 숫자만 작게 넣는다.
+- 그림을 만들기 전에 대상·구도·샷·앵글·조명·화풍 6가지를 한 줄로 정리해 보여 준다.
+
+[답하는 방식]
+- 쉬운 우리말로 짧게 답한다. 어려운 말은 괄호로 풀어 쓴다.
+- 내 주문이 모호하면 그림을 만들기 전에 한 가지만 되묻는다.</pre></div>
+<div class="box ext"><b class="l">한 걸음 더</b>프로젝트를 만들 때 <b>기억(메모리) 범위</b>를 "이 프로젝트만"으로 고를 수 있으면 그렇게 하세요. 다른 대화의 내용이 섞이지 않아 캐릭터가 덜 흔들려요. 내 캐릭터는 STEP 7에서 <b>프로젝트를 따로</b> 만들어요.</div>
+</div>
+
+</div></section>
+
+<!-- ============ STEP 4 ============ -->
+<section class="panel" data-tab="그림 주문 6요소" data-no="4">
+<div class="head"><span class="no">STEP 4</span><h1>그림을 정확히 주문하는 6가지 말</h1><p>"예쁘게 그려 줘"로는 원하는 그림이 안 나와요. 사진작가처럼 6가지를 정해서 주문해요.</p></div>
+<div class="grid">
+
+<div class="card full" id="c-six"><h2><span class="k">①</span>주문 공식</h2>
+<svg viewBox="0 0 980 120" role="img" aria-label="6요소 공식">
+<g font-size="17" text-anchor="middle" font-weight="700">
+<rect x="5" y="20" width="140" height="62" rx="14" fill="#3157D5"/><text x="75" y="58" fill="#fff">대상</text>
+<rect x="170" y="20" width="140" height="62" rx="14" fill="#EEF2FD" stroke="#3157D5"/><text x="240" y="58" fill="#3157D5">구도</text>
+<rect x="335" y="20" width="140" height="62" rx="14" fill="#EEF2FD" stroke="#3157D5"/><text x="405" y="58" fill="#3157D5">샷</text>
+<rect x="500" y="20" width="140" height="62" rx="14" fill="#EEF2FD" stroke="#3157D5"/><text x="570" y="58" fill="#3157D5">앵글</text>
+<rect x="665" y="20" width="140" height="62" rx="14" fill="#EEF2FD" stroke="#3157D5"/><text x="735" y="58" fill="#3157D5">조명</text>
+<rect x="830" y="20" width="140" height="62" rx="14" fill="#EEF2FD" stroke="#3157D5"/><text x="900" y="58" fill="#3157D5">화풍</text>
+</g>
+<g font-size="22" fill="#9AA3B5" text-anchor="middle"><text x="157" y="59">+</text><text x="322" y="59">+</text><text x="487" y="59">+</text><text x="652" y="59">+</text><text x="817" y="59">+</text></g>
+<g font-size="13" fill="#5B6273" text-anchor="middle"><text x="75" y="105">누가 · 무엇을 · 어디서</text><text x="240" y="105">어디에 놓을까</text><text x="405" y="105">얼마나 크게</text><text x="570" y="105">어디서 볼까</text><text x="735" y="105">빛은 어떻게</text><text x="900" y="105">어떤 그림체로</text></g>
+</svg>
+</div>
+
+<div class="card" id="c-e1"><h2><span class="k">②</span>대상 · 구도</h2>
+<p><b>대상</b>: 누가, 무엇을 하며, 어디에 있는지 한 문장으로.<br><span class="muted">예) 곶감이 초가집 마루 끝에 앉아 다리를 흔든다</span></p>
+<svg viewBox="0 0 420 150" role="img" aria-label="3분할과 중앙 구도">
+<rect x="10" y="10" width="190" height="125" rx="8" fill="#F7F8FB" stroke="#D5DAE3"/><g stroke="#C9D0DC"><path d="M73 10 V135"/><path d="M137 10 V135"/><path d="M10 52 H200"/><path d="M10 93 H200"/></g><circle cx="137" cy="93" r="14" fill="#E07A3F"/><text x="105" y="150" font-size="13" text-anchor="middle" fill="#5B6273">3분할 · 선이 만나는 곳</text>
+<rect x="220" y="10" width="190" height="125" rx="8" fill="#F7F8FB" stroke="#D5DAE3"/><circle cx="315" cy="72" r="24" fill="#E07A3F"/><text x="315" y="150" font-size="13" text-anchor="middle" fill="#5B6273">중앙 · 정면 포스터</text>
+</svg>
+<p><b>구도</b>: <b>3분할</b>은 화면을 3×3으로 나눠 선이 만나는 곳에 주인공을 둬요(자연스러움). <b>중앙</b>은 한가운데(또렷하고 당당함).</p>
+</div>
+
+<div class="card" id="c-e2"><h2><span class="k">③</span>샷 · 얼마나 크게</h2>
+<svg viewBox="0 0 420 150" role="img" aria-label="샷 크기">
+<g fill="#E07A3F"><circle cx="70" cy="70" r="46"/><circle cx="210" cy="55" r="28"/><rect x="185" y="83" width="50" height="45" rx="10"/><circle cx="350" cy="40" r="16"/><rect x="335" y="57" width="30" height="40" rx="8"/><rect x="337" y="97" width="9" height="22" rx="3"/><rect x="354" y="97" width="9" height="22" rx="3"/></g>
+<g fill="none" stroke="#3157D5" stroke-width="2"><rect x="15" y="10" width="110" height="118"/><rect x="155" y="10" width="110" height="118"/><rect x="295" y="10" width="110" height="118"/></g>
+<g font-size="13" text-anchor="middle" fill="#5B6273"><text x="70" y="146">클로즈업</text><text x="210" y="146">미디엄</text><text x="350" y="146">풀샷</text></g>
+</svg>
+<ul><li><b>클로즈업</b>: 얼굴만 크게 → 표정이 잘 보여요</li><li><b>미디엄샷</b>: 허리 위까지 → 몸짓과 표정 함께</li><li><b>풀샷</b>: 머리부터 발끝까지 → 캐릭터 전체 모습</li></ul>
+</div>
+
+<div class="card" id="c-e3"><h2><span class="k">④</span>앵글 · 어디서 볼까</h2>
+<svg viewBox="0 0 420 150" role="img" aria-label="카메라 앵글">
+<rect x="0" y="120" width="420" height="4" fill="#D5DAE3"/><circle cx="210" cy="95" r="25" fill="#E07A3F"/>
+<g fill="#3157D5"><rect x="20" y="82" width="30" height="20" rx="4"/><rect x="195" y="5" width="30" height="20" rx="4"/><rect x="355" y="20" width="30" height="20" rx="4"/><rect x="330" y="108" width="30" height="20" rx="4"/></g>
+<g stroke="#3157D5" stroke-dasharray="4 4" stroke-width="2"><path d="M52 92 H180"/><path d="M210 28 V66"/><path d="M352 38 L230 82"/><path d="M328 112 L234 100"/></g>
+<g font-size="12" fill="#5B6273"><text x="10" y="74">눈높이</text><text x="232" y="20">위에서 수직</text><text x="340" y="15">하이</text><text x="365" y="146">로우</text></g>
+</svg>
+<ul><li><b>눈높이</b>: 마주 보는 느낌 → 친근해요</li><li><b>로우앵글</b>: 아래에서 올려다봄 → 크고 당당해 보여요</li><li><b>하이앵글</b>: 위에서 내려다봄 → 작고 귀여워 보여요</li><li><b>위에서 수직으로</b>: 지도 보듯 → 소품 · 음식 배치에 좋아요</li></ul>
+</div>
+
+<div class="card" id="c-e4"><h2><span class="k">⑤</span>조명 · 화풍</h2>
+<table><tr><th>조명</th><th>느낌</th></tr>
+<tr><td>자연광</td><td>창가 햇빛처럼 편안하고 따뜻해요</td></tr>
+<tr><td>역광</td><td>뒤에서 빛이 와서 윤곽이 반짝여요. 감성적이에요</td></tr>
+<tr><td>스튜디오</td><td>깔끔하고 그림자가 정돈돼요. 상품 사진에 좋아요</td></tr></table>
+<table><tr><th>화풍</th><th>느낌</th></tr>
+<tr><td>3D</td><td>피규어처럼 입체적 · 오늘 기본</td></tr>
+<tr><td>수채</td><td>물감 번짐, 동화책 느낌</td></tr>
+<tr><td>플랫</td><td>단순한 면과 선, 스티커 · 아이콘 느낌</td></tr>
+<tr><td>실사</td><td>진짜 사진처럼</td></tr></table>
+</div>
+
+<div class="card full" id="c-p1"><h2><span class="k">⑥</span>따라 하기 A · 6요소로 한 장 주문하기</h2>
+<p>프로젝트 안 새 대화에서 <b>곶감 그림을 첨부</b>하고 아래를 붙여 넣어요. (「세 친구 한 장」을 올렸다면 "첨부한 그림 중 곶감"이라고 써 주세요.)</p>
+<div class="prompt"><div class="pl">기본 주문<button class="cp">복사</button></div><pre>첨부한 곶감 캐릭터의 모양·색·질감을 그대로 유지해 줘.
+
+[대상] 곶감 캐릭터가 초가집 마루 끝에 앉아 다리를 흔들고 있다
+[구도] 3분할 구도, 캐릭터는 오른쪽 아래 교차점
+[샷] 풀샷(머리부터 발끝까지)
+[앵글] 눈높이
+[조명] 늦은 오후의 따뜻한 자연광
+[화풍] 부드러운 털 질감의 3D 피규어
+
+정사각형(1:1)으로 1장 만들어 줘. 그림 안에 글자는 넣지 마.</pre></div>
+<p>나오면 <b>한 가지만</b> 바꿔서 차이를 봐요. 아래 중 하나를 골라 이어서 보내요.</p>
+<div class="prompt"><div class="pl">하나씩 바꿔 보기<button class="cp">복사</button></div><pre>방금 그림에서 [샷]만 클로즈업(얼굴만 크게)으로 바꿔 줘. 나머지는 그대로.
+
+방금 그림에서 [앵글]만 로우앵글(아래에서 올려다봄)로 바꿔 줘. 나머지는 그대로.
+
+방금 그림에서 [조명]만 역광(뒤에서 비치는 노을빛)으로 바꿔 줘. 나머지는 그대로.
+
+방금 그림에서 [화풍]만 수채화로 바꿔 줘. 캐릭터 생김새는 그대로.</pre></div>
+<div class="box help"><b class="l">막힐 때</b>그림이 엉뚱하게 나오면 "첨부한 곶감과 다른 점을 말해 주고, 똑같이 다시 그려 줘"라고 보내요. 한 번에 여러 개를 바꾸면 무엇 때문에 달라졌는지 알 수 없으니 <b>꼭 하나씩</b> 바꿔요.</div>
+</div>
+
+<div class="card full" id="c-p2"><h2><span class="k">⑦</span>따라 하기 B · 9칸으로 한눈에 비교하기</h2>
+<p><b>그리드</b>(격자)로 9가지를 한 장에 뽑으면, 한 장씩 9번 만드는 것보다 빠르게 비교할 수 있어요.</p>
+<div class="prompt"><div class="pl">9칸 비교표<button class="cp">복사</button></div><pre>첨부한 곶감 캐릭터로 3×3 격자(9칸) 비교 그림을 1장 만들어 줘.
+캐릭터의 모양·색·질감은 9칸 모두 똑같이 유지하고, 칸마다 아래 조합만 바꿔 줘.
+배경은 9칸 모두 같은 초가집 마당으로 해 줘.
+각 칸 왼쪽 위에 숫자(1~9)만 작게 넣고, 다른 글자는 넣지 마.
+
+1 클로즈업 · 눈높이 · 스튜디오 조명 · 3D
+2 미디엄샷 · 눈높이 · 자연광 · 3D
+3 풀샷 · 눈높이 · 자연광 · 3D
+4 풀샷 · 로우앵글(아래에서 올려다봄) · 역광 · 3D
+5 풀샷 · 하이앵글(위에서 내려다봄) · 자연광 · 3D
+6 위에서 수직으로 내려다봄 · 스튜디오 조명 · 3D
+7 풀샷 · 눈높이 · 자연광 · 수채화
+8 풀샷 · 눈높이 · 스튜디오 조명 · 플랫 일러스트
+9 풀샷 · 눈높이 · 자연광 · 실사 사진
+
+정사각형(1:1)으로 만들어 줘.</pre></div>
+<div class="box help"><b class="l">9칸이 어지러우면</b>먼저 4칸으로 샷만 비교해요. "첨부한 곶감으로 2×2 격자(4칸)를 만들어 줘. 1 클로즈업, 2 미디엄샷, 3 풀샷, 4 위에서 내려다봄. 나머지는 모두 같게, 숫자만 작게."</div>
+<div class="prompt"><div class="pl">마음에 드는 칸 크게 뽑기<button class="cp">복사</button></div><pre>9칸 중 4번이 마음에 들어. 4번 조합으로 곶감을 크게 1장 다시 만들어 줘. 숫자는 빼 줘.</pre></div>
+<div class="box ext"><b class="l">한 걸음 더</b>숫자 뒤의 조합을 내 마음대로 바꿔 보세요. 예를 들어 9칸을 모두 <b>조명</b>만 다르게(아침 · 한낮 · 노을 · 달빛 · 촛불 …) 하면 "빛 하나로 분위기가 이렇게 바뀌는구나"를 한눈에 볼 수 있어요.</div>
+<div class="box set"><b class="l">플로우 · 메타 AI로 할 때</b>같은 주문을 그대로 붙여 넣고, 참고 그림 올리기 단추가 있으면 곶감 그림을 함께 올려요. 결과가 어색하면 챗GPT에게 "이 주문을 영어로 바꿔 줘"라고 한 뒤 붙여 넣어 보세요.</div>
+</div>
+
+</div></section>
+
+<!-- ============ STEP 5 ============ -->
+<section class="panel" data-tab="IP 기획서" data-no="5">
+<div class="head"><span class="no">STEP 5</span><h1>캐릭터 소개서(IP 기획서) 만들기</h1><p>알고 프로필처럼, 곶감의 이름 · 성격 · 색 · 말투를 정해요.</p></div>
+<div class="grid">
+
+<div class="card" id="c-form"><h2><span class="k">①</span>기획서에 들어가는 것</h2>
+<table><tr><th>항목</th><th>정하는 것</th></tr>
+<tr><td>이름</td><td>부르기 쉽고, 뜻이 담긴 이름</td></tr>
+<tr><td>누구에게</td><td>이 캐릭터를 좋아할 사람</td></tr>
+<tr><td>성격</td><td>3가지 + 해시태그</td></tr>
+<tr><td>대표 색</td><td>2~3가지 (굿즈 · 광고에 계속 써요)</td></tr>
+<tr><td>말투</td><td>자주 하는 말 (인스타툰 말풍선에 써요)</td></tr>
+<tr><td>관계</td><td>다른 캐릭터와의 사이</td></tr>
+<tr><td class="hl">꼭 지킬 것</td><td>그림에서 절대 바꾸면 안 되는 요소</td></tr></table>
+</div>
+
+<div class="card" id="c-why2"><h2><span class="k">②</span>왜 글로 먼저 정하나요?</h2>
+<p>그림만 있으면 챗GPT는 매번 <b>짐작</b>으로 그려요. 기획서가 있으면 2주차 광고, 5주차 인스타툰에서도 "기획서대로"라는 한마디로 같은 캐릭터를 불러올 수 있어요.</p>
+<div class="box set"><b class="l">기획서 저장하기</b>완성된 기획서를 복사해 메모장이나 한글 파일로 저장한 뒤, 프로젝트 <b>파일</b>에 올려 두면 다음 주에도 그대로 써요.</div>
+</div>
+
+<div class="card full" id="c-p3"><h2><span class="k">③</span>따라 하기 · 곶감 기획서</h2>
+<div class="prompt"><div class="pl">곶감 IP 기획서<button class="cp">복사</button></div><pre>첨부한 곶감 캐릭터의 IP 기획서(캐릭터 소개서)를 만들어 줘.
+이 캐릭터는 흰 호랑이 '알고'의 라이벌이야. 옛이야기 「호랑이와 곶감」에서 호랑이가 곶감을 무서워했다는 이야기를 바탕으로 해.
+
+아래 항목을 표로 정리해 줘.
+1. 이름 후보 5개: 알고(알고리즘+알다)처럼 두 가지 뜻이 겹치는 이름, 이름마다 뜻 한 줄
+2. 누구에게: 이 캐릭터를 좋아할 사람
+3. 성격: 3가지 + 해시태그 5개
+4. 대표 색: 2~3가지, 색 이름과 색상 코드
+5. 말투: 자주 하는 말 3개
+6. 알고와의 관계: 라이벌이 된 이유 2~3줄
+7. 꼭 지킬 것: 그림에서 절대 바꾸면 안 되는 요소 5가지</pre></div>
+<div class="prompt"><div class="pl">이름 정하고 다시 정리<button class="cp">복사</button></div><pre>이름은 ○○○로 할게. 이 이름으로 기획서를 다시 정리해 주고, 마지막에 이 캐릭터를 한 문장으로 소개해 줘.</pre></div>
+<div class="box help"><b class="l">막힐 때</b>이름 후보가 마음에 안 들면 "더 짧고 귀엽게, 두 글자로 5개 더"처럼 <b>조건을 하나</b> 붙여서 다시 받아요.</div>
+<div class="box ext"><b class="l">한 걸음 더</b>"곰과 반딧불이의 기획서도 같은 표로 만들어 주고, 네 캐릭터(알고 포함)의 관계를 한 문단으로 정리해 줘"라고 하면 세계관 설정집이 생겨요.</div>
+</div>
+
+</div></section>
+
+<!-- ============ STEP 6 ============ -->
+<section class="panel" data-tab="캐릭터 시트" data-no="6">
+<div class="head"><span class="no">STEP 6</span><h1>캐릭터 시트(설계도) 만들기</h1><p>앞 · 옆 · 뒤와 표정을 한 장에 모아 두면, 어떤 장면에서도 같은 캐릭터를 그릴 수 있어요.</p></div>
+<div class="grid">
+
+<div class="card full" id="c-sheet"><h2><span class="k">①</span>캐릭터 시트는 이렇게 생겼어요</h2>
+<svg viewBox="0 0 980 230" role="img" aria-label="캐릭터 시트 구성">
+<rect x="10" y="10" width="580" height="210" rx="14" fill="#fff" stroke="#D5DAE3"/><text x="30" y="40" font-size="15" font-weight="700" fill="#3157D5">턴어라운드 (돌려 보기)</text>
+<g fill="#E07A3F"><ellipse cx="90" cy="135" rx="45" ry="55"/><ellipse cx="230" cy="135" rx="32" ry="55"/><ellipse cx="370" cy="135" rx="45" ry="55" fill="#C9662F"/><ellipse cx="510" cy="135" rx="40" ry="55"/></g>
+<g fill="#3B2A20"><circle cx="75" cy="128" r="5"/><circle cx="105" cy="128" r="5"/><circle cx="245" cy="128" r="5"/><circle cx="515" cy="128" r="5"/><circle cx="537" cy="128" r="5"/></g>
+<g font-size="13" text-anchor="middle" fill="#5B6273"><text x="90" y="212">앞</text><text x="230" y="212">옆</text><text x="370" y="212">뒤</text><text x="510" y="212">비스듬히</text></g>
+<rect x="610" y="10" width="360" height="210" rx="14" fill="#fff" stroke="#D5DAE3"/><text x="630" y="40" font-size="15" font-weight="700" fill="#3157D5">표정 시트</text>
+<g fill="#F3C9A9"><circle cx="680" cy="95" r="32"/><circle cx="790" cy="95" r="32"/><circle cx="900" cy="95" r="32"/><circle cx="680" cy="175" r="32"/><circle cx="790" cy="175" r="32"/><circle cx="900" cy="175" r="32"/></g>
+<g font-size="12" text-anchor="middle" fill="#5B6273"><text x="680" y="99">기본</text><text x="790" y="99">미소</text><text x="900" y="99">약 오름</text><text x="680" y="179">놀람</text><text x="790" y="179">시무룩</text><text x="900" y="179">자신만만</text></g>
+</svg>
+</div>
+
+<div class="card full" id="c-p4"><h2><span class="k">②</span>따라 하기 · 앞 · 옆 · 뒤 시트</h2>
+<div class="prompt"><div class="pl">턴어라운드 시트<button class="cp">복사</button></div><pre>첨부한 곶감 캐릭터의 캐릭터 시트(설계도)를 만들어 줘.
+- 한 장에 같은 캐릭터를 4방향으로: 앞, 옆(오른쪽), 뒤, 비스듬한 앞(3/4 각도)
+- 4개 모두 같은 크기·같은 비율로 가로 한 줄에 나란히
+- 차렷 자세(팔을 내린 기본 자세), 기본 표정
+- 뒤 모습에도 꼭지 잎과 파란 구슬 안테나가 보이게
+- 흰 배경, 그림자는 바닥에만 연하게
+- 글자·설명·화살표는 넣지 마
+- 가로로 긴 3:2 비율</pre></div>
+</div>
+
+<div class="card full" id="c-p5"><h2><span class="k">③</span>따라 하기 · 표정 시트</h2>
+<div class="prompt"><div class="pl">표정 6가지<button class="cp">복사</button></div><pre>같은 곶감 캐릭터로 표정 시트를 만들어 줘.
+- 3×2 격자(6칸)에 얼굴과 상반신만(미디엄 클로즈업)
+- 표정 6가지: 기본, 새침한 미소, 약 오른 얼굴(라이벌 모드), 깜짝 놀람, 시무룩, 자신만만한 윙크
+- 모양·색·질감·꼭지 잎·안테나 구슬은 6칸 모두 똑같이
+- 흰 배경, 글자는 넣지 마
+- 가로로 긴 3:2 비율</pre></div>
+</div>
+
+<div class="card" id="c-check"><h2><span class="k">④</span>시트 점검표</h2>
+<ul class="check"><li>4방향의 키와 몸 비율이 같은가요?</li><li>색이 방향마다 달라지지 않았나요?</li><li>꼭 지킬 것(꼭지 잎 · 파란 구슬)이 다 있나요?</li><li>질감(하얀 분)이 그대로인가요?</li><li>배경이 깨끗하고 글자가 없나요?</li></ul>
+</div>
+
+<div class="card" id="c-fix"><h2><span class="k">⑤</span>틀린 곳은 "그것만" 고치기</h2>
+<div class="prompt"><div class="pl">부분 수정<button class="cp">복사</button></div><pre>시트에서 뒤 모습에 파란 구슬 안테나가 빠졌어. 다른 건 그대로 두고 안테나만 넣어 줘.</pre></div>
+<p class="muted">전체를 다시 그리라고 하면 다른 곳까지 바뀌어요. 고칠 곳 <b>하나만</b> 콕 집어 말해요.</p>
+</div>
+
+<div class="card full" id="c-more"><h2><span class="k">⑥</span>한 걸음 더</h2>
+<div class="box ext"><b class="l">세 친구 모두 시트로</b>같은 두 주문에서 "곶감"만 "반달가슴곰", "반딧불이"로 바꿔 보내요. 꼭 지킬 것도 그 친구에 맞게 바꿔요(곰: 가슴 초승달 · 머리 새싹 / 반딧불이: 빛나는 배 · 더듬이).</div>
+<div class="prompt"><div class="pl">세 친구 단체 사진<button class="cp">복사</button></div><pre>첨부한 세 친구(곶감, 반달가슴곰, 반딧불이)를 한 장에 모아 단체 사진을 만들어 줘.
+- 세 친구의 생김새·색·크기 비율은 원래 그림 그대로
+- 곶감은 가운데에서 팔짱 낀 자신만만한 자세, 곰은 고개를 갸웃, 반딧불이는 곰 머리 위에서 배를 밝히며 날고 있음
+- 미디엄 풀샷, 눈높이, 부드러운 스튜디오 조명, 연한 하늘색 단색 배경
+- 글자는 넣지 마, 가로 3:2</pre></div>
+</div>
+
+</div></section>
+
+<!-- ============ STEP 7 ============ -->
+<section class="panel" data-tab="내 캐릭터 만들기" data-no="7">
+<div class="head"><span class="no">STEP 7</span><h1>이제 내 캐릭터를 만들어요</h1><p>똑같은 순서예요. 다만 이번엔 <b>챗GPT가 먼저 묻고, 내가 답하면서</b> 기획서를 완성해요.</p></div>
+<div class="grid">
+
+<div class="card full" id="c-topic"><h2><span class="k">①</span>소재 고르기 (셋 중 하나)</h2>
+<table><tr><th>소재</th><th>이런 캐릭터가 돼요</th><th>나중에 이렇게 써요</th></tr>
+<tr><td class="hl">내 가게 · 일</td><td>빵집의 식빵 사장님, 꽃집의 튤립 점원, 세무사무실의 계산기 도우미</td><td>가게 광고 · 포장 스티커 · 안내 카드뉴스</td></tr>
+<tr><td class="hl">우리 동네 · 가족</td><td>동네 공원의 은행잎 요정, 손주를 닮은 아기 오리</td><td>가족 동화책 · 동네 소식 카드뉴스</td></tr>
+<tr><td class="hl">취미 · 반려동물</td><td>우리 집 강아지, 등산 좋아하는 다람쥐, 뜨개질하는 양</td><td>인스타툰 · 키링 · 머그</td></tr></table>
+</div>
+
+<div class="card" id="c-new"><h2><span class="k">②</span>내 캐릭터용 프로젝트 만들기</h2>
+<ol class="steps"><li><b>새 프로젝트</b> → 이름은 "내 캐릭터"(나중에 캐릭터 이름으로 바꿔요)</li><li>반려동물 · 가게 사진이 있으면 1장 올려요 (선택)</li><li>프로젝트 안에서 새 대화를 열고 ④를 붙여 넣어요</li></ol>
+<p class="muted">알고 친구들 프로젝트와 따로 두어야 캐릭터 설정이 섞이지 않아요.</p>
+</div>
+
+<div class="card" id="c-flow2"><h2><span class="k">③</span>되묻기 방식이란?</h2>
+<svg viewBox="0 0 440 170" role="img" aria-label="되묻기 흐름">
+<g font-size="14"><rect x="10" y="10" width="270" height="40" rx="12" fill="#EEF2FD"/><text x="25" y="36">AI: 어떤 소재로 할까요? ①②③</text>
+<rect x="160" y="62" width="270" height="40" rx="12" fill="#ECF7F0"/><text x="175" y="88">나: 2번, 우리 동네 은행나무요</text>
+<rect x="10" y="114" width="270" height="40" rx="12" fill="#EEF2FD"/><text x="25" y="140">AI: 성격은요? ①②③ …</text></g>
+</svg>
+<p>질문이 하나씩, 고르기 쉬운 보기와 함께 와요. <b>번호만 골라도</b> 돼요.</p>
+</div>
+
+<div class="card full" id="c-p6"><h2><span class="k">④</span>되묻기 기획 프롬프트</h2>
+<div class="prompt"><div class="pl">내 캐릭터 기획 · AI가 묻고 내가 답하기<button class="cp">복사</button></div><pre>너는 캐릭터 기획 전문가야. 지금부터 나에게 질문을 해서 '내 캐릭터' 기획서를 같이 완성해 줘.
+
+[진행 방법]
+- 질문은 한 번에 하나만 해. 내가 답하면 다음 질문으로 넘어가.
+- 질문마다 고르기 쉬운 보기를 3개씩 번호로 붙여 줘. 나는 번호만 골라도 돼.
+- 질문은 7개 안에서 끝내. 순서: ① 소재(내 가게·일 / 우리 동네·가족 / 취미·반려동물) ② 캐릭터의 정체(동물·식물·음식·물건 등) ③ 누구에게 보여 줄지 ④ 성격 ⑤ 대표 색 ⑥ 말투 ⑦ 꼭 들어가야 할 특징(소품·무늬)
+- 내 답이 짧거나 막연하면, 구체적인 보기를 들어 다시 물어봐 줘.
+- 사진을 올렸다면 사진 속 색과 특징을 보기에 반영해 줘.
+
+[다 끝나면]
+1. IP 기획서 표: 이름 후보 3개(뜻 포함) · 누구에게 · 성격(+해시태그) · 대표 색(색상 코드) · 말투 · 꼭 지킬 것 5가지
+2. 정면 그림 주문서: 대상·구도·샷·앵글·조명·화풍 6요소로 정리
+3. 마지막에 "이대로 정면 그림을 만들까요?"라고 물어봐 줘.
+
+첫 질문부터 시작해 줘.</pre></div>
+</div>
+
+<div class="card full" id="c-p7"><h2><span class="k">⑤</span>정면 그림 1장 만들기</h2>
+<p>기획서가 나오고 이름을 골랐다면, 아래를 보내요. 기획서와 같은 대화에서 이어서 보내야 해요.</p>
+<div class="prompt"><div class="pl">내 캐릭터 정면 그림<button class="cp">복사</button></div><pre>위 기획서대로 내 캐릭터의 정면 그림을 1장 만들어 줘.
+- 정면, 풀샷(머리부터 발끝까지), 눈높이, 차렷 자세, 기본 표정
+- 2등신, 통통하고 부드러운 3D 피규어 느낌 (다른 화풍을 원하면 이 줄만 바꾸세요)
+- 꼭 지킬 것 5가지가 모두 보이게
+- 연한 회색 단색 배경, 스튜디오 조명, 바닥에 그림자 살짝
+- 글자는 넣지 마
+- 정사각형(1:1)</pre></div>
+<div class="box set"><b class="l">이 그림이 앵커예요</b>앞으로 8주 동안 모든 그림의 <b>기준</b>이 돼요. 마음에 들 때까지 한 가지씩 고쳐서 확정하고, 내려받아 프로젝트 파일에 올려 두세요.</div>
+</div>
+
+<div class="card" id="c-help"><h2><span class="k">⑥</span>막힐 때</h2>
+<div class="box help"><b class="l">소재가 안 떠올라요</b>"저는 ○○을 하는 사람이고 ○○을 좋아해요. 이걸로 캐릭터 소재 5개만 추천해 줘."</div>
+<div class="box help"><b class="l">그림이 기획서와 달라요</b>"기획서의 꼭 지킬 것 중 빠진 것을 찾아서, 그것만 넣어 다시 그려 줘."</div>
+<div class="box help"><b class="l">화풍이 마음에 안 들어요</b>STEP 4의 화풍(수채 · 플랫 · 실사) 중 하나로 <b>화풍만</b> 바꿔 달라고 해요.</div>
+</div>
+
+<div class="card" id="c-adv"><h2><span class="k">⑦</span>한 걸음 더</h2>
+<div class="box ext"><b class="l">반려동물 사진으로</b>"첨부한 우리 강아지 사진의 털색과 무늬, 귀 모양을 살려서 2등신 캐릭터로 만들어 줘. 사진처럼 그리지 말고 캐릭터답게 단순하게."</div>
+<div class="box ext"><b class="l">시트까지</b>정면 그림이 확정되면 STEP 6의 두 주문에서 "곶감"을 내 캐릭터 이름으로 바꿔 시트까지 만들어요.</div>
+<div class="box ext"><b class="l">빠른 모드</b>이미 정한 게 있으면 되묻기 대신 "이름 ○○, 정체 ○○, 성격 ○○, 색 ○○, 말투 ○○, 특징 ○○. 이걸로 기획서 표와 정면 그림 주문서를 바로 만들어 줘."</div>
+<div class="box ext"><b class="l">친구 만들기</b>"내 캐릭터의 라이벌과 단짝을 한 명씩 기획해 줘. 화풍은 똑같이."</div>
+</div>
+
+</div></section>
+
+<!-- ============ 마무리 ============ -->
+<section class="panel" data-tab="마무리" data-no="8">
+<div class="head"><span class="no">마무리</span><h1>오늘 만든 것 챙기기</h1><p>다음 주부터는 오늘 만든 캐릭터가 광고 모델로 나서요.</p></div>
+<div class="grid">
+
+<div class="card" id="c-done"><h2><span class="k">①</span>오늘 결과물</h2>
+<ul class="check"><li>곶감 6요소 비교 그림과 9칸 비교 그림</li><li>곶감 IP 기획서</li><li>곶감 캐릭터 시트 (앞 · 옆 · 뒤 · 표정)</li><li><b>내 캐릭터 기획서</b></li><li><b>내 캐릭터 정면 그림 1장</b></li></ul>
+</div>
+
+<div class="card" id="c-save"><h2><span class="k">②</span>저장하는 법</h2>
+<ol class="steps"><li>그림을 눌러 크게 연 뒤 <b>내려받기</b>를 눌러요.</li><li>파일 이름을 바꿔요. 예) <b>캐릭터이름_정면_01.png</b></li><li>기획서는 복사해 문서로 저장하고, 프로젝트 파일에 올려요.</li></ol>
+<p class="muted">무료 계정은 올리기가 하루 3개라, 꼭 필요한 것(정면 그림 · 기획서)부터 올려요.</p>
+</div>
+
+<div class="card full" id="c-rule"><h2><span class="k">③</span>8주 동안 지킬 약속</h2>
+<div class="box warn"><b class="l">저작권</b>남의 캐릭터 · 로고 · 유명인 얼굴은 쓰지 않아요. 알고 가이드도 견본으로만 봐요. 내 캐릭터는 내가 기획하고 AI로 그린 것이라, 8주차 판매 등록 때 <b>AI 사용 표기</b>를 함께 해요.<br>오늘 따라 그린 <b>알고의 친구 3종도 연습용</b>이에요. 알고의 세계를 빌린 캐릭터라 SNS에 올리거나 판매하지 않고, 8주 동안 쓰는 건 <b>내 캐릭터</b>예요.</div>
+</div>
+
+<div class="card full" id="c-next"><h2><span class="k">④</span>다음 시간 · 광고 이미지</h2>
+<p>내 캐릭터를 <b>광고 모델</b>로 세워요. 키 비주얼(대표 광고 그림), 제품 컷, SNS 크기별 바꾸기, 행사 포스터를 만들어요.</p>
+<div class="box set"><b class="l">준비해 오세요</b>오늘 확정한 <b>정면 그림</b>, 그리고 홍보하고 싶은 것(가게 · 상품 · 행사) <b>사진 1장</b>이나 한 줄 설명.</div>
+</div>
+
+</div></section>
+
+</main>
+<aside class="side" id="side"><h4>이 STEP의 내용</h4><div id="sidelist"></div></aside>
+</div>
+
+<div class="credit">양천구 평생학습관 · 챗GPT 이미지 200% 활용 · 강사 김충효<br>알고(Algo) © 2026 TTA — 가이드는 수업 견본으로만 소개합니다. 알고의 친구 그림은 강사가 미드저니로 만든 예시입니다.</div>
+
+<div class="foot"><div class="in"><button class="nb" id="prev" onclick="go(cur-1)">← 이전</button><span class="muted" id="pos"></span><button class="nb n" id="next" onclick="go(cur+1)">다음 →</button></div></div>
+
+<script>
+var IMG={gam:'img01.jpg',bear:'img02.jpg',firefly:'img03.jpg'};
+[].forEach.call(document.querySelectorAll('[data-img]'),function(e){var s=IMG[e.dataset.img];if(e.tagName==='IMG')e.src=s;else e.href=s;});
+var size=20;function fs(d){size=Math.min(30,Math.max(16,size+d));document.documentElement.style.setProperty('--fs',size+'px');}
+var panels=[].slice.call(document.querySelectorAll('.panel')),tabs=document.getElementById('tabs'),cur=0;
+panels.forEach(function(p,i){var b=document.createElement('button');b.className='tab';var n=p.getAttribute('data-no');
+b.innerHTML=(n==='0'||n==='8'?'':'<b>'+n+'</b>')+p.getAttribute('data-tab');b.onclick=function(){go(i)};tabs.appendChild(b);});
+function go(i){if(i<0||i>=panels.length)return;cur=i;panels.forEach(function(p,j){p.classList.toggle('on',j===i)});
+[].forEach.call(tabs.children,function(t,j){t.classList.toggle('on',j===i)});
+var tb=tabs.children[i];tabs.scrollLeft=tb.offsetLeft-(tabs.clientWidth-tb.offsetWidth)/2;
+document.getElementById('prev').disabled=i===0;document.getElementById('next').disabled=i===panels.length-1;
+document.getElementById('pos').textContent=(i+1)+' / '+panels.length;buildSide();window.scrollTo(0,0);}
+function buildSide(){var l=document.getElementById('sidelist');l.innerHTML='';
+[].forEach.call(panels[cur].querySelectorAll('.card'),function(c){var h=c.querySelector('h2');if(!h)return;var a=document.createElement('a');a.href='#'+c.id;a.textContent=h.textContent.replace(/^[①-⑩]/,'').trim();a.dataset.t=c.id;
+a.onclick=function(e){e.preventDefault();var off=document.querySelector('.top').offsetHeight+12;window.scrollTo({top:c.getBoundingClientRect().top+window.pageYOffset-off,behavior:'smooth'});};l.appendChild(a);});spy();}
+function spy(){var cs=panels[cur].querySelectorAll('.card'),best=null;[].forEach.call(cs,function(c){if(c.getBoundingClientRect().top<180)best=c.id;});
+if(!best&&cs[0])best=cs[0].id;[].forEach.call(document.querySelectorAll('#sidelist a'),function(a){a.classList.toggle('on',a.dataset.t===best)});}
+window.addEventListener('scroll',spy,{passive:true});
+document.addEventListener('click',function(e){var b=e.target.closest('.cp');if(!b)return;var t=b.closest('.prompt').querySelector('pre').innerText;
+function ok(){b.textContent='복사됨';b.classList.add('ok');setTimeout(function(){b.textContent='복사';b.classList.remove('ok')},1600);}
+function fb(){var ta=document.createElement('textarea');ta.value=t;ta.style.position='absolute';ta.style.left='-9999px';document.body.appendChild(ta);ta.select();var s=false;try{s=document.execCommand('copy')}catch(x){}document.body.removeChild(ta);
+if(s)ok();else{var r=document.createRange();r.selectNodeContents(b.closest('.prompt').querySelector('pre'));var sel=getSelection();sel.removeAllRanges();sel.addRange(r);b.textContent='Ctrl+C를 누르세요';}}
+if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(t).then(ok,fb)}else fb();});
+function lineup(){var srcs=[].map.call(document.querySelectorAll('.lineup img'),function(i){return i.src});var c=document.createElement('canvas');c.width=1800;c.height=600;var x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,1800,600);var n=0;
+srcs.forEach(function(s,k){var im=new Image();im.onload=function(){x.drawImage(im,k*600,0,600,600);if(++n===3){try{var a=document.createElement('a');a.download='알고친구_세친구한장.jpg';a.href=c.toDataURL('image/jpeg',0.88);document.body.appendChild(a);a.click();a.remove();}catch(e){document.getElementById('lumsg').textContent='내려받기가 막혔어요. 그림을 한 장씩 저장해 주세요.'}}};im.src=s;});}
+go(0);
+</script>
+</body>
+</html>

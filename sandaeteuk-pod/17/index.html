@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>부크크 전자책 올리기</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+:root{--bg:#faf9f6;--card:#fff;--line:#e4e2dc;--ink:#26323a;--mute:#66737b;--acc:#2f6f8f;--acc2:#e6f0f4;
+--set:#eef5f8;--setl:#cfe0e8;--warn:#fbefef;--warnl:#efd2d2;--ext:#f1f6ec;--extl:#d6e4c8;--help:#f4f1f9;--helpl:#ddd5ea;--chk:#fdf6f0;--chkl:#efdcc9;--fs:20px}
+*{box-sizing:border-box}
+html{font-size:var(--fs)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Pretendard,-apple-system,"Malgun Gothic",sans-serif;line-height:1.65;word-break:keep-all}
+.top{position:sticky;top:0;z-index:20;background:rgba(250,249,246,.97);border-bottom:1px solid var(--line)}
+.bar{max-width:1240px;margin:0 auto;display:flex;align-items:center;gap:.8rem;padding:.55rem 1rem}
+.bar h1{font-size:1.05rem;margin:0;flex:1}
+.bar h1 small{color:var(--mute);font-weight:500;margin-left:.4rem;font-size:.8rem}
+.fsz button{font:inherit;font-size:.8rem;border:1px solid var(--line);background:#fff;border-radius:8px;padding:.2rem .55rem;cursor:pointer;color:var(--ink)}
+.tabs{max-width:1240px;margin:0 auto;display:flex;gap:.35rem;overflow-x:auto;padding:0 1rem .55rem}
+.tab{font:inherit;font-size:.82rem;white-space:nowrap;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:999px;padding:.3rem .8rem;cursor:pointer}
+.tab.on{background:var(--acc);border-color:var(--acc);color:#fff}
+.wrap{max-width:1240px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr) 230px;gap:1.4rem;padding:1.2rem 1rem 0}
+main{min-width:0}
+.side{align-self:start;position:sticky;top:7.2rem}
+.side .in{border:1px solid var(--line);background:#fff;border-radius:14px;padding:.8rem}
+.side b{display:block;font-size:.75rem;color:var(--mute);margin-bottom:.4rem}
+.side a{display:block;font-size:.8rem;color:var(--ink);text-decoration:none;padding:.3rem .4rem;border-radius:8px;line-height:1.35}
+.side a:hover,.side a.on{background:var(--acc2);color:var(--acc)}
+.step{display:none}.step.on{display:block}
+.step-head{border-bottom:1px solid var(--line);padding-bottom:.8rem;margin-bottom:1rem}
+.kicker{color:var(--acc);font-weight:700;font-size:.85rem}
+.step-head h2{margin:.2rem 0 .4rem;font-size:1.45rem;line-height:1.35}
+.step-head p{margin:0;color:#3d4a52}
+h3.sec{font-size:1.12rem;margin:1.8rem 0 .7rem;display:flex;gap:.55rem;align-items:center;scroll-margin-top:8rem}
+h3.sec .no{font-size:.75rem;background:var(--acc2);color:var(--acc);border-radius:8px;padding:.1rem .5rem}
+h4{margin:.1rem 0 .4rem;font-size:1rem}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:1rem;align-items:start}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.9rem}
+.card{min-width:0;overflow-wrap:anywhere;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:.9rem 1rem}
+.card p{margin:.2rem 0 0;font-size:.92rem}
+.pick h4{font-size:1.05rem}
+.chip{display:inline-block;font-size:.7rem;background:var(--acc2);color:var(--acc);border-radius:999px;padding:.05rem .5rem;margin-left:.2rem}
+figure{margin:.3rem 0 .6rem}
+figure img{width:100%;height:auto;border:1px solid var(--line);border-radius:10px;display:block;background:#fff}
+figcaption{font-size:.78rem;color:var(--mute);margin-top:.3rem}
+.tint{border:1px solid;border-radius:14px;padding:.8rem 1rem;margin:.8rem 0;font-size:.95rem}
+.tint .lab,.pad .lab{display:block;font-weight:700;font-size:.82rem;margin-bottom:.3rem}
+.tint ul,.tint ol,.pad ul{margin:.2rem 0;padding-left:1.2rem}
+.set{background:var(--set);border-color:var(--setl)}.set .lab{color:var(--acc)}
+.warn{background:var(--warn);border-color:var(--warnl)}.warn .lab{color:#9b4a4a}
+.ext{background:var(--ext);border-color:var(--extl)}.ext .lab{color:#4f7a3a}
+.help{background:var(--help);border-color:var(--helpl)}.help .lab{color:#6a5a8c}
+.check{background:var(--chk);border-color:var(--chkl)}.check .lab{color:#8a5a2b}
+.pad{border:1.5px dashed var(--acc);border-radius:14px;padding:.8rem 1rem;margin:1.4rem 0 .4rem;background:#fff;font-size:.95rem}
+.pad .lab{color:var(--acc)}
+.prompt{border:1px solid var(--line);border-radius:12px;background:#fff;margin:.7rem 0;overflow:hidden}
+.ph{display:flex;justify-content:space-between;align-items:center;gap:.5rem;padding:.45rem .8rem;border-bottom:1px solid var(--line);background:#f6f5f1;font-size:.8rem;color:var(--mute)}
+.ph b{color:var(--acc)}
+.copy{font:inherit;font-size:.8rem;border:1px solid var(--acc);color:var(--acc);background:#fff;border-radius:8px;padding:.2rem .7rem;cursor:pointer;white-space:nowrap}
+.copy.done{background:var(--acc);color:#fff}
+pre{margin:0;padding:.75rem .9rem;white-space:pre-wrap;word-break:break-word;font-family:inherit;font-size:.88rem;line-height:1.6}
+pre.plain{background:#fff;border-radius:10px}
+pre.tree{padding:.2rem 0;font-family:ui-monospace,Consolas,monospace;font-size:.8rem}
+.cgrid{display:grid;grid-template-columns:1fr 1fr;gap:0 .9rem}
+.cgrid .prompt pre{font-size:.8rem}
+details{margin:.7rem 0}
+summary{cursor:pointer;font-weight:600;font-size:.92rem;color:var(--acc);padding:.3rem 0}
+details.sample{border:1px solid var(--line);border-radius:12px;background:#fff;padding:.3rem .9rem}
+.sbody{padding:.3rem 0 .6rem}
+mark{background:#f7d9d9;padding:0 .15rem;border-radius:4px}
+.pages{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem}
+.pg{border:1px solid var(--line);border-radius:10px;padding:.55rem .7rem;font-size:.85rem;background:#fcfcfa}
+.pg .en{font-size:.78rem;color:#45545c}
+.tbl{overflow-x:auto;margin:.7rem 0}
+table{border-collapse:collapse;width:100%;font-size:.86rem;background:#fff}
+th,td{border:1px solid var(--line);padding:.4rem .55rem;text-align:left;vertical-align:top}
+th{background:#f3f2ee;font-weight:600}
+.go{display:inline-block;font-size:.8rem;font-weight:600;color:var(--acc);background:#fff;border:1px solid var(--acc);border-radius:999px;padding:.15rem .7rem;margin:.15rem .2rem .15rem 0;text-decoration:none;white-space:nowrap}.go:hover{background:var(--acc);color:#fff}
+.golist{border:1px solid var(--line);background:#fff;border-radius:14px;padding:.7rem .9rem;margin:.2rem 0 .8rem}.golist b{display:block;font-size:.8rem;color:var(--mute);margin-bottom:.3rem}
+.asm{border:1.5px solid var(--acc);border-radius:16px;background:#fff;padding:1rem;margin:.6rem 0}
+.asm-row{display:flex;flex-wrap:wrap;gap:.8rem;align-items:center;margin-bottom:.7rem}
+.asm label{display:flex;flex-direction:column;font-size:.8rem;font-weight:600;color:var(--mute);gap:.25rem}
+.asm label.wide{flex:1;min-width:280px}
+.asm select,.asm input{font:inherit;font-size:.9rem;border:1px solid var(--line);border-radius:10px;padding:.35rem .6rem;background:#fff;color:var(--ink);min-width:170px}
+.asm-lab{font-size:.8rem;font-weight:600;color:var(--mute)}
+.sw{width:2.1rem;height:2.1rem;border-radius:10px;border:1px solid #c9cdd0;cursor:pointer;margin-right:.35rem;vertical-align:middle}
+.sw.on{outline:3px solid var(--acc);outline-offset:2px}
+.picked{font-size:.85rem}
+.pp{border-radius:4px;padding:0 .1rem}
+.pp-sty{background:#e3eef4}.pp-frm{background:#f1e9f7}.pp-who{background:#fbeede}.pp-bg{background:#e6f2e1}.pp-no{background:#f6e3e3}.pp-end{background:#ececec}
+td .pp{display:inline-block;padding:.05rem .45rem;font-weight:600;font-size:.82rem;white-space:nowrap}
+.ko{margin-top:.6rem}.ko .lab{font-weight:700;font-size:.85rem;color:var(--acc);margin-bottom:.3rem}
+.ko td.en{font-size:.78rem;color:#45545c}
+.cres{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem}
+.cres div{border:1px solid var(--line);border-radius:12px;padding:.5rem .7rem;background:#fcfcfa}
+.cres span{display:block;font-size:.75rem}.cres b{font-size:1.05rem}
+.cbar{height:.7rem;background:#eee;border-radius:99px;margin:.6rem 0 .2rem;overflow:hidden}.cbar div{height:100%;background:var(--acc);border-radius:99px}
+.storybar{display:flex;align-items:center;gap:.4rem;font-size:.8rem;background:var(--ext);border:1px solid var(--extl);border-radius:999px;padding:.2rem .4rem .2rem .8rem}
+.storybar b{font-size:.85rem;color:#3d6b2c}.storybar select{font:inherit;font-size:.78rem;border:1px solid var(--line);border-radius:999px;padding:.15rem .4rem;background:#fff}
+.picks{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.8rem;margin:.4rem 0 .6rem}
+.pick{font:inherit;text-align:left;border:1.5px solid var(--line);background:#fff;border-radius:16px;padding:.9rem 1rem;cursor:pointer;color:var(--ink);display:flex;flex-direction:column;gap:.25rem}
+.pick .pe{font-size:1.8rem}.pick b{font-size:1.05rem}.pick span:last-child{font-size:.82rem;color:var(--mute)}
+.pick.on{border-color:#4f7a3a;background:var(--ext);box-shadow:0 0 0 3px #d6e4c8}
+.proc{margin:.2rem 0 .9rem}.proc-lab{font-size:.78rem;font-weight:700;color:var(--mute);margin-bottom:.25rem}.proc svg{margin:0}
+.chat{display:flex;flex-direction:column;gap:.45rem;margin:.5rem 0;border:1px solid var(--line);border-radius:16px;padding:.9rem;background:#fcfcfa}
+.bub{max-width:78%;border-radius:14px;padding:.5rem .8rem;font-size:.9rem}
+.bub .who{display:block;font-size:.72rem;font-weight:700;color:var(--mute)}
+.bub.ai{background:#eef5f8;align-self:flex-start}.bub.me{background:#f3f7ef;align-self:flex-end}
+.ba-wrap{display:flex;flex-direction:column;gap:.7rem;margin:.6rem 0}
+.ba{display:grid;grid-template-columns:1fr auto 1fr;gap:.6rem;align-items:stretch}
+.ba .b,.ba .a{border-radius:12px;padding:.6rem .8rem;font-size:.9rem}
+.ba .b{background:#fbefef;border:1px solid #efd2d2}.ba .a{background:#f1f6ec;border:1px solid #d6e4c8}
+.ba .arrow{align-self:center;font-size:1.4rem;color:var(--mute)}
+.ba .why{grid-column:1/-1;font-size:.82rem;color:#45545c;margin-top:-.2rem}
+.tagb,.taga{display:block;font-size:.72rem;font-weight:700;margin-bottom:.2rem}.tagb{color:#9b4a4a}.taga{color:#4f7a3a}
+ul.cl{list-style:none;padding-left:0}ul.cl li{margin:.25rem 0}
+.mine{margin:.2rem 0 .8rem}
+.pick-wide{width:100%;flex-direction:row;align-items:center;gap:.8rem}.pick-wide b{white-space:nowrap}
+.mine-form{display:none;border:1.5px solid #d6e4c8;border-top:none;border-radius:0 0 16px 16px;background:#fff;padding:.9rem 1rem;margin-top:-10px;grid-template-columns:repeat(3,minmax(0,1fr));gap:.7rem}
+.mine.open .pick-wide{border-radius:16px 16px 0 0}
+.mine.open .mine-form{display:grid}
+.mine-form label{display:flex;flex-direction:column;font-size:.8rem;font-weight:600;color:var(--mute);gap:.25rem}
+.mine-form label.wide{grid-column:span 3}
+.mine-form input{font:inherit;font-size:.9rem;border:1px solid var(--line);border-radius:10px;padding:.4rem .6rem;color:var(--ink)}
+.mine-form p{grid-column:1/-1;margin:0}
+.exm .copy{display:none}
+.mineclear{font:inherit;font-size:.8rem;border:1px solid var(--line);background:#fff;border-radius:8px;padding:.1rem .5rem;cursor:pointer}
+.exnote{font-size:.85rem;color:#3d6b2c;background:var(--ext);border:1px dashed var(--extl);border-radius:10px;padding:.35rem .7rem;margin:.5rem 0}
+code{font-family:ui-monospace,Consolas,monospace;font-size:.85em;background:var(--acc2);color:var(--acc);padding:.05rem .3rem;border-radius:5px}
+.rule{font-size:1.05rem;text-align:center;padding:1rem;border:1px solid var(--setl);background:var(--set);border-radius:14px;margin:.4rem 0 .8rem}
+.five{display:grid;grid-template-columns:repeat(5,1fr);gap:.5rem;margin:.5rem 0}
+.five div{border:1px solid var(--setl);background:var(--set);border-radius:12px;padding:.55rem;font-size:.8rem;text-align:center}
+.five b{display:block;color:var(--acc);font-size:.88rem}
+.muted{color:var(--mute);font-size:.88rem}
+svg.flow{width:100%;height:auto;margin:.3rem 0 .6rem}
+.nav{position:sticky;bottom:0;background:rgba(250,249,246,.97);border-top:1px solid var(--line);margin-top:1.6rem}
+.nav .in{max-width:1240px;margin:0 auto;display:flex;justify-content:space-between;padding:.55rem 1rem}
+.nav button{font:inherit;font-size:.85rem;border:1px solid var(--acc);background:#fff;color:var(--acc);border-radius:10px;padding:.35rem 1rem;cursor:pointer}
+.nav button:disabled{opacity:.35;cursor:default}
+@media (max-width:900px){.mine-form{grid-template-columns:1fr}.mine-form label.wide{grid-column:auto}.pick-wide{flex-direction:column;align-items:flex-start}.picks{grid-template-columns:1fr}.ba{grid-template-columns:1fr}.ba .arrow{display:none}.storybar select{max-width:9rem}.wrap{grid-template-columns:1fr}.side{display:none}.grid2,.grid3,.cgrid,.pages{grid-template-columns:1fr}.five{grid-template-columns:1fr 1fr}}
+
+.stybar{display:flex;flex-wrap:wrap;gap:.5rem 1rem;align-items:center;border:1px solid var(--line);background:#fff;border-radius:12px;padding:.5rem .9rem;margin:.6rem 0;font-size:.9rem}
+.stybar select{font:inherit;font-size:.85rem;border:1px solid var(--line);border-radius:8px;padding:.25rem .5rem;background:#fff;max-width:100%}
+.stygrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:.6rem;margin:.4rem 0 1rem}
+.stycard{font:inherit;text-align:left;cursor:pointer;background:#fff;border:1px solid var(--line);border-radius:12px;padding:.6rem .75rem;display:flex;flex-direction:column;gap:.2rem;color:var(--ink)}
+.stycard b{font-size:.95rem}.stycard .feel{font-size:.75rem;color:var(--acc)}.stycard .ko{font-size:.78rem;color:var(--mute);line-height:1.4}
+.stycard.on{border:2px solid var(--acc);background:var(--acc2)}
+.mall{margin:1.4rem 0 .3rem;padding-top:.8rem;border-top:1px dashed var(--line);font-size:1.05rem}
+.mine-form select{font:inherit;font-size:.9rem;border:1px solid var(--line);border-radius:10px;padding:.4rem .6rem;background:#fff;color:var(--ink);width:100%}
+.mine-form.always{display:grid;border:1.5px solid #d6e4c8;border-radius:16px;margin-top:0}
+</style>
+</head>
+<body>
+<div class="top">
+ <div class="bar"><h1>부크크 전자책 올리기<small>PDF 20MB 이하 · 기본정보부터 심사까지</small></h1>
+  <div class="fsz"><button type="button" data-fs="-2">가−</button> <button type="button" data-fs="0">기본</button> <button type="button" data-fs="2">가+</button></div></div>
+ <nav class="tabs" id="tabs"><button class="tab" data-go="0" type="button">0 준비</button><button class="tab" data-go="1" type="button">1 PDF 20MB</button><button class="tab" data-go="2" type="button">2 기본정보</button><button class="tab" data-go="3" type="button">3 원고등록</button><button class="tab" data-go="4" type="button">4 디자인</button><button class="tab" data-go="5" type="button">5 가격정책</button><button class="tab" data-go="6" type="button">6 최종확인</button><button class="tab" data-go="7" type="button">7 심사·수익</button><button class="tab" data-go="8" type="button">✓ 한 장 점검</button></nav>
+</div>
+<div class="wrap">
+ <main id="main"><section class="step" id="b0"><div class="step-head"><div class="kicker">STEP 0</div><h2>올리기 전에 챙길 것</h2><p>부크크(BOOKK)는 책을 만들어 파는 출판 플랫폼이에요. 전자책은 <b>원고 PDF 한 개 + 앞표지 그림 한 장</b>만 있으면 올릴 수 있어요.</p></div><svg viewBox="0 0 960 410" class="flow" role="img" aria-label="오늘 흐름 도식"><defs><marker id="ar" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#9aa7ad"/></marker></defs><g font-family="Pretendard, sans-serif"><rect x="10" y="20" width="940" height="110" rx="16" fill="#eef5f8" stroke="#cfe0e8"/><text x="30" y="52" font-size="20" font-weight="700" fill="#2f6f8f">준비</text><rect x="30" y="68" width="288" height="44" rx="10" fill="#fff" stroke="#cfe0e8"/><text x="174" y="96" text-anchor="middle" font-size="15" fill="#33424a">원고 PDF (20MB 이하)</text><line x1="319" y1="90" x2="333" y2="90" stroke="#9aa7ad" stroke-width="2" marker-end="url(#ar)"/><rect x="336" y="68" width="288" height="44" rx="10" fill="#fff" stroke="#cfe0e8"/><text x="480" y="96" text-anchor="middle" font-size="15" fill="#33424a">앞표지 JPG (10MB 이하)</text><line x1="625" y1="90" x2="639" y2="90" stroke="#9aa7ad" stroke-width="2" marker-end="url(#ar)"/><rect x="642" y="68" width="288" height="44" rx="10" fill="#fff" stroke="#cfe0e8"/><text x="786" y="96" text-anchor="middle" font-size="15" fill="#33424a">소개 글 3개</text><rect x="10" y="150" width="940" height="110" rx="16" fill="#f1f7ec" stroke="#d6e4c8"/><text x="30" y="182" font-size="20" font-weight="700" fill="#3d6b2c">부크크 5단계</text><rect x="30" y="198" width="166" height="44" rx="10" fill="#fff" stroke="#d6e4c8"/><text x="113" y="226" text-anchor="middle" font-size="15" fill="#33424a">기본정보</text><line x1="197" y1="220" x2="211" y2="220" stroke="#9aa7ad" stroke-width="2" marker-end="url(#ar)"/><rect x="214" y="198" width="166" height="44" rx="10" fill="#fff" stroke="#d6e4c8"/><text x="296" y="226" text-anchor="middle" font-size="15" fill="#33424a">원고등록</text><line x1="380" y1="220" x2="394" y2="220" stroke="#9aa7ad" stroke-width="2" marker-end="url(#ar)"/><rect x="397" y="198" width="166" height="44" rx="10" fill="#fff" stroke="#d6e4c8"/><text x="480" y="226" text-anchor="middle" font-size="15" fill="#33424a">디자인</text><line x1="564" y1="220" x2="578" y2="220" stroke="#9aa7ad" stroke-width="2" marker-end="url(#ar)"/><rect x="581" y="198" width="166" height="44" rx="10" fill="#fff" stroke="#d6e4c8"/><text x="664" y="226" text-anchor="middle" font-size="15" fill="#33424a">가격정책</text><line x1="747" y1="220" x2="761" y2="220" stroke="#9aa7ad" stroke-width="2" marker-end="url(#ar)"/><rect x="764" y="198" width="166" height="44" rx="10" fill="#fff" stroke="#d6e4c8"/><text x="847" y="226" text-anchor="middle" font-size="15" fill="#33424a">최종확인</text><rect x="10" y="280" width="940" height="110" rx="16" fill="#fbf4ea" stroke="#ecdcc2"/><text x="30" y="312" font-size="20" font-weight="700" fill="#8a5a14">그 다음</text><rect x="30" y="328" width="288" height="44" rx="10" fill="#fff" stroke="#ecdcc2"/><text x="174" y="356" text-anchor="middle" font-size="15" fill="#33424a">심사 (영업일 2~3일)</text><line x1="319" y1="350" x2="333" y2="350" stroke="#9aa7ad" stroke-width="2" marker-end="url(#ar)"/><rect x="336" y="328" width="288" height="44" rx="10" fill="#fff" stroke="#ecdcc2"/><text x="480" y="356" text-anchor="middle" font-size="15" fill="#33424a">판매 시작</text><line x1="625" y1="350" x2="639" y2="350" stroke="#9aa7ad" stroke-width="2" marker-end="url(#ar)"/><rect x="642" y="328" width="288" height="44" rx="10" fill="#fff" stroke="#ecdcc2"/><text x="786" y="356" text-anchor="middle" font-size="15" fill="#33424a">계정인증·계좌</text></g></svg><h3 class="sec" id="b0-1" data-nav="0-1 준비물 세 가지"><span class="no">0-1</span>준비물 세 가지</h3><div class="tbl"><table><tr><th>준비물</th><th>조건</th><th>어디서</th></tr><tr><td>원고 PDF</td><td><b>20MB 이하</b> · PDF 또는 EPUB(우리는 PDF)</td><td>미리캔버스에서 만든 책 전체(표지 포함 26쪽)를 PDF로 다운로드</td></tr><tr><td>앞표지 그림</td><td><b>10MB 이하</b> · JPG 또는 PDF · 300dpi(인쇄 선명도 기준)</td><td>미리캔버스에서 <b>1쪽(앞표지)만</b> JPG로 다운로드</td></tr><tr><td>소개 글 3개</td><td>도서소개 · 도서목차 · 저자경력소개</td><td>STEP 6의 프롬프트로 책 만든 제미나이 대화창에서</td></tr></table></div><div class="tint set"><span class="lab">같은 이름 세 군데</span><ul><li>부크크 <b>도서명</b> = 표지 제목 = 판권(24쪽) 제목</li><li>부크크 <b>저자</b> = 표지의 지은이 = 판권 지은이</li><li>하나라도 다르면 심사에서 되돌아올 수 있어요 (반려 — 고쳐서 다시 내라는 뜻)</li></ul></div><h3 class="sec" id="b0-2" data-nav="0-2 부크크 들어가기"><span class="no">0-2</span>부크크 들어가기</h3><div class="grid2"><div><figure><img src="img01.jpg" alt="부크크 왼쪽 메뉴" style="max-width:300px"><figcaption>책만들기 → 왼쪽 메뉴의 「새전자책」</figcaption></figure></div><div><p><a class="go" href="https://bookk.co.kr" target="_blank" rel="noopener">부크크 열기 ↗</a> → 로그인 → 위쪽 <b>책만들기</b> → 왼쪽 <b>새전자책</b></p><p>위에 5칸이 보여요: <b>기본정보 · 원고등록 · 디자인 · 가격정책 · 최종확인</b>. 이 교안 STEP 2~6이 그 순서 그대로예요.</p><p>중간에 멈춰도 <b>임시서재</b>에 남아요. 다음에 거기서 이어 하면 돼요.</p></div></div><div class="tint help"><span class="lab">막힐 때</span><ul><li>가입이 안 돼 있으면 → 부크크 첫 화면 오른쪽 위에서 회원가입 (구글·카카오 가능)</li><li>「새전자책」 대신 「새종이책」을 눌렀으면 → 뒤로 가서 새전자책으로 (종이책은 표지·규격이 달라요)</li></ul></div><div class="tint check"><span class="lab">✔ 이 STEP 점검 — 다 체크되면 다음으로</span><ul class="cl"><li><label><input type="checkbox"> 원고 PDF와 앞표지 JPG가 내 컴퓨터에 있나?</label></li><li><label><input type="checkbox"> 도서명·저자 이름을 표지·판권과 똑같이 정했나?</label></li><li><label><input type="checkbox"> 부크크에 로그인해 「새전자책」 화면을 열었나?</label></li></ul></div><div class="pad"><span class="lab">📌 패들렛에 올릴 것 <a class="go" href="https://padlet.com/jaycobb1/ai-pod-s0242xmlfl3pykbzfxwe" target="_blank" rel="noopener">패들렛 열기 ↗</a></span><ul><li>새전자책 첫 화면 캡처</li></ul></div></section><section class="step" id="b1"><div class="step-head"><div class="kicker">STEP 1</div><h2>PDF 용량 20MB 이하로 맞추기</h2><p>부크크는 <b>20MB가 넘는 원고는 아예 올라가지 않아요.</b> 그림이 많은 그림책은 넘기 쉬우니 올리기 전에 꼭 확인해요.</p></div><h3 class="sec" id="b1-1" data-nav="1-1 용량 확인하기"><span class="no">1-1</span>용량 확인하기</h3><div class="tint set"><span class="lab">내 PDF가 몇 MB인지 보는 법</span><ul><li><b>윈도우</b>: 파일에 마우스 오른쪽 → <b>속성</b> → 「크기」</li><li><b>맥</b>: 파일 클릭 → <b>Command + I</b> → 「크기」</li><li>1MB = 1,024KB. 「6,296KB」면 약 6.1MB → 통과</li></ul></div><div class="tbl"><table><tr><th>내 PDF</th><th>할 일</th></tr><tr><td>20MB 이하</td><td>그대로 STEP 2로</td></tr><tr><td>20MB 넘음</td><td>1-2 압축 → 다시 크기 확인</td></tr><tr><td>압축해도 20MB 넘음</td><td>1-3 미리캔버스에서 다시 받기</td></tr></table></div><h3 class="sec" id="b1-2" data-nav="1-2 어도비 무료 압축"><span class="no">1-2</span>어도비 무료 압축</h3><div class="grid2"><div><figure><img src="img02.jpg" alt="어도비 PDF 압축" style="max-width:460px"><figcaption>어도비 아크로뱃 온라인 「PDF 압축」 — 파일 선택</figcaption></figure></div><div><ol><li><a class="go" href="https://www.adobe.com/kr/acrobat/online/compress-pdf.html" target="_blank" rel="noopener">어도비 PDF 압축 ↗</a> 열기</li><li><b>파일 선택</b> → 내 PDF 고르기</li><li>압축 수준은 <b>중간</b> (그림이 흐려지면 「낮음」으로 다시)</li><li><b>다운로드</b> → 파일 이름 끝에 「-압축됨」이 붙어요</li><li>받은 파일 크기를 1-1처럼 다시 확인</li></ol></div></div><div class="tint warn"><span class="lab">압축한 뒤 꼭 열어 보기</span><ul><li>압축하면 그림 화질이 조금 내려가요. PDF를 열어 <b>표지·장면 그림이 뭉개지지 않았는지</b> 확대해서 보기</li><li>뭉개졌으면 → 압축 수준을 한 단계 낮춰 다시</li><li>다운로드할 때 로그인을 요구하면 구글 계정으로 로그인하면 돼요</li></ul></div><h3 class="sec" id="b1-3" data-nav="1-3 그래도 크면"><span class="no">1-3</span>그래도 크면</h3><div class="tint help"><span class="lab">막힐 때</span><ul><li>다른 무료 압축: <a class="go" href="https://www.ilovepdf.com/ko/compress_pdf" target="_blank" rel="noopener">iLovePDF 압축 ↗</a> (「권장 압축」)</li><li>미리캔버스에서 다운로드할 때 <b>인쇄용·고화질</b>을 골랐다면 일반 PDF로 다시 받기 — 전자책은 화면으로 보니 인쇄용 화질이 필요 없어요</li><li>그림 한 장이 유독 큰 경우 → 그 그림만 JPG로 다시 넣고 PDF 다시 받기</li></ul></div><div class="tint ext"><span class="lab">한 걸음 더</span><ul><li>EPUB(전자책 전용 파일 형식)으로도 올릴 수 있어요. 단 <b>EPUB 2.0은 외부서점 유통 가능, EPUB 3.0은 외부유통 불가</b>이고, 올리기 전에 EPUB 유효성 검사(파일 오류 검사)를 해야 해요. 그림책은 PDF가 쉬워요.</li></ul></div><div class="tint check"><span class="lab">✔ 이 STEP 점검 — 다 체크되면 다음으로</span><ul class="cl"><li><label><input type="checkbox"> PDF 크기를 확인했나? (20MB 이하)</label></li><li><label><input type="checkbox"> 압축했다면 열어서 그림이 괜찮은지 봤나?</label></li><li><label><input type="checkbox"> PDF 쪽 순서가 맞나? (1 앞표지 … 24 판권 · 25 맺는 글 · 26 뒷표지)</label></li></ul></div><div class="pad"><span class="lab">📌 패들렛에 올릴 것 <a class="go" href="https://padlet.com/jaycobb1/ai-pod-s0242xmlfl3pykbzfxwe" target="_blank" rel="noopener">패들렛 열기 ↗</a></span><ul><li>PDF 속성 창 캡처 (크기 보이게)</li></ul></div></section><section class="step" id="b2"><div class="step-head"><div class="kicker">STEP 2</div><h2>기본정보</h2><p>책 이름표를 다는 단계예요. 빨간 별(*)은 꼭 채워야 하는 칸이에요.</p></div><div class="grid2"><div><figure><img src="img03.jpg" alt="부크크 기본정보" style="max-width:460px"><figcaption>기본정보 화면 (캡처는 시험용 「1」로 채운 것 — 실제로는 진짜 제목)</figcaption></figure></div><div><h3 class="sec" id="b2-1" data-nav="2-1 칸마다 이렇게"><span class="no">2-1</span>칸마다 이렇게</h3></div></div><div class="tbl"><table><tr><th>칸</th><th>이렇게 넣어요</th><th>주의</th></tr><tr><td>도서명 *</td><td>표지 제목 그대로 (예: 할아버지의 라디오)</td><td>최대 50자 · <b>이모지 사용 불가</b> · 특수문자는 되도록 빼기</td></tr><tr><td>부제</td><td>비워도 돼요. 넣는다면 짧은 한 줄</td><td>최대 30자</td></tr><tr><td>저자 *</td><td>표지·판권의 지은이와 같게</td><td>두 명 이상이면 쉼표로 (예: 김철수, 이영희)</td></tr><tr><td>도서 제작 목적 *</td><td><b>ISBN 출판 판매용</b></td><td>판매하려면 이걸로. ISBN = 책 주민번호 같은 국제 번호</td></tr><tr><td>ISBN 입력 *</td><td><b>부크크에서 무료등록</b></td><td>내 ISBN이 따로 있을 때만 직접 기재</td></tr><tr><td>대표 장르 *</td><td><b>시 에세이 - 그림 에세이</b> (우리 책 기준)</td><td>책 내용과 안 맞으면 심사에서 보류될 수 있어요</td></tr><tr><td>보조 장르</td><td>선택 (최대 3개 — 서점에 같이 보이는 칸)</td><td>예: 유아·어린이 쪽 분류가 있으면 하나</td></tr><tr><td>성인도서여부 *</td><td><b>전연령</b></td><td></td></tr></table></div><div class="tint warn"><span class="lab">자주 틀리는 것</span><ul><li>연습한다고 도서명·저자에 「1」 같은 걸 넣고 그대로 내면 그 이름으로 심사 들어가요 — <b>최종확인 화면에서 한 번 더</b> 보기</li><li>도서명에 「」『』 같은 괄호, 이모지 넣지 않기</li><li>표지 제목과 도서명이 띄어쓰기까지 같은지</li></ul></div><div class="tint check"><span class="lab">✔ 이 STEP 점검 — 다 체크되면 다음으로</span><ul class="cl"><li><label><input type="checkbox"> 도서명이 표지·판권과 같나?</label></li><li><label><input type="checkbox"> 저자가 표지·판권 지은이와 같나?</label></li><li><label><input type="checkbox"> ISBN 출판 판매용 + 부크크에서 무료등록인가?</label></li><li><label><input type="checkbox"> 대표 장르를 골랐나?</label></li></ul></div><div class="pad"><span class="lab">📌 패들렛에 올릴 것 <a class="go" href="https://padlet.com/jaycobb1/ai-pod-s0242xmlfl3pykbzfxwe" target="_blank" rel="noopener">패들렛 열기 ↗</a></span><ul><li>기본정보 화면 캡처</li></ul></div></section><section class="step" id="b3"><div class="step-head"><div class="kicker">STEP 3</div><h2>원고등록 — PDF 올리기</h2><p>STEP 1에서 20MB 이하로 맞춘 PDF를 올려요.</p></div><div class="grid2"><div><figure><img src="img04.jpg" alt="부크크 원고등록" style="max-width:460px"><figcaption>원고 업로드 → 「업로드 완료」 파란 막대가 나오면 성공</figcaption></figure></div><div><h3 class="sec" id="b3-1" data-nav="3-1 올리는 순서"><span class="no">3-1</span>올리는 순서</h3><ol><li>오른쪽 <b>원고 업로드</b> 상자 클릭 (또는 파일을 끌어다 놓기)</li><li>PDF 고르기</li><li>파일 이름 · 크기 아래 <b>「업로드 완료」</b> 확인</li><li><b>Step3 꾸미기</b> 버튼</li></ol></div></div><div class="tint warn"><span class="lab">원고 주의사항 (부크크 안내)</span><ul><li>파일 형식은 <b>PDF 또는 EPUB</b></li><li><b>20MB가 넘으면 업로드 불가</b></li><li>EPUB은 2.0만 외부서점 유통 가능, 3.0은 외부유통 불가</li><li>올린 파일이 부크크 이용약관에 맞는지 안내 링크에서 확인 (남의 사진·글 무단 사용 금지)</li></ul></div><div class="tint help"><span class="lab">막힐 때</span><ul><li>업로드가 멈추면 → 크기 다시 확인(20MB) / 파일 이름에 특수문자가 많으면 짧게 바꾸기 (예: 할아버지의라디오.pdf)</li><li>워드·한글 파일만 있으면 → 화면의 「PDF로 변환하는 방법」 안내 따라 PDF로 바꾸기</li><li>잘못 올렸으면 → 다시 업로드 상자를 눌러 새 파일로 바꾸면 돼요</li></ul></div><div class="tint check"><span class="lab">✔ 이 STEP 점검 — 다 체크되면 다음으로</span><ul class="cl"><li><label><input type="checkbox"> 「업로드 완료」가 나왔나?</label></li><li><label><input type="checkbox"> 올린 파일 이름이 최종본(압축본)인가?</label></li></ul></div><div class="pad"><span class="lab">📌 패들렛에 올릴 것 <a class="go" href="https://padlet.com/jaycobb1/ai-pod-s0242xmlfl3pykbzfxwe" target="_blank" rel="noopener">패들렛 열기 ↗</a></span><ul><li>원고 업로드 완료 화면 캡처</li></ul></div></section><section class="step" id="b4"><div class="step-head"><div class="kicker">STEP 4</div><h2>디자인 — 앞표지 올리기</h2><p>전자책 표지는 <b>앞표지 한 장</b>이면 돼요 (종이책처럼 뒷표지·책등을 붙인 큰 그림이 필요 없어요).</p></div><div class="grid2"><div><figure><img src="img05.jpg" alt="부크크 디자인" style="max-width:430px"><figcaption>「직접 올리기」 → 업로드 → 로고 고르기</figcaption></figure></div><div><h3 class="sec" id="b4-1" data-nav="4-1 올리는 순서"><span class="no">4-1</span>올리는 순서</h3><ol><li>탭 세 개 중 <b>직접 올리기</b> (무료 표지·구매한 템플릿은 부크크 디자인을 쓸 때)</li><li><b>업로드</b> → 앞표지 JPG 고르기 → 「업로드 완료」</li><li>위 태블릿 그림에 내 표지가 보이는지 확인</li><li><b>로고 선택</b> — 표지 아래에 붙는 BOOKK 글자 색 4가지 중 하나</li><li><b>Step4 가격정책</b></li></ol></div></div><div class="tint warn"><span class="lab">표지 주의사항 (부크크 안내)</span><ul><li>표지 파일은 <b>10MB까지</b></li><li>파일 형식은 <b>JPG 또는 PDF</b> 두 가지</li><li>JPG는 <b>300dpi 기준</b> — 미리캔버스에서 받을 때 고화질로</li><li>PDF로 올리면 미리보기가 안 나와요 → 확인하기 쉬운 <b>JPG 추천</b></li><li>표지에 부크크 로고를 직접 넣었으면 로고가 따로 붙지 않아요</li></ul></div><h3 class="sec" id="b4-2" data-nav="4-2 미리캔버스에서 앞표지만 받기"><span class="no">4-2</span>미리캔버스에서 앞표지만 받기</h3><ol><li><a class="go" href="https://www.miricanvas.com" target="_blank" rel="noopener">미리캔버스 ↗</a>에서 책 디자인 열기 → 오른쪽 위 <b>다운로드</b></li><li>파일 형식 <b>JPG</b> · 고화질</li><li>페이지 선택에서 <b>1쪽만</b> 체크 → 다운로드</li></ol><div class="tint help"><span class="lab">막힐 때</span><ul><li>표지 아래쪽 글자(지은이 이름 등)와 BOOKK 로고가 겹치면 → 로고 색을 바꾸거나, 미리캔버스에서 이름을 조금 위로 올려 다시 받기</li><li>표지가 잘려 보이면 → 미리캔버스 판형이 3:4(A5 세로)인지 확인</li></ul></div><div class="tint check"><span class="lab">✔ 이 STEP 점검 — 다 체크되면 다음으로</span><ul class="cl"><li><label><input type="checkbox"> 앞표지 JPG 업로드 완료가 나왔나?</label></li><li><label><input type="checkbox"> 미리보기에서 제목이 잘리지 않았나?</label></li><li><label><input type="checkbox"> 로고 색이 표지와 어울리고 글자와 안 겹치나?</label></li></ul></div><div class="pad"><span class="lab">📌 패들렛에 올릴 것 <a class="go" href="https://padlet.com/jaycobb1/ai-pod-s0242xmlfl3pykbzfxwe" target="_blank" rel="noopener">패들렛 열기 ↗</a></span><ul><li>디자인 화면 캡처 (표지 미리보기 보이게)</li></ul></div></section><section class="step" id="b5"><div class="step-head"><div class="kicker">STEP 5</div><h2>가격정책 — 정가와 서점</h2><p>얼마에 팔지, 어디서 팔지 정해요. 오른쪽에 <b>내 수익</b>이 바로 계산돼요.</p></div><div class="grid2"><div><figure><img src="img06.jpg" alt="부크크 가격정책" style="max-width:460px"><figcaption>정가 1,000원이면 부크크 수수료 300원, 내 수익 700원</figcaption></figure></div><div><h3 class="sec" id="b5-1" data-nav="5-1 정가 정하기"><span class="no">5-1</span>정가 정하기</h3><p>부크크 기준: 전자책은 <b>종이책 값의 70%</b> 권장 · 종이책이 없으면 <b>쪽수로</b> (100쪽당 3,000~5,000원).</p><p>우리 책은 26쪽 → 100쪽 기준으로 나누면 <b>약 800~1,300원</b>. 연습으로는 <b>1,000원</b>이 무난해요.</p></div></div><div class="tbl"><table><tr><th>정가</th><th>부크크 수수료(30%)</th><th>내 수익</th></tr><tr><td>1,000원</td><td>300원</td><td>700원</td></tr><tr><td>1,500원</td><td>450원</td><td>1,050원</td></tr><tr><td>2,000원</td><td>600원</td><td>1,400원</td></tr></table></div><div class="tint warn"><span class="lab">자주 놓치는 것</span><ul><li>처음 칸의 1000원은 <b>부크크가 넣어 둔 예시</b>예요</li><li>값을 바꿨으면 아래 <b>「도서 정가를 직접 변경하였습니다」</b>에 꼭 체크</li><li>전자책 정가 상한은 흑백 종이책 값의 3배까지</li></ul></div><h3 class="sec" id="b5-2" data-nav="5-2 외부서점 입점"><span class="no">5-2</span>외부서점 입점</h3><div class="tbl"><table><tr><th>선택</th><th>뜻</th><th>이럴 때</th></tr><tr><td>네</td><td>교보문고·YES24·알라딘 등 외부 온라인 서점에도 판매</td><td>많이 알리고 싶을 때 (단, STEP 6의 AI 사용 안내 참고)</td></tr><tr><td>아니요</td><td><b>부크크 서점에서만</b> 판매</td><td>첫 책 연습 · 가족·지인에게 링크로 나눌 때</td></tr></table></div><div class="tint help"><span class="lab">막힐 때</span><ul><li>오른쪽 「서점별 예상인세」는 외부서점에서 팔릴 때 내 몫이에요 (서점마다 달라요)</li><li>나중에 가격을 바꾸고 싶으면 → 판매 시작 뒤 나의서재에서 수정 요청</li></ul></div><div class="tint check"><span class="lab">✔ 이 STEP 점검 — 다 체크되면 다음으로</span><ul class="cl"><li><label><input type="checkbox"> 정가를 정했나? (바꿨으면 체크박스 체크)</label></li><li><label><input type="checkbox"> 외부서점 네/아니요를 골랐나?</label></li><li><label><input type="checkbox"> 내 수익 금액을 확인했나?</label></li></ul></div><div class="pad"><span class="lab">📌 패들렛에 올릴 것 <a class="go" href="https://padlet.com/jaycobb1/ai-pod-s0242xmlfl3pykbzfxwe" target="_blank" rel="noopener">패들렛 열기 ↗</a></span><ul><li>가격정책 화면 캡처</li></ul></div></section><section class="step" id="b6"><div class="step-head"><div class="kicker">STEP 6</div><h2>최종확인 — 소개 글 · AI · 저작권</h2><p>서점에 보일 소개 글 세 개를 넣고, AI 사용과 저작권을 사실대로 고른 뒤 제출해요.</p></div><div class="grid2"><div><figure><img src="img07.jpg" alt="부크크 최종확인" style="max-width:460px"><figcaption>최종확인 — 왼쪽은 서점 소개정보, 오른쪽은 지금까지 넣은 내용 요약</figcaption></figure></div><div><h3 class="sec" id="b6-1" data-nav="6-1 오른쪽 요약부터 확인"><span class="no">6-1</span>오른쪽 요약부터 확인</h3><ul><li>도서명 · 저자 — 「1」 같은 연습 값이 아닌가?</li><li>종류 <b>전자도서</b> · 목적 <b>ISBN 출판 판매용</b></li><li>파일 이름이 최종본인가? 용량 20MB 이하?</li><li>외부유통 · 판매가격</li></ul><p>틀린 게 있으면 위쪽 5칸(기본정보 …)을 눌러 돌아가 고쳐요.</p></div></div><h3 class="sec" id="b6-2" data-nav="6-2 소개 글 세 칸 — 책 만든 대화창에서"><span class="no">6-2</span>소개 글 세 칸 — 책 만든 대화창에서</h3><p>그림책을 만든 <b>그 제미나이 대화창</b> 맨 아래에 보내요. 앞 내용을 알고 있어서 따로 붙일 게 없어요. 결과 코드 블록을 복사해 부크크 칸에 붙여요.</p><div class="prompt"><div class="ph"><span><b>제미나이</b> · ① 도서소개</span><button class="copy" type="button">복사</button></div><pre>[목표] 이 대화에서 만든 그림책을 부크크 서점에 올리려고 해. 서점의 「도서소개」 칸에 넣을 글을 써 줘.
+[읽는 사람] 이 책을 사거나 선물하려는 사람(부모·조부모·지인)이 서점 화면에서 읽어.
+[내용] ① 어떤 이야기인지 2문장 ② 누구에게 들려주면 좋은지 1문장 ③ 책 모양 1문장 — [쪽수 — 예: 표지 포함 26쪽] 그림책, 펼치면 왼쪽 그림·오른쪽 글.
+[지킬 것] 이 대화에 없는 내용은 지어내지 마. &quot;최고의&quot;, &quot;감동 보장&quot; 같은 과장 광고 말은 쓰지 마. 300~500자.
+[결과 모양] 코드 블록 하나.</pre></div><div class="prompt"><div class="ph"><span><b>부크크</b> · ② 도서목차 — 미리캔버스 3쪽 목차의 제목 그대로</span><button class="copy" type="button">복사</button></div><pre>목차
+앞속표지
+1. [장면 1 제목]
+2. [장면 2 제목]
+3. [장면 3 제목]
+4. [장면 4 제목]
+5. [장면 5 제목]
+6. [장면 6 제목]
+7. [장면 7 제목]
+8. [장면 8 제목]
+9. [장면 9 제목]
+10. [장면 10 제목]
+맺는 글</pre></div><div class="prompt"><div class="ph"><span><b>제미나이</b> · ③ 저자경력소개</span><button class="copy" type="button">복사</button></div><pre>[목표] 부크크 「저자경력소개」 칸에 넣을 저자 소개를 써 줘.
+[내가 알려 주는 것 — 이것만 써]
+· 이름(또는 필명): [이름]
+· 하는 일이나 살아온 일: [한두 줄 — 예: 30년 동안 초등학교에서 아이들을 가르쳤다]
+· 이 책을 만든 까닭: [한 줄 — 예: 손녀에게 할아버지 이야기를 남겨 주고 싶어서]
+[지킬 것] 내가 말하지 않은 경력·상은 지어내지 마. 자랑하는 말투 말고 담백하게. 3~4문장.
+[결과 모양] 코드 블록 하나.</pre></div><h3 class="sec" id="b6-3" data-nav="6-3 AI 사용 여부 · 초상/저작권"><span class="no">6-3</span>AI 사용 여부 · 초상/저작권</h3><figure><img src="img08.jpg" alt="AI 사용여부와 저작권" style="max-width:620px"><figcaption>AI 사용여부 및 기여도 · 초상/저작권리 보유여부</figcaption></figure><div class="tbl"><table><tr><th>칸</th><th>어떻게</th><th>알아 둘 것</th></tr><tr><td>AI 사용여부 및 기여도</td><td>목록을 열어 <b>내 책에 맞는 것을 사실대로</b> (예: 「표지 및 본문 일부 작성에 사용」)</td><td><b>AI 기여가 상당하면 외부서점 유통 신청이 보류·거절될 수 있어요.</b> 부크크 서점 판매는 그대로</td></tr><tr><td>초상/저작권리 보유여부</td><td><b>모든 콘텐츠 초상/저작권리 보유중</b></td><td>표지·본문의 모든 책임은 저자에게 있어요</td></tr></table></div><div class="tint warn"><span class="lab">저작권 — 이런 건 넣으면 안 돼요 (부크크 안내)</span><ul><li>연예인·남의 사진</li><li>남의 상표·로고, 다른 책·만화 캐릭터</li><li>남의 글·그림을 2차·3차 가공한 것</li><li>쓸 권리가 없는 유료 글꼴</li><li>우리 책은 내 이야기 + 내가 만든 AI 그림 + 미리캔버스 글꼴이라 괜찮아요. 가족 사진을 넣었다면 그 가족의 허락을 받아요</li></ul></div><div class="tint set"><span class="lab">마지막으로</span><ul><li>다 맞으면 <b>도서제출</b></li><li>제출하면 심사 목록에 「심사요청」으로 올라가요 → STEP 7</li></ul></div><div class="tint ext"><span class="lab">한 걸음 더</span><ul><li>도서소개 끝에 「이렇게 읽어 주세요」 한 줄을 넣으면 좋아요 — 예: 「장면마다 아이에게 “너라면 어땠을까?” 하고 물어봐 주세요」</li><li>목차 칸은 서점에 그대로 보여요. 쪽 번호는 빼는 게 깔끔해요</li></ul></div><div class="tint check"><span class="lab">✔ 이 STEP 점검 — 다 체크되면 다음으로</span><ul class="cl"><li><label><input type="checkbox"> 오른쪽 요약에 연습 값(「1」)이 없나?</label></li><li><label><input type="checkbox"> 도서소개·목차·저자소개를 넣었나?</label></li><li><label><input type="checkbox"> AI 사용여부를 사실대로 골랐나?</label></li><li><label><input type="checkbox"> 저작권 문제가 될 사진·로고·글꼴이 없나?</label></li><li><label><input type="checkbox"> 도서제출을 눌렀나?</label></li></ul></div><div class="pad"><span class="lab">📌 패들렛에 올릴 것 <a class="go" href="https://padlet.com/jaycobb1/ai-pod-s0242xmlfl3pykbzfxwe" target="_blank" rel="noopener">패들렛 열기 ↗</a></span><ul><li>최종확인 화면 캡처 (소개 글 들어간 상태)</li><li>제미나이가 써 준 도서소개</li></ul></div></section><section class="step" id="b7"><div class="step-head"><div class="kicker">STEP 7</div><h2>심사 · 판매 · 수익 받기</h2><p>제출하면 부크크가 책을 확인해요. 통과하면 서점에 올라가고, 팔린 돈을 받으려면 계좌를 등록해요.</p></div><div class="grid2"><div><figure><img src="img09.jpg" alt="부크크 심사 목록" style="max-width:460px"><figcaption>왼쪽 메뉴 「심사·신청」 — 「심사요청중입니다. 영업일 기준 2-3일」</figcaption></figure></div><div><h3 class="sec" id="b7-1" data-nav="7-1 심사 상태 보기"><span class="no">7-1</span>심사 상태 보기</h3><ul><li>왼쪽 메뉴 <b>심사·신청</b> → 「도서 최초등록」</li><li><b>심사요청 → 심사중 → 최종확인</b> 순서로 바뀌어요</li><li>보통 <b>영업일 기준 2~3일</b> (주말·공휴일 빼고)</li><li>제출을 되돌리려면 오른쪽 아래 <b>제출취소</b></li></ul></div></div><h3 class="sec" id="b7-2" data-nav="7-2 반려되면"><span class="no">7-2</span>반려되면</h3><div class="tbl"><table><tr><th>자주 나오는 이유</th><th>고치는 법</th></tr><tr><td>도서명·저자가 표지·판권과 다름</td><td>셋을 똑같이 맞추고 다시 제출</td></tr><tr><td>장르가 내용과 안 맞음</td><td>대표 장르를 그림 에세이 등 맞는 것으로</td></tr><tr><td>파일 문제 (쪽 빠짐·흐림)</td><td>PDF 다시 확인 → 다시 업로드</td></tr><tr><td>저작권이 걱정되는 이미지·글꼴</td><td>그 요소를 빼고 다시</td></tr></table></div><p>반려 사유는 심사 목록과 알림(종 모양)에서 볼 수 있어요. 사유대로 고쳐 다시 내면 돼요.</p><h3 class="sec" id="b7-3" data-nav="7-3 ISBN과 판권"><span class="no">7-3</span>ISBN과 판권</h3><div class="tint set"><span class="lab">판권(24쪽)의 ISBN 줄</span><ul><li>「부크크에서 무료등록」은 <b>심사 뒤에</b> ISBN 번호가 나와요</li><li>처음 올릴 땐 판권의 ISBN 줄을 <b>빼고</b> 올려요</li><li>번호를 판권에 넣고 싶으면 → 번호를 받은 뒤 PDF를 고쳐 심사·신청의 <b>파일교체</b>로 다시 올려요</li></ul></div><h3 class="sec" id="b7-4" data-nav="7-4 수익 받기 — 계정인증 · 계좌등록"><span class="no">7-4</span>수익 받기 — 계정인증 · 계좌등록</h3><div class="tint warn"><span class="lab">팔린 돈을 받으려면 꼭</span><ul><li>왼쪽 메뉴 <b>수익내역</b> → 위쪽 <b>인증관리</b>(본인 인증)와 <b>계좌관리</b>(내 통장)를 둘 다 해야 지급돼요</li><li>최소 인출금을 <b>10원</b>으로 설정해 두면 적은 금액도 받을 수 있어요 (안 바꾸면 예전 기준 그대로)</li><li>부크크 판매분은 다음 달, 외부서점 판매분은 두 달 뒤에 정산돼요</li><li>계좌번호·주민번호 같은 건 <b>본인이 직접</b> 입력해요 — 남에게 대신 시키지 않기</li></ul></div><div class="tint ext"><span class="lab">한 걸음 더</span><ul><li>판매가 시작되면 부크크 서점에서 내 책 주소를 복사해 가족 단톡방·SNS에 나눠요</li><li>같은 원고로 <b>새종이책</b>을 만들면 종이책도 낼 수 있어요 (표지는 앞·책등·뒤를 붙인 큰 그림이 따로 필요해요)</li></ul></div><div class="tint check"><span class="lab">✔ 이 STEP 점검 — 다 체크되면 다음으로</span><ul class="cl"><li><label><input type="checkbox"> 심사 목록에 「심사요청」으로 올라갔나?</label></li><li><label><input type="checkbox"> 반려됐다면 사유를 읽고 고쳤나?</label></li><li><label><input type="checkbox"> 수익내역에서 인증관리·계좌관리를 했나?</label></li></ul></div><div class="pad"><span class="lab">📌 패들렛에 올릴 것 <a class="go" href="https://padlet.com/jaycobb1/ai-pod-s0242xmlfl3pykbzfxwe" target="_blank" rel="noopener">패들렛 열기 ↗</a></span><ul><li>심사 목록 캡처 (내 책 보이게)</li><li>판매 시작되면 서점의 내 책 화면 캡처</li></ul></div></section><section class="step" id="ball"><div class="step-head"><div class="kicker">한 장 점검</div><h2>올리기 전 한 장 점검표</h2><p>제출 버튼 누르기 전에 이 표만 보고 하나씩 체크해요.</p></div><h3 class="sec" id="ball-1" data-nav="✓ 점검표"><span class="no">✓</span>점검표</h3><div class="tbl"><table><tr><th>항목</th><th>확인할 것</th><th>어디</th></tr><tr><td>PDF</td><td>20MB 이하 · 26쪽 순서 맞음 · 압축했다면 그림 확인</td><td>STEP 1</td></tr><tr><td>도서명·저자</td><td>표지 = 판권 = 부크크 칸 (연습 값 「1」 없음)</td><td>STEP 2</td></tr><tr><td>목적·ISBN</td><td>ISBN 출판 판매용 · 부크크에서 무료등록</td><td>STEP 2</td></tr><tr><td>장르</td><td>시 에세이 - 그림 에세이 · 전연령</td><td>STEP 2</td></tr><tr><td>원고</td><td>「업로드 완료」 · 최종 파일 이름</td><td>STEP 3</td></tr><tr><td>표지</td><td>JPG 10MB 이하 · 직접 올리기 · 로고 색</td><td>STEP 4</td></tr><tr><td>가격</td><td>정가 · 바꿨으면 체크박스 · 외부서점 네/아니요</td><td>STEP 5</td></tr><tr><td>소개 글</td><td>도서소개 · 목차 · 저자소개</td><td>STEP 6</td></tr><tr><td>AI·저작권</td><td>AI 사용 사실대로 · 남의 사진·로고·유료 글꼴 없음</td><td>STEP 6</td></tr><tr><td>판권</td><td>ISBN 줄은 처음엔 빼기</td><td>STEP 7</td></tr><tr><td>수익</td><td>인증관리 · 계좌관리 · 최소 인출금 10원</td><td>STEP 7</td></tr></table></div><div class="tint check"><span class="lab">✔ 이 STEP 점검 — 다 체크되면 다음으로</span><ul class="cl"><li><label><input type="checkbox"> 위 11줄을 다 확인했다</label></li></ul></div><div class="pad"><span class="lab">📌 패들렛에 올릴 것 <a class="go" href="https://padlet.com/jaycobb1/ai-pod-s0242xmlfl3pykbzfxwe" target="_blank" rel="noopener">패들렛 열기 ↗</a></span><ul><li>심사요청 화면 캡처 — 오늘의 마지막 올리기</li></ul></div></section></main>
+ <aside class="side"><div class="in"><b>이 STEP 안에서</b><div id="sidelist"></div></div></aside>
+</div>
+<div class="nav"><div class="in"><button type="button" id="prev">← 이전 STEP</button><button type="button" id="next">다음 STEP →</button></div></div>
+<script>
+(function(){
+ var steps=[].slice.call(document.querySelectorAll('.step')),tabs=[].slice.call(document.querySelectorAll('.tab')),cur=0;
+ var side=document.getElementById('sidelist');
+ function show(i,scroll){cur=Math.max(0,Math.min(steps.length-1,i));
+  steps.forEach(function(s,k){s.classList.toggle('on',k===cur)});
+  tabs.forEach(function(t,k){t.classList.toggle('on',k===cur)});
+  document.getElementById('prev').disabled=cur===0;document.getElementById('next').disabled=cur===steps.length-1;
+  var hs=steps[cur].querySelectorAll('h3.sec');side.innerHTML='';
+  if(!hs.length){side.innerHTML='<a href="#">이 STEP 전체</a>'}
+  [].forEach.call(hs,function(h){var a=document.createElement('a');a.href='#'+h.id;a.textContent=h.getAttribute('data-nav');
+   a.addEventListener('click',function(e){e.preventDefault();h.scrollIntoView({behavior:'smooth',block:'start'})});side.appendChild(a)});
+  try{tabs[cur].scrollIntoView({block:'nearest',inline:'center'})}catch(e){}
+  if(scroll!==false){document.querySelector('.top').scrollIntoView({block:'start'});window.scrollTo(0,0)}}
+ tabs.forEach(function(t,k){t.addEventListener('click',function(){show(k)})});
+ document.getElementById('prev').addEventListener('click',function(){show(cur-1)});
+ document.getElementById('next').addEventListener('click',function(){show(cur+1)});
+ show(0,false);
+ [].forEach.call(document.querySelectorAll('[data-fs]'),function(b){b.addEventListener('click',function(){
+  var d=+b.getAttribute('data-fs'),r=document.documentElement,c=parseFloat(getComputedStyle(r).fontSize);
+  r.style.setProperty('--fs',(d===0?20:Math.max(16,Math.min(30,c+d)))+'px')})});
+ function fallback(t){var ta=document.createElement('textarea');ta.value=t;ta.style.position='fixed';ta.style.top='0';ta.style.left='0';ta.style.opacity='0';document.body.appendChild(ta);ta.focus();ta.select();var ok=false;try{ok=document.execCommand('copy')}catch(e){}document.body.removeChild(ta);return ok}
+ function selectPre(pre){try{var r=document.createRange();r.selectNodeContents(pre);var sel=window.getSelection();sel.removeAllRanges();sel.addRange(r)}catch(e){}}
+ document.addEventListener('click',function(ev){var b=ev.target.closest&&ev.target.closest('.copy');if(!b)return;var box=b.closest('.prompt');if(!box)return;var pre=box.querySelector('pre');if(!pre)return;var t=pre.innerText;
+  function done(){b.textContent='복사됨';b.classList.add('done');setTimeout(function(){b.textContent='복사';b.classList.remove('done')},1600)}
+  function fail(){selectPre(pre);b.textContent='Ctrl+C 누르세요';setTimeout(function(){b.textContent='복사'},2500)}
+  if(fallback(t)){done();return}
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(done,fail)}else fail()});
+})();
+</script>
+</body>
+</html>

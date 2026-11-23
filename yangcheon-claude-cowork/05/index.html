@@ -1,0 +1,1053 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>내 스크랩북 — 클로드 코워크로 자료 관리·재가공</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+:root{
+  --fs:20px;
+  --bg:#FBFBF8; --paper:#FFFFFF; --ink:#26292E; --sub:#656B73; --line:#E3E4DF; --line2:#EEEFEA;
+  --accent:#2F6690; --accent-d:#234D6E; --accent-soft:#EAF1F7;
+  --see:#EEF0F3; --see-t:#4A5563;
+  --with:#E7F1EA; --with-t:#2F6B45;
+  --mine:#EAF1F7; --mine-t:#2F6690;
+  --ok:#2F6B45; --ok-soft:#E7F1EA;
+  --warn:#F6ECEE; --warn-line:#E2C9CF; --warn-t:#8A3A4A;
+  --ext:#EEF3EC; --ext-line:#CADBC5; --ext-t:#46684A;
+  --mono:"D2Coding","Consolas","Menlo",monospace;
+}
+*{box-sizing:border-box}
+html{font-size:var(--fs)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;line-height:1.65;word-break:keep-all}
+body.big{--fs:24px}
+h1,h2,h3,h4{margin:0;line-height:1.35}
+p{margin:0 0 .5em}
+ul,ol{margin:.2em 0 .6em;padding-left:1.3em}
+li{margin:.15em 0}
+button{font:inherit;cursor:pointer}
+code{font-family:var(--mono);font-size:.9em;background:var(--line2);padding:1px 6px;border-radius:5px}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+
+/* 상단 */
+.top{position:sticky;top:0;z-index:30;background:var(--bg);border-bottom:1px solid var(--line)}
+.top-row{display:flex;align-items:center;gap:14px;max-width:1280px;margin:0 auto;padding:10px 20px 4px}
+.top-title{font-size:1rem;font-weight:700;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.top-title small{display:block;font-size:.66rem;font-weight:500;color:var(--sub)}
+.fbtns{display:flex;gap:6px}
+.fbtns button{border:1px solid var(--line);background:var(--paper);border-radius:8px;padding:4px 12px;font-size:.78rem}
+.tabs{display:flex;gap:2px;overflow-x:auto;max-width:1280px;margin:0 auto;padding:2px 20px 0;scrollbar-width:thin}
+.tab{flex:0 0 auto;border:0;background:none;padding:7px 12px 9px;font-size:.78rem;color:var(--sub);border-bottom:3px solid transparent;white-space:nowrap}
+.tab b{display:block;font-size:.6rem;font-weight:600;color:#9AA0A8}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent);font-weight:700}
+.tab[aria-selected="true"] b{color:var(--accent)}
+.tab.reftab{margin-left:14px;background:var(--accent);color:#fff;border-radius:999px;padding:6px 16px 8px;align-self:center;font-weight:800;border-bottom:0;box-shadow:0 3px 10px rgba(47,102,144,.25)}
+.tab.reftab b{color:#DCE8F2}
+.tab.reftab .ico{width:1.1em;height:1.1em;vertical-align:-.2em}
+.tab.reftab[aria-selected="true"]{background:var(--accent-d);color:#fff;border-bottom:0}
+.tab.reftab[aria-selected="true"] b{color:#fff}
+
+/* 본문 레이아웃 */
+.wrap{max-width:1280px;margin:0 auto;padding:22px 20px 60px;display:grid;grid-template-columns:minmax(0,1fr) 210px;gap:26px;align-items:start}
+.side{position:sticky;top:118px;border-left:1px solid var(--line);padding:4px 0 4px 16px}
+.side p{margin:0 0 6px;font-size:.66rem;color:var(--sub)}
+.side a{display:block;color:var(--sub);text-decoration:none;font-size:.72rem;padding:5px 0 5px 10px;border-left:2px solid transparent;margin-left:-18px;line-height:1.4}
+.side a.on{color:var(--accent);border-left-color:var(--accent);font-weight:700}
+.side p.side-ref{margin:14px 0 6px;padding-top:10px;border-top:1px dashed var(--line);color:var(--accent);font-weight:800;font-size:.72rem}
+.side a.ref{color:var(--accent-d);background:var(--accent-soft);border-radius:8px;padding:6px 10px;margin:4px 0 4px -18px;border-left:3px solid var(--accent)}
+.side a.ref::before{content:"▶ ";font-size:.7em}
+.step{display:none}
+.step.on{display:block}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:20px 22px;scroll-margin-top:130px;min-width:0}
+.card.wide{grid-column:1 / -1}
+.card h3{font-size:1.05rem;margin-bottom:8px}
+.band{background:var(--accent-soft);border:1px solid #CFDDE9;border-radius:12px;padding:20px 24px;display:flex;gap:18px;align-items:flex-start;grid-column:1 / -1}
+.band-no{font-size:.7rem;font-weight:700;color:var(--accent);background:var(--paper);border-radius:99px;padding:3px 12px;white-space:nowrap;margin-top:4px}
+.band h2{font-size:1.25rem;color:var(--accent-d)}
+.band p{margin:.3em 0 0;color:var(--sub);font-size:.9rem}
+
+/* 표시 뱃지 */
+.bd{display:inline-block;font-size:.68rem;font-weight:700;border-radius:99px;padding:2px 11px;margin:0 6px 8px 0;vertical-align:middle}
+.bd.see{background:var(--see);color:var(--see-t)}
+.bd.with{background:var(--with);color:var(--with-t)}
+.bd.mine{background:var(--mine);color:var(--mine-t)}
+.bd.chk{background:var(--ok-soft);color:var(--ok)}
+.bd.film{background:#F0EDF5;color:#5B4B7A}
+
+/* 박스 */
+.box{border-radius:10px;padding:14px 16px;border:1px solid;margin-top:12px;font-size:.92rem}
+.box h4{font-size:.82rem;font-weight:700;margin-bottom:4px}
+.box.basic{background:var(--ext);border-color:var(--ext-line)}.box.basic h4{color:var(--ext-t)}
+.box.adv{background:var(--see);border-color:#D5D9DF}.box.adv h4{color:var(--see-t)}
+.box.warn{background:var(--warn);border-color:var(--warn-line)}.box.warn h4{color:var(--warn-t)}
+.box.note{background:var(--accent-soft);border-color:#CFDDE9}.box.note h4{color:var(--accent-d)}
+
+/* 표 */
+table{width:100%;border-collapse:collapse;font-size:.88rem;margin:8px 0}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:var(--line2);font-weight:700}
+td.no{color:var(--warn-t)}
+td.ok{color:var(--ok);font-weight:600}
+
+/* 프롬프트 */
+.plabel{font-size:.72rem;color:var(--sub);margin:12px 0 4px;font-weight:600}
+.prompt{position:relative;background:#F6F6F2;border:1px solid var(--line);border-radius:10px;padding:40px 16px 14px;font-size:.84rem;line-height:1.6;white-space:pre-wrap;margin:0}
+.prompt .copy{position:absolute;top:8px;right:8px;border:1px solid var(--line);background:var(--paper);border-radius:8px;font-size:.66rem;padding:3px 12px}
+.prompt .copy.done{color:var(--ok);border-color:var(--ok)}
+.prompt .bl{background:#DCE8F2;color:var(--accent-d);border-radius:4px;padding:0 4px;font-weight:700}
+.hint{font-size:.78rem;color:var(--sub);margin-top:6px}
+
+/* 순서 */
+.steps{list-style:none;padding:0;margin:6px 0;counter-reset:s}
+.steps li{position:relative;padding-left:40px;margin:8px 0;counter-increment:s}
+.steps li::before{content:counter(s);position:absolute;left:0;top:2px;width:28px;height:28px;border-radius:50%;background:var(--accent);color:#fff;font-size:.74rem;font-weight:700;display:flex;align-items:center;justify-content:center}
+
+/* 체크 */
+.chk label{display:block;padding:6px 0;border-bottom:1px dashed var(--line2);font-size:.92rem}
+.chk input{width:1.1em;height:1.1em;margin-right:8px;vertical-align:-2px;accent-color:var(--accent)}
+
+/* 도식 */
+.fig{width:100%;height:auto;display:block;margin:6px 0}
+.fig text{font-family:"Pretendard","Malgun Gothic",sans-serif}
+
+/* 움직이는 설명 */
+.anim{margin:0;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--paper)}
+.anim svg{width:100%;height:auto;display:block;background:#FDFDFB}
+.anim svg text{font-family:"Pretendard","Malgun Gothic",sans-serif}
+.abar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:10px 12px;border-top:1px solid var(--line);background:#F7F7F3}
+.ab{border:1px solid var(--line);background:var(--paper);border-radius:8px;padding:5px 12px;font-size:.74rem;white-space:nowrap}
+.ab.play{background:var(--accent);color:#fff;border-color:var(--accent);min-width:7.2em}
+.aseek{flex:1;min-width:120px;accent-color:var(--accent)}
+.acap{flex-basis:100%;font-size:.74rem;color:var(--sub)}
+.a{opacity:0;animation:ap .5s ease-out forwards;animation-play-state:paused}
+.a.d{animation:ap .5s ease-out forwards, dp .4s ease-in forwards;animation-play-state:paused}
+@keyframes ap{to{opacity:1}}
+@keyframes dp{to{opacity:0}}
+@keyframes mv1{from{transform:translateX(0)}to{transform:translateX(760px)}}
+
+.ab2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:8px 0}
+.ab2 > div{border:1px solid var(--line);border-radius:10px;padding:12px 14px;background:#FAFAF7}
+.ab2 h4{font-size:.86rem;margin-bottom:6px}
+.ab2 .bad h4{color:var(--warn-t)}.ab2 .good h4{color:var(--ok)}
+.cmp td b{color:var(--accent-d)}
+.tree{font-family:var(--mono);font-size:.8rem;line-height:1.5;white-space:pre;background:#F6F6F2;border:1px solid var(--line);border-radius:10px;padding:12px 14px;overflow-x:auto;margin:6px 0}
+.say{border-left:4px solid var(--accent);background:var(--accent-soft);padding:10px 14px;border-radius:0 10px 10px 0;margin:10px 0;font-size:.95rem}
+.say b{color:var(--accent-d)}
+@media (max-width:980px){.ab2{grid-template-columns:1fr}}
+.src{font-size:.68rem;color:#8A929B}
+.refbody{font-size:.95rem}
+.refbody table{font-size:.86rem}
+.card.ref{scroll-margin-top:130px}
+.refsec{grid-column:1 / -1;scroll-margin-top:130px;margin-top:10px;padding:12px 18px;border-radius:12px;background:var(--accent);color:#fff;font-weight:800;font-size:1.05rem;display:flex;align-items:center;gap:8px}
+.refsec .ico{width:1.3em;height:1.3em;margin:0}
+.refsec .cnt{margin-left:auto;font-size:.78rem;font-weight:600;opacity:.9}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{display:inline-block;background:var(--accent-soft);color:var(--accent-d);border:1px solid #CFDDE9;border-radius:999px;padding:6px 14px;font-size:.86rem;font-weight:700;text-decoration:none}
+.chip:hover{background:var(--accent);color:#fff}
+.card.ref h3{color:var(--accent-d);border-bottom:2px solid var(--accent-soft);padding-bottom:6px;margin-bottom:12px}
+.flow{font-family:var(--mono);font-size:.82rem;line-height:1.55;white-space:pre;background:#F6F6F2;border:1px solid var(--line);border-radius:10px;padding:12px 14px;overflow-x:auto;margin:6px 0}
+.ico{width:1.35em;height:1.35em;vertical-align:-.32em;margin-right:.25em}
+.band-ico{width:72px;height:72px;flex:none;margin-left:auto}
+.dia{width:100%;height:auto;display:block;margin:8px 0}
+.dia text{font-family:"Pretendard","Malgun Gothic",sans-serif}
+@media (max-width:980px){.band-ico{display:none}}
+/* STEP 인트로 영상 */
+.intro{grid-column:1 / -1;position:relative;border-radius:16px;overflow:hidden;border:1px solid var(--line);background:radial-gradient(120% 140% at 10% 0%,#FFFFFF 0%,#EAF1F7 45%,#EFEBF5 100%)}
+.intro .stage{position:relative;width:100%;aspect-ratio:960/340;min-height:220px}
+.intro canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.intro .ov{position:absolute;inset:0;padding:5% 6%;pointer-events:none}
+.intro .kicker{position:absolute;left:6%;top:9%;font-size:clamp(11px,1.3vw,15px);font-weight:700;letter-spacing:.12em;color:var(--accent);opacity:0}
+.intro .title{position:absolute;left:6%;top:18%;text-shadow:0 1px 0 #fff,0 0 14px rgba(255,255,255,.95);font-size:clamp(26px,4.6vw,56px);font-weight:800;line-height:1.1;color:var(--accent-d);letter-spacing:-.01em}
+.intro .title span{display:inline-block;opacity:0;transform:translateY(.5em) scale(.8);will-change:transform,opacity}
+.intro .sub{position:absolute;left:6%;top:47%;text-shadow:0 0 10px #fff;font-size:clamp(14px,1.8vw,22px);color:var(--sub);opacity:0;transform:translateY(10px)}
+.intro .line{position:absolute;left:6%;text-shadow:0 1px 0 #fff,0 0 10px rgba(255,255,255,.95);display:flex;align-items:center;gap:.5em;font-size:clamp(14px,1.9vw,24px);font-weight:600;color:var(--ink);opacity:0;transform:translateX(-24px);white-space:nowrap}
+.intro .line svg{width:1.5em;height:1.5em;flex:none}
+.intro .line.dim{color:#8A929B;font-weight:500}
+.intro .close{position:absolute;left:6%;right:6%;bottom:7%;text-shadow:0 1px 0 #fff,0 0 12px rgba(255,255,255,.95);font-size:clamp(16px,2.4vw,30px);font-weight:800;color:var(--accent-d);opacity:0;transform:scale(.96)}
+.intro .close i{font-style:normal;background:linear-gradient(transparent 62%,#DCE8F2 62%);background-repeat:no-repeat;background-size:0% 100%}
+.intro .big{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
+.intro .big button{pointer-events:auto;width:84px;height:84px;border-radius:50%;border:0;background:rgba(47,102,144,.92);color:#fff;font-size:34px;box-shadow:0 10px 30px rgba(35,77,110,.25);display:flex;align-items:center;justify-content:center;padding-left:6px}
+.intro.playing .big,.intro.done .big{display:none}
+.intro .abar{background:rgba(255,255,255,.85);border-top:1px solid var(--line)}
+/* 하단 이동 */
+.navbtns{grid-column:1 / -1;display:flex;justify-content:space-between;gap:10px;margin-top:8px}
+.navbtns button{border:1px solid var(--line);background:var(--paper);border-radius:10px;padding:10px 18px;font-size:.86rem}
+.navbtns button.next{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+@media (max-width:980px){
+  .wrap{grid-template-columns:1fr}
+  .side{position:static;border-left:0;padding:0;display:flex;flex-wrap:wrap;gap:6px}
+  .side p{flex-basis:100%}
+  .side a{border-left:0;margin:0;border:1px solid var(--line);border-radius:99px;padding:3px 10px;background:var(--paper)}
+  .side a.on{background:var(--accent-soft)}
+  .grid{grid-template-columns:1fr}
+  .band{flex-direction:column;gap:8px}
+}
+</style></head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="i-folder" viewBox="0 0 64 64"><path d="M6 18a6 6 0 0 1 6-6h14l6 6h20a6 6 0 0 1 6 6v26a6 6 0 0 1-6 6H12a6 6 0 0 1-6-6z" fill="#F2C96B"/><path d="M6 26h52v24a6 6 0 0 1-6 6H12a6 6 0 0 1-6-6z" fill="#F7D98C"/><circle cx="24" cy="42" r="2.4" fill="#8A6A1E"/><circle cx="40" cy="42" r="2.4" fill="#8A6A1E"/><path d="M27 48q5 4 10 0" stroke="#8A6A1E" stroke-width="2.4" fill="none" stroke-linecap="round"/></symbol>
+<symbol id="i-doc" viewBox="0 0 64 64"><path d="M16 6h22l12 12v36a4 4 0 0 1-4 4H16a4 4 0 0 1-4-4V10a4 4 0 0 1 4-4z" fill="#fff" stroke="#C9D2DC" stroke-width="2.5"/><path d="M38 6v12h12" fill="#E3EBF2" stroke="#C9D2DC" stroke-width="2.5" stroke-linejoin="round"/><path d="M20 30h24M20 38h24M20 46h16" stroke="#2F6690" stroke-width="3" stroke-linecap="round"/></symbol>
+<symbol id="i-md" viewBox="0 0 64 64"><path d="M16 6h22l12 12v36a4 4 0 0 1-4 4H16a4 4 0 0 1-4-4V10a4 4 0 0 1 4-4z" fill="#fff" stroke="#C9D2DC" stroke-width="2.5"/><path d="M38 6v12h12" fill="#E3EBF2" stroke="#C9D2DC" stroke-width="2.5" stroke-linejoin="round"/><text x="32" y="46" text-anchor="middle" font-size="17" font-weight="800" fill="#2F6690" font-family="Consolas,monospace">.md</text></symbol>
+<symbol id="i-clip" viewBox="0 0 64 64"><rect x="14" y="12" width="36" height="44" rx="6" fill="#fff" stroke="#C9D2DC" stroke-width="2.5"/><rect x="22" y="6" width="20" height="12" rx="4" fill="#2F6690"/><path d="M22 30h20M22 38h20M22 46h12" stroke="#C9D2DC" stroke-width="3" stroke-linecap="round"/><circle cx="46" cy="46" r="11" fill="#2F6690"/><path d="M40 46l4 4 8-8" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="i-claude" viewBox="0 0 64 64"><rect x="10" y="16" width="44" height="36" rx="12" fill="#2F6690"/><rect x="16" y="22" width="32" height="24" rx="8" fill="#EAF1F7"/><circle cx="26" cy="33" r="3.2" fill="#234D6E"/><circle cx="38" cy="33" r="3.2" fill="#234D6E"/><path d="M26 40q6 4 12 0" stroke="#234D6E" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M32 16V9" stroke="#2F6690" stroke-width="3" stroke-linecap="round"/><circle cx="32" cy="7" r="3.5" fill="#F2C96B"/><rect x="4" y="28" width="6" height="12" rx="3" fill="#234D6E"/><rect x="54" y="28" width="6" height="12" rx="3" fill="#234D6E"/></symbol>
+<symbol id="i-obs" viewBox="0 0 64 64"><path d="M32 4l20 14-6 34-14 8-14-8-6-34z" fill="#7B61A8"/><path d="M32 4l20 14-20 6z" fill="#A58BD0"/><path d="M12 18l20 6-14 36z" fill="#5B4B7A"/><path d="M32 24l20-6-6 34z" fill="#8F77BF"/></symbol>
+<symbol id="i-star" viewBox="0 0 64 64"><path d="M32 6l7.6 16.4 17.9 2.1-13.2 12.3 3.5 17.7L32 45.6l-15.8 8.9 3.5-17.7L6.5 24.5l17.9-2.1z" fill="#F2C96B" stroke="#D9A83C" stroke-width="2" stroke-linejoin="round"/></symbol>
+<symbol id="i-lock" viewBox="0 0 64 64"><rect x="12" y="28" width="40" height="30" rx="8" fill="#8A3A4A"/><path d="M20 28v-8a12 12 0 0 1 24 0v8" stroke="#8A3A4A" stroke-width="6" fill="none"/><circle cx="32" cy="42" r="4" fill="#F6ECEE"/><path d="M32 44v7" stroke="#F6ECEE" stroke-width="3.5" stroke-linecap="round"/></symbol>
+<symbol id="i-check" viewBox="0 0 64 64"><circle cx="32" cy="32" r="26" fill="#2F6B45"/><path d="M20 33l8 8 16-18" stroke="#fff" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="i-globe" viewBox="0 0 64 64"><circle cx="32" cy="32" r="26" fill="#DCEAF5" stroke="#2F6690" stroke-width="2.5"/><ellipse cx="32" cy="32" rx="11" ry="26" fill="none" stroke="#2F6690" stroke-width="2"/><path d="M6 32h52M10 20h44M10 44h44" stroke="#2F6690" stroke-width="2"/></symbol>
+<symbol id="i-sparkle" viewBox="0 0 64 64"><path d="M32 6c2 14 8 20 22 26-14 6-20 12-22 26-2-14-8-20-22-26 14-6 20-12 22-26z" fill="#F2C96B"/><path d="M50 6c1 6 3 9 9 11-6 2-8 5-9 11-1-6-3-9-9-11 6-2 8-5 9-11z" fill="#F7D98C"/></symbol>
+<symbol id="i-cloud" viewBox="0 0 64 64"><path d="M18 48a11 11 0 0 1-1-22 15 15 0 0 1 29-4 10 10 0 0 1 4 26z" fill="#EEF0F3" stroke="#9AA0A8" stroke-width="2.5"/></symbol>
+<symbol id="i-box" viewBox="0 0 64 64"><rect x="8" y="20" width="48" height="36" rx="6" fill="#DCEAF5" stroke="#2F6690" stroke-width="2.5"/><path d="M8 28h48" stroke="#2F6690" stroke-width="2.5"/><path d="M22 10h20l6 10H16z" fill="#EAF1F7" stroke="#2F6690" stroke-width="2.5" stroke-linejoin="round"/><path d="M26 40h12" stroke="#2F6690" stroke-width="3" stroke-linecap="round"/></symbol>
+</defs></svg>
+
+<header class="top">
+  <div class="top-row">
+    <div class="top-title">내 스크랩북 — 모으는 건 내가, 정리·재가공은 클로드가<small>클로드 데스크톱 심화 5차시 · 클로드 코워크로 자료 관리 · 수정 · 재가공</small></div>
+    <div class="fbtns"><span style="font-size:.7rem;color:var(--sub);align-self:center">글자</span><button type="button" id="fminus">가−</button><button type="button" id="fplus">가+</button></div>
+  </div>
+  <nav class="tabs" role="tablist" id="tabs">
+    <button class="tab" role="tab" data-i="0"><b>STEP 0</b>자료 가공, 지금 어떻게?</button>
+    <button class="tab" role="tab" data-i="1"><b>STEP 1</b>웹클리퍼 시연</button>
+    <button class="tab" role="tab" data-i="2"><b>STEP 2</b>폴더에 바로 넣자 · 마크다운</button>
+    <button class="tab" role="tab" data-i="3"><b>STEP 3</b>정리시켜 보기</button>
+    <button class="tab" role="tab" data-i="4"><b>STEP 4</b>기준을 써 두자 ★</button>
+    <button class="tab" role="tab" data-i="5"><b>STEP 5</b>내 자료실 · 재가공</button>
+    <button class="tab" role="tab" data-i="6"><b>부록</b>막힘 사전 · 플랜B</button>
+    <button class="tab reftab" role="tab" data-i="7"><b>참조</b><svg class="ico"><use href="#i-doc"/></svg>참조 자료 모음</button>
+  </nav>
+</header>
+
+<div class="wrap">
+<main id="main">
+
+<!-- STEP 0 -->
+<section class="step" data-i="0"><div class="grid">
+  <div class="band"><span class="band-no">STEP 0</span><div><h2>자료 가공, 지금 어떻게 하나</h2><p>이번 주는 <b>자료</b> 이야기입니다. 자료는 내가 고르고, 정리·요약·다시 쓰기는 클로드가, 보는 건 한 창에서.</p></div><svg class="band-ico"><use href="#i-star"/></svg></div>
+
+  <div class="card wide" id="s0-path"><span class="bd see">👀 보기</span><h3>오늘의 길 — 한눈에</h3>
+    <svg class="dia" viewBox="0 0 960 150" role="img" aria-label="STEP 0부터 5까지의 흐름">
+      <path d="M60 80 H900" stroke="#CFDDE9" stroke-width="6" stroke-linecap="round"/>
+      <g font-size="12" text-anchor="middle" fill="#656B73">
+        <g><circle cx="80" cy="80" r="26" fill="#fff" stroke="#2F6690" stroke-width="2.5"/><svg x="64" y="64" width="32" height="32"><use href="#i-star"/></svg><text x="80" y="128" font-weight="700" fill="#234D6E">0 어디에 담나</text></g>
+        <g><circle cx="240" cy="80" r="26" fill="#fff" stroke="#2F6690" stroke-width="2.5"/><svg x="224" y="64" width="32" height="32"><use href="#i-md"/></svg><text x="240" y="128" font-weight="700" fill="#234D6E">1 클리퍼 시연</text></g>
+        <g><circle cx="400" cy="80" r="26" fill="#fff" stroke="#2F6690" stroke-width="2.5"/><svg x="384" y="64" width="32" height="32"><use href="#i-obs"/></svg><text x="400" y="128" font-weight="700" fill="#234D6E">2 폴더에 바로 · .md</text></g>
+        <g><circle cx="560" cy="80" r="26" fill="#fff" stroke="#2F6690" stroke-width="2.5"/><svg x="544" y="64" width="32" height="32"><use href="#i-claude"/></svg><text x="560" y="128" font-weight="700" fill="#234D6E">3 정리시켜 보기</text></g>
+        <g><circle cx="720" cy="80" r="28" fill="#EAF1F7" stroke="#2F6690" stroke-width="3"/><svg x="704" y="64" width="32" height="32"><use href="#i-doc"/></svg><text x="720" y="128" font-weight="700" fill="#234D6E">4 CLAUDE.md ★</text></g>
+        <g><circle cx="880" cy="80" r="26" fill="#fff" stroke="#2F6690" stroke-width="2.5"/><svg x="864" y="64" width="32" height="32"><use href="#i-sparkle"/></svg><text x="880" y="128" font-weight="700" fill="#234D6E">5 내 자료실</text></g>
+      </g>
+      <g font-size="11" fill="#8A929B" text-anchor="middle"><text x="160" y="40">클릭 한 번이면</text><text x="320" y="40">폴더엔 안 남는다</text><text x="480" y="40">쌓여만 있다</text><text x="640" y="40">되묻는다</text><text x="800" y="40">이번엔 된다</text></g>
+    </svg></div>
+
+  <div class="card wide" id="s0-how"><span class="bd see">👀 보기</span><h3>우리 자료 가공, 지금 어떻게 하나?</h3>
+    <p>클로드에게 자료를 정리시키려면 먼저 <b>자료가 있어야</b> 합니다. 그 자료를 지금은 어떻게 모으고 있나요?</p>
+    <table><tr><th style="width:28%">방법</th><th>누가 고르나</th><th>어떻게 되나</th></tr>
+      <tr><td>① 주소를 즐겨찾기에</td><td>내가</td><td>주소만 남는다. 클로드에게 주려면 주소를 하나씩 붙여 넣어야 한다</td></tr>
+      <tr><td>② 코워크 <b>예약 작업</b>으로 "매주 ○○ 소식 찾아서 정리해줘"</td><td>클로드가</td><td>편하다. 그런데 <b>클로드가 고른 글</b>이지 내가 읽고 고른 글이 아니다. 안 본 글이 쌓인다</td></tr>
+      <tr><td>③ 내가 보다가 <b>클릭 한 번</b>으로 담기</td><td>내가</td><td><b>내가 읽고 고른 글</b>이 그대로 담긴다. 이게 <b>웹클리퍼</b></td></tr></table>
+    <svg class="dia" viewBox="0 0 960 200" role="img" aria-label="즐겨찾기, 예약 작업, 웹클리퍼 세 갈래">
+      <g font-size="13" text-anchor="middle">
+        <rect x="20" y="20" width="280" height="160" rx="14" fill="#FAFAF7" stroke="#E3E4DF"/><svg x="135" y="34" width="50" height="50"><use href="#i-star"/></svg><text x="160" y="110" font-weight="700" fill="#26292E">① 즐겨찾기</text><text x="160" y="132" fill="#656B73">내가 고름 · 주소만 남음</text><text x="160" y="152" fill="#8A3A4A">클로드에게 하나씩 붙여 넣어야</text>
+        <rect x="340" y="20" width="280" height="160" rx="14" fill="#FAFAF7" stroke="#E3E4DF"/><svg x="455" y="34" width="50" height="50"><use href="#i-claude"/></svg><text x="480" y="110" font-weight="700" fill="#26292E">② 코워크 예약 작업</text><text x="480" y="132" fill="#656B73">클로드가 고름 · 편함</text><text x="480" y="152" fill="#8A3A4A">내가 안 본 글이 쌓임</text>
+        <rect x="660" y="20" width="280" height="160" rx="14" fill="#EAF1F7" stroke="#2F6690" stroke-width="2.5"/><svg x="775" y="34" width="50" height="50"><use href="#i-clip"/></svg><text x="800" y="110" font-weight="700" fill="#234D6E">③ 웹클리퍼</text><text x="800" y="132" fill="#656B73">내가 보다가 클릭 한 번</text><text x="800" y="152" fill="#2F6B45" font-weight="700">내가 고른 글이 글째로 담김</text>
+      </g>
+    </svg>
+    <div class="say">자료는 <b>내가 고르고</b>, 정리는 <b>클로드가</b> 하는 게 제일 좋습니다. 그래서 자료 수집에는 <b>웹클리퍼</b>를 씁니다.<br>그런데 웹클리퍼도 여러 가지입니다. 담은 글이 <b>어디에 남느냐</b>가 다릅니다.</div></div>
+
+  <div class="card wide" id="s0-where"><span class="bd see">👀 보기</span><h3>웹클리퍼로 담으면, 어디에 남나?</h3>
+    <table><tr><th style="width:26%">클리퍼</th><th>어디에 남나</th><th>다시 꺼내 쓰려면</th></tr>
+      <tr><td>크롬 읽기 목록 · 카톡 나에게 보내기</td><td>주소만</td><td>다시 들어가서 읽어야. 글이 없어지기도</td></tr>
+      <tr><td>NotebookLM 클리퍼 (Notebook Clipper 등)</td><td>NotebookLM 안</td><td>요약은 잘해 주지만, 꺼내려면 <b>내보내기</b>를 또 해야</td></tr>
+      <tr><td>노션 · 에버노트 클리퍼</td><td>그 서비스 안</td><td>그 안에서는 편한데, 밖으로 가져오려면 <b>또 옮겨야</b></td></tr></table>
+    <div class="say">보관도 애매하고, 가서 보고, 다시 빼 와야 합니다. <b>그럴 바에는 처음부터 "내 폴더에 파일로" 담자.</b><br>클로드 코워크는 폴더 안 파일을 바로 읽으니까요. (1~4차시에서 해 본 그대로)</div>
+    <svg class="dia" viewBox="0 0 960 250" role="img" aria-label="서비스 안에 갇히는 저장과 내 폴더에 파일로 남는 저장">
+      <g font-size="13" text-anchor="middle">
+        <text x="200" y="26" font-weight="700" fill="#8A3A4A">서비스 안에 갇힘</text>
+        <rect x="40" y="40" width="320" height="110" rx="14" fill="#F6ECEE" stroke="#E2C9CF"/>
+        <svg x="60" y="60" width="44" height="44"><use href="#i-cloud"/></svg><svg x="150" y="60" width="44" height="44"><use href="#i-cloud"/></svg><svg x="240" y="60" width="44" height="44"><use href="#i-cloud"/></svg>
+        <text x="82" y="130" font-size="11" fill="#656B73">NotebookLM</text><text x="172" y="130" font-size="11" fill="#656B73">노션</text><text x="262" y="130" font-size="11" fill="#656B73">에버노트</text>
+        <svg x="300" y="62" width="40" height="40"><use href="#i-lock"/></svg>
+        <text x="200" y="180" fill="#8A3A4A">가서 보고, 꺼내려면 또 옮겨야</text>
+        <path d="M400 95 H470" stroke="#2F6690" stroke-width="3"/><path d="M466 87l12 8-12 8z" fill="#2F6690"/><text x="435" y="80" font-size="11" fill="#234D6E">그럴 바에는</text>
+        <text x="730" y="26" font-weight="700" fill="#234D6E">내 폴더에 파일로</text>
+        <rect x="500" y="40" width="450" height="110" rx="14" fill="#EAF1F7" stroke="#2F6690" stroke-width="2.5"/>
+        <svg x="520" y="56" width="44" height="44"><use href="#i-globe"/></svg><text x="542" y="118" font-size="11" fill="#656B73">인터넷 글</text>
+        <path d="M572 78 H602" stroke="#2F6690" stroke-width="2.5"/><path d="M599 72l9 6-9 6z" fill="#2F6690"/>
+        <svg x="608" y="56" width="44" height="44"><use href="#i-clip"/></svg><text x="630" y="118" font-size="11" fill="#656B73">클릭 한 번</text>
+        <path d="M660 78 H690" stroke="#2F6690" stroke-width="2.5"/><path d="M687 72l9 6-9 6z" fill="#2F6690"/>
+        <svg x="696" y="56" width="44" height="44"><use href="#i-folder"/></svg><text x="718" y="118" font-size="11" fill="#656B73">scrap/inbox</text>
+        <path d="M748 70 L790 60" stroke="#2F6690" stroke-width="2.5"/><path d="M748 88 L790 98" stroke="#2F6690" stroke-width="2.5"/>
+        <svg x="800" y="36" width="40" height="40"><use href="#i-claude"/></svg><text x="888" y="62" font-size="11" fill="#234D6E">클로드가 정리·재가공</text>
+        <svg x="800" y="86" width="40" height="40"><use href="#i-obs"/></svg><text x="888" y="112" font-size="11" fill="#5B4B7A">옵시디언에서 내가 본다</text>
+        <text x="720" y="180" fill="#2F6B45" font-weight="700">둘 다 같은 폴더를 본다</text>
+      </g>
+      <text x="480" y="232" text-anchor="middle" font-size="13" fill="#656B73">폴더에 파일로 바로 넣어 주는 것 = 옵시디언 + 옵시디언 웹클리퍼. 오늘 거기까지 갑니다.</text>
+    </svg>
+    <p class="hint">그 전에 STEP 1에서 "클릭 한 번"이 어떤 건지 먼저 눈으로 봅니다.</p></div>
+
+  <div class="card" id="s0-routine"><span class="bd with">🤝 같이</span><h3>매주 시작 루틴</h3>
+    <ol class="steps"><li>내 계정으로 로그인</li><li>USB 꽂기</li><li>클로드 데스크톱 앱 열기</li><li>업데이트 확인</li><li>승인 모드 <b>「수동」</b> 확인</li></ol>
+    <div class="box note"><h4>약속 4가지</h4><p>설명 짧게, 바로 손 · 프롬프트는 [복사] 버튼 · 승인은 수동 · 원본은 지우지 않는다</p></div></div>
+
+  <div class="card" id="s0-folder"><span class="bd with">🤝 같이</span><h3><svg class="ico"><use href="#i-folder"/></svg>프로젝트 「내 스크랩북」 + 폴더 <code>scrap</code> 연결</h3>
+    <ol class="steps"><li>USB(또는 바탕화면)에 새 폴더 → 이름 <code>scrap</code> (스크랩 폴더), 그 안에 <code>inbox</code> (받은 글 상자)</li><li>클로드 앱에서 <b>새 프로젝트</b> → 이름 「내 스크랩북」 (1차시에 했던 그 방식)</li><li>프로젝트에서 코워크로 <code>scrap</code> 폴더를 <b>작업 폴더로 연결</b></li><li>지난주 ai-office 폴더는 <b>오늘 열지 않습니다</b></li></ol>
+    <p class="hint">왜 프로젝트로 하나 — 다음 주에 와서 프로젝트만 열면 폴더·대화·지침이 그대로 있습니다. 폴더 이름은 영어로(한글 이름 오류 예방).</p></div>
+
+  <div class="card wide" id="s0-topic"><span class="bd mine">✋ 내 것</span><h3>내 주제 하나 고르기</h3>
+    <p>오늘 담을 글의 주제입니다. <b>못 고르겠으면 "AI 소식"</b>으로 합니다. 나중에 바꿔도 됩니다.</p>
+    <table><tr><th style="width:14%">갈래</th><th style="width:30%">주제 예</th><th>담을 글 예</th></tr>
+      <tr><td><b>업무</b></td><td>총무 · 회계 · 인사 · 영업 자료 모으기</td><td>세법·규정 변경 안내, 공공기관 공지, 업계 뉴스, 서식 안내 글</td></tr>
+      <tr><td><b>분석</b></td><td>주식 종목 · 시장 · 경쟁사</td><td>공시, 실적 기사, 산업 리포트 요약 글</td></tr>
+      <tr><td><b>트렌드</b></td><td>AI 소식 <span class="bd see" style="margin:0">강사 예시</span> · 우리 업계 동향</td><td>새 도구 발표 글, 전문 매체 기사</td></tr>
+      <tr><td><b>일상</b></td><td>여행 · 건강 · 독서 · 취미</td><td>여행지 기사, 건강 정보, 서평</td></tr></table>
+    <div class="box warn"><h4>업무 주제를 고른 분께</h4><p>수업에서는 <b>진짜 회사 숫자·거래처 이름을 학습관 PC에 넣지 마세요.</b> 공개된 글(뉴스·공지·공시)로만 연습하고, 실제 자료는 집·회사 PC에서 같은 방법으로 하세요. 주식은 클로드가 "사라·팔아라"를 말하게 하지 않습니다. 정리만 시키고 판단은 내가 합니다.</p></div></div>
+</div></section>
+
+<!-- STEP 1 -->
+<section class="step" data-i="1"><div class="grid">
+  <div class="band"><span class="band-no">STEP 1</span><div><h2>웹클리퍼, 클릭 한 번이면 이렇게 됩니다</h2><p>강사 시연만 봅니다. 설치할 것 없습니다. <b>구글 로그인만 돼 있으면</b> 되는 NotebookLM 클리퍼로 "클릭 한 번"이 어떤 건지 봅니다.</p></div><svg class="band-ico"><use href="#i-clip"/></svg></div>
+
+  <div class="card wide" id="s1-demo"><span class="bd see">👀 보기</span><h3><svg class="ico"><use href="#i-clip"/></svg>시연 — 기사 한 건이 NotebookLM에 들어가기까지</h3>
+    <svg class="dia" viewBox="0 0 960 170" role="img" aria-label="기사에서 클리퍼를 누르면 NotebookLM 노트북에 소스로 들어가고 요약이 뜨는 흐름">
+      <g font-size="13" text-anchor="middle">
+        <rect x="20" y="30" width="200" height="110" rx="14" fill="#FAFAF7" stroke="#E3E4DF"/><svg x="95" y="42" width="50" height="50"><use href="#i-globe"/></svg><text x="120" y="118" font-weight="700" fill="#26292E">① AI 기사</text>
+        <path d="M226 85 H256" stroke="#2F6690" stroke-width="3"/><path d="M252 77l12 8-12 8z" fill="#2F6690"/>
+        <rect x="266" y="30" width="200" height="110" rx="14" fill="#FAFAF7" stroke="#E3E4DF"/><svg x="341" y="42" width="50" height="50"><use href="#i-clip"/></svg><text x="366" y="118" font-weight="700" fill="#26292E">② 클리퍼 아이콘</text>
+        <path d="M472 85 H502" stroke="#2F6690" stroke-width="3"/><path d="M498 77l12 8-12 8z" fill="#2F6690"/>
+        <rect x="512" y="30" width="200" height="110" rx="14" fill="#FAFAF7" stroke="#E3E4DF"/><svg x="587" y="42" width="50" height="50"><use href="#i-cloud"/></svg><text x="612" y="118" font-weight="700" fill="#26292E">③ 노트북 고르기</text>
+        <path d="M718 85 H748" stroke="#2F6690" stroke-width="3"/><path d="M744 77l12 8-12 8z" fill="#2F6690"/>
+        <rect x="758" y="30" width="182" height="110" rx="14" fill="#EAF1F7" stroke="#2F6690" stroke-width="2.5"/><svg x="824" y="42" width="50" height="50"><use href="#i-sparkle"/></svg><text x="849" y="118" font-weight="700" fill="#234D6E">④ 요약이 뜬다</text>
+      </g>
+    </svg>
+    <ol class="steps"><li>강사 크롬에서 AI 기사 1건을 엽니다</li><li>클리퍼 아이콘 → 노트북 「AI 소식」 선택 → 저장</li><li>NotebookLM 화면을 띄웁니다. 방금 글이 <b>소스</b>로 들어와 있고, 요약·질문이 바로 됩니다</li></ol>
+    <div class="say">클릭 한 번. 로그인도 따로 없습니다. <b>이게 웹클리퍼가 하는 일</b>입니다 — 보던 글을 글째로 어딘가에 담아 준다.</div></div>
+
+  <div class="card" id="s1-but"><span class="bd see">👀 보기</span><h3><svg class="ico"><use href="#i-lock"/></svg>좋죠? 그런데 자료는 어디에 있나</h3>
+    <svg class="dia" viewBox="0 0 440 170" role="img" aria-label="NotebookLM 구름 안에 자물쇠, 내 폴더는 비어 있음">
+      <g font-size="12" text-anchor="middle">
+        <svg x="40" y="20" width="110" height="90"><use href="#i-cloud"/></svg><svg x="80" y="44" width="34" height="34"><use href="#i-lock"/></svg><text x="95" y="135" fill="#8A3A4A" font-weight="700">NotebookLM 안</text><text x="95" y="153" fill="#656B73">요약은 잘해 줌</text>
+        <text x="220" y="80" fill="#8A3A4A" font-size="22">✗</text>
+        <svg x="290" y="22" width="90" height="90"><use href="#i-folder"/></svg><text x="335" y="135" fill="#656B73" font-weight="700">내 폴더 scrap</text><text x="335" y="153" fill="#8A3A4A">비어 있음</text>
+      </g>
+    </svg>
+    <ul><li>담은 글은 <b>NotebookLM 안</b>에 있습니다. 내 폴더에는 아무것도 안 생겼습니다</li><li>그래서 <b>클로드 코워크가 못 읽습니다.</b> 꺼내 쓰려면 내보내기를 또 해야 합니다</li><li>노션·에버노트 클리퍼도 똑같습니다. 그 서비스 안에서는 편한데, <b>밖으로 가져오려면 또 옮겨야</b> 합니다</li></ul></div>
+
+  <div class="card" id="s1-so"><span class="bd see">👀 보기</span><h3><svg class="ico"><use href="#i-folder"/></svg>그래서 우리는 — 내 폴더에 파일로</h3>
+    <svg class="dia" viewBox="0 0 440 170" role="img" aria-label="인터넷 글이 클릭 한 번에 내 폴더에 파일로 들어가고, 클로드와 옵시디언이 그 폴더를 본다">
+      <g font-size="12" text-anchor="middle">
+        <svg x="20" y="30" width="56" height="56"><use href="#i-globe"/></svg><text x="48" y="108" fill="#656B73">인터넷 글</text>
+        <path d="M84 58 H112" stroke="#2F6690" stroke-width="3"/><path d="M108 51l10 7-10 7z" fill="#2F6690"/>
+        <svg x="120" y="30" width="56" height="56"><use href="#i-clip"/></svg><text x="148" y="108" fill="#656B73">클릭 한 번</text>
+        <path d="M184 58 H212" stroke="#2F6690" stroke-width="3"/><path d="M208 51l10 7-10 7z" fill="#2F6690"/>
+        <svg x="220" y="26" width="64" height="64"><use href="#i-folder"/></svg><text x="252" y="108" fill="#8A6A1E" font-weight="700">scrap/inbox</text>
+        <path d="M292 48 L330 36" stroke="#2F6690" stroke-width="2.5"/><path d="M292 68 L330 80" stroke="#5B4B7A" stroke-width="2.5"/>
+        <svg x="336" y="14" width="40" height="40"><use href="#i-claude"/></svg><text x="400" y="38" fill="#234D6E" font-size="11">클로드가 정리</text>
+        <svg x="336" y="66" width="40" height="40"><use href="#i-obs"/></svg><text x="400" y="90" fill="#5B4B7A" font-size="11">옵시디언이 보여 줌</text>
+        <text x="220" y="150" fill="#2F6B45" font-weight="700" font-size="13">둘 다 같은 폴더를 본다</text>
+      </g>
+    </svg>
+    <p>처음부터 <b>내 폴더에 파일로</b> 담으면, 클로드가 바로 읽고 옵시디언에서 바로 봅니다. 그걸 해 주는 게 <b>옵시디언 웹클리퍼</b>입니다. <b>STEP 2부터 클로드와 연결합니다.</b></p></div>
+</div></section>
+
+<section class="step" data-i="2"><div class="grid">
+  <div class="band"><span class="band-no">STEP 2</span><div><h2>폴더에 바로 넣자 — 옵시디언 + 웹클리퍼, 그리고 마크다운</h2><p>옵시디언 클리퍼는 글을 <b>내 폴더에 바로</b> 넣습니다. 담긴 파일을 열어 보면 그게 <b>마크다운(.md)</b>입니다. 여기서부터 <b>클로드와 연결</b>됩니다.</p></div><svg class="band-ico"><use href="#i-obs"/></svg></div>
+
+  <div class="card wide" id="s2-what"><span class="bd see">👀 보기</span><h3><svg class="ico"><use href="#i-obs"/></svg>옵시디언이 뭔가 — 메모장입니다</h3>
+    <div class="say">노션처럼 글 쓰고 모으는 앱인데 딱 하나 다릅니다. <b>노션은 인터넷에, 옵시디언은 내 PC 폴더에 글 파일(.md)로 저장</b>합니다.<br>그래서 <b>클로드 코워크와 같은 폴더</b>를 쓸 수 있습니다. 내가 담으면 클로드가 읽고, 클로드가 정리하면 내가 봅니다.</div>
+    <svg class="dia" viewBox="0 0 960 190" role="img" aria-label="코워크 창과 옵시디언 창이 같은 폴더를 보는 그림">
+      <g font-size="13" text-anchor="middle">
+        <rect x="40" y="30" width="260" height="130" rx="14" fill="#EAF1F7" stroke="#2F6690" stroke-width="2.5"/><svg x="140" y="44" width="60" height="60"><use href="#i-claude"/></svg><text x="170" y="128" font-weight="700" fill="#234D6E">클로드 코워크</text><text x="170" y="148" fill="#656B73">일하는 창 — 읽고 정리하고 다시 쓴다</text>
+        <rect x="660" y="30" width="260" height="130" rx="14" fill="#EFEBF5" stroke="#5B4B7A" stroke-width="2.5"/><svg x="760" y="44" width="60" height="60"><use href="#i-obs"/></svg><text x="790" y="128" font-weight="700" fill="#5B4B7A">옵시디언</text><text x="790" y="148" fill="#656B73">보는 창 — 쌓인 것·정리된 것을 본다</text>
+        <svg x="440" y="40" width="80" height="80"><use href="#i-folder"/></svg><text x="480" y="148" font-weight="700" fill="#8A6A1E">scrap 폴더</text>
+        <path d="M304 95 H432" stroke="#2F6690" stroke-width="3" stroke-dasharray="8 6"/><path d="M528 95 H656" stroke="#5B4B7A" stroke-width="3" stroke-dasharray="8 6"/>
+        <text x="368" y="84" font-size="11" fill="#234D6E">읽고 · 쓴다</text><text x="592" y="84" font-size="11" fill="#5B4B7A">본다 · 고친다</text>
+      </g>
+    </svg>
+    <p class="hint">보관함(Vault)이라는 말이 나오는데, 그냥 <b>폴더</b>입니다. 옵시디언을 지워도 파일은 남습니다.</p></div>
+
+  <div class="card" id="s2-install"><span class="bd with">🤝 같이</span><h3>설치 2개 → scrap 열기</h3>
+    <ol class="steps"><li><a href="https://obsidian.md/download" target="_blank" rel="noopener">obsidian.md/download</a> → Windows용 내려받기 → 설치 → 실행</li><li>「폴더를 보관함으로 열기」 → <code>scrap</code> 선택 → 신뢰 확인 창 「신뢰」</li><li>왼쪽에 <code>inbox</code>와 아까 넣은 글이 보이면 됨 (메뉴가 영어면 설정 → Language → 한국어)</li><li><a href="https://chromewebstore.google.com/detail/obsidian-web-clipper/cnjifjpddelmedmihgijeibhnjfabmlf" target="_blank" rel="noopener">크롬 웹스토어 — Obsidian Web Clipper (공식)</a> → 「Chrome에 추가」 → 퍼즐 아이콘에서 고정 (개발자가 obsidian.md인지 확인)</li></ol>
+    <p class="hint">둘 다 됐으면 손을 들어 주세요.</p></div>
+
+  <div class="card" id="s2-connect"><span class="bd with">🤝 같이</span><h3><svg class="ico"><use href="#i-clip"/></svg>클리퍼를 scrap 폴더에 연결 · 1건 담기</h3>
+    <ol class="steps"><li>옵시디언을 <b>켜 둔 채</b> 크롬에서 클리퍼 아이콘 → 아래쪽 톱니(Settings)</li><li>General에서 보관함(Vault) 추가 → <code>scrap</code></li><li>템플릿(Default)의 Note location(저장 위치) → <code>inbox</code></li><li>강사가 띄운 AI 기사에서 클리퍼 아이콘 → 아래 「Add to Obsidian」</li><li>옵시디언 왼쪽 <code>inbox</code>에 글이 <b>바로 생기는지</b> 확인 — 옮길 필요가 없습니다</li></ol>
+    <p class="hint">팝업 아래쪽에 Vault(보관함)·Folder(폴더) 칸이 있습니다. 본문이 비면 필요한 부분을 드래그로 선택한 뒤 저장합니다.</p></div>
+
+  <div class="card" id="s2-open"><span class="bd with">🤝 같이</span><h3><svg class="ico"><use href="#i-md"/></svg>담긴 파일을 메모장으로 열어 보기</h3>
+    <ol class="steps"><li>탐색기에서 <code>scrap/inbox</code> → 방금 생긴 <code>.md</code> 파일 → 오른쪽 클릭 → 연결 프로그램 → 메모장</li><li>그냥 <b>글</b>입니다. 맨 위에 제목·주소·날짜, 그 아래 본문. 기호 몇 개만 붙어 있습니다</li><li>닫습니다</li></ol>
+    <table><tr><th style="width:36%">기호</th><th>뜻</th></tr>
+      <tr><td><code># 제목</code></td><td>제목 (#이 많을수록 작은 제목)</td></tr>
+      <tr><td><code>- 항목</code></td><td>목록</td></tr>
+      <tr><td><code>**굵게**</code></td><td>강조</td></tr>
+      <tr><td><code>[글자](주소)</code></td><td>링크</td></tr></table>
+    <div class="say">이게 <b>마크다운</b>입니다. 워드는 "모양"을 저장하고, 마크다운은 "이건 제목, 이건 목록"이라는 <b>구조</b>만 기호로 저장합니다. 그래서 어떤 프로그램에서도 열리고, <b>클로드가 정확히 읽습니다.</b> 외울 건 위 4개뿐이고, 오늘은 읽을 줄만 알면 됩니다.</div></div>
+
+  <div class="card" id="s2-read"><span class="bd with">🤝 같이</span><h3><svg class="ico"><use href="#i-claude"/></svg>클로드가 읽는지 보기 — 첫 연결</h3>
+    <p>같은 폴더가 코워크에 연결돼 있으니, 방금 담은 글을 바로 읽을 수 있습니다.</p>
+    <div class="plabel">그대로 붙여 넣기</div>
+    <pre class="prompt"><button type="button" class="copy">복사</button>inbox 폴더에 있는 글을 읽고 한 줄로 요약해줘. 출처 주소도 같이 보여줘.</pre>
+    <p>요약과 주소가 나오면 성공. <b>내가 클릭 한 번으로 담은 글을, 클로드가 폴더에서 읽었습니다.</b> 아무것도 옮기지 않았습니다.</p>
+    <div class="say">여기서부터가 클로드 코워크와의 연결입니다. 담는 건 내가, 읽고 정리하는 건 클로드가, 보는 건 옵시디언에서.</div>
+    <div class="chk"><label><input type="checkbox" data-k="c2r">옵시디언 inbox에 글이 생겼고 메모장으로 열어 봤다</label><label><input type="checkbox" data-k="c2s">클로드가 inbox 글을 요약했다</label></div></div>
+
+  <div class="card wide" id="s2-anim"><span class="bd film">🎬 움직이는 설명 ①</span><h3>기호가 모양이 된다</h3>
+    <figure class="anim">
+      <svg viewBox="0 0 960 330" role="img" aria-label="마크다운 기호가 옵시디언 화면에서 제목, 목록, 굵게로 보이는 장면">
+        <rect x="30" y="30" width="430" height="270" rx="12" fill="#F6F6F2" stroke="#E3E4DF"/><text x="245" y="58" text-anchor="middle" font-size="14" font-weight="700" fill="#656B73">파일 안 (메모장으로 보면)</text>
+        <rect x="500" y="30" width="430" height="270" rx="12" fill="#fff" stroke="#C9D2DC"/><text x="715" y="58" text-anchor="middle" font-size="14" font-weight="700" fill="#5B4B7A">옵시디언으로 보면</text>
+        <g font-family="Consolas, D2Coding, monospace" font-size="16" fill="#26292E">
+          <text class="a" style="animation-delay:.5s" x="56" y="100"># 새 AI 도구 발표</text>
+          <text class="a" style="animation-delay:2.1s" x="56" y="145">- 10월 7일 공개</text>
+          <text class="a" style="animation-delay:3.7s" x="56" y="190">- 무료 이용 가능</text>
+          <text class="a" style="animation-delay:5.3s" x="56" y="235">**핵심** 한글 지원</text>
+        </g>
+        <text class="a" style="animation-delay:1.2s" x="526" y="104" font-size="22" font-weight="700" fill="#26292E">새 AI 도구 발표</text>
+        <g class="a" style="animation-delay:2.8s"><circle cx="534" cy="141" r="4" fill="#26292E"/><text x="548" y="147" font-size="16" fill="#26292E">10월 7일 공개</text></g>
+        <g class="a" style="animation-delay:4.4s"><circle cx="534" cy="186" r="4" fill="#26292E"/><text x="548" y="192" font-size="16" fill="#26292E">무료 이용 가능</text></g>
+        <g class="a" style="animation-delay:6s"><text x="526" y="237" font-size="16" font-weight="800" fill="#26292E">핵심</text><text x="566" y="237" font-size="16" fill="#26292E">한글 지원</text></g>
+        <g class="a" style="animation-delay:7.4s"><text x="480" y="322" text-anchor="middle" font-size="14" font-weight="700" fill="#234D6E">같은 파일 하나. 기호는 그대로 저장되고, 보는 창이 모양으로 바꿔 보여 준다</text></g>
+      </svg>
+      <div class="abar"><button type="button" class="ab play">▶ 재생</button><button type="button" class="ab stop">■ 정지</button><button type="button" class="ab back">⏪ 되감기</button><input type="range" class="aseek" min="0" max="1000" value="0" aria-label="재생 위치"><span class="acap">왼쪽처럼 저장된 파일이 오른쪽처럼 보입니다</span></div>
+    </figure></div>
+
+  <div class="card wide" id="s2-mine"><span class="bd mine">✋ 내 것</span><h3>내 주제 글 2~3건 담기 — 그리고 보기</h3>
+    <ol class="steps"><li>내 주제 글을 검색해서 <b>2~3건</b> 클리퍼로 담습니다 (공개된 글만)</li><li>옵시디언에서 <code>inbox</code>를 봅니다. 글이 <b>그냥 쌓여만</b> 있습니다</li></ol>
+    <div class="say">여기까지가 "모으기"입니다. 북마크보다 낫지만, 아직은 쌓이기만 합니다. 이제 클로드에게 넘깁니다.</div>
+    <div class="chk" style="margin-top:10px"><label><input type="checkbox" data-k="c2a">클리퍼 저장 위치가 inbox다</label><label><input type="checkbox" data-k="c2b">옵시디언 inbox에 내 글이 3건 이상 보인다</label></div>
+    <div class="box basic"><h4>막혔을 때 (초급)</h4><ul><li>클리퍼에 보관함이 안 보이면 → 옵시디언이 꺼져 있는 겁니다. 켜고 설정 다시</li><li>Clippings 폴더에 저장되면 → 저장 위치를 inbox로</li><li>클리퍼가 끝내 안 되면 → 부록 플랜B (다른 방법으로 inbox에 넣기)</li></ul></div></div>
+</div></section>
+
+<!-- STEP 3 -->
+<section class="step" data-i="3"><div class="grid">
+  <div class="band"><span class="band-no">STEP 3</span><div><h2>정리시켜 보기 — 되묻는다</h2><p>쌓인 inbox를 클로드에게 넘겨 봅니다. 그냥 넘기면 어떻게 되는지 먼저 봅니다.</p></div><svg class="band-ico"><use href="#i-claude"/></svg></div>
+
+  <div class="card" id="s3-try"><span class="bd mine">✋ 내 것</span><h3><svg class="ico"><use href="#i-claude"/></svg>그냥 말해 보기</h3>
+    <div class="plabel">그대로 붙여 넣기</div>
+    <pre class="prompt"><button type="button" class="copy">복사</button>inbox 폴더의 글을 정리해줘.</pre>
+    <p>둘 중 하나가 일어납니다.</p>
+    <div class="ab2">
+      <div class="bad"><h4>되묻는다</h4><p>"어떤 기준으로 정리할까요? 폴더로 나눌까요, 요약할까요?"</p></div>
+      <div class="bad"><h4>제멋대로 한다</h4><p>자기 기준으로 폴더를 만들고, 요약은 없고, 할 때마다 다르게</p></div>
+    </div>
+    <p class="hint">되물으면 답하지 말고 그대로 둡니다. 다음 STEP에서 해결합니다.</p></div>
+
+  <div class="card" id="s3-why"><span class="bd see">👀 보기</span><h3>왜 그런가</h3>
+    <div class="say">클로드는 <b>내 기준을 모릅니다.</b> 어떤 서랍으로 나눌지, 요약을 몇 줄로 할지, 출처를 남길지 — 말해 준 적이 없으니까요.<br>그렇다고 <b>매번 말하기엔</b> 길고, 매번 조금씩 달라집니다.</div>
+    <p>이게 STEP 4가 필요한 이유입니다. <b>기준을 폴더에 한 번 써 두면</b>, 클로드가 매번 먼저 읽고 시작합니다.</p>
+    <div class="chk"><label><input type="checkbox" data-k="c3a">"정리해줘"만 했더니 되묻거나 제멋대로 했다</label></div></div>
+</div></section>
+
+<!-- STEP 4 -->
+<section class="step" data-i="4"><div class="grid">
+  <div class="band"><span class="band-no">STEP 4 ★</span><div><h2>기준을 써 두자 — CLAUDE.md</h2><p>폴더 안에 이 이름의 파일이 있으면, 클로드는 <b>내가 말하지 않아도 먼저 읽고</b> 시작합니다.</p></div><svg class="band-ico"><use href="#i-doc"/></svg></div>
+
+  <div class="card wide" id="s4-what"><span class="bd see">👀 보기</span><h3><svg class="ico"><use href="#i-doc"/></svg>쉽게 말하면 — 폴더에 붙는 젬</h3>
+    <div class="say">구글 젬이나 GPTs는 한 번 설정해 두면 매번 설명 안 해도 됩니다. CLAUDE.md도 똑같은데 하나 다릅니다. <b>젬은 내 계정에 붙고, CLAUDE.md는 폴더에 붙습니다.</b><br>그래서 <b>이 폴더를 연결하는 순간 클로드는 이 폴더의 일을 할 준비가 끝난 채로 시작</b>합니다. 폴더를 바꾸면 규칙도 바뀝니다. 폴더마다 다른 직원을 두는 셈입니다.</div>
+    <table><tr><th></th><th>구글 젬 · GPTs</th><th>CLAUDE.md</th></tr>
+      <tr><td>어디에 붙나</td><td>내 계정</td><td><b>폴더</b></td></tr>
+      <tr><td>언제 읽나</td><td>그 젬을 골랐을 때</td><td><b>그 폴더를 연결했을 때, 자동으로</b></td></tr>
+      <tr><td>무엇이 들어가나</td><td>역할 · 말투 · 할 일</td><td>이 폴더의 규칙 · 분류함 · 할 일</td></tr></table>
+    <p class="hint">CLAUDE.md도 STEP 2에서 본 것과 같은 글 파일(.md)입니다. 이름만 정해져 있습니다. 프로젝트 지침 칸에도 규칙을 쓸 수 있지만, <b>폴더 일의 규칙은 폴더 안 파일에</b> 두는 게 옮기기도 보기도 쉽습니다.</p></div>
+
+  <div class="card wide" id="s4-anim"><span class="bd film">🎬 움직이는 설명 ②</span><h3>있고 없고</h3>
+    <figure class="anim">
+      <svg viewBox="0 0 960 330" role="img" aria-label="CLAUDE.md가 없는 폴더와 있는 폴더에 같은 말을 했을 때 결과가 달라지는 장면">
+        <rect x="30" y="30" width="430" height="270" rx="12" fill="#fff" stroke="#E2C9CF" stroke-width="2"/><text x="245" y="58" text-anchor="middle" font-size="15" font-weight="700" fill="#8A3A4A">STEP 3 — CLAUDE.md 없음</text>
+        <rect x="500" y="30" width="430" height="270" rx="12" fill="#fff" stroke="#2F6690" stroke-width="2"/><text x="715" y="58" text-anchor="middle" font-size="15" font-weight="700" fill="#234D6E">STEP 4 — CLAUDE.md 있음</text>
+        <g font-size="12" fill="#656B73"><text x="56" y="86">📁 inbox/  📄 글1  📄 글2  📄 글3</text><text x="526" y="86">📁 inbox/  📄 글1  📄 글2  📄 글3</text></g>
+        <rect x="526" y="96" width="120" height="24" rx="6" fill="#EAF1F7" stroke="#2F6690"/><text x="586" y="113" text-anchor="middle" font-size="12" font-weight="700" fill="#234D6E">📘 CLAUDE.md</text>
+        <g class="a" style="animation-delay:.6s"><rect x="56" y="130" width="200" height="30" rx="8" fill="#F3F3F0"/><text x="66" y="150" font-size="13" fill="#26292E">"inbox 정리해줘"</text><rect x="526" y="130" width="200" height="30" rx="8" fill="#F3F3F0"/><text x="536" y="150" font-size="13" fill="#26292E">"inbox 정리해줘"</text></g>
+        <g class="a" style="animation-delay:2s"><rect x="660" y="96" width="250" height="24" rx="6" fill="#E7F1EA"/><text x="672" y="113" font-size="12" fill="#2F6B45">먼저 읽음 → 분류함 · 3줄 요약 · 목록</text></g>
+        <g class="a" style="animation-delay:3.2s"><rect x="56" y="180" width="380" height="60" rx="8" fill="#F6ECEE"/><text x="68" y="204" font-size="13" fill="#8A3A4A">"어떻게 정리할까요? 기준을 알려 주세요."</text><text x="68" y="226" font-size="12" fill="#8A3A4A">또는 제멋대로 폴더 생성, 요약 없음</text></g>
+        <g class="a" style="animation-delay:3.2s"><g font-size="12" fill="#26292E"><text x="526" y="190">📁 도구소식/  글1 (3줄 요약 · #도구소식)</text><text x="526" y="212">📁 활용사례/  글2 (3줄 요약 · #활용사례)</text><text x="526" y="234">📁 공부자료/  글3 (3줄 요약 · #공부자료)</text><text x="526" y="256">📄 index.md   분류함 · 제목 · 한 줄</text></g></g>
+        <g class="a" style="animation-delay:4.8s"><text x="245" y="275" text-anchor="middle" font-size="13" fill="#8A3A4A">매번 다시 설명해야 함</text><text x="715" y="282" text-anchor="middle" font-size="13" font-weight="700" fill="#2F6B45">한 번 써 두면 매번 같은 기준으로</text></g>
+        <g class="a" style="animation-delay:6.2s"><text x="480" y="320" text-anchor="middle" font-size="15" font-weight="700" fill="#234D6E">같은 글, 같은 말. 다른 건 폴더 안의 파일 하나.</text></g>
+      </svg>
+      <div class="abar"><button type="button" class="ab play">▶ 재생</button><button type="button" class="ab stop">■ 정지</button><button type="button" class="ab back">⏪ 되감기</button><input type="range" class="aseek" min="0" max="1000" value="0" aria-label="재생 위치"><span class="acap">같은 글에 같은 말을 해도, CLAUDE.md가 있는 폴더에서만 묻지 않고 규칙대로 정리합니다</span></div>
+    </figure></div>
+
+  <div class="card wide" id="s4-with"><span class="bd with">🤝 같이</span><h3>내 CLAUDE.md 받기 — 강사 예시(AI 소식) 그대로</h3>
+    <p>세 덩어리뿐입니다. <b>내 주제 · 분류함(서랍) · 글마다 할 일.</b></p>    <svg class="dia" viewBox="0 0 960 170" role="img" aria-label="CLAUDE.md의 세 덩어리: 내 주제, 분류함, 글마다 할 일">
+      <svg x="20" y="20" width="110" height="130"><use href="#i-doc"/></svg><text x="75" y="162" text-anchor="middle" font-size="12" font-weight="700" fill="#234D6E">CLAUDE.md</text>
+      <g font-size="13">
+        <rect x="170" y="18" width="240" height="130" rx="14" fill="#EAF1F7" stroke="#CFDDE9"/><text x="290" y="48" text-anchor="middle" font-weight="700" fill="#234D6E">① 내 주제</text><text x="290" y="76" text-anchor="middle" fill="#656B73">한 줄</text><text x="290" y="104" text-anchor="middle" fill="#26292E">"AI 소식"</text>
+        <rect x="440" y="18" width="240" height="130" rx="14" fill="#FFF7E6" stroke="#F2C96B"/><text x="560" y="48" text-anchor="middle" font-weight="700" fill="#8A6A1E">② 분류함 (서랍)</text><svg x="470" y="60" width="28" height="28"><use href="#i-folder"/></svg><svg x="505" y="60" width="28" height="28"><use href="#i-folder"/></svg><svg x="540" y="60" width="28" height="28"><use href="#i-folder"/></svg><svg x="575" y="60" width="28" height="28"><use href="#i-folder"/></svg><text x="560" y="112" text-anchor="middle" fill="#656B73">도구소식 · 활용사례 · 공부자료 · 보류</text><text x="560" y="134" text-anchor="middle" fill="#8A6A1E" font-size="11">내 주제로 바꾸는 건 이 4줄뿐</text>
+        <rect x="710" y="18" width="230" height="130" rx="14" fill="#E7F1EA" stroke="#CADBC5"/><text x="825" y="48" text-anchor="middle" font-weight="700" fill="#2F6B45">③ 글마다 할 일</text><text x="825" y="76" text-anchor="middle" fill="#26292E">3줄 요약 · 태그 2개</text><text x="825" y="98" text-anchor="middle" fill="#26292E">출처 유지 · 없는 말 금지</text><text x="825" y="120" text-anchor="middle" fill="#26292E">index 갱신 · 모르면 보류</text>
+      </g>
+      <path d="M135 85 H165" stroke="#2F6690" stroke-width="3"/><path d="M162 79l9 6-9 6z" fill="#2F6690"/>
+    </svg>
+
+    <div class="plabel">그대로 붙여 넣기</div>
+    <pre class="prompt"><button type="button" class="copy">복사</button>scrap 폴더에 CLAUDE.md를 만들어줘. 아래 내용을 그대로 넣고, 다른 말은 덧붙이지 마.
+
+# 내 스크랩북 규칙
+
+## 내 주제
+AI 소식
+
+## 분류함 (inbox의 글을 이 중 하나로 옮긴다. 폴더가 없으면 만든다. 복사가 아니라 이동)
+- 도구소식/ : 새 AI 도구·기능 발표
+- 활용사례/ : 누가 어떻게 썼다는 이야기
+- 공부자료/ : 개념 설명, 강의, 책
+- 보류/ : 어디에도 안 맞으면 여기
+
+## 글마다 할 일
+1. 머리말(--- 사이) 아래, 본문 위에 3줄 요약을 붙인다
+2. 태그 2개를 단다 (#분류함이름 #미검토)
+3. 출처 주소와 저장 날짜는 지우지 않는다
+4. 원문에 없는 내용은 쓰지 않는다
+5. 끝나면 index.md에 「분류함 · 제목 · 한 줄」 목록을 갱신한다
+6. 모르겠으면 보류/ 에 넣고 나에게 묻는다</pre>
+    <p class="hint">승인 → <b>옵시디언 왼쪽에 CLAUDE.md가 툭 나타납니다.</b> 같은 폴더니까요. 눌러서 세 덩어리를 한 번 읽어 봅니다.</p></div>
+
+  <div class="card" id="s4-mine"><span class="bd mine">✋ 내 것</span><h3>분류함 4줄만 내 주제로</h3>
+    <div class="plabel">[ ] 안만 바꿔서 붙여 넣기</div>
+    <pre class="prompt"><button type="button" class="copy">복사</button>scrap/CLAUDE.md에서 '내 주제'와 '분류함'만 아래로 바꿔줘. 나머지 줄은 그대로 둬.
+내 주제: <b class="bl">[ ]</b>
+분류함:
+- <b class="bl">[분류함1]</b>/ : <b class="bl">[어떤 글]</b>
+- <b class="bl">[분류함2]</b>/ : <b class="bl">[어떤 글]</b>
+- <b class="bl">[분류함3]</b>/ : <b class="bl">[어떤 글]</b>
+- 보류/ : 어디에도 안 맞으면 여기</pre>
+    <table style="font-size:.8rem"><tr><th>주제</th><th>분류함 예</th></tr>
+      <tr><td>총무</td><td>규정공지 / 계약서식 / 비품구매 / 보류</td></tr>
+      <tr><td>회계</td><td>세무변경 / 결산자료 / 비용절감 / 보류</td></tr>
+      <tr><td>주식</td><td>공시 / 실적뉴스 / 산업동향 / 보류</td></tr>
+      <tr><td>여행</td><td>숙소 / 맛집 / 코스 / 보류</td></tr>
+      <tr><td>건강</td><td>식단 / 운동 / 병원정보 / 보류</td></tr></table>
+    <div class="box basic"><h4>막혔을 때 (초급)</h4><p>"내 주제가 ○○인데 분류함 3개 제안해줘"라고 먼저 물어보고 고르세요.</p></div></div>
+
+  <div class="card" id="s4-again"><span class="bd mine">✋ 내 것</span><h3>다시 "정리해줘" — 이번엔 된다</h3>
+    <div class="plabel">그대로 붙여 넣기 (STEP 3과 거의 같은 말)</div>
+    <pre class="prompt"><button type="button" class="copy">복사</button>inbox 폴더의 글을 CLAUDE.md 규칙대로 정리해줘.
+한 번에 묶어서 작업하고, 끝나면 어떤 글을 어느 분류함으로 옮겼는지 표로 보여줘.</pre>
+    <p>이번엔 <b>묻지 않고</b> 분류함으로 나누고, 요약을 붙이고, index.md를 만듭니다. 승인 창이 여러 번 뜨면 보고 「승인」. 보류에 넣은 글을 두고 "삭제할까요?" 하고 물으면 <b>"그대로 둬"</b>라고 답하면 됩니다.</p>
+    <div class="say">STEP 3과 다른 건 <b>폴더 안에 파일 하나</b>뿐입니다. 내가 읽으라고 하지 않았는데 먼저 읽었습니다.</div>
+    <div class="chk"><label><input type="checkbox" data-k="c4a">내 분류함이 CLAUDE.md에 들어갔다</label><label><input type="checkbox" data-k="c4b">다시 시켰더니 묻지 않고 정리했다</label></div></div>
+
+  <div class="card wide" id="s4-prove"><span class="bd with">🤝 같이</span><h3>한 번 더 확인 — 새 대화에서</h3>
+    <ol class="steps"><li>코워크에서 <b>새 대화</b>를 엽니다 (같은 scrap 폴더)</li><li>딱 이것만 묻습니다.<pre class="prompt" style="margin-top:8px;padding-top:14px"><button type="button" class="copy">복사</button>지금 내 규칙이 뭐야? 분류함 이름만 말해줘.</pre></li><li>내 분류함 이름을 말하면, 새 대화마다 자동으로 읽는다는 뜻입니다</li></ol>
+    <div class="box adv"><h4>한 걸음 더 (고급)</h4><p>「글마다 할 일」에 "숫자·날짜는 출처가 있을 때만 쓴다"를 추가. 주식이면 "매수·매도 권유 문장은 쓰지 않는다", 회계면 "계산한 값은 계산식을 함께 쓴다".</p></div></div>
+</div></section>
+
+<!-- STEP 5 -->
+<section class="step" data-i="5"><div class="grid">
+  <div class="band"><span class="band-no">STEP 5</span><div><h2>내 자료실 — 보고, 고치고, 재가공</h2><p>정리된 자료실을 옵시디언에서 봅니다. 그리고 글 하나를 골라 <b>내 용도로 다시 쓰게</b> 합니다.</p></div><svg class="band-ico"><use href="#i-sparkle"/></svg></div>
+
+  <div class="card wide" id="s5-anim"><span class="bd film">🎬 움직이는 설명 ③</span><h3>쌓임 → 정리됨 → 재가공</h3>
+    <figure class="anim">
+      <svg viewBox="0 0 960 330" role="img" aria-label="inbox에 쌓인 글을 클로드가 분류함으로 나누고 요약을 붙이고, 한 글을 골라 다시 쓰는 장면">
+        <rect x="30" y="30" width="300" height="270" rx="12" fill="#fff" stroke="#C9D2DC" stroke-width="2"/><rect x="30" y="30" width="300" height="32" rx="12" fill="#5B4B7A"/><text x="180" y="52" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">전 — 쌓임</text>
+        <g font-size="13" fill="#656B73"><text x="50" y="92">📁 inbox/</text><text x="70" y="116">📄 새 AI 모델 발표</text><text x="70" y="140">📄 선생님 활용 후기</text><text x="70" y="164">📄 프롬프트 기초 강의</text><text x="70" y="188">📄 요금제 변경 안내</text></g>
+        <g class="a" style="animation-delay:.6s"><rect x="350" y="110" width="150" height="60" rx="12" fill="#EAF1F7" stroke="#2F6690" stroke-width="2"/><text x="425" y="135" text-anchor="middle" font-size="13" font-weight="700" fill="#234D6E">클로드</text><text x="425" y="156" text-anchor="middle" font-size="11" fill="#656B73">CLAUDE.md 규칙대로</text></g>
+        <rect x="520" y="30" width="410" height="270" rx="12" fill="#fff" stroke="#2F6690" stroke-width="2"/><rect x="520" y="30" width="410" height="32" rx="12" fill="#2F6690"/><text x="725" y="52" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">후 — 정리됨</text>
+        <g font-size="12" fill="#26292E">
+          <g class="a" style="animation-delay:1.8s"><text x="540" y="90">📁 도구소식/  새 AI 모델 발표 · 3줄 요약</text></g>
+          <g class="a" style="animation-delay:2.6s"><text x="540" y="114">📁 활용사례/  선생님 활용 후기 · 3줄 요약</text></g>
+          <g class="a" style="animation-delay:3.4s"><text x="540" y="138">📁 공부자료/  프롬프트 기초 강의 · 3줄 요약</text></g>
+          <g class="a" style="animation-delay:4.2s"><text x="540" y="162">📁 보류/      요금제 변경 안내 · "어디에?"</text></g>
+          <g class="a" style="animation-delay:5s"><text x="540" y="186" font-weight="700" fill="#234D6E">📄 index.md  분류함 · 제목 · 한 줄</text></g>
+        </g>
+        <g class="a" style="animation-delay:6.2s"><rect x="540" y="205" width="370" height="30" rx="8" fill="#F3F3F0"/><text x="552" y="225" font-size="12" fill="#26292E">"활용사례 글을 수강생 안내문 5줄로 다시 써줘"</text></g>
+        <g class="a" style="animation-delay:7.6s"><rect x="540" y="245" width="370" height="44" rx="8" fill="#E7F1EA"/><text x="552" y="264" font-size="12" font-weight="700" fill="#2F6B45">📄 output/안내문_활용사례.md</text><text x="552" y="282" font-size="11" fill="#2F6B45">원문은 그대로, 새 파일로 — 재가공</text></g>
+        <g class="a" style="animation-delay:9s"><text x="480" y="322" text-anchor="middle" font-size="15" font-weight="700" fill="#234D6E">모으기 → 정리 → 내가 보고 → 필요한 것만 다시 쓰기</text></g>
+      </svg>
+      <div class="abar"><button type="button" class="ab play">▶ 재생</button><button type="button" class="ab stop">■ 정지</button><button type="button" class="ab back">⏪ 되감기</button><input type="range" class="aseek" min="0" max="1000" value="0" aria-label="재생 위치"><span class="acap">같은 옵시디언 창에서 전(쌓임)·후(분류함·요약·목록)를 보고, 글 하나를 골라 내 용도로 다시 씁니다</span></div>
+    </figure></div>
+
+  <div class="card wide" id="s5-lib"><span class="bd see">👀 보기</span><h3>정리가 끝난 내 자료실</h3>
+    <svg class="dia" viewBox="0 0 960 260" role="img" aria-label="정리된 scrap 폴더 구조">
+      <svg x="20" y="14" width="64" height="64"><use href="#i-folder"/></svg><text x="96" y="54" font-size="16" font-weight="700" fill="#8A6A1E" font-family="Consolas,monospace">scrap/</text>
+      <g font-size="14" font-family="Consolas,D2Coding,monospace" fill="#26292E">
+        <svg x="110" y="76" width="30" height="30"><use href="#i-doc"/></svg><text x="150" y="97">CLAUDE.md</text><text x="470" y="97" fill="#656B73" font-family="Pretendard,sans-serif">규칙 — 클로드가 매번 먼저 읽음</text>
+        <svg x="110" y="112" width="30" height="30"><use href="#i-box"/></svg><text x="150" y="133">inbox/</text><text x="470" y="133" fill="#656B73" font-family="Pretendard,sans-serif">받은 글 상자 — 클리퍼가 여기로. 정리 후엔 비어 있음</text>
+        <svg x="110" y="148" width="30" height="30"><use href="#i-folder"/></svg><text x="150" y="169">도구소식/ 활용사례/ 공부자료/ 보류/</text><text x="470" y="169" fill="#656B73" font-family="Pretendard,sans-serif">분류함 — 3줄 요약·태그 붙은 글</text>
+        <svg x="110" y="184" width="30" height="30"><use href="#i-doc"/></svg><text x="150" y="205">index.md</text><text x="470" y="205" fill="#656B73" font-family="Pretendard,sans-serif">전체 목록 한 장</text>
+        <svg x="110" y="220" width="30" height="30"><use href="#i-sparkle"/></svg><text x="150" y="241">output/</text><text x="470" y="241" fill="#656B73" font-family="Pretendard,sans-serif">재가공한 글 (안내문 · 메모)</text>
+      </g>
+    </svg></div>
+
+  <div class="card" id="s5-see"><span class="bd mine">✋ 내 것</span><h3>옵시디언에서 보기 · 고치기</h3>
+    <ol class="steps"><li>왼쪽 목록: <code>inbox</code>가 비고 <b>내 분류함 폴더</b>가 생겼다</li><li>글 하나 열기: 맨 위에 <b>3줄 요약 + 태그</b></li><li><code>index.md</code> 열기: 전체 목록 한 장</li><li>엉뚱한 서랍에 들어간 글이 있으면 코워크에: <code>"○○ 글은 △△ 분류함이 맞아. 옮기고 index도 고쳐줘"</code></li></ol>
+    <div class="say"><b>왜 옵시디언에서 보나</b> — 클로드는 말로만 결과를 알려 주고, 탐색기는 파일 이름만 보여 줍니다. 쌓이고 정리된 걸 <b>눈으로 보고 고치는 창</b>이 옵시디언입니다.</div></div>
+
+  <div class="card" id="s5-remake"><span class="bd mine">✋ 내 것</span><h3><svg class="ico"><use href="#i-sparkle"/></svg>재가공 — 글 하나를 내 용도로</h3>
+    <p>정리된 글 중 하나를 골라, <b>내가 쓸 모양</b>으로 다시 쓰게 합니다. 원문은 그대로 두고 새 파일로.</p>
+    <div class="plabel">[ ] 안만 바꿔서 붙여 넣기</div>
+    <pre class="prompt"><button type="button" class="copy">복사</button><b class="bl">[분류함]</b> 폴더의 '<b class="bl">[글 제목]</b>' 글을 <b class="bl">[용도: 예) 수강생 안내문 / 팀 공유 메모 / 카톡 5줄]</b> 로 다시 써줘.
+원문은 건드리지 말고 output 폴더에 새 파일로 만들어. 파일 이름은 안내문_글제목.md 로.
+원문에 없는 내용은 쓰지 말고, 맨 아래에 출처 주소를 남겨.</pre>
+    <p class="hint">강사 예시: 활용사례 글 → "수강생 안내문 5줄". 회계: 세무변경 글 → "팀장 보고용 3줄". 여행: 숙소 글 → "가족 카톡용 5줄".</p>
+    <div class="chk"><label><input type="checkbox" data-k="c5a">분류함 폴더 · 3줄 요약 · index.md가 있다</label><label><input type="checkbox" data-k="c5b">output에 재가공한 파일이 생겼다</label></div></div>
+
+  <div class="card wide" id="s5-end"><span class="bd chk">✅ 확인</span><h3><svg class="ico"><use href="#i-check"/></svg>오늘 가져가는 것 — 폴더 하나 · 앞으로는 담기만</h3>
+    <div class="grid" style="gap:14px">
+      <div><div class="chk"><label><input type="checkbox" data-k="e1">scrap/CLAUDE.md — 내 주제와 분류함</label><label><input type="checkbox" data-k="e2">웹클리퍼가 scrap/inbox에 연결됨</label><label><input type="checkbox" data-k="e3">분류함 폴더 + 요약 + index.md + output</label></div>
+        <div class="box note"><h4>오늘 한 문장</h4><p>"모으는 건 클리퍼로 내가, 정리·재가공은 CLAUDE.md 규칙대로 클로드가, 보고 고치는 건 옵시디언에서 내가."</p></div></div>
+      <div><h4 style="font-size:.86rem;margin-bottom:6px">집에서 이어 하기</h4><div class="chk"><label><input type="checkbox" data-k="h1">집 PC에도 옵시디언·클리퍼 설치, scrap 폴더 열기</label><label><input type="checkbox" data-k="h2">이번 주 내 주제 글 5건 담기 → "inbox 정리해줘"</label><label><input type="checkbox" data-k="h3">분류함이 안 맞으면 CLAUDE.md 분류함 줄 고치기</label><label><input type="checkbox" data-k="h4">(업무) 회사 PC에서 실제 자료로 같은 방법</label></div>
+        <div class="box adv" style="margin-top:10px"><h4>한 걸음 더 (고급)</h4><pre class="prompt" style="margin-top:6px"><button type="button" class="copy">복사</button>매주 월요일 아침 8시에 inbox의 새 글을 CLAUDE.md 규칙대로 정리하는 예약 작업을 만들어줘. 처음 한 번은 지금 바로 실행해줘.</pre></div>
+        <p class="hint" style="margin-top:10px">끝나면 옵시디언·클로드 앱 로그아웃, USB 안전 제거. 다음 시간에는 이 폴더로 나만의 사이트를 만듭니다.</p></div>
+    </div></div>
+</div></section>
+
+<!-- 부록 -->
+<section class="step" data-i="6"><div class="grid">
+  <div class="band"><span class="band-no">부록</span><div><h2>막힘 사전 · 플랜B · 더 알기</h2><p>화면이 이상하면 여기부터 봅니다.</p></div><svg class="band-ico"><use href="#i-check"/></svg></div>
+
+  <div class="card wide" id="a-dict"><h3>막힘 사전</h3>
+    <table><tr><th style="width:30%">화면</th><th style="width:30%">왜</th><th>뭘 누르나</th></tr>
+      <tr><td>주제를 못 정하겠음</td><td>고를 게 많음</td><td>"AI 소식"으로 진행</td></tr>
+      <tr><td>클리퍼로 담았는데 옵시디언에 안 보임</td><td>저장 위치가 다른 보관함</td><td>클리퍼 팝업 아래 Vault가 scrap인지 확인</td></tr>
+      <tr><td>옵시디언 메뉴가 영어</td><td>언어 설정</td><td>설정(톱니) → Language → 한국어</td></tr>
+      <tr><td>옵시디언에 inbox가 안 보임</td><td>다른 보관함이 열림</td><td>「폴더를 보관함으로 열기」로 scrap 다시</td></tr>
+      <tr><td>클리퍼 보관함 목록이 비어 있음</td><td>옵시디언이 꺼져 있음</td><td>옵시디언 켜고 클리퍼 설정 다시</td></tr>
+      <tr><td>Clippings 폴더에 저장됨</td><td>저장 위치 미변경</td><td>템플릿 Note location을 inbox로</td></tr>
+      <tr><td>클리핑 본문이 빔</td><td>스크립트로 그리는 페이지</td><td>필요한 부분 드래그 선택 후 저장</td></tr>
+      <tr><td>클로드가 "어떻게 정리할까요?" 되물음</td><td>CLAUDE.md가 없거나 이름이 다름</td><td>옵시디언 왼쪽에 CLAUDE.md 확인. .txt면 "이름 바꿔줘"</td></tr>
+      <tr><td>새 대화에서 내 규칙을 모름</td><td>다른 프로젝트·폴더에서 열었음</td><td>프로젝트 「내 스크랩북」에서 새 대화, 작업 폴더가 scrap인지 확인</td></tr>
+      <tr><td>승인 창이 계속 뜸</td><td>승인 수동 + 파일 여러 개</td><td>프롬프트에 "한 번에 묶어서 작업"</td></tr>
+      <tr><td>요약에 원문에 없는 내용</td><td>지어냄</td><td>"출처에 없는 내용은 지워줘" + 규칙 4번 확인</td></tr>
+      <tr><td>inbox가 비어서 "글이 지워졌나?" 싶음</td><td>분류함으로 이동한 것</td><td>옵시디언 왼쪽의 분류함 폴더를 열면 그대로 있음</td></tr>
+      <tr><td>분류함을 바꿨는데 예전 폴더에 글이 남음</td><td>규칙만 바뀌고 폴더는 그대로</td><td>"예전 분류함 폴더의 글을 새 분류함으로 다시 나누고 index도 고쳐줘"</td></tr>
+      <tr><td>긴 대화에서 규칙을 안 지킴</td><td>대화가 길어져 산만</td><td>새 대화 열고 다시</td></tr>
+      <tr><td>지난주와 다른 PC라 보관함이 없음</td><td>USB 드라이브 문자가 바뀜</td><td>「폴더를 보관함으로 열기」로 다시</td></tr></table></div>
+
+  <div class="card" id="a-planb"><h3>플랜B — 클리퍼가 끝내 안 될 때</h3>
+    <p>① <a href="https://chromewebstore.google.com/detail/marksnip-webpage-to-markd/kcbaglhfgbkjdnpeokaamjjkddempipm" target="_blank" rel="noopener">MarkSnip</a>(웹페이지를 .md 파일로 내려받는 확장)으로 받아서 inbox에 끌어다 넣기. ② 그것도 안 되면 클로드가 대신:</p>
+    <pre class="prompt"><button type="button" class="copy">복사</button>아래 주소의 글을 읽고 각각 inbox 폴더에 md 파일로 저장해줘.
+맨 위에 제목, 원문 주소, 저장 날짜. 본문은 원문 내용만.
+<b class="bl">[주소1]</b>
+<b class="bl">[주소2]</b></pre>
+    <p class="hint">코워크의 웹 접근 설정이 켜져 있어야 합니다.</p></div>
+
+  <div class="card" id="a-safe"><h3>안전 수칙</h3>
+    <div class="box warn"><ul><li>공용 PC에는 진짜 회사 숫자 · 거래처 이름 · 개인 정보를 넣지 않습니다.</li><li>주식: 클로드가 매수·매도 권유를 하지 않게 합니다. 판단은 사람이.</li><li>회계: 숫자는 원문 그대로, 계산값은 계산식과 함께.</li><li>끝나면 로그아웃, USB 안전 제거.</li></ul></div></div>
+
+  </div></section>
+
+<section class="step" data-i="7"><div class="grid">
+  <div class="band"><span class="band-no">참조</span><div><h2>참조 자료 모음</h2><p>각 STEP에 딸린 읽을거리를 한 자리에 펼쳐 두었습니다. 수업 중에는 STEP 탭으로, 더 알고 싶을 때는 여기로.</p></div><svg class="band-ico"><use href="#i-doc"/></svg></div>
+  <div class="card wide" id="ref-top"><h3>어느 STEP 참조 자료를 보시겠어요?</h3><div class="chips"><a href="#refsec-0" class="chip">STEP 0 · 자료 가공, 지금 어떻게 하나</a><a href="#refsec-1" class="chip">STEP 1 · 웹클리퍼 시연</a><a href="#refsec-2" class="chip">STEP 2 · 폴더에 바로 넣자 · 마크다운</a><a href="#refsec-4" class="chip">STEP 4 · 기준을 써 두자 — CLAUDE.md</a><a href="#refsec-6" class="chip">부록 · 막힘 사전 · 플랜B</a></div></div>
+  <div class="refsec" id="refsec-0"><svg class="ico"><use href="#i-star"/></svg>STEP 0 · 자료 가공, 지금 어떻게 하나 <span class="cnt">1개</span></div>
+  <div class="card wide ref" id="ref-0-8"><span class="bd see">STEP 0</span><h3>크롬 웹클리퍼 비교 (2026.10 기준)</h3><div class="refbody"><table><tr><th>클리퍼</th><th>저장되는 곳</th><th>남는 것</th><th>클로드가 폴더에서 읽나</th></tr>
+        <tr><td>크롬 북마크 · 읽기 목록</td><td>크롬 안</td><td>주소</td><td>✗</td></tr>
+        <tr><td>Google Keep 확장</td><td>Keep(인터넷)</td><td>주소 + 메모</td><td>✗</td></tr>
+        <tr><td>Notion Web Clipper (공식)</td><td>노션 워크스페이스</td><td>본문 + 주소 속성</td><td>✗</td></tr>
+        <tr><td>Evernote Web Clipper</td><td>에버노트</td><td>본문 · 화면</td><td>✗</td></tr>
+        <tr><td><a href="https://chromewebstore.google.com/detail/ancgeemmgnlempppapnfkdpghghphgjb" target="_blank" rel="noopener">Notebook Clipper</a> — NotebookLM용 (비공식, 설치 3만)</td><td>NotebookLM 노트북</td><td>페이지·유튜브·PDF를 소스로</td><td>✗ (내보내기 필요)</td></tr>
+        <tr><td><a href="https://chromewebstore.google.com/detail/marksnip-webpage-to-markd/kcbaglhfgbkjdnpeokaamjjkddempipm" target="_blank" rel="noopener">크롬 웹스토어 — MarkSnip</a></td><td>내 PC 다운로드 폴더</td><td>.md 파일</td><td>○ (폴더로 옮기면)</td></tr>
+        <tr><td><b><a href="https://chromewebstore.google.com/detail/obsidian-web-clipper/cnjifjpddelmedmihgijeibhnjfabmlf" target="_blank" rel="noopener">크롬 웹스토어 — Obsidian Web Clipper (공식)</a></b> · 설치 100만</td><td><b>내 폴더(보관함)에 바로</b></td><td>.md 파일 + 제목·주소·날짜</td><td><b>○</b></td></tr></table>
+      <p class="src">Pocket은 2025년 7월 서비스 종료. 구글 공식 NotebookLM 크롬 클리퍼는 없음 — NotebookLM 안에서 "소스 추가 → 웹사이트"가 공식 방법. "Obsidian Clipper", "markClipper" 등 이름이 비슷한 비공식 확장이 있으니 <b>개발자가 obsidian.md인 것</b>을 고릅니다.</p></div></div>
+  <div class="refsec" id="refsec-1"><svg class="ico"><use href="#i-clip"/></svg>STEP 1 · 웹클리퍼 시연 <span class="cnt">1개</span></div>
+  <div class="card wide ref" id="ref-1-8"><span class="bd see">STEP 1</span><h3>NotebookLM 클리퍼, 언제 쓰나</h3><div class="refbody"><p><a href="https://chromewebstore.google.com/detail/ancgeemmgnlempppapnfkdpghghphgjb" target="_blank" rel="noopener">Notebook Clipper (크롬 웹스토어)</a> — 설치 3만, 평점 4.9. 페이지·PDF·유튜브 영상·AI 대화를 NotebookLM 노트북에 소스로 넣어 줍니다. <b>구글 공식은 아니고</b> 개인 개발자 확장이라, 스토어 고지에 사용자 활동 정보를 처리한다고 적혀 있습니다. 공용 PC에서는 깔지 않는 게 좋고, 공식 방법은 NotebookLM 안에서 <b>소스 추가 → 웹사이트</b>에 주소를 붙여 넣는 것입니다.</p>
+      <p>NotebookLM이 좋은 날: 자료 10~20개를 넣고 <b>오디오 요약·퀴즈·마인드맵</b>을 뽑고 싶을 때. 우리처럼 자료를 <b>내 것으로 쌓아 두고 클로드가 계속 가공</b>하려면 폴더 쪽이 맞습니다. 둘은 경쟁이 아니라 용도가 다릅니다.</p></div></div>
+  <div class="refsec" id="refsec-2"><svg class="ico"><use href="#i-obs"/></svg>STEP 2 · 폴더에 바로 넣자 · 마크다운 <span class="cnt">3개</span></div>
+  <div class="card wide ref" id="ref-2-8"><span class="bd see">STEP 2</span><h3>옵시디언, 제대로</h3><div class="refbody"><p><b>"그 자료 분명히 봤는데 어디 있더라."</b> 자료를 준비할 때 시간을 제일 많이 잡아먹는 건 만드는 일이 아니라 <b>예전에 본 자료를 다시 찾는 일</b>입니다. 폴더를 아무리 잘 나눠도 안 풀립니다. 자료는 한 폴더에만 속하지 않으니까요. 옵시디언은 분류하는 대신 <b>연결</b>합니다. 이런 걸 개인 지식 관리(PKM)라고 부르는데, 쉽게 말해 <b>나만의 자료실</b>입니다.</p>
+      <table><tr><th></th><th>옵시디언</th><th>노션</th><th>에버노트</th><th>원노트</th></tr>
+        <tr><td>저장 위치</td><td><b>내 PC</b></td><td>클라우드</td><td>클라우드</td><td>클라우드/PC</td></tr>
+        <tr><td>파일 형식</td><td><b>마크다운(.md)</b></td><td>독자 형식</td><td>독자 형식</td><td>독자 형식</td></tr>
+        <tr><td>인터넷 없이</td><td>완전 작동</td><td>제한적</td><td>제한적</td><td>가능</td></tr>
+        <tr><td>옮기기</td><td><b>폴더째 옮기면 끝</b></td><td>내보내기 필요</td><td>내보내기 필요</td><td>내보내기 필요</td></tr>
+        <tr><td>연결 그림(그래프)</td><td>있음</td><td>없음</td><td>없음</td><td>없음</td></tr>
+        <tr><td>가격</td><td>무료</td><td>무료~유료</td><td>유료</td><td>Office 포함</td></tr></table>
+      <p class="hint">클라우드 도구는 회사 자료·고객 정보를 넣을 때 보안 정책을 확인해야 합니다. 옵시디언은 파일이 내 PC에만 있어서 그 걱정이 없습니다. 반대로 집·사무실에서 같이 쓰려면 구글 드라이브·원드라이브 같은 동기화 폴더 안에 보관함을 두면 됩니다(파일은 여전히 PC에 있고 동기화만 클라우드가 함). 두 PC에서 동시에 열면 충돌 파일이 생기니 한쪽을 닫고 씁니다.</p>
+      <p><b>처음 세팅 6단계</b> — ① 설치 ② 「폴더를 보관함으로 열기」로 내 폴더 선택(보관함 이름·위치는 나중에 바꿔도 됨) ③ 왼쪽에서 새 폴더 ④ 새 노트 하나 쓰기 ⑤ 설정 → 코어 플러그인에서 <b>백링크 · 그래프 뷰 · 태그 창 · 템플릿 · 개요</b> 켜기 ⑥ Ctrl+G로 그래프 열어 보기.</p>
+      <p><b>폴더는 이렇게 시작하면 됩니다.</b> 처음부터 완벽하게 만들려 하면 시작을 못 합니다. 오늘은 <code>inbox</code>와 분류함 몇 개면 충분하고, 커지면 이런 식으로 늘립니다.</p>
+      <div class="tree">내자료실/
+├── 00_inbox/      담은 것을 일단 던져 두는 곳
+├── 10_자료/       정리된 글 (분류함들)
+├── 20_사례/       수업·업무에 쓸 사례와 인용
+├── 30_도구/       도구별 사용법과 프롬프트
+└── 90_템플릿/     반복해서 쓰는 노트 양식      ← 번호를 앞에 붙이면 순서가 고정됨</div>
+      <table><tr><th>노트를 잇는 두 방법</th><th>어떻게</th><th>성격</th><th>언제</th></tr>
+        <tr><td>링크</td><td><code>[[노트이름]]</code></td><td><b>길</b> — 두 노트를 직접 잇는다</td><td>이 노트를 읽다가 저 노트로 넘어가야 할 때</td></tr>
+        <tr><td>태그</td><td><code>#태그명</code></td><td><b>바구니</b> — 흩어진 노트를 같은 이름으로 묶는다</td><td>나중에 한꺼번에 모아 보고 싶을 때</td></tr></table>
+      <p><b>백링크</b> — 링크는 한 방향인데, B 노트를 열면 "B를 가리킨 노트들"이 옆에 자동으로 뜹니다. 폴더는 자료를 한 곳에만 넣지만, 백링크는 그 자료가 쓰인 <b>모든 자리</b>를 보여 줍니다. <b>그래프 뷰</b>(Ctrl+G)는 노트를 점, 링크를 선으로 그립니다. 예쁜 그림이 아니라 진단 도구입니다.</p>
+      <table><tr><th>그래프에서 보이는 것</th><th>뜻</th><th>할 일</th></tr>
+        <tr><td>선이 없는 외딴 점</td><td>어디에도 연결 안 된 노트</td><td>관련 노트를 찾아 링크</td></tr>
+        <tr><td>선이 몰린 큰 점</td><td>내 관심의 중심축</td><td>글·수업 주제 후보</td></tr>
+        <tr><td>점선 점</td><td>링크만 걸고 아직 안 만든 노트</td><td>다음에 쓸 목록으로</td></tr></table>
+      <table><tr><th>증상</th><th>원인</th><th>해결</th></tr>
+        <tr><td>링크를 걸었는데 연결 안 됨</td><td>노트 이름이 정확히 안 맞음</td><td>대괄호 안 자동완성에서 고르기</td></tr>
+        <tr><td>백링크 칸이 안 보임</td><td>기능이 꺼짐</td><td>코어 플러그인에서 백링크 켜기</td></tr>
+        <tr><td>그래프가 텅 빔</td><td>링크가 없음</td><td>노트 두 개를 서로 링크</td></tr>
+        <tr><td>노트가 검색 안 됨</td><td>보관함 밖 파일</td><td>보관함 폴더 안으로 옮기기</td></tr>
+        <tr><td>충돌 파일이 생김</td><td>두 기기에서 동시에 편집</td><td>한쪽을 닫고 편집</td></tr></table>
+      <p><b>낱말</b> — <b>보관함(Vault)</b>: 옵시디언이 보는 폴더 하나. 지워도 파일은 남음. <b>노트</b>: 그 안의 md 파일 하나. 긴 글 하나보다 짧은 노트 여럿이 연결된 쪽이 나중에 쓸모 있음. <b>백링크</b>: 나를 가리키는 노트 목록. <b>그래프 뷰</b>: 연결 지도. <b>태그</b>: 이름표.</p>
+      <p><b>집에서 해 보기:</b> 노트 세 개를 만들어 서로 <code>[[ ]]</code>로 잇고 그래프에서 삼각형이 그려지는지 봅니다. 아직 없는 노트 이름으로 링크를 하나 더 걸어 점선 점을 확인합니다.</p></div></div>
+  <div class="card wide ref" id="ref-2-8"><span class="bd see">STEP 2</span><h3>마크다운, 제대로</h3><div class="refbody"><p><b>마크다운이 뭔가.</b> 2004년에 만들어진 글쓰기 약속입니다. 프로그램이 아니라 규칙이라, 문장 앞에 기호 몇 개를 붙여 "이건 제목", "이건 목록"이라고 표시합니다. 핵심은 둘입니다. ① <b>그냥 텍스트 파일</b>이라 확장자가 .md일 뿐 메모장으로도 열리고, 특정 회사 프로그램이 없어도 20년 뒤에 열립니다. ② <b>사람도 기계도 읽습니다.</b> <code>## 학습목표</code>라고 적으면 사람은 제목으로 보고, AI는 "여기서 새 단원이 시작된다"고 이해합니다. 워드 파일에서는 이 정보가 서식 코드 속에 묻혀 AI가 놓치기 쉽습니다.</p>
+      <table><tr><th>왜 쓰나</th><th>설명</th></tr>
+        <tr><td>AI가 정확히 읽음</td><td>구조가 그대로 전달되어 요약·변환·재구성의 정확도가 올라감</td></tr>
+        <tr><td>한 원본에서 여러 형식</td><td>같은 파일에서 문서·슬라이드·웹 페이지·PDF를 뽑아냄</td></tr>
+        <tr><td>검색·비교가 쉬움</td><td>텍스트 파일이라 여러 글을 한 번에 찾고 바꿀 수 있음</td></tr>
+        <tr><td>버전 관리</td><td>어제와 오늘의 차이를 줄 단위로 확인</td></tr></table>
+      <p><b>기본 문법 전체</b></p>
+      <table><tr><th>이렇게 치면</th><th>뜻</th><th>메모</th></tr>
+        <tr><td><code>## 제목</code> <code>### 작은 제목</code></td><td>제목</td><td>본문은 <code>##</code>부터 시작하는 게 표준. <code>#</code> 하나는 파일 제목 자리로 쓰임</td></tr>
+        <tr><td><code>**굵게**</code> <code>*기울임*</code> <code>~~취소~~</code></td><td>강조</td><td>굵게 = 핵심 용어, 기울임 = 외래어·책 제목</td></tr>
+        <tr><td><code>- 항목</code> / <code>&nbsp;&nbsp;- 하위</code></td><td>목록 · 중첩</td><td>하위는 스페이스 2칸 들여쓰기</td></tr>
+        <tr><td><code>1. 첫째</code> <code>2. 둘째</code></td><td>번호 목록</td><td></td></tr>
+        <tr><td><code>- [ ] 할 일</code> <code>- [x] 끝남</code></td><td>체크박스</td><td>옵시디언에서 클릭으로 체크됨</td></tr>
+        <tr><td><code>| 열1 | 열2 |</code> 다음 줄 <code>|---|---|</code></td><td>표</td><td>둘째 줄 구분선이 없으면 표로 안 보임</td></tr>
+        <tr><td><code>`코드`</code> / <code>```</code> 블록</td><td>코드</td><td>프롬프트를 그대로 보여 줄 때</td></tr>
+        <tr><td><code>&gt; 인용</code></td><td>인용문</td><td></td></tr>
+        <tr><td><code>[글자](주소)</code> / <code>![설명](그림주소)</code></td><td>링크 / 그림</td><td></td></tr></table>
+      <p><b>옵시디언에서만 더 되는 것</b> — <code>[[다른 노트]]</code> 노트끼리 연결(그래프의 선이 됨) · <code>#태그</code> 이름표(태그 창에 모임) · <code>&gt; [!note]</code> 색 상자(콜아웃) · 파일 맨 위 <code>---</code> 사이 속성(날짜·출처·태그가 칸으로 보임).</p>
+      <table><tr><th>상황</th><th>워드로 만들었을 때</th><th>마크다운으로 만들었을 때</th></tr>
+        <tr><td>슬라이드로 바꾸기</td><td>내용을 다시 옮겨 적음</td><td>변환을 요청하면 끝</td></tr>
+        <tr><td>웹에 올리기</td><td>별도 편집 필요</td><td>거의 그대로 올라감</td></tr>
+        <tr><td>AI에게 요약시키기</td><td>서식이 섞여 정확도 떨어짐</td><td>구조를 그대로 이해</td></tr>
+        <tr><td>3년 뒤 열어 보기</td><td>프로그램 버전 따라 깨질 수 있음</td><td>메모장으로도 열림</td></tr></table>
+      <table><tr><th>증상</th><th>원인</th><th>해결</th></tr>
+        <tr><td>표가 표로 안 보임</td><td>둘째 줄 구분선 누락</td><td><code>|---|---|</code> 넣기</td></tr>
+        <tr><td>줄바꿈이 안 됨</td><td>엔터 한 번은 무시됨</td><td>빈 줄 한 줄, 또는 줄 끝 공백 두 칸</td></tr>
+        <tr><td>목록이 붙어 나옴</td><td>목록 앞에 빈 줄 없음</td><td>목록 시작 전 빈 줄</td></tr>
+        <tr><td>기호가 그대로 보임</td><td>편집 모드</td><td>읽기 모드로 전환(옵시디언 오른쪽 위 책 아이콘)</td></tr>
+        <tr><td>특수문자가 사라짐</td><td>기호로 해석됨</td><td>기호 앞에 <code>\</code></td></tr></table>
+      <p><b>집에서 해 보기:</b> 최근에 쓴 워드 문서 하나를 골라 마크다운으로 다시 써 보세요. 제목·목록·표를 한 번씩 씁니다. (클로드에게 "이 워드 파일을 md로 바꿔줘"라고 해도 됩니다)</p></div></div>
+  <div class="card wide ref" id="ref-2-8"><span class="bd see">STEP 2</span><h3>웹클리퍼, 제대로</h3><div class="refbody"><p>지금 브라우저에 탭이 몇 개 열려 있나요? "나중에 읽어야지" 하고 열어 둔 것들, 실제로 다시 읽는 건 거의 없습니다. 북마크도 같습니다. 저장은 쉬운데 다시 찾지 않습니다. <b>링크만 남고 내용은 내 것이 되지 않기 때문</b>입니다. 웹클리퍼는 링크가 아니라 내용을, 그것도 마크다운으로 가져옵니다.</p>
+      <table><tr><th>기능</th><th>내용</th></tr>
+        <tr><td>전체 저장</td><td>페이지 전체를 마크다운으로</td></tr>
+        <tr><td>선택 저장</td><td>드래그한 부분만 (Ctrl+A로 전체 선택도 가능)</td></tr>
+        <tr><td><b>제목·주소·날짜 자동 기록</b></td><td>가장 값진 기능. 나중에 인용할 때 출처 되찾을 일이 없음</td></tr>
+        <tr><td>폴더 지정</td><td>저장 폴더를 미리 정함 (우리는 inbox)</td></tr>
+        <tr><td>템플릿</td><td>저장 노트의 모양을 일정하게</td></tr>
+        <tr><td>하이라이트</td><td>중요한 문장에 형광펜 → 그 부분만 저장. 다시 방문하면 표시가 남아 있음</td></tr></table>
+      <p><b>설치와 연결</b> ① <a href="https://chromewebstore.google.com/detail/obsidian-web-clipper/cnjifjpddelmedmihgijeibhnjfabmlf" target="_blank" rel="noopener">크롬 웹스토어 — Obsidian Web Clipper (공식)</a> → 추가 ② 퍼즐 아이콘에서 고정 ③ <b>옵시디언을 켜 둔 상태로</b> 클리퍼 설정(톱니) 열기 ④ General에서 보관함 추가 ⑤ 템플릿의 저장 위치를 inbox로. 옵시디언이 꺼져 있으면 연결이 안 됩니다. 단축키: 열기 Ctrl+Shift+O, 빠른 저장 Alt+Shift+O.</p>
+      <p><b>인박스 원칙</b> — 담을 때 제자리를 찾으려 하면 담기 자체가 부담이 됩니다. <b>일단 inbox에 던져 두고 나중에 정리</b>하는 방식이 오래갑니다. 오늘은 그 "나중에 정리"를 클로드가 합니다.</p>
+      <p><b>템플릿</b> — 저장되는 노트의 머리말을 고정해 둘 수 있습니다. 처음엔 기본 템플릿으로 충분하고, 익숙해지면 이렇게 바꿉니다.</p>
+      <div class="tree">---
+type: 수집자료
+created: {{date}}
+source: {{url}}
+title: {{title}}
+tags: [수집, 미검토]
+---
+## {{title}}
+출처 : [{{domain}}]({{url}})
+---
+{{content}}</div>
+      <p class="hint">중괄호 두 개 부분은 저장할 때 실제 값으로 바뀝니다. 이미지는 내려받지 않고 링크만 남깁니다(옵시디언에서 「Download attachments for current file」 명령으로 나중에 받을 수 있음).</p>
+      <table><tr><th>태그는 먼저 정한다</th><th>예</th><th>쓰임</th></tr>
+        <tr><td>자료 성격</td><td>#사례 #통계 #공식문서 #후기</td><td>무엇인지</td></tr>
+        <tr><td>도구</td><td>#ChatGPT #Claude #옵시디언</td><td>어떤 도구 이야기인지</td></tr>
+        <tr><td>내 주제</td><td>내 분류함 이름</td><td>어디에 쓸지</td></tr>
+        <tr><td>상태</td><td><b>#미검토 → #검토완료 → #인용함</b></td><td>처리했는지. #미검토만 검색하면 안 읽은 글이 한눈에</td></tr></table>
+      <p class="hint">나중에 #사례·#사례연구·#활용사례처럼 갈라지면 태그의 의미가 사라집니다. 목록을 한 파일(예: tags.md)에 적어 두고 그것만 씁니다. 오늘 CLAUDE.md의 "태그 2개(#분류함이름 #미검토)"가 이것의 가장 작은 판입니다.</p>
+      <p><b>수집한 다음이 진짜</b> — 수집만 하면 inbox는 또 하나의 열린 탭 더미가 됩니다. 저장한 뒤 ① "왜 저장했나" 한 줄 ② 관련 노트에 링크. <b>수집 · 요약 · 연결</b>이 한 세트. 오늘은 수집·요약을 클로드가 하고, 연결은 다음에 합니다.</p>
+      <table><tr><th>증상</th><th>원인</th><th>해결</th></tr>
+        <tr><td>보관함 목록이 비어 있음</td><td>옵시디언이 꺼져 있음</td><td>옵시디언을 열고 설정 다시</td></tr>
+        <tr><td>저장은 됐는데 본문이 빔</td><td>스크립트로 그리는 페이지</td><td>필요한 부분을 드래그해 선택 저장</td></tr>
+        <tr><td>이미지가 깨져 보임</td><td>원문 서버 이미지 링크가 막힘</td><td>필요한 이미지만 따로 저장</td></tr>
+        <tr><td>원문 주소가 안 남음</td><td>템플릿에 source 항목 없음</td><td>템플릿에 source 추가</td></tr>
+        <tr><td>매번 다른 폴더에 저장됨</td><td>기본 저장 위치 미지정</td><td>저장 위치를 inbox로 고정</td></tr>
+        <tr><td>로그인 필요한 페이지가 안 됨</td><td>접근 권한</td><td>필요한 부분만 복사해 직접 노트로</td></tr></table>
+      <p><b>집에서 해 보기:</b> 지금 열려 있는 탭 중 세 개를 클리핑하고, 각각 한 줄 요약과 태그 두 개를 붙인 뒤 탭을 닫아 보세요. (요약·태그는 "inbox 정리해줘"로 클로드에게 시켜도 됩니다)</p></div></div>
+  <div class="refsec" id="refsec-4"><svg class="ico"><use href="#i-doc"/></svg>STEP 4 · 기준을 써 두자 — CLAUDE.md <span class="cnt">2개</span></div>
+  <div class="card wide ref" id="ref-4-8"><span class="bd see">STEP 4</span><h3>왜 "규칙 파일"이 프롬프트보다 중요한가</h3><div class="refbody"><p><b>컨텍스트</b>라는 말은 "함께 엮인 것"이라는 뜻입니다. AI에게는 <b>지금 이 일을 하려고 눈앞에 올려 둔 모든 정보</b> — 질문 한 줄이 아니라 배경 정보·규칙·이전 대화·파일 내용의 합입니다.</p>
+      <table><tr><th>시기</th><th>개념</th><th>핵심 질문</th><th>비유</th></tr>
+        <tr><td>2023</td><td>프롬프트 엔지니어링</td><td>"어떻게 물어볼까"</td><td>직원에게 지시를 잘 내리는 기술</td></tr>
+        <tr><td>2025</td><td><b>컨텍스트 엔지니어링</b></td><td>"무엇을 미리 읽혀 둘까"</td><td>직원이 일하기 전에 읽을 <b>업무 매뉴얼</b>을 잘 만드는 일</td></tr>
+        <tr><td>2026~</td><td>하네스 엔지니어링</td><td>"어떤 틀 안에서 돌릴까"</td><td>실수할 수 없게 시스템을 설계하는 일</td></tr></table>
+      <p>프롬프트만 쓰면 이렇게 됩니다 — 매일 아침 "메일은 격식체로", "우리 회사 이름은 ○○", "담당자는 ○○" … 규칙 파일에 한 번 적어 두면 <b>매번 자동으로 적용</b>됩니다. 이것이 실무에서 만들어 내는 가장 큰 가치, <b>반복 설명의 제거</b>입니다. 좋은 결과는 좋은 질문이 아니라 <b>좋은 배경 정보</b>에서 나옵니다.</p>
+      <p><b>CLAUDE.md가 뭔가.</b> 클로드가 폴더 일을 시작할 때 <b>자동으로 읽는 특수 마크다운 파일</b>입니다. 새 팀원이 왔을 때 건네는 <b>온보딩 문서</b>와 같고, 가장 중요한 특성은 <b>사람이 직접 쓴다</b>는 것입니다. (클로드가 스스로 적는 메모 기능과는 다릅니다. 중요한 규칙은 반드시 사람이 여기 적어야 일관성이 유지됩니다.)</p>
+      <table><tr><th>코워크에서 겹쳐 읽히는 지침</th><th>어디에</th><th>언제</th><th>넣을 것</th></tr>
+        <tr><td>프로젝트 지침</td><td>프로젝트 설정의 지침 칸</td><td>이 프로젝트의 모든 대화</td><td>호칭 · 말투 · 날짜 형식 같은 큰 규칙</td></tr>
+        <tr><td>폴더 규칙</td><td>폴더 안의 <b>CLAUDE.md</b></td><td>이 폴더로 일할 때</td><td>내 주제 · 분류함 · 할 일 · 금지</td></tr>
+        <tr><td>이번 부탁</td><td>지금 치는 말</td><td>지금만</td><td>이번 일의 세부</td></tr></table>
+      <p>이 셋은 서로 <b>덮어쓰지 않고 합쳐져서</b> 읽힙니다. 넓은 규칙 먼저, 구체적인 것 나중. 프로젝트 지침과 CLAUDE.md의 차이 하나 — <b>CLAUDE.md는 파일</b>이라 폴더째 옮기면 따라가고, 옵시디언에서도 보이고 고칠 수 있습니다. 폴더 일의 규칙은 여기에, 말투 같은 큰 규칙은 프로젝트 지침에. 회사 전체 규정집을 먼저 읽고 팀 매뉴얼을 읽는 신입과 같습니다 — 팀 매뉴얼이 규정집을 지우는 게 아니라, 더 구체적이라 실무에서 더 강하게 따르는 것입니다.</p>
+      <table><tr><th>대화가 끝나면 사라지는 것</th><th>끝나도 남는 것</th></tr>
+        <tr><td>그 대화에서 주고받은 내용 · "아까 그거" 같은 지칭 · 한 번만 말한 조건</td><td><b>CLAUDE.md</b> · 폴더 안의 모든 파일</td></tr></table>
+      <p class="hint">실무 원칙 한 줄: <b>"매번 설명하기 싫은 것은 CLAUDE.md에 적어 두세요."</b></p>
+      <table><tr><th>나쁜 규칙</th><th>좋은 규칙</th><th>차이</th></tr>
+        <tr><td class="no">보고서를 잘 써 주세요</td><td class="ok">A4 1장 이내 · 요약 3줄 → 배경 → 현황 → 제안 순서 · 표는 3열까지 · 수치엔 출처 · "~인 것 같습니다" 금지</td><td>"잘"은 사람마다 다름. AI는 확인 가능한 조건만 일관되게 따름</td></tr>
+        <tr><td class="no">우리 회사 정보 알죠?</td><td class="ok">회사명 · 소재지 · 주요 업무 · 담당자 직책 · 공문 발신 명의를 적어 둠</td><td>AI는 없는 정보를 추측해 채움. 이름·연락처가 틀리면 실제 피해</td></tr>
+        <tr><td class="no">깔끔하게 정리해 주세요</td><td class="ok">명단은 표(이름|상태|날짜) · 안내문은 {이름}님은 … 변수 형식 · 메일은 제목→본문→서명 순</td><td>형식을 안 정하면 매번 다른 모양. 반복 발행 문서에서 치명적</td></tr></table>
+      <p><b>짧을수록 잘 지킵니다.</b> 파일은 길이와 무관하게 전부 읽히지만, 길수록 규칙 <b>준수도가 떨어집니다.</b> 200줄 안쪽을 권하고, 자주 안 쓰는 긴 내용은 다른 파일로 뺍니다. 커지면 이렇게 나눕니다.</p>
+      <div class="tree">내폴더/
+├── CLAUDE.md        규칙·역할·절대 금지 (짧게)
+├── context/         배경 — 회사 소개, 용어 정의, 기준
+├── templates/       양식 — 안내문, 보고서, 회의록
+└── memory/          기록 — 진행 이력, 결정 사항</div>
+      <p><b>컨텍스트가 지저분해지면</b> — 분명히 적었는데 무시하는 것 같고, 대화가 길어질수록 앞 규칙을 잊는 것 같을 때. 해결: 규칙 파일은 짧게, 자주 안 쓰는 건 분리, 새 주제는 <b>새 대화</b>로.</p>
+      <p><b>더 채우고 싶을 때 5문항</b> ① 나는 누구이고 무슨 일을 하나 ② 자주 시키는 일 3가지 ③ 결과물은 어떤 모양이면 좋은가 ④ 절대 하면 안 되는 것 ⑤ 모르면 어떻게 하길 원하나. 이 답을 아래 틀에 넣으면 업무용 전체 규칙 파일이 됩니다.</p>
+      <div class="tree">## 나에 대해          이름 · 직무 · 소속 · 주요 담당 업무 · 응답 기본값(한국어, 날짜 형식)
+## 기본 정보          회사/기관명 · 주요 업무 · 담당자 · 발신 명의
+## 자주 요청하는 작업  1. … 2. … (각각 어떤 양식을 쓰는지)
+## 선호 출력 형식      명단은 표 · 안내문은 변수 형식 · 보고서는 두괄식 · 메일 순서
+## 절대 규칙          주민번호·계좌 포함 파일 금지 · 외부 발송은 내가 확인 후 · 숫자는 확인 전 단정 금지 · 모르면 묻는다
+## 내부 약어·용어      NCS = … / 이사님 = …
+## 참고 파일          필요할 때 읽을 파일 목록</div>
+      <table><tr><th>개념</th><th>한 줄</th></tr>
+        <tr><td>컨텍스트 엔지니어링</td><td>다음 일에 필요한 딱 맞는 정보를 AI에게 미리 주는 기술</td></tr>
+        <tr><td>CLAUDE.md</td><td>AI가 시작할 때 자동으로 읽는 업무 지침서</td></tr>
+        <tr><td>합쳐 읽기</td><td>넓은 규칙 → 폴더 규칙 → 이번 부탁, 덮어쓰지 않고 합산</td></tr>
+        <tr><td>짧게</td><td>길수록 덜 지킴. 자주 안 쓰는 건 분리</td></tr>
+        <tr><td>남는 것</td><td>대화는 사라지고 파일은 남는다</td></tr></table>
+      <p><b>3줄 요약</b> — ① 프롬프트보다 배경 파일이 중요하다. ② CLAUDE.md는 AI에게 주는 신입 매뉴얼이다. 한 번 잘 만들면 반복 설명이 사라진다. ③ 적을수록 잘 따른다.</p></div></div>
+  <div class="card wide ref" id="ref-4-8"><span class="bd see">STEP 4</span><h3>주제별 절대 규칙 예</h3><div class="refbody"><table><tr><th>주제</th><th>절대 규칙에 넣을 한 줄</th></tr>
+        <tr><td>총무·인사</td><td>개인 연락처·주민번호가 든 파일은 만들지 않는다. 외부로 나가는 글은 내가 확인한 뒤 보낸다</td></tr>
+        <tr><td>회계</td><td>숫자는 원문 그대로. 계산한 값은 계산식과 함께. 확인 전 수치는 "확인 필요"로 표시</td></tr>
+        <tr><td>주식</td><td>매수·매도 권유 문장은 쓰지 않는다. 판단은 내가 한다. 출처 없는 수치 금지</td></tr>
+        <tr><td>여행·건강</td><td>가격·운영시간·복용량은 출처가 있을 때만. 없으면 [확인 필요]</td></tr></table>
+      <p>좋은 규칙의 공통점은 하나입니다 — <b>지켰는지 확인할 수 있다.</b></p></div></div>
+  <div class="refsec" id="refsec-6"><svg class="ico"><use href="#i-check"/></svg>부록 · 막힘 사전 · 플랜B <span class="cnt">1개</span></div>
+  <div class="card wide ref" id="ref-6-8"><span class="bd see">부록</span><h3>태그 · 상태 · 과제</h3><div class="refbody"><table><tr><th>갈래</th><th>태그 예</th><th>쓰임</th></tr>
+      <tr><td>자료 성격</td><td>#사례 #통계 #공식문서 #후기</td><td>무엇인지</td></tr>
+      <tr><td>도구</td><td>#ChatGPT #Claude #옵시디언</td><td>어떤 도구 이야기인지</td></tr>
+      <tr><td>내 주제</td><td>각자 분류함 이름</td><td>어디에 쓸지</td></tr>
+      <tr><td>상태</td><td><b>#미검토 → #검토완료 → #인용함</b></td><td>처리했는지. #미검토만 검색하면 안 읽은 글이 한눈에</td></tr></table>
+    <p>수집 → 요약 → 연결, 셋이 한 세트. 오늘은 수집·요약까지. 연결([[링크]]·그래프)은 다음에.</p>
+    <p><b>과제:</b> 열려 있는 탭 3개를 클리핑하고, 각각 한 줄 요약과 태그 2개를 붙인 뒤 탭을 닫아 보세요. (클로드에게 시켜도 됩니다)</p></div></div>
+</div></section>
+
+</main>
+<aside class="side" id="side" aria-label="이 STEP의 카드 목록"></aside>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.150.1/three.min.js"></script>
+<script>
+(function(){
+  var tabs=[].slice.call(document.querySelectorAll('.tab'));
+  var steps=[].slice.call(document.querySelectorAll('.step'));
+  var side=document.getElementById('side');
+  var cur=0;
+  function store(k,v){try{localStorage.setItem('kimedu5v4_'+k,v);}catch(e){}}
+  function load(k){try{return localStorage.getItem('kimedu5v4_'+k);}catch(e){return null;}}
+
+  function buildSide(sec){
+    side.innerHTML='';
+    var p=document.createElement('p');p.textContent='이 STEP의 카드';side.appendChild(p);
+    [].slice.call(sec.querySelectorAll('.card')).forEach(function(c){
+      var h=c.querySelector('h3');if(!h)return;
+      var a=document.createElement('a');a.href='#'+c.id;a.textContent=h.textContent.replace(/\s+/g,' ').trim();
+      a.addEventListener('click',function(e){e.preventDefault();c.scrollIntoView({behavior:'smooth',block:'start'});c.style.boxShadow='0 0 0 3px #2F6690';setTimeout(function(){c.style.boxShadow='';},900);mark(a);});
+      side.appendChild(a);
+    });
+    var si=+sec.dataset.i;
+    if(si<7){var refs=[].slice.call(document.querySelectorAll('.step[data-i="7"] .card.ref[id^="ref-'+si+'-"]'));
+      if(refs.length){var h=document.createElement('p');h.className='side-ref';h.textContent='이 STEP 참조 자료';side.appendChild(h);
+        refs.forEach(function(rc){var ra=document.createElement('a');ra.href='#'+rc.id;ra.className='ref';ra.textContent=rc.querySelector('h3').textContent.trim();
+          ra.addEventListener('click',function(e){e.preventDefault();show(7,false);setTimeout(function(){rc.scrollIntoView({behavior:'smooth',block:'start'});rc.style.boxShadow='0 0 0 3px #2F6690';setTimeout(function(){rc.style.boxShadow='';},1200);},60);});
+          side.appendChild(ra);});}}
+    if(si===7){var back=document.createElement('p');back.className='side-ref';back.textContent='STEP으로 돌아가기';side.appendChild(back);
+      [0,1,2,4,6].forEach(function(k){var ba=document.createElement('a');ba.href='#';ba.className='ref';ba.textContent=(k===6?'부록':'STEP '+k)+' →';ba.addEventListener('click',function(e){e.preventDefault();show(k,true);});side.appendChild(ba);});}
+  }
+  function mark(a){[].slice.call(side.querySelectorAll('a')).forEach(function(x){x.classList.toggle('on',x===a);});}
+
+  function show(i,scroll){
+    cur=i;
+    tabs.forEach(function(t){t.setAttribute('aria-selected',String(+t.dataset.i===i));});
+    steps.forEach(function(s){s.classList.toggle('on',+s.dataset.i===i);});
+    var sec=steps[i];mountIntro(i,sec);buildSide(sec);addNav(sec);
+    initAnims(sec);
+    store('step',i);
+    if(scroll){window.scrollTo({top:0,behavior:'smooth'});}
+  }
+  function addNav(sec){
+    var g=sec.querySelector('.grid');if(!g||g.querySelector('.navbtns'))return;
+    var d=document.createElement('div');d.className='navbtns';
+    var i=+sec.dataset.i;
+    var b1=document.createElement('button');b1.type='button';b1.textContent='← 이전 STEP';b1.disabled=i===0;b1.onclick=function(){show(i-1,true);};
+    var b2=document.createElement('button');b2.type='button';b2.className='next';b2.textContent=i<steps.length-1?'다음 STEP →':'처음으로';b2.onclick=function(){show(i<steps.length-1?i+1:0,true);};
+    d.appendChild(b1);d.appendChild(b2);g.appendChild(d);
+  }
+  tabs.forEach(function(t){t.addEventListener('click',function(){show(+t.dataset.i,true);});});
+
+  /* 글자 크기 */
+  var body=document.body;
+  function setBig(b){body.classList.toggle('big',b);store('big',b?'1':'0');}
+  document.getElementById('fplus').onclick=function(){setBig(true);};
+  document.getElementById('fminus').onclick=function(){setBig(false);};
+  if(load('big')==='1')setBig(true);
+
+  /* 복사 */
+  [].slice.call(document.querySelectorAll('.copy')).forEach(function(b){
+    b.addEventListener('click',function(){
+      var pre=b.parentNode;var txt=pre.textContent.replace(b.textContent,'').replace(/^\n/,'').trim();
+      function ok(){b.textContent='복사됨';b.classList.add('done');setTimeout(function(){b.textContent='복사';b.classList.remove('done');},1600);}
+      function fb(){var t=document.createElement('textarea');t.value=txt;document.body.appendChild(t);t.select();try{document.execCommand('copy');ok();}catch(e){}document.body.removeChild(t);}
+      if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(ok,fb);}else fb();
+    });
+  });
+
+  /* 체크 저장 */
+  [].slice.call(document.querySelectorAll('.chk input')).forEach(function(c){
+    if(load('k_'+c.dataset.k)==='1')c.checked=true;
+    c.addEventListener('change',function(){store('k_'+c.dataset.k,c.checked?'1':'0');});
+  });
+
+  /* 움직이는 설명 — 버튼 3개: 재생/일시정지(통합), 정지, 되감기 */
+  function initAnims(sec){
+    [].slice.call(sec.querySelectorAll('.anim')).forEach(function(a){
+      var svg=a.querySelector('svg');
+      function anims(){return svg.getAnimations?svg.getAnimations({subtree:true}):[];}
+      function ref(){var m=-1,r=null;anims().forEach(function(x){var t=x.effect.getComputedTiming();if(t.endTime>m){m=t.endTime;r=x;}});return r;}
+      function dur(){var r=ref();return r?r.effect.getComputedTiming().endTime:1;}
+      function cur(){var r=ref();return r?(r.currentTime||0):0;}
+      function setT(t){anims().forEach(function(x){x.currentTime=t;});}
+      anims().forEach(function(x){x.pause();});setT(0);
+      if(a.dataset.ready){if(a._label)a._label();return;}
+      a.dataset.ready='1';
+      var play=a.querySelector('.play'),stop=a.querySelector('.stop'),back=a.querySelector('.back'),seek=a.querySelector('.aseek');
+      var drag=false;
+      function running(){return anims().some(function(x){return x.playState==='running';});}
+      function finished(){return cur()>=dur()-10;}
+      function label(){play.textContent=running()?'❚❚ 일시정지':(finished()?'▶ 다시 재생':'▶ 재생');}
+      play.onclick=function(){if(running()){anims().forEach(function(x){x.pause();});}else{if(finished())setT(0);anims().forEach(function(x){x.play();});}label();};
+      stop.onclick=function(){anims().forEach(function(x){x.pause();});setT(0);label();};
+      back.onclick=function(){var t=cur()-3000;if(t<0)t=0;setT(t);label();};
+      seek.addEventListener('input',function(){drag=true;setT(seek.value/1000*dur());label();});
+      seek.addEventListener('change',function(){drag=false;});
+      (function tick(){if(!drag){var d=dur();var v=Math.round(cur()/d*1000);seek.value=v>1000?1000:v;if(!running()&&play.textContent.indexOf('일시정지')>-1)label();}requestAnimationFrame(tick);})();
+      a._label=label;label();
+    });
+  }
+
+
+  /* ───── STEP 인트로 영상 (three.js + 타이포 모션, 타임라인 제어) ───── */
+  var INTROS={
+    0:{k:'STEP 0',t:'자료, 누가 고르나?',s:'클로드 코워크로 자료 관리 · 수정 · 재가공',l:[['i-star','즐겨찾기 — 주소만 남는다','dim'],['i-claude','예약 작업 — 클로드가 고른다','dim'],['i-clip','웹클리퍼 — 내가 고른 글이 글째로','']],c:'자료는 <i>내가 고르고</i>, 정리는 <i>클로드가</i>'},
+    1:{k:'STEP 1',t:'클릭 한 번이면',s:'웹클리퍼 시연 — NotebookLM',l:[['i-globe','기사 → 클립 → 노트북 → 요약',''],['i-lock','좋죠? 그런데 자료는 NotebookLM 안에','dim'],['i-folder','클로드가 내 폴더에서 못 읽는다','dim']],c:'그래서 우리는 — <i>내 폴더에 파일로</i>'},
+    2:{k:'STEP 2',t:'폴더에 바로 넣자',s:'옵시디언 + 웹클리퍼 + 마크다운(.md)',l:[['i-obs','옵시디언 = PC 폴더에 저장하는 메모장',''],['i-clip','클리퍼 → scrap/inbox 에 .md 파일',''],['i-claude','클로드가 읽고, 옵시디언이 보여 준다','']],c:'<i>같은 폴더</i>, 두 개의 창'},
+    3:{k:'STEP 3',t:'"정리해줘"',s:'그냥 말해 보면',l:[['i-claude','"어떤 기준으로요?"','dim'],['i-box','되묻거나, 제멋대로','dim'],['i-doc','클로드는 내 기준을 모른다','']],c:'<i>기준을 써 두자</i>'},
+    4:{k:'STEP 4',t:'CLAUDE.md',s:'폴더에 붙는 젬',l:[['i-doc','내 주제 · 분류함 · 글마다 할 일',''],['i-folder','폴더를 연결하면 자동으로 먼저 읽는다',''],['i-check','같은 말, 같은 글 — 다른 건 파일 하나','']],c:'한 번 써 두면, <i>매번 같은 기준으로</i>'},
+    5:{k:'STEP 5',t:'내 자료실',s:'보고 · 고치고 · 재가공',l:[['i-folder','분류함 · 3줄 요약 · index.md',''],['i-obs','옵시디언에서 보고 고친다',''],['i-sparkle','글 하나를 내 용도로 다시 쓴다','']],c:'앞으로는 <i>담기만</i> 하면 된다'}
+  };
+  var DUR=12000, PAL=[0x2F6690,0x7B61A8,0xF2C96B,0x2F6B45,0xCFDDE9,0xA58BD0,0x8FB3CC];
+  var live=null;
+  function clamp(x){return x<0?0:x>1?1:x;}
+  function ease(x){return 1-Math.pow(1-x,3);}
+  function unmountIntro(){if(!live)return;live.playing=false;if(live.renderer){try{live.renderer.dispose();}catch(e){}}live.el.remove();live=null;}
+  function mountIntro(i,sec){
+    unmountIntro();var d=INTROS[i];if(!d)return;
+    var grid=sec.querySelector('.grid');if(!grid)return;
+    var el=document.createElement('div');el.className='intro';
+    var chars=d.t.split('').map(function(ch,j){return '<span style="--j:'+j+'">'+(ch===' '?'&nbsp;':ch)+'</span>';}).join('');
+    var lines=d.l.map(function(x,j){return '<div class="line '+x[2]+'" style="top:'+(46+j*11)+'%"><svg><use href="#'+x[0]+'"/></svg><span>'+x[1]+'</span></div>';}).join('');
+    el.innerHTML='<div class="stage"><canvas></canvas><div class="ov"><div class="kicker">'+d.k+' · 영상 설명</div><div class="title">'+chars+'</div><div class="sub">'+d.s+'</div>'+lines+'<div class="close">'+d.c+'</div></div><div class="big"><button type="button" aria-label="재생">▶</button></div></div>'
+      +'<div class="abar"><button type="button" class="ab play">▶ 재생</button><button type="button" class="ab stop">■ 정지</button><button type="button" class="ab back">⏪ 되감기</button><input type="range" class="aseek" min="0" max="1000" value="0" aria-label="재생 위치"><span class="acap">이 STEP을 12초로 먼저 봅니다 · 재생을 누르세요</span></div>';
+    grid.insertBefore(el,grid.firstChild);
+    var st={el:el,idx:i,t:0,playing:false,last:0,renderer:null,scene:null,cam:null,shapes:[],pts:null,canvas:el.querySelector('canvas'),ctx2d:null,
+      title:[].slice.call(el.querySelectorAll('.title span')),kicker:el.querySelector('.kicker'),sub:el.querySelector('.sub'),lines:[].slice.call(el.querySelectorAll('.line')),close:el.querySelector('.close'),closeI:el.querySelector('.close i'),
+      play:el.querySelector('.play'),seek:el.querySelector('.aseek'),big:el.querySelector('.big button'),beats:[4200,6200,8200]};
+    live=st;
+    setup3d(st);size(st);window.addEventListener('resize',function(){if(live===st)size(st);});
+    function label(){st.play.textContent=st.playing?'❚❚ 일시정지':(st.t>=DUR?'▶ 다시 재생':'▶ 재생');el.classList.toggle('playing',st.playing);el.classList.toggle('done',!st.playing&&st.t>=DUR);}
+    function go(){if(st.playing)return;if(st.t>=DUR)st.t=0;st.playing=true;st.last=performance.now();label();requestAnimationFrame(loop);}
+    function loop(now){if(!st.playing||live!==st)return;st.t+=now-st.last;st.last=now;if(st.t>=DUR){st.t=DUR;st.playing=false;}render(st);label();if(st.playing)requestAnimationFrame(loop);}
+    st.play.onclick=function(){if(st.playing){st.playing=false;label();}else go();};
+    st.big.onclick=go;
+    el.querySelector('.stop').onclick=function(){st.playing=false;st.t=0;render(st);label();};
+    el.querySelector('.back').onclick=function(){st.t=Math.max(0,st.t-3000);render(st);label();};
+    st.seek.addEventListener('input',function(){st.t=st.seek.value/1000*DUR;render(st);label();});
+    render(st);label();
+  }
+  /* ── 내용에 맞는 3D 소품 ── */
+  var SCENES={
+    0:{props:[['star',-7,3.5,-2,-10,5.5,-3,0,4200,'fade'],['star',-5,2.2,-3,-8,4,-4,300,4200,'fade'],['star',-6.5,0.6,-2,-9,2,-3,600,4200,'fade'],
+              ['claude',2.2,2.6,-2,2.2,2.6,-2,0,1,''],['cloud',5.2,3.2,-3,5.2,3.2,-3,0,1,''],['doc',2.2,2.6,-2,5.2,3.2,-3,4600,6400,'shrink'],
+              ['folder',6.2,-1.2,-1,6.2,-1.2,-1,0,1,''],['clip',2.6,-0.6,-1,2.6,-0.6,-1,0,1,''],
+              ['doc',-9,4.5,-2,6.2,-1.0,-0.8,8200,10200,'shrink'],['doc',-8,3.8,-3,6.2,-1.0,-0.8,8700,10600,'shrink'],['doc',-9.5,3,-2,6.2,-1.0,-0.8,9200,11000,'shrink']],
+       labels:[['scrap',6.2,-2.6,-1,8200],['즐겨찾기',-6.5,4.6,-2,600,4200],['예약 작업',3.6,4.0,-2,2200],['웹클리퍼',2.6,-2.0,-1,6600]]},
+    1:{props:[['cloud',5.5,2.2,-2,5.5,2.2,-2,0,1,''],['lock',5.5,2.2,-1.2,5.5,2.2,-1.2,6200,6600,'pop'],
+              ['doc',-8,4.5,-3,5.5,2.4,-2,1200,3600,'shrink'],['doc',-7,3.6,-3,5.5,2.4,-2,1800,4200,'shrink'],
+              ['folder',7.2,-1.8,-1,7.2,-1.8,-1,0,1,''],['claude',3.2,-1.6,-1,3.2,-1.6,-1,8200,8600,'pop']],
+       labels:[['NotebookLM',5.5,0.4,-2,3800],['내 폴더 — 비어 있음',7.2,-3.3,-1,6200],['?',3.2,-0.2,-1,8600]]},
+    2:{props:[['folder',6,-0.8,-1,6,-0.8,-1,0,1,''],['clip',1.8,2.8,-2,1.8,2.8,-2,0,1,''],['gem',8.6,2.6,-2,8.6,2.6,-2,0,1,''],['claude',3.2,-2.4,-1,3.2,-2.4,-1,8200,8600,'pop'],
+              ['doc',-9,4.5,-3,6,-0.6,-0.8,1000,3200,'shrink'],['doc',-8.5,3.5,-3,6,-0.6,-0.8,4400,6400,'shrink'],['doc',-9.5,2.6,-3,6,-0.6,-0.8,6600,8400,'shrink'],['doc',-8,4.2,-3,6,-0.6,-0.8,8800,10400,'shrink']],
+       labels:[['scrap/inbox',6,-2.4,-1,2600],['.md',1.8,1.2,-2,4600],['옵시디언',8.6,1.1,-2,6400],['클로드',3.2,-3.8,-1,8600]]},
+    3:{props:[['doc',2.5,2.6,-2,2.5,2.6,-2,0,1,'bob'],['doc',4.6,1.2,-3,4.6,1.2,-3,0,1,'bob'],['doc',6.8,2.9,-2,6.8,2.9,-2,0,1,'bob'],['doc',3.6,-1.4,-2,3.6,-1.4,-2,0,1,'bob'],['doc',7.4,-0.9,-3,7.4,-0.9,-3,0,1,'bob'],['doc',5.6,-2.6,-2,5.6,-2.6,-2,0,1,'bob'],
+              ['claude',8.8,-2.2,-1,8.8,-2.2,-1,0,1,'']],
+       labels:[['?',3.4,3.8,-1,4200,0,'q'],['?',6.4,0.4,-1,5000,0,'q'],['?',4.8,-3.4,-1,5800,0,'q'],['어떻게요?',8.8,-0.6,-1,6200],['기준이 없다',5.2,4.2,-2,8200]]},
+    4:{props:[['bigdoc',5.4,0.6,-1.5,5.4,0.6,-1.5,0,1,'spin'],['check',5.4,0.6,-0.5,5.4,0.6,-0.5,8200,8600,'pop'],
+              ['folder',5.2,-3.3,-2,5.2,-3.3,-2,6200,6600,'pop'],['folder',7.3,-3.4,-2,7.3,-3.4,-2,6500,6900,'pop'],['folder',9.4,-3.3,-2,9.4,-3.3,-2,6800,7200,'pop'],['folder',11.5,-3.4,-2,11.5,-3.4,-2,7100,7500,'pop']],
+       labels:[['CLAUDE.md',5.4,3.0,-1,1200],['내 주제',8.6,3.4,-1,4200],['분류함',9.8,1.8,-1,4700],['글마다 할 일',9.6,0.2,-1,5200],['자동으로 먼저 읽는다',7.6,-1.4,-1,8600]]},
+    5:{props:[['folder',2.2,-1.6,-2,2.2,-1.6,-2,0,1,''],['folder',5.2,-1.6,-2,5.2,-1.6,-2,0,1,''],['folder',8.2,-1.6,-2,8.2,-1.6,-2,0,1,''],
+              ['doc',4,4.5,-3,2.2,-1.4,-1.5,800,2800,'shrink'],['doc',6,4.6,-3,5.2,-1.4,-1.5,1600,3600,'shrink'],['doc',8,4.4,-3,8.2,-1.4,-1.5,2400,4400,'shrink'],['doc',5,5,-3,2.2,-1.4,-1.5,3200,5200,'shrink'],['doc',7,4.9,-3,8.2,-1.4,-1.5,4000,6000,'shrink'],
+              ['gem',9.4,2.6,-2,9.4,2.6,-2,6200,6600,'pop'],['bigdoc',3.0,2.4,-2,3.0,2.4,-2,8200,8600,'pop'],['spark',3.9,3.4,-1,3.9,3.4,-1,8600,9000,'pop']],
+       labels:[['도구소식',2.2,-3.1,-2,2800],['활용사례',5.2,-3.1,-2,3600],['공부자료',8.2,-3.1,-2,4400],['index.md',5.6,1.6,-1,6200],['output/',3.0,0.6,-2,8600]]}
+  };
+  var MAT={};
+  function mat(hex,op){var k=hex+'_'+op;if(!MAT[k])MAT[k]=new THREE.MeshStandardMaterial({color:hex,roughness:.55,metalness:.05,transparent:true,opacity:op==null?1:op,flatShading:true});return MAT[k].clone();}
+  function sprite(txt,big){var c=document.createElement('canvas');var fs=big?96:52;c.width=640;c.height=160;var x=c.getContext('2d');x.font='800 '+fs+'px Pretendard,"Malgun Gothic",sans-serif';var w=x.measureText(txt).width+56;var h=fs+44;
+    x.fillStyle='rgba(255,255,255,.92)';x.strokeStyle='#CFDDE9';x.lineWidth=3;var rx=(640-w)/2,ry=(160-h)/2;x.beginPath();x.roundRect?x.roundRect(rx,ry,w,h,22):x.rect(rx,ry,w,h);x.fill();x.stroke();
+    x.fillStyle=big?'#8A3A4A':'#234D6E';x.textAlign='center';x.textBaseline='middle';x.fillText(txt,320,82);
+    var t=new THREE.CanvasTexture(c);t.anisotropy=4;var m=new THREE.SpriteMaterial({map:t,transparent:true,opacity:0});var sp=new THREE.Sprite(m);sp.scale.set(4,1,1);return sp;}
+  function build(kind){
+    var g=new THREE.Group();
+    if(kind==='doc'||kind==='bigdoc'){var sc=kind==='bigdoc'?2.2:1;var body=new THREE.Mesh(new THREE.BoxGeometry(.95*sc,1.25*sc,.06),mat(0xffffff));g.add(body);for(var i=0;i<3;i++){var ln=new THREE.Mesh(new THREE.BoxGeometry(.6*sc*(i===2?.6:1),.07*sc,.02),mat(0x2F6690));ln.position.set((i===2?-.12*sc:0),(.3-i*.25)*sc,.05);g.add(ln);}var fold=new THREE.Mesh(new THREE.BoxGeometry(.22*sc,.22*sc,.07),mat(0xE3EBF2));fold.position.set(.36*sc,.5*sc,0);g.add(fold);}
+    else if(kind==='folder'){var back=new THREE.Mesh(new THREE.BoxGeometry(1.8,1.2,.22),mat(0xE8B84A));g.add(back);var tab=new THREE.Mesh(new THREE.BoxGeometry(.7,.26,.22),mat(0xE8B84A));tab.position.set(-.55,.72,0);g.add(tab);var front=new THREE.Mesh(new THREE.BoxGeometry(1.8,1.0,.08),mat(0xF7D98C));front.position.set(0,-.1,.15);g.add(front);var e1=new THREE.Mesh(new THREE.SphereGeometry(.07,8,8),mat(0x8A6A1E));e1.position.set(-.3,-.1,.22);g.add(e1);var e2=e1.clone();e2.position.x=.3;g.add(e2);var mo=new THREE.Mesh(new THREE.TorusGeometry(.18,.035,8,16,Math.PI),mat(0x8A6A1E));mo.position.set(0,-.3,.22);mo.rotation.z=Math.PI;g.add(mo);}
+    else if(kind==='star'){var sh=new THREE.Shape();for(var k=0;k<10;k++){var r=k%2?.38:.9,an=k*Math.PI/5-Math.PI/2;k?sh.lineTo(Math.cos(an)*r,Math.sin(an)*r):sh.moveTo(Math.cos(an)*r,Math.sin(an)*r);}sh.closePath();g.add(new THREE.Mesh(new THREE.ExtrudeGeometry(sh,{depth:.18,bevelEnabled:false}),mat(0xF2C96B)));}
+    else if(kind==='cloud'){[[0,0,1.05],[-.95,-.2,.75],[.95,-.2,.8],[-.3,.55,.7],[.45,.5,.65]].forEach(function(p){var m=new THREE.Mesh(new THREE.SphereGeometry(p[2],18,14),mat(0xF1F3F6));m.position.set(p[0],p[1],0);g.add(m);});}
+    else if(kind==='lock'){var bd=new THREE.Mesh(new THREE.BoxGeometry(1.0,.8,.5),mat(0x8A3A4A));bd.position.y=-.3;g.add(bd);var sh2=new THREE.Mesh(new THREE.TorusGeometry(.33,.09,10,20,Math.PI),mat(0x8A3A4A));sh2.position.y=.1;g.add(sh2);var kh=new THREE.Mesh(new THREE.SphereGeometry(.1,10,10),mat(0xF6ECEE));kh.position.set(0,-.25,.28);g.add(kh);}
+    else if(kind==='clip'){var bb=new THREE.Mesh(new THREE.BoxGeometry(.95,1.25,.08),mat(0xffffff));g.add(bb);var top=new THREE.Mesh(new THREE.BoxGeometry(.5,.26,.14),mat(0x2F6690));top.position.y=.62;g.add(top);var ck=new THREE.Mesh(new THREE.SphereGeometry(.28,14,12),mat(0x2F6690));ck.position.set(.3,-.4,.12);g.add(ck);}
+    else if(kind==='claude'){var hd=new THREE.Mesh(new THREE.BoxGeometry(1.3,1.05,.7),mat(0x2F6690));g.add(hd);var fc=new THREE.Mesh(new THREE.BoxGeometry(.95,.7,.1),mat(0xEAF1F7));fc.position.z=.36;g.add(fc);var ey=new THREE.Mesh(new THREE.SphereGeometry(.08,8,8),mat(0x234D6E));ey.position.set(-.2,.1,.42);g.add(ey);var ey2=ey.clone();ey2.position.x=.2;g.add(ey2);var an=new THREE.Mesh(new THREE.SphereGeometry(.11,8,8),mat(0xF2C96B));an.position.y=.75;g.add(an);var st=new THREE.Mesh(new THREE.CylinderGeometry(.03,.03,.3,6),mat(0x2F6690));st.position.y=.6;g.add(st);}
+    else if(kind==='gem'){g.add(new THREE.Mesh(new THREE.OctahedronGeometry(.9,0),mat(0x7B61A8)));}
+    else if(kind==='check'){var ring=new THREE.Mesh(new THREE.TorusGeometry(.55,.14,10,24),mat(0x2F6B45));g.add(ring);var c1=new THREE.Mesh(new THREE.BoxGeometry(.5,.12,.12),mat(0x2F6B45));c1.rotation.z=-.8;c1.position.set(.12,-.05,0);g.add(c1);var c2=new THREE.Mesh(new THREE.BoxGeometry(.3,.12,.12),mat(0x2F6B45));c2.rotation.z=.8;c2.position.set(-.18,-.1,0);g.add(c2);}
+    else if(kind==='spark'){var sh3=new THREE.Shape();for(var q=0;q<8;q++){var r2=q%2?.18:.7,an2=q*Math.PI/4;q?sh3.lineTo(Math.cos(an2)*r2,Math.sin(an2)*r2):sh3.moveTo(Math.cos(an2)*r2,Math.sin(an2)*r2);}sh3.closePath();g.add(new THREE.Mesh(new THREE.ExtrudeGeometry(sh3,{depth:.12,bevelEnabled:false}),mat(0xF2C96B)));}
+    return g;
+  }
+  function setup3d(st){
+    var ok=false;
+    try{
+      if(window.THREE){
+        var r=new THREE.WebGLRenderer({canvas:st.canvas,alpha:true,antialias:true});r.setPixelRatio(Math.min(window.devicePixelRatio||1,2));r.setClearColor(0x000000,0);
+        var sc=new THREE.Scene();var cam=new THREE.PerspectiveCamera(42,960/340,.1,100);cam.position.set(0,0,14);
+        sc.add(new THREE.HemisphereLight(0xffffff,0xdde7f0,1.15));var dl=new THREE.DirectionalLight(0xffffff,.65);dl.position.set(4,6,8);sc.add(dl);
+        var cfg=SCENES[st.idx]||SCENES[0];
+        cfg.props.forEach(function(p){var g=build(p[0]);g.userData={from:[p[1],p[2],p[3]],to:[p[4],p[5],p[6]],t0:p[7],t1:p[8],fx:p[9],ph:Math.random()*6.28,kind:p[0]};if(p[9]==='pop')g.visible=false;sc.add(g);st.shapes.push(g);});
+        cfg.labels.forEach(function(l){var sp=sprite(l[0],l[6]==='q');sp.position.set(l[1],l[2],l[3]);sp.userData={t0:l[4],t1:l[5]||0,kind:'label'};if(l[6]==='q')sp.scale.set(1.4,1.4,1);sc.add(sp);st.shapes.push(sp);});
+        for(var k=0;k<10;k++){var amb=new THREE.Mesh(k%2?new THREE.IcosahedronGeometry(.3,0):new THREE.SphereGeometry(.22,12,10),mat(PAL[k%PAL.length],.55));amb.userData={from:[1+Math.random()*9,(Math.random()*2-1)*4.5,-5-Math.random()*4],to:null,ph:Math.random()*6.28,kind:'amb'};sc.add(amb);st.shapes.push(amb);}
+        var n=220,pos=new Float32Array(n*3),base=[];for(var q=0;q<n;q++){var x=(Math.random()*2-1)*14,y=(Math.random()*2-1)*6,z=-5-Math.random()*8;base.push(x,y,z);pos[q*3]=x;pos[q*3+1]=y;pos[q*3+2]=z;}
+        var pg=new THREE.BufferGeometry();pg.setAttribute('position',new THREE.BufferAttribute(pos,3));
+        var pm=new THREE.PointsMaterial({color:0x2F6690,size:.08,transparent:true,opacity:.4});var pts=new THREE.Points(pg,pm);pts.userData.base=base;sc.add(pts);
+        st.renderer=r;st.scene=sc;st.cam=cam;st.pts=pts;ok=true;
+      }
+    }catch(e){ok=false;}
+    if(!ok){st.renderer=null;st.ctx2d=st.canvas.getContext('2d');st.blobs=[];for(var b=0;b<26;b++)st.blobs.push({x:Math.random(),y:Math.random(),r:.03+Math.random()*.09,c:PAL[b%PAL.length],ph:Math.random()*6.28,sp:.2+Math.random()*.5,amp:.03+Math.random()*.05});}
+  }
+  function size(st){var w=st.el.clientWidth||960,h=Math.round(w*340/960);if(st.renderer){st.renderer.setSize(w,h,false);st.cam.aspect=w/h;st.cam.updateProjectionMatrix();}else{st.canvas.width=w*(window.devicePixelRatio||1);st.canvas.height=h*(window.devicePixelRatio||1);}render(st);}
+  function pulse(t,beats){var p=0;for(var i=0;i<beats.length;i++){var d=(t-beats[i])/320;p+=Math.exp(-d*d);}return p;}
+  function render(st){
+    var t=st.t,T=t/1000,pr=t/DUR;
+    if(st.renderer){
+      var pu=pulse(t,st.beats);
+      st.shapes.forEach(function(g,i){var u=g.userData;
+        if(u.kind==='amb'){g.position.set(u.from[0]+Math.sin(T*.5+u.ph)*.5,u.from[1]+Math.cos(T*.4+u.ph)*.4,u.from[2]);g.rotation.set(T*.4+u.ph,T*.3,0);return;}
+        if(u.kind==='label'){var op=ease(clamp((t-u.t0)/450));if(u.t1)op*=1-ease(clamp((t-u.t1)/400));g.material.opacity=op;g.position.y+=0;return;}
+        var p=ease(clamp((t-u.t0)/Math.max(1,u.t1-u.t0)));
+        var x=u.from[0]+(u.to[0]-u.from[0])*p,y=u.from[1]+(u.to[1]-u.from[1])*p+Math.sin(T*1.1+u.ph)*(p<1?0.6*(1-p):0),z=u.from[2]+(u.to[2]-u.from[2])*p;
+        var bob=Math.sin(T*.9+u.ph)*.12;g.position.set(x,y+bob,z);
+        if(u.fx==='pop'){g.visible=t>=u.t0;var sp=.2+.8*p;g.scale.setScalar(sp*(1+.15*Math.sin(Math.min(1,p)*Math.PI)));g.rotation.y=Math.sin(T*.8+u.ph)*.25;}
+        else if(u.fx==='shrink'){var sc=1-.55*p;g.scale.setScalar(sc);g.rotation.set(0,Math.sin(T+u.ph)*.5,(1-p)*.3);g.visible=p<1;}
+        else if(u.fx==='fade'){g.traverse(function(m){if(m.material)m.material.opacity=1-p;});g.rotation.z=T*.6+u.ph;}
+        else if(u.fx==='spin'){g.rotation.y=Math.sin(T*.7)*.35;g.scale.setScalar(1+.06*pu);}
+        else {g.rotation.y=Math.sin(T*.6+u.ph)*.3;g.scale.setScalar(1+.08*pu*(i%3===0?1:.3));}
+      });
+      var pp=st.pts.geometry.attributes.position,b=st.pts.userData.base;for(var q=0;q<pp.count;q++){pp.array[q*3+1]=b[q*3+1]+Math.sin(T*.7+q)*.25;pp.array[q*3]=b[q*3]+Math.cos(T*.4+q*.3)*.2;}pp.needsUpdate=true;
+      st.cam.position.z=14-2.4*ease(pr);st.cam.position.x=1.2+Math.sin(T*.25)*.5;st.cam.position.y=Math.cos(T*.2)*.25;st.cam.lookAt(2.2,0,-2);
+      st.renderer.render(st.scene,st.cam);
+    }else if(st.ctx2d){
+      var c=st.ctx2d,W=st.canvas.width,H=st.canvas.height;c.clearRect(0,0,W,H);
+      st.blobs.forEach(function(bb){var x=(bb.x+Math.sin(T*bb.sp+bb.ph)*bb.amp)*W,y=(bb.y+Math.cos(T*bb.sp*.8+bb.ph)*bb.amp)*H,r=bb.r*W*(1+.15*pulse(t,st.beats));var g=c.createRadialGradient(x,y,0,x,y,r);var col='#'+bb.c.toString(16).padStart(6,'0');g.addColorStop(0,col+'88');g.addColorStop(1,col+'00');c.fillStyle=g;c.beginPath();c.arc(x,y,r,0,6.28);c.fill();});
+    }
+    /* 타이포 타임라인 */
+    st.kicker.style.opacity=ease(clamp((t-100)/500));
+    st.title.forEach(function(sp,j){var p=ease(clamp((t-350-j*70)/420));sp.style.opacity=p;sp.style.transform='translateY('+((1-p)*.5)+'em) scale('+(.8+.2*p)+')';});
+    var ps=ease(clamp((t-2200)/600))*(1-ease(clamp((t-3900)/400)));st.sub.style.opacity=ps;st.sub.style.transform='translateY('+((1-ps)*10)+'px)';
+    st.lines.forEach(function(ln,j){var p=ease(clamp((t-st.beats[j])/520));ln.style.opacity=p;ln.style.transform='translateX('+((1-p)*-24)+'px)';});
+    var pc=ease(clamp((t-10200)/600));st.close.style.opacity=pc;st.close.style.transform='scale('+(.96+.04*pc)+')';
+    if(st.closeI)st.closeI.style.backgroundSize=(ease(clamp((t-10700)/700))*100)+'% 100%';
+    st.seek.value=Math.round(pr*1000);
+  }
+
+  [].slice.call(document.querySelectorAll('.chip')).forEach(function(c){c.addEventListener('click',function(e){e.preventDefault();var t=document.querySelector(c.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth',block:'start'});});});
+
+  var saved=parseInt(load('step'),10);
+  show(isNaN(saved)?0:Math.min(saved,steps.length-1),false);
+})();
+</script>
+</body></html>
+
+</body></html>

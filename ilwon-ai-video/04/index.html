@@ -1,0 +1,470 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>내 영상 설계도 — 프레임부터 컷까지</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#FAFAF8;--paper:#fff;--line:#E6E4EC;--ink:#221E2B;--ink2:#625D6E;--ac:#0E7C86;--t1:#E4F4F5;--set:#EEF2F7;--setl:#D5DEEA;--warn:#FBEFEE;--warnl:#EFD2CE;--ext:#EEF6F1;--extl:#CFE3D6;--fs:20px}
+*{box-sizing:border-box}
+html{scroll-padding-top:150px}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;font-size:var(--fs);line-height:1.6;word-break:keep-all}
+body.big{--fs:24px}
+.top{position:sticky;top:0;z-index:20;background:rgba(250,250,248,.97);border-bottom:1px solid var(--line)}
+.top-in{max-width:1480px;margin:0 auto;padding:8px 20px;display:flex;align-items:center;gap:14px}
+.tabs{display:flex;gap:4px;overflow-x:auto;max-width:1480px;margin:0 auto;padding:0 20px 8px;scrollbar-width:thin}
+.tab{flex:none;border:1px solid var(--line);background:#fff;color:var(--ink2);border-radius:999px;padding:6px 14px;font:inherit;font-size:.7em;font-weight:700;cursor:pointer;white-space:nowrap}
+.tab .n{color:var(--ac);margin-right:6px}
+.tab.on{background:var(--ac);border-color:var(--ac);color:#fff}.tab.on .n{color:#fff}
+.tab:focus-visible{outline:3px solid var(--ac);outline-offset:2px}
+.top h1{margin:0;font-size:.95em;font-weight:800;letter-spacing:-.02em;flex:1}
+.top h1 small{display:block;font-size:.66em;font-weight:500;color:var(--ink2)}
+.btn{border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:8px;padding:6px 12px;font:inherit;font-size:.72em;font-weight:700;cursor:pointer}
+.btn:focus-visible,.side a:focus-visible,.copy:focus-visible{outline:3px solid var(--ac);outline-offset:2px}
+#menuBtn{display:none}
+.wrap{max-width:1480px;margin:0 auto;padding:18px 20px 10px;display:flex;gap:22px;align-items:flex-start}
+.side{position:sticky;top:122px;width:270px;order:2;flex:none;max-height:calc(100vh - 190px);overflow-y:auto;background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 8px;font-size:.74em;transition:width .2s}
+.side .fold{display:flex;justify-content:space-between;align-items:center;padding:0 4px 6px;border-bottom:1px solid var(--line);margin-bottom:6px}
+.side .fold button{border:none;background:none;color:var(--ink2);font:inherit;font-size:.9em;cursor:pointer}
+.side .hd{font-weight:800;color:var(--ac);padding-left:6px}
+.side .cl{list-style:none;margin:0;padding:0 2px}
+.side .cl a{display:block;padding:7px 10px;color:var(--ink2);text-decoration:none;line-height:1.4;border-left:3px solid transparent;border-radius:0 6px 6px 0}
+.side .cl a.cur{color:var(--ac);border-left-color:var(--ac);background:var(--t1);font-weight:700}
+.side.folded{width:56px}.side.folded .hd,.side.folded .cl{display:none}
+.main{flex:1;min-width:0;order:1}
+.step{display:none}.step.on{display:block}
+.sh{display:flex;gap:18px;align-items:flex-start;margin:0 0 18px}
+.sh .no{font-size:2.6em;font-weight:900;color:var(--ac);line-height:1;letter-spacing:-.04em}
+.sh h2{margin:0;font-size:1.45em;font-weight:800;letter-spacing:-.02em;line-height:1.3}
+.sh p{margin:4px 0 0;color:var(--ink2);max-width:46em}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(420px,1fr));gap:16px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:18px 20px;scroll-margin-top:150px}
+.card.wide{grid-column:1/-1}
+.card h3{margin:0 0 10px;font-size:1.05em;font-weight:800;letter-spacing:-.01em;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.lab{font-size:.68em;font-weight:700;border-radius:6px;padding:2px 9px;background:var(--t1);color:var(--ac)}
+.card.key{background:var(--t1);border-color:#BFE3E6}.card.key .lab{background:var(--ac);color:#fff}
+.card.set{background:var(--set);border-color:var(--setl)}.card.set .lab{background:#fff;color:#3E5A7E}
+.card.warn{background:var(--warn);border-color:var(--warnl)}.card.warn .lab{background:#fff;color:#A23B2C}
+.card.ext{background:var(--ext);border-color:var(--extl)}.card.ext .lab{background:#fff;color:#2F6B45}
+.card.demo{border-left:5px solid var(--ac)}.card.demo .lab{background:var(--ac);color:#fff}
+.card.you{border-left:5px solid #6FB8BE}
+.card p{margin:6px 0}.card ol,.card ul{margin:6px 0;padding-left:1.3em}.card li{margin:4px 0}
+.muted{color:var(--ink2);font-size:.88em}
+.fig{margin:6px 0 10px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px}
+.fig svg{display:block;width:100%;height:auto;max-height:360px}
+.pr{position:relative;background:#F8FCFC;border:1px solid var(--line);border-left:4px solid var(--ac);border-radius:8px;padding:12px 90px 12px 14px;margin:10px 0}
+.pr .en{margin:0;font-weight:600;font-size:.88em;line-height:1.6;word-break:normal}
+.pr .ko{margin:6px 0 0;color:var(--ink2);font-size:.85em}
+.pr .nt{margin:6px 0 0;color:var(--ac);font-size:.8em;font-weight:600}
+.k{background:var(--t1);color:var(--ac);border-radius:4px;padding:0 3px}
+.copy{position:absolute;top:10px;right:10px;border:1px solid #BFE3E6;background:#fff;color:var(--ac);border-radius:6px;padding:4px 10px;font:inherit;font-size:.7em;font-weight:700;cursor:pointer}
+.copy.done{background:var(--ac);color:#fff}
+.tbl{overflow-x:auto}
+.go{display:inline-block;background:var(--ac);color:#fff;text-decoration:none;font-weight:800;border-radius:8px;padding:6px 14px;margin:2px 6px 2px 0;font-size:.85em}
+.go:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+table{width:100%;border-collapse:collapse;font-size:.86em;background:#fff;margin:6px 0}
+th,td{border-bottom:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+th{color:var(--ac);font-weight:800;border-bottom:2px solid var(--ac);white-space:nowrap}
+td input[type=checkbox]{width:22px;height:22px;accent-color:var(--ac)}
+.bottom{position:sticky;bottom:0;z-index:20;background:rgba(250,250,248,.97);border-top:1px solid var(--line)}
+.bottom-in{max-width:1480px;margin:0 auto;padding:8px 20px;display:flex;justify-content:space-between;gap:10px}
+.bottom .btn{font-size:.74em;padding:9px 14px;max-width:46%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bottom .btn:disabled{opacity:.3;cursor:default}
+@media (max-width:900px){
+ #menuBtn{display:inline-block}
+ .wrap{flex-direction:column;padding:12px}
+ .side{order:0;position:static;width:auto;max-height:none;display:none;margin-bottom:14px;align-self:stretch}
+ .side.open{display:block}.side .fold{display:none}
+ .grid{grid-template-columns:1fr}
+ .pr{padding:40px 12px 12px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style></head><body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<marker id="ah" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="11" refY="7" orient="auto"><path d="M0,0 L14,7 L0,14 z" fill="#0E7C86"/></marker>
+<g id="pp"><circle cx="0" cy="-40" r="12"/><rect x="-13" y="-26" width="26" height="38" rx="8"/><rect x="-11" y="12" width="9" height="26"/><rect x="2" y="12" width="9" height="26"/></g>
+<g id="cam"><rect x="-16" y="-10" width="32" height="20" rx="3"/><path d="M16 -5 L26 -10 L26 10 L16 5 z"/></g>
+</defs></svg>
+
+<header class="top"><div class="top-in"><h1>내 영상 설계도 — 프레임부터 컷까지<small>일원 · 3·4회차 통합 · 제미나이로 기획하고 플로우로 만들기</small></h1><button class="btn" id="menuBtn" type="button">☰ 이 단계 카드</button><button class="btn" id="fontBtn" type="button">가+</button></div><nav class="tabs" id="tabs" aria-label="단계"></nav></header>
+
+<div class="wrap"><main class="main">
+
+<!-- STEP 0 -->
+<section class="step" id="s0"><header class="sh"><span class="no">0</span><div><h2>오늘의 지도</h2><p>시작·끝 프레임으로 몸을 풀고, 제미나이와 함께 내 영상 한 편을 처음부터 설계합니다.</p></div></header><div class="grid">
+<article class="card key" id="s0a"><h3><span class=lab>핵심</span>오늘 만드는 것</h3><ol>
+<li><b>프레임 실험 영상</b> — 따로 / 시작·끝 / 이어달리기 비교</li>
+<li><b>스타일 문장 · 인물 문장</b> — 화풍과 얼굴을 고정하는 두 문장</li>
+<li><b>앵커 이미지 + 캐릭터 시트</b></li>
+<li><b>콘티 표 + 스토리보드</b> — 30초~1분 미만</li>
+<li><b>컷마다 이미지·영상</b> — 하나씩 따로 생성</li></ol></article>
+<article class="card set" id="s0b"><h3><span class=lab>준비</span>오늘 쓰는 곳</h3>
+<p><a class="go" href="https://gemini.google.com/app" target="_blank" rel="noopener">제미나이 열기 ↗</a> <a class="go" href="https://labs.google/fx/tools/flow" target="_blank" rel="noopener">플로우 열기 ↗</a></p>
+<ul><li><b>제미나이</b> = 기획과 이미지. <b>대화창 하나</b>로 끝까지 — 새 창을 열면 앞 내용을 잊어요</li>
+<li><b>플로우</b> = 영상. <b>웹(노트북)</b>에서, <b>360p</b>로</li>
+<li>메모장(또는 카톡 나에게 보내기)을 옆에 열어 두기</li></ul></article>
+<article class="card wide" id="s0c"><h3>전체 흐름</h3><figure class="fig"><svg viewBox="0 0 720 250" xmlns="http://www.w3.org/2000/svg" font-family="Noto Sans KR, sans-serif" role="img" aria-label="전체 과정 흐름도">
+<rect x="10" y="20" width="700" height="100" rx="10" fill="#E4F4F5"/><rect x="10" y="145" width="700" height="90" rx="10" fill="#EEF2F7"/>
+<text x="22" y="42" font-size="14" fill="#0E7C86" font-weight="800">제미나이 — 기획·이미지</text><text x="22" y="167" font-size="14" fill="#3E5A7E" font-weight="800">플로우 — 영상</text>
+<g font-size="13" font-weight="700" text-anchor="middle">
+<rect x="30" y="58" width="100" height="46" rx="8" fill="#fff" stroke="#0E7C86" stroke-width="1.5"/><text x="80" y="78" fill="#0E7C86">STEP 3</text><text x="80" y="96" fill="#221E2B">화풍</text>
+<rect x="143" y="58" width="100" height="46" rx="8" fill="#fff" stroke="#0E7C86" stroke-width="1.5"/><text x="193" y="78" fill="#0E7C86">STEP 4</text><text x="193" y="96" fill="#221E2B">앵커 이미지</text>
+<rect x="256" y="58" width="100" height="46" rx="8" fill="#fff" stroke="#0E7C86" stroke-width="1.5"/><text x="306" y="78" fill="#0E7C86">STEP 5</text><text x="306" y="96" fill="#221E2B">캐릭터 시트</text>
+<rect x="369" y="58" width="100" height="46" rx="8" fill="#fff" stroke="#0E7C86" stroke-width="1.5"/><text x="419" y="78" fill="#0E7C86">STEP 6</text><text x="419" y="96" fill="#221E2B">콘티</text>
+<rect x="482" y="58" width="100" height="46" rx="8" fill="#fff" stroke="#0E7C86" stroke-width="1.5"/><text x="532" y="78" fill="#0E7C86">STEP 6</text><text x="532" y="96" fill="#221E2B">스토리보드</text>
+<rect x="595" y="58" width="100" height="46" rx="8" fill="#0E7C86"/><text x="645" y="78" fill="#fff">STEP 7</text><text x="645" y="96" fill="#fff">컷 이미지</text>
+<rect x="30" y="180" width="200" height="42" rx="8" fill="#fff" stroke="#3E5A7E" stroke-width="1.5"/><text x="130" y="206" fill="#221E2B">STEP 1 · 프레임 실험</text>
+<rect x="595" y="180" width="100" height="42" rx="8" fill="#0E7C86"/><text x="645" y="206" fill="#fff">컷 영상</text>
+<rect x="380" y="180" width="190" height="42" rx="8" fill="#fff" stroke="#625D6E" stroke-dasharray="5 4"/><text x="475" y="206" fill="#625D6E">모아서 한 편 (다음 시간)</text></g>
+<g stroke="#0E7C86" stroke-width="2.5" marker-end="url(#ah)"><line x1="130" y1="81" x2="141" y2="81"/><line x1="243" y1="81" x2="254" y2="81"/><line x1="356" y1="81" x2="367" y2="81"/><line x1="469" y1="81" x2="480" y2="81"/><line x1="582" y1="81" x2="593" y2="81"/><line x1="645" y1="106" x2="645" y2="176"/><line x1="593" y1="201" x2="574" y2="201"/></g>
+<text x="235" y="140" font-size="12" fill="#625D6E" font-weight="600">STEP 1 결과로 STEP 7에서 컷마다 ‘따로 / 시작·끝 / 이어달리기’를 고릅니다</text>
+</svg></figure></article>
+<article class="card key wide" id="s0d"><h3><span class=lab>핵심</span>흔들리지 않는 프롬프트 = 고정 문장 두 개 + 이번 컷</h3><figure class="fig"><svg viewBox="0 0 720 120" xmlns="http://www.w3.org/2000/svg" font-family="Noto Sans KR, sans-serif" role="img" aria-label="프롬프트 공식">
+<g font-weight="800" text-anchor="middle"><rect x="10" y="25" width="150" height="70" rx="10" fill="#0E7C86"/><text x="85" y="55" font-size="16" fill="#fff">스타일 문장</text><text x="85" y="78" font-size="13" fill="#fff">화풍 고정</text>
+<text x="180" y="68" font-size="26" fill="#0E7C86">+</text>
+<rect x="200" y="25" width="150" height="70" rx="10" fill="#0E7C86"/><text x="275" y="55" font-size="16" fill="#fff">인물 문장</text><text x="275" y="78" font-size="13" fill="#fff">얼굴·옷 고정</text>
+<text x="370" y="68" font-size="26" fill="#0E7C86">+</text>
+<rect x="390" y="25" width="150" height="70" rx="10" fill="#fff" stroke="#0E7C86" stroke-width="2"/><text x="465" y="55" font-size="16" fill="#221E2B">이번 컷</text><text x="465" y="78" font-size="13" fill="#625D6E">뷰·샷·앵글·무슨 일</text>
+<text x="560" y="68" font-size="26" fill="#0E7C86">=</text>
+<rect x="580" y="25" width="130" height="70" rx="10" fill="#E4F4F5" stroke="#0E7C86" stroke-width="2"/><text x="645" y="55" font-size="15" fill="#0E7C86">같은 화풍</text><text x="645" y="78" font-size="15" fill="#0E7C86">같은 얼굴</text></g></svg></figure>
+<p>앞의 두 문장은 한 번 만들면 <b>모든 컷에 그대로 복사</b>, 세 번째만 컷마다 바꿉니다.</p></article>
+<article class="card wide" id="s0e"><h3>예제는 둘 중 하나, 아니면 내 이야기</h3><div class="tbl"><table>
+<tr><th></th><th>예제 A 국내</th><th>예제 B 해외</th><th>내 이야기</th></tr>
+<tr><td>주인공</td><td>제주 바닷가 작은 책방 주인</td><td>파리 골목 작은 꽃집 주인</td><td>나 또는 가족</td></tr>
+<tr><td>이야기 한 줄</td><td>책방 문을 열고, 손님이 두고 간 쪽지를 발견하고, 노을 속에서 답장을 쓴다</td><td>꽃을 다듬다가, 비 오는 날 지나가던 손님에게 꽃 한 송이를 건네고, 저녁에 가게 불을 끈다</td><td>작은 사건 하나가 있는 나의 하루</td></tr></table></div>
+<p class="muted">나이·성별은 내가 정합니다. 모든 프롬프트는 [빈칸]만 바꾸면 A·B·내 이야기 어느 쪽이든 작동해요. 🟢 공통은 모두 함께, 🔵 확장은 여유 있는 분만.</p></article>
+</div></section>
+
+<!-- STEP 1 -->
+<section class="step" id="s1"><header class="sh"><span class="no">1</span><div><h2>시작·끝 프레임 실험</h2><p>이어지는 이미지 세 장으로, 같은 이야기를 세 가지 방법으로 만들어 비교합니다. 옴니 플래시 1.1에서 무엇이 달라지는지 내 눈으로 확인해요.</p></div></header><div class="grid">
+<article class="card key wide" id="s1a"><h3><span class=lab>핵심</span>프레임과 재료(첨부 요소)는 다릅니다</h3><figure class="fig"><svg viewBox="0 0 720 210" xmlns="http://www.w3.org/2000/svg" font-family="Noto Sans KR, sans-serif" role="img" aria-label="프레임과 재료의 차이">
+<text x="180" y="22" font-size="16" fill="#0E7C86" font-weight="800" text-anchor="middle">프레임 — 이 그림 그대로</text>
+<clipPath id="fe1"><rect x="20" y="40" width="140" height="100"/></clipPath><rect x="20" y="40" width="140" height="100" rx="6" fill="#fff" stroke="#221E2B" stroke-width="1.5"/><g clip-path="url(#fe1)"><rect x="35" y="60" width="40" height="80" fill="#D5DEEA"/><use href="#pp" fill="#221E2B" transform="translate(115 118) scale(.75)"/></g>
+<line x1="165" y1="90" x2="193" y2="90" stroke="#0E7C86" stroke-width="3" marker-end="url(#ah)"/>
+<clipPath id="fe2"><rect x="200" y="40" width="140" height="100"/></clipPath><rect x="200" y="40" width="140" height="100" rx="6" fill="#E4F4F5" stroke="#0E7C86" stroke-width="2"/><g clip-path="url(#fe2)"><rect x="215" y="60" width="40" height="80" fill="#D5DEEA"/><use href="#pp" fill="#221E2B" transform="translate(295 118) scale(.75)"/></g>
+<text x="90" y="162" font-size="13" fill="#625D6E" font-weight="600" text-anchor="middle">넣은 이미지</text><text x="270" y="162" font-size="13" fill="#0E7C86" font-weight="700" text-anchor="middle">영상 첫 화면 = 똑같음</text>
+<line x1="360" y1="20" x2="360" y2="190" stroke="#E6E4EC" stroke-width="2"/>
+<text x="540" y="22" font-size="16" fill="#3E5A7E" font-weight="800" text-anchor="middle">재료 — 이 사람을 참고해서</text>
+<rect x="380" y="40" width="140" height="100" rx="6" fill="#fff" stroke="#221E2B" stroke-width="1.5"/><use href="#pp" fill="#221E2B" transform="translate(450 120) scale(.8)"/>
+<line x1="525" y1="90" x2="553" y2="90" stroke="#3E5A7E" stroke-width="3" marker-end="url(#ah)"/>
+<clipPath id="fe3"><rect x="560" y="40" width="140" height="100"/></clipPath><rect x="560" y="40" width="140" height="100" rx="6" fill="#EEF2F7" stroke="#3E5A7E" stroke-width="2"/><g clip-path="url(#fe3)"><rect x="560" y="115" width="140" height="25" fill="#CFE3D6"/><circle cx="670" cy="62" r="10" fill="#F2B45A"/><use href="#pp" fill="#221E2B" transform="translate(600 122) scale(.45)"/></g>
+<text x="450" y="162" font-size="13" fill="#625D6E" font-weight="600" text-anchor="middle">넣은 이미지</text><text x="630" y="162" font-size="13" fill="#3E5A7E" font-weight="700" text-anchor="middle">첫 화면 = 새 장면, 같은 사람</text>
+<text x="360" y="200" font-size="13" fill="#625D6E" font-weight="600" text-anchor="middle">프레임은 ‘장면’을 고정, 재료는 ‘사람·물건’만 빌려옴</text></svg></figure>
+<div class="tbl"><table><tr><th></th><th>프레임 (시작 칸·끝 칸)</th><th>재료 (첨부 요소)</th></tr>
+<tr><td>고정되는 것</td><td>구도·배경·옷·빛까지 <b>그림 전체</b></td><td>얼굴·옷·물건 같은 <b>요소만</b></td></tr>
+<tr><td>영상 첫 화면</td><td>넣은 이미지와 <b>똑같이</b> 시작</td><td>프롬프트대로 <b>새 장면</b></td></tr>
+<tr><td>프롬프트</td><td>이미지에 있는 건 다시 안 쓰고 <b>움직임·소리만</b></td><td>장면·구도·빛까지 <b>다 써야</b> 함</td></tr>
+<tr><td>잘 맞는 때</td><td>장면을 정확히 설계했을 때 · 컷을 이어 붙일 때</td><td>같은 주인공을 여러 장소에 등장시킬 때</td></tr></table></div></article>
+
+<article class="card key wide" id="s1b"><h3><span class=lab>핵심</span>세 가지 방법 — 이미지는 모두 합쳐 3장</h3><figure class="fig"><svg viewBox="0 0 720 290" xmlns="http://www.w3.org/2000/svg" font-family="Noto Sans KR, sans-serif" role="img" aria-label="세 가지 제작 방법 비교">
+<g font-size="15" font-weight="800" fill="#221E2B"><text x="10" y="62">① 따로</text><text x="10" y="152">② 시작·끝</text><text x="10" y="242">③ 이어달리기</text></g>
+<g font-size="16" font-weight="800" text-anchor="middle">
+<rect x="130" y="35" width="60" height="44" rx="6" fill="#0E7C86"/><text x="160" y="63" fill="#fff">1</text>
+<rect x="195" y="49" width="90" height="16" rx="8" fill="#D5DEEA"/><rect x="290" y="35" width="50" height="44" rx="6" fill="#fff" stroke="#625D6E" stroke-dasharray="4 3"/><text x="315" y="63" fill="#625D6E">?</text>
+<rect x="380" y="35" width="60" height="44" rx="6" fill="#0E7C86"/><text x="410" y="63" fill="#fff">2</text>
+<rect x="445" y="49" width="90" height="16" rx="8" fill="#D5DEEA"/><rect x="540" y="35" width="50" height="44" rx="6" fill="#fff" stroke="#625D6E" stroke-dasharray="4 3"/><text x="565" y="63" fill="#625D6E">?</text>
+<rect x="130" y="125" width="60" height="44" rx="6" fill="#0E7C86"/><text x="160" y="153" fill="#fff">1</text>
+<rect x="195" y="139" width="180" height="16" rx="8" fill="#BFE3E6"/>
+<rect x="380" y="125" width="60" height="44" rx="6" fill="#0E7C86"/><text x="410" y="153" fill="#fff">2</text>
+<rect x="130" y="215" width="60" height="44" rx="6" fill="#0E7C86"/><text x="160" y="243" fill="#fff">1</text>
+<rect x="195" y="229" width="110" height="16" rx="8" fill="#BFE3E6"/>
+<rect x="310" y="215" width="60" height="44" rx="6" fill="#0E7C86" stroke="#F2B45A" stroke-width="4"/><text x="340" y="243" fill="#fff">2</text>
+<rect x="375" y="229" width="110" height="16" rx="8" fill="#BFE3E6"/>
+<rect x="490" y="215" width="60" height="44" rx="6" fill="#0E7C86"/><text x="520" y="243" fill="#fff">3</text></g>
+<g font-size="13" font-weight="700" fill="#625D6E"><text x="600" y="55">영상 2개</text><text x="600" y="73">끝은 AI 마음대로</text>
+<text x="460" y="145">영상 1개</text><text x="460" y="163">끝이 2로 고정</text>
+<text x="565" y="235">영상 2개</text><text x="565" y="253">2가 이음새</text></g>
+<text x="360" y="284" font-size="12" fill="#625D6E" font-weight="600" text-anchor="middle">1·2·3은 같은 사람, 같은 장소, 같은 거리에서 이어지는 순간 세 장</text></svg></figure>
+<p>①은 1·2를 <b>각각 시작 프레임</b>으로 영상 두 개. ②는 1을 시작, 2를 끝으로 영상 하나. ③은 ②를 한 뒤 <b>2를 다시 시작</b>, 3을 끝으로 한 번 더 — 그래서 이미지가 <b>3장</b> 필요합니다.</p></article>
+
+<article class="card demo wide" id="s1c"><h3><span class=lab>강사 먼저</span>① 이어지는 이미지 세 장 만들기</h3>
+<p>🟢 <a class="go" href="https://gemini.google.com/app" target="_blank" rel="noopener">제미나이 열기 ↗</a> 같은 대화창에서 이미지 1을 그리고, <b>그 그림을 고쳐서</b> 2와 3을 만듭니다. 처음부터 새로 그리면 얼굴과 가게가 달라져요. 지난 시간 주인공_시트가 있으면 첨부하세요. 실험은 비교가 쉽도록 <b>사실적인 사진</b>으로 통일하고, 화풍은 STEP 3에서 고릅니다.</p>
+<div class="pr"><button class="copy" type="button">복사</button><p class="en">사실적인 사진으로 그려줘. 가로 16:9. <span class=k>[주인공]</span>이 <span class=k>[이미지 1]</span>. 전신이 보이게, 눈높이에서, <span class=k>[조명]</span>. 화면엔 한 명만, 글자 없이.</p><p class="nt">이미지 1</p></div>
+<div class="pr"><button class="copy" type="button">복사</button><p class="en">방금 그림과 같은 사람, 같은 옷, 같은 장소, <b>같은 카메라 위치</b>에서 같은 거리와 높이로 다시 그려줘. 이번엔 <span class=k>[이미지 2]</span>. 나머지는 그대로.</p><p class="nt">이미지 2 — 1을 고쳐서</p></div>
+<div class="pr"><button class="copy" type="button">복사</button><p class="en">방금 그림과 같은 사람, 같은 옷, 같은 장소, <b>같은 카메라 위치</b>에서 같은 거리와 높이로 다시 그려줘. 이번엔 <span class=k>[이미지 3]</span>. 나머지는 그대로.</p><p class="nt">이미지 3 — 2를 고쳐서 · 저장 이름: 1.png / 2.png / 3.png</p></div>
+<div class="tbl"><table><tr><th>빈칸</th><th>예제 A 제주 책방</th><th>예제 B 파리 꽃집</th></tr>
+<tr><td>[주인공]</td><td>제주 바닷가 작은 책방을 하는 [나이·성별] 주인</td><td>파리 골목 작은 꽃집을 하는 [나이·성별] 주인</td></tr>
+<tr><td>[이미지 1]</td><td>책방 문을 열고 막 안으로 들어서는 모습, 어깨에 천 가방</td><td>가게 앞 나무 테이블 옆에 서 있는 모습, 옆에 꽃 양동이</td></tr>
+<tr><td>[이미지 2]</td><td>책장 앞에서 책 한 권을 꺼내 드는 모습</td><td>테이블에서 꽃을 골라 다듬는 모습</td></tr>
+<tr><td>[이미지 3]</td><td>바다가 보이는 창가 의자에 앉아 책을 펼치고 웃는 모습</td><td>완성한 꽃다발을 두 손으로 들고 웃는 모습</td></tr>
+<tr><td>[조명]</td><td>부드러운 아침 햇살</td><td>흐린 날의 부드러운 빛</td></tr></table></div></article>
+
+<article class="card set" id="s1d"><h3><span class=lab>준비</span>세 장이 잘 이어졌나 확인</h3><ol>
+<li>세 장의 <b>얼굴·옷</b>이 같은가</li><li>세 장의 <b>카메라 위치·거리·높이</b>가 같은가 — 영상은 카메라가 가만히 있으므로, 사진마다 구도가 바뀌면 영상이 억지로 변형됩니다</li>
+<li>1→2, 2→3 사이 변화가 <b>한 동작 정도</b>로 작은가</li></ol>
+<p class="muted">차이가 너무 크면 영상이 8초 안에 억지로 도착하느라 몸이 흐물흐물 변하기 쉬워요.</p></article>
+
+<article class="card set" id="s1e"><h3><span class=lab>준비</span>플로우에서 공통 설정</h3><p><a class="go" href="https://labs.google/fx/tools/flow" target="_blank" rel="noopener">플로우 열기 ↗</a></p><ol>
+<li><b>프레임 → 동영상</b> 선택 (웹에서만 끝 칸이 보여요)</li><li>옴니 플래시 1.1 · <b>360p</b> · 16:9</li>
+<li>공정한 비교를 위해 <b>같은 프롬프트</b>를 씁니다</li><li>플로우 프롬프트는 <b>영어</b>가 안정적 — 이미지는 제미나이에 한글로, 영상은 플로우에 영어로</li></ol></article>
+
+<article class="card demo wide" id="s1f"><h3><span class=lab>강사 먼저</span>② 세 가지 방법으로 영상 만들기</h3>
+<p>🟢 쓰는 프롬프트는 딱 두 개. <b>동작 가</b>(1→2)와 <b>동작 나</b>(2→3).</p>
+<div class="pr"><button class="copy" type="button">복사</button><p class="en"><span class=k>[동작 가]</span>. The camera stays still. <span class=k>[소리]</span>, no music.</p><p class="ko">[동작 가]. 카메라는 가만히. [소리], 음악 없음.</p><p class="nt">프롬프트 가</p></div>
+<div class="pr"><button class="copy" type="button">복사</button><p class="en"><span class=k>[동작 나]</span>. The camera stays still. <span class=k>[소리]</span>, no music.</p><p class="ko">[동작 나]. 카메라는 가만히. [소리], 음악 없음.</p><p class="nt">프롬프트 나</p></div>
+<div class="tbl"><table><tr><th>빈칸</th><th>예제 A 제주 책방</th><th>예제 B 파리 꽃집</th></tr>
+<tr><td>[동작 가]</td><td>The person walks in, puts the bag down and pulls a book from the shelf</td><td>The person picks flowers from the bucket and starts trimming them on the table</td></tr>
+<tr><td>[동작 나]</td><td>The person walks to the window seat, sits down and opens the book, smiling</td><td>The person ties the flowers into a bouquet, lifts it up and smiles</td></tr>
+<tr><td>[소리]</td><td>soft waves outside, footsteps on wood</td><td>quiet street ambience, scissors snipping</td></tr></table></div>
+<div class="tbl"><table><tr><th>방법</th><th>시작 칸</th><th>끝 칸</th><th>프롬프트</th><th>파일 이름</th></tr>
+<tr><td>① 따로</td><td>1</td><td>비움</td><td>가</td><td>따로_1.mp4</td></tr>
+<tr><td></td><td>2</td><td>비움</td><td>나</td><td>따로_2.mp4</td></tr>
+<tr><td>② 시작·끝</td><td>1</td><td>2</td><td>가</td><td>시작끝.mp4</td></tr>
+<tr><td>③ 이어달리기</td><td colspan="4">첫 번째 = ②의 영상을 그대로 씁니다 (새로 안 만들어도 됨)</td></tr>
+<tr><td></td><td>2</td><td>3</td><td>나</td><td>이어_2.mp4</td></tr></table></div>
+<p class="muted">새로 만드는 영상은 모두 <b>4개</b>. ①과 ②가 같은 프롬프트라 차이는 오직 ‘끝 칸이 있느냐’입니다.</p></article>
+
+<article class="card key wide" id="s1g"><h3><span class=lab>핵심</span>무엇이 달라질까 — 비교표</h3><div class="tbl"><table>
+<tr><th></th><th>① 따로</th><th>② 시작·끝</th><th>③ 이어달리기</th></tr>
+<tr><td>필요한 이미지</td><td>2장</td><td>2장</td><td><b>3장</b></td></tr>
+<tr><td>영상 길이</td><td>8초 + 8초</td><td>8초</td><td>8초 + 8초, 한 흐름</td></tr>
+<tr><td>끝 모습</td><td>AI가 정함 — 2에 도착한다는 보장 없음</td><td>정확히 2로 끝남</td><td>두 번 모두 정해 둔 그림으로 끝남</td></tr>
+<tr><td>두 영상 이음새</td><td><b>뚝 끊김</b> — 첫 영상 끝과 2가 달라서 장면이 점프</td><td>이음새 없음</td><td><b>매끄러움</b> — 앞 영상의 마지막 = 뒤 영상의 처음(2)</td></tr>
+<tr><td>잘 맞는 장면</td><td>장소·시간이 바뀌는 컷 (아침 → 저녁)</td><td>한 동작 안의 상태 변화</td><td>길게 이어지는 한 동작, 원 테이크 느낌</td></tr>
+<tr><td>주의</td><td>이어 붙이면 컷 편집처럼 보임</td><td>1·2 차이가 크면 억지 변형</td><td>이음새에서 속도·카메라가 바뀌면 멈칫</td></tr></table></div>
+<p class="muted">이 표는 예상입니다. 옴니 플래시 1.1에서 실제로 어떻게 나오는지는 오늘 우리 결과로 확인해요.</p></article>
+
+<article class="card you wide" id="s1h"><h3><span class=lab>내 차례</span>③ 나란히 보고 체크하기</h3><div class="tbl"><table>
+<tr><th>보는 것</th><th>① 따로</th><th>② 시작·끝</th><th>③ 이어달리기</th></tr>
+<tr><td>마지막 장면이 내가 만든 그림과 같은가</td><td><input type="checkbox" aria-label="1 끝모습"></td><td><input type="checkbox" aria-label="2 끝모습"></td><td><input type="checkbox" aria-label="3 끝모습"></td></tr>
+<tr><td>중간 움직임이 자연스러운가</td><td><input type="checkbox" aria-label="1 움직임"></td><td><input type="checkbox" aria-label="2 움직임"></td><td><input type="checkbox" aria-label="3 움직임"></td></tr>
+<tr><td>얼굴·옷이 끝까지 같은가</td><td><input type="checkbox" aria-label="1 얼굴"></td><td><input type="checkbox" aria-label="2 얼굴"></td><td><input type="checkbox" aria-label="3 얼굴"></td></tr>
+<tr><td>두 영상을 붙였을 때 튀지 않는가</td><td><input type="checkbox" aria-label="1 이음새"></td><td>—</td><td><input type="checkbox" aria-label="3 이음새"></td></tr></table></div>
+<p>한 줄로 적어 보기: “나는 <b>이런 장면</b>에는 <b>이 방법</b>을 쓰겠다.” — STEP 7에서 컷마다 이 기준으로 고릅니다.</p></article>
+
+<article class="card ext" id="s1i"><h3><span class=lab>확장</span>🔵 프레임 vs 재료 직접 비교</h3><p>이미지 1을 한 번은 <b>시작 칸</b>에, 한 번은 <b>재료 칸</b>에 넣고 같은 문장으로 만들어 첫 화면을 비교.</p>
+<div class="pr"><button class="copy" type="button">복사</button><p class="en">The same person <span class=k>[새 장소 장면]</span>, full body, eye level, warm sunset light. The camera follows alongside. <span class=k>[소리]</span>, no music.</p><p class="ko">재료로 쓸 땐 장소·구도까지 다 써야 합니다. A: walks slowly along a quiet seaside road / B: walks along a narrow Paris street with a bouquet</p><p class="nt">재료 칸이 안 보이면 이 실험은 건너뛰어도 됩니다</p></div></article>
+
+<article class="card ext" id="s1m"><h3><span class=lab>확장</span>🔵 방법 ④ 장면 확장 — 이미지 없이 이어 가기</h3><p>옴니 1.1 플래시엔 만든 영상의 <b>끝에 이어 붙이는 ‘장면 확장’</b>도 있어요. ②의 영상을 확장해서 ③(2→3)과 나란히 비교해 보세요.</p>
+<div class="pr"><button class="copy" type="button">복사</button><p class="en"><span class=k>[동작 나]</span>. Keep the same person, place and camera. <span class=k>[소리]</span>, no music.</p><p class="ko">같은 사람·장소·카메라 유지.</p><p class="nt">③은 끝 모습을 내가 정하고 이미지 1장이 더 필요 · ④는 이미지가 필요 없지만 끝 모습은 AI가 정함 — 클립 끝에만 붙습니다</p></div></article>
+<article class="card ext" id="s1j"><h3><span class=lab>확장</span>🔵 이어달리기 한 번 더</h3><p>이미지 4를 만들어 3 → 4로 한 번 더 이으면 24초 원 테이크. 이음새마다 카메라 문장을 <b>똑같이</b> 두는 게 비결입니다.</p>
+<div class="pr"><button class="copy" type="button">복사</button><p class="en">Keep the same pace and the same camera as the previous clip.</p><p class="ko">앞 영상과 같은 속도, 같은 카메라.</p><p class="nt">프롬프트 끝에 덧붙이기</p></div></article>
+
+<article class="card warn wide" id="s1k"><h3><span class=lab>주의</span>잘 안 될 때</h3><ul>
+<li>끝 칸이 없음 → 모바일 앱이 아니라 <b>웹</b>, <b>프레임 → 동영상</b>인지 확인</li>
+<li>몸이 녹듯이 변함 → 두 이미지 차이를 줄이기 (2를 1에 더 가깝게 다시)</li>
+<li>시작과 끝 비율이 다르다는 오류 → 세 장 모두 16:9</li>
+<li>얼굴이 중간에 바뀜 → 이미지를 새로 그리지 말고 앞 그림을 <b>고쳐서</b> 만들기</li><li>인물이 화면 밖으로 나가 버림 → 두 이미지 사이 이동 거리를 줄이거나, 카메라 문장을 <b>The camera follows alongside</b>로</li></ul></article>
+</div></section>
+
+<!-- STEP 2 -->
+<section class="step" id="s2"><header class="sh"><span class="no">2</span><div><h2>카메라의 눈 — 뷰·샷·앵글</h2><p>한 컷은 세 가지 질문으로 정해집니다. 어느 쪽에서 보나 · 얼마나 크게 담나 · 어느 높이에서 보나. 여기에 움직임 하나.</p></div></header><div class="grid">
+<article class="card key wide" id="s2a"><h3><span class=lab>핵심</span>세 가지 질문</h3><div class="tbl"><table>
+<tr><th>이름</th><th>질문</th><th>예</th></tr>
+<tr><td><b>뷰</b></td><td>어느 <b>방향</b>에서 보나</td><td>정면 · 비스듬히 · 옆 · 뒤 · 어깨 너머</td></tr>
+<tr><td><b>샷</b></td><td>얼마나 <b>크게</b> 담나</td><td>멀리 · 전신 · 상반신 · 얼굴</td></tr>
+<tr><td><b>앵글</b></td><td>어느 <b>높이</b>에서 보나</td><td>눈높이 · 아래서 · 위에서 · 바로 위</td></tr></table></div>
+<p class="muted">샷과 앵글을 가장 많이 헷갈려요. 샷은 ‘크기’, 앵글은 ‘높이’.</p></article>
+
+<article class="card" id="s2b"><h3>① 샷 — 얼마나 크게</h3><figure class="fig"><svg viewBox="0 0 720 185" xmlns="http://www.w3.org/2000/svg" font-family="Noto Sans KR, sans-serif" role="img" aria-label="샷 크기 네 가지">
+<clipPath id="sh0"><rect x="15" y="15" width="160" height="130"/></clipPath><rect x="15" y="15" width="160" height="130" rx="6" fill="#fff" stroke="#221E2B" stroke-width="1.5"/><g clip-path="url(#sh0)"><rect x="15" y="115" width="160" height="30" fill="#E4F4F5"/><rect x="30" y="70" width="40" height="45" fill="#D5DEEA"/><circle cx="145" cy="80" r="16" fill="#CFE3D6"/><rect x="142" y="92" width="6" height="23" fill="#CFE3D6"/><use href="#pp" fill="#221E2B" transform="translate(100 120) scale(.5)"/></g>
+<clipPath id="sh1"><rect x="193" y="15" width="160" height="130"/></clipPath><rect x="193" y="15" width="160" height="130" rx="6" fill="#fff" stroke="#221E2B" stroke-width="1.5"/><g clip-path="url(#sh1)"><use href="#pp" fill="#221E2B" transform="translate(273 92) scale(1.2)"/></g>
+<clipPath id="sh2"><rect x="371" y="15" width="160" height="130"/></clipPath><rect x="371" y="15" width="160" height="130" rx="6" fill="#fff" stroke="#221E2B" stroke-width="1.5"/><g clip-path="url(#sh2)"><use href="#pp" fill="#221E2B" transform="translate(451 134) scale(2)"/></g>
+<clipPath id="sh3"><rect x="549" y="15" width="160" height="130"/></clipPath><rect x="549" y="15" width="160" height="130" rx="6" fill="#fff" stroke="#221E2B" stroke-width="1.5"/><g clip-path="url(#sh3)"><use href="#pp" fill="#221E2B" transform="translate(629 240) scale(4)"/></g>
+<g font-size="18" fill="#0E7C86" font-weight="800" text-anchor="middle"><text x="95" y="172">멀리</text><text x="273" y="172">전신</text><text x="451" y="172">상반신</text><text x="629" y="172">얼굴</text></g></svg></figure>
+<table><tr><th>우리 말</th><th>영어</th><th>이럴 때</th></tr>
+<tr><td>멀리</td><td>wide shot</td><td>장소 소개</td></tr><tr><td>전신</td><td>full shot</td><td>걷기, 등장</td></tr>
+<tr><td>상반신</td><td>medium shot</td><td>일하는 모습</td></tr><tr><td>얼굴</td><td>close-up</td><td>표정, 감정</td></tr>
+<tr><td>🔵 아주 가까이</td><td>extreme close-up</td><td>눈, 손끝, 물건</td></tr></table></article>
+
+<article class="card" id="s2c"><h3>② 앵글 — 어느 높이에서</h3><figure class="fig"><svg viewBox="0 0 720 205" xmlns="http://www.w3.org/2000/svg" font-family="Noto Sans KR, sans-serif" role="img" aria-label="앵글 네 가지">
+<line x1="30" y1="170" x2="690" y2="170" stroke="#221E2B" stroke-width="1.5"/><use href="#pp" fill="#221E2B" transform="translate(360 168) scale(1.3)"/>
+<use href="#cam" fill="#0E7C86" transform="translate(150 110)"/><use href="#cam" fill="#0E7C86" transform="translate(120 165) rotate(-20)"/><use href="#cam" fill="#0E7C86" transform="translate(590 60) rotate(150)"/><use href="#cam" fill="#0E7C86" transform="translate(360 25) rotate(90)"/>
+<g font-size="19" fill="#221E2B" font-weight="800" text-anchor="middle"><text x="150" y="88">눈높이</text><text x="120" y="198">아래서</text><text x="590" y="33">위에서</text><text x="440" y="32">바로 위</text></g></svg></figure>
+<table><tr><th>우리 말</th><th>영어</th><th>느낌</th></tr>
+<tr><td>눈높이</td><td>eye level</td><td>편안하게, 있는 그대로</td></tr><tr><td>아래서</td><td>low angle</td><td>당당하게</td></tr>
+<tr><td>위에서</td><td>high angle</td><td>작고 아늑하게</td></tr><tr><td>바로 위</td><td>top-down</td><td>테이블, 손 작업</td></tr>
+<tr><td>🔵 기울여서</td><td>dutch angle</td><td>불안, 긴장</td></tr></table></article>
+
+<article class="card" id="s2d"><h3>③ 뷰 — 어느 방향에서</h3><figure class="fig"><svg viewBox="0 0 720 235" xmlns="http://www.w3.org/2000/svg" font-family="Noto Sans KR, sans-serif" role="img" aria-label="위에서 내려다본 카메라 방향">
+<circle cx="360" cy="118" r="95" fill="none" stroke="#E6E4EC" stroke-width="2" stroke-dasharray="6 5"/>
+<ellipse cx="360" cy="118" rx="34" ry="15" fill="#221E2B"/><circle cx="360" cy="118" r="13" fill="#625D6E"/><path d="M354 129 L366 129 L360 139 z" fill="#625D6E"/>
+<use href="#cam" fill="#0E7C86" transform="translate(360 212) rotate(-90)"/><use href="#cam" fill="#0E7C86" transform="translate(455 180) rotate(-146)"/><use href="#cam" fill="#0E7C86" transform="translate(478 118) rotate(180)"/><use href="#cam" fill="#0E7C86" transform="translate(360 24) rotate(90)"/><use href="#cam" fill="#0E7C86" transform="translate(292 40) rotate(49)"/>
+<g font-size="17" fill="#221E2B" font-weight="800"><text x="385" y="222">정면</text><text x="492" y="210">비스듬히</text><text x="505" y="124">옆</text><text x="385" y="30">뒤</text><text x="170" y="42">어깨 너머</text></g>
+<text x="120" y="200" font-size="13" fill="#625D6E" font-weight="600">위에서 내려다본 그림 · 얼굴은 아래쪽</text></svg></figure>
+<table><tr><th>우리 말</th><th>영어</th><th>느낌</th></tr>
+<tr><td>정면</td><td>front view</td><td>소개, 마주 봄</td></tr><tr><td>비스듬히</td><td>three-quarter view</td><td>자연스럽고 입체적</td></tr>
+<tr><td>옆</td><td>side view</td><td>걷기, 방향</td></tr><tr><td>뒤</td><td>from behind</td><td>떠남, 궁금함</td></tr>
+<tr><td>어깨 너머</td><td>over the shoulder</td><td>그 사람이 보는 것</td></tr><tr><td>🔵 주인공 눈으로</td><td>POV shot</td><td>내가 된 느낌</td></tr></table></article>
+
+<article class="card" id="s2e"><h3>④ 움직임 — 한 컷에 하나</h3><table><tr><th>우리 말</th><th>영어</th><th>느낌</th></tr>
+<tr><td>가만히</td><td>static shot</td><td>일하는 손, 잔잔함</td></tr><tr><td>다가가기</td><td>slowly pushes in</td><td>마음이 가까워짐</td></tr>
+<tr><td>물러나기</td><td>slowly pulls back</td><td>장소가 드러남</td></tr><tr><td>따라가기</td><td>follows alongside</td><td>걷고 움직일 때</td></tr>
+<tr><td>둘러보기</td><td>slowly pans</td><td>풍경 훑기</td></tr><tr><td>돌기</td><td>slowly orbits</td><td>주인공 소개</td></tr></table>
+<p class="muted">둘을 넣으면 어정쩡해집니다. 조명은 시간으로 — 아침·한낮·노을·밤 실내.</p></article>
+
+<article class="card key wide" id="s2f"><h3><span class=lab>핵심</span>장면 목적별 추천 조합</h3><div class="tbl"><table>
+<tr><th>장면 목적</th><th>뷰</th><th>샷</th><th>앵글</th><th>움직임</th></tr>
+<tr><td>장소 소개</td><td>정면</td><td>멀리</td><td>눈높이</td><td>물러나기</td></tr>
+<tr><td>주인공 등장</td><td>비스듬히</td><td>전신</td><td>눈높이</td><td>따라가기</td></tr>
+<tr><td>일하는 손</td><td>정면</td><td>아주 가까이</td><td>바로 위</td><td>가만히</td></tr>
+<tr><td>무언가 발견</td><td>어깨 너머</td><td>상반신</td><td>눈높이</td><td>다가가기</td></tr>
+<tr><td>감정·표정</td><td>비스듬히</td><td>얼굴</td><td>눈높이</td><td>다가가기</td></tr>
+<tr><td>여운·마무리</td><td>뒤</td><td>멀리</td><td>위에서</td><td>물러나기</td></tr></table></div>
+<p>고르기 어려우면 <b>한 줄을 통째로</b>. 프롬프트엔 <b>뷰, 샷, 앵글</b>을 맨 앞에 차례로 씁니다.</p></article>
+
+<article class="card demo wide" id="s2g"><h3><span class=lab>강사 먼저</span>같은 장면, 세 구도로 비교</h3>
+<p>🟢 제미나이에서. 첫 그림 뒤에는 “같은 장면을 이번엔 [조합 2]로”라고만 말해도 됩니다.</p>
+<div class="pr"><button class="copy" type="button">복사</button><p class="en"><span class=k>[뷰]</span>, <span class=k>[샷]</span>, <span class=k>[앵글]</span>. <span class=k>[장면]</span>. Soft natural light, realistic photo, only one person, 16:9, no text.</p><p class="ko">[뷰], [샷], [앵글]. [장면]. 부드러운 자연광, 사실적인 사진, 한 명만, 16:9, 글자 없음.</p></div>
+<div class="tbl"><table><tr><th></th><th>[뷰]</th><th>[샷]</th><th>[앵글]</th></tr>
+<tr><td>조합 1</td><td>front view</td><td>wide shot</td><td>eye level</td></tr>
+<tr><td>조합 2</td><td>three-quarter view</td><td>close-up</td><td>low angle</td></tr>
+<tr><td>조합 3</td><td>from behind</td><td>full shot</td><td>high angle</td></tr></table>
+<table><tr><th>[장면]</th><th>예제 A</th><th>예제 B</th></tr><tr><td></td><td>A person arranges books on a shelf in a small seaside bookstore</td><td>A person trims flowers in front of a small flower shop in a Paris alley</td></tr></table></div></article>
+<article class="card you" id="s2h"><h3><span class=lab>내 차례</span>하나 고르기</h3><p>세 장 중 내 이야기에 가장 어울리는 구도 하나를 고르고, <b>왜</b>인지 한 줄로 말해 보세요. “얼굴이 커서 마음이 느껴진다”처럼.</p></article>
+<article class="card warn" id="s2i"><h3><span class=lab>주의</span>헷갈릴 때</h3><ul><li>샷 두 개를 한 문장에 넣지 않기 (close-up, wide shot ✕)</li><li>영어가 어려우면 표에서 그대로 복사</li><li>원하는 구도가 안 나오면 그 단어를 문장 <b>맨 앞</b>으로</li></ul></article>
+</div></section>
+
+<!-- STEP 3 -->
+<section class="step" id="s3"><header class="sh"><span class="no">3</span><div><h2>화풍 고르기</h2><p>리얼 포토냐, 애니메이션 일러스트냐. 한 번 정하면 영상 끝까지 바꾸지 않습니다.</p></div></header><div class="grid">
+<article class="card key wide" id="s3a"><h3><span class=lab>핵심</span>두 화풍 비교</h3><div class="tbl"><table>
+<tr><th></th><th>리얼 포토</th><th>애니메이션 일러스트</th></tr>
+<tr><td>느낌</td><td>실제로 찍은 듯, 광고·브이로그·다큐</td><td>따뜻한 그림, 동화·추억·감성</td></tr>
+<tr><td>좋은 점</td><td>현실감, 제품·가게 홍보에 강함</td><td>얼굴이 조금 달라도 티가 덜 남</td></tr>
+<tr><td>어려운 점</td><td>얼굴이 흔들리면 바로 보임</td><td>손·글자 표현이 뭉개질 때가 있음</td></tr></table></div></article>
+<article class="card" id="s3b"><h3>리얼 포토 스타일 문장 예</h3><div class="pr"><button class="copy" type="button">복사</button><p class="en">Photorealistic cinematic still, 35mm lens look, soft natural light, warm muted colors, gentle film grain, shallow depth of field.</p><p class="ko">사실적인 영화 장면, 35mm 렌즈 느낌, 부드러운 자연광, 따뜻하고 차분한 색, 은은한 필름 질감, 배경 흐림.</p></div></article>
+<article class="card" id="s3c"><h3>애니메이션 일러스트 스타일 문장 예</h3><div class="pr"><button class="copy" type="button">복사</button><p class="en">Hand-drawn 2D animation illustration, clean soft line art, watercolor backgrounds, warm pastel palette, gentle cel shading, cozy mood.</p><p class="ko">손그림 2D 애니메이션, 깔끔하고 부드러운 선, 수채화 배경, 따뜻한 파스텔 색, 은은한 명암, 아늑한 분위기.</p></div></article>
+<article class="card demo wide" id="s3d"><h3><span class=lab>강사 먼저</span>① 제미나이를 기획 도우미로</h3><p>🟢 STEP 1과 다른 <b>새 대화창</b>을 열고, 이제부터 이 창 하나로 끝까지 갑니다. STEP 1의 주인공이 마음에 들면 그 이미지를 첨부해 “이 사람으로”라고 해도 됩니다.</p>
+<div class="pr"><button class="copy" type="button">복사</button><p class="en">너는 내 AI 영상 기획 도우미야. 이 대화창에서 짧은 영상 한 편을 처음부터 끝까지 같이 기획할 거야.<br>- 주인공: <span class=k>[주인공]</span><br>- 이야기 한 줄: <span class=k>[이야기 한 줄]</span><br>- 영상 길이: <span class=k>[30초 / 50초 정도]</span><br>- 화풍: <span class=k>[리얼 포토 / 애니메이션 일러스트]</span><br>먼저 이 화풍을 모든 이미지에 똑같이 적용할 수 있게 영어 ‘스타일 문장’을 한 문장(30단어 안팎)으로 만들어줘. 빛, 색감, 질감을 넣고, 작가·작품·회사 이름은 넣지 마. 한국어 뜻도 함께.</p><p class="ko">위 예시 문장을 그대로 써도 됩니다. 제미나이가 내 이야기에 맞게 다듬어 줘요.</p></div></article>
+<article class="card set" id="s3e"><h3><span class=lab>준비</span>메모장에 저장</h3><p>받은 문장을 메모장에 <b>① 스타일 문장</b>으로 붙여 두기. 마음에 안 들면 “더 따뜻하게”, “더 선명하게”처럼 한마디로 고치기.</p></article>
+<article class="card warn" id="s3f"><h3><span class=lab>주의</span>이름 대신 느낌으로</h3><p>특정 작가·애니메이션 회사 이름을 넣으면 거절되거나 저작권 문제가 생길 수 있어요. “따뜻한 수채화 느낌”처럼 <b>느낌을 말로</b>.</p></article>
+<article class="card ext wide" id="s3g"><h3><span class=lab>확장</span>🔵 두 화풍 모두 그려 보고 고르기</h3><div class="pr"><button class="copy" type="button">복사</button><p class="en">내 주인공을 리얼 포토 한 장, 애니메이션 일러스트 한 장으로 각각 그려줘. 정면, 상반신, 눈높이, 단순한 배경, 16:9, 글자 없이. 그리고 내 이야기에는 어느 쪽이 어울리는지 이유와 함께 추천해줘.</p></div></article>
+</div></section>
+
+<!-- STEP 4 -->
+<section class="step" id="s4"><header class="sh"><span class="no">4</span><div><h2>앵커 이미지</h2><p>앵커는 배의 닻. 모든 컷의 얼굴이 이 한 장에 묶입니다.</p></div></header><div class="grid">
+<article class="card key wide" id="s4a"><h3><span class=lab>핵심</span>좋은 앵커의 조건</h3><p><b>정면 · 상반신 · 눈높이 · 단순한 배경 · 한 명</b>. 얼굴과 옷이 가장 또렷하게 보이는 사진이어야 이후 모든 컷이 그 얼굴을 따라 그립니다. 장면 연출은 아직 필요 없어요.</p></article>
+<article class="card demo wide" id="s4b"><h3><span class=lab>강사 먼저</span>① 앵커 이미지 그리기</h3><p>🟢 같은 대화창에서.</p>
+<div class="pr"><button class="copy" type="button">복사</button><p class="en">스타일 문장을 그대로 적용해서 내 주인공의 앵커 이미지를 그려줘. 외모: <span class=k>[외모]</span>. 옷: <span class=k>[옷]</span>. 정면, 상반신, 눈높이, 단순한 밝은 배경, 편안한 표정, 한 명만, 가로 16:9, 글자 없이.</p></div>
+<div class="tbl"><table><tr><th>빈칸</th><th>예제 A 제주 책방</th><th>예제 B 파리 꽃집</th></tr>
+<tr><td>[외모]</td><td>[나이·성별], 짧은 단발, 동그란 안경</td><td>[나이·성별], 묶은 머리, 햇볕에 그을린 피부</td></tr>
+<tr><td>[옷]</td><td>하늘색 리넨 셔츠, 베이지 앞치마</td><td>초록 앞치마, 흰 셔츠, 걷어 올린 소매</td></tr></table></div></article>
+<article class="card you wide" id="s4c"><h3><span class=lab>내 차례</span>② 인물 문장 받기</h3>
+<div class="pr"><button class="copy" type="button">복사</button><p class="en">방금 그린 인물을 다른 장면에서도 똑같이 그릴 수 있게 영어 ‘인물 문장’을 한 문장(30단어 안팎)으로 만들어줘. 나이대, 얼굴 특징, 머리, 옷, 소품을 넣어서. 한국어 뜻도 함께.</p></div>
+<p>메모장에 <b>② 인물 문장</b>으로 저장. 이미지는 <b>앵커.png</b>로 다운로드.</p></article>
+<article class="card set" id="s4d"><h3><span class=lab>준비</span>고르는 기준</h3><ol><li>얼굴이 또렷한가</li><li>눈·손가락이 이상하지 않은가</li><li>옷 색이 잘 보이는가</li></ol></article>
+<article class="card ext" id="s4e"><h3><span class=lab>확장</span>🔵 트레이드마크 소품 하나</h3><p>노란 우산, 빨간 목도리처럼 <b>눈에 띄는 소품 하나</b>를 정해 인물 문장에 넣으면 컷이 바뀌어도 같은 사람으로 알아보기 쉬워요.</p></article>
+<article class="card warn wide" id="s4f"><h3><span class=lab>주의</span>얼굴은 내 것 또는 상상 속 인물로</h3><p>연예인이나 다른 사람 사진은 쓰지 않기. 가족 사진을 참고할 땐 그분께 먼저 물어보세요.</p></article>
+</div></section>
+
+<!-- STEP 5 -->
+<section class="step" id="s5"><header class="sh"><span class="no">5</span><div><h2>캐릭터 시트</h2><p>앵커 한 장을 여러 각도로 펼칩니다. 옆모습·뒷모습 컷에서도 같은 사람이 나오게.</p></div></header><div class="grid">
+<article class="card key wide" id="s5a"><h3><span class=lab>핵심</span>왜 시트가 필요할까</h3><p>앵커는 정면뿐이라, 뒷모습을 그리라고 하면 AI가 짐작해서 <b>다른 사람</b>이 되기 쉬워요. 정면·옆·뒤와 표정을 <b>한 장</b>에 모아 두면 어느 방향에서도 같은 사람으로 그립니다. STEP 2의 <b>뷰</b>가 바로 이 각도들이에요.</p></article>
+<article class="card demo wide" id="s5b"><h3><span class=lab>강사 먼저</span>① 캐릭터 시트 그리기</h3><p>🟢 같은 대화창, 앵커 바로 다음에.</p>
+<div class="pr"><button class="copy" type="button">복사</button><p class="en">앵커 이미지 속 같은 인물로 캐릭터 시트를 그려줘. 같은 화풍. 한 장에 정면·비스듬히·옆·뒤 전신 4개, 그리고 얼굴 표정 3개(웃음·놀람·생각). 모든 모습에 같은 옷, 흰 배경, 깔끔한 배치, 가로 16:9, 글자 없이.</p><p class="nt">흰 배경 = 나중에 참고로 넣을 때 배경이 섞이지 않게</p></div></article>
+<article class="card set" id="s5c"><h3><span class=lab>준비</span>확인하고 저장</h3><ol><li>7개 모습이 모두 <b>같은 얼굴</b>인가</li><li>옷·소품이 모두 같은가</li><li><b>시트.png</b>로 다운로드</li></ol><p class="muted">하나라도 다른 사람 같으면 다시. 시트가 틀리면 이후 컷이 전부 틀려요.</p></article>
+<article class="card warn" id="s5d"><h3><span class=lab>주의</span>잘 안 될 때</h3><ul><li>인물이 너무 작음 → 표정 3개는 빼고 전신 4개만</li><li>뒷모습 머리가 다름 → “뒷모습도 앵커와 같은 머리 모양”</li><li>글자가 들어감 → “글자 없이” 다시 강조</li></ul></article>
+<article class="card ext wide" id="s5e"><h3><span class=lab>확장</span>🔵 장소 앵커도 하나</h3><div class="pr"><button class="copy" type="button">복사</button><p class="en">스타일 문장을 적용해서 내 이야기의 주 장소를 그려줘: <span class=k>[장소]</span>. 사람 없이, 멀리서, 눈높이, 16:9, 글자 없이.</p><p class="ko">가게 모습이 컷마다 달라지는 것도 막아 줍니다. 장소.png로 저장.</p></div></article>
+</div></section>
+
+<!-- STEP 6 -->
+<section class="step" id="s6"><header class="sh"><span class="no">6</span><div><h2>콘티 → 스토리보드</h2><p>글 표로 약속하고, 그림으로 확인합니다. 영상 길이는 30초~1분 미만.</p></div></header><div class="grid">
+<article class="card key wide" id="s6a"><h3><span class=lab>핵심</span>컷 수 = 길이 ÷ 8초</h3><figure class="fig"><svg viewBox="0 0 720 165" xmlns="http://www.w3.org/2000/svg" font-family="Noto Sans KR, sans-serif" role="img" aria-label="컷 수와 영상 길이">
+<text x="10" y="55" font-size="15" fill="#221E2B" font-weight="800">🟢 4컷</text><text x="10" y="128" font-size="15" fill="#221E2B" font-weight="800">🔵 7컷</text>
+<g font-size="13" font-weight="700" text-anchor="middle">
+<rect x="85" y="30" width="110" height="40" rx="6" fill="#0E7C86"/><text x="140" y="55" fill="#fff">장소</text>
+<rect x="200" y="30" width="110" height="40" rx="6" fill="#0E7C86"/><text x="255" y="55" fill="#fff">등장</text>
+<rect x="315" y="30" width="110" height="40" rx="6" fill="#0E7C86"/><text x="370" y="55" fill="#fff">작은 사건</text>
+<rect x="430" y="30" width="110" height="40" rx="6" fill="#0E7C86"/><text x="485" y="55" fill="#fff">마무리</text>
+<g fill="#BFE3E6"><rect x="85" y="103" width="80" height="40" rx="6"/><rect x="170" y="103" width="80" height="40" rx="6"/><rect x="255" y="103" width="80" height="40" rx="6"/><rect x="340" y="103" width="80" height="40" rx="6"/><rect x="425" y="103" width="80" height="40" rx="6"/><rect x="510" y="103" width="80" height="40" rx="6"/><rect x="595" y="103" width="80" height="40" rx="6"/></g>
+<g fill="#0E7C86"><text x="125" y="128">1</text><text x="210" y="128">2</text><text x="295" y="128">3</text><text x="380" y="128">4</text><text x="465" y="128">5</text><text x="550" y="128">6</text><text x="635" y="128">7</text></g></g>
+<text x="560" y="56" font-size="16" fill="#0E7C86" font-weight="800">= 32초</text><text x="685" y="155" font-size="15" fill="#0E7C86" font-weight="800" text-anchor="end">= 56초</text></svg></figure>
+<p>흐름은 <b>시작 → 작은 사건 → 따뜻한 마무리</b>. 🟢 4컷으로 먼저 완성하고, 여유가 있으면 🔵 컷을 늘립니다.</p></article>
+<article class="card demo wide" id="s6b"><h3><span class=lab>강사 먼저</span>① 콘티 표 받기</h3><p>🟢 같은 대화창에서.</p>
+<div class="pr"><button class="copy" type="button">복사</button><p class="en">지금까지 정한 주인공과 화풍으로 <span class=k>[4 / 6 / 7]</span>컷 콘티를 표로 짜줘. 컷당 8초.<br>이야기 흐름: 시작 → 작은 사건 → 따뜻한 마무리.<br>표 칸: 컷 번호 / 무슨 일(한 줄) / 뷰(정면·비스듬히·옆·뒤·어깨 너머) / 샷(멀리·전신·상반신·얼굴) / 앵글(눈높이·아래서·위에서·바로 위) / 카메라 움직임(하나만) / 조명 / 소리 / 앞 컷과 이어짐(새 장면·이어짐).<br>규칙: 같은 샷이 두 컷 연속 나오지 않게. 첫 컷은 장소가 보이게 멀리서. 화면엔 주인공 한 명. 대사·자막 없이.</p><p class="ko">‘이어짐’ 칸은 STEP 1에서 배운 방법을 고를 때 씁니다.</p></div></article>
+<article class="card you" id="s6c"><h3><span class=lab>내 차례</span>② 한 칸씩 고치기</h3><p>표 전체를 다시 만들지 말고 칸만 고쳐 달라고 하세요.</p>
+<div class="pr"><button class="copy" type="button">복사</button><p class="en"><span class=k>[3]</span>번 컷을 어깨 너머 뷰로 바꾸고, 나머지는 그대로 둬줘.</p></div></article>
+<article class="card you" id="s6d"><h3><span class=lab>내 차례</span>③ 영어 프롬프트 받기</h3><p>표가 마음에 들면 그다음에.</p>
+<div class="pr"><button class="copy" type="button">복사</button><p class="en">좋아. 이제 컷마다 두 가지를 영어로 써줘.<br>① 이미지 프롬프트: 맨 앞에 스타일 문장과 인물 문장, 그다음 뷰·샷·앵글, 무슨 일, 조명. 끝에 only one person, 16:9, no text.<br>② 영상 프롬프트: 움직임·표정·카메라 움직임·소리만. 끝에 no music.<br>③ 이어짐 칸이 ‘이어짐’인 컷은 그 컷이 끝나는 모습의 <b>끝 이미지 프롬프트</b>도 하나 더 — 시작 이미지와 같은 카메라 위치·거리·높이로.<br>컷 번호별로 코드 블록에 따로.</p><p class="nt">③번 줄은 🔵 — 모두 ‘따로’로 만들 분은 지워도 됩니다</p></div></article>
+<article class="card demo wide" id="s6e"><h3><span class=lab>강사 먼저</span>④ 스토리보드 한 장</h3><p>🟢 <b>시트.png</b>를 첨부하고.</p>
+<div class="pr"><button class="copy" type="button">복사</button><p class="en">위 콘티로 스토리보드 한 장을 그려줘. <span class=k>[4 / 6]</span>칸 격자, 칸마다 콘티의 뷰·샷·앵글대로 구도를 잡고, 카메라 움직임은 화살표로. 첨부한 캐릭터 시트의 주인공이 칸마다 한 명씩. 연필 스케치 느낌, 흰 바탕, 포인트 색 하나. 글자는 칸 번호만. 가로 16:9.</p><p class="nt">스토리보드는 구도 확인용 — 대충이어도 충분 · 7컷은 4칸 + 3칸 두 장으로</p></div></article>
+<article class="card set" id="s6f"><h3><span class=lab>준비</span>스토리보드로 확인할 세 가지</h3><ol><li>칸마다 <b>크기</b>(멀리·전신·상반신·얼굴)가 다양한가</li><li>그림만 봐도 <b>이야기</b>가 읽히는가</li><li>주인공이 <b>같은 사람</b>으로 보이는가</li></ol></article>
+<article class="card ext" id="s6g"><h3><span class=lab>확장</span>🔵 방향을 지키기</h3><p>주인공이 1번 컷에서 <b>왼쪽 → 오른쪽</b>으로 걸었다면 끝까지 같은 방향으로. 방향이 뒤집히면 되돌아가는 것처럼 보여요. 콘티 규칙에 “주인공의 이동 방향은 왼쪽에서 오른쪽으로 유지”를 추가.</p></article>
+</div></section>
+
+<!-- STEP 7 -->
+<section class="step" id="s7"><header class="sh"><span class="no">7</span><div><h2>컷마다 만들기</h2><p>이미지는 제미나이에서, 영상은 플로우에서. 한 컷씩 따로 만들어 번호대로 모읍니다.</p></div></header><div class="grid">
+<article class="card key wide" id="s7a"><h3><span class=lab>핵심</span>한 컷의 공정</h3><figure class="fig"><svg viewBox="0 0 720 190" xmlns="http://www.w3.org/2000/svg" font-family="Noto Sans KR, sans-serif" role="img" aria-label="한 컷 제작 공정">
+<g font-weight="700" text-anchor="middle">
+<rect x="15" y="30" width="150" height="90" rx="10" fill="#E4F4F5" stroke="#0E7C86" stroke-width="2"/><text x="90" y="62" font-size="14" fill="#0E7C86">제미나이</text><text x="90" y="86" font-size="14" fill="#221E2B">시트 첨부 +</text><text x="90" y="105" font-size="14" fill="#221E2B">이미지 프롬프트</text>
+<rect x="195" y="30" width="150" height="90" rx="10" fill="#E4F4F5" stroke="#0E7C86" stroke-width="2"/><text x="270" y="70" font-size="14" fill="#221E2B">다운로드</text><text x="270" y="94" font-size="14" fill="#0E7C86">01.png</text>
+<rect x="375" y="30" width="150" height="90" rx="10" fill="#EEF2F7" stroke="#3E5A7E" stroke-width="2"/><text x="450" y="62" font-size="14" fill="#3E5A7E">플로우</text><text x="450" y="86" font-size="14" fill="#221E2B">프레임→동영상</text><text x="450" y="105" font-size="14" fill="#221E2B">영상 프롬프트</text>
+<rect x="555" y="30" width="150" height="90" rx="10" fill="#EEF2F7" stroke="#3E5A7E" stroke-width="2"/><text x="630" y="70" font-size="14" fill="#221E2B">다운로드</text><text x="630" y="94" font-size="14" fill="#3E5A7E">01.mp4</text></g>
+<g stroke="#0E7C86" stroke-width="3" marker-end="url(#ah)" fill="none"><line x1="167" y1="75" x2="192" y2="75"/><line x1="347" y1="75" x2="372" y2="75"/><line x1="527" y1="75" x2="552" y2="75"/><path d="M630 124 C630 170 90 170 90 128"/></g>
+<text x="360" y="182" font-size="13" fill="#0E7C86" font-weight="800" text-anchor="middle">다음 컷으로 반복</text></svg></figure>
+<p class="muted">이미지를 제미나이에서 만들면 플로우 크레딧은 영상에만 씁니다.</p></article>
+<article class="card key wide" id="s7b"><h3><span class=lab>핵심</span>컷마다 방법 고르기 — STEP 1 결과 그대로</h3><div class="tbl"><table>
+<tr><th>콘티 ‘이어짐’ 칸이</th><th>방법</th><th>필요한 이미지</th></tr>
+<tr><td>새 장면 (장소·시간이 바뀜)</td><td>① 따로 — 시작 칸만</td><td>그 컷 1장</td></tr>
+<tr><td>한 컷 안에서 모습이 바뀜</td><td>② 시작·끝</td><td>시작 1장 + 끝 1장</td></tr>
+<tr><td>앞 컷에서 그대로 이어짐</td><td>③ 이어달리기 — 앞 컷의 <b>끝 이미지</b>를 시작 칸에</td><td>끝 1장만 추가</td></tr></table></div>
+<p class="muted">③은 <b>앞 컷이 ②(끝 이미지가 있는 컷)</b>일 때만 됩니다. 앞 컷을 ① 따로로 만들었다면 끝 이미지 파일이 없으니, 앞 컷을 먼저 ②로 바꾸세요.</p>
+<p class="muted">🟢 처음엔 모두 ① 따로로 완성해도 충분합니다. 🔵 한두 컷만 ②·③으로 바꿔 보세요.</p></article>
+<article class="card demo wide" id="s7c"><h3><span class=lab>강사 먼저</span>① 컷 이미지</h3><p>🟢 제미나이 같은 대화창, 시트.png 첨부.</p>
+<div class="pr"><button class="copy" type="button">복사</button><p class="en">첨부한 캐릭터 시트의 인물로, <span class=k>[1]</span>번 컷 이미지 프롬프트대로 그려줘. 가로 16:9, 한 명만, 글자 없이.</p></div>
+<p class="muted">프롬프트를 직접 넣고 싶으면 이 틀로:</p>
+<div class="pr"><button class="copy" type="button">복사</button><p class="en"><span class=k>[스타일 문장]</span> <span class=k>[인물 문장]</span> <span class=k>[뷰]</span>, <span class=k>[샷]</span>, <span class=k>[앵글]</span>. <span class=k>[무슨 일]</span>. <span class=k>[조명]</span>. Only one person, 16:9, no text.</p></div></article>
+<article class="card demo wide" id="s7d"><h3><span class=lab>강사 먼저</span>② 컷 영상</h3><p>🟢 플로우 <b>프레임 → 동영상</b> · 시작 칸에 컷 이미지 · 360p. 이미지에 있는 건 다시 쓰지 않고 <b>움직임·소리만</b>.</p>
+<div class="pr"><button class="copy" type="button">복사</button><p class="en"><span class=k>[동작]</span>. The camera <span class=k>[움직임 하나]</span>. <span class=k>[소리]</span>, no music.</p><p class="ko">제미나이가 써 준 ‘영상 프롬프트’를 그대로 붙여도 됩니다.</p></div></article>
+<article class="card you wide" id="s7e"><h3><span class=lab>내 차례</span>③ 작업표</h3><div class="tbl"><table>
+<tr><th>컷</th><th>방법</th><th>이미지</th><th>영상</th><th>파일 이름</th></tr>
+<tr><td>1</td><td>따로</td><td><input type="checkbox" aria-label="컷1 이미지"></td><td><input type="checkbox" aria-label="컷1 영상"></td><td>01_장소</td></tr>
+<tr><td>2</td><td>따로 / 시작·끝 / 이어</td><td><input type="checkbox" aria-label="컷2 이미지"></td><td><input type="checkbox" aria-label="컷2 영상"></td><td>02_등장</td></tr>
+<tr><td>3</td><td>따로 / 시작·끝 / 이어</td><td><input type="checkbox" aria-label="컷3 이미지"></td><td><input type="checkbox" aria-label="컷3 영상"></td><td>03_사건</td></tr>
+<tr><td>4</td><td>따로 / 시작·끝 / 이어</td><td><input type="checkbox" aria-label="컷4 이미지"></td><td><input type="checkbox" aria-label="컷4 영상"></td><td>04_마무리</td></tr>
+<tr><td>🔵 5~7</td><td></td><td><input type="checkbox" aria-label="추가 이미지"></td><td><input type="checkbox" aria-label="추가 영상"></td><td>05_… 06_… 07_…</td></tr></table></div>
+<p class="muted">번호를 앞에 붙여 한 폴더에 — 다음 시간 캡컷에서 순서대로 이어 붙입니다.</p></article>
+<article class="card ext" id="s7f"><h3><span class=lab>확장</span>🔵 한 가지만 고치기</h3><p>마음에 안 드는 컷은 새로 만들지 말고 한 가지만 바꿔 달라고.</p>
+<div class="pr"><button class="copy" type="button">복사</button><p class="en">방금 그림에서 앵글만 아래서 보는 구도로 바꾸고, 나머지는 그대로 둬줘.</p></div></article>
+<article class="card warn" id="s7g"><h3><span class=lab>주의</span>잘 안 될 때</h3><ul><li>얼굴이 바뀜 → 시트를 다시 첨부</li><li>화풍이 바뀜 → 스타일 문장이 <b>맨 앞</b>에 있는지</li><li>사람이 늘어남 → <b>only one person</b></li><li>카메라가 멋대로 → 움직임 하나, 가만히는 <b>static shot</b></li></ul></article>
+</div></section>
+
+<!-- STEP 8 -->
+<section class="step" id="s8"><header class="sh"><span class="no">8</span><div><h2>감상 · 정리</h2><p>2~3명의 프레임 실험과 컷을 함께 봅니다.</p></div></header><div class="grid">
+<article class="card key wide" id="s8a"><h3><span class=lab>핵심</span>오늘 가져가는 것</h3><ul>
+<li>프레임 = 장면 고정, 재료 = 사람·물건만 참고</li>
+<li>따로 / 시작·끝 / 이어달리기 — 이어달리기는 이미지 3장</li>
+<li>한 컷 = 뷰 · 샷 · 앵글 + 움직임 하나</li>
+<li>스타일 문장 + 인물 문장 = 같은 화풍, 같은 얼굴</li>
+<li>콘티(글 표) + 스토리보드(그림) = 한 세트 설계도</li></ul></article>
+<article class="card set" id="s8b"><h3><span class=lab>준비</span>집에서</h3><ul><li>남은 컷 완성, 번호 순서로 한 폴더에</li><li>메모장의 두 문장과 시트.png 보관 — 다음 시간에도 씁니다</li></ul></article>
+<article class="card ext" id="s8c"><h3><span class=lab>확장</span>🔵 제목 붙이기</h3><div class="pr"><button class="copy" type="button">복사</button><p class="en">지금까지 만든 콘티를 보고 이 영상의 제목 후보 3개와, 마지막 장면에 넣을 짧은 한 줄 문구 3개를 추천해줘.</p></div></article>
+</div></section>
+
+<!-- 막힘 사전 -->
+<section class="step" id="s9"><header class="sh"><span class="no">?</span><div><h2>막힘 사전</h2><p>자주 만나는 화면과 해결.</p></div></header><div class="grid">
+<article class="card warn" id="s9a"><h3><span class=lab>주의</span>끝 프레임 칸이 없어요</h3><p>웹 플로우에서 <b>프레임 → 동영상</b>을 고르세요. 모바일 앱에선 아직 안 됩니다.</p></article>
+<article class="card warn" id="s9b"><h3><span class=lab>주의</span>제미나이가 그림을 안 그려요</h3><p>문장 끝을 “<b>그려줘</b>”로 분명하게. 그래도 글로만 답하면 입력창의 이미지 만들기 도구를 켜고 다시.</p></article>
+<article class="card warn" id="s9c"><h3><span class=lab>주의</span>제미나이가 앞 내용을 잊었어요</h3><p>같은 대화창인지 확인하고, 메모장의 스타일 문장·인물 문장을 다시 붙여 넣으세요.</p></article>
+<article class="card warn" id="s9d"><h3><span class=lab>주의</span>그림에 글자가 이상하게 들어가요</h3><p>“글자 없이” / <b>no text</b>를 끝에 한 번 더.</p></article>
+<article class="card warn" id="s9e"><h3><span class=lab>주의</span>이어달리기 이음새가 멈칫해요</h3><p>두 영상의 카메라 문장과 속도(slowly)를 <b>똑같이</b>. 시작 칸에 앞 영상의 <b>끝 이미지 파일 그대로</b> 넣었는지 확인.</p></article>
+<article class="card warn" id="s9g"><h3><span class=lab>주의</span>제미나이가 더 이상 그림을 안 그려줘요</h3><p>하루에 만들 수 있는 이미지 수에 제한이 있을 수 있어요. 남은 컷 이미지는 플로우 <b>이미지 만들기</b>에서 시트를 재료로 넣고 같은 이미지 프롬프트로 만드세요.</p></article>
+<article class="card warn" id="s9f"><h3><span class=lab>주의</span>크레딧이 걱정돼요</h3><p>영상은 360p. 이미지는 제미나이에서. 마음에 드는 것만 나중에 다시.</p></article>
+</div></section>
+
+</main><nav class="side" id="side" aria-label="이 단계의 카드"></nav></div>
+<footer class="bottom"><div class="bottom-in"><button class="btn" id="prev" type="button">←</button><button class="btn" id="next" type="button">→</button></div></footer>
+<script>
+const secs=[...document.querySelectorAll('.step')];
+const NAV=secs.map(s=>({id:s.id,t:s.querySelector('h2').textContent,c:[...s.querySelectorAll('.card')].map(c=>[c.id,c.querySelector('h3').textContent.replace(/^(핵심|준비|주의|확장|강사 먼저|내 차례)/,'').trim()])}));
+const num=i=>NAV[i].id==='s9'?'?':i;
+const side=document.getElementById('side'),tabs=document.getElementById('tabs');let cur=0;
+tabs.innerHTML=NAV.map((s,i)=>'<button class="tab" type="button" data-s="'+i+'"><span class="n">'+num(i)+'</span>'+s.t+'</button>').join('');
+tabs.addEventListener('click',e=>{const t=e.target.closest('.tab');if(t)go(+t.dataset.s);});
+function renderSide(i){const f=side.classList.contains('folded');side.innerHTML='<div class="fold"><span class="hd">'+num(i)+'. '+NAV[i].t+'</span><button type="button" id="foldBtn">'+(f?'◀':'접기 ▶')+'</button></div><ol class="cl">'+NAV[i].c.map(c=>'<li><a href="#'+c[0]+'" data-c="'+c[0]+'">'+c[1]+'</a></li>').join('')+'</ol>';
+ document.getElementById('foldBtn').onclick=function(){side.classList.toggle('folded');renderSide(cur);};}
+function go(i){cur=i;secs.forEach((s,j)=>s.classList.toggle('on',j===i));tabs.querySelectorAll('.tab').forEach((t,j)=>{t.classList.toggle('on',j===i);if(j===i)tabs.scrollLeft=t.offsetLeft-tabs.clientWidth/2+t.offsetWidth/2;});renderSide(i);
+ const p=document.getElementById('prev'),n=document.getElementById('next');p.disabled=i===0;n.disabled=i===secs.length-1;
+ p.textContent=i>0?'← '+NAV[i-1].t:'←';n.textContent=i<secs.length-1?NAV[i+1].t+' →':'→';
+ window.scrollTo(0,0);if(window.innerWidth<=900)side.classList.remove('open');observe();}
+side.addEventListener('click',e=>{const a=e.target.closest('a');if(!a)return;e.preventDefault();const el=document.getElementById(a.dataset.c);el&&window.scrollTo(0,el.getBoundingClientRect().top+window.scrollY-140);if(window.innerWidth<=900)side.classList.remove('open');});
+document.getElementById('menuBtn').onclick=()=>side.classList.toggle('open');
+document.getElementById('prev').onclick=()=>cur>0&&go(cur-1);document.getElementById('next').onclick=()=>cur<secs.length-1&&go(cur+1);
+document.addEventListener('keydown',e=>{if(e.target.closest('input,textarea'))return;if(e.key==='ArrowRight'&&cur<secs.length-1)go(cur+1);if(e.key==='ArrowLeft'&&cur>0)go(cur-1);});
+document.getElementById('fontBtn').onclick=function(){document.body.classList.toggle('big');this.textContent=document.body.classList.contains('big')?'가−':'가+';};
+let io;function observe(){if(io)io.disconnect();if(!('IntersectionObserver' in window))return;
+ io=new IntersectionObserver(es=>{es.forEach(en=>{if(en.isIntersecting){side.querySelectorAll('.cl a').forEach(a=>a.classList.toggle('cur',a.dataset.c===en.target.id));}})},{rootMargin:'-130px 0px -55% 0px'});
+ secs[cur].querySelectorAll('.card').forEach(c=>io.observe(c));}
+document.querySelectorAll('.copy').forEach(b=>b.onclick=()=>{const t=b.parentNode.querySelector('.en').innerText.replace(/[ \t]+/g,' ').replace(/\n{3,}/g,'\n\n').trim();
+ const ok=()=>{b.textContent='복사됨';b.classList.add('done');setTimeout(()=>{b.textContent='복사';b.classList.remove('done')},1500)};
+ const fb=()=>{const a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();try{document.execCommand('copy')}catch(e){}a.remove();ok()};
+ navigator.clipboard?navigator.clipboard.writeText(t).then(ok,fb):fb();});
+go(0);
+</script></body></html>

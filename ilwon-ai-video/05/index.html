@@ -1,0 +1,696 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>일원 5회차 여행 영상</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Sans+KR:wght@400;500;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* 레이아웃: 상단 sticky(제목+STEP 탭) / 본문 카드 그리드 + 오른쪽 sticky 카드 메뉴 / 하단 sticky 이동 줄. position:fixed 없음, 일반 문서 스크롤 */
+:root{
+  --bg:#FBFAF8; --surface:#FFFFFF; --line:#E7E3DF; --line-2:#D6D0CA;
+  --fg:#24201E; --fg-2:#5A534E; --fg-3:#8A827B;
+  --acc:#9A4A36; --acc-ink:#FFFFFF; --acc-soft:#F6ECE8; --acc-line:#E5CFC7;
+  --set:#EEF3F7; --set-line:#CFDCE8; --set-ink:#365A7A;
+  --warn:#FBEFEF; --warn-line:#EDCFCF; --warn-ink:#A03838;
+  --ext:#EEF6F0; --ext-line:#CBE3D2; --ext-ink:#2F6B45;
+  --code:#F5F2EF;
+  --f-display:"Gowun Batang","Nanum Myeongjo","AppleMyungjo",serif;
+  --f-body:"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --f-mono:"IBM Plex Mono",Consolas,"Malgun Gothic",monospace;
+  --fs:20px; --hdr:130px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#171514; --surface:#201D1B; --line:#34302D; --line-2:#433E3A;
+  --fg:#EEE9E5; --fg-2:#C2BAB3; --fg-3:#958C85;
+  --acc:#E09A84; --acc-ink:#1E1210; --acc-soft:#33231E; --acc-line:#5A3A31;
+  --set:#1C2530; --set-line:#2F4256; --set-ink:#9EC0E0;
+  --warn:#301E1E; --warn-line:#5A3333; --warn-ink:#F0A8A8;
+  --ext:#1B2A20; --ext-line:#2F5140; --ext-ink:#93D3A9;
+  --code:#262220; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#171514; --surface:#201D1B; --line:#34302D; --line-2:#433E3A;
+  --fg:#EEE9E5; --fg-2:#C2BAB3; --fg-3:#958C85;
+  --acc:#E09A84; --acc-ink:#1E1210; --acc-soft:#33231E; --acc-line:#5A3A31;
+  --set:#1C2530; --set-line:#2F4256; --set-ink:#9EC0E0;
+  --warn:#301E1E; --warn-line:#5A3333; --warn-ink:#F0A8A8;
+  --ext:#1B2A20; --ext-line:#2F5140; --ext-ink:#93D3A9;
+  --code:#262220; color-scheme:dark}
+*{box-sizing:border-box}
+html{font-size:var(--fs)}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:1rem;line-height:1.7;word-break:keep-all;overflow-wrap:anywhere}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;line-height:1.35;margin:0;font-weight:700}
+p{margin:0}
+button,select,input{font:inherit}
+:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+b{font-weight:700}
+
+/* 상단 */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--bg);border-bottom:1px solid var(--line)}
+.top-in{max-width:1360px;margin:0 auto;padding-inline:16px}
+.bar{display:flex;align-items:center;gap:12px;padding-block:10px 4px}
+.brand{display:flex;flex-direction:column;min-width:0;flex:1}
+.brand b{font-family:var(--f-display);font-size:1rem}
+.brand small{font-size:.64rem;color:var(--fg-3)}
+.fsz{display:flex;gap:4px;align-items:center}
+.fsz span{font-size:.6rem;color:var(--fg-3);margin-right:2px}
+.fsz button{border:1px solid var(--line-2);background:var(--surface);color:var(--fg-2);border-radius:8px;padding:2px 10px;font-size:.66rem;cursor:pointer}
+.fsz button:hover{border-color:var(--acc);color:var(--acc)}
+.tabs{display:flex;gap:2px;overflow-x:auto;scrollbar-width:thin}
+.tab{flex:none;border:0;border-bottom:3px solid transparent;background:none;color:var(--fg-2);padding:6px 12px 8px;cursor:pointer;display:flex;flex-direction:column;align-items:center;line-height:1.3}
+.tab small{font-size:.54rem;font-weight:700;color:var(--fg-3);letter-spacing:.04em}
+.tab span{font-size:.7rem;white-space:nowrap}
+.tab[aria-selected="true"]{border-bottom-color:var(--acc);color:var(--fg)}
+.tab[aria-selected="true"] small{color:var(--acc)}
+.tab[aria-selected="true"] span{font-weight:700}
+
+/* 본문 */
+.wrap{max-width:1360px;margin:0 auto;padding-inline:16px;padding-block:20px 32px;display:grid;grid-template-columns:minmax(0,1fr) 250px;gap:28px;align-items:start}
+.sh{display:flex;gap:16px;align-items:center;background:var(--acc-soft);border:1px solid var(--acc-line);border-radius:14px;padding:16px 20px;margin-bottom:18px}
+.sh .badge{flex:none;background:var(--acc);color:var(--acc-ink);font-weight:800;border-radius:10px;padding:8px 14px;font-size:.8rem;letter-spacing:.02em}
+.sh h2{font-size:1.3rem}
+.sh p{color:var(--fg-2);font-size:.88rem;margin-top:2px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:22px;display:flex;flex-direction:column;gap:14px;min-width:0;scroll-margin-top:calc(var(--hdr) + 12px)}
+.card.wide{grid-column:1/-1}
+.card-h{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.card-h .no{font-family:var(--f-mono);font-size:.64rem;color:var(--fg-3)}
+.card-h h3{font-size:1.05rem;flex:1;min-width:0}
+.tag{font-size:.6rem;font-weight:700;border-radius:6px;padding:1px 8px;white-space:nowrap}
+.tag.key{background:var(--acc);color:var(--acc-ink)}
+.tag.do{background:var(--acc-soft);color:var(--acc);border:1px solid var(--acc-line)}
+.tag.you{background:var(--surface);color:var(--acc);border:1px solid var(--acc)}
+.tag.set{background:var(--set);color:var(--set-ink)}
+.tag.warn{background:var(--warn);color:var(--warn-ink)}
+.tag.ext{background:var(--ext);color:var(--ext-ink)}
+.card.set{background:var(--set);border-color:var(--set-line)}
+.card.warn{background:var(--warn);border-color:var(--warn-line)}
+.card.ext{background:var(--ext);border-color:var(--ext-line)}
+.card ul,.card ol{margin:0;padding-left:1.3em;display:flex;flex-direction:column;gap:4px}
+.muted{color:var(--fg-2)}
+.small{font-size:.8rem}
+.k{background:var(--acc-soft);color:var(--acc);border-radius:4px;padding:0 4px;font-weight:700}
+code{font-family:var(--f-mono);font-size:.8em;background:var(--code);padding:1px 6px;border-radius:5px}
+.where{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:.76rem}
+.where span{border:1px solid var(--line-2);border-radius:999px;padding:1px 10px;background:var(--bg);color:var(--fg-2)}
+.where i{font-style:normal;color:var(--fg-3)}
+
+/* 프롬프트 */
+.pr{border:1px solid var(--line-2);border-radius:10px;overflow:hidden;background:var(--code)}
+.pr-h{display:flex;align-items:center;gap:8px;padding:6px 10px 6px 14px;border-bottom:1px solid var(--line);background:var(--surface)}
+.pr-h span{flex:1;font-size:.7rem;font-weight:700;color:var(--fg-2);min-width:0}
+.cp{border:1px solid var(--acc);color:var(--acc);background:var(--surface);border-radius:7px;padding:1px 12px;font-size:.66rem;cursor:pointer;font-weight:700;flex:none}
+.cp.ok{background:var(--acc);color:var(--acc-ink)}
+.pr pre{margin:0;padding:12px 14px;font-family:var(--f-mono);font-size:.74rem;line-height:1.65;white-space:pre-wrap;word-break:break-word;color:var(--fg)}
+.pr .ko{padding:0 14px 12px;font-size:.74rem;color:var(--fg-2)}
+.pr .sv{padding:6px 14px;border-top:1px dashed var(--line-2);font-size:.7rem;color:var(--acc);font-weight:700;background:var(--surface)}
+
+/* 표 */
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:10px}
+table{border-collapse:collapse;width:100%;font-size:.8rem;min-width:480px}
+th,td{border-bottom:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+th{background:var(--code);font-weight:700;color:var(--fg-2);font-size:.72rem;white-space:nowrap}
+tr:last-child td{border-bottom:none}
+td[contenteditable]{background:var(--surface);min-width:70px}
+td[contenteditable]:empty::before{content:"입력";color:var(--fg-3)}
+
+/* 박스 */
+.box{border:1px solid;border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;gap:4px;font-size:.86rem}
+.box .bt{font-weight:700;font-size:.72rem}
+.box.easy{background:var(--bg);border-color:var(--line-2);border-style:dashed}
+.box.easy .bt{color:var(--fg-2)}
+.box.acc{background:var(--acc-soft);border-color:var(--acc-line)}
+.box.acc .bt{color:var(--acc)}
+
+/* 체크 */
+.checks{list-style:none;padding:0!important}
+.checks li{display:flex;gap:10px;align-items:flex-start}
+.checks input{width:1.1em;height:1.1em;margin-top:.35em;accent-color:var(--acc);flex:none}
+
+/* 도식·그림 */
+.fig{overflow-x:auto}
+.fig svg{display:block;width:100%;height:auto;min-width:540px}
+.svg-t{fill:var(--fg);font-family:var(--f-body)}
+.svg-s{fill:var(--fg-2);font-family:var(--f-body)}
+.svg-box{fill:var(--surface);stroke:var(--line-2)}
+.svg-acc{fill:var(--acc-soft);stroke:var(--acc)}
+.svg-solid{fill:var(--acc)}
+.svg-ink{fill:var(--acc-ink);font-family:var(--f-body)}
+.svg-al{stroke:var(--acc);fill:none}
+.svg-af{fill:var(--acc)}
+.svg-ln{stroke:var(--line-2);fill:none}
+
+/* 실제 예시 */
+.shots{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.shot{margin:0;display:flex;flex-direction:column;gap:6px;min-width:0}
+.shot img{width:100%;height:auto;border-radius:10px;border:1px solid var(--line);display:block}
+.shot figcaption{font-size:.72rem;color:var(--fg-2);line-height:1.5}
+.shot figcaption b{color:var(--warn-ink)}
+
+/* 링크 카드 */
+.links{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px}
+.links a{display:flex;flex-direction:column;gap:2px;text-decoration:none;border:1px solid var(--line-2);border-radius:8px;padding:8px 10px;background:var(--surface);color:var(--fg);min-width:0}
+.links a:hover{border-color:var(--acc)}
+.links a b{font-size:.74rem;color:var(--acc)}
+.links a b::after{content:" ↗"}
+.links small{font-size:.6rem;color:var(--fg-3);line-height:1.4}
+
+/* 연습 대상 고르기 */
+.pick{display:flex;flex-wrap:wrap;gap:6px}
+.pick button{border:1px solid var(--line-2);background:var(--surface);color:var(--fg-2);border-radius:999px;padding:3px 14px;font-size:.72rem;cursor:pointer}
+.pick button[aria-pressed="true"]{background:var(--acc);border-color:var(--acc);color:var(--acc-ink);font-weight:700}
+.pick-l{font-size:.68rem;font-weight:700;color:var(--fg-3)}
+
+/* 플레이어 */
+.pl{border:1px solid var(--line);border-radius:12px;background:var(--surface);overflow:hidden;display:flex;flex-direction:column}
+.pl-stage{background:var(--bg);padding:14px;display:flex;flex-direction:column;gap:8px;align-items:center;overflow-x:auto}
+.pl-stage svg{width:100%;height:auto;display:block;min-width:520px}
+.pl-cap{min-height:2.6em;font-size:.8rem;font-weight:700;color:var(--acc);text-align:center;line-height:1.4}
+.pl-bar{display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:10px 12px;border-top:1px solid var(--line)}
+.pl-b{border:1px solid var(--line-2);background:var(--surface);color:var(--fg);border-radius:8px;padding:2px 10px;font-size:.66rem;cursor:pointer;white-space:nowrap}
+.pl-b.pri{background:var(--acc);border-color:var(--acc);color:var(--acc-ink)}
+.pl-r{flex:1;min-width:120px;accent-color:var(--acc)}
+.pl-note{width:100%;font-size:.66rem;color:var(--fg-3)}
+
+/* 오른쪽 카드 메뉴 */
+.side{position:sticky;top:calc(var(--hdr) + 16px);border-left:1px solid var(--line);padding:4px 0 4px 10px;display:flex;flex-direction:column;gap:1px;max-height:calc(100vh - var(--hdr) - 90px);overflow:auto}
+.side .st{font-size:.62rem;color:var(--fg-3);font-weight:700;margin-bottom:6px;padding-left:8px}
+.side a{display:block;text-decoration:none;color:var(--fg-2);font-size:.7rem;padding:5px 8px;border-left:3px solid transparent;margin-left:-13px;padding-left:18px;line-height:1.45}
+.side a:hover{color:var(--fg)}
+.side a.on{color:var(--acc);border-left-color:var(--acc);font-weight:700}
+
+/* 하단 */
+.foot{position:sticky;bottom:0;z-index:20;background:var(--bg);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
+.foot-in{max-width:1360px;margin:0 auto;padding-inline:16px;padding-block:8px;display:flex;gap:8px;align-items:center}
+.nav{border:1px solid var(--line-2);background:var(--surface);color:var(--fg);border-radius:9px;padding:4px 16px;font-size:.74rem;cursor:pointer;white-space:nowrap}
+.nav.pri{background:var(--acc);border-color:var(--acc);color:var(--acc-ink)}
+.nav:disabled{opacity:.4;cursor:default}
+.foot select{flex:1;min-width:0;border:1px solid var(--line-2);background:var(--surface);color:var(--fg);border-radius:9px;padding:4px 8px;font-size:.7rem}
+
+@media (max-width:1000px){.wrap{grid-template-columns:minmax(0,1fr)}.side{display:none}}
+@media (max-width:760px){:root{--fs:18px}.grid,.shots{grid-template-columns:minmax(0,1fr)}.card{padding:16px}.foot-in{flex-wrap:wrap}.foot select{flex-basis:40%}.sh{flex-direction:column;align-items:flex-start}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+
+<header class="top" id="top">
+  <div class="top-in">
+    <div class="bar">
+      <div class="brand"><b>시작과 끝을 정하면 여행이 됩니다</b><small>일원평생학습센터 · SNS·유튜브를 사로잡는 AI영상제작 · 5회차 · 구글 플로우 + 캡컷</small></div>
+      <div class="fsz" aria-label="글자 크기"><span>글자</span><button type="button" data-fs="-1" aria-label="글자 작게">가−</button><button type="button" data-fs="1" aria-label="글자 크게">가+</button></div>
+    </div>
+    <nav class="tabs" id="tabs" role="tablist" aria-label="STEP"></nav>
+  </div>
+</header>
+
+<div class="wrap">
+  <main id="main"></main>
+  <aside class="side" id="side" aria-label="이 STEP 카드"></aside>
+</div>
+
+<footer class="foot">
+  <div class="foot-in">
+    <button type="button" class="nav" id="prev">◀ 이전</button>
+    <select id="selStep" aria-label="STEP 이동"></select>
+    <select id="selCard" aria-label="카드 이동"></select>
+    <button type="button" class="nav pri" id="next">다음 ▶</button>
+  </div>
+</footer>
+
+<script>
+/* ================= 도우미 ================= */
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+let PID=0;
+function P(label,text,ko,save,id){PID++;const pid=id||('p'+PID);return `<div class="pr"><div class="pr-h"><span>${label}</span><button type="button" class="cp" data-p="${pid}">복사</button></div><pre id="${pid}">${esc(text)}</pre>${ko?`<div class="ko">${ko}</div>`:''}${save?`<div class="sv">저장: ${save}</div>`:''}</div>`}
+const B=(k,t,h)=>`<div class="box ${k}"><div class="bt">${t}</div><div>${h}</div></div>`;
+const W=(...a)=>`<div class="where">${a.map((x,i)=>(i?'<i>→</i>':'')+`<span>${x}</span>`).join('')}</div>`;
+const T=(head,rows)=>`<div class="tbl"><table><tr>${head.map(h=>`<th>${h}</th>`).join('')}</tr>${rows.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</table></div>`;
+const CHK=items=>`<ul class="checks">${items.map((x,i)=>`<li><input type="checkbox" id="ck${++PID}"><label for="ck${PID}">${x}</label></li>`).join('')}</ul>`;
+const US=q=>'https://unsplash.com/s/photos/'+q.trim().toLowerCase().replace(/\s+/g,'-');
+const PX=q=>'https://www.pexels.com/search/'+encodeURIComponent(q)+'/';
+const LINKS=items=>`<div class="links">${items.map(([lab,u,src])=>`<a href="${u}" target="_blank" rel="noopener"><b>${lab}</b><small>${src}</small></a>`).join('')}</div>`;
+
+/* ================= 그림 도구 (강의용 자체 제작 도식) ================= */
+let UID=0;const uid=p=>(p||'g')+(++UID);
+const SK='#EFC9A8',HAIR='#2A2320';
+/* 서 있는 사람: 원점 = 발 가운데, 키 약 120 */
+function MAN(o={}){
+  const top=o.top||'#3A3A3E',bot=o.bot||'#3E5378',hat=o.hat===undefined?'#1F1F22':o.hat;
+  let g='';
+  g+=`<rect x="-13" y="-58" width="11" height="56" rx="4" fill="${bot}"/><rect x="2" y="-58" width="11" height="56" rx="4" fill="${bot}"/>`;
+  g+=`<ellipse cx="-8" cy="-1" rx="9" ry="4" fill="#5A3B26"/><ellipse cx="8" cy="-1" rx="9" ry="4" fill="#5A3B26"/>`;
+  g+=`<path d="M-18 -98 Q-18 -106 -10 -106 H10 Q18 -106 18 -98 V-56 H-18 Z" fill="${top}"/>`;
+  if(o.back){g+=`<circle cx="0" cy="-116" r="12" fill="${HAIR}"/>`}else{g+=`<circle cx="0" cy="-116" r="12" fill="${SK}"/><circle cx="-4" cy="-117" r="1.5" fill="#2B2B2B"/><circle cx="4" cy="-117" r="1.5" fill="#2B2B2B"/><path d="M-6 -110 Q0 -104 6 -110 L6 -108 Q0 -100 -6 -108Z" fill="#3A2B22" opacity=".8"/>`}
+  if(hat) g+=`<path d="M-12.5 -117 Q-13 -132 0 -132 Q13 -132 12.5 -117 Z" fill="${hat}"/>`;
+  if(o.phone){g+=`<path d="M-17 -96 L-12 -78 L-3 -74" stroke="${top}" stroke-width="7" fill="none" stroke-linecap="round"/><path d="M17 -96 L12 -78 L3 -74" stroke="${top}" stroke-width="7" fill="none" stroke-linecap="round"/>`}
+  else{g+=`<path d="M-18 -96 L-21 -62" stroke="${top}" stroke-width="7" stroke-linecap="round"/><path d="M18 -96 L21 -62" stroke="${top}" stroke-width="7" stroke-linecap="round"/><circle cx="-21" cy="-60" r="3.5" fill="${SK}"/><circle cx="21" cy="-60" r="3.5" fill="${SK}"/>`}
+  return g;
+}
+const PHONE=(x,y,k)=>`<g ${k?`data-r="${k}"`:''}><rect x="${x-5}" y="${y-8}" width="10" height="15" rx="2" fill="#20242C"/><rect x="${x-3.5}" y="${y-6.5}" width="7" height="11" rx="1" fill="#7FB4F0"/><circle cx="${x}" cy="${y-1}" r="10" fill="#9CC8FF" opacity=".35"/></g>`;
+const BAG=(k)=>`<g ${k?`data-r="${k}"`:''}><path d="M-12 -104 L16 -62" stroke="#7A4A2A" stroke-width="3"/><rect x="10" y="-70" width="20" height="17" rx="3" fill="#8A5530"/></g>`;
+/* 앉은 사람 + 테이블 + 찻잔 (카페 창가) */
+function CAFE(o={}){
+  const id=uid('w');const cup=o.cupUp?`<g data-r="${o.cupKey||''}"><rect x="34" y="-78" width="12" height="11" rx="2" fill="#FFFFFF" stroke="#8A8A8A"/></g>`:`<g data-r="${o.cupKey||''}"><rect x="58" y="-38" width="12" height="11" rx="2" fill="#FFFFFF" stroke="#8A8A8A"/></g>`;
+  return `<rect x="-90" y="-150" width="180" height="150" fill="#F4EEE6"/>
+  <rect x="-70" y="-135" width="70" height="80" fill="#CFE4F2" stroke="#B8A898" stroke-width="4"/><path d="M-35 -135 V-55 M-70 -95 H0" stroke="#B8A898" stroke-width="3"/>
+  <rect x="-90" y="-27" width="180" height="27" fill="#C9B49A"/>
+  <rect x="10" y="-27" width="80" height="6" fill="#8C6A4C"/>
+  <rect x="2" y="-74" width="30" height="48" rx="8" fill="#D9C2A0"/>
+  <circle cx="${o.turn?18:12}" cy="-86" r="12" fill="${SK}"/><path d="M0 -88 Q4 -102 18 -100 Q28 -98 26 -84 Q22 -94 12 -94 Q4 -92 0 -88Z" fill="#5A4030"/>
+  <path d="M28 -66 ${o.cupUp?'L36 -74':'L52 -32'}" stroke="#D9C2A0" stroke-width="7" stroke-linecap="round"/>${cup}`;
+}
+/* 돌담길 장소 */
+function PATHSCENE(){return `<rect x="-90" y="-150" width="180" height="150" fill="#DCE8EE"/><path d="M-90 -40 L-20 -95 L20 -95 L90 -40 V0 H-90Z" fill="#CDBB9F"/><path d="M-90 -40 L-20 -95 V-120 L-90 -90Z" fill="#9C8E7C"/><path d="M90 -40 L20 -95 V-120 L90 -90Z" fill="#8F8270"/>${[0,1,2,3].map(i=>`<path d="M${-90+i*16} ${-90+i*12} L${-90+i*16} ${-40-i*12}" stroke="#7E7262" stroke-width="1"/>`).join('')}<circle cx="-50" cy="-128" r="18" fill="#E2A85A" opacity=".85"/><circle cx="60" cy="-130" r="16" fill="#D98E4C" opacity=".85"/>`}
+
+/* ================= 움직이는 설명 플레이어 ================= */
+const TL={};
+const seg=(t,a,b)=>Math.max(0,Math.min(1,(t-a)/(b-a)));
+function PLAYER(key,svg,dur,draw,note){
+  TL[key]={dur,draw};
+  return `<div class="pl" data-pl="${key}"><div class="pl-stage">${svg}<div class="pl-cap" aria-live="polite"></div></div>
+  <div class="pl-bar"><button type="button" class="pl-b pri" data-a="play">▶ 재생</button><button type="button" class="pl-b" data-a="pause">❚❚ 일시정지</button><button type="button" class="pl-b" data-a="stop">■ 정지</button><button type="button" class="pl-b" data-a="rew">⏪ 되감기</button><input type="range" class="pl-r" min="0" max="1000" value="0" aria-label="진행">${note?`<div class="pl-note">${note}</div>`:''}</div></div>`;
+}
+const R=(root,n)=>root.querySelector(`[data-r="${n}"]`);
+const op=(el,v)=>el&&el.setAttribute('opacity',(+v).toFixed(3));
+const tf=(el,v)=>el&&el.setAttribute('transform',v);
+const AH=id=>`<marker id="${id}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" class="svg-af"/></marker>`;
+
+/* ① 마스크 편집 */
+function PL_MASK(){
+  const a=uid('a'),c=uid('c');
+  const scene=`<rect x="0" y="0" width="360" height="200" fill="#F1E7DA"/><rect x="0" y="0" width="360" height="110" fill="#D7E6EF"/><path d="M180 0 V110 M0 55 H360" stroke="#C8B8A6" stroke-width="4"/><rect x="0" y="110" width="360" height="90" fill="#B98F66"/>
+  <ellipse cx="110" cy="150" rx="34" ry="10" fill="#FFFFFF"/><rect x="90" y="122" width="40" height="28" rx="6" fill="#FFFFFF" stroke="#9A9A9A"/><ellipse cx="110" cy="123" rx="18" ry="4" fill="#C99A6A"/>
+  <ellipse cx="190" cy="158" rx="36" ry="9" fill="#FFFFFF"/><path d="M162 152 Q190 128 218 152 Q190 160 162 152Z" fill="#D9A04E"/>
+  <g data-r="vase"><rect x="262" y="118" width="26" height="40" rx="8" fill="#BFE0E6" opacity=".85"/><path d="M275 118 V90 M268 118 L258 96 M282 118 L294 98" stroke="#5E8A4E" stroke-width="2.5"/><circle cx="275" cy="86" r="8" fill="#E8889A"/><circle cx="257" cy="93" r="7" fill="#F2C14E"/><circle cx="295" cy="95" r="7" fill="#E8889A"/></g>
+  <g data-r="fill" opacity="0"><rect x="240" y="110" width="80" height="60" fill="#B98F66"/></g>`;
+  const svg=`<svg viewBox="0 0 560 250" role="img" aria-label="마스크 편집 과정"><defs>${AH(a)}<clipPath id="${c}"><rect data-r="clip" x="246" y="76" width="0" height="90"/></clipPath></defs>
+  <g transform="translate(20 20)">${scene}<g clip-path="url(#${c})"><g transform="translate(-20 -20)"><rect x="266" y="96" width="0" height="0"/></g><rect x="226" y="56" width="80" height="94" rx="14" fill="#E0503A" opacity=".45" transform="translate(-20 -20)"/></g>
+  <g data-r="brush" opacity="0"><circle r="9" fill="#E0503A" opacity=".7"/><circle r="9" fill="none" stroke="#FFFFFF" stroke-width="2"/></g>
+  <rect x="0" y="0" width="360" height="200" fill="none" stroke="#C9C1B8"/></g>
+  <g data-r="chip" opacity="0"><rect x="400" y="70" width="150" height="70" rx="10" class="svg-acc"/><text x="475" y="98" text-anchor="middle" class="svg-t" font-size="13" font-weight="700">Remove the vase.</text><text x="475" y="120" text-anchor="middle" class="svg-s" font-size="12">칠한 곳만 고쳐 주세요</text></g>
+  <g data-r="ok" opacity="0"><circle cx="475" cy="180" r="16" fill="#2F6B45"/><path d="M467 180 L473 186 L484 174" stroke="#FFFFFF" stroke-width="3" fill="none" stroke-linecap="round"/><text x="475" y="220" text-anchor="middle" class="svg-s" font-size="12">컵·크루아상은 그대로</text></g>
+  </svg>`;
+  return PLAYER('mask',svg,7000,(r,t)=>{
+    const p=seg(t,.12,.45);R(r,'clip').setAttribute('width',(90*p).toFixed(1));
+    const br=R(r,'brush');op(br,t>.1&&t<.47?1:0);tf(br,`translate(${246+90*p} ${92+Math.sin(p*18)*22})`);
+    op(R(r,'chip'),seg(t,.48,.56));
+    const f=seg(t,.62,.78);op(R(r,'vase'),1-f);op(R(r,'fill'),f);R(r,'clip').parentNode&&op(R(r,'clip').closest('g')||null,1);
+    const paint=r.querySelector('[clip-path]');op(paint,1-f);
+    op(R(r,'ok'),seg(t,.8,.88));
+    return t<.12?'① 고치고 싶은 사진 한 장':t<.47?'② 꽃병만 표시합니다 — 붓으로 칠하거나, 말로 지정':t<.6?'③ 칠한 곳을 어떻게 할지 말로 적습니다':'④ 칠한 부분만 바뀌고, 나머지는 그대로입니다';
+  });
+}
+
+/* ② 엔드 만드는 법 */
+function PL_END(){
+  const a=uid('a');
+  const frame=(x,inner,label,k)=>`<g transform="translate(${x} 40)" ${k?`data-r="${k}"`:''}><g transform="translate(90 150)">${inner}</g><rect width="180" height="150" fill="none" stroke="#C9C1B8"/><text x="90" y="174" text-anchor="middle" class="svg-t" font-size="14" font-weight="700">${label}</text></g>`;
+  const svg=`<svg viewBox="0 0 720 300" role="img" aria-label="엔드 이미지 만드는 법"><defs>${AH(a)}</defs>
+  ${frame(20,CAFE({cupKey:'c1'}),'스타트 이미지','f1')}
+  <g data-r="ghost" opacity="0">${frame(20,CAFE({}),'')}</g>
+  <g data-r="ref" opacity="0"><path d="M210 115 L300 115" class="svg-al" stroke-width="2.5" marker-end="url(#${a})"/><text x="255" y="102" text-anchor="middle" class="svg-t" font-size="13" font-weight="700">레퍼런스로 넣기</text></g>
+  <g data-r="ask" opacity="0"><rect x="246" y="190" width="228" height="62" rx="10" class="svg-acc"/><text x="360" y="214" text-anchor="middle" class="svg-t" font-size="12.5" font-weight="700">같은 사람 · 같은 장소 · 같은 카메라</text><text x="360" y="238" text-anchor="middle" class="svg-s" font-size="12.5">바뀌는 것 하나: 찻잔을 들어 마신다</text></g>
+  <g data-r="f2" opacity="0"><g transform="translate(520 40)"><g transform="translate(90 150)">${CAFE({cupUp:true})}</g><rect width="180" height="150" fill="none" stroke="#C9C1B8"/><text x="90" y="174" text-anchor="middle" class="svg-t" font-size="14" font-weight="700">엔드 이미지</text></g></g>
+  <g data-r="ring" opacity="0"><circle cx="652" cy="110" r="30" fill="none" stroke="#E0503A" stroke-width="2.5" stroke-dasharray="5 4"/><text x="652" y="62" text-anchor="middle" font-size="12" font-weight="700" fill="#C2412C">여기만 바뀜</text></g>
+  <g data-r="cam" opacity="0"><text x="360" y="285" text-anchor="middle" class="svg-s" font-size="12.5">두 장의 창문 · 테이블 · 사람 위치가 같습니다 = 같은 카메라 위치</text></g>
+  </svg>`;
+  return PLAYER('endref',svg,9000,(r,t)=>{
+    const g=seg(t,.18,.42);op(R(r,'ghost'),g>0&&g<1?.55:0);tf(R(r,'ghost'),`translate(${500*g} 0)`);
+    op(R(r,'ref'),seg(t,.15,.22));op(R(r,'ask'),seg(t,.42,.5));op(R(r,'f2'),seg(t,.5,.62));op(R(r,'ring'),seg(t,.66,.74));op(R(r,'cam'),seg(t,.78,.86));
+    return t<.15?'① 스타트 이미지를 먼저 만듭니다':t<.42?'② 스타트 이미지를 레퍼런스 칸에 넣습니다':t<.5?'③ "같은 것"과 "바뀌는 것 하나"를 적습니다':t<.78?'④ 찻잔만 바뀐 엔드 이미지가 나옵니다':'⑤ 카메라 위치가 같아야 영상이 부드럽게 이어집니다';
+  });
+}
+
+/* ③ 스타트만 vs 스타트+엔드 */
+function PL_COMPARE(){
+  const scr=(x,label,k)=>`<g transform="translate(${x} 70)"><rect width="300" height="170" rx="8" fill="#FFFFFF" stroke="#C9C1B8"/><g transform="translate(150 165) scale(.95)"><g data-r="${k}">${CAFE({cupKey:k+'cup'})}</g></g><text x="150" y="196" text-anchor="middle" class="svg-t" font-size="13.5" font-weight="700">${label}</text></g>`;
+  const svg=`<svg viewBox="0 0 720 300" role="img" aria-label="스타트만 넣은 영상과 스타트와 엔드를 넣은 영상 비교">
+  <rect x="40" y="18" width="640" height="10" rx="5" class="svg-box"/><rect data-r="bar" x="40" y="18" width="0" height="10" rx="5" class="svg-solid"/>
+  <text x="40" y="50" class="svg-s" font-size="12">0초 · 스타트</text><text x="680" y="50" text-anchor="end" class="svg-s" font-size="12">끝</text>
+  ${scr(40,'A 스타트만 — 어디로 갈지 AI가 정함','A')}
+  ${scr(380,'B 스타트 + 엔드 — 정한 도착점으로','B')}
+  <g data-r="gh" opacity="0"><g transform="translate(530 235) scale(.95)"><rect x="34" y="-78" width="12" height="11" rx="2" fill="none" stroke="#2F6B45" stroke-width="2" stroke-dasharray="3 2"/></g></g>
+  <g data-r="okB" opacity="0"><circle cx="660" cy="92" r="13" fill="#2F6B45"/><path d="M653 92 L658 97 L667 87" stroke="#FFFFFF" stroke-width="2.6" fill="none" stroke-linecap="round"/></g>
+  <g data-r="qA" opacity="0"><circle cx="320" cy="92" r="13" fill="#C2412C"/><text x="320" y="97" text-anchor="middle" font-size="15" font-weight="800" fill="#FFFFFF">?</text></g>
+  </svg>`;
+  return PLAYER('compare',svg,8000,(r,t)=>{
+    const p=seg(t,.08,.88);R(r,'bar').setAttribute('width',(640*p).toFixed(1));
+    tf(R(r,'A'),`translate(${-26*p} ${-4*p}) scale(${1+.18*p})`);
+    const cb=R(r,'Bcup');tf(cb,`translate(${-24*p} ${-40*p})`);
+    op(R(r,'gh'),t>.08&&t<.92?.9:0);op(R(r,'okB'),seg(t,.88,.95));op(R(r,'qA'),seg(t,.88,.95));
+    return t<.08?'같은 스타트 이미지로 영상 두 개를 만듭니다':t<.88?'A는 화면이 마음대로 움직이고, B는 찻잔이 정한 자리로 갑니다':'끝 장면을 정하면 영상이 어디서 끝날지 내가 정할 수 있습니다';
+  },'왼쪽 A: 시작 프레임 칸에만 넣음 / 오른쪽 B: 시작·끝 프레임 칸에 둘 다 넣음');
+}
+
+/* ④ 손에 든 폰이 시트에 따라옴 */
+function PL_SHEET(){
+  const anchor=`<g transform="translate(110 220)">${MAN({phone:1})}<g data-r="aph">${PHONE(0,-72)}${BAG()}</g></g>`;
+  const views=[0,1,2,3].map(i=>{const x=330+i*95;return `<g transform="translate(${x} 220) scale(${i==2?.92:1} 1)">${MAN({phone:1,back:i===3})}${i!==3?PHONE(0,-72):''}${BAG()}</g>`});
+  const clean=[0,1,2,3].map(i=>{const x=330+i*95;return `<g transform="translate(${x} 220) scale(${i==2?.92:1} 1)">${MAN({back:i===3})}</g>`});
+  const svg=`<svg viewBox="0 0 720 280" role="img" aria-label="손에 든 폰이 시트 네 칸에 따라오는 모습">
+  <rect x="40" y="60" width="140" height="180" rx="8" fill="#ECEDEF" stroke="#C9C1B8"/><text x="110" y="262" text-anchor="middle" class="svg-t" font-size="13" font-weight="700">앵커</text>
+  <g data-r="anc">${anchor}</g><g data-r="anc2" opacity="0"><g transform="translate(110 220)">${MAN({})}</g></g>
+  <rect x="270" y="60" width="420" height="180" rx="8" fill="#ECEDEF" stroke="#C9C1B8"/><text x="480" y="262" text-anchor="middle" class="svg-t" font-size="13" font-weight="700">캐릭터 시트 (정면 · 비스듬히 · 옆 · 뒤)</text>
+  <g data-r="bad" opacity="0">${views.join('')}${[0,1,2].map(i=>`<circle cx="${330+i*95}" cy="148" r="17" fill="none" stroke="#E0503A" stroke-width="2.5"/>`).join('')}</g>
+  <g data-r="good" opacity="0">${clean.join('')}<circle cx="670" cy="80" r="13" fill="#2F6B45"/><path d="M663 80 L668 85 L677 75" stroke="#FFFFFF" stroke-width="2.6" fill="none" stroke-linecap="round"/></g>
+  <g data-r="x" opacity="0"><path d="M60 120 L160 200 M160 120 L60 200" stroke="#E0503A" stroke-width="4" opacity=".0"/></g>
+  <text data-r="lbl" x="360" y="34" text-anchor="middle" font-size="14" font-weight="700" fill="#C2412C"></text>
+  </svg>`;
+  return PLAYER('sheet',svg,10000,(r,t)=>{
+    op(R(r,'bad'),seg(t,.12,.22)*(1-seg(t,.62,.7)));
+    op(R(r,'anc'),1-seg(t,.4,.5));op(R(r,'anc2'),seg(t,.4,.5));
+    op(R(r,'good'),seg(t,.66,.76));
+    const l=R(r,'lbl');l.textContent=t<.4&&t>.12?'손에 든 폰 · 가방이 네 칸에 모두 복사됨':t>.66?'빈손 앵커 → 깨끗한 시트':'';l.setAttribute('fill',t>.66?'#2F6B45':'#C2412C');
+    return t<.12?'① 지난주 앵커: 폰을 보고, 가방을 멘 사진':t<.4?'② "같은 옷"이라고 하자 폰과 가방까지 옷처럼 따라왔습니다':t<.62?'③ 앵커에서 손에 든 것을 빼고 빈손으로 다시':'④ 빈손 앵커로 만든 시트는 장면마다 손에 할 일을 줄 수 있습니다';
+  });
+}
+
+/* ⑤ 레퍼런스 두 장 → 스타트 → 엔드 → 영상 */
+function PL_MERGE(){
+  const a=uid('a');
+  const card=(x,y,inner,label,k)=>`<g data-r="${k}"><g transform="translate(${x} ${y})"><rect width="120" height="90" rx="6" fill="#FFFFFF" stroke="#C9C1B8"/>${inner}<text x="60" y="108" text-anchor="middle" class="svg-t" font-size="12" font-weight="700">${label}</text></g></g>`;
+  const mini=`<rect x="6" y="6" width="108" height="78" fill="#ECEDEF"/>${[0,1,2,3].map(i=>`<g transform="translate(${22+i*25} 78) scale(.45)">${MAN({back:i===3})}</g>`).join('')}`;
+  const place=`<g transform="translate(60 90) scale(.6667 .6)">${PATHSCENE()}</g>`;
+  const startS=`<g transform="translate(60 90) scale(.6667 .6)">${PATHSCENE()}<g transform="translate(0 -10) scale(.55)">${MAN({hat:'#1F1F22'})}</g></g>`;
+  const endS=`<g transform="translate(60 90) scale(.6667 .6)">${PATHSCENE()}<g transform="translate(6 -62) scale(.3)">${MAN({back:1})}</g></g>`;
+  const svg=`<svg viewBox="0 0 720 250" role="img" aria-label="레퍼런스 두 장으로 컷 만들기"><defs>${AH(a)}</defs>
+  ${card(20,10,mini,'① 시트','c1')}${card(20,135,place,'② 여행지 사진','c2')}
+  <g data-r="ar1" opacity="0"><path d="M146 55 C190 55 190 110 226 110" class="svg-al" stroke-width="2" marker-end="url(#${a})"/><path d="M146 180 C190 180 190 120 226 120" class="svg-al" stroke-width="2" marker-end="url(#${a})"/></g>
+  ${card(232,70,startS,'③ 스타트','c3')}
+  <g data-r="ar2" opacity="0"><path d="M358 115 L398 115" class="svg-al" stroke-width="2" marker-end="url(#${a})"/><text x="378" y="104" text-anchor="middle" class="svg-s" font-size="10">레퍼런스</text></g>
+  ${card(404,70,endS,'④ 엔드','c4')}
+  <g data-r="ar3" opacity="0"><path d="M530 115 L570 115" class="svg-al" stroke-width="2" marker-end="url(#${a})"/></g>
+  <g data-r="c5"><g transform="translate(576 70)"><rect width="124" height="90" rx="6" fill="#2A2522"/>${[0,1,2,3,4,5].map(i=>`<rect x="${8+i*19}" y="6" width="10" height="7" rx="1.5" fill="#6A625C"/><rect x="${8+i*19}" y="77" width="10" height="7" rx="1.5" fill="#6A625C"/>`).join('')}<path d="M52 30 L78 45 L52 60Z" fill="#FFFFFF"/><text x="62" y="108" text-anchor="middle" class="svg-t" font-size="12" font-weight="700">⑤ 영상</text></g></g>
+  </svg>`;
+  return PLAYER('merge',svg,9000,(r,t)=>{
+    op(R(r,'c1'),seg(t,0,.06));op(R(r,'c2'),seg(t,.04,.1));op(R(r,'ar1'),seg(t,.16,.24));op(R(r,'c3'),seg(t,.26,.36));
+    op(R(r,'ar2'),seg(t,.44,.5));op(R(r,'c4'),seg(t,.5,.6));op(R(r,'ar3'),seg(t,.68,.74));op(R(r,'c5'),seg(t,.74,.84));
+    return t<.16?'시트 = 누구인지, 여행지 사진 = 어디인지':t<.44?'두 장을 함께 레퍼런스로 넣고 스타트 이미지를 만듭니다':t<.68?'스타트를 레퍼런스로 넣고, 바뀌는 것 하나만 적어 엔드를 만듭니다':'스타트와 엔드를 프레임 칸에 넣어 영상 한 컷 완성';
+  });
+}
+
+/* ⑥ 캡컷 타임라인 */
+function PL_CAPCUT(){
+  const clip=(x,c,n,k)=>`<g data-r="${k}"><rect x="${x}" y="70" width="150" height="46" rx="6" fill="${c}"/><text x="${x+12}" y="98" font-size="13" font-weight="700" fill="#FFFFFF">컷 ${n}</text></g>`;
+  const svg=`<svg viewBox="0 0 720 230" role="img" aria-label="캡컷 타임라인 편집">
+  <rect x="20" y="20" width="680" height="190" rx="10" fill="#1E1B1A"/>
+  <text x="40" y="50" font-size="12" fill="#B8AEA6">타임라인</text>
+  <rect x="120" y="66" width="560" height="54" rx="6" fill="#2C2826"/><text x="40" y="98" font-size="12" fill="#B8AEA6">영상</text>
+  <rect x="120" y="134" width="560" height="40" rx="6" fill="#2C2826"/><text x="40" y="159" font-size="12" fill="#B8AEA6">음악</text>
+  ${clip(124,'#9A4A36',1,'v1')}${clip(278,'#7A5A3E',2,'v2')}${clip(432,'#5E6E52',3,'v3')}
+  <g data-r="mu"><rect data-r="mubar" x="124" y="138" width="552" height="32" rx="5" fill="#3E7A8C"/><path data-r="wave" d="${Array.from({length:46},(_,i)=>`M${132+i*12} ${154-4-(i*7%9)} V${154+4+(i*5%8)}`).join(' ')}" stroke="#A9D6E2" stroke-width="2"/></g>
+  <g data-r="cut" opacity="0"><line x1="586" y1="60" x2="586" y2="182" stroke="#F2C14E" stroke-width="2.5" stroke-dasharray="5 4"/><text x="586" y="56" text-anchor="middle" font-size="12" font-weight="700" fill="#F2C14E">✂ 영상 끝에서 자르기</text></g>
+  <g data-r="fade" opacity="0"><path d="M520 138 L586 170 L586 138Z" fill="#1E1B1A" opacity=".75"/><text x="540" y="196" font-size="12" font-weight="700" fill="#A9D6E2">페이드 아웃</text></g>
+  </svg>`;
+  return PLAYER('capcut',svg,9000,(r,t)=>{
+    ['v1','v2','v3'].forEach((k,i)=>{const p=seg(t,.04+i*.1,.12+i*.1);op(R(r,k),p);tf(R(r,k),`translate(${(1-p)*80} 0)`)});
+    op(R(r,'mu'),seg(t,.36,.44));
+    op(R(r,'cut'),seg(t,.52,.58));
+    const c=seg(t,.6,.7);R(r,'mubar').setAttribute('width',(552-90*c).toFixed(1));
+    op(R(r,'fade'),seg(t,.74,.82));
+    return t<.36?'① 컷 영상을 순서대로 끌어다 놓습니다':t<.52?'② 픽사베이 음악을 아래 줄에 넣습니다':t<.72?'③ 영상이 끝나는 곳에서 음악을 잘라 뒤를 지웁니다':'④ 음악 끝에 페이드 아웃 → 내보내기';
+  });
+}
+
+/* ================= 정지 도식 ================= */
+const FLOW=()=>{const a=uid('a');const box=(x,n,t,s,acc)=>`<rect x="${x}" y="40" width="140" height="92" rx="12" class="${acc?'svg-acc':'svg-box'}"/><text x="${x+70}" y="72" text-anchor="middle" class="svg-t" font-size="15" font-weight="700">${n}</text><text x="${x+70}" y="96" text-anchor="middle" class="svg-t" font-size="13.5" font-weight="700">${t}</text><text x="${x+70}" y="118" text-anchor="middle" class="svg-s" font-size="11.5">${s}</text>`;
+  const arr=x=>`<path d="M${x} 86 L${x+18} 86" class="svg-al" stroke-width="2" marker-end="url(#${a})"/>`;
+  return `<div class="fig"><svg viewBox="0 0 960 170" role="img" aria-label="오늘의 흐름"><defs>${AH(a)}</defs>
+  ${box(10,'STEP 1','나노바나나 2.1','부분 수정')}${arr(152)}${box(172,'STEP 2','스타트·엔드','연습 장면으로')}${arr(314)}${box(334,'STEP 3','앵커·시트','빈손 · 기본 복장',1)}${arr(476)}${box(496,'STEP 4','여행지 사진','레퍼런스 준비')}${arr(638)}${box(658,'STEP 5','여행 컷','스타트→엔드→영상',1)}${arr(800)}${box(820,'STEP 6','캡컷','픽사베이 음악')}
+  <text x="480" y="158" text-anchor="middle" class="svg-s" font-size="12.5">STEP 2에서 익힌 순서를 STEP 5에서 내 주인공과 여행지로 다시 합니다</text></svg></div>`};
+const COURSE=()=>`<div class="fig"><svg viewBox="0 0 960 120" role="img" aria-label="12회차 중 5회차">${Array.from({length:12},(_,i)=>{const x=10+i*79,on=i===4,done=i<4;return `<rect x="${x}" y="${on?14:22}" width="72" height="${on?72:56}" rx="8" class="${on?'svg-solid':done?'svg-acc':'svg-box'}"/><text x="${x+36}" y="${on?46:48}" text-anchor="middle" class="${on?'svg-ink':'svg-t'}" font-size="16" font-weight="800">${i+1}</text><text x="${x+36}" y="${on?68:68}" text-anchor="middle" class="${on?'svg-ink':'svg-s'}" font-size="11">${['첫 영상','주인공','콘티','카메라','여행','하루','말하기','다큐','식품','화장품','가게','영화'][i]}</text>`}).join('')}
+<text x="168" y="108" text-anchor="middle" class="svg-s" font-size="12">기본</text><text x="484" y="108" text-anchor="middle" class="svg-s" font-size="12">응용 — 오늘 시작</text><text x="800" y="108" text-anchor="middle" class="svg-s" font-size="12">완성</text></svg></div>`;
+const CUTFLOW=()=>{const a=uid('a');const b=(x,t,s,acc)=>`<rect x="${x}" y="20" width="168" height="84" rx="10" class="${acc?'svg-acc':'svg-box'}"/><text x="${x+84}" y="54" text-anchor="middle" class="svg-t" font-size="14" font-weight="700">${t}</text><text x="${x+84}" y="80" text-anchor="middle" class="svg-s" font-size="11.5">${s}</text>`;const ar=x=>`<path d="M${x} 62 L${x+20} 62" class="svg-al" stroke-width="2" marker-end="url(#${a})"/>`;
+  return `<div class="fig"><svg viewBox="0 0 960 130" role="img" aria-label="한 컷 만드는 순서"><defs>${AH(a)}</defs>${b(10,'레퍼런스 2장','시트 + 여행지 사진')}${ar(180)}${b(202,'스타트 이미지','어디서 무엇을 하나',1)}${ar(372)}${b(394,'엔드 이미지','스타트를 레퍼런스로',1)}${ar(564)}${b(586,'영상','시작·끝 프레임 칸')}${ar(756)}${b(778,'저장','컷1_영상')}</svg></div>`};
+
+/* ================= 데이터 ================= */
+const TAIL_PHOTO='Photorealistic photo, no text.';
+const SCENES=[
+ {n:'카페 창가',start:'A woman in her 40s with short wavy hair, wearing a beige knit cardigan, sits at a window seat in a quiet café, looking out the window. A white teacup sits on the table in front of her.',change:'She lifts the white teacup with both hands and takes a sip, eyes closed, smiling softly.',move:'She slowly turns from the window, lifts the teacup and takes a sip.',ko:['카페 창가에 앉아 창밖을 보는 40대 여성, 앞에 흰 찻잔','찻잔을 두 손으로 들어 눈을 감고 한 모금']},
+ {n:'공원 벤치',start:'A man in his 60s with grey hair, wearing a navy cardigan and a flat cap, sits on a wooden park bench under autumn trees, reading a folded newspaper.',change:'He has folded the newspaper on his lap and looks up at the trees, smiling.',move:'He slowly folds the newspaper and looks up at the falling leaves.',ko:['가을 나무 아래 벤치에서 신문을 읽는 60대 남성','신문을 무릎에 접고 나무를 올려다보며 미소']},
+ {n:'작은 서점',start:'A woman in her 30s with long straight hair, wearing a cream trench coat, stands in front of a tall wooden bookshelf in a small bookstore, looking at the book spines.',change:'She holds an open book with both hands and reads it, smiling.',move:'She pulls a book from the shelf, opens it and starts reading.',ko:['작은 서점 책장 앞에서 책등을 보는 30대 여성','책을 펼쳐 두 손으로 들고 읽으며 미소']},
+ {n:'기차 창가',start:'A man in his 50s with short hair and glasses, wearing a grey sweater, sits by the window on a train, looking out at the autumn countryside.',change:'He leans closer and touches the window glass with one hand, smiling at the view.',move:'He leans toward the window and gently touches the glass.',ko:['기차 창가에서 가을 들판을 보는 50대 남성','창에 가까이 기대 한 손을 유리에 댐']},
+ {n:'바닷가',start:'A woman in her 50s with a short bob, wearing a white linen shirt and a straw hat, stands on a quiet beach facing the sea, seen from behind, holding her hat with one hand.',change:'She has turned around toward the camera and waves with one hand, smiling.',move:'She turns from the sea toward the camera and waves.',ko:['조용한 바닷가에서 바다를 보는 50대 여성 뒷모습','카메라 쪽으로 돌아서 손을 흔듦']},
+ {n:'전통시장',start:'A man in his 40s with a short beard, wearing a denim jacket, stands at a fruit stall in a traditional Korean market, looking at a basket of red apples.',change:'He holds up one red apple in his hand and smiles at it.',move:'He picks up a red apple and lifts it to look closer.',ko:['전통시장 과일 가게에서 사과 바구니를 보는 40대 남성','사과 하나를 들어 올려 보며 미소']}
+];
+const sceneStart=s=>`${s.start} Medium shot, eye level. Soft natural light. ${TAIL_PHOTO}`;
+const sceneEnd=s=>`Keep the same person, same clothes, same place, same camera position and same lighting as the reference image. Only change: ${s.change} ${TAIL_PHOTO}`;
+const sceneVidA=s=>`${s.move} Static camera. Natural ambient sound, no music.`;
+
+const PEOPLE=[
+ {n:'준호 (시연)',d:'a Korean man in his early 30s with short black hair and a short neat beard, wearing a black knit beanie, a charcoal turtleneck sweater, dark blue straight jeans and brown leather boots',k:'same black knit beanie, same charcoal turtleneck, same dark blue jeans, same brown boots',ko:'30대 초반 한국 남성, 짧은 수염, 검정 비니, 차콜 터틀넥, 청바지, 갈색 부츠',sv:'준호'},
+ {n:'20대 여성',d:'a Korean woman in her late 20s with shoulder-length brown hair, wearing a cream knit sweater, a long camel skirt and white sneakers',k:'same cream knit sweater, same camel skirt, same white sneakers',ko:'20대 후반 여성, 어깨 길이 갈색 머리, 크림 니트, 카멜 롱스커트, 흰 운동화',sv:'주인공'},
+ {n:'50대 여성',d:'a Korean woman in her 50s with a short grey bob and round glasses, wearing a navy trench coat, black trousers and black loafers',k:'same round glasses, same navy trench coat, same black trousers, same black loafers',ko:'50대 여성, 짧은 회색 단발, 동그란 안경, 남색 트렌치코트, 검정 바지, 로퍼',sv:'주인공'},
+ {n:'60대 남성',d:'a Korean man in his 60s with short white hair, wearing a beige flat cap, a brown corduroy jacket, grey trousers and walking shoes',k:'same beige flat cap, same brown corduroy jacket, same grey trousers, same walking shoes',ko:'60대 남성, 흰 머리, 베이지 헌팅캡, 갈색 코듀로이 재킷, 회색 바지, 워킹화',sv:'주인공'},
+ {n:'40대 남성',d:'a Korean man in his 40s with a short buzz cut, wearing an olive field jacket over a white t-shirt, khaki pants and hiking boots',k:'same olive field jacket, same white t-shirt, same khaki pants, same hiking boots',ko:'40대 남성, 짧은 스포츠머리, 올리브 야상, 흰 티셔츠, 카키 바지, 등산화',sv:'주인공'},
+ {n:'70대 여성',d:'a Korean woman in her 70s with short permed grey hair, wearing a lilac cardigan over a floral blouse, dark slacks and comfortable flat shoes',k:'same lilac cardigan, same floral blouse, same dark slacks, same flat shoes',ko:'70대 여성, 짧은 회색 파마머리, 연보라 카디건, 꽃무늬 블라우스, 짙은 바지, 단화',sv:'주인공'}
+];
+const anchorP=p=>`Photorealistic full-body photo of ${p.d}. Standing upright, facing the camera, calm neutral expression, empty hands, arms relaxed at the sides. Plain light grey studio background, soft even lighting, no props, no bag, no text.`;
+const sheetP=p=>`Keep the exact same person from the reference image: same face, same hair, ${p.k}. Create a photorealistic character turnaround sheet: front view, three-quarter view, side view and back view, full body, standing in one row, same size. Empty hands, no phone, no bag, no props. Plain light grey studio background, soft even lighting, no text, no labels.`;
+
+const TONES=[
+ {n:'가을 오후 (시연)',t:'Warm autumn afternoon light, soft golden tones, film photo look.'},
+ {n:'맑은 아침',t:'Clear morning light, fresh soft colors, clean airy look.'},
+ {n:'노을',t:'Golden hour sunset light, warm orange and pink tones, gentle film grain.'},
+ {n:'비 온 뒤 저녁',t:'Evening after rain, soft blue tones, wet reflections, calm moody look.'}
+];
+const PLACES=[
+ {n:'경주 (시연)',where:'Gyeongju, Korea',cuts:[
+  {nm:'돌담길',q:'Gyeongju stone wall',s:'The person stands at the entrance of an old stone-wall path in Gyeongju, Korea, looking down the path with a gentle smile, hands in the pockets.',shot:'Wide shot, eye level.',c:'the person has walked deep into the path, seen from behind, one hand touching the stone wall.',m:'The person walks slowly down the stone-wall path, away from the camera, touching the wall.',snd:'Footsteps, birds and rustling leaves'},
+  {nm:'한옥 마루',q:'hanok porch',s:'The person sits on the wooden porch of a traditional Korean hanok, holding a warm teacup with both hands, looking at the courtyard.',shot:'Medium shot, eye level.',c:'the person lifts the teacup, takes a sip and smiles at the camera.',m:'The person lifts the teacup, takes a sip and smiles.',snd:'Soft wind and wind chimes'},
+  {nm:'억새 들판',q:'silver grass field Korea',s:'The person stands in a field of tall silver grass near Gyeongju, Korea, seen from behind, looking at the sky.',shot:'Wide shot, eye level.',c:'the person has turned around toward the camera and smiles.',m:'The person slowly turns around toward the camera and smiles.',snd:'Wind through the grass'}]},
+ {n:'전주 한옥마을',where:'Jeonju Hanok Village, Korea',cuts:[
+  {nm:'기와 골목',q:'Jeonju hanok village',s:'The person walks into a narrow alley of Jeonju Hanok Village, Korea, lined with tiled roofs, looking up at the eaves.',shot:'Wide shot, eye level.',c:'the person stops in the middle of the alley and turns back to the camera with a smile.',m:'The person walks into the alley, stops and turns back to smile.',snd:'Footsteps and distant birds'},
+  {nm:'한옥 카페 앞',q:'hanok cafe',s:'The person sits on a wooden bench in front of a hanok café, holding a small bowl of tea with both hands.',shot:'Medium shot, eye level.',c:'the person lifts the bowl and takes a sip, eyes closed.',m:'The person lifts the tea bowl and takes a slow sip.',snd:'Quiet street ambience'},
+  {nm:'개울 돌다리',q:'stone bridge stream Korea',s:'The person stands on a stone bridge over a small stream, both hands on the railing, looking at the water.',shot:'Wide shot, eye level.',c:'the person turns to the camera with a smile, hands still on the railing.',m:'The person turns from the stream toward the camera and smiles.',snd:'Running water'}]},
+ {n:'제주 애월',where:'Aewol, Jeju Island, Korea',cuts:[
+  {nm:'바닷가 산책길',q:'Jeju coast',s:'The person walks along a coastal path of black volcanic rocks by the blue sea in Aewol, Jeju Island, Korea.',shot:'Wide shot, eye level.',c:'the person stops and looks out at the sea, hair moving in the wind.',m:'The person walks along the coastal path, stops and looks at the sea.',snd:'Waves and sea wind'},
+  {nm:'바다 보이는 카페',q:'ocean view cafe window',s:'The person sits at a window seat in a seaside café with an ocean view, holding a cup of coffee with both hands.',shot:'Medium shot, eye level.',c:'the person raises the cup toward the window as if toasting the sea, smiling.',m:'The person raises the coffee cup toward the sea and smiles.',snd:'Soft café ambience'},
+  {nm:'노을 해변',q:'Jeju beach sunset',s:'The person stands barefoot at the water\'s edge on a quiet beach, holding a pair of shoes in one hand, looking at the sea.',shot:'Wide shot, eye level.',c:'the person has stepped into the shallow water, small waves around the ankles.',m:'The person steps slowly into the shallow water.',snd:'Gentle waves'}]},
+ {n:'파리 센 강변',where:'Paris, France',cuts:[
+  {nm:'강변 산책',q:'Seine river Paris',s:'The person walks along the Seine riverbank in Paris, France, under autumn trees.',shot:'Wide shot, eye level.',c:'the person stops at the stone wall by the river and looks at the water.',m:'The person walks along the river, stops at the wall and looks at the water.',snd:'City ambience and river'},
+  {nm:'길가 카페',q:'Paris sidewalk cafe',s:'The person sits at a small round table of a Paris sidewalk café, holding a cup of coffee.',shot:'Medium shot, eye level.',c:'the person takes a sip and smiles at the street.',m:'The person takes a sip of coffee and smiles at the street.',snd:'Café chatter'},
+  {nm:'다리 위',q:'Paris bridge',s:'The person stands on a stone bridge over the Seine, both hands on the railing, seen from behind.',shot:'Wide shot, eye level.',c:'the person turns to the camera and smiles.',m:'The person turns around from the railing and smiles at the camera.',snd:'Wind and distant city'}]},
+ {n:'리스본 골목',where:'Lisbon, Portugal',cuts:[
+  {nm:'돌길 언덕',q:'Lisbon Alfama street',s:'The person climbs a steep cobblestone street in the Alfama district of Lisbon, Portugal, colorful tiled houses on both sides.',shot:'Wide shot, eye level.',c:'the person stops halfway and turns back to look down the street, smiling.',m:'The person climbs the street, stops and looks back.',snd:'Footsteps on cobblestones'},
+  {nm:'지붕 보이는 테라스',q:'Lisbon rooftops terrace',s:'The person sits on a terrace overlooking red rooftops, holding a small cup of coffee.',shot:'Medium shot, eye level.',c:'the person lifts the cup toward the view and smiles.',m:'The person lifts the cup toward the rooftops and smiles.',snd:'Distant city and seagulls'},
+  {nm:'전망대',q:'Lisbon viewpoint',s:'The person stands at a viewpoint, the river and rooftops below, seen from behind.',shot:'Wide shot, eye level.',c:'the person turns to the camera and smiles.',m:'The person turns around from the view and smiles.',snd:'Wind'}]},
+ {n:'교토 단풍길',where:'Kyoto, Japan',cuts:[
+  {nm:'돌 깔린 골목',q:'Kyoto street autumn',s:'The person walks along a quiet stone-paved lane with old wooden houses in Kyoto, Japan, red maple leaves overhead.',shot:'Wide shot, eye level.',c:'the person stops under a maple tree and looks up at the leaves.',m:'The person walks down the lane, stops and looks up at the maple leaves.',snd:'Footsteps and birds'},
+  {nm:'정원 툇마루',q:'Kyoto temple garden',s:'The person sits on the wooden veranda of a temple garden, looking at the red maple trees.',shot:'Medium shot, eye level.',c:'the person closes the eyes and breathes in, with a gentle smile.',m:'The person closes the eyes and takes a slow breath.',snd:'Quiet garden, distant bell'},
+  {nm:'연못 다리',q:'Kyoto pond bridge',s:'The person crosses a small wooden bridge over a pond, red maple trees around.',shot:'Wide shot, eye level.',c:'the person stops in the middle of the bridge and looks down at the reflection in the water.',m:'The person walks onto the bridge, stops and looks down at the water.',snd:'Water and birds'}]}
+];
+const cutStart=(c,tone)=>`Use the person from the character sheet and the place from the location photo. Photorealistic travel photo: ${c.s} ${c.shot} ${tone} No text, no signs, no phone.`;
+const cutEnd=(c,tone)=>`Keep the same person, same clothes, same place, same camera position and same lighting as the reference image. Only change: ${c.c} Photorealistic, ${tone.charAt(0).toLowerCase()+tone.slice(1)} No text, no phone.`;
+const cutVid=c=>`${c.m} Static camera. ${c.snd}, no music.`;
+
+/* ================= 실제 예시 이미지 (형님 지난주 수업 결과) ================= */
+const IMG_SHEET='img01.jpg';
+const IMG_SPRING='img02.jpg';
+const IMG_FLOW='img03.jpg';
+const IMG_STUDIO='img04.jpg';
+const IMG_NOTICE='img05.jpg';
+const IMG_TMENU='img06.jpg';
+const IMG_TFOOD='img07.jpg';
+const IMG_TCAT='img08.jpg';
+
+/* ================= STEP 내용 ================= */
+const STEPS=[
+{id:'s0',tab:'오늘의 지도',title:'오늘의 지도',lead:'실사 주인공을 실제 여행지 사진 속에 넣고, 시작과 끝을 정해 짧은 여행 영상 한 편을 만듭니다.',cards:[
+ {t:'오늘의 흐름',k:'key',w:1,h:()=>`${FLOW()}<p>오늘은 <b>모두 실사(사진처럼)</b>로 만듭니다. STEP 2에서 연습 장면으로 순서를 익히고, STEP 5에서 내 주인공과 여행지로 똑같이 한 번 더 합니다.</p>`},
+ {t:'12회차 중 오늘의 자리',k:'key',w:1,h:()=>`${COURSE()}<p>기본 네 번을 마치고 오늘부터 <b>응용</b>입니다. 오늘 만든 주인공 시트는 6회차 「주인공의 하루」에서 그대로 다시 씁니다.</p>`},
+ {t:'오늘의 규칙 세 줄',k:'key',h:()=>`<ol><li>엔드 이미지는 <b>스타트 이미지를 레퍼런스로 넣고</b> 만듭니다. 바꾸는 건 한 가지만.</li><li>시트는 <b>배경 없이 · 기본 복장만 · 빈손</b>으로 만듭니다.</li><li>장소는 <b>여행지 사진을 레퍼런스로</b> 넣습니다. AI가 장소를 상상하지 않게.</li></ol>`},
+ {t:'시작 전 준비',k:'set',h:()=>`<ul><li>구글 플로우 로그인</li><li>입력창 오른쪽 모델 이름을 눌러 <b>Nano Banana 2.1</b> 선택. 이미지 생성 크레딧 표시도 확인</li><li>바탕화면에 <b>여행영상</b> 폴더 만들기. 오늘 받는 사진·영상·음악은 전부 여기에</li><li>이어폰. 영상 소리와 음악을 들어 봅니다</li><li>영상은 <b>옴니 플래시 · 360p</b>로 만듭니다. 한 달 크레딧을 12주 동안 나눠 써야 해서입니다</li></ul>`}
+]},
+{id:'s1',tab:'나노바나나 2.1',title:'나노바나나 2.1',lead:'나노바나나 2.1은 10월 6일 공개된 구글의 새 이미지 생성·수정 모델입니다. 만들기보다 고치기와 이어 만들기가 좋아졌습니다.',cards:[
+ {t:'무엇이 좋아졌나 — 공식 문서 기준',k:'key',w:1,h:()=>T(['좋아진 점','무슨 뜻인가','오늘 어디서 쓰나'],[
+  ['이미지 품질 · 지시 따르기','1K · 2K · 4K에서 더 사실적이고, 긴 문장과 수정 요청을 더 잘 따릅니다','전 STEP — 실사 사진'],
+  ['연속 수정 때 캐릭터 유지','여러 번 고쳐도 같은 사람 · 같은 물건 모습을 더 잘 지킵니다','STEP 2 · 3 · 5 — 스타트에서 엔드로, 앵커에서 시트로'],
+  ['부분 수정 (마스크 · 낙서)','칠하거나 표시한 곳만 고치는 능력이 좋아졌습니다','이 STEP — 꽃병만 지우기'],
+  ['글자 · 인포그래픽 배치','포스터 · 카드뉴스의 제목 · 설명 · 사진 배치가 정확해졌습니다','한 걸음 더 — 칠판에 한글'],
+  ['아주 긴 가로 · 세로 그림','8:1 같은 배너 비율에서 무늬가 반복되던 오류를 고쳤습니다','—']])+B('easy','이미 있던 기능','레퍼런스 최대 14장(사람 4명 · 사물 10개), 4K, 검색 활용은 나노바나나 2에도 있던 기능입니다. 2.1은 <b>숫자가 늘어난 게 아니라 결과가 더 정확해진</b> 업데이트입니다.')},
+ {t:'플로우 공식 공지',k:'key',h:()=>`<figure class="shot"><img src="${IMG_NOTICE}" alt="플로우 공지: Nano Banana 2.1 출시, Nano Banana 2를 대체"><figcaption>플로우 팀 공지 화면 (2026.10.07 확인)</figcaption></figure><ul><li>생성과 수정 모두에서 <b>그림 품질</b>과 <b>같은 대상 유지</b>가 좋아졌다고 밝혔습니다</li><li><b>나노바나나 2를 대체</b>합니다. 그래서 플로우 모델 목록에 2가 없고 Pro · 2 Lite · 2.1만 보입니다</li><li>이상한 결과는 플로우 안의 피드백이나 디스코드로 알려 달라고 했습니다</li></ul>`},
+ {t:'실제 예시 — 강사가 2.1로 직접 만든 결과',k:'key',w:1,h:()=>`<figure class="shot"><img src="${IMG_TMENU}" alt="나노바나나 2.1로 만든 한글 분식 메뉴판 네 장"><figcaption><b style="color:var(--acc)">한글 메뉴판</b> — 떡볶이 · 순대 · 만두 · 라면 · 쫄면 같은 큰 한글과 가격이 또렷하게 나왔습니다. 지난 시간 메뉴판 실습을 2.1로 다시 해 보면 차이가 보입니다</figcaption></figure>
+ <div class="shots"><figure class="shot"><img src="${IMG_TFOOD}" alt="나노바나나 2.1로 만든 분식 상차림 실사 네 장"><figcaption><b style="color:var(--acc)">분식 상차림</b> — 떡볶이 국물 · 김밥 단면 · 양은 냄비처럼 질감이 사진에 가깝습니다. 네 장 모두 같은 메뉴 구성을 지켰습니다</figcaption></figure><figure class="shot"><img src="${IMG_TCAT}" alt="cat in the sky 세 단어로 만든 구름 위 고양이 네 장"><figcaption><b style="color:var(--acc)">cat in the sky</b> — 세 단어만 넣어도 노을 · 구름 · 빛까지 채워서 네 가지 구도로 나왔습니다</figcaption></figure></div>
+ ${B('acc','보는 법','큰 글자는 잘 맞지만, <b>작은 영어 부제와 숫자는 확대해서</b> 한 번 더 확인하세요. 짧은 프롬프트는 AI가 알아서 채우니 편하지만, 원하는 결과를 정확히 얻으려면 오늘처럼 사람 · 장소 · 빛을 문장으로 정해 줍니다.')}`},
+ {t:'구글 자체 평가 점수',k:'key',h:()=>T(['항목','2.1','2','Pro'],[
+  ['일반 이미지 수정','<b>1,026</b>','938','939'],['한 캐릭터 일관성','<b>1,028</b>','981','991'],['여러 캐릭터 일관성','<b>1,106</b>','978','1,011'],['마스크 · 낙서 수정','<b>1,049</b>','965','927'],['여러 레퍼런스 수정','<b>1,066</b>','988','989']])+`<p class="muted small">구글 DeepMind 모델 카드의 선호도 점수입니다. 높을수록 좋고, "몇 % 좋아졌다"는 뜻은 아닙니다. 2와 2.1은 사고(thinking) 사용 기준.</p>`},
+ {t:'그래도 아직은',k:'warn',h:()=>`<ul><li>공식 문서도 <b>작은 글씨 · 긴 문단 · 캐릭터 유지 · 좌우 위치 · 부분 수정</b>이 완벽하지 않다고 밝힙니다</li><li>해외 소규모 비교에서는 <b>같은 인물 재현은 Pro가 나았던</b> 사례도 있습니다</li><li>한국어 글자가 얼마나 좋아졌는지는 공식 수치가 없습니다 — 직접 확인</li></ul>`},
+ {t:'어디서 쓰나 — 2026.10.07 강사 화면',k:'set',w:1,h:()=>`<div class="shots"><figure class="shot"><img src="${IMG_FLOW}" alt="플로우 모델 선택: Nano Banana Pro, 2 Lite, 2.1과 생성 시 0크레딧 표시"><figcaption><b style="color:var(--ext-ink)">플로우</b> — 모델 목록에 Pro · 2 Lite · 2.1. 이미지 생성 <b style="color:var(--ext-ink)">0크레딧</b> 표시</figcaption></figure><figure class="shot"><img src="${IMG_STUDIO}" alt="구글 AI 스튜디오의 Nano Banana 2.1 Paid 표시"><figcaption><b>AI 스튜디오</b> — 2.1에 Paid 표시. 무료로는 쓸 수 없습니다</figcaption></figure></div>${T(['어디서','지금 확인한 것'],[['구글 플로우','2.1 선택 가능 · 이미지 0크레딧 (강사 계정 기준)'],['AI 스튜디오','유료 (Paid)'],['제미나이 앱','공식 제공 경로에 포함. 하루 몇 장인지는 아직 공식 안내 없음']])}<p class="muted small">강사 계정에서 확인한 화면입니다. 계정 · 요금제 · 시점에 따라 다를 수 있으니 <b>내 화면의 모델 이름과 크레딧 표시</b>를 꼭 확인하세요. 영상(옴니 플래시)은 지금처럼 크레딧이 듭니다.</p>`},
+ {t:'움직이는 설명 — 부분 수정',k:'key',w:1,h:()=>PL_MASK()},
+ {t:'① 연습 사진 한 장',k:'do',h:()=>`${W('플로우','이미지','Nano Banana 2.1','비율 16:9')}${P('연습 사진','Photorealistic photo of a wooden café table by a window. A cup of latte, a croissant on a small plate and a small glass vase with flowers. Soft afternoon light, shallow depth of field, eye level, no people, no text.','창가 나무 테이블 위 라떼 · 크루아상 · 작은 꽃병. 오후 햇살, 사람 없음, 글자 없음.','연습_테이블')}<p class="muted small">네 장 중 꽃병이 잘 보이는 한 장을 고릅니다.</p>`},
+ {t:'② 꽃병만 지우기',k:'do',h:()=>`${W('연습_테이블을 레퍼런스로','아래 문장')}${P('수정 문장','Keep everything in the reference image exactly the same. Only change: remove the vase and the flowers, and fill the spot with the same wooden table surface and window light.','다른 건 모두 그대로. 꽃병과 꽃만 지우고 그 자리를 같은 테이블과 햇빛으로 채워 주세요.','연습_수정')}${B('easy','붓 도구가 보이면','이미지를 열었을 때 붓 · 칠하기 도구가 있으면 꽃병을 칠한 뒤 보내세요. 모델의 부분 수정 능력이 좋아진 것과 화면에 붓 도구가 있는지는 별개라, 없으면 위처럼 <b>말로</b> 지정합니다.')}`},
+ {t:'내 차례 — 다른 물건 바꾸기',k:'you',h:()=>`<p>같은 방법으로 크루아상을 다른 디저트로 바꿔 봅니다.</p>${P('수정 문장','Keep everything in the reference image exactly the same. Only change: replace the croissant with a slice of strawberry cake on the same plate.','다른 건 그대로. 크루아상만 같은 접시 위 딸기 케이크로.','')}<p class="muted small">딸기 케이크 대신 마카롱 · 치즈케이크 · 붕어빵으로 바꿔도 됩니다.</p>`},
+ {t:'잘 안 될 때',k:'warn',h:()=>`<ul><li><b>컵 · 창문까지 바뀜</b> → 문장 맨 앞 Keep everything … exactly the same 확인</li><li><b>지운 자리에 엉뚱한 게 생김</b> → 무엇으로 채울지 적기 (same wooden table surface)</li><li><b>2.1이 목록에 없음</b> → 플로우 새로고침. 그래도 없으면 Nano Banana Pro로 같은 문장</li></ul>`},
+ {t:'한 걸음 더 — 그림 속 한글 · 모델 비교',k:'ext',w:1,h:()=>`<p>2.1에서 크게 좋아진 글자 표현을 시험합니다. 결과가 틀리면 한국어 글자의 한계로 기록해 두세요.</p>${P('수정 문장','Keep everything in the reference image the same. Add a small wooden chalkboard sign on the table. Write "오늘의 라떼" on it in white chalk, neat handwriting.','테이블에 작은 칠판을 세우고 흰 분필로 「오늘의 라떼」.','연습_칠판')}<p>같은 문장을 <b>Nano Banana Pro</b>로도 만들어 2.1과 나란히 놓고 보세요. 확인할 것 세 가지: 글자가 맞는가 · 같은 물건이 유지됐는가 · 요청한 부분만 바뀌었는가.</p>`}
+]},
+{id:'s2',tab:'스타트·엔드',title:'스타트·엔드 프레임 연습',lead:'스타트는 영상의 첫 장면, 엔드는 영상이 도착할 장면입니다. 엔드는 스타트를 레퍼런스로 넣고 만듭니다.',cards:[
+ {t:'스타트만 넣을 때와 둘 다 넣을 때',k:'key',w:1,h:()=>T(['','스타트만','스타트 + 엔드'],[
+  ['넣는 이미지','1장 (시작 프레임 칸)','2장 (시작 · 끝 프레임 칸)'],
+  ['영상이 끝나는 곳','AI가 정합니다','내가 정한 엔드 장면'],
+  ['좋은 때','분위기만 있으면 되는 풍경 컷','동작이 분명한 컷 — 찻잔을 든다, 돌아본다'],
+  ['오늘 쓰는 곳','비교용','STEP 5 여행 컷 전부']])+B('easy','쉽게 말하면','스타트만 주면 "출발지만 알려 준 택시"입니다. 엔드까지 주면 도착지를 찍어 준 택시가 됩니다.')},
+ {t:'움직이는 설명 — 엔드 이미지 만드는 법',k:'key',w:1,h:()=>PL_END()},
+ {t:'움직이는 설명 — 영상 두 개 비교',k:'key',w:1,h:()=>PL_COMPARE()},
+ {t:'① 스타트 이미지',k:'do',h:()=>`${W('이미지','비율 16:9')}${P('스타트','A woman in her 40s with short wavy hair, wearing a beige knit cardigan, sits at a window seat in a quiet café, looking out the window. A white teacup sits on the table in front of her. Medium shot, eye level. Soft natural light. Photorealistic photo, no text.','카페 창가에 앉아 창밖을 보는 40대 여성, 앞에 흰 찻잔. 상반신이 보이는 거리, 눈높이, 자연광, 실사.','연습_스타트')}`},
+ {t:'② 엔드 이미지 — 스타트를 레퍼런스로',k:'do',h:()=>`${W('입력창 ＋','연습_스타트 넣기','아래 문장')}${P('엔드','Keep the same person, same clothes, same place, same camera position and same lighting as the reference image. Only change: She lifts the white teacup with both hands and takes a sip, eyes closed, smiling softly. Photorealistic photo, no text.','같은 사람 · 옷 · 장소 · 카메라 위치 · 빛. 바뀌는 것 하나: 찻잔을 두 손으로 들어 눈을 감고 한 모금.','연습_엔드')}`},
+ {t:'③ 영상 두 번 만들어 비교',k:'do',w:1,h:()=>`${W('영상','옴니 플래시','360p')}<div class="grid"><div style="display:flex;flex-direction:column;gap:10px;min-width:0"><p><b>A</b> — 시작 프레임 칸에 <b>연습_스타트</b>만</p>${P('영상 A','She slowly turns from the window, lifts the teacup and takes a sip. Static camera. Natural ambient sound, no music.','창밖에서 고개를 돌려 찻잔을 들고 한 모금. 카메라 고정, 음악 없음.','연습_영상A')}</div><div style="display:flex;flex-direction:column;gap:10px;min-width:0"><p><b>B</b> — 시작 칸에 <b>연습_스타트</b>, 끝 칸에 <b>연습_엔드</b></p>${P('영상 B','She slowly turns from the window, lifts the teacup and takes a sip. Static camera. Natural ambient sound, no music.','A와 같은 문장. 다른 건 끝 프레임 하나뿐입니다.','연습_영상B')}</div></div><p class="muted small">문장은 같고 끝 프레임만 다릅니다. 두 영상의 마지막 장면을 나란히 놓고 보세요.</p>`},
+ {t:'내 차례 — 연습 장면 고르기',k:'you',w:1,h:()=>`<div class="pick-l">장면을 고르면 아래 세 문장이 함께 바뀝니다</div><div class="pick" id="pkScene">${SCENES.map((s,i)=>`<button type="button" aria-pressed="${i===1}" data-i="${i}">${s.n}</button>`).join('')}</div><div id="scBox"></div>`},
+ {t:'고르는 기준',k:'set',h:()=>CHK(['두 장이 <b>같은 사람</b>인가 (얼굴 · 머리 · 옷)','두 장이 <b>같은 장소</b>인가 (창문 · 벽 · 가구)','두 장의 <b>구도</b>가 같은가 (사람 위치 · 크기)','바뀐 것이 <b>한 가지</b>뿐인가'])},
+ {t:'잘 안 될 때',k:'warn',h:()=>`<ul><li><b>엔드에서 사람이 바뀜</b> → 스타트를 레퍼런스로 넣었는지 확인</li><li><b>엔드에서 구도가 바뀜</b> → same camera position 문장이 있는지 확인하고 다시</li><li><b>영상이 중간에 튐</b> → 두 장의 차이가 너무 큼. 바꾸는 것을 하나로 줄이기</li></ul>`},
+ {t:'한 걸음 더 — 이어달리기',k:'ext',w:1,h:()=>`<p>엔드 이미지를 <b>다음 컷의 스타트</b>로 쓰면 컷 두 개가 끊김 없이 이어집니다. 이미지는 세 장이 필요합니다.</p>${T(['','시작 프레임','끝 프레임'],[['컷 1','연습_스타트','연습_엔드'],['컷 2','연습_엔드','연습_엔드2 (새로 만들기)']])}${P('엔드2 — 연습_엔드를 레퍼런스로','Keep the same person, same clothes, same place, same camera position and same lighting as the reference image. Only change: She puts the teacup down and looks at the camera with a warm smile. Photorealistic photo, no text.','찻잔을 내려놓고 카메라를 보며 미소.','연습_엔드2')}`}
+]},
+{id:'s3',tab:'앵커·시트',title:'앵커와 캐릭터 시트',lead:'앵커는 모든 장면이 기준으로 삼는 주인공 사진 한 장, 시트는 그 사람의 정면·옆·뒤를 한 장에 모은 것입니다.',cards:[
+ {t:'실제 예시 — 지난주 결과',k:'key',w:1,h:()=>`<div class="shots"><figure class="shot"><img src="${IMG_SHEET}" alt="모든 모습이 스마트폰과 가방을 든 캐릭터 시트"><figcaption><b>손에 든 폰과 가방이 모든 칸에 따라왔습니다.</b> 장면 사진에서 앵커를 뽑고, 시트에 "같은 옷"이라고만 적었기 때문입니다.</figcaption></figure><figure class="shot"><img src="${IMG_SPRING}" alt="약수터 장면마다 폰을 보는 주인공과 영어 간판"><figcaption><b>할아버지와 산책하는데도 폰을 봅니다.</b> 장면에서 손에 할 일을 주지 않았고, 레퍼런스에 폰 든 사진이 들어갔습니다.</figcaption></figure></div>${B('acc','한 줄 정리','AI는 말하지 않은 것을 그대로 둡니다. 빼고 싶은 것은 <b>빼라고 적어야</b> 빠집니다.')}`},
+ {t:'움직이는 설명 — 폰이 따라오는 이유',k:'key',w:1,h:()=>PL_SHEET()},
+ {t:'시트 규칙 세 개',k:'key',h:()=>`<ol><li><b>배경 없이</b> — 연회색 단색 배경. 나중에 장소 사진과 섞이지 않게</li><li><b>기본 복장만</b> — 모자 · 안경처럼 몸에 걸친 것까지만</li><li><b>빈손</b> — 폰 · 가방 · 컵은 앵커에서 빼고, 장면에서 쥐여 줍니다</li></ol>`},
+ {t:'걸치는 것과 손에 드는 것',k:'key',h:()=>T(['','예','앵커에'],[['걸치는 것','비니 · 안경 · 스카프 · 목걸이','넣습니다 — 주인공 표시가 됩니다'],['손에 드는 것','폰 · 가방 · 컵 · 우산 · 책','뺍니다 — 장면 문장에서 줍니다']])},
+ {t:'① 준호 앵커',k:'do',h:()=>`${W('새 이미지','비율 9:16','레퍼런스 없이')}${P('앵커',anchorP(PEOPLE[0]),'30대 초반 한국 남성 전신 사진. 정면 · 중립 표정 · <b>빈손</b> · 팔은 옆에 · 연회색 배경 · 소품 없음 · 글자 없음.','준호_앵커')}<p class="muted small">지난주 이미지를 레퍼런스로 넣지 마세요. 폰이 다시 따라옵니다.</p>`},
+ {t:'② 준호 시트 — 앵커만 레퍼런스로',k:'do',h:()=>`${W('입력창 ＋','준호_앵커 한 장만','비율 16:9')}${P('시트',sheetP(PEOPLE[0]),'같은 얼굴 · 머리 · 비니 · 터틀넥 · 청바지 · 부츠. 정면 · 비스듬히 · 옆 · 뒤 전신을 한 줄로. 빈손, 연회색 배경, 글자 없음.','준호_시트')}`},
+ {t:'내 차례 — 내 주인공',k:'you',w:1,h:()=>`<div class="pick-l">비슷한 사람을 고르면 앵커 · 시트 문장이 함께 바뀝니다. 고른 뒤 나이 · 머리 · 옷 단어만 내 주인공에 맞게 고쳐도 됩니다</div><div class="pick" id="pkPerson">${PEOPLE.map((s,i)=>`<button type="button" aria-pressed="${i===1}" data-i="${i}">${s.n}</button>`).join('')}</div><div id="psBox"></div>`},
+ {t:'고르는 기준',k:'set',h:()=>CHK(['머리부터 발끝까지 다 나왔나','손이 비어 있나 (폰 · 가방 · 컵 없음)','네 방향이 모두 같은 얼굴 · 같은 옷인가','배경에 무늬 · 그림자 · 글자가 없나'])},
+ {t:'잘 안 될 때',k:'warn',h:()=>`<ul><li><b>시트에 폰이 또 나옴</b> → 레퍼런스에 지난주 사진이 섞였는지 확인. 앵커 한 장만</li><li><b>뒷모습 머리가 다름</b> → 문장 끝에 <code>Same hairstyle in the back view.</code></li><li><b>칸마다 다른 사람</b> → 네 칸이 어려우면 <code>front view and side view</code> 두 칸으로</li><li>연예인 · 지인 얼굴 사진은 쓰지 않습니다</li></ul>`},
+ {t:'한 걸음 더 — 지난주 시트 살리기 · 표정 시트',k:'ext',w:1,h:()=>`<p>지난주 시트를 버리기 아깝다면 시트를 레퍼런스로 넣고 폰과 가방만 지웁니다. 붓 도구가 보이면 칠한 뒤 보내도 됩니다.</p>${P('수정 문장','Remove the smartphone and the shoulder bag from every figure. Empty hands, arms relaxed at the sides. Keep the faces, clothes and poses the same.','모든 모습에서 폰과 가방을 지우고 빈손으로. 얼굴 · 옷 · 자세는 그대로.','')}${P('표정 시트 — 앵커를 레퍼런스로','Keep the exact same person from the reference image. Create a photorealistic expression sheet: six head-and-shoulders close-ups in a 3 by 2 grid — happy, surprised, calm, thinking, laughing, moved. Same lighting, plain light grey background, no text, no labels.','같은 사람의 얼굴 표정 여섯 가지(기쁨 · 놀람 · 차분 · 생각 · 웃음 · 감동).','준호_표정')}`}
+]},
+{id:'s4',tab:'여행지 사진',title:'여행지 사진 정하기',lead:'여행지 사진은 장면의 배경 레퍼런스입니다. AI가 장소를 상상하지 않고 이 사진을 따라 그립니다.',cards:[
+ {t:'왜 사진을 넣나',k:'key',w:1,h:()=>`<figure class="shot"><img src="${IMG_SPRING}" alt="한국 약수터를 요청했으나 미국 온천과 영어 간판이 나온 장면"><figcaption><b>"약수터"라고만 적었더니 미국 국립공원 온천이 되고 영어 간판이 생겼습니다.</b> 말로 설명한 장소는 AI가 아는 그림으로 바꿔 버립니다.</figcaption></figure>${B('acc','그래서','장소는 <b>사진으로</b> 보여 주고, 문장에는 <b>나라 이름</b>(Korea · France …)을 꼭 넣습니다.')}`},
+ {t:'고르는 기준',k:'set',h:()=>CHK(['사람이 없는 사진','가로 사진','간판 · 글자가 적은 사진 (그대로 그려질 수 있음)','세 장의 시간대가 비슷한 사진 (낮이면 낮끼리)','컷 수만큼 3장'])},
+ {t:'주의 — 사진 출처',k:'warn',h:()=>`<ul><li>핀터레스트 · 블로그 사진은 주인이 따로 있어 쓰면 안 됩니다</li><li><b>언스플래시 · 펙셀</b>은 무료로 쓸 수 있는 사진 사이트입니다</li><li>가장 좋은 건 <b>내가 직접 찍은 여행 사진</b></li></ul>`},
+ {t:'다 같이 — 경주 사진 3장 받기',k:'do',w:1,h:()=>`${W('링크 열기','마음에 드는 사진','Download (무료)','여행영상 폴더에 저장')}${LINKS([['장소_1 돌담길',US('Gyeongju stone wall'),'언스플래시 검색 “Gyeongju stone wall”'],['장소_2 한옥 마루',US('hanok'),'언스플래시 검색 “hanok”'],['장소_3 억새 들판',US('silver grass'),'언스플래시 검색 “silver grass”'],['돌담길 더 보기',PX('Gyeongju'),'펙셀 검색 “Gyeongju”']])}<p class="muted small">받은 사진은 장소_1 · 장소_2 · 장소_3으로 이름을 바꿔 두면 STEP 5에서 헷갈리지 않습니다. 새 창에서 열리며, 저작권은 각 사진의 작가에게 있습니다.</p>`},
+ {t:'내 차례 — 내 여행지',k:'you',w:1,h:()=>`<div class="pick-l">여행지를 고르면 컷 3개에 맞는 사진 검색 링크가 바뀝니다</div><div class="pick" id="pkPlace4">${PLACES.map((s,i)=>`<button type="button" aria-pressed="${i===2}" data-i="${i}">${s.n}</button>`).join('')}</div><div id="plBox4"></div>`},
+ {t:'한 걸음 더 — 내가 찍은 사진으로',k:'ext',w:1,h:()=>`<p>휴대폰에 있는 여행 사진을 컴퓨터로 옮겨 장소_1~3으로 쓰면 <b>세상에 하나뿐인 여행 영상</b>이 됩니다. 사람이 찍힌 사진이면 사진을 레퍼런스로 넣고 사람만 지운 뒤 씁니다.</p>${P('수정 문장','Remove the people. Fill the spot with the same background so the place looks empty and natural.','사람을 지우고 같은 배경으로 자연스럽게 채워 주세요.','')}`}
+]},
+{id:'s5',tab:'여행 컷',title:'여행 컷 만들기',lead:'시트와 여행지 사진을 함께 레퍼런스로 넣고, 컷마다 스타트 → 엔드 → 영상 순서로 만듭니다.',cards:[
+ {t:'한 컷 만드는 순서',k:'key',w:1,h:()=>`${CUTFLOW()}<p>STEP 2와 순서가 같습니다. 달라진 건 스타트를 만들 때 <b>레퍼런스 두 장</b>(시트 + 여행지 사진)을 넣는다는 것뿐입니다.</p>`},
+ {t:'움직이는 설명 — 레퍼런스 두 장에서 영상까지',k:'key',w:1,h:()=>PL_MERGE()},
+ {t:'톤 한 줄',k:'key',w:1,h:()=>`<p>톤 한 줄은 <b>모든 컷 문장 끝에 똑같이 붙이는 빛·색 문장</b>입니다. 컷마다 색이 달라지는 걸 막아 줍니다. 한 영상에는 톤 하나만 씁니다.</p>${T(['톤','문장'],TONES.map(x=>[x.n,`<code>${esc(x.t)}</code>`]))}`},
+ {t:'컷 1 — 돌담길',k:'do',w:1,h:()=>CUTCARD(PLACES[0],0,TONES[0],'컷1','장소_1')},
+ {t:'컷 2 — 한옥 마루',k:'do',w:1,h:()=>CUTCARD(PLACES[0],1,TONES[0],'컷2','장소_2')},
+ {t:'컷 3 — 억새 들판 (혼자 해 보기)',k:'do',w:1,h:()=>CUTCARD(PLACES[0],2,TONES[0],'컷3','장소_3')},
+ {t:'내 차례 — 내 여행지 · 내 톤',k:'you',w:1,h:()=>`<div class="pick-l">여행지</div><div class="pick" id="pkPlace5">${PLACES.map((s,i)=>`<button type="button" aria-pressed="${i===2}" data-i="${i}">${s.n}</button>`).join('')}</div><div class="pick-l">톤</div><div class="pick" id="pkTone">${TONES.map((s,i)=>`<button type="button" aria-pressed="${i===0}" data-i="${i}">${s.n}</button>`).join('')}</div><div id="plBox5"></div><p class="muted small">문장 속 <b>the person</b>은 시트 속 내 주인공을 가리킵니다. 그래서 어떤 주인공이든 그대로 씁니다.</p>`},
+ {t:'내 컷 계획표',k:'you',w:1,h:()=>`<p class="muted small">칸을 눌러 적어 두세요. 화면을 닫으면 지워지니 다 적은 뒤 메모장에 옮겨 두면 좋습니다.</p><div class="tbl"><table><tr><th>컷</th><th>장소 사진</th><th>스타트 — 어디서 무엇을</th><th>엔드 — 바뀌는 것 하나</th><th>소리</th></tr>${[1,2,3,4].map(n=>`<tr><td>${n}</td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td></tr>`).join('')}</table></div>`},
+ {t:'한눈에 보기 — 막힐 때',k:'warn',w:1,h:()=>T(['이런 결과','이유','이렇게'],[
+  ['얼굴이 컷마다 바뀜','시트를 레퍼런스로 넣지 않음','스타트를 만들 때 시트를 꼭 함께'],
+  ['폰 · 가방이 다시 나옴','레퍼런스에 지난주 사진이 섞임 / 손에 할 일이 없음','시트만 넣기 · 손에 할 일 주기 (hands in the pockets, holding a teacup)'],
+  ['장소가 사진과 다름','여행지 사진을 안 넣음','레퍼런스에 시트 + 장소 사진 두 장'],
+  ['영어 간판이 생김','간판 많은 사진 / 나라 이름 없음','no text, no signs · 문장에 Korea'],
+  ['컷마다 색이 다름','톤 한 줄을 빼먹음','모든 컷 끝에 같은 톤 한 줄'],
+  ['영상이 중간에 튐','스타트와 엔드의 구도가 다름','엔드 문장의 same camera position 확인']])},
+ {t:'한 걸음 더 — 이어 붙이기 · 세로판',k:'ext',w:1,h:()=>`<ul><li><b>이어달리기</b>: 컷 1의 엔드를 컷 2의 스타트로 쓰면 장소가 같은 컷끼리 끊김 없이 이어집니다</li><li><b>릴스용 세로판</b>: 스타트 · 엔드를 비율 9:16으로 다시 만들고 문장 끝에 <code>Vertical composition, the person in the center.</code></li><li><b>두 번째 인물</b>: 함께 여행하는 사람의 앵커 · 시트를 따로 만들어 레퍼런스로 함께 넣습니다 (2.1은 4명까지)</li></ul>`}
+]},
+{id:'s6',tab:'캡컷',title:'캡컷 간단 편집',lead:'컷을 순서대로 놓고 픽사베이 음악 한 곡을 깝니다. 이것만 하면 완성입니다.',cards:[
+ {t:'움직이는 설명 — 캡컷 네 단계',k:'key',w:1,h:()=>PL_CAPCUT()},
+ {t:'① 픽사베이 음악 받기',k:'do',h:()=>`${W('pixabay.com','음악','검색','▶ 들어보기','다운로드')}${LINKS([['여행 어쿠스틱','https://pixabay.com/music/search/travel%20acoustic/','픽사베이 음악 검색 “travel acoustic”'],['가을 피아노','https://pixabay.com/music/search/autumn%20piano/','픽사베이 음악 검색 “autumn piano”']])}<p class="muted small">다운로드할 때 로그인이 필요할 수 있습니다. 받은 음악은 여행영상 폴더에.</p>`},
+ {t:'② 캡컷 네 단계',k:'do',h:()=>`<ol><li><b>새 프로젝트</b> → <b>가져오기</b>로 컷 영상과 음악을 한 번에 불러오기</li><li>영상을 <b>컷 순서대로</b> 타임라인에 끌어다 놓기</li><li>음악을 아래 줄에 놓고, 영상이 끝나는 곳에서 <b>분할</b> → 뒤쪽 <b>삭제</b></li><li>음악 선택 → <b>페이드 아웃</b> → 오른쪽 위 <b>내보내기</b></li></ol><div class="pr"><div class="sv">저장: 내여행.mp4</div></div>`},
+ {t:'잘 안 될 때',k:'warn',h:()=>`<ul><li><b>영상 소리와 음악이 겹침</b> → 영상 클립을 선택하고 볼륨을 낮추기</li><li><b>음악이 갑자기 끊김</b> → 페이드 아웃을 길게</li><li>음악 페이지에서 <b>라이선스 안내</b>를 한 번 확인하고 씁니다</li></ul>`},
+ {t:'한 걸음 더 — 제목 한 줄',k:'ext',h:()=>`<p>첫 컷 위에 <b>텍스트</b>로 제목을 한 줄 올립니다.</p><ul><li>경주, 가을 오후</li><li>준호의 첫 여행</li><li>내 여행지 이름 + 계절</li></ul><p class="muted small">2초쯤 보이고 사라지게 길이를 맞추면 깔끔합니다.</p>`}
+]},
+{id:'s7',tab:'감상·정리',title:'감상과 정리',lead:'서로의 여행 영상을 보고, 오늘 규칙 세 줄을 다시 확인합니다.',cards:[
+ {t:'서로 보기',k:'do',h:()=>`<p>옆 사람 영상을 보며 세 가지를 확인해 주세요.</p>${CHK(['주인공 손이 비어 있다가 장면마다 할 일을 하나','장소가 여행지 사진과 같은가','컷끼리 색이 이어지나'])}`},
+ {t:'한눈에 보기 — 오늘 규칙 세 줄',k:'key',h:()=>T(['규칙','문장에서 이렇게'],[['엔드는 스타트를 레퍼런스로','Keep the same … Only change: …'],['시트는 배경 없이 · 기본 복장만 · 빈손','empty hands, no props, plain light grey background'],['장소는 사진으로','the place from the location photo · 나라 이름']])},
+ {t:'다음 회차 예고',k:'set',w:1,h:()=>`<p><b>6회차 「AI로 만드는 주인공의 하루」</b> — 오늘 만든 <b>시트</b>를 그대로 씁니다. 준호_시트 (또는 내 주인공 시트)를 잘 보관해 주세요.</p>`}
+]}
+];
+
+function CUTCARD(pl,i,tone,name,ph){
+  const c=pl.cuts[i];
+  return `<div class="grid">
+  <div style="display:flex;flex-direction:column;gap:10px;min-width:0">${W('＋ 레퍼런스',`${name==='컷1'||name==='컷2'||name==='컷3'?'준호_시트':'내 시트'}`,ph,'비율 16:9')}${P('스타트',cutStart(c,tone.t),'',`${name}_스타트`)}</div>
+  <div style="display:flex;flex-direction:column;gap:10px;min-width:0">${W('＋ 레퍼런스',`${name}_스타트 한 장`)}${P('엔드',cutEnd(c,tone.t),'',`${name}_엔드`)}</div></div>
+  ${W('영상','시작 칸 '+name+'_스타트','끝 칸 '+name+'_엔드','360p')}${P('영상',cutVid(c),'',`${name}_영상`)}`;
+}
+
+/* ================= 렌더 ================= */
+const tabsEl=document.getElementById('tabs'),mainEl=document.getElementById('main'),sideEl=document.getElementById('side');
+const selStep=document.getElementById('selStep'),selCard=document.getElementById('selCard');
+const tagTxt={key:'핵심',do:'다 같이',you:'내 차례',set:'준비',warn:'주의',ext:'한 걸음 더'};
+let cur=0;
+STEPS.forEach((s,i)=>{
+  const b=document.createElement('button');b.type='button';b.className='tab';b.setAttribute('role','tab');b.id='tab-'+s.id;
+  b.innerHTML=`<small>STEP ${i}</small><span>${s.tab}</span>`;b.onclick=()=>go(i,true);tabsEl.appendChild(b);
+  const o=document.createElement('option');o.value=i;o.textContent=`STEP ${i} · ${s.tab}`;selStep.appendChild(o);
+  const sec=document.createElement('section');sec.id=s.id;sec.hidden=true;sec.setAttribute('role','tabpanel');
+  sec.innerHTML=`<div class="sh"><span class="badge">STEP ${i}</span><div><h2>${s.title}</h2><p>${s.lead}</p></div></div>
+  <div class="grid">${s.cards.map((c,j)=>`<article class="card${c.w?' wide':''}${['set','warn','ext'].includes(c.k)?' '+c.k:''}" id="${s.id}-c${j+1}"><div class="card-h"><span class="no">${i}-${j+1}</span><h3>${c.t}</h3><span class="tag ${c.k}">${tagTxt[c.k]}</span></div>${c.h()}</article>`).join('')}</div>`;
+  mainEl.appendChild(sec);
+});
+
+/* 연습 대상 고르기 */
+function bindPick(id,fn,init){const el=document.getElementById(id);if(!el)return;const run=i=>{el.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.i===i));fn(i)};el.addEventListener('click',e=>{const b=e.target.closest('button');if(b)run(+b.dataset.i)});run(init)}
+bindPick('pkScene',i=>{const s=SCENES[i];document.getElementById('scBox').innerHTML=`<div class="grid" style="margin-top:12px">${P('스타트',sceneStart(s),s.ko[0],'내_스타트','ps1')}${P('엔드 — 내_스타트를 레퍼런스로',sceneEnd(s),'바뀌는 것 하나: '+s.ko[1],'내_엔드','ps2')}</div><div style="margin-top:12px">${P('영상 — 시작 칸 내_스타트 · 끝 칸 내_엔드',sceneVidA(s),'','내_영상','ps3')}</div>`},1);
+bindPick('pkPerson',i=>{const p=PEOPLE[i];const sv=p.sv;document.getElementById('psBox').innerHTML=`<div class="grid" style="margin-top:12px">${P('앵커 — 비율 9:16, 레퍼런스 없이',anchorP(p),p.ko+' · 빈손 · 연회색 배경',sv+'_앵커','pp1')}${P('시트 — '+sv+'_앵커만 레퍼런스로, 비율 16:9',sheetP(p),'정면 · 비스듬히 · 옆 · 뒤 전신을 한 줄로, 빈손',sv+'_시트','pp2')}</div>`},1);
+bindPick('pkPlace4',i=>{const pl=PLACES[i];document.getElementById('plBox4').innerHTML=`<div style="margin-top:12px">${LINKS(pl.cuts.flatMap((c,k)=>[[`장소_${k+1} ${c.nm}`,US(c.q),`언스플래시 “${c.q}”`],[`장소_${k+1} 더 보기`,PX(c.q),`펙셀 “${c.q}”`]]))}</div>`},2);
+let pl5=2,tn5=0;
+function renderPl5(){const pl=PLACES[pl5],tone=TONES[tn5];document.getElementById('plBox5').innerHTML=pl.cuts.map((c,k)=>`<div style="margin-top:14px;display:flex;flex-direction:column;gap:10px"><p><b>컷 ${k+1} · ${c.nm}</b> <span class="muted small">— 레퍼런스: 내 시트 + 장소_${k+1}</span></p><div class="grid">${P('스타트',cutStart(c,tone.t),'',`컷${k+1}_스타트`,'pc'+k+'a')}${P('엔드 — 컷'+(k+1)+'_스타트를 레퍼런스로',cutEnd(c,tone.t),'',`컷${k+1}_엔드`,'pc'+k+'b')}</div>${P('영상 — 시작·끝 칸에 두 장',cutVid(c),'',`컷${k+1}_영상`,'pc'+k+'c')}</div>`).join('')}
+bindPick('pkPlace5',i=>{pl5=i;renderPl5()},2);
+bindPick('pkTone',i=>{tn5=i;renderPl5()},0);
+
+/* 플레이어 */
+function initPlayers(){
+  const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.querySelectorAll('.pl').forEach(root=>{
+    const T=TL[root.dataset.pl];if(!T)return;
+    const rng=root.querySelector('.pl-r'),cap=root.querySelector('.pl-cap');
+    let t=0,raf=0,last=0,playing=false,played=false;
+    const render=()=>{cap.textContent=T.draw(root,t);rng.value=Math.round(t*1000)};
+    const tick=now=>{if(!playing)return;t=Math.max(0,t+Math.max(0,now-last)/T.dur);last=now;if(t>=1){t=1;playing=false;render();return}render();raf=requestAnimationFrame(tick)};
+    const play=()=>{if(t>=1)t=0;playing=true;played=true;last=performance.now();cancelAnimationFrame(raf);raf=requestAnimationFrame(tick)};
+    const pause=()=>{playing=false;cancelAnimationFrame(raf)};
+    root.querySelector('.pl-bar').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const a=b.dataset.a;
+      if(a==='play')play();if(a==='pause')pause();if(a==='stop'){pause();t=0;render()}if(a==='rew'){pause();t=Math.max(0,t-.2);render()}});
+    rng.addEventListener('input',()=>{pause();t=rng.value/1000;render()});
+    t=1;render();t=0;if(reduce){t=1}render();
+    if(!reduce&&'IntersectionObserver' in window){new IntersectionObserver((es,o)=>{es.forEach(en=>{if(en.isIntersecting&&!played&&!en.target.closest('[hidden]')){play();o.disconnect()}})},{threshold:.6}).observe(root)}
+  });
+}
+
+/* 이동 — scrollIntoView 대신 창 안에서만 스크롤 (구글 사이트 임베드에서 바깥 페이지가 움직이지 않게) */
+function setHdr(){document.documentElement.style.setProperty('--hdr',document.getElementById('top').offsetHeight+'px')}
+function tabIntoView(btn){const L=btn.offsetLeft,Rr=L+btn.offsetWidth;if(L<tabsEl.scrollLeft)tabsEl.scrollLeft=L-8;else if(Rr>tabsEl.scrollLeft+tabsEl.clientWidth)tabsEl.scrollLeft=Rr-tabsEl.clientWidth+8}
+function go(i,scroll){
+  cur=Math.max(0,Math.min(STEPS.length-1,i));
+  STEPS.forEach((s,k)=>{document.getElementById(s.id).hidden=k!==cur;document.getElementById('tab-'+s.id).setAttribute('aria-selected',k===cur)});
+  const s=STEPS[cur];
+  sideEl.innerHTML=`<div class="st">이 화면 카드</div>`+s.cards.map((c,j)=>`<a href="#${s.id}-c${j+1}" data-c="${s.id}-c${j+1}">${c.t}</a>`).join('');
+  selCard.innerHTML=s.cards.map((c,j)=>`<option value="${s.id}-c${j+1}">${cur}-${j+1} ${c.t}</option>`).join('');
+  selStep.value=cur;
+  document.getElementById('prev').disabled=cur===0;
+  document.getElementById('next').disabled=cur===STEPS.length-1;
+  tabIntoView(document.getElementById('tab-'+s.id));
+  if(scroll) window.scrollTo({top:0,behavior:'smooth'});
+  try{localStorage.setItem('ilwon5step',cur)}catch(e){}
+  observe();
+}
+function jump(id){const el=document.getElementById(id);if(!el)return;setHdr();const y=el.getBoundingClientRect().top+window.scrollY-document.getElementById('top').offsetHeight-12;window.scrollTo({top:Math.max(0,y),behavior:'smooth'})}
+sideEl.addEventListener('click',e=>{const a=e.target.closest('a');if(a){e.preventDefault();jump(a.dataset.c)}});
+selCard.onchange=()=>jump(selCard.value);
+selStep.onchange=()=>go(+selStep.value,true);
+document.getElementById('prev').onclick=()=>go(cur-1,true);
+document.getElementById('next').onclick=()=>go(cur+1,true);
+let io;
+function observe(){
+  if(io) io.disconnect();
+  if(!('IntersectionObserver' in window)) return;
+  io=new IntersectionObserver(es=>{es.forEach(en=>{if(en.isIntersecting){const id=en.target.id;sideEl.querySelectorAll('a').forEach(a=>a.classList.toggle('on',a.dataset.c===id));if(selCard.value!==id) selCard.value=id;}})},{rootMargin:'-30% 0px -60% 0px'});
+  document.querySelectorAll('#'+STEPS[cur].id+' .card').forEach(c=>io.observe(c));
+  /* 숨겨져 있던 플레이어가 화면에 나타나면 자동 재생 */
+  document.querySelectorAll('#'+STEPS[cur].id+' .pl').forEach(p=>{p.dispatchEvent(new Event('stepshow'))});
+}
+/* 복사 */
+document.addEventListener('click',e=>{
+  const b=e.target.closest('.cp');if(!b) return;
+  const pre=document.getElementById(b.dataset.p);const txt=pre.textContent;
+  const done=()=>{b.textContent='복사됨';b.classList.add('ok');setTimeout(()=>{b.textContent='복사';b.classList.remove('ok')},1600)};
+  const fallback=()=>{const r=document.createRange();r.selectNodeContents(pre);const s=getSelection();s.removeAllRanges();s.addRange(r);try{document.execCommand('copy');done()}catch(_){b.textContent='Ctrl+C'}};
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(done,fallback)}else fallback();
+});
+/* 글자 크기 */
+let fs=20;try{fs=+localStorage.getItem('ilwon5fs')||20}catch(e){}
+function applyFs(){document.documentElement.style.setProperty('--fs',fs+'px');setHdr()}
+document.querySelectorAll('.fsz button').forEach(b=>b.onclick=()=>{fs=Math.max(16,Math.min(28,fs+(+b.dataset.fs)*2));try{localStorage.setItem('ilwon5fs',fs)}catch(e){}applyFs()});
+if(fs!==20) applyFs();
+/* 시작 */
+let start=0;const h=location.hash.replace('#','');const hi=STEPS.findIndex(s=>s.id===h);
+if(hi>=0) start=hi; else {try{start=+localStorage.getItem('ilwon5step')||0}catch(e){}}
+initPlayers();go(start,false);setHdr();addEventListener('resize',setHdr);
+</script>
+
+</html>

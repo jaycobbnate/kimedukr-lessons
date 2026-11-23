@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>미리캔버스 출판 라이선스</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#fbfaf7; --card:#ffffff; --line:#e4e6ea; --text:#23272e; --muted:#5f6772;
+  --point:#2f6fae; --point-dark:#1d3a5f; --point-soft:#eaf2fa;
+  --ok:#1f7a45; --ok-soft:#e6f3eb; --no:#b23a3a; --no-soft:#fbeaea;
+  --warn:#8a5a14; --warn-soft:#fdf4e4; --ext:#5b4b9a; --ext-soft:#f1eefa;
+  --fs:20px;
+}
+*{box-sizing:border-box}
+html{font-size:var(--fs)}
+body{margin:0;background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-serif;line-height:1.7;word-break:keep-all}
+/* 상단바 */
+.topbar{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1180px;margin:0 auto;padding:.6rem 1rem;display:flex;align-items:center;gap:.8rem;flex-wrap:wrap}
+.topbar h1{font-size:1.05rem;margin:0;color:var(--point-dark);font-weight:700;flex:1;min-width:12rem}
+.fsbtn{display:flex;gap:.3rem}
+.fsbtn button{font:inherit;font-size:.8rem;padding:.2rem .7rem;border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:6px;cursor:pointer}
+.fsbtn button:hover{border-color:var(--point);color:var(--point)}
+.tabs{max-width:1180px;margin:0 auto;padding:0 1rem;display:flex;gap:.2rem;overflow-x:auto}
+.tabs button{font:inherit;font-size:.82rem;white-space:nowrap;padding:.5rem .9rem;border:0;border-bottom:3px solid transparent;background:none;color:var(--muted);cursor:pointer}
+.tabs button.on{color:var(--point);border-bottom-color:var(--point);font-weight:700}
+/* 본문 */
+.wrap{max-width:1180px;margin:0 auto;padding:1.4rem 1rem 0;display:grid;grid-template-columns:1fr 13rem;gap:1.4rem;align-items:start}
+.step{display:none}
+.step.on{display:block}
+.step-head{margin-bottom:1rem}
+.step-head .no{font-size:.75rem;color:var(--point);font-weight:700;letter-spacing:.05em}
+.step-head h2{margin:.1rem 0 .3rem;font-size:1.45rem;color:var(--point-dark);line-height:1.4}
+.step-head p{margin:0;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(18rem,1fr));gap:1rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:1.1rem 1.2rem;scroll-margin-top:7rem}
+.card.wide{grid-column:1/-1}
+.card h3{margin:0 0 .5rem;font-size:1.05rem;color:var(--point-dark)}
+.card h3 .tag{font-size:.72rem;font-weight:500;color:var(--point);background:var(--point-soft);padding:.1rem .5rem;border-radius:4px;margin-right:.4rem;vertical-align:.1rem}
+.card p{margin:.3rem 0}
+.card ul{margin:.3rem 0;padding-left:1.1rem}
+.card li{margin:.25rem 0}
+.box-warn{background:var(--warn-soft);border-color:#efd9b0}
+.box-warn h3{color:var(--warn)}
+.box-ext{background:var(--ext-soft);border-color:#dcd4f2}
+.box-ext h3{color:var(--ext)}
+.box-set{background:var(--point-soft);border-color:#cfe0f1}
+.ok,.ng{display:inline-block;font-size:.78rem;font-weight:700;padding:.05rem .55rem;border-radius:5px}
+.ok{background:var(--ok-soft);color:var(--ok)}
+.ng{background:var(--no-soft);color:var(--no)}
+.quote{border-left:3px solid var(--point);background:#f7f9fc;padding:.6rem .9rem;margin:.6rem 0;border-radius:0 6px 6px 0;font-size:.92rem}
+.quote small{display:block;color:var(--muted);font-size:.75rem;margin-top:.2rem}
+.meta{font-size:.8rem;color:var(--muted)}
+/* 결론 카드 */
+.verdict{display:flex;flex-direction:column;gap:.4rem}
+.verdict .row{display:flex;justify-content:space-between;align-items:center;gap:.6rem}
+.verdict .law{font-size:.78rem;color:var(--muted)}
+/* 도식 */
+.flow{display:flex;align-items:stretch;gap:.6rem;flex-wrap:wrap}
+.flow .node{flex:1;min-width:9rem;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:.7rem .8rem;text-align:center;font-size:.88rem}
+.flow .node b{display:block;color:var(--point-dark)}
+.flow .arrow{align-self:center;color:var(--point);font-weight:700}
+.flow .node.okn{border-color:#bfe0cb;background:var(--ok-soft)}
+.flow .node.ngn{border-color:#efc5c5;background:var(--no-soft)}
+/* 체크리스트 */
+.check label{display:flex;gap:.7rem;align-items:flex-start;padding:.55rem 0;border-bottom:1px dashed var(--line);cursor:pointer}
+.check label:last-child{border-bottom:0}
+.check input{width:1.05rem;height:1.05rem;margin-top:.35rem;accent-color:var(--point);flex:none}
+.check input:checked + span{color:var(--muted);text-decoration:line-through}
+.progress{height:8px;background:var(--line);border-radius:4px;overflow:hidden;margin:.4rem 0 .8rem}
+.progress i{display:block;height:100%;width:0;background:var(--point);transition:width .25s}
+/* 사이드 메뉴 */
+.side{position:sticky;top:6.5rem;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:.8rem .9rem}
+.side b{display:block;font-size:.75rem;color:var(--muted);margin-bottom:.4rem}
+.side a{display:block;font-size:.8rem;color:var(--text);text-decoration:none;padding:.3rem .5rem;border-radius:5px;line-height:1.45}
+.side a:hover{background:var(--point-soft);color:var(--point)}
+/* 하단 버튼 */
+.bottom{position:sticky;bottom:0;z-index:15;background:linear-gradient(to top,var(--bg) 70%,rgba(251,250,247,0));padding:1rem 1rem .8rem;margin-top:1.2rem}
+.bottom-in{max-width:1180px;margin:0 auto;display:flex;justify-content:space-between;gap:.8rem}
+.bottom button{font:inherit;font-size:.85rem;padding:.5rem 1.1rem;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--text);cursor:pointer}
+.bottom button.next{background:var(--point);border-color:var(--point);color:#fff}
+.bottom button:disabled{opacity:.35;cursor:default}
+.src a{color:var(--point);word-break:break-all}
+footer{max-width:1180px;margin:0 auto;padding:0 1rem 1.2rem;font-size:.72rem;color:var(--muted)}
+@media (max-width:860px){
+  .wrap{grid-template-columns:1fr}
+  .side{position:static;order:-1}
+  .grid{grid-template-columns:1fr}
+  .flow .arrow{transform:rotate(90deg);width:100%;text-align:center}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-in">
+    <h1>미리캔버스로 만든 동화책, 전자책·POD 출판 가능할까?</h1>
+    <div class="fsbtn" aria-label="글자 크기">
+      <button type="button" data-fs="-1">가-</button>
+      <button type="button" data-fs="0">기본</button>
+      <button type="button" data-fs="1">가+</button>
+    </div>
+  </div>
+  <nav class="tabs" id="tabs"></nav>
+</div>
+
+<div class="wrap">
+  <main id="steps">
+
+    <!-- STEP 1 -->
+    <section class="step" data-title="결론">
+      <div class="step-head">
+        <div class="no">STEP 1</div>
+        <h2>한눈에 보는 결론</h2>
+        <p>미리캔버스 라이선스 계약(시행 2023.9.11, 2026.10 기준 최신본) 조항으로 확인한 결과입니다.</p>
+      </div>
+      <div class="grid">
+        <div class="card wide" id="s1-flow">
+          <h3>판단 흐름</h3>
+          <div class="flow">
+            <div class="node"><b>미리캔버스 에디터</b>에서 동화책 편집</div>
+            <div class="arrow">→</div>
+            <div class="node"><b>PDF로 내보내기</b>완성본 그대로 사용</div>
+            <div class="arrow">→</div>
+            <div class="node okn"><b>전자책·POD 종이책</b>출판·판매 가능</div>
+            <div class="node ngn" style="flex-basis:100%"><b>단, 같은 디자인으로 굿즈 판매는 ✕</b>티셔츠·머그·에코백 등 판매용 굿즈는 불가</div>
+          </div>
+        </div>
+        <div class="card" id="s1-ok">
+          <h3>할 수 있는 것</h3>
+          <div class="verdict">
+            <div class="row"><span>전자책(PDF·e북) 출판·판매</span><span class="ok">가능</span></div>
+            <div class="law">제7조 10호</div>
+            <div class="row"><span>POD 종이책 출판·판매</span><span class="ok">가능</span></div>
+            <div class="law">제7조 10호 (인쇄 출판물)</div>
+            <div class="row"><span>미리캔버스 제휴 폰트 사용</span><span class="ok">가능</span></div>
+            <div class="law">제1조 2호, 제4조 · 에디터 안에서 사용할 때</div>
+          </div>
+        </div>
+        <div class="card" id="s1-ng">
+          <h3>할 수 없는 것</h3>
+          <div class="verdict">
+            <div class="row"><span>같은 디자인으로 굿즈 POD 판매</span><span class="ng">불가</span></div>
+            <div class="law">제7조 11호</div>
+            <div class="row"><span>이름 넣어주는 맞춤형 동화책 판매</span><span class="ng">불가</span></div>
+            <div class="law">제9조 6호</div>
+            <div class="row"><span>저작권 귀속 공모전 출품</span><span class="ng">불가</span></div>
+            <div class="law">제9조 9호</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STEP 2 -->
+    <section class="step" data-title="출판 허용 근거">
+      <div class="step-head">
+        <div class="no">STEP 2</div>
+        <h2>출판이 허용되는 근거</h2>
+        <p>표지뿐 아니라 본문(내지)까지, 폰트까지 허용 범위에 들어갑니다.</p>
+      </div>
+      <div class="grid">
+        <div class="card" id="s2-art7">
+          <h3><span class="tag">제7조 10호</span>출판물 표지·내지</h3>
+          <div class="quote">서적, 잡지, 전자책 등 인쇄 출판물 또는 e북, 전자책 등 온라인 출판물의 표지 또는 내지 디자인<small>미리캔버스 라이선스 계약 제7조(콘텐츠 사용의 허용 범위) 10호</small></div>
+          <ul>
+            <li><b>내지(본문 페이지)</b>까지 포함 → 동화책 전체를 미리캔버스로 편집해도 됩니다.</li>
+            <li>POD 종이책 = 인쇄 출판물, PDF 전자책 = 온라인 출판물</li>
+          </ul>
+        </div>
+        <div class="card" id="s2-font">
+          <h3><span class="tag">제1조 2호 · 제4조</span>폰트도 같은 조건</h3>
+          <ul>
+            <li>"디자인 요소" 정의에 <b>글꼴·폰트</b>가 포함되어 있습니다.</li>
+            <li>제휴 업체가 제공한 유료 공급자 콘텐츠도 허용 범위 안에서 <b>개인적·비상업적·상업적 목적</b>으로 사용할 수 있습니다.</li>
+            <li>단, <b>에디터 안에서 쓴 폰트</b>에 한합니다. 폰트 파일을 따로 추출해 쓰는 것은 해당되지 않습니다.</li>
+          </ul>
+        </div>
+        <div class="card box-set" id="s2-plan">
+          <h3>무료 회원 vs Pro 회원 <span class="meta">(제5조)</span></h3>
+          <ul>
+            <li><b>무료 회원</b>이 유료(왕관 표시) 요소를 쓰면 별도 결제를 해야 라이선스가 생깁니다.</li>
+            <li><b>Pro·엔터프라이즈</b> 회원은 추가 비용 없이 모든 유료 요소 라이선스를 받습니다.</li>
+          </ul>
+        </div>
+        <div class="card box-ext" id="s2-ai">
+          <h3>한 걸음 더: AI로 만든 그림은?</h3>
+          <p>직접 생성해 업로드한 이미지는 <b>"사용자 요소"</b>(제1조 4호)입니다. 미리캔버스 요소가 아니므로 권리 관계가 깔끔하지만, 그 이미지의 권리 문제에 대한 책임은 업로드한 본인에게 있습니다(제13조 2호).</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- STEP 3 -->
+    <section class="step" data-title="굿즈 불가 근거">
+      <div class="step-head">
+        <div class="no">STEP 3</div>
+        <h2>굿즈 판매가 안 되는 근거</h2>
+        <p>책은 되지만, 같은 디자인으로 만든 판매용 굿즈는 허용 범위 밖입니다.</p>
+      </div>
+      <div class="grid">
+        <div class="card" id="s3-art7">
+          <h3><span class="tag">제7조 11호</span>굿즈는 비판매·개인 용도만</h3>
+          <div class="quote">판매 또는 재판매를 목적으로 하지 않은 개인적인 사용 목적의 노트, 메모지 등의 팬시 물품 또는 키링, 열쇠고리, 텀블러, 손거울, 티셔츠(기업 단체복), 에코백 등의 굿즈를 위한 디자인<small>미리캔버스 라이선스 계약 제7조 11호</small></div>
+        </div>
+        <div class="card box-warn" id="s3-warn">
+          <h3>주의</h3>
+          <p>동화책 표지·캐릭터 디자인을 그대로 써서 <b>티셔츠·머그·에코백 POD</b>로 판매하면 라이선스 위반입니다.</p>
+          <p>굿즈까지 판매하려면 캐릭터·그림을 <b>미리캔버스 요소 없이</b> 직접 만든 이미지로만 구성하는 것이 안전합니다.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- STEP 4 -->
+    <section class="step" data-title="금지 조항">
+      <div class="step-head">
+        <div class="no">STEP 4</div>
+        <h2>출판 시 반드시 확인할 금지 조항</h2>
+        <p>제9조(콘텐츠의 금지된 사용)와 제13조(면책) 중 동화책과 관련된 항목입니다.</p>
+      </div>
+      <div class="grid">
+        <div class="card" id="s4-2">
+          <h3><span class="tag">제9조 2호</span>로고·상표 등록 금지</h3>
+          <p>상표권·저작권 <b>등록</b>이 필요한 로고·BI/CI·상표로 사용 불가</p>
+          <p class="meta">→ 표지 디자인을 시리즈 로고로 상표 등록하면 안 됩니다.</p>
+        </div>
+        <div class="card" id="s4-6">
+          <h3><span class="tag">제9조 6호</span>맞춤형·주문형 상품 금지</h3>
+          <p>불특정 다수에게 <b>맞춤형·주문형 상품</b>으로 판매 불가 (예: 스마트스토어·크몽 "디자인 샘플" 판매)</p>
+          <p class="meta">→ 내용이 고정된 책은 해당되지 않는 것으로 보이나, "아이 이름 넣어주는 동화책"은 해당됩니다.</p>
+        </div>
+        <div class="card" id="s4-9">
+          <h3><span class="tag">제9조 9호</span>저작권 귀속 공모전 금지</h3>
+          <p>저작권 귀속을 요구하는 공모전·전시회·대회 출품 불가</p>
+          <p class="meta">→ 당선작 저작권이 주최 측에 넘어가는 동화 공모전은 출품 불가</p>
+        </div>
+        <div class="card" id="s4-10">
+          <h3><span class="tag">제9조 10호</span>요소 잘라내기 금지</h3>
+          <p>디자인 요소를 <b>캡처하거나 잘라내</b> 다른 문서·그래픽 프로그램에서 사용 불가</p>
+          <p class="meta">→ 미리캔버스 일러스트만 따로 빼서 쓰면 안 됩니다.</p>
+        </div>
+        <div class="card" id="s4-16">
+          <h3><span class="tag">제9조 16호</span>단독 소유 표현 금지</h3>
+          <p>미리캔버스 디자인을 <b>본인만의 창작물·소유물인 것처럼</b> 표현 불가</p>
+          <p class="meta">→ 판권면에 "모든 디자인 저작권 저자 소유" 식 표기 주의</p>
+        </div>
+        <div class="card box-warn" id="s4-13">
+          <h3><span class="tag">제13조 8호</span>증명 못 하면 보호 못 받음</h3>
+          <p>다른 편집기에서 재편집했거나, 작업 파일 삭제·계정 탈퇴로 <b>에디터에서 만든 것을 증명할 수 없으면</b> 법적 보호를 받을 수 없습니다.</p>
+          <p class="meta">→ 미리캔버스 작업 파일은 절대 지우지 말고 보관</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- STEP 5 -->
+    <section class="step" data-title="수강생 안내">
+      <div class="step-head">
+        <div class="no">STEP 5</div>
+        <h2>강의·수강생 안내 시 짚어야 할 점</h2>
+        <p>입문자가 자주 놓치는 부분과, 출판까지 가는 분을 위한 심화 확인 사항입니다.</p>
+      </div>
+      <div class="grid">
+        <div class="card box-warn" id="s5-edu">
+          <h3>교육용 계정은 조건이 다릅니다</h3>
+          <p>Edu+ 요금제나 교육청 사업으로 받은 Pro 계정은 별도의 <b>교육용 라이선스 계약</b>이 적용되고, 사용 제한 범위가 <b>더 넓어집니다</b>(서문·제7조·제9조).</p>
+          <p class="meta">학교·기관 계정으로 만든 동화책을 판매하려면 교육용 라이선스를 따로 확인해야 합니다.</p>
+        </div>
+        <div class="card" id="s5-pdf">
+          <h3>PDF는 완성본으로만</h3>
+          <p>다른 프로그램에서의 제한적 편집은 <b>PPT·이미지·영상 파일</b>에 한해 명시되어 있습니다(제7조 17호).</p>
+          <p class="meta">PDF로 내보낸 뒤 다른 툴에서 뜯어고치지 않는 것이 안전합니다.</p>
+        </div>
+        <div class="card" id="s5-change">
+          <h3>약관은 바뀔 수 있습니다</h3>
+          <p>미리캔버스는 라이선스를 별도 고지 없이 변경할 수 있습니다(제2조 2호).</p>
+          <p class="meta">출간 직전에 헬프센터에서 최신 라이선스 계약을 다시 확인하세요.</p>
+        </div>
+        <div class="card box-ext" id="s5-mail">
+          <h3>한 걸음 더: 서면 답변 받아두기</h3>
+          <p>맞춤형 상품(제9조 6호)처럼 해석이 애매한 경우, 고객센터(<b>miricanvas@miricanvas.com</b>)에 출판 계획을 구체적으로 적어 문의하고 <b>서면 답변</b>을 보관해 두면 가장 확실한 근거가 됩니다.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- STEP 6 -->
+    <section class="step" data-title="체크리스트">
+      <div class="step-head">
+        <div class="no">STEP 6</div>
+        <h2>출간 전 체크리스트</h2>
+        <p>모두 체크되면 라이선스 측면에서 출간 준비가 된 것입니다.</p>
+      </div>
+      <div class="grid">
+        <div class="card wide" id="s6-check">
+          <h3>확인 항목 <span class="meta" id="cnt">0 / 8</span></h3>
+          <div class="progress"><i id="bar"></i></div>
+          <div class="check" id="checklist">
+            <label><input type="checkbox"><span>모든 편집을 미리캔버스 에디터 안에서 했는가?</span></label>
+            <label><input type="checkbox"><span>무료 회원이라면 유료(왕관) 요소에 대한 라이선스를 결제했는가?</span></label>
+            <label><input type="checkbox"><span>교육용(Edu+·교육청) 계정으로 만든 디자인이 아닌가?</span></label>
+            <label><input type="checkbox"><span>디자인 요소를 캡처·추출해서 다른 프로그램에 쓰지 않았는가?</span></label>
+            <label><input type="checkbox"><span>판권면에 디자인 저작권을 저자 단독 소유로 표기하지 않았는가?</span></label>
+            <label><input type="checkbox"><span>같은 디자인으로 판매용 굿즈를 만들 계획이 없는가?</span></label>
+            <label><input type="checkbox"><span>미리캔버스 작업 파일을 삭제하지 않고 보관하고 있는가?</span></label>
+            <label><input type="checkbox"><span>출간 직전 최신 라이선스 계약을 다시 확인했는가?</span></label>
+          </div>
+        </div>
+        <div class="card wide src" id="s6-src">
+          <h3>출처</h3>
+          <ul>
+            <li>미리캔버스 라이선스 계약 (시행일자 2023년 9월 11일)<br><a href="https://help.miricanvas.com/hc/ko/articles/22476200417945" target="_blank" rel="noopener">help.miricanvas.com/hc/ko/articles/22476200417945</a></li>
+            <li>미리캔버스 헬프센터 (최신 약관 목록)<br><a href="https://help.miricanvas.com/hc/ko" target="_blank" rel="noopener">help.miricanvas.com/hc/ko</a></li>
+            <li>미리캔버스 사용 범위 안내<br><a href="https://help.miricanvas.com/hc/ko/articles/360035922131" target="_blank" rel="noopener">help.miricanvas.com/hc/ko/articles/360035922131</a></li>
+          </ul>
+          <p class="meta">※ 라이선스 조항을 정리한 참고 자료이며 법률 자문이 아닙니다. 최종 판단은 미리캔버스 공식 약관과 고객센터 답변을 기준으로 하시기 바랍니다.</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <aside class="side" id="side"><b>이 STEP의 카드</b><div id="sidelist"></div></aside>
+</div>
+
+<div class="bottom">
+  <div class="bottom-in">
+    <button type="button" id="prev">← 이전 STEP</button>
+    <button type="button" id="next" class="next">다음 STEP →</button>
+  </div>
+</div>
+<footer>에이비랩(AB Lab) 김충효 · 근거: 미리캔버스 라이선스 계약(시행 2023.9.11) · 확인 2026.10.22</footer>
+
+<script>
+(function(){
+  var steps=[].slice.call(document.querySelectorAll('.step'));
+  var tabs=document.getElementById('tabs');
+  var side=document.getElementById('sidelist');
+  var cur=0;
+  steps.forEach(function(s,i){
+    var b=document.createElement('button');
+    b.type='button';
+    b.textContent='STEP '+(i+1)+' '+s.dataset.title;
+    b.onclick=function(){show(i,true)};
+    tabs.appendChild(b);
+  });
+  function show(i,scroll){
+    cur=i;
+    steps.forEach(function(s,k){s.classList.toggle('on',k===i)});
+    [].forEach.call(tabs.children,function(b,k){b.classList.toggle('on',k===i)});
+    side.innerHTML='';
+    [].forEach.call(steps[i].querySelectorAll('.card'),function(c){
+      var h=c.querySelector('h3'); if(!h||!c.id) return;
+      var a=document.createElement('a');
+      a.href='#'+c.id;
+      var t=h.querySelector('.tag');a.textContent=(t?t.textContent+' · ':'')+[].filter.call(h.childNodes,function(n){return n!==t&&!(n.classList&&n.classList.contains('meta'))}).map(function(n){return n.textContent}).join('').trim();
+      a.onclick=function(e){e.preventDefault();c.scrollIntoView({behavior:'smooth',block:'start'})};
+      side.appendChild(a);
+    });
+    document.getElementById('prev').disabled=i===0;
+    document.getElementById('next').disabled=i===steps.length-1;
+    if(scroll){steps[i].scrollIntoView({behavior:'smooth',block:'start'})}
+  }
+  document.getElementById('prev').onclick=function(){if(cur>0)show(cur-1,true)};
+  document.getElementById('next').onclick=function(){if(cur<steps.length-1)show(cur+1,true)};
+  show(0,false);
+
+  // 글자 크기
+  var base=20,size=base;
+  [].forEach.call(document.querySelectorAll('.fsbtn button'),function(b){
+    b.onclick=function(){
+      var d=+b.dataset.fs;
+      size=d===0?base:Math.min(28,Math.max(16,size+d*2));
+      document.documentElement.style.setProperty('--fs',size+'px');
+    };
+  });
+
+  // 체크리스트 진행률
+  var boxes=document.querySelectorAll('#checklist input');
+  function upd(){
+    var n=[].filter.call(boxes,function(x){return x.checked}).length;
+    document.getElementById('cnt').textContent=n+' / '+boxes.length;
+    document.getElementById('bar').style.width=(n/boxes.length*100)+'%';
+  }
+  [].forEach.call(boxes,function(x){x.onchange=upd});
+})();
+</script>
+</body>
+</html>

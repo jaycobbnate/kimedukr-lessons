@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>같은 말, 다른 그림 — 플랫폼 차이를 평탄화하는 법</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --fs:20px;
+  --bg:#FCFCFA; --paper:#FFFFFF; --ink:#2A2826; --sub:#68645F; --line:#E5E2DC; --line2:#EFEDE8;
+  --accent:#A44E3C; --accent-soft:#F7ECE8;
+  --set:#EDF2F6; --set-line:#C9D7E2;
+  --warn:#F6EEF3; --warn-line:#E0CBD7;
+  --ext:#EEF3EC; --ext-line:#CADBC5;
+  --ok:#4F7A55; --no:#A44E3C;
+}
+*{box-sizing:border-box}
+html{font-size:var(--fs)}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;line-height:1.7;word-break:keep-all}
+h1,h2,h3{font-family:"Gowun Batang","Nanum Myeongjo",serif;line-height:1.35;margin:0}
+img{max-width:100%;display:block}
+button{font:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+
+/* ── 상단 (sticky) ── */
+.top{position:sticky;top:0;z-index:20;background:rgba(252,252,250,.97);border-bottom:1px solid var(--line)}
+.top-row{display:flex;align-items:center;gap:16px;max-width:1280px;margin:0 auto;padding:12px 24px 6px}
+.top-title{font-family:"Gowun Batang",serif;font-weight:700;font-size:1.05rem;flex:1}
+.top-title small{display:block;font-family:"Pretendard",sans-serif;font-weight:400;font-size:.7rem;color:var(--sub)}
+.zoom{display:flex;gap:6px;align-items:center}
+.zoom span{font-size:.7rem;color:var(--sub);margin-right:2px}
+.zoom button{border:1px solid var(--line);background:var(--paper);border-radius:8px;padding:2px 12px;font-size:.8rem}
+.tabs{display:flex;gap:4px;overflow-x:auto;max-width:1280px;margin:0 auto;padding:4px 24px 0;scrollbar-width:thin}
+.tab{flex:0 0 auto;border:0;background:none;padding:8px 14px 10px;font-size:.8rem;color:var(--sub);border-bottom:3px solid transparent;white-space:nowrap}
+.tab b{display:block;font-size:.62rem;font-weight:600;letter-spacing:.02em;color:#9A958F}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent);font-weight:600}
+.tab[aria-selected="true"] b{color:var(--accent)}
+
+/* ── 본문 레이아웃 ── */
+.wrap{max-width:1280px;margin:0 auto;padding:28px 24px 40px;display:grid;grid-template-columns:minmax(0,1fr) 240px;gap:32px;align-items:start}
+.side{position:sticky;top:132px;border-left:1px solid var(--line);padding:4px 0 4px 18px}
+.side p{margin:0 0 8px;font-size:.68rem;color:var(--sub)}
+.side a{display:block;color:var(--sub);text-decoration:none;font-size:.74rem;padding:6px 0 6px 10px;border-left:2px solid transparent;margin-left:-20px;line-height:1.45}
+.side a.on{color:var(--accent);border-left-color:var(--accent);font-weight:600}
+.step{display:none}
+.step.on{display:block}
+.step-head{margin-bottom:22px;padding-bottom:18px;border-bottom:1px solid var(--line)}
+.step-no{font-size:.72rem;color:var(--accent);font-weight:700;margin-bottom:4px}
+.step-head h2{font-size:1.7rem}
+.step-head .lead{margin:10px 0 0;font-size:1.02rem;color:var(--sub);max-width:46em}
+
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:22px 24px;scroll-margin-top:140px}
+.card.wide{grid-column:1 / -1}
+.card h3{font-size:1.08rem;margin-bottom:10px}
+.card p{margin:0 0 10px}
+.card p:last-child{margin-bottom:0}
+.term{color:var(--sub);font-size:.82em}
+
+.box{border-radius:10px;padding:16px 18px;border:1px solid}
+.box h3{font-family:"Pretendard",sans-serif;font-size:.86rem;font-weight:700;margin-bottom:6px}
+.box.set{background:var(--set);border-color:var(--set-line)}
+.box.set h3{color:#3D5A70}
+.box.warn{background:var(--warn);border-color:var(--warn-line)}
+.box.warn h3{color:#7D4566}
+.box.ext{background:var(--ext);border-color:var(--ext-line)}
+.box.ext h3{color:#46684A}
+.key{background:var(--accent-soft);border:1px solid #E8CFC6;border-left:5px solid var(--accent);border-radius:10px;padding:18px 20px;font-size:1.05rem}
+.key strong{color:var(--accent)}
+ul.clean{margin:4px 0 0;padding-left:1.1em}
+ul.clean li{margin:3px 0}
+
+figure{margin:0}
+figure img{border:1px solid var(--line2);border-radius:8px;background:#fff;width:auto;margin:0 auto}
+figcaption{font-size:.74rem;color:var(--sub);margin-top:8px;line-height:1.5}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
+.trio{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;align-items:start}
+.tag{display:inline-block;font-size:.66rem;font-weight:700;border-radius:99px;padding:1px 10px;margin-bottom:6px}
+.tag.no{background:#F3E3DF;color:var(--no)}
+.tag.ok{background:#E2EDE2;color:var(--ok)}
+.tag.mid{background:#ECEAE5;color:var(--sub)}
+
+/* 프롬프트 */
+.prompt{position:relative;background:#F7F6F3;border:1px solid var(--line);border-radius:10px;padding:42px 18px 16px;font-size:.8rem;line-height:1.65;white-space:pre-wrap;font-family:"Pretendard",sans-serif}
+.prompt .copy{position:absolute;top:10px;right:10px;border:1px solid var(--line);background:var(--paper);border-radius:8px;font-size:.66rem;padding:3px 10px}
+.prompt .copy.done{color:var(--ok);border-color:var(--ok)}
+.prompt-label{font-size:.72rem;color:var(--sub);margin:12px 0 6px;font-weight:600}
+
+/* 도식 공통 */
+.diagram{margin:6px 0 4px}
+.diagram svg{width:100%;height:auto;display:block}
+.dia-title{font-size:.74rem;color:var(--sub);font-weight:600;margin-bottom:8px}
+
+/* 도식1: 흐름 */
+.flow{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;align-items:stretch;counter-reset:f}
+.flow div{position:relative;border:1px solid var(--line);border-radius:10px;padding:12px 8px 12px;text-align:center;font-size:.74rem;line-height:1.4;background:#fff}
+.flow div b{display:block;font-size:1.1rem;font-family:"Gowun Batang",serif;color:#9A958F;margin-bottom:4px}
+.flow div:not(:last-child)::after{content:"";position:absolute;right:-9px;top:50%;width:10px;height:2px;background:#C9C5BF}
+.flow .prob{background:var(--warn);border-color:var(--warn-line)}
+.flow .prob b{color:#7D4566}
+.flow .sol{background:var(--accent-soft);border-color:#E3C3B8}
+.flow .sol b{color:var(--accent)}
+.flow .me{border:2px solid var(--accent)}
+.flow small{display:block;margin-top:4px;font-size:.62rem;color:var(--sub)}
+
+/* 도식2: 비교판 */
+table.cmp{width:100%;border-collapse:collapse;font-size:.78rem}
+table.cmp th,table.cmp td{border-bottom:1px solid var(--line2);padding:9px 8px;text-align:left;vertical-align:top}
+table.cmp th{font-weight:600;color:var(--sub);font-size:.72rem}
+table.cmp td.m{text-align:center;font-weight:700;width:46px}
+table.cmp td.m.s{color:var(--ok)} table.cmp td.m.d{color:var(--no)}
+
+/* 도식5: 세 칸 */
+.three{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.three div{border:2px dashed #CFCAC3;border-radius:10px;padding:14px;text-align:center}
+.three div b{display:block;font-size:.72rem;color:var(--accent);margin-bottom:6px}
+.three div span{font-size:.86rem}
+
+/* 도식6: 말로 되는/안 되는 */
+.split{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.split > div{border-radius:10px;padding:14px 16px;border:1px solid var(--line)}
+.split .yes{background:#F3F7F2}
+.split .nope{background:#FAF2F0}
+.split h4{margin:0 0 6px;font-size:.84rem}
+.split ul{margin:0;padding-left:1.1em;font-size:.82rem}
+.gauge{margin-top:14px}
+.gauge .bar{height:16px;border-radius:99px;background:#EEEBE6;overflow:hidden;display:flex}
+.gauge .bar i{display:block;height:100%}
+.gauge .lbl{display:flex;justify-content:space-between;font-size:.68rem;color:var(--sub);margin-top:4px}
+
+/* 하단 이동 (sticky) */
+.pager{position:sticky;bottom:0;z-index:15;background:rgba(252,252,250,.97);border-top:1px solid var(--line)}
+.pager-in{max-width:1280px;margin:0 auto;padding:10px 24px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.pager button{border:1px solid var(--line);background:var(--paper);border-radius:10px;padding:8px 18px;font-size:.8rem}
+.pager button.next{background:var(--accent);border-color:var(--accent);color:#fff}
+.pager button:disabled{opacity:.35;cursor:default}
+.pager .where{font-size:.72rem;color:var(--sub)}
+
+@media (max-width:1000px){
+  .wrap{grid-template-columns:1fr}
+  .side{display:none}
+  .flow{grid-template-columns:repeat(4,1fr)}
+  .flow div:nth-child(4)::after{display:none}
+}
+@media (max-width:720px){
+  :root{--fs:18px}
+  .grid,.pair,.split{grid-template-columns:1fr}
+  .trio{grid-template-columns:1fr 1fr}
+  .flow{grid-template-columns:repeat(2,1fr)}
+  .flow div::after{display:none}
+  .three{grid-template-columns:1fr}
+  .top-row,.tabs,.wrap,.pager-in{padding-left:14px;padding-right:14px}
+}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+
+/* 시작 화면 */
+.hero{padding:30px 0 34px;margin-bottom:24px;border-bottom:1px solid var(--line)}
+.hero-kicker{margin:0 0 12px;font-size:.78rem;color:var(--accent);font-weight:700}
+.hero-line{font-size:2.05rem;line-height:1.45;font-weight:700}
+.hero-line em{font-style:normal;color:var(--accent);border-bottom:3px solid #E8CFC6}
+.hero-sub{margin:16px 0 0;font-size:1.02rem;color:var(--sub)}
+.hero.small{padding:10px 0 6px;margin:0;border:0}
+.hero.small .hero-line{font-size:1.5rem}
+.road{display:grid;grid-template-columns:1fr 40px 1fr 40px 1fr;align-items:stretch}
+.road-item{border:1px solid var(--line);border-radius:12px;padding:18px;background:#fff}
+.road-item.hot{border:2px solid var(--accent);background:var(--accent-soft)}
+.road-item b{display:block;font-size:1rem;margin:6px 0 4px}
+.road-item p{margin:0;font-size:.82rem;color:var(--sub)}
+.road-no{display:inline-flex;width:30px;height:30px;border-radius:50%;background:var(--ink);color:#fff;align-items:center;justify-content:center;font-size:.8rem;font-weight:700}
+.road-item.hot .road-no{background:var(--accent)}
+.road-arrow{position:relative}
+.road-arrow::after{content:"";position:absolute;left:8px;right:8px;top:50%;height:2px;background:#C9C5BF}
+.words{list-style:none;margin:0;padding:0}
+.words li{padding:10px 0;border-bottom:1px solid var(--line2);font-size:.88rem;line-height:1.55}
+.words li:last-child{border:0}
+.ask{margin-top:14px!important;padding:12px 16px;border-left:3px solid var(--set-line);background:#F7F9FB;border-radius:0 8px 8px 0;font-size:.9rem;color:#3D5A70}
+/* 장면 카드 */
+.scene-no{font-size:.72rem;font-weight:700;color:var(--accent);margin-bottom:2px}
+.scene h3{font-size:1.3rem;margin-bottom:16px}
+.scene-body{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:28px;align-items:center}
+figure.big img{max-height:560px;width:100%;object-fit:contain}
+.pair.big2 figure img{max-height:620px;width:100%;object-fit:contain}
+.scene-text p{margin:0 0 12px}
+.scene-text ul{margin-bottom:14px}
+.scene-under{margin-top:20px;max-width:46em}
+.scene-under > p{margin:0 0 14px}
+.score{border:1px solid var(--line);border-radius:12px;padding:14px 18px;margin:0 0 14px;background:#FCFBF9}
+.score-title{margin:0 0 6px!important;font-size:.8rem;color:var(--sub);font-weight:600}
+.score-row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--line2);font-size:.9rem}
+.score-row:last-child{border:0}
+.score-row b.x{color:var(--no)} .score-row b.o{color:var(--ok)}
+img.mid-img{max-height:360px}
+ol.qs{margin:0 0 12px;padding-left:1.3em}
+ol.qs li{margin:4px 0}
+@media (max-width:1000px){.road{grid-template-columns:1fr;gap:10px}.road-arrow{display:none}}
+@media (max-width:720px){.scene-body{grid-template-columns:1fr}.hero-line{font-size:1.5rem}.pair.big2{grid-template-columns:1fr}}
+
+.road6{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+.road6 div{position:relative;border:1px solid var(--line);border-radius:10px;padding:12px 8px;text-align:center;font-size:.76rem;line-height:1.4;background:#fff}
+.road6 div b{display:block;font-family:"Gowun Batang",serif;font-size:1.1rem;color:#9A958F;margin-bottom:2px}
+.road6 div:not(:last-child)::after{content:"";position:absolute;right:-9px;top:50%;width:10px;height:2px;background:#C9C5BF}
+.road6 .hot{border:2px solid var(--accent);background:var(--accent-soft)}
+.road6 .hot b{color:var(--accent)}
+.scene-no:empty{display:none}
+@media (max-width:720px){.road6{grid-template-columns:repeat(3,1fr)}.road6 div::after{display:none}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="top-row">
+    <div class="top-title">같은 말, 다른 그림 — 플랫폼 차이를 평탄화하는 법
+      <small>생성형AI 이미지 생성 실무 · 화풍 통일과 캐릭터 일관성</small></div>
+    <div class="zoom" role="group" aria-label="글자 크기"><span>글자</span>
+      <button id="zDown" aria-label="글자 작게">가−</button>
+      <button id="zUp" aria-label="글자 크게">가+</button></div>
+  </div>
+  <nav class="tabs" role="tablist" aria-label="STEP 이동">
+    <button class="tab" role="tab" data-i="0"><b>STEP 1</b>오늘의 한 문장</button>
+    <button class="tab" role="tab" data-i="1"><b>STEP 2</b>지피티 vs 제미나이</button>
+    <button class="tab" role="tab" data-i="2"><b>STEP 3</b>제미나이가 직접 해도</button>
+    <button class="tab" role="tab" data-i="3"><b>STEP 4</b>알게 된 것</button>
+    <button class="tab" role="tab" data-i="4"><b>STEP 5</b>평탄화하기</button>
+    <button class="tab" role="tab" data-i="5"><b>STEP 6</b>저작권과 정리</button>
+  </nav>
+</header>
+
+<div class="wrap">
+<main id="main">
+
+<section class="step" data-step="0">
+  <div class="hero">
+    <p class="hero-kicker">STEP 1 · 오늘의 한 문장</p>
+    <h2 class="hero-line">AI마다 그림 손맛이 달라요.<br>그러니 <em>규칙</em>은 분석해서 쓰고,<br><em>느낌</em>은 기준 그림으로 맞춰요.</h2>
+    <p class="hero-sub">이렇게 플랫폼마다 다른 결과를 비슷하게 맞추는 걸 <b>평탄화</b>라고 부를게요.</p>
+  </div>
+  
+  <div class="grid">
+<div class="card wide" id="s0-a">
+      <h3>오늘 가는 길</h3>
+      <div class="road6">
+        <div><b>1</b>오늘의 한 문장</div><div><b>2</b>지피티 vs 제미나이</div><div><b>3</b>제미나이가 직접 해도</div>
+        <div><b>4</b>알게 된 것</div><div class="hot"><b>5</b>평탄화하기</div><div><b>6</b>저작권과 정리</div>
+      </div>
+    </div>
+<div class="card" id="s0-b">
+      <h3>오늘 쓰는 말</h3>
+      <ul class="words">
+        <li><b>글로 그림 그리기</b> <span class="term">(T2I, Text-to-Image)</span><br>프롬프트를 넣으면 그림이 나오는 것</li>
+        <li><b>규칙</b> <span class="term">(스타일 분석 결과)</span><br>머리 크기, 눈 모양, 색, 여백처럼 말로 정리한 특징</li>
+        <li><b>기준 그림</b> <span class="term">(참조 이미지, 앵커 이미지)</span><br>"이 느낌으로 그려" 하고 같이 넣는 그림</li>
+        <li><b>평탄화</b><br>플랫폼마다 들쭉날쭉한 결과를 평평하게 맞추기</li>
+      </ul>
+    </div>
+<div class="card" id="s0-c">
+      <h3>지난 시간에 한 것</h3>
+      <ul class="clean">
+        <li>지피티 작업 방<span class="term">(프로젝트)</span> 만들기</li>
+        <li>GoFullPage로 핀터레스트 보드를 한 장에 캡처</li>
+        <li>지피티에게 화풍 분석시키고, 틀린 곳 찾아보기</li>
+        <li>그 분석으로 프롬프트 만들어 그림 그리기</li>
+      </ul>
+      <p class="ask">오늘은 여기서 생긴 "이상한 일"부터 봅니다.</p>
+    </div>
+  </div>
+</section>
+<section class="step" data-step="1">
+  <div class="step-head">
+    <div class="step-no">STEP 2</div>
+    <h2>지피티 vs 제미나이 — 같은 말, 다른 그림</h2>
+    <p class="lead">지난 시간 한 순서 그대로예요. 지피티로 분석해서 그린 그림과, 같은 프롬프트를 제미나이에 넣은 그림을 나란히 봐요.</p>
+  </div>
+  <div class="grid">
+<div class="card wide scene" id="s1-a">
+      <div class="scene-no">지피티로 분석 → 지피티로 그림</div>
+      <h3>지피티로 분석하고, 지피티로 그렸어요</h3>
+      <div class="scene-body">
+        <figure class="big"><img src="img01.jpg" alt="지피티로 그린 그림: 아이보리 종이에 단발머리 아이가 옆모습으로 걷고 앞에 토끼가 있다"></figure>
+        <div class="scene-text">
+          <p>레퍼런스 보드에서 본 느낌이 꽤 살아 있어요.</p>
+          <ul class="clean"><li>종이 결이 보여요</li><li>연필선이 살짝 떨려요</li><li>위쪽이 넓게 비어 있어요</li></ul>
+          <span class="tag ok">레퍼런스와 비슷함</span>
+        </div>
+      </div>
+    </div>
+<div class="card wide scene" id="s1-b">
+      <div class="scene-no">같은 프롬프트 → 제미나이</div>
+      <h3>같은 프롬프트를 제미나이에 넣었어요</h3>
+      <div class="scene-body">
+        <figure class="big"><img src="img02.jpg" alt="제미나이로 그린 그림: 깨끗한 바탕 가운데 남자아이와 토끼"></figure>
+        <div class="scene-text">
+          <p>글자 하나 안 바꿨는데 그림이 달라졌어요.</p>
+          <ul class="clean"><li>종이 결이 거의 없어요</li><li>선이 깨끗하고 고르게 그어졌어요</li><li>아이가 화면 한가운데 있어요</li></ul>
+          <p>그래도 아이, 토끼, 풀밭, 색은 다 맞게 그렸어요. <b>무엇을</b> 그릴지는 지켰고, <b>어떤 손맛으로</b> 그릴지가 달라졌어요.</p>
+          <span class="tag no">레퍼런스와 다름</span>
+          <p class="ask">생각해 보기 — 지피티가 쓴 프롬프트라서 제미나이와 안 맞은 걸까요?</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="step" data-step="2">
+  <div class="step-head">
+    <div class="step-no">STEP 3</div>
+    <h2>제미나이가 직접 분석해도</h2>
+    <p class="lead">"지피티가 쓴 프롬프트라서 안 맞았나?" 그래서 제미나이한테 직접 분석부터 시켜 봤어요.</p>
+  </div>
+  <div class="grid">
+<div class="card wide scene" id="s1-c">
+      <div class="scene-no">제미나이로 분석 → 제미나이로 그림</div>
+      <h3>그럼 제미나이한테 직접 분석시키고 그리게 했어요</h3>
+      <div class="pair big2">
+        <figure><img src="img03.jpg" alt="제미나이 그림 1: 노란 우비 아이와 강아지, 배경이 꽉 참"><figcaption>첫 번째 결과</figcaption></figure>
+        <figure><img src="img04.jpg" alt="제미나이 그림 2: 노란 우비 아이와 강아지, 울타리와 돌바닥"><figcaption>다시 뽑은 결과</figcaption></figure>
+      </div>
+      <div class="scene-under">
+        <p>제미나이가 직접 분석하고, 직접 프롬프트를 만들고, 직접 그렸어요. 그런데도 <b>여전히 제미나이 그림</b>이에요. 굵은 외곽선, 꽉 찬 배경, 선명한 원색.</p>
+        <div class="score">
+          <p class="score-title">제미나이가 스스로 만든 체크리스트로 채점하면</p>
+          <div class="score-row"><span>검은 선이 안 쓰였나</span><b class="x">✕</b></div>
+          <div class="score-row"><span>머리가 크고 볼이 발그레한가</span><b class="o">○</b></div>
+          <div class="score-row"><span>종이 느낌이 보이나</span><b class="x">✕</b></div>
+          <div class="score-row"><span>화면 절반 이상이 비어 있나</span><b class="x">✕</b></div>
+        </div>
+        <p>자기가 만든 기준에 자기 그림이 떨어졌어요. <b>분석을 잘하는 것과 그 분석대로 그리는 것은 다른 일</b>이에요.</p>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="step" data-step="3">
+  <div class="step-head">
+    <div class="step-no">STEP 4</div>
+    <h2>그래서 알게 된 것</h2>
+    <p class="lead">누가 분석하든, 그림은 그 플랫폼이 가진 손맛을 따라가요.</p>
+  </div>
+  <div class="grid">
+<div class="card wide scene" id="s1-d">
+      
+      <h3>그래서 알게 된 것</h3>
+      <div class="dia-title">도식 · 누가 분석해도, 그림은 그 플랫폼의 손맛을 따라가요</div>
+      <div class="diagram">
+      <svg viewBox="0 0 900 300" role="img" aria-label="같은 프롬프트가 지피티, 제미나이, 다른 플랫폼에 들어가면 각자 학습한 손맛대로 다른 그림이 나오는 도식">
+        <defs><marker id="m1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10z" fill="#9A958F"/></marker></defs>
+        <rect x="20" y="115" width="180" height="70" rx="14" fill="#FFFFFF" stroke="#C9C5BF" stroke-width="2"/>
+        <text x="110" y="146" text-anchor="middle" font-size="19" font-weight="700" fill="#2A2826">같은 프롬프트</text>
+        <text x="110" y="170" text-anchor="middle" font-size="14" fill="#68645F">(분석한 규칙)</text>
+        <path d="M200 150 C260 150, 260 50, 320 50" fill="none" stroke="#9A958F" stroke-width="2.5" marker-end="url(#m1)"/>
+        <path d="M200 150 L320 150" fill="none" stroke="#9A958F" stroke-width="2.5" marker-end="url(#m1)"/>
+        <path d="M200 150 C260 150, 260 250, 320 250" fill="none" stroke="#9A958F" stroke-width="2.5" marker-end="url(#m1)"/>
+        <rect x="324" y="20" width="230" height="60" rx="12" fill="#F7F6F3" stroke="#E5E2DC"/>
+        <text x="439" y="46" text-anchor="middle" font-size="17" font-weight="700" fill="#2A2826">지피티</text>
+        <text x="439" y="68" text-anchor="middle" font-size="13" fill="#68645F">학습한 그림: 종이에 그린 실물 느낌</text>
+        <rect x="324" y="120" width="230" height="60" rx="12" fill="#F7F6F3" stroke="#E5E2DC"/>
+        <text x="439" y="146" text-anchor="middle" font-size="17" font-weight="700" fill="#2A2826">제미나이</text>
+        <text x="439" y="168" text-anchor="middle" font-size="13" fill="#68645F">학습한 그림: 깨끗한 디지털 그림</text>
+        <rect x="324" y="220" width="230" height="60" rx="12" fill="#F7F6F3" stroke="#E5E2DC" stroke-dasharray="5 4"/>
+        <text x="439" y="246" text-anchor="middle" font-size="17" font-weight="700" fill="#68645F">다른 플랫폼</text>
+        <text x="439" y="268" text-anchor="middle" font-size="13" fill="#9A958F">또 다른 손맛</text>
+        <line x1="556" y1="50" x2="636" y2="50" stroke="#9A958F" stroke-width="2.5" marker-end="url(#m1)"/>
+        <line x1="556" y1="150" x2="636" y2="150" stroke="#9A958F" stroke-width="2.5" marker-end="url(#m1)"/>
+        <line x1="556" y1="250" x2="636" y2="250" stroke="#9A958F" stroke-width="2.5" marker-end="url(#m1)"/>
+        <rect x="640" y="22" width="110" height="56" rx="8" fill="#F3EBDD" stroke="#D8C9AE"/><text x="695" y="56" text-anchor="middle" font-size="15" fill="#5F5244">그림 A</text>
+        <rect x="640" y="122" width="110" height="56" rx="8" fill="#FFFFFF" stroke="#B8C4CE"/><text x="695" y="156" text-anchor="middle" font-size="15" fill="#3D5A70">그림 B</text>
+        <rect x="640" y="222" width="110" height="56" rx="8" fill="#F6EEF3" stroke="#E0CBD7"/><text x="695" y="256" text-anchor="middle" font-size="15" fill="#7D4566">그림 C</text>
+        <text x="830" y="140" text-anchor="middle" font-size="16" font-weight="700" fill="#A44E3C">전부</text>
+        <text x="830" y="164" text-anchor="middle" font-size="16" font-weight="700" fill="#A44E3C">달라요</text>
+      </svg>
+      </div>
+      <div class="key">글로 그림 그리기<span class="term">(T2I)</span>는 <strong>플랫폼 모델이 무엇을 보고 배웠는지</strong>가 결과를 크게 좌우해요. 그래서 어디에 넣어도 똑같이 나오는 만능 프롬프트<span class="term">(크로스 플랫폼 프롬프트)</span>는 만들기 어려워요.</div>
+      <p class="ask">생각해 보기 — STEP 2의 질문, 이제 답할 수 있나요? 프롬프트 탓이 아니라 <b>플랫폼 탓</b>이었어요.</p>
+    </div>
+  </div>
+</section>
+<section class="step" data-step="4">
+  <div class="step-head">
+    <div class="step-no">STEP 5</div>
+    <h2>평탄화하기 — 규칙은 분석으로, 느낌은 기준 그림으로</h2>
+    <p class="lead">말로는 플랫폼 손맛을 못 이겨요. 그럼 그림을 보여 주면 돼요. 규칙은 분석해서 글로, 느낌은 기준 그림으로 같이 넣어요.</p>
+  </div>
+  <div class="grid">
+<div class="card wide" id="s2-a">
+      <h3>평탄화는 이렇게 생겼어요</h3>
+      <div class="dia-title">도식 · 기준 그림을 넣으면 들쭉날쭉하던 결과가 평평해져요</div>
+      <div class="diagram">
+      <svg viewBox="0 0 900 260" role="img" aria-label="왼쪽은 프롬프트만 넣어 플랫폼별 결과 높이가 들쭉날쭉하고, 오른쪽은 기준 그림을 함께 넣어 결과가 고르게 맞춰진 막대 도식">
+        <text x="20" y="30" font-size="17" font-weight="700" fill="#68645F">프롬프트만 넣으면</text>
+        <line x1="20" y1="80" x2="400" y2="80" stroke="#A44E3C" stroke-width="2" stroke-dasharray="6 5"/>
+        <text x="404" y="85" font-size="13" fill="#A44E3C">레퍼런스 느낌</text>
+        <rect x="50" y="90" width="70" height="130" rx="6" fill="#E9DCC6"/><text x="85" y="245" text-anchor="middle" font-size="14" fill="#68645F">지피티</text>
+        <rect x="160" y="160" width="70" height="60" rx="6" fill="#C9D7E2"/><text x="195" y="245" text-anchor="middle" font-size="14" fill="#68645F">제미나이</text>
+        <rect x="270" y="125" width="70" height="95" rx="6" fill="#E0CBD7"/><text x="305" y="245" text-anchor="middle" font-size="14" fill="#68645F">다른 곳</text>
+        <line x1="40" y1="220" x2="360" y2="220" stroke="#C9C5BF" stroke-width="2"/>
+        <text x="500" y="30" font-size="17" font-weight="700" fill="#A44E3C">규칙 + 기준 그림을 같이 넣으면</text>
+        <line x1="500" y1="80" x2="880" y2="80" stroke="#A44E3C" stroke-width="2" stroke-dasharray="6 5"/>
+        <rect x="530" y="92" width="70" height="128" rx="6" fill="#E9DCC6"/><text x="565" y="245" text-anchor="middle" font-size="14" fill="#68645F">지피티</text>
+        <rect x="640" y="96" width="70" height="124" rx="6" fill="#C9D7E2"/><text x="675" y="245" text-anchor="middle" font-size="14" fill="#68645F">제미나이</text>
+        <rect x="750" y="94" width="70" height="126" rx="6" fill="#E0CBD7"/><text x="785" y="245" text-anchor="middle" font-size="14" fill="#68645F">다른 곳</text>
+        <line x1="520" y1="220" x2="840" y2="220" stroke="#C9C5BF" stroke-width="2"/>
+      </svg>
+      </div>
+    </div>
+<div class="card wide" id="s2-b">
+      <h3>두 가지를 따로 준비해서, 같이 넣어요</h3>
+      <div class="dia-title">도식 · 규칙은 규칙, 기준 그림은 기준 그림</div>
+      <div class="diagram">
+      <svg viewBox="0 0 900 270" role="img" aria-label="분석에서 나온 규칙과 기준 그림이 각각 들어가 합쳐져서 첫 그림이 되고, 그 첫 그림으로 시리즈를 만드는 도식">
+        <defs><marker id="m2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10z" fill="#A44E3C"/></marker></defs>
+        <rect x="20" y="20" width="260" height="100" rx="14" fill="#EDF2F6" stroke="#C9D7E2"/>
+        <text x="40" y="52" font-size="18" font-weight="700" fill="#3D5A70">규칙 (분석)</text>
+        <text x="40" y="80" font-size="15" fill="#2A2826">머리 큰 아이, 점 눈, 흐린 색,</text>
+        <text x="40" y="104" font-size="15" fill="#2A2826">여백 넓게, 장면 설명</text>
+        <rect x="20" y="150" width="260" height="100" rx="14" fill="#F7ECE8" stroke="#E3C3B8"/>
+        <text x="40" y="182" font-size="18" font-weight="700" fill="#A44E3C">기준 그림 (참조 이미지)</text>
+        <text x="40" y="210" font-size="15" fill="#2A2826">종이 느낌, 떨리는 선,</text>
+        <text x="40" y="234" font-size="15" fill="#2A2826">말로 못 하는 손맛</text>
+        <path d="M282 70 C340 70, 340 135, 380 135" fill="none" stroke="#A44E3C" stroke-width="2.5" marker-end="url(#m2)"/>
+        <path d="M282 200 C340 200, 340 135, 380 135" fill="none" stroke="#A44E3C" stroke-width="2.5" marker-end="url(#m2)"/>
+        <rect x="384" y="95" width="200" height="80" rx="14" fill="#FFFFFF" stroke="#A44E3C" stroke-width="2.5"/>
+        <text x="484" y="130" text-anchor="middle" font-size="18" font-weight="700" fill="#2A2826">첫 그림</text>
+        <text x="484" y="154" text-anchor="middle" font-size="14" fill="#68645F">(베이스 이미지, 내가 고름)</text>
+        <line x1="586" y1="135" x2="656" y2="135" stroke="#A44E3C" stroke-width="2.5" marker-end="url(#m2)"/>
+        <rect x="660" y="95" width="70" height="80" rx="8" fill="#FBF8F2" stroke="#E5E2DC"/>
+        <rect x="740" y="95" width="70" height="80" rx="8" fill="#FBF8F2" stroke="#E5E2DC"/>
+        <rect x="820" y="95" width="70" height="80" rx="8" fill="#FBF8F2" stroke="#E5E2DC"/>
+        <text x="775" y="205" text-anchor="middle" font-size="15" fill="#68645F">장면만 바꿔 시리즈</text>
+      </svg>
+      </div>
+      <div class="key">규칙만 넣으면 플랫폼 손맛이 이기고, 그림만 넣으면 장면을 마음대로 못 바꿔요. <strong>둘 다 넣어야</strong> 원하는 그림이 나와요.</div>
+    </div>
+<div class="card wide scene" id="s2-c">
+      <h3>실제로 해 봤어요</h3>
+      <div class="scene-body">
+        <figure class="big"><span class="tag mid">넣은 기준 그림</span><img src="img01.jpg" alt="기준 그림으로 넣은 지피티 그림"><figcaption>STEP 2의 지피티 그림을 기준 그림으로</figcaption></figure>
+        <figure class="big"><span class="tag ok">제미나이 결과</span><img src="img05.jpg" alt="기준 그림을 넣고 제미나이로 다시 그린 그림, 종이 결과 연필선이 살아 있다"><figcaption>같은 제미나이인데 종이 결과 연필선이 따라왔어요. (화면 캡처라 위쪽만 보여요)</figcaption></figure>
+      </div>
+      <div class="scene-under">
+        <p>STEP 2의 깨끗한 디지털 그림과 비교해 보세요. 같은 플랫폼이 이렇게 달라졌어요.</p>
+        <div class="box set"><h3>선생님 시연</h3><p>수업 시간에 기준 그림을 넣기 전과 후를 바로 눈앞에서 보여 줄게요.</p></div>
+      </div>
+    </div>
+<div class="card" id="s2-d">
+      <h3>알아 두기: 주인공도 따라와요</h3>
+      <p>기준 그림을 넣었더니 제미나이의 남자아이가 <b>단발머리 여자아이</b>로 바뀌었어요. 기준 그림은 느낌뿐 아니라 주인공까지 데려와요.</p>
+      <p>동화책에서는 오히려 좋아요. 그림 한 장으로 <b>화풍과 주인공을 한 번에 고정</b>할 수 있으니까요.</p>
+    </div>
+<div class="card" id="s2-e">
+      <h3>말로 고쳐 달라고 하면 어디까지 될까</h3>
+      <figure><img class="mid-img" src="img06.jpg" alt="제미나이에게 자기 그림을 채점시킨 뒤 다시 뽑은 그림, 여백이 넓어지고 옆모습으로 걷는다"></figure>
+      <p style="margin-top:10px">제미나이에게 자기 그림의 문제를 찾게 하고 다시 그리게 했더니 여백이 생겼어요. 그래도 <b>외곽선은 깨끗하게 닫혀 있고 색은 아직 진해요.</b> 말로는 7~8할까지, 나머지 손맛은 기준 그림이 맞춰요.</p>
+    </div>
+<div class="card wide" id="s2-f">
+      <h3>그대로 써 보는 문장</h3>
+      <div class="prompt"><button class="copy">복사</button>첨부한 그림을 기준 그림으로 쓴다. 이 그림의 종이 느낌, 연필선의 굵기 변화, 흐린 색감, 넓은 여백, 주인공 생김새를 그대로 유지해라.
+
+[규칙] 머리가 몸통만큼 큰 2등신 아이, 점 눈과 작은 입, 손가락은 생략한 둥근 손. 색은 흐리고 얼룩덜룩하게. 외곽선은 가늘고 군데군데 끊긴 연필선. 위쪽 절반 이상은 빈 종이로 남긴다.
+
+[장면] 아이가 나무 아래 앉아 작은 그림책을 읽고, 옆에 갈색 강아지가 졸고 있다. 가로 4:3, 아이는 화면 오른쪽 3분의 1.
+
+[빼 줘] 진한 외곽선, 평평한 색면, 순백 바탕, 선명한 원색, 꽉 찬 배경</div>
+      <div class="box warn" style="margin-top:14px"><h3>주의</h3><p>기준 그림은 <b>내가 만든 그림</b>만 넣어요. 레퍼런스 작가의 원작은 넣지 않아요. (STEP 6)</p></div>
+    </div>
+<div class="card" id="s2-g">
+      <h3>첫 그림 고르는 질문 세 개</h3>
+      <ol class="qs"><li>종이 느낌이 또렷하게 보이나?</li><li>체크리스트 4개 중 3개 이상 통과하나?</li><li>이 주인공으로 여러 장을 이어 갈 수 있나?</li></ol>
+      <p>"예쁜 그림"보다 <b>"느낌이 또렷한 그림"</b>을 골라요. 흐린 그림을 기준으로 삼으면 뒤에 나오는 그림도 다 흐려져요.</p>
+      <p class="ask">생각해 보기 — 고르는 건 AI일까요, 나일까요? 마지막 판단은 사람이 해요<span class="term">(HITL)</span>.</p>
+    </div>
+<div class="card" id="s2-h">
+      <div class="box set"><h3>따라 하기</h3><p>오늘 뽑은 그림 중 느낌이 제일 좋은 한 장을 고르세요. 그 그림을 기준 그림으로 넣고 위 문장으로 장면 하나를 바꿔 보세요.</p></div>
+      <div class="box ext" style="margin-top:14px"><h3>한 걸음 더</h3><p>같은 기준 그림과 같은 문장을 지피티와 제미나이에 둘 다 넣어 보세요. STEP 2 때보다 두 그림이 얼마나 가까워졌나요? 그게 평탄화예요.</p></div>
+    </div>
+  </div>
+</section>
+<section class="step" data-step="5">
+  <div class="step-head">
+    <div class="step-no">STEP 6</div>
+    <h2>저작권과 정리</h2>
+    <p class="lead">우리는 실제로 출판할 책을 만들어요. 화풍은 배워도 되지만, 장면을 베끼면 안 돼요.</p>
+  </div>
+  <div class="grid">
+<div class="card wide" id="s3-a">
+      <h3>되는 것과 안 되는 것</h3>
+      <div class="split">
+        <div class="yes"><h4 style="color:var(--ok)">○ 해도 돼요</h4>
+          <ul><li>여러 그림을 보고 공통 규칙 뽑기</li><li>그 규칙을 내 말로 프롬프트에 쓰기</li><li>내가 만든 그림을 기준 그림으로 쓰기</li><li>레퍼런스 작가를 "공부한 작가"로 소개하기</li></ul></div>
+        <div class="nope"><h4 style="color:var(--no)">✕ 하면 안 돼요</h4>
+          <ul><li>프롬프트에 작가 이름 넣기</li><li>작가의 원작을 기준 그림으로 넣기</li><li>보드에 있던 장면을 그대로 다시 그리기</li><li>"딱 봐도 그 그림"인 결과 쓰기</li></ul></div>
+      </div>
+    </div>
+<div class="card" id="s3-b">
+      <h3>실제로 있었던 일</h3>
+      <p>STEP 3의 우비 그림, 기억나죠? 제미나이가 예시로 제안한 장면이었는데, <b>레퍼런스 보드에 있던 그림의 장면을 그대로 옮긴 것</b>이었어요. 화풍을 배운 게 아니라 작품을 따라간 거예요.</p>
+      <p>반대로 지피티의 "들판을 걷는 아이와 토끼"는 보드에 없는 새 장면이었어요.</p>
+      <div class="key">AI가 보드 속 장면을 그대로 제안하면 <strong>"보드에 없는 새 장면으로 바꿔라"</strong>라고 돌려보내세요.</div>
+    </div>
+<div class="card" id="s3-c">
+      <h3>출판 전 체크리스트</h3>
+      <table class="cmp">
+        <tr><td>1. 프롬프트에 작가 이름이 없다</td><td style="width:70px">□</td></tr>
+        <tr><td>2. 기준 그림은 전부 내가 만든 그림이다</td><td>□</td></tr>
+        <tr><td>3. 보드에 있던 장면과 같은 장면이 아니다</td><td>□</td></tr>
+        <tr><td>4. 원작과 나란히 놓아도 "같은 그림"으로 안 보인다</td><td>□</td></tr>
+        <tr><td>5. 쓴 AI 도구의 상업 이용 규정을 확인했다</td><td>□</td></tr>
+      </table>
+      <p style="margin-top:10px;font-size:.78rem;color:var(--sub)">AI 그림의 저작권 등록과 출판 플랫폼의 AI 표시 규정은 바뀔 수 있어요. 출판할 때 한국저작권위원회와 플랫폼 공지를 다시 확인하세요.</p>
+    </div>
+<div class="card wide" id="s3-d">
+      <h3>오늘 정리</h3>
+      <div class="hero small">
+        <h2 class="hero-line">AI마다 그림 손맛이 달라요.<br>그러니 <em>규칙</em>은 분석해서 쓰고,<br><em>느낌</em>은 기준 그림으로 맞춰요.</h2>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<aside class="side" aria-label="이 STEP의 카드 목록">
+  <p id="sideTitle">이 STEP 카드</p>
+  <div id="sideList"></div>
+</aside>
+</div>
+
+<nav class="pager" aria-label="STEP 앞뒤 이동">
+  <div class="pager-in">
+    <button id="prev">이전</button>
+    <span class="where" id="where"></span>
+    <button id="next" class="next">다음</button>
+  </div>
+</nav>
+
+<script>
+(function(){
+  var steps=[].slice.call(document.querySelectorAll('.step'));
+  var tabs=[].slice.call(document.querySelectorAll('.tab'));
+  var side=document.getElementById('sideList');
+  var cur=0, obs=null;
+
+  function buildSide(sec){
+    side.innerHTML='';
+    var cards=[].slice.call(sec.querySelectorAll('.card[id]'));
+    var links=[];
+    cards.forEach(function(c){
+      var h=c.querySelector('h3');
+      if(!h) return;
+      var a=document.createElement('a');
+      a.href='#'+c.id; a.textContent=h.childNodes[0].textContent.trim();
+      a.addEventListener('click',function(e){e.preventDefault();c.scrollIntoView({behavior:'smooth',block:'start'});});
+      side.appendChild(a); links.push([c,a]);
+    });
+    if(obs) obs.disconnect();
+    if('IntersectionObserver' in window){
+      obs=new IntersectionObserver(function(es){
+        es.forEach(function(e){
+          if(e.isIntersecting){links.forEach(function(p){p[1].classList.toggle('on',p[0]===e.target);});}
+        });
+      },{rootMargin:'-140px 0px -55% 0px'});
+      links.forEach(function(p){obs.observe(p[0]);});
+    }
+  }
+
+  function show(i,scroll){
+    cur=Math.max(0,Math.min(steps.length-1,i));
+    steps.forEach(function(s,k){s.classList.toggle('on',k===cur);});
+    tabs.forEach(function(t,k){t.setAttribute('aria-selected',k===cur?'true':'false');});
+    tabs[cur].scrollIntoView({block:'nearest',inline:'center'});
+    buildSide(steps[cur]);
+    document.getElementById('prev').disabled=cur===0;
+    document.getElementById('next').disabled=cur===steps.length-1;
+    document.getElementById('where').textContent='STEP '+(cur+1)+' / '+steps.length;
+    if(scroll){var top=document.getElementById('main').getBoundingClientRect().top+window.pageYOffset-140;
+      if(window.pageYOffset>top) window.scrollTo(0,top);}
+  }
+
+  tabs.forEach(function(t){t.addEventListener('click',function(){show(+t.dataset.i,true);});});
+  document.getElementById('prev').addEventListener('click',function(){show(cur-1,true);});
+  document.getElementById('next').addEventListener('click',function(){show(cur+1,true);});
+
+  var fs=20;
+  function setFs(v){fs=Math.max(16,Math.min(28,v));document.documentElement.style.setProperty('--fs',fs+'px');}
+  document.getElementById('zUp').addEventListener('click',function(){setFs(fs+2);});
+  document.getElementById('zDown').addEventListener('click',function(){setFs(fs-2);});
+
+  [].slice.call(document.querySelectorAll('.prompt .copy')).forEach(function(b){
+    b.addEventListener('click',function(){
+      var txt=b.parentNode.textContent.replace(b.textContent,'').trim();
+      function ok(){b.textContent='복사됨';b.classList.add('done');setTimeout(function(){b.textContent='복사';b.classList.remove('done');},1600);}
+      if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(ok,fallback);}else fallback();
+      function fallback(){var t=document.createElement('textarea');t.value=txt;document.body.appendChild(t);t.select();try{document.execCommand('copy');ok();}catch(e){}document.body.removeChild(t);}
+    });
+  });
+
+  [].slice.call(document.querySelectorAll('.road6 div')).forEach(function(d,k){d.setAttribute('role','button');d.tabIndex=0;d.style.cursor='pointer';d.addEventListener('click',function(){show(k,true);});d.addEventListener('keydown',function(e){if(e.key==='Enter')show(k,true);});});
+  show(0,false);
+})();
+</script>
+</body>
+</html>

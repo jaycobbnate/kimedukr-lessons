@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>마스크로 만드는 SNS 유행 영상 · 사람 뒤 자막 · 손가락 창</title><style>
+:root{--ac:#0f8b8d;--ac2:#e6f4f4;--ink:#1f2a30;--sub:#4a5a62;--line:#e3e8eb;--bg:#fbfbfa;--fs:20px}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Pretendard","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;font-size:var(--fs);line-height:1.7;word-break:keep-all}
+.top{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid var(--line)}
+.bar{display:flex;align-items:center;gap:12px;padding:10px 20px;max-width:1280px;margin:0 auto}
+.bar h1{font-size:1.05em;margin:0;flex:1;line-height:1.35}
+.bar h1 small{display:block;font-size:.72em;color:var(--sub);font-weight:500}
+.fz button{border:1px solid var(--line);background:#fff;border-radius:8px;padding:4px 12px;font-size:.8em;cursor:pointer;color:var(--ink)}
+.fz button:hover{border-color:var(--ac);color:var(--ac)}
+.tabs{display:flex;gap:6px;padding:0 20px 10px;max-width:1280px;margin:0 auto;overflow-x:auto}
+.tabs button{flex:0 0 auto;border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 16px;font-size:.82em;cursor:pointer;color:var(--sub);white-space:nowrap}
+.tabs button.on{background:var(--ac);border-color:var(--ac);color:#fff;font-weight:700}
+.wrap{max-width:1280px;margin:0 auto;padding:20px}
+.step{display:none}.step.on{display:block}
+.grid{display:grid;grid-template-columns:1fr 230px;gap:24px;align-items:start}
+.main{display:grid;gap:20px;min-width:0}
+.side{position:sticky;top:120px}
+.sidebox{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:2px;font-size:.78em}
+.sidebox b{color:var(--ac);margin-bottom:4px}
+.sidebox a{color:var(--sub);text-decoration:none;padding:5px 8px;border-radius:8px}
+.sidebox a:hover{background:var(--ac2);color:var(--ink)}
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:22px 26px;scroll-margin-top:130px}
+.card h2{font-size:1.15em;margin:0 0 12px;display:flex;align-items:center;gap:8px}
+.card h3{font-size:1em;margin:18px 0 8px}
+p{margin:.4em 0}
+img{max-width:100%;height:auto;display:block;border-radius:10px;border:1px solid var(--line)}
+figure{margin:12px 0}
+figcaption{font-size:.8em;color:var(--sub);margin-top:6px}
+figure.narrow img{max-width:480px}
+.diagram svg{width:100%;height:auto;background:#fff}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
+.three{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;align-items:start}
+.goal li,.steps li{margin:6px 0}
+.steps{padding-left:1.6em}
+.steps li::marker{color:var(--ac);font-weight:800}
+.check{list-style:none;padding:0;margin:0}
+.check li{padding-left:1.5em;position:relative;margin:6px 0}
+.check li::before{content:"✓";position:absolute;left:0;color:var(--ac);font-weight:800}
+.tag{display:inline-block;border-radius:8px;padding:1px 10px;font-size:.78em;font-weight:700;white-space:nowrap}
+.t-g{background:#e7f5ec;color:#1d7a44}.t-b{background:#e8f0fb;color:#2459a8}.t-p{background:#f1ebfa;color:#6b3fb0}.t-r{background:#fcebee;color:#b3263e}
+.legend{display:grid;grid-template-columns:auto 1fr;gap:10px 14px;align-items:center}
+.num{display:inline-flex;width:1.4em;height:1.4em;border-radius:50%;background:#e6283c;color:#fff;font-size:.72em;font-weight:800;align-items:center;justify-content:center;vertical-align:middle}
+.small{font-size:.82em;color:var(--sub)}
+.box{border-radius:12px;padding:14px 18px;margin:14px 0 4px;font-size:.92em}
+.box.why{background:#eef5fb;border:1px solid #d4e4f3}
+.box.tip{background:var(--ac2);border:1px solid #c6e3e3}
+.box.warn{background:#fcf0f2;border:1px solid #f1d2d8}
+.box.ext{background:#f6f2fb;border:1px solid #e3d8f1}
+.box.ext p{margin:.6em 0}
+kbd{border:1px solid #c8d0d4;border-bottom-width:2px;border-radius:6px;padding:0 6px;font-size:.82em;background:#fff;font-family:inherit}
+table{border-collapse:collapse;width:100%;font-size:.88em}
+th,td{border:1px solid var(--line);padding:8px 12px;text-align:left;vertical-align:top}
+th{background:#f4f7f8}
+table.nums td,table.nums th{text-align:center}
+.copies{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
+.cp{border:1px solid var(--ac);background:#fff;color:var(--ink);border-radius:10px;padding:8px 14px;font-size:.9em;cursor:pointer;font-family:inherit}
+.cp::after{content:"  복사";font-size:.75em;color:var(--ac);font-weight:700}
+.cp.wide{text-align:left}
+.dl{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px}
+.dlb{display:flex;flex-direction:column;gap:4px;border:1px solid var(--ac);border-radius:12px;padding:14px 16px;text-decoration:none;color:var(--ink);background:#fff}
+.dlb:hover{background:var(--ac2)}
+.dlb b{color:var(--ac)}
+.dlb span{font-size:.75em;color:var(--sub)}
+.inl{color:var(--ac);font-weight:700}
+.pcopy{border:1px solid var(--line);border-radius:12px;margin:10px 0;overflow:hidden}
+.ph{display:flex;justify-content:space-between;align-items:center;background:#f4f7f8;padding:6px 12px;font-size:.82em;font-weight:700}
+.pcopy pre{margin:0;padding:12px 14px;white-space:pre-wrap;font-size:.78em;line-height:1.55;font-family:inherit;background:#fff}
+.cp.sm{padding:3px 12px;font-size:.8em}
+.cp.sm::after{content:""}
+.ratio{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:12px 0;padding:10px 12px;background:var(--ac2);border-radius:12px}
+.ratio span{font-weight:700;font-size:.85em;margin-right:4px}
+.rb{border:1px solid var(--ac);background:#fff;color:var(--ac);border-radius:999px;padding:6px 16px;font-size:.82em;cursor:pointer;font-family:inherit;font-weight:700}
+.rb.on{background:var(--ac);color:#fff}
+.flowc.r916 .v169,.flowc.r169 .v916{display:none}
+.rsvg{max-width:720px;margin:0 auto;display:block}
+.flowc.r916 .rt::after{content:"9:16"}.flowc.r169 .rt::after{content:"16:9"}
+code{background:#eef3f4;border-radius:5px;padding:0 5px;font-size:.85em}
+@media (max-width:900px){.dl{grid-template-columns:1fr}}
+.cp.done{background:var(--ac);color:#fff}.cp.done::after{content:"  복사됨";color:#fff}
+.nav{position:sticky;bottom:0;background:rgba(255,255,255,.96);border-top:1px solid var(--line);z-index:20}
+.nav div{max-width:1280px;margin:0 auto;padding:10px 20px;display:flex;justify-content:space-between;gap:10px}
+.nav button{border:1px solid var(--ac);background:#fff;color:var(--ac);border-radius:10px;padding:8px 18px;font-size:.85em;cursor:pointer;font-family:inherit;font-weight:700}
+.nav button:disabled{opacity:.3;cursor:default}
+@media (max-width:900px){.grid{grid-template-columns:1fr}.side{display:none}.two,.three{grid-template-columns:1fr}.card{padding:18px}}
+</style></head>
+<body>
+<header class="top"><div class="bar"><h1>마스크로 만드는 SNS 유행 영상<small>사람 뒤에서 나타나는 자막 · 손가락 창 안에 내 영상 · 캡컷 PC</small></h1>
+<div class="fz"><button id="fzm" aria-label="글자 작게">가-</button> <button id="fzp" aria-label="글자 크게">가+</button></div></div>
+<nav class="tabs" aria-label="STEP"></nav></header>
+<main class="wrap"><!-- ================= STEP 0 ================= -->
+<section class="step" id="s0" data-title="시작하기">
+<div class="grid">
+<div class="main">
+
+<div class="card" id="s0-goal">
+<h2>오늘의 학습 목표</h2>
+<ol class="goal">
+<li>캡컷 <b>마스크</b>(화면 일부만 보이게 가리는 틀)와 <b>키프레임</b>(시간마다 위치·크기를 기록해 두는 점)이 무엇인지 말할 수 있다.</li>
+<li>걸어가는 사람 뒤에서 글자가 나타나는 <b>사람 뒤 자막</b> 영상을 만들 수 있다.</li>
+<li>손가락으로 만든 네모 창 안에 <b>내 AI 영상</b>이 보이는 <b>손가락 창</b> 영상을 만들 수 있다.</li>
+<li>손가락 창을 화면 가득 펼쳐 <b>다음 장면으로 넘기고</b>, 자막·음악을 넣어 내보낼 수 있다.</li>
+</ol>
+</div>
+
+<div class="card" id="s0-idea">
+<h2>오늘의 원리 한 장</h2>
+<p>요즘 릴스에서 자주 보이는 「어떻게 만들었지?」 효과는 대부분 <b>같은 원리</b>예요. 클립을 두 줄로 겹치고, 위 클립에 <b>마스크</b>를 씌운 뒤, <b>키프레임</b>으로 마스크를 움직이면 됩니다.</p>
+<figure class="diagram">
+<svg viewBox="0 0 900 330" role="img" aria-label="위 클립, 마스크, 키프레임 원리 도식">
+<defs><marker id="ar" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10z" fill="#0f8b8d"/></marker></defs>
+<g font-size="20" text-anchor="middle" fill="#1f2a30">
+<rect x="20" y="40" width="240" height="70" rx="12" fill="#e6f4f4" stroke="#0f8b8d"/>
+<text x="140" y="70" font-weight="700">① 위 클립</text><text x="140" y="96" font-size="16" fill="#4a5a62">보여 줄 것 (글자·내 영상)</text>
+<rect x="20" y="130" width="240" height="70" rx="12" fill="#f4f6f7" stroke="#b9c4c9"/>
+<text x="140" y="160" font-weight="700">아래 클립</text><text x="140" y="186" font-size="16" fill="#4a5a62">바탕 영상 (사람·손)</text>
+<path d="M270 120 H330" stroke="#0f8b8d" stroke-width="3" marker-end="url(#ar)"/>
+<rect x="340" y="60" width="220" height="120" rx="12" fill="#fff" stroke="#0f8b8d" stroke-dasharray="7 6"/>
+<rect x="395" y="90" width="110" height="60" rx="6" fill="#e6f4f4" stroke="#0f8b8d"/>
+<text x="450" y="126" font-weight="700" font-size="18">보이는 곳</text>
+<text x="450" y="210" font-weight="700">② 마스크</text><text x="450" y="236" font-size="16" fill="#4a5a62">위 클립을 틀 모양만큼만 보이게</text>
+<path d="M570 120 H630" stroke="#0f8b8d" stroke-width="3" marker-end="url(#ar)"/>
+<line x1="650" y1="120" x2="880" y2="120" stroke="#b9c4c9" stroke-width="3"/>
+<g fill="#0f8b8d"><path d="M670 108 l12 12 -12 12 -12 -12z"/><path d="M740 108 l12 12 -12 12 -12 -12z"/><path d="M810 108 l12 12 -12 12 -12 -12z"/></g>
+<text x="670" y="160" font-size="15" fill="#4a5a62">0초</text><text x="740" y="160" font-size="15" fill="#4a5a62">1초</text><text x="810" y="160" font-size="15" fill="#4a5a62">2초</text>
+<text x="765" y="210" font-weight="700">③ 키프레임</text><text x="765" y="236" font-size="16" fill="#4a5a62">1초마다 틀 위치를 다시 맞추기</text>
+</g>
+<g font-size="17" fill="#1f2a30">
+<rect x="20" y="268" width="420" height="50" rx="10" fill="#f6f2fb" stroke="#d9cdea"/>
+<text x="230" y="299" text-anchor="middle">STEP 1 · 위 = 글자 · 틀 = <tspan font-weight="700">분할</tspan>(직선 한 줄)</text>
+<rect x="460" y="268" width="420" height="50" rx="10" fill="#f6f2fb" stroke="#d9cdea"/>
+<text x="670" y="299" text-anchor="middle">STEP 2·3 · 위 = 내 영상 · 틀 = <tspan font-weight="700">직사각형</tspan></text>
+</g>
+</svg>
+</figure>
+</div>
+
+<div class="card" id="s0-flow">
+<h2>오늘 만드는 두 편</h2>
+<div class="two">
+<figure><img src="img01.jpg" alt="사람 뒤 자막 완성 장면"><figcaption>① 사람이 지나간 자리부터 글자가 드러나는 영상</figcaption></figure>
+<figure><img src="img02.jpg" alt="손가락 창 완성 장면"><figcaption>② 흑백 손가락 창 안에서만 컬러 AI 영상이 보이는 영상</figcaption></figure>
+</div>
+</div>
+
+<div class="card" id="s0-ready">
+<h2>준비물</h2>
+<ul class="check">
+<li><b>캡컷 PC 버전</b>: 기본 과정은 모두 <b>무료</b>로 됩니다. 💎 표시가 붙은 건 캡컷 프로 기능이라 「한 걸음 더」에만 넣었어요.</li>
+<li><b>걷는 영상 1개</b>: 지난 시간 플로우(옴니 1.2)로 만든 「왼쪽에서 등장해 오른쪽으로 걷는」 영상, 또는 「자료 받기」의 걷는 사람 영상</li>
+<li><b>손 영상 1개</b>: 아래 「자료 받기」의 강사 손 영상, 또는 휴대폰으로 직접 찍은 영상 (찍는 법은 STEP 2)</li>
+<li><b>내 AI 영상 1개</b>: 지금까지 플로우로 만든 영상 아무거나. <b>밝고 색이 많은 영상</b>일수록 창 안에서 잘 보여요.</li>
+</ul>
+</div>
+
+<div class="card" id="s0-down">
+<h2>자료 받기</h2>
+<div class="dl">
+<a class="dlb" href="https://drive.google.com/file/d/1i_K-WDKO9YAQPF5Z5fiopHwksWnH4WXb/view?usp=sharing" target="_blank" rel="noopener"><b>⬇ 강사 손 영상 받기</b><span>1118 (3).mp4 · 34초 · 약 42MB · STEP 2·3에서 사용</span></a>
+<a class="dlb" href="https://drive.google.com/file/d/1P1al5fcRYEIS5mzobk7fZETEAScWCJPO/view?usp=sharing" target="_blank" rel="noopener"><b>⬇ 걷는 사람 영상 받기</b><span>walk_pexels_purple_wall_1080p.mp4 · 약 5MB · STEP 1에서 사용</span></a>
+<a class="dlb" href="https://www.youtube.com/audiolibrary" target="_blank" rel="noopener"><b>♪ 유튜브 오디오 보관함</b><span>무료 배경음악 · STEP 3에서 사용</span></a>
+<a class="dlb" href="https://pixabay.com/ko/music/" target="_blank" rel="noopener"><b>♪ 픽사베이 음악</b><span>무료 배경음악 · STEP 3에서 사용</span></a>
+</div>
+<ol class="steps">
+<li><b>영상 받기</b> 버튼을 누르면 구글 드라이브 미리 보기가 열려요.</li>
+<li>오른쪽 위 <b>⬇ 다운로드</b> 아이콘 → 「바이러스 검사를 할 수 없음」 안내가 나오면 <b>무시하고 다운로드</b></li>
+<li>파일은 <b>다운로드</b> 폴더에 저장돼요. 캡컷 가져오기에서 다운로드 폴더를 열면 바로 보여요.</li>
+</ol>
+<p class="small">걷는 영상은 지난 시간 플로우에서 만든 내 영상을 써도 되고, 위 「걷는 사람 영상」을 받아 써도 돼요. 새로 만들려면 STEP 1 「플로우로 걷는 영상 만들기」를 따라 하세요.</p>
+</div>
+
+<div class="card" id="s0-mark">
+<h2>표시 읽는 법</h2>
+<div class="legend">
+<span class="tag t-g">🟢 같이 하기</span><span>모두 함께 따라 하는 부분</span>
+<span class="tag t-b">🔵 한 걸음 더</span><span>먼저 끝낸 분이 더 해 보는 부분</span>
+<span class="tag t-p">💎 프로</span><span>캡컷 프로 결제가 있어야 되는 기능</span>
+<span class="tag t-r">⚠️ 막힐 때</span><span>자주 막히는 곳과 해결법</span>
+</div>
+<p class="small">화면 사진의 <span class="num">1</span> <span class="num">2</span> 빨간 번호는 설명 순서와 같아요.</p>
+</div>
+
+</div>
+<aside class="side"><div class="sidebox"><b>STEP 0</b><a href="#s0-goal">학습 목표</a><a href="#s0-idea">원리 한 장</a><a href="#s0-flow">오늘 만드는 두 편</a><a href="#s0-ready">준비물</a><a href="#s0-down">자료 받기</a><a href="#s0-mark">표시 읽는 법</a></div></aside>
+</div>
+</section>
+
+<!-- ================= STEP 1 ================= -->
+<section class="step" id="s1" data-title="사람 뒤 자막">
+<div class="grid">
+<div class="main">
+
+<div class="card" id="s1-done">
+<h2>STEP 1 · 사람 뒤에서 나타나는 자막</h2>
+<p>사람이 걸어가면 <b>지나간 자리부터</b> 글자가 한 글자씩 드러나요. 사람이 글자를 「끌고 가는」 것처럼 보이는 효과예요.</p>
+<div class="two">
+<figure><img src="img01.jpg" alt="4초 장면"><figcaption>사람이 지나가는 중: 등 뒤까지만 글자가 보임</figcaption></figure>
+<figure><img src="img03.jpg" alt="7초 장면"><figcaption>사람이 나간 뒤: 글자 전체가 보임</figcaption></figure>
+</div>
+</div>
+
+<div class="card" id="s1-layer">
+<h2>원리: 3겹 쌓기</h2>
+<figure class="diagram">
+<svg viewBox="0 0 900 300" role="img" aria-label="사람 뒤 자막 3겹 구조">
+<g font-size="19" fill="#1f2a30">
+<rect x="30" y="30" width="520" height="62" rx="10" fill="#f6f2fb" stroke="#d9cdea" stroke-dasharray="6 5"/>
+<text x="50" y="68"><tspan font-weight="700">맨 위</tspan> · 사람만 오려 낸 복사본 (배경 제거 · 자동 삭제 💎)</text>
+<rect x="30" y="110" width="520" height="62" rx="10" fill="#e6f4f4" stroke="#0f8b8d"/>
+<text x="50" y="148"><tspan font-weight="700">가운데</tspan> · 글자 → 복합 클립 → <tspan font-weight="700">분할 마스크</tspan></text>
+<rect x="30" y="190" width="520" height="62" rx="10" fill="#f4f6f7" stroke="#b9c4c9"/>
+<text x="50" y="228"><tspan font-weight="700">맨 아래</tspan> · 걷는 영상 원본</text>
+</g>
+<g>
+<rect x="600" y="40" width="270" height="210" rx="10" fill="#2b3338"/>
+<rect x="600" y="40" width="150" height="210" rx="10" fill="#2b3338"/>
+<text x="625" y="160" font-size="34" font-weight="800" fill="#fff">오늘도</text>
+<line x1="750" y1="40" x2="750" y2="250" stroke="#ff4d6a" stroke-width="3" stroke-dasharray="6 5"/>
+<circle cx="772" cy="105" r="14" fill="#c9d3d8"/><rect x="760" y="122" width="26" height="70" rx="8" fill="#c9d3d8"/>
+<rect x="762" y="192" width="9" height="45" fill="#c9d3d8"/><rect x="776" y="192" width="9" height="45" fill="#c9d3d8"/>
+<path d="M800 150 h45" stroke="#fff" stroke-width="3" marker-end="url(#ar2)"/>
+<defs><marker id="ar2" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10z" fill="#fff"/></marker></defs>
+<text x="735" y="275" font-size="16" text-anchor="middle" fill="#4a5a62">빨간 선 = 마스크 경계 = 사람 등 뒤</text>
+</g>
+</svg>
+</figure>
+<p>가운데 글자에 <b>분할 마스크</b>를 씌우면 화면이 직선 하나로 나뉘어 한쪽에서만 글자가 보여요. 이 직선을 키프레임으로 <b>사람 등 뒤에 붙여 따라가게</b> 하면 완성이에요.</p>
+<figure><img src="img04.jpg" alt="세 줄 타임라인"><figcaption>완성된 타임라인: 맨 위 사람 복사본 · 가운데 「복합 클립1」(글자) · 맨 아래 원본</figcaption></figure>
+</div>
+
+<div class="card" id="s1-do1">
+<h2><span class="tag t-g">🟢</span> 따라 하기 ① 영상 두 줄 + 사람 오리기</h2>
+<ol class="steps">
+<li><b>새 프로젝트</b> → 미디어 → 가져오기 → 걷는 영상 → 타임라인에 끌어다 놓기</li>
+<li>타임라인 위 도구 모음에서 <b>메인 트랙 자석</b>(자석 모양) 끄기: 클립이 저절로 앞으로 붙지 않게 해요.</li>
+<li>걷는 영상 선택 → <kbd>Ctrl</kbd>+<kbd>C</kbd> → <kbd>Ctrl</kbd>+<kbd>V</kbd> → <b>위 트랙</b>에 같은 영상이 하나 더 생겨요 (시작점이 같아야 해요). 이게 「영상 두 줄」이에요.</li>
+<li><b>위 복사본</b>만 선택 → 오른쪽 <b>동영상 → 배경 제거 → 자동 삭제</b> 체크 → 사람만 남아요. 💎</li>
+</ol>
+<figure><img src="img05.jpg" alt="배경 제거 자동 삭제"><figcaption><span class="num">1</span> 자동 삭제: 옆 보라색 💎 표시는 캡컷 프로 기능이에요. 무료판이면 이 단계를 건너뛰어도 효과는 돼요(팔·다리가 글자 뒤로 가려지지 않을 뿐).</figcaption></figure>
+</div>
+
+<div class="card" id="s1-do1b">
+<h2><span class="tag t-g">🟢</span> 따라 하기 ② 글자 넣고 줄 순서 맞추기</h2>
+<ol class="steps" start="5">
+<li>왼쪽 위 <b>텍스트 → 기본 텍스트</b> → 문구 입력 (아래 카드에서 복사)</li>
+<li>글자를 크게, 높이는 <b>사람 몸통 높이</b>에: 머리 위에 있으면 사람 「뒤」로 안 보여요. 세로(9:16)면 <b>짧은 문구</b>를 두 줄로.</li>
+<li>글자 클립 길이를 <b>영상 길이와 똑같이</b> 맞추기</li>
+<li><b>줄 순서 맞추기</b>: 맨 위 = 사람 복사본 · 가운데 = 글자 · 맨 아래 = 원본. 글자 클립을 끌어서 두 영상 <b>사이</b> 트랙에 놓아요.</li>
+<li>글자 클립 <b>오른쪽 클릭 → 복합 클립(하위 프로젝트) 만들기</b> (단축키 <kbd>Alt</kbd>+<kbd>G</kbd>)</li>
+</ol>
+<figure><img src="img04.jpg" alt="세 줄 타임라인"><figcaption>줄 순서: 맨 위 사람 복사본 · 가운데 「복합 클립1」(글자) · 맨 아래 원본</figcaption></figure>
+<figure><img src="img06.jpg" alt="복합 클립 만들기 메뉴"><figcaption><span class="num">1</span> 오른쪽 클릭 메뉴 가운데쯤에 있어요.</figcaption></figure>
+<div class="box why"><b>왜 복합 클립으로 바꾸나요?</b> 캡컷은 글자 클립에 마스크를 바로 걸 수 없어요. 복합 클립으로 바꾸면 글자가 「영상 클립」처럼 취급돼서 마스크 메뉴가 열려요.</div>
+</div>
+
+<div class="card" id="s1-text">
+<h2>문구 카드 (눌러서 복사)</h2>
+<div class="copies">
+<button class="cp" data-copy="오늘도 한 걸음">오늘도 한 걸음</button>
+<button class="cp" data-copy="천천히, 그러나 멈추지 않고">천천히, 그러나 멈추지 않고</button>
+<button class="cp" data-copy="나의 하루를 걷다">나의 하루를 걷다</button>
+<button class="cp" data-copy="걷는 만큼 가까워진다">걷는 만큼 가까워진다</button>
+</div>
+<p class="small">짧을수록 잘 보여요. 두 줄이 넘으면 사람 몸에 다 안 가려져요.</p>
+</div>
+
+<div class="card flowc r916" id="s1-flow">
+<h2>플로우로 걷는 영상 만들기 (시작·끝 사진)</h2>
+<p>받은 영상이나 지난 시간 영상을 쓰면 이 카드는 건너뛰어도 돼요. 새로 만들 때는 <b>시작 사진 → 끝 사진 → 영상</b> 순서예요. 이미지는 크레딧이 들지 않아요.</p>
+<div class="ratio" role="radiogroup" aria-label="비율 선택">
+<span>비율 고르기</span>
+<button class="rb on" data-r="916">세로 9:16 · 쇼츠·릴스</button>
+<button class="rb" data-r="169">가로 16:9 · 유튜브</button>
+</div>
+<figure class="diagram"><svg viewBox="0 0 450 256" class="rsvg v916" role="img" aria-label="916 장면 미리보기"><defs><marker id="ar3_916" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10z" fill="#0f8b8d"/></marker></defs><g transform="translate(20,6)"><rect x="0" y="0" width="110" height="196" rx="8" fill="#f4efe6" stroke="#b9c4c9"/><rect x="0" y="168.56" width="110" height="27.44" fill="#d9dde0"/><rect x="60.50000000000001" y="68.6" width="41.8" height="99.96000000000001" fill="#e8d6bf" stroke="#c9b08f"/><circle cx="17.6" cy="96.03999999999999" r="8.82" fill="#33536b"/><rect x="10.740000000000002" y="106.82" width="13.719999999999999" height="33.32" rx="3.92" fill="#33536b"/><line x1="14.660000000000002" y1="143.07999999999998" x2="7.800000000000001" y2="168.56" stroke="#33536b" stroke-width="3.92"/><line x1="20.540000000000003" y1="143.07999999999998" x2="27.400000000000002" y2="168.56" stroke="#33536b" stroke-width="3.92"/><path d="M26.42 96.03999999999999 l5.88 0" stroke="#33536b" stroke-width="2.94"/></g><text x="75.0" y="226" text-anchor="middle" font-size="15" font-weight="700" fill="#1f2a30">① 시작 사진</text><text x="75.0" y="246" text-anchor="middle" font-size="12" fill="#4a5a62">왼쪽 끝 · 오른쪽 보기</text><path d="M136 104.0 h26" stroke="#b9c4c9" stroke-width="2" marker-end="url(#ar3_916)"/><g transform="translate(170,6)"><rect x="0" y="0" width="110" height="196" rx="8" fill="#f4efe6" stroke="#b9c4c9"/><rect x="0" y="168.56" width="110" height="27.44" fill="#d9dde0"/><rect x="60.50000000000001" y="68.6" width="41.8" height="99.96000000000001" fill="#e8d6bf" stroke="#c9b08f"/><circle cx="92.39999999999999" cy="96.03999999999999" r="8.82" fill="#33536b"/><rect x="85.53999999999999" y="106.82" width="13.719999999999999" height="33.32" rx="3.92" fill="#33536b"/><line x1="89.46" y1="143.07999999999998" x2="82.6" y2="168.56" stroke="#33536b" stroke-width="3.92"/><line x1="95.33999999999999" y1="143.07999999999998" x2="102.19999999999999" y2="168.56" stroke="#33536b" stroke-width="3.92"/><path d="M101.22 96.03999999999999 l5.88 0" stroke="#33536b" stroke-width="2.94"/></g><text x="225.0" y="226" text-anchor="middle" font-size="15" font-weight="700" fill="#1f2a30">② 끝 사진</text><text x="225.0" y="246" text-anchor="middle" font-size="12" fill="#4a5a62">같은 장면 · 오른쪽 끝</text><path d="M286 104.0 h26" stroke="#b9c4c9" stroke-width="2" marker-end="url(#ar3_916)"/><g transform="translate(320,6)"><rect x="0" y="0" width="110" height="196" rx="8" fill="#f4efe6" stroke="#b9c4c9"/><rect x="0" y="168.56" width="110" height="27.44" fill="#d9dde0"/><rect x="60.50000000000001" y="68.6" width="41.8" height="99.96000000000001" fill="#e8d6bf" stroke="#c9b08f"/><g opacity=".35"><circle cx="13.2" cy="96.03999999999999" r="8.82" fill="#33536b"/></g><path d="M19.8 39.2 H90.19999999999999" stroke="#0f8b8d" stroke-width="3" marker-end="url(#ar3_916)"/><circle cx="55.0" cy="96.03999999999999" r="8.82" fill="#33536b"/><rect x="48.14" y="106.82" width="13.719999999999999" height="33.32" rx="3.92" fill="#33536b"/><line x1="52.06" y1="143.07999999999998" x2="45.2" y2="168.56" stroke="#33536b" stroke-width="3.92"/><line x1="57.94" y1="143.07999999999998" x2="64.8" y2="168.56" stroke="#33536b" stroke-width="3.92"/><path d="M63.82 96.03999999999999 l5.88 0" stroke="#33536b" stroke-width="2.94"/></g><text x="375.0" y="226" text-anchor="middle" font-size="15" font-weight="700" fill="#1f2a30">③ 영상 10초</text><text x="375.0" y="246" text-anchor="middle" font-size="12" fill="#4a5a62">일정한 걸음으로 →</text></svg><svg viewBox="0 0 708 170" class="rsvg v169" role="img" aria-label="169 장면 미리보기"><defs><marker id="ar3_169" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10z" fill="#0f8b8d"/></marker></defs><g transform="translate(20,6)"><rect x="0" y="0" width="196" height="110" rx="8" fill="#f4efe6" stroke="#b9c4c9"/><rect x="0" y="94.6" width="196" height="15.400000000000002" fill="#d9dde0"/><rect x="107.80000000000001" y="38.5" width="74.48" height="56.1" fill="#e8d6bf" stroke="#c9b08f"/><circle cx="31.36" cy="53.899999999999984" r="4.95" fill="#33536b"/><rect x="27.509999999999998" y="59.94999999999999" width="7.700000000000001" height="18.700000000000003" rx="2.2" fill="#33536b"/><line x1="29.71" y1="80.29999999999998" x2="25.86" y2="94.6" stroke="#33536b" stroke-width="2.2"/><line x1="33.01" y1="80.29999999999998" x2="36.86" y2="94.6" stroke="#33536b" stroke-width="2.2"/><path d="M36.31 53.899999999999984 l3.3000000000000003 0" stroke="#33536b" stroke-width="1.6500000000000001"/></g><text x="118.0" y="140" text-anchor="middle" font-size="15" font-weight="700" fill="#1f2a30">① 시작 사진</text><text x="118.0" y="160" text-anchor="middle" font-size="12" fill="#4a5a62">왼쪽 끝 · 오른쪽 보기</text><path d="M222 61.0 h26" stroke="#b9c4c9" stroke-width="2" marker-end="url(#ar3_169)"/><g transform="translate(256,6)"><rect x="0" y="0" width="196" height="110" rx="8" fill="#f4efe6" stroke="#b9c4c9"/><rect x="0" y="94.6" width="196" height="15.400000000000002" fill="#d9dde0"/><rect x="107.80000000000001" y="38.5" width="74.48" height="56.1" fill="#e8d6bf" stroke="#c9b08f"/><circle cx="164.64" cy="53.899999999999984" r="4.95" fill="#33536b"/><rect x="160.79" y="59.94999999999999" width="7.700000000000001" height="18.700000000000003" rx="2.2" fill="#33536b"/><line x1="162.98999999999998" y1="80.29999999999998" x2="159.14" y2="94.6" stroke="#33536b" stroke-width="2.2"/><line x1="166.29" y1="80.29999999999998" x2="170.14" y2="94.6" stroke="#33536b" stroke-width="2.2"/><path d="M169.58999999999997 53.899999999999984 l3.3000000000000003 0" stroke="#33536b" stroke-width="1.6500000000000001"/></g><text x="354.0" y="140" text-anchor="middle" font-size="15" font-weight="700" fill="#1f2a30">② 끝 사진</text><text x="354.0" y="160" text-anchor="middle" font-size="12" fill="#4a5a62">같은 장면 · 오른쪽 끝</text><path d="M458 61.0 h26" stroke="#b9c4c9" stroke-width="2" marker-end="url(#ar3_169)"/><g transform="translate(492,6)"><rect x="0" y="0" width="196" height="110" rx="8" fill="#f4efe6" stroke="#b9c4c9"/><rect x="0" y="94.6" width="196" height="15.400000000000002" fill="#d9dde0"/><rect x="107.80000000000001" y="38.5" width="74.48" height="56.1" fill="#e8d6bf" stroke="#c9b08f"/><g opacity=".35"><circle cx="23.52" cy="53.899999999999984" r="4.95" fill="#33536b"/></g><path d="M35.28 22.0 H160.72" stroke="#0f8b8d" stroke-width="3" marker-end="url(#ar3_169)"/><circle cx="98.0" cy="53.899999999999984" r="4.95" fill="#33536b"/><rect x="94.15" y="59.94999999999999" width="7.700000000000001" height="18.700000000000003" rx="2.2" fill="#33536b"/><line x1="96.35" y1="80.29999999999998" x2="92.5" y2="94.6" stroke="#33536b" stroke-width="2.2"/><line x1="99.65" y1="80.29999999999998" x2="103.5" y2="94.6" stroke="#33536b" stroke-width="2.2"/><path d="M102.95 53.899999999999984 l3.3000000000000003 0" stroke="#33536b" stroke-width="1.6500000000000001"/></g><text x="590.0" y="140" text-anchor="middle" font-size="15" font-weight="700" fill="#1f2a30">③ 영상 10초</text><text x="590.0" y="160" text-anchor="middle" font-size="12" fill="#4a5a62">일정한 걸음으로 →</text></svg><figcaption>프롬프트 3개가 만드는 장면. 고른 비율에 맞는 프롬프트만 아래에 보여요.</figcaption></figure>
+<h3>① 시작 사진 (이미지 · <span class="rt"></span> · Nano Banana 2.1 · x2)</h3>
+<div class="pcopy v916"><div class="ph"><span>👨 남자 · 카페 앞</span><button class="cp sm" data-copy="Vertical 9:16 photo, straight side view (pure profile) of a Korean street in front of a small cafe with a warm wooden storefront, soft daylight. A Korean man in his 30s wearing a navy jacket, white T-shirt, beige trousers and white sneakers is walking from left to right: he is at the far LEFT side of the frame, full body visible from head to shoes, his face and body clearly facing RIGHT (the direction he walks), mid-stride with one foot forward. Plenty of empty space on the right side of the frame. Camera at chest height, perfectly level, completely still, wide enough to see the whole body with space above the head. Photorealistic. No text, no logo, no other people.">복사</button></div><pre>Vertical 9:16 photo, straight side view (pure profile) of a Korean street in front of a small cafe with a warm wooden storefront, soft daylight. A Korean man in his 30s wearing a navy jacket, white T-shirt, beige trousers and white sneakers is walking from left to right: he is at the far LEFT side of the frame, full body visible from head to shoes, his face and body clearly facing RIGHT (the direction he walks), mid-stride with one foot forward. Plenty of empty space on the right side of the frame. Camera at chest height, perfectly level, completely still, wide enough to see the whole body with space above the head. Photorealistic. No text, no logo, no other people.</pre></div><div class="pcopy v169"><div class="ph"><span>👨 남자 · 카페 앞</span><button class="cp sm" data-copy="Wide 16:9 photo, straight side view (pure profile) of a Korean street in front of a small cafe with a warm wooden storefront, soft daylight. A Korean man in his 30s wearing a navy jacket, white T-shirt, beige trousers and white sneakers is walking from left to right: he is at the far LEFT side of the frame, full body visible from head to shoes, his face and body clearly facing RIGHT (the direction he walks), mid-stride with one foot forward. Plenty of empty space on the right side of the frame. Camera at chest height, perfectly level, completely still, wide enough to see the whole body with space above the head. Photorealistic. No text, no logo, no other people.">복사</button></div><pre>Wide 16:9 photo, straight side view (pure profile) of a Korean street in front of a small cafe with a warm wooden storefront, soft daylight. A Korean man in his 30s wearing a navy jacket, white T-shirt, beige trousers and white sneakers is walking from left to right: he is at the far LEFT side of the frame, full body visible from head to shoes, his face and body clearly facing RIGHT (the direction he walks), mid-stride with one foot forward. Plenty of empty space on the right side of the frame. Camera at chest height, perfectly level, completely still, wide enough to see the whole body with space above the head. Photorealistic. No text, no logo, no other people.</pre></div>
+<div class="pcopy v916"><div class="ph"><span>👩 여자 · 꽃집 앞</span><button class="cp sm" data-copy="Vertical 9:16 photo, straight side view (pure profile) of a Korean street in front of a small flower shop with large windows full of plants and flowers, soft daylight. A Korean woman in her 30s wearing a beige trench coat, light blue jeans and white sneakers is walking from left to right: she is at the far LEFT side of the frame, full body visible from head to shoes, her face and body clearly facing RIGHT (the direction she walks), mid-stride with one foot forward. Plenty of empty space on the right side of the frame. Camera at chest height, perfectly level, completely still, wide enough to see the whole body with space above the head. Photorealistic. No text, no logo, no other people.">복사</button></div><pre>Vertical 9:16 photo, straight side view (pure profile) of a Korean street in front of a small flower shop with large windows full of plants and flowers, soft daylight. A Korean woman in her 30s wearing a beige trench coat, light blue jeans and white sneakers is walking from left to right: she is at the far LEFT side of the frame, full body visible from head to shoes, her face and body clearly facing RIGHT (the direction she walks), mid-stride with one foot forward. Plenty of empty space on the right side of the frame. Camera at chest height, perfectly level, completely still, wide enough to see the whole body with space above the head. Photorealistic. No text, no logo, no other people.</pre></div><div class="pcopy v169"><div class="ph"><span>👩 여자 · 꽃집 앞</span><button class="cp sm" data-copy="Wide 16:9 photo, straight side view (pure profile) of a Korean street in front of a small flower shop with large windows full of plants and flowers, soft daylight. A Korean woman in her 30s wearing a beige trench coat, light blue jeans and white sneakers is walking from left to right: she is at the far LEFT side of the frame, full body visible from head to shoes, her face and body clearly facing RIGHT (the direction she walks), mid-stride with one foot forward. Plenty of empty space on the right side of the frame. Camera at chest height, perfectly level, completely still, wide enough to see the whole body with space above the head. Photorealistic. No text, no logo, no other people.">복사</button></div><pre>Wide 16:9 photo, straight side view (pure profile) of a Korean street in front of a small flower shop with large windows full of plants and flowers, soft daylight. A Korean woman in her 30s wearing a beige trench coat, light blue jeans and white sneakers is walking from left to right: she is at the far LEFT side of the frame, full body visible from head to shoes, her face and body clearly facing RIGHT (the direction she walks), mid-stride with one foot forward. Plenty of empty space on the right side of the frame. Camera at chest height, perfectly level, completely still, wide enough to see the whole body with space above the head. Photorealistic. No text, no logo, no other people.</pre></div>
+<p class="small">장소를 바꾸려면 <code>small cafe with a warm wooden storefront</code> 부분만 바꿔요. 예: bakery(빵집), bookstore(서점).</p>
+<h3>② 끝 사진: 시작 사진을 [+]로 첨부</h3>
+<ol class="steps"><li>아래 입력창 왼쪽 <b>+</b> → 목록에서 시작 사진 누르기(아직 안 들어감) → <b>「프롬프트에 추가」</b></li><li>입력창 위에 사진이 붙었는지 보고 → 아래 프롬프트 붙여 넣기 → 만들기</li></ol>
+<div class="pcopy v916"><div class="ph"><span>👨 남자용</span><button class="cp sm" data-copy="Use the attached image as the base. Keep EVERYTHING exactly the same: same place, same camera position and framing, same light, same man with the same clothes. Only change: the man has walked to the far RIGHT side of the frame, close to the right edge, still facing RIGHT and still walking toward the right, mid-stride with the other foot forward. The left and center of the frame now show only the empty street and the shop. Vertical 9:16, photorealistic, no text.">복사</button></div><pre>Use the attached image as the base. Keep EVERYTHING exactly the same: same place, same camera position and framing, same light, same man with the same clothes. Only change: the man has walked to the far RIGHT side of the frame, close to the right edge, still facing RIGHT and still walking toward the right, mid-stride with the other foot forward. The left and center of the frame now show only the empty street and the shop. Vertical 9:16, photorealistic, no text.</pre></div><div class="pcopy v169"><div class="ph"><span>👨 남자용</span><button class="cp sm" data-copy="Use the attached image as the base. Keep EVERYTHING exactly the same: same place, same camera position and framing, same light, same man with the same clothes. Only change: the man has walked to the far RIGHT side of the frame, close to the right edge, still facing RIGHT and still walking toward the right, mid-stride with the other foot forward. The left and center of the frame now show only the empty street and the shop. Wide 16:9, photorealistic, no text.">복사</button></div><pre>Use the attached image as the base. Keep EVERYTHING exactly the same: same place, same camera position and framing, same light, same man with the same clothes. Only change: the man has walked to the far RIGHT side of the frame, close to the right edge, still facing RIGHT and still walking toward the right, mid-stride with the other foot forward. The left and center of the frame now show only the empty street and the shop. Wide 16:9, photorealistic, no text.</pre></div>
+<div class="pcopy v916"><div class="ph"><span>👩 여자용</span><button class="cp sm" data-copy="Use the attached image as the base. Keep EVERYTHING exactly the same: same place, same camera position and framing, same light, same woman with the same clothes. Only change: the woman has walked to the far RIGHT side of the frame, close to the right edge, still facing RIGHT and still walking toward the right, mid-stride with the other foot forward. The left and center of the frame now show only the empty street and the shop. Vertical 9:16, photorealistic, no text.">복사</button></div><pre>Use the attached image as the base. Keep EVERYTHING exactly the same: same place, same camera position and framing, same light, same woman with the same clothes. Only change: the woman has walked to the far RIGHT side of the frame, close to the right edge, still facing RIGHT and still walking toward the right, mid-stride with the other foot forward. The left and center of the frame now show only the empty street and the shop. Vertical 9:16, photorealistic, no text.</pre></div><div class="pcopy v169"><div class="ph"><span>👩 여자용</span><button class="cp sm" data-copy="Use the attached image as the base. Keep EVERYTHING exactly the same: same place, same camera position and framing, same light, same woman with the same clothes. Only change: the woman has walked to the far RIGHT side of the frame, close to the right edge, still facing RIGHT and still walking toward the right, mid-stride with the other foot forward. The left and center of the frame now show only the empty street and the shop. Wide 16:9, photorealistic, no text.">복사</button></div><pre>Use the attached image as the base. Keep EVERYTHING exactly the same: same place, same camera position and framing, same light, same woman with the same clothes. Only change: the woman has walked to the far RIGHT side of the frame, close to the right edge, still facing RIGHT and still walking toward the right, mid-stride with the other foot forward. The left and center of the frame now show only the empty street and the shop. Wide 16:9, photorealistic, no text.</pre></div>
+<div class="box tip"><b>확인 3가지</b> ① 배경이 시작 사진과 같은가 ② 오른쪽 끝에 있는가 ③ 여전히 <b>오른쪽을 보고 걷는</b> 자세인가. 아니면 다시 만들어요.</div>
+<div class="box warn"><b>함정: 사진을 눌러 크게 연 화면에서 「수정」하지 마세요.</b> 새 사진이 아니라 같은 사진의 새 버전으로 덮어써서, 영상 만들 때 시작 사진을 고를 수 없게 돼요. 끝 사진은 꼭 바깥 입력창의 <b>[+] 첨부</b>로 새로 만들어요.</div>
+<h3>③ 영상 설정</h3>
+<ol class="steps"><li><b>동영상 → 프레임 → <span class="rt"></span></b> (사진과 같은 비율)</li><li>모델 <b>Omni 1.2 Flash</b> · 화질 연습은 <b>360p</b>, 올릴 것은 720p</li><li>길이 <b>10초</b> (시작+끝 사진을 쓰면 10초까지만 돼요) · x1 → 크레딧 숫자 확인</li></ol>
+<h3>④ 시작·종료 칸에 사진 넣기</h3>
+<ol class="steps"><li><b>시작</b> 칸 → 시작 사진 → <b>「프롬프트에 추가」</b> / <b>종료</b> 칸 → 끝 사진 → 「프롬프트에 추가」</li><li>시작 = 왼쪽 끝 사람, 종료 = 오른쪽 끝 사람인지 <b>눈으로 확인</b> (같은 사진이 두 번 들어가는 실수가 잦아요. 칸을 다시 누르면 비워져요.)</li></ol>
+<h3>⑤ 영상 프롬프트</h3>
+<div class="pcopy"><div class="ph"><span>👨 남자용</span><button class="cp sm" data-copy="Static locked-off camera, the camera does not move, zoom or pan at all. The man walks from the left side of the frame to the right side in profile, at a steady, constant, relaxed walking pace from start to end, natural arm swing, never stopping, never speeding up. He keeps facing right the whole time. The background, shop and lighting stay exactly the same. Realistic, natural motion. No text, no other people.">복사</button></div><pre>Static locked-off camera, the camera does not move, zoom or pan at all. The man walks from the left side of the frame to the right side in profile, at a steady, constant, relaxed walking pace from start to end, natural arm swing, never stopping, never speeding up. He keeps facing right the whole time. The background, shop and lighting stay exactly the same. Realistic, natural motion. No text, no other people.</pre></div>
+<div class="pcopy"><div class="ph"><span>👩 여자용</span><button class="cp sm" data-copy="Static locked-off camera, the camera does not move, zoom or pan at all. The woman walks from the left side of the frame to the right side in profile, at a steady, constant, relaxed walking pace from start to end, natural arm swing, never stopping, never speeding up. She keeps facing right the whole time. The background, shop and lighting stay exactly the same. Realistic, natural motion. No text, no other people.">복사</button></div><pre>Static locked-off camera, the camera does not move, zoom or pan at all. The woman walks from the left side of the frame to the right side in profile, at a steady, constant, relaxed walking pace from start to end, natural arm swing, never stopping, never speeding up. She keeps facing right the whole time. The background, shop and lighting stay exactly the same. Realistic, natural motion. No text, no other people.</pre></div>
+<p class="small">핵심 말: <code>Static locked-off camera</code>(카메라 고정) · <code>steady, constant pace</code>(일정한 걸음) · <code>keeps facing right</code>(계속 오른쪽 보기). 카메라가 움직이면 글자가 배경 위에서 미끄러져 보여요.</p>
+<h3>⑥ 결과 확인 → 내려받기</h3>
+<p>카메라가 고정됐는지, 처음부터 끝까지 오른쪽으로 걷는지 확인하고 → 영상 위 <b>다운로드</b> → 캡컷으로 가져와요.</p>
+</div>
+
+<div class="card" id="s1-do2">
+<h2><span class="tag t-g">🟢</span> 따라 하기 ③ 분할 마스크</h2>
+<ol class="steps" start="10">
+<li>복합 클립 선택 → 오른쪽 패널 <b>동영상 → 마스크</b> → <b>분할</b></li>
+<li>패널을 아래로 내려 <b>마스크 설정 → 회전</b>에 <b>270</b> 입력 (사람이 왼쪽 → 오른쪽으로 걸을 때)</li>
+</ol>
+<div class="two">
+<figure><img src="img07.jpg" alt="분할 마스크 선택"><figcaption><span class="num">1</span> 분할: 화면을 직선 하나로 나눠요.</figcaption></figure>
+<figure><img src="img08.jpg" alt="마스크 설정 위치 회전"><figcaption><span class="num">1</span> 위치 X = 경계선이 좌우로 움직이는 값 · <span class="num">2</span> 회전 270° · <span class="num">3</span> ◇ 키프레임</figcaption></figure>
+</div>
+<figure><img src="img09.jpg" alt="화면 속 분할선"><figcaption>화면에 세로 흰 선이 보이면 성공. 이 선의 <b>왼쪽</b>에만 글자가 보여요.</figcaption></figure>
+</div>
+
+<div class="card" id="s1-do3">
+<h2><span class="tag t-g">🟢</span> 따라 하기 ④ 키프레임으로 사람 따라가기</h2>
+<ol class="steps" start="12">
+<li>재생 헤드를 <b>사람이 처음 화면에 들어온 순간</b>으로 옮기기</li>
+<li>마스크 설정 <b>위치 X</b> 숫자를 바꾸거나 화면의 흰 선을 끌어서, 선을 <b>사람 등 바로 뒤</b>에 두기</li>
+<li><b>마스크 설정</b> 줄 오른쪽 <b>◇</b>를 눌러 키프레임 만들기 (◆ 파란색으로 바뀜)</li>
+<li>재생 헤드를 <b>1초 뒤</b>로 → 선을 다시 사람 등 뒤로 옮기기 → 숫자만 바뀌어도 <b>키프레임이 저절로 추가</b>돼요.</li>
+<li>사람이 화면 밖으로 나갈 때까지 1초마다 반복</li>
+<li>사람이 나간 뒤에는 선을 <b>화면 오른쪽 끝 밖</b>까지 옮기기 → 글자 전체가 보여요.</li>
+<li>처음부터 재생해 보고, 글자가 사람보다 앞서 나오는 곳에 <b>키프레임 하나 더</b></li>
+<li>오른쪽 위 <b>내보내기</b>로 한 편 저장 (STEP 3 「한 걸음 더」에서 손가락 창 영상과 이어 붙여요)</li>
+</ol>
+<div class="box tip"><b>키프레임은 몇 개?</b> AI 영상은 걸음 빠르기가 조금씩 달라요. 처음·끝 2개만으로는 어긋나니 <b>1초에 하나</b>가 기본이에요. 걸음이 고르면 2초에 하나도 괜찮아요.</div>
+</div>
+
+<div class="card" id="s1-more">
+<h2><span class="tag t-b">🔵</span> 한 걸음 더</h2>
+<div class="box ext">
+<p><b>바탕만 흑백</b>: 맨 아래 원본 선택 → <b>조정 → 기본 → 채도</b>를 끝까지 왼쪽으로 (STEP 2에 사진 있어요). 사람 복사본은 컬러로 두면 사람만 도드라져요.</p>
+<p><b>스르륵 드러나기</b>: 마스크 설정 <b>페더</b>(가장자리 흐림)를 5~10으로 올리면 글자 경계가 부드러워져요.</p>
+<p><b>사람에게만 효과</b>: 편집효과에서 <b>흑백 플래시 · 플래시 포커스 · 네온</b> 같은 효과를 <b>맨 위 사람 복사본 위로</b> 끌어다 놓으면 사람에게만 효과가 들어가요.</p>
+</div>
+</div>
+
+<div class="card" id="s1-help">
+<h2><span class="tag t-r">⚠️</span> 막힐 때</h2>
+<table>
+<tr><th>이럴 때</th><th>이렇게</th></tr>
+<tr><td>마스크 메뉴가 안 보여요</td><td>글자를 <b>복합 클립</b>으로 바꿨는지 확인 (<kbd>Alt</kbd>+<kbd>G</kbd>)</td></tr>
+<tr><td>글자가 반대쪽에 보여요</td><td>회전 <b>270° ↔ 90°</b>로 바꾸기 (사람이 오른쪽 → 왼쪽으로 걸으면 90°)</td></tr>
+<tr><td>글자가 사람보다 먼저 나와요</td><td>그 시점에 키프레임 추가 → 선을 사람 등 뒤로</td></tr>
+<tr><td>글자가 머리 위에 떠 있어요</td><td>글자 높이를 몸통 높이로 내리기</td></tr>
+<tr><td>클립이 앞으로 당겨 붙어요</td><td>메인 트랙 자석 끄기</td></tr>
+<tr><td>글자가 사람 앞에 덮여요</td><td>줄 순서 확인: 사람 복사본이 맨 위, 글자가 가운데</td></tr>
+<tr><td>사람 복사본에 배경이 남아요</td><td>위 복사본만 선택했는지 확인 → 자동 삭제 다시 체크</td></tr>
+<tr><td>값을 바꿨는데 키프레임이 안 생겨요</td><td>첫 키프레임(◇)을 먼저 눌렀는지 확인</td></tr>
+</table>
+</div>
+
+</div>
+<aside class="side"><div class="sidebox"><b>STEP 1</b><a href="#s1-done">완성 모습</a><a href="#s1-layer">원리: 3겹</a><a href="#s1-do1">① 영상 두 줄·사람 오리기</a><a href="#s1-do1b">② 글자·줄 순서</a><a href="#s1-text">문구 카드</a><a href="#s1-flow">플로우로 걷는 영상</a><a href="#s1-do2">③ 분할 마스크</a><a href="#s1-do3">④ 키프레임</a><a href="#s1-more">🔵 한 걸음 더</a><a href="#s1-help">⚠️ 막힐 때</a></div></aside>
+</div>
+</section>
+
+<!-- ================= STEP 2 ================= -->
+<section class="step" id="s2" data-title="손가락 창">
+<div class="grid">
+<div class="main">
+
+<div class="card" id="s2-done">
+<h2>STEP 2 · 손가락 창 안에 내 영상</h2>
+<p>엄지와 검지로 만든 네모 창 안에서만 <b>컬러 AI 영상</b>이 보이고, 창 밖 손은 <b>흑백</b>이에요. 손가락이 움직이면 창도 같이 움직여요.</p>
+<div class="three">
+<figure><img src="img02.jpg" alt="창 넓을 때"><figcaption>창이 넓을 때</figcaption></figure>
+<figure><img src="img10.jpg" alt="창 좁아질 때"><figcaption>손가락이 모이면 창도 좁게</figcaption></figure>
+<figure><img src="img11.jpg" alt="세모 손 모양"><figcaption>손 모양이 바뀌어도 따라감</figcaption></figure>
+</div>
+</div>
+
+<div class="card" id="s2-layer">
+<h2>원리: 2겹 쌓기</h2>
+<figure class="diagram">
+<svg viewBox="0 0 900 250" role="img" aria-label="손가락 창 2겹 구조">
+<g font-size="19" fill="#1f2a30">
+<rect x="30" y="40" width="500" height="70" rx="10" fill="#e6f4f4" stroke="#0f8b8d"/>
+<text x="50" y="72"><tspan font-weight="700">위</tspan> · 내 AI 영상</text>
+<text x="50" y="98" font-size="16" fill="#4a5a62">직사각형 마스크(손가락 끝 안쪽) + 1초마다 키프레임</text>
+<rect x="30" y="130" width="500" height="70" rx="10" fill="#f4f6f7" stroke="#b9c4c9"/>
+<text x="50" y="162"><tspan font-weight="700">아래</tspan> · 손 영상</text>
+<text x="50" y="188" font-size="16" fill="#4a5a62">조정 → 채도를 끝까지 내려 흑백</text>
+</g>
+<g>
+<rect x="590" y="30" width="270" height="190" rx="10" fill="#4b5257"/>
+<path d="M600 80 h70 a12 12 0 0 1 0 24 h-70z" fill="#a9b1b5"/><path d="M850 80 h-70 a12 12 0 0 0 0 24 h70z" fill="#a9b1b5"/>
+<path d="M600 160 h80 a12 12 0 0 1 0 24 h-80z" fill="#a9b1b5"/><path d="M850 160 h-80 a12 12 0 0 0 0 24 h80z" fill="#a9b1b5"/>
+<rect x="690" y="98" width="72" height="64" rx="4" fill="#f2b45a"/>
+<rect x="690" y="98" width="72" height="64" rx="4" fill="url(#sky)"/>
+<defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7cc4e8"/><stop offset="1" stop-color="#f5c06a"/></linearGradient></defs>
+<rect x="690" y="98" width="72" height="64" rx="4" fill="none" stroke="#ff4d6a" stroke-width="2.5" stroke-dasharray="5 4"/>
+<text x="725" y="242" font-size="16" text-anchor="middle" fill="#4a5a62">빨간 점선 = 직사각형 마스크</text>
+</g>
+</svg>
+</figure>
+</div>
+
+<div class="card" id="s2-film">
+<h2>손 영상 직접 찍을 때</h2>
+<ul class="check">
+<li><b>어두운 단색</b> 천·벽 앞에서 찍기 (손이 또렷하게 보여요)</li>
+<li>휴대폰은 <b>세워서 고정</b>, 손만 움직이기</li>
+<li>엄지·검지로 네모를 만들고 <b>천천히</b> 벌렸다 오므리기: 빠르면 키프레임이 많이 필요해요.</li>
+<li>손가락 끝이 <b>화면 밖으로 나가지 않게</b></li>
+</ul>
+<div class="box tip"><b>얼굴 앞에서 찍으면?</b> 릴스 원본처럼 얼굴 앞에 손가락 창을 만들면 「창 안 = 원래 색, 창 밖 = 효과」 버전도 만들 수 있어요. 「🔵 한 걸음 더」에 있어요.</div>
+</div>
+
+<div class="card" id="s2-do1">
+<h2><span class="tag t-g">🟢</span> 따라 하기 ① 손 영상 준비</h2>
+<ol class="steps">
+<li>강사 손 영상을 아직 안 받았으면 → <a class="inl" href="https://drive.google.com/file/d/1i_K-WDKO9YAQPF5Z5fiopHwksWnH4WXb/view?usp=sharing" target="_blank" rel="noopener">⬇ 강사 손 영상 받기</a> (다운로드 폴더에 저장)</li>
+<li><b>새 프로젝트</b> → 손 영상 가져오기 → 타임라인에 놓기</li>
+<li>가운데 <b>세부 정보 → 수정하기</b> → <b>가로 세로 비율</b>: 강사 손 영상은 <b>1:1</b>, 휴대폰으로 세워 찍었으면 <b>9:16</b> → 저장</li>
+<li><b>강사 손 영상만</b>: 손 영상 클립 선택 → 오른쪽 <b>동영상 → 기본 → 확대</b>에 <b>185</b> 입력 → 사방의 검은 띠가 사라지고 손이 화면에 꽉 차요. (직접 찍은 영상은 건너뛰기)</li>
+<li>손가락 창이 또렷한 <b>5~6초</b>만 남기기 (강사 영상은 13초~19초)<br>· 재생 헤드 13초 → <kbd>Ctrl</kbd>+<kbd>B</kbd> → 앞 조각 선택 → <kbd>Delete</kbd><br>· 손 영상이 0초부터 시작하면 6초 지점 → <kbd>Ctrl</kbd>+<kbd>B</kbd> → 뒤 조각 삭제</li>
+</ol>
+<figure><img src="img12.jpg" alt="가로 세로 비율 목록"><figcaption>프로젝트 설정의 가로 세로 비율 목록: 세로로 찍었으면 <b>9:16</b>, 강사 영상은 <b>1:1</b></figcaption></figure>
+<div class="box why"><b>왜 짧게 자르나요?</b> 마스크는 손이 움직일 때마다 다시 맞춰야 해요. 34초를 다 하면 키프레임이 수십 개라 연습은 5~6초로 해요.</div>
+</div>
+
+<div class="card" id="s2-do2">
+<h2><span class="tag t-g">🟢</span> 따라 하기 ② 위에 내 영상 + 직사각형 마스크</h2>
+<ol class="steps" start="6">
+<li>내 AI 영상을 손 영상 <b>위 트랙</b>, <b>0초</b>부터 끌어다 놓기</li>
+<li>내 영상이 화면을 다 채우지 못하고 위아래에 검은 띠가 보이면 → 위 클립 <b>동영상 → 기본 → 확대</b>를 띠가 없어질 때까지 키우기 (가로 영상이면 180 정도)</li>
+<li>위 클립 선택 → <b>동영상 → 마스크</b> → <b>마스크 추가(+)</b> → <b>직사각형</b></li>
+</ol>
+<div class="two">
+<figure><img src="img13.jpg" alt="마스크 모양 목록"><figcaption><span class="num">1</span> 마스크 추가 · <span class="num">2</span> 직사각형 · <span class="num">3</span> 펜 💎 (프로)</figcaption></figure>
+<figure><img src="img14.jpg" alt="화면 속 직사각형 틀"><figcaption>화면에 흰 점선 네모가 생겨요. 모서리 점 = 크기, 안쪽 = 위치, 아래 ↻ = 회전</figcaption></figure>
+</div>
+</div>
+
+<div class="card" id="s2-do3">
+<h2><span class="tag t-g">🟢</span> 따라 하기 ③ 키프레임으로 손가락 따라가기</h2>
+<ol class="steps" start="9">
+<li>재생 헤드 <b>0초</b> → 화면의 네모 틀을 <b>끌어서</b> 손가락 끝 4개의 <b>안쪽</b>에 맞추기 (모서리 점 = 크기, 안쪽 = 위치)</li>
+<li>마스크 설정 줄 오른쪽 <b>◇</b> 누르기 → 첫 키프레임</li>
+<li>재생 헤드 <b>1초 뒤</b> → 틀을 다시 손가락 끝 안쪽에 맞추기 (키프레임 자동 추가)</li>
+<li>구간이 끝날 때까지 반복 → 재생해서 어긋난 곳에 하나 더</li>
+</ol>
+<figure><img src="img15.jpg" alt="마스크 설정 키프레임 켜짐"><figcaption><span class="num">1</span> 마스크 설정 ◇ → ◆ · <span class="num">2</span> 위치 X·Y · <span class="num">3</span> 크기 가로·세로</figcaption></figure>
+<h3>막힐 때 넣어 보는 숫자 (강사 손 영상 · 1:1 · 13초에서 자른 뒤)</h3>
+<table class="nums">
+<tr><th>시간</th><th>위치 X</th><th>위치 Y</th><th>크기 가로</th><th>크기 세로</th></tr>
+<tr><td>0초</td><td>-2</td><td>137</td><td>508</td><td>487</td></tr>
+<tr><td>1초</td><td>-18</td><td>162</td><td>419</td><td>419</td></tr>
+<tr><td>3초</td><td>-10</td><td>170</td><td>180</td><td>350</td></tr>
+<tr><td>4초</td><td>-10</td><td>187</td><td>316</td><td>368</td></tr>
+</table>
+<p class="small">끌어서 맞추기가 기본이에요. 숫자는 막힐 때 넣어 보는 <b>출발점</b>이라, 넣은 뒤 화면을 보며 손가락 끝에 맞게 조금씩 고치세요. 내 영상 확대 값에 따라 조금 달라질 수 있어요.</p>
+<figure><img src="img16.jpg" alt="키프레임이 찍힌 타임라인"><figcaption>위 클립에 흰 ◇가 줄지어 생기면 키프레임이 잘 들어간 거예요.</figcaption></figure>
+</div>
+
+<div class="card" id="s2-do4">
+<h2><span class="tag t-g">🟢</span> 따라 하기 ④ 창 밖 흑백</h2>
+<ol class="steps" start="13">
+<li><b>아래 손 영상</b> 선택 → 오른쪽 패널 <b>조정 → 기본</b></li>
+<li>아래로 내려 <b>채도</b> 막대를 끝까지 왼쪽으로 (-50)</li>
+</ol>
+<div class="two">
+<figure><img src="img17.jpg" alt="채도 -50"><figcaption><span class="num">1</span> 채도 -50 = 흑백 (무료)</figcaption></figure>
+<figure><img src="img02.jpg" alt="흑백 적용 결과"><figcaption>창 밖 손과 천은 흑백, 창 안 내 영상은 컬러</figcaption></figure>
+</div>
+<div class="box warn"><b>채도는 아래 손 영상만!</b> 위 클립까지 바꾸면 창 안도 흑백이 돼요.</div>
+</div>
+
+<div class="card" id="s2-more">
+<h2><span class="tag t-b">🔵</span> 한 걸음 더</h2>
+<div class="box ext">
+<p><b>둥근 모서리·회전</b>: 직사각형 마스크 설정 아래쪽 <b>둥근 모서리</b>, 위쪽 <b>회전</b>도 키프레임이 돼요. 손이 기울면 회전도 같이 맞춰 보세요.</p>
+<p><b>💎 펜 마스크</b>: 마스크 → <b>펜</b> → 손가락 끝 4곳에 점 하나씩 → 몇 프레임마다 점 위치를 다시 맞추기. 기울어진 네모나 세모 창까지 딱 맞아요.</p>
+<figure class="narrow"><img src="img18.jpg" alt="펜 마스크"><figcaption><span class="num">1</span> 펜 아이콘 왼쪽 위 보라색 💎 = 프로</figcaption></figure>
+<p><b>릴스 원본 버전 (얼굴 앞 손가락)</b>: 내 얼굴 앞에서 손가락 창을 찍기 → 클립 복사해 위 트랙에 → 위 클립에 마스크 → <b>아래 원본에만</b> 편집효과(편집효과 탭에서 효과를 <b>아래 클립 위로</b> 끌어다 놓기). 창 안은 원래 얼굴, 창 밖은 효과가 돼요.</p>
+</div>
+</div>
+
+<div class="card" id="s2-help">
+<h2><span class="tag t-r">⚠️</span> 막힐 때</h2>
+<table>
+<tr><th>이럴 때</th><th>이렇게</th></tr>
+<tr><td>창이 손가락을 덮어요</td><td>틀을 손가락 끝 <b>안쪽</b>으로 줄이기</td></tr>
+<tr><td>키프레임 사이에서 창이 어긋나요</td><td>어긋난 시점에 키프레임 하나 더</td></tr>
+<tr><td>창 안까지 흑백이에요</td><td>채도는 <b>아래 손 영상</b>만</td></tr>
+<tr><td>내 영상이 안 보여요</td><td>내 영상이 <b>위 트랙</b>인지 확인</td></tr>
+<tr><td>펜을 누르니 결제 창이 떠요</td><td>💎 프로 기능 → 직사각형으로 하기</td></tr>
+<tr><td>손 영상 둘레에 검은 띠가 있어요</td><td>강사 손 영상은 1:1 + 확대 185, 직접 찍은 세로 영상은 9:16</td></tr>
+<tr><td>창 안 내 영상 위아래가 검어요</td><td>위 클립 확대를 키우기 (180 정도)</td></tr>
+</table>
+</div>
+
+</div>
+<aside class="side"><div class="sidebox"><b>STEP 2</b><a href="#s2-done">완성 모습</a><a href="#s2-layer">원리: 2겹</a><a href="#s2-film">직접 찍을 때</a><a href="#s2-do1">① 손 영상 준비</a><a href="#s2-do2">② 직사각형 마스크</a><a href="#s2-do3">③ 키프레임</a><a href="#s2-do4">④ 창 밖 흑백</a><a href="#s2-more">🔵 한 걸음 더</a><a href="#s2-help">⚠️ 막힐 때</a></div></aside>
+</div>
+</section>
+
+<!-- ================= STEP 3 ================= -->
+<section class="step" id="s3" data-title="펼치기·마무리">
+<div class="grid">
+<div class="main">
+
+<div class="card" id="s3-done">
+<h2>STEP 3 · 창을 펼쳐 다음 장면으로</h2>
+<p>손가락 창이 마지막에 <b>화면 가득 펼쳐지면서</b> 내 AI 영상으로 넘어가요. 장면 전환 효과를 따로 넣지 않아도 마스크 키프레임 하나로 됩니다.</p>
+<div class="three">
+<figure><img src="img11.jpg" alt="창 작음"><figcaption>손가락 창</figcaption></figure>
+<figure><img src="img19.jpg" alt="창 펼쳐지는 중"><figcaption>펼쳐지는 중</figcaption></figure>
+<figure><img src="img20.jpg" alt="화면 가득"><figcaption>화면 가득 = 다음 장면</figcaption></figure>
+</div>
+</div>
+
+<div class="card" id="s3-do1">
+<h2><span class="tag t-g">🟢</span> 따라 하기 ① 화면 가득 펼치기</h2>
+<ol class="steps">
+<li>재생 헤드를 마지막 키프레임 <b>1~2초 뒤</b>로 (강사 영상은 <b>6초</b>)</li>
+<li>위 클립 선택 → 마스크 설정 <b>위치 X 0, Y 0</b> · <b>크기 1100 × 1100</b> 입력 → 키프레임이 저절로 생기며 창이 화면 가득</li>
+<li>9:16 프로젝트라면 크기를 <b>1100 × 2000</b>처럼 화면보다 크게 · 펼쳤는데 가장자리가 남으면 더 크게</li>
+<li>손 영상은 여기서 끝나고, 그 뒤로는 <b>내 영상만</b> 이어져요. 내 영상 끝을 원하는 길이(전체 8~12초)로 자르기</li>
+</ol>
+<figure class="narrow"><img src="img21.jpg" alt="펼치기 값"><figcaption><span class="num">1</span> 위치 0, 0 · <span class="num">2</span> 크기 1100 × 1100 (화면보다 조금 크게)</figcaption></figure>
+<div class="box why"><b>왜 1100?</b> 1:1 화면이 1080 정도라 그보다 조금 크게 해야 테두리 없이 꽉 차요.</div>
+</div>
+
+<div class="card" id="s3-do2">
+<h2><span class="tag t-g">🟢</span> 따라 하기 ② 자막 · 음악 · 내보내기</h2>
+<ol class="steps" start="5">
+<li><b>텍스트 → 기본 텍스트</b>로 펼쳐지는 순간에 제목 한 줄 (아래 카드에서 복사)</li>
+<li>음악: <a class="inl" href="https://www.youtube.com/audiolibrary" target="_blank" rel="noopener">유튜브 오디오 보관함</a> 또는 <a class="inl" href="https://pixabay.com/ko/music/" target="_blank" rel="noopener">픽사베이</a>에서 받아 가져오기 → 볼륨 <b>-15dB</b> → 끝에 <b>페이드 아웃</b></li>
+<li>오른쪽 위 <b>내보내기</b> → 해상도 1080p → 내보내기</li>
+</ol>
+<div class="copies">
+<button class="cp" data-copy="이 안에 내 이야기가 있다">이 안에 내 이야기가 있다</button>
+<button class="cp" data-copy="손끝으로 여는 나의 세계">손끝으로 여는 나의 세계</button>
+<button class="cp" data-copy="지금, 이 장면으로">지금, 이 장면으로</button>
+</div>
+</div>
+
+<div class="card" id="s3-more">
+<h2><span class="tag t-b">🔵</span> 한 걸음 더</h2>
+<div class="box ext">
+<p><b>릴스 한 편 묶기</b>: STEP 1 사람 뒤 자막 영상 + STEP 3 손가락 창 영상을 한 프로젝트에 이어 붙여 15초 릴스 한 편</p>
+<p><b>효과음</b>: 창이 펼쳐지는 순간에 「휙」 효과음 (오디오 → 효과음 → 「whoosh」 검색)</p>
+<p><b>펼쳐질 때 부드럽게</b>: 마지막 키프레임에서 마스크 <b>페더</b>를 10~20으로 올리면 창 가장자리가 흐려지며 펼쳐져요.</p>
+</div>
+</div>
+
+<div class="card" id="s3-help">
+<h2><span class="tag t-r">⚠️</span> 막힐 때</h2>
+<table>
+<tr><th>이럴 때</th><th>이렇게</th></tr>
+<tr><td>펼친 뒤에도 가장자리에 손이 보여요</td><td>크기를 더 크게 (1300 등)</td></tr>
+<tr><td>창이 너무 갑자기 커져요</td><td>마지막 두 키프레임 사이를 2초로 벌리기</td></tr>
+<tr><td>펼친 뒤 화면이 검어요</td><td>내 영상이 그 시점까지 이어지는지(클립 길이) 확인</td></tr>
+</table>
+</div>
+
+</div>
+<aside class="side"><div class="sidebox"><b>STEP 3</b><a href="#s3-done">완성 모습</a><a href="#s3-do1">① 화면 가득 펼치기</a><a href="#s3-do2">② 자막·음악·내보내기</a><a href="#s3-more">🔵 한 걸음 더</a><a href="#s3-help">⚠️ 막힐 때</a></div></aside>
+</div>
+</section>
+</main>
+<div class="nav"><div><button id="prev">←</button><button id="next">→</button></div></div>
+<script>
+const steps=[...document.querySelectorAll('.step')];const tabs=document.querySelector('.tabs');
+steps.forEach((s,i)=>{const b=document.createElement('button');b.textContent=(i===0?'STEP 0':'STEP '+i)+' · '+s.dataset.title;b.onclick=()=>go(i,true);tabs.appendChild(b)});
+let cur=0;
+function go(i,top){cur=i;steps.forEach((s,j)=>s.classList.toggle('on',j===i));[...tabs.children].forEach((b,j)=>b.classList.toggle('on',j===i));
+document.getElementById('prev').disabled=i===0;document.getElementById('next').disabled=i===steps.length-1;
+document.getElementById('prev').textContent=i>0?'← '+tabs.children[i-1].textContent:'←';
+document.getElementById('next').textContent=i<steps.length-1?tabs.children[i+1].textContent+' →':'→';
+if(top)window.scrollTo({top:0});}
+document.getElementById('prev').onclick=()=>go(Math.max(0,cur-1),true);
+document.getElementById('next').onclick=()=>go(Math.min(steps.length-1,cur+1),true);
+go(0,false);
+document.querySelectorAll('.rb').forEach(btn=>btn.onclick=()=>{const c=btn.closest('.flowc');c.classList.remove('r916','r169');c.classList.add('r'+btn.dataset.r);c.querySelectorAll('.rb').forEach(x=>x.classList.toggle('on',x===btn))});
+let fs=20;document.getElementById('fzm').onclick=()=>{fs=Math.max(16,fs-2);document.documentElement.style.setProperty('--fs',fs+'px')};
+document.getElementById('fzp').onclick=()=>{fs=Math.min(30,fs+2);document.documentElement.style.setProperty('--fs',fs+'px')};
+document.querySelectorAll('.cp').forEach(b=>b.onclick=()=>{const t=b.dataset.copy;const ok=()=>{b.classList.add('done');setTimeout(()=>b.classList.remove('done'),1500)};
+if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(ok,()=>{fb(t);ok()})}else{fb(t);ok()}});
+function fb(t){const a=document.createElement('textarea');a.value=t;a.style.position='absolute';a.style.left='-9999px';document.body.appendChild(a);a.select();try{document.execCommand('copy')}catch(e){}a.remove()}
+document.querySelectorAll('.sidebox a').forEach(a=>a.onclick=e=>{e.preventDefault();const el=document.querySelector(a.getAttribute('href'));if(el)el.scrollIntoView({behavior:'smooth',block:'start'})});
+</script></body></html>

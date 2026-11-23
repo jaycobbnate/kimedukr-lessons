@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>강의 문의 — 김에듀</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<style>
+/* 구글 사이트 "웹에서 삽입"용. position:fixed 없음, 높이 고정 없음, 일반 문서 스크롤. */
+:root{
+  --navy:#1f2d4d; --navy-deep:#16213a; --gold:#c9a227; --gold-soft:#f6efd6;
+  --paper:#f5f4f0; --card:#ffffff; --ink:#1e2230; --ink-soft:#5a6070; --line:#dfe2e8;
+  --font:"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:var(--font);color:var(--ink);background:var(--paper);font-size:17px;line-height:1.65;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1040px;margin:0 auto;padding:16px;overflow-x:hidden}
+a{color:inherit}
+h2{font-size:22px;font-weight:900;color:var(--navy);margin:0 0 14px;display:flex;align-items:center;gap:10px}
+h2::before{content:"";width:20px;height:4px;background:var(--gold);border-radius:2px}
+section{margin-top:26px}
+
+/* 머리 띠 */
+.hero{display:grid;grid-template-columns:minmax(0,1fr) 170px;gap:0 20px;align-items:end;background:var(--navy);color:#fff;border-radius:10px;padding:0 18px 0 28px;overflow:hidden}
+.hero-body{padding:28px 0 26px;min-width:0}
+.hero h1{margin:0 0 8px;font-size:30px;font-weight:900;line-height:1.25;text-wrap:balance}
+.hero p{margin:0 0 18px;color:#c9d0e0;font-size:16px;max-width:60ch}
+.hero-img{min-width:0;margin-top:14px}
+.hero-img img{width:100%;max-width:170px;display:block;margin:0 auto}
+.btns{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.btn{display:inline-block;padding:13px 22px;border-radius:8px;font-weight:900;font-size:16px;text-decoration:none;line-height:1.2;white-space:nowrap}
+.btn.gold{background:var(--gold);color:var(--navy-deep)}
+.btn.ghost{border:2px solid rgba(255,255,255,.7);color:#fff}
+.btn:focus-visible{outline:3px solid #fff;outline-offset:2px}
+.mail{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.1);border-radius:8px;padding:10px 14px;font-size:15px}
+.mail code{font-family:inherit;font-weight:700;color:#fff;user-select:all}
+.mail button{font:inherit;font-size:13px;font-weight:700;border:1px solid rgba(255,255,255,.5);background:transparent;color:#fff;border-radius:6px;padding:4px 10px;cursor:pointer}
+
+/* 진행 순서 */
+.steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.step{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:16px 16px 14px;min-width:0;border-top:3px solid var(--gold)}
+.step b{display:block;font-size:16px;color:var(--navy);font-weight:900;margin-bottom:4px}
+.step span{font-size:14.5px;color:var(--ink-soft)}
+.step i{font-style:normal;display:inline-block;font-size:12px;font-weight:900;color:var(--gold);letter-spacing:.08em;margin-bottom:6px}
+
+/* 분야 표 */
+.fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.f{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:18px 18px 16px;min-width:0}
+.f h3{margin:0 0 8px;font-size:17px;font-weight:900;color:var(--navy);line-height:1.3}
+.f .who{font-size:13.5px;color:var(--ink-soft);margin:0 0 10px}
+.f .who b{color:var(--navy);font-weight:700}
+.f ul{margin:0;padding:0;list-style:none;display:flex;flex-wrap:wrap;gap:6px}
+.f li{font-size:13.5px;background:var(--gold-soft);color:var(--navy);border-radius:999px;padding:3px 10px}
+
+/* 실적 */
+.orgs{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:18px 20px}
+.orgs ul{margin:0;padding:0;list-style:none;columns:2;column-gap:28px;font-size:15px}
+.orgs li{break-inside:avoid;padding:4px 0 4px 14px;position:relative}
+.orgs li::before{content:"";position:absolute;left:0;top:.9em;width:5px;height:5px;border-radius:50%;background:var(--gold)}
+.orgs p{margin:12px 0 0;font-size:14px;color:var(--ink-soft)}
+
+/* FAQ */
+.faq{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.q{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:16px 18px;min-width:0}
+.q b{display:block;font-size:16px;color:var(--navy);font-weight:900;margin-bottom:6px}
+.q span{font-size:15px;color:var(--ink-soft)}
+
+/* 꼬리 */
+.tail{display:grid;grid-template-columns:120px minmax(0,1fr);gap:16px;align-items:center;background:var(--gold-soft);border-radius:10px;padding:16px 20px;margin-top:26px}
+.tail img{width:100%;max-width:120px;display:block}
+.tail p{margin:0;font-size:16px;color:var(--navy)}
+.tail p b{font-weight:900}
+.tail a{color:var(--navy);font-weight:900}
+
+@media (max-width:900px){
+  .steps{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:640px){
+  .hero{grid-template-columns:minmax(0,1fr);padding:0 18px}
+  .hero-img{display:none}
+  .hero h1{font-size:25px}
+  .fields,.faq,.steps{grid-template-columns:minmax(0,1fr)}
+  .orgs ul{columns:1}
+  .tail{grid-template-columns:90px minmax(0,1fr)}
+}
+@media (prefers-reduced-motion:no-preference){.btn{transition:transform .12s}.btn:hover{transform:translateY(-1px)}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <section class="hero" aria-label="강의 문의">
+    <div class="hero-body">
+      <h1>기관·단체 맞춤 AI 교육, 이렇게 진행합니다</h1>
+      <p>강의 출강, 커리큘럼 설계, 교재·콘텐츠 개발, 강사 양성 컨설팅까지 한 사람이 끝까지 맡습니다. 아래 버튼을 누르면 문의 양식이 채워진 메일이 열립니다. 보내 주시면 2일 안에 답드립니다.</p>
+      <div class="btns">
+        <a class="btn gold" href="mailto:kimedukr@gmail.com?subject=%5B%EA%B0%95%EC%9D%98%20%EB%AC%B8%EC%9D%98%5D%20%EA%B8%B0%EA%B4%80%EB%AA%85%20%2F%20%ED%9D%AC%EB%A7%9D%20%EB%B6%84%EC%95%BC&body=%EA%B8%B0%EA%B4%80%EB%AA%85%3A%20%0A%EA%B5%90%EC%9C%A1%20%EB%8C%80%EC%83%81%3A%20%0A%EC%9D%B8%EC%9B%90%3A%20%0A%ED%9D%AC%EB%A7%9D%20%EB%B6%84%EC%95%BC%3A%20%0A%ED%9D%AC%EB%A7%9D%20%EC%9D%BC%EC%A0%95%C2%B7%EC%8B%9C%EA%B0%84%3A%20%0A%EC%9E%A5%EC%86%8C%20(%EC%98%A4%ED%94%84%EB%9D%BC%EC%9D%B8%20%2F%20%EC%98%A8%EB%9D%BC%EC%9D%B8)%3A%20%0A%EB%8B%B4%EB%8B%B9%EC%9E%90%20%EC%97%B0%EB%9D%BD%EC%B2%98%3A%20%0A%EA%B8%B0%ED%83%80%3A%20">메일로 문의하기</a>
+        <span class="mail"><code id="addr">kimedukr@gmail.com</code><button type="button" id="copy">복사</button></span>
+      </div>
+    </div>
+    <div class="hero-img"><img src="img01.webp" alt=""></div>
+  </section>
+
+  <section aria-label="진행 순서">
+    <h2>진행 순서</h2>
+    <div class="steps">
+      <div class="step"><i>STEP 1</i><b>문의</b><span>기관·대상·인원·희망 분야·일정을 메일로 보내 주세요.</span></div>
+      <div class="step"><i>STEP 2</i><b>제안</b><span>목적에 맞춘 과정 구성과 견적을 보내 드립니다.</span></div>
+      <div class="step"><i>STEP 3</i><b>준비</b><span>교안·실습 자료를 기관 상황에 맞게 만듭니다.</span></div>
+      <div class="step"><i>STEP 4</i><b>교육</b><span>오프라인·온라인·하이브리드 모두 가능합니다. 끝나면 결과물이 남습니다.</span></div>
+    </div>
+  </section>
+
+  <section aria-label="강의 분야">
+    <h2>강의 분야</h2>
+    <div class="fields">
+      <div class="f"><h3>① 생성형 AI 핵심 도구 실무</h3><p class="who"><b>잘 맞는 곳</b> 기업 HRD · 전문교육기관 · 공공기관 · 평생교육</p>
+        <ul><li>ChatGPT 실무</li><li>AI 프롬프트</li><li>Claude · MCP · Cowork</li><li>구글 AI 스튜디오</li><li>Gemini · NotebookLM</li><li>나만의 AI 챗봇</li></ul></div>
+      <div class="f"><h3>② AI 업무 혁신·자동화</h3><p class="who"><b>잘 맞는 곳</b> 기업 HRD · 전문교육기관 · 직업훈련기관 · 공무원 교육</p>
+        <ul><li>ChatGPT + 엑셀 VBA 자동화</li><li>노코드 자동화 메이크(Make)</li><li>노션 · 협업툴 스마트워크</li><li>AI 보고서 작성</li><li>AI 블로그 수익화</li></ul></div>
+      <div class="f"><h3>③ AI 영상·미디어 제작</h3><p class="who"><b>잘 맞는 곳</b> 기업 마케팅 · 전문교육기관 · 평생교육 · 청소년기관</p>
+        <ul><li>AI 숏폼 · 쇼츠</li><li>AI 초단편 영화</li><li>AI 모션툰</li><li>캡컷 · VREW</li><li>AI 보이스 · 더빙 · 음악</li><li>유튜브 채널 운영</li></ul></div>
+      <div class="f"><h3>④ AI 출판·콘텐츠 창작</h3><p class="who"><b>잘 맞는 곳</b> 평생교육원 · 50플러스센터 · 복지관 · 사내 콘텐츠 제작</p>
+        <ul><li>AI 동화책 제작</li><li>AI 전자책 · POD 자가출판</li><li>플립북 · 오디오북</li><li>AI 이모티콘 · 굿즈</li><li>스토리 창작 · 웹툰</li></ul></div>
+      <div class="f"><h3>⑤ HRD·강사 역량 개발</h3><p class="who"><b>잘 맞는 곳</b> 전문교육기관 · 직업훈련기관 · 기업 HRD · 교육청</p>
+        <ul><li>미리캔버스 교안 제작</li><li>AI 활용 강의자료 개발</li><li>AI 강사 양성</li><li>Claude로 교재·문서 제작</li><li>e러닝 콘텐츠 제작</li></ul></div>
+      <div class="f"><h3>⑥ 강사 역량 강화 &amp; 직무 역량 강화</h3><p class="who"><b>잘 맞는 곳</b> 기관 맞춤 워크숍 · 직원 교육 · 역량강화 연수</p>
+        <ul><li>직무별 AI 활용 워크숍</li><li>협업툴 &amp; AI 스마트워크</li><li>디지털 역량 강화</li><li>교·강사 보수교육</li></ul></div>
+    </div>
+  </section>
+
+  <section aria-label="출강 기관">
+    <h2>함께한 기관</h2>
+    <div class="orgs">
+      <ul>
+        <li>한국기술교육대학교 능력개발교육원 — 전국 교·강사 보수교육</li>
+        <li>고용노동부 산대특 — AI 과정 2개 전담</li>
+        <li>양천구 평생학습관 — AI 과정 다수 운영</li>
+        <li>관악50플러스센터 · 금천50플러스센터 · 서초50플러스센터</li>
+        <li>강남구 일원평생학습센터</li>
+        <li>더휴먼컴퓨터아트아카데미 (직업훈련)</li>
+        <li>GSEEK 경기도 온라인 평생학습 (실시간 Zoom)</li>
+        <li>창동청소년문화센터 · 성북여성취업교육센터 · 시립서대문농아인복지관</li>
+        <li>구리남양주교육지청 (교육행정직 역량강화)</li>
+        <li>부천시 오정청년공간 (청년 특강)</li>
+        <li>기업교육 커리큘럼 개발 — KBC</li>
+      </ul>
+      <p>기업 HRD · 공공 · 평생교육 · 직업훈련 · 학교 · 복지관, 6개 유형 · 전국 다수 도시</p>
+    </div>
+  </section>
+
+  <section aria-label="자주 묻는 질문">
+    <h2>자주 묻는 질문</h2>
+    <div class="faq">
+      <div class="q"><b>최소 인원이 있나요?</b><span>실습 중심이라 10~25명이 가장 좋습니다. 그 밖의 인원도 상의해 주세요.</span></div>
+      <div class="q"><b>준비해야 할 장비가 있나요?</b><span>1인 1 PC(또는 노트북)와 인터넷이면 됩니다. 필요한 AI 도구는 무료 계정으로 수업 중 함께 만듭니다.</span></div>
+      <div class="q"><b>온라인도 가능한가요?</b><span>네. 실시간 Zoom, 유튜브 라이브, 오프라인·하이브리드 모두 운영해 봤습니다.</span></div>
+      <div class="q"><b>비용은 어떻게 되나요?</b><span>시간·인원·장소에 따라 다릅니다. 메일로 조건을 보내 주시면 견적을 드립니다.</span></div>
+    </div>
+  </section>
+
+  <div class="tail">
+    <img src="img02.webp" alt="">
+    <p><b>강사가 궁금하시면</b> 경력·자격·하는 일을 한 장으로 정리했습니다. <a href="/강사-소개">강사 소개 보기 →</a></p>
+  </div>
+
+</div>
+<script>
+(function(){
+  var b=document.getElementById('copy'),a=document.getElementById('addr');
+  if(!b||!a)return;
+  b.addEventListener('click',function(){
+    var t=a.textContent;
+    function done(){b.textContent='복사됨';setTimeout(function(){b.textContent='복사'},1500)}
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(done,function(){sel()})}else{sel()}
+    function sel(){var r=document.createRange();r.selectNodeContents(a);var s=window.getSelection();s.removeAllRanges();s.addRange(r);try{document.execCommand('copy');done()}catch(e){}}
+  });
+})();
+</script>
+</body>
+</html>

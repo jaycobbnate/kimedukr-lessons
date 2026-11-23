@@ -1,0 +1,935 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>일원 7회차 소리 동시 생성</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap">
+<style>
+:root{
+  --bg:#FAFAF7; --card:#FFFFFF; --line:#E5E5DF; --ink:#22262C; --sub:#5A606A; --muted:#8A8F98;
+  --accent:#2E6DB4; --accent-soft:#E9F1FA; --accent-ink:#1D4F86;
+  --set:#EEF4FB; --set-line:#C9DCF1;
+  --warn:#FBEFF1; --warn-line:#EFCAD2; --warn-ink:#8A2E44;
+  --ext:#F2EFFB; --ext-line:#D6CEF2; --ext-ink:#4B3C99;
+  --com:#EAF5EE; --com-line:#C4E2CF; --com-ink:#22663F;
+  --topH:120px;
+}
+*{box-sizing:border-box}
+html{font-size:20px}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;line-height:1.7;word-break:keep-all}
+button,input,select{font-family:inherit}
+.top{position:sticky;top:0;z-index:20;background:rgba(250,250,247,.97);border-bottom:1px solid var(--line)}
+.head{display:flex;align-items:center;gap:16px;padding:12px 24px 6px;max-width:1360px;margin:0 auto}
+.head .ttl{flex:1;min-width:0}
+.head .ttl b{display:block;font-size:1.05rem;font-weight:700}
+.head .ttl span{font-size:.75rem;color:var(--sub)}
+.fz{display:flex;gap:6px}
+.fz button{border:1px solid var(--line);background:#fff;border-radius:8px;padding:4px 12px;font-size:.8rem;cursor:pointer;color:var(--ink)}
+.fz button:hover{border-color:var(--accent);color:var(--accent)}
+.tabs{display:flex;gap:6px;overflow-x:auto;padding:6px 24px 10px;max-width:1360px;margin:0 auto;scrollbar-width:thin}
+.tab{flex:0 0 auto;border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 16px;font-size:.78rem;cursor:pointer;color:var(--sub);white-space:nowrap}
+.tab b{color:var(--accent);font-weight:700;margin-right:6px}
+.tab.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.tab.on b{color:#fff}
+.wrap{display:grid;grid-template-columns:minmax(0,1fr) 240px;gap:28px;max-width:1360px;margin:0 auto;padding:24px 24px 40px}
+.side{position:sticky;top:calc(var(--topH) + 16px);align-self:start;border:1px solid var(--line);background:#fff;border-radius:14px;padding:14px 12px}
+.side p{margin:0 0 8px 6px;font-size:.7rem;color:var(--muted);font-weight:500}
+.side a{display:block;padding:6px 10px;border-radius:8px;font-size:.75rem;color:var(--sub);text-decoration:none;line-height:1.45}
+.side a:hover{background:var(--accent-soft);color:var(--accent-ink)}
+.step{display:none}
+.step.on{display:block}
+.shead{margin:0 0 18px}
+.shead .no{display:inline-block;font-size:.72rem;font-weight:700;color:var(--accent);background:var(--accent-soft);border-radius:999px;padding:2px 12px}
+.shead h2{margin:8px 0 4px;font-size:1.45rem;font-weight:700;line-height:1.4}
+.shead p{margin:0;color:var(--sub)}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;align-items:start}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;scroll-margin-top:calc(var(--topH) + 16px);min-width:0}
+.card.wide{grid-column:1/-1}
+.card h3{margin:0 0 10px;font-size:1rem;font-weight:700;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.card h4{margin:14px 0 6px;font-size:.88rem;font-weight:700;color:var(--accent-ink)}
+.card p{margin:0 0 10px}
+.card p:last-child{margin-bottom:0}
+.tag{font-size:.65rem;font-weight:700;border-radius:999px;padding:1px 10px;border:1px solid}
+.t-com{background:var(--com);border-color:var(--com-line);color:var(--com-ink)}
+.t-ext{background:var(--ext);border-color:var(--ext-line);color:var(--ext-ink)}
+.t-warn{background:var(--warn);border-color:var(--warn-line);color:var(--warn-ink)}
+.t-set{background:var(--set);border-color:var(--set-line);color:var(--accent-ink)}
+.t-my{background:var(--accent);border-color:var(--accent);color:#fff}
+.card.set{background:var(--set);border-color:var(--set-line)}
+.card.warn{background:var(--warn);border-color:var(--warn-line)}
+.card.ext{background:var(--ext);border-color:var(--ext-line)}
+.card.com{border-color:var(--com-line)}
+.card.my{border-color:#BFD3EC;box-shadow:0 0 0 3px #F1F6FC}
+.def{border-left:3px solid var(--accent);padding:4px 0 4px 14px;margin:0 0 12px;border-radius:0}
+.def b{color:var(--accent-ink)}
+.note{font-size:.82rem;color:var(--sub)}
+ol.do{margin:0;padding:0;list-style:none;counter-reset:n}
+ol.do li{counter-increment:n;position:relative;padding:0 0 10px 42px}
+ol.do li::before{content:counter(n);position:absolute;left:0;top:2px;width:28px;height:28px;border-radius:50%;background:var(--accent-soft);color:var(--accent-ink);font-size:.72rem;font-weight:700;display:flex;align-items:center;justify-content:center}
+ul.dot{margin:0;padding-left:1.1em}
+ul.dot li{margin-bottom:6px}
+.menu{display:inline-block;background:#F3F4F6;border:1px solid var(--line);border-radius:6px;padding:0 8px;font-size:.85em;color:var(--ink);white-space:nowrap}
+.pbox{border:1px solid var(--line);border-radius:12px;overflow:hidden;margin:10px 0}
+.pbox .pt{display:flex;align-items:center;justify-content:space-between;gap:8px;background:#F6F7F9;border-bottom:1px solid var(--line);padding:6px 12px;font-size:.75rem;color:var(--sub);font-weight:500}
+.pbox pre{margin:0;padding:14px 16px;white-space:pre-wrap;word-break:break-word;font-family:Consolas,"D2Coding",monospace;font-size:.8rem;line-height:1.6;background:#fff}
+.pbox .ko{padding:10px 16px;border-top:1px dashed var(--line);font-size:.78rem;color:var(--sub);background:#FCFCFB}
+.cp{border:1px solid var(--accent);background:#fff;color:var(--accent);border-radius:8px;padding:2px 12px;font-size:.72rem;cursor:pointer;font-weight:500;flex:0 0 auto}
+.cp.ok{background:var(--accent);color:#fff}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0}
+.chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:3px 14px;font-size:.78rem;cursor:pointer;color:var(--ink)}
+.chip:hover{border-color:var(--accent);color:var(--accent)}
+.chip.ok,.chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.flow{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:4px 0 12px}
+.flow span{background:var(--accent-soft);color:var(--accent-ink);border-radius:8px;padding:4px 12px;font-size:.78rem;font-weight:500}
+.flow i{color:var(--muted);font-style:normal}
+table.t{width:100%;border-collapse:collapse;font-size:.82rem}
+table.t th,table.t td{border-bottom:1px solid var(--line);padding:8px 8px;text-align:left;vertical-align:top}
+table.t th{color:var(--sub);font-weight:500;background:#F8F8F6}
+table.t td.c{text-align:center}
+table.t input{width:22px;height:22px;accent-color:var(--accent)}
+.tblw{overflow-x:auto}
+.rules{counter-reset:r;margin:0;padding:0;list-style:none}
+.rules li{counter-increment:r;padding:10px 12px 10px 48px;position:relative;border:1px solid var(--line);border-radius:10px;margin-bottom:8px;background:#fff}
+.rules li::before{content:counter(r);position:absolute;left:12px;top:10px;width:26px;height:26px;border-radius:50%;background:var(--accent);color:#fff;font-size:.72rem;font-weight:700;display:flex;align-items:center;justify-content:center}
+.narr{display:grid;grid-template-columns:150px minmax(0,1fr) auto;gap:12px;align-items:center;border-bottom:1px solid var(--line);padding:10px 0}
+.narr:last-child{border-bottom:0}
+.narr img{width:150px;border-radius:8px;display:block;border:1px solid var(--line)}
+.narr small{display:block;color:var(--muted);font-size:.68rem}
+.narr.who-v{background:#F7F5FD;border-radius:10px;padding:10px 8px}
+.narr .vbadge{width:150px;height:84px;border-radius:8px;background:#EEEBFA;border:1px solid #C3BDEB;color:#4B3C99;font-size:.72rem;font-weight:700;display:flex;align-items:center;justify-content:center;text-align:center;padding:6px}
+/* 네 줄 구조 */
+.four{display:grid;gap:8px;margin:6px 0 4px}
+.four > div{display:grid;grid-template-columns:34px minmax(0,1fr);gap:10px;align-items:start;border:1px solid var(--line);border-radius:10px;padding:8px 12px;background:#fff}
+.four b.n{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.72rem;color:#fff}
+.four > div > div{min-width:0}
+.four code{display:block;font-family:Consolas,"D2Coding",monospace;font-size:.76rem;color:var(--ink);background:none;word-break:break-word}
+.four small{display:block;color:var(--sub);font-size:.74rem}
+.four .q{background:#FFF3C4;border-radius:4px;padding:0 3px}
+/* 프롬프트 만들기 */
+.bstep{border-top:1px dashed var(--line);padding-top:12px;margin-top:12px}
+.bstep:first-of-type{border-top:0;margin-top:0;padding-top:0}
+.bstep > b{display:flex;align-items:center;gap:8px;font-size:.88rem;margin-bottom:6px}
+.bstep > b i{font-style:normal;width:24px;height:24px;border-radius:50%;background:var(--accent);color:#fff;font-size:.7rem;display:flex;align-items:center;justify-content:center}
+.srcbtns{display:flex;flex-wrap:wrap;gap:8px}
+.srcbtns button{border:1px solid var(--line);background:#fff;border-radius:10px;padding:6px 14px;font-size:.8rem;cursor:pointer;color:var(--ink)}
+.srcbtns button small{display:block;font-size:.62rem;color:var(--muted);line-height:1.2}
+.srcbtns button.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.srcbtns button.on small{color:#DCE8F7}
+.srcbtns button.oth{border-style:dashed}
+.vrow{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:8px}
+.vrow label{font-size:.78rem;color:var(--sub)}
+.vrow select{font-size:.82rem;padding:5px 8px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink)}
+.qline{display:grid;grid-template-columns:70px minmax(0,1fr);gap:10px;align-items:center;margin:6px 0}
+.qline span.lb{font-size:.78rem;color:var(--sub);font-weight:500}
+.qwrap{position:relative;display:flex;align-items:center;border:2px solid #E7C65A;border-radius:12px;background:#FFFBEA;padding:2px 10px}
+.qwrap::before,.qwrap::after{font-size:1.5rem;color:#C9A227;font-weight:700;line-height:1}
+.qwrap::before{content:"\201C";margin-right:6px}
+.qwrap::after{content:"\201D";margin-left:6px}
+.qwrap input{flex:1;min-width:0;border:0;background:transparent;font-size:.95rem;padding:6px 0;color:var(--ink);outline:none}
+.qcount{grid-column:2;font-size:.68rem;color:var(--muted);margin-top:-2px}
+.qcount.long{color:var(--warn-ink);font-weight:700}
+.chk{display:flex;align-items:center;gap:8px;font-size:.85rem;cursor:pointer;margin-top:4px}
+.chk input{width:20px;height:20px;accent-color:var(--accent)}
+.oth-box{display:none}
+.is-oth .oth-box{display:block}
+.is-oth .pl-box{display:none}
+.mini{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.mini label{display:block;font-size:.74rem;color:var(--sub)}
+.mini input{width:100%;font-size:.88rem;padding:6px 10px;border:1px solid var(--line);border-radius:8px}
+.seq{width:100%;border-collapse:collapse;font-size:.84rem;margin-top:8px}
+.seq td{border-bottom:1px solid var(--line);padding:8px 6px;vertical-align:middle}
+.seq td.k{width:118px;color:var(--sub);font-size:.74rem}
+.seq tr.v td{background:#F7F5FD}
+.seq tr.v td.k{color:#4B3C99;font-weight:700}
+.seq tr.e td{background:#FBFAFE;color:var(--sub)}
+.seq td.b{width:64px;text-align:right}
+.stage{position:relative;width:100%;height:380px;border:1px solid var(--line);border-radius:12px;background:#F7F8FA;overflow:hidden}
+.stage canvas{display:block;width:100%;height:100%}
+.ctrl{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:12px 0 8px}
+.ctrl button{border:1px solid var(--line);background:#fff;border-radius:8px;padding:5px 14px;font-size:.78rem;cursor:pointer;color:var(--ink)}
+.ctrl button.pri{border-color:var(--accent);color:var(--accent);font-weight:500}
+.ctrl button:hover{border-color:var(--accent)}
+.cap{border:1px solid var(--line);background:#fff;border-radius:10px;padding:10px 14px;min-height:72px}
+.cap b{display:block;color:var(--accent-ink)}
+.cap span{color:var(--sub);font-size:.85rem}
+.fallback{padding:18px;color:var(--sub);font-size:.85rem}
+.bnav{position:sticky;bottom:0;z-index:15;background:rgba(250,250,247,.97);border-top:1px solid var(--line)}
+.bnav div{max-width:1360px;margin:0 auto;padding:10px 24px;display:flex;align-items:center;gap:12px}
+.bnav button{border:1px solid var(--line);background:#fff;border-radius:10px;padding:8px 18px;font-size:.8rem;cursor:pointer;color:var(--ink)}
+.bnav button.nx{background:var(--accent);border-color:var(--accent);color:#fff}
+.bnav button:disabled{opacity:.4;cursor:default}
+.bnav .where{flex:1;text-align:center;font-size:.75rem;color:var(--sub)}
+@media (max-width:1000px){.wrap{grid-template-columns:minmax(0,1fr)}.side{display:none}}
+@media (max-width:760px){.grid{grid-template-columns:minmax(0,1fr)}.head,.tabs,.wrap,.bnav div{padding-left:16px;padding-right:16px}.stage{height:300px}.narr{grid-template-columns:96px minmax(0,1fr)}.narr img,.narr .vbadge{width:96px}.narr .vbadge{height:60px}.narr .cp{grid-column:2;justify-self:start}.bnav .where{display:none}.bnav div{justify-content:space-between}.mini{grid-template-columns:minmax(0,1fr)}.qline{grid-template-columns:minmax(0,1fr)}.qcount{grid-column:1}.seq td.k{width:82px}}
+</style>
+</head>
+<body>
+
+<div class="top" id="top">
+  <div class="head">
+    <div class="ttl"><b>7회차 · AI로 만드는 말하는 영상 — 소리 동시 생성(동시녹음)</b><span>[일원] SNS·유튜브를 사로잡는 AI영상제작 · 플로우 + 캡컷</span></div>
+    <div class="fz"><button onclick="fz(-1)" aria-label="글자 작게">가-</button><button onclick="fz(1)" aria-label="글자 크게">가+</button></div>
+  </div>
+  <nav class="tabs" id="tabs"></nav>
+</div>
+
+<div class="wrap">
+<main id="main">
+
+<!-- STEP 0 -->
+<section class="step" data-title="오늘의 지도">
+  <div class="shead"><span class="no">STEP 0</span><h2>오늘의 지도</h2><p>먼저 말하는 영상 생성을 걸어 두고, 기다리는 동안 지난주 영상으로 캡컷을 연습한 뒤, 결과를 들어 보고 한 편으로 묶습니다.</p></div>
+  <div class="grid">
+    <div class="card wide" id="s0-map">
+      <h3>한눈에 보기</h3>
+      <div class="stage" id="stageA"></div>
+      <div class="ctrl"><button class="pri" data-act="play">▶ 재생</button><button data-act="prev">◀ 이전</button><button data-act="next">다음 ▶</button><button data-act="reset">처음부터</button></div>
+      <div class="cap" id="capA"><b>재생을 누르면 오늘 순서가 하나씩 켜집니다.</b><span>위 줄은 1차 연습, 아래 줄은 2차 작품입니다. 아래 줄 첫 칸(생성 걸기)이 오늘 제일 먼저 하는 일입니다.</span></div>
+    </div>
+    <div class="card" id="s0-def">
+      <h3>소리 동시 생성(동시녹음)이란?</h3>
+      <p class="def"><b>소리 동시 생성</b> = 영상을 만들 때 대사와 현장 소리가 함께 만들어지는 것.</p>
+      <p>영화 촬영장에서 배우의 대사를 그 자리에서 함께 받는 <b>동시녹음</b>과 같은 원리입니다. 실제로 녹음하는 건 아니고, 옴니 플래시에 대사를 써 주면 AI가 소리까지 한 번에 만들어 줍니다.</p>
+      <p>영화에서도 음악은 촬영장이 아니라 편집에서 깝니다. 그래서 오늘도 음악은 캡컷에서 한 곡으로 깝니다.</p>
+      <p class="def"><b>소리 따로 입히기(후시더빙)</b> = 영상을 다 만든 뒤 목소리를 따로 입히는 것. 오늘 사진 나레이션으로 맛만 보고, 다음 주(8회차)에 제대로 합니다.</p>
+    </div>
+    <div class="card" id="s0-rule">
+      <h3>오늘의 규칙 세 줄 (미리 보기)</h3>
+      <ol class="rules">
+        <li>영상에는 대사·효과음만, 음악은 캡컷에서 한 곡으로 깝니다.</li>
+        <li>빛 번짐 같은 효과는 영상 전체에서 한 번만, 전환은 두 가지만, 글꼴은 하나로 씁니다.</li>
+        <li>왕관·다이아·Pro 표시가 없는 것만 고릅니다. (유료)</li>
+      </ol>
+    </div>
+    <div class="card set wide" id="s0-kit">
+      <h3><span class="tag t-set">완성품이 없으면</span> 지난 시간 결과물이 없는 분은 강사 예제로 합니다</h3>
+      <p>아래 단추로 강사 예제 묶음(zip)을 내려받아 압축을 풉니다. 오늘 모든 STEP을 이 재료로 그대로 따라 할 수 있습니다.</p>
+      <p><a href="https://drive.google.com/file/d/1CllIJN3-GOLRC2K3R0OtHynR5iRQWYpv/view?usp=sharing" target="_blank" rel="noopener" style="display:inline-block;background:var(--accent);color:#fff;border-radius:10px;padding:6px 16px;font-weight:700;text-decoration:none;font-size:.85rem">강사 예제 받기 (zip)</a></p>
+      <ul class="dot">
+        <li><b>장면 사진 4장</b>: 레몬 계단 오르기 · 계단에서 돌아보기 · 바다 테라스 · 활짝 웃음 → STEP 1 시작 프레임, STEP 4 사진 슬라이드</li>
+        <li><b>영상 2개</b>: 계단 오르는 영상 · 바다 보는 영상 → STEP 2 캡컷 1차 연습</li>
+        <li>STEP 1 <b>내 차례</b>에서는 예제를 <b>「아말피」</b>로, 목소리는 <b>남성 · 40대</b>로 고르면 됩니다.</li>
+      </ul>
+    </div>
+    <div class="card set wide" id="s0-ready">
+      <h3><span class="tag t-set">준비</span> 시작 전에 확인하세요</h3>
+      <ul class="dot">
+        <li>지난주 만든 <b>장면 이미지</b> 3~4장을 내 컴퓨터에 내려받아 둡니다. (장면마다 시작 이미지 1장 이상)</li>
+        <li>지난주 만든 <b>영상 2개</b> (내 컴퓨터에 내려받기)</li>
+        <li>캡컷 실행 · 로그인 완료</li>
+        <li>플로우 모델은 <span class="menu">옴니 플래시 1.1</span>, 화질은 <span class="menu">360p</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- STEP 1 -->
+<section class="step" data-title="말하는 영상 생성 걸기">
+  <div class="shead"><span class="no">STEP 1</span><h2>말하는 영상, 먼저 생성 걸어 두기</h2><p>내 장면에 맞는 움직임과 대사로 프롬프트를 만들어 생성을 걸고, 기다리는 동안 STEP 2 캡컷 연습을 합니다.</p></div>
+  <div class="grid">
+    <div class="card wide" id="s1-four">
+      <h3>말하는 영상 프롬프트는 네 줄입니다</h3>
+      <div class="four">
+        <div><b class="n" style="background:#8A8F98">①</b><div><code>Keep the same person, outfit and place as the start frame.</code><small>고정 줄 — 지난주 이미지와 같은 사람·옷·장소. 누구나 그대로.</small></div></div>
+        <div><b class="n" style="background:#2E6DB4">②</b><div><code>The person [움직임], then says in Korean: <span class="q">"대사"</span></code><small>움직임 + 대사 — 내 장면에서 하는 동작 뒤에 할 말을 <b>큰따옴표 안에</b> 씁니다. 10자 안팎이 알맞습니다.</small></div></div>
+        <div><b class="n" style="background:#7A6BC9">③</b><div><code>Voice: a warm voice of a Korean woman in her 40s, ...</code><small>목소리 줄 — 주인공의 성별·나이·느낌. <b>두 클립에 똑같이</b> 넣어야 같은 사람처럼 들립니다.</small></div></div>
+        <div><b class="n" style="background:#3F9A7C">④</b><div><code>Natural ambient sound: [현장음]. Soft acoustic background music.</code><small>소리 줄 — 오늘은 일부러 배경음악을 넣어 봅니다. STEP 3에서 음악을 빼고 다시 만듭니다.</small></div></div>
+      </div>
+    </div>
+    <div class="card com" id="s1-do">
+      <h3><span class="tag t-com">🟢 다 같이</span> 강사 화면 그대로 따라 하기</h3>
+      <ol class="do">
+        <li>플로우에서 지난주 프로젝트를 엽니다.</li>
+        <li>모델이 <span class="menu">옴니 플래시 1.1</span>, 화질이 <span class="menu">360p</span>인지 확인합니다.</li>
+        <li>입력 방식을 <span class="menu">프레임으로 동영상</span>으로 바꾸고, 시작 프레임 칸에 <b>지난주 장면 1 이미지</b>를 넣습니다.</li>
+        <li>오른쪽 <b>시연 클립 1 프롬프트</b>를 복사해 붙여 넣고 생성합니다.</li>
+        <li>시작 프레임을 <b>장면 2 이미지</b>로 바꾸고 <b>클립 2 프롬프트</b>로 생성합니다.</li>
+        <li>강사 시연을 본 뒤, 아래 <b>내 차례</b>에서 내 장면용 프롬프트를 만들어 같은 순서로 생성합니다.</li>
+        <li>생성이 도는 동안 STEP 2로 넘어갑니다.</li>
+      </ol>
+      <p style="margin-top:8px;font-size:.85rem;color:var(--sub)">오늘은 일부러 배경음악을 넣어 봅니다. 왜 "음악은 캡컷에서 한 곡"(규칙 1)이 필요한지 STEP 3에서 귀로 확인합니다.</p>
+    </div>
+    <div class="card" id="s1-prompt">
+      <h3>강사 시연 프롬프트 — 아말피</h3>
+      <p class="note">레몬 골목 계단(장면 1) · 바다 테라스(장면 2) · 40대 남성 목소리</p>
+      <div id="demoPrompts"></div>
+    </div>
+    <div class="card my wide" id="s1-my">
+      <h3><span class="tag t-my">내 차례</span> 내 장면에 맞는 프롬프트 만들기</h3>
+      <div id="builder">
+        <div class="bstep"><b><i>1</i>지난주(6회차)에 어떤 예제로 만들었나요?</b>
+          <div class="srcbtns" data-sync="src"></div>
+          <p class="note" style="margin:6px 0 0">지난 시간 완성품이 없으면 <a href="https://drive.google.com/file/d/1CllIJN3-GOLRC2K3R0OtHynR5iRQWYpv/view?usp=sharing" target="_blank" rel="noopener">강사 예제</a>를 받아 「아말피」 · 남성 40대로 합니다.</p>
+        </div>
+        <div class="bstep"><b><i>2</i>주인공 목소리</b>
+          <div class="chips" id="vpre"></div>
+          <div class="vrow">
+            <label>성별 <select id="vg"><option value="w">여성</option><option value="m">남성</option></select></label>
+            <label>나이대 <select id="va"><option>20</option><option>30</option><option>40</option><option>50</option><option>60</option><option>70</option></select>대</label>
+            <label>느낌 <select id="vt"></select></label>
+          </div>
+        </div>
+        <div class="bstep"><b><i>3</i>할 말을 큰따옴표 안에 쓰세요</b>
+          <p class="note pl-box" style="margin:0 0 4px">고른 장소에 어울리는 대사가 미리 들어가 있습니다. 내 말로 고쳐도 됩니다.</p>
+          <p class="note oth-box" style="margin:0 0 4px">내 장면에서 주인공이 할 말을 씁니다. 아래 「대사가 떠오르지 않으면」 단추를 눌러도 됩니다.</p>
+          <div class="qline"><span class="lb">클립 1</span><div class="qwrap"><input id="l1" maxlength="40" aria-label="클립 1 대사"></div><div class="qcount" id="c1"></div></div>
+          <div class="qline"><span class="lb">클립 2</span><div class="qwrap"><input id="l2" maxlength="40" aria-label="클립 2 대사"></div><div class="qcount" id="c2"></div></div>
+          <label class="chk"><input type="checkbox" id="nomusic"> 배경음악 빼기 <span class="note">(STEP 3에서 다시 만들 때 켭니다)</span></label>
+        </div>
+        <div class="bstep"><b><i>4</i>복사해서 플로우에 붙여 넣기</b>
+          <div class="oth-box">
+            <div class="card set" style="padding:14px 16px;margin:4px 0 10px">
+              <b style="font-size:.85rem">다른 예제를 한 분 — 지난주 문장을 불러와 끝에 세 줄을 붙입니다</b>
+              <ol class="do" style="margin-top:8px">
+                <li>플로우에서 지난주 영상에 마우스를 올리고 <span class="menu">프롬프트 재사용</span>을 누릅니다. 입력창에 지난주 문장이 다시 들어옵니다.</li>
+                <li>시작 프레임에는 <b>지난주 장면 이미지 한 장만</b> 남깁니다. 끝 프레임이 같이 들어왔으면 뺍니다.</li>
+                <li>불러온 문장의 <b>마지막 소리·음악 줄</b>(Natural ambient sound… / No music.)은 지웁니다.</li>
+                <li>문장 맨 끝에 아래 <b>덧붙이기 3줄</b>을 붙여 넣고 생성합니다.</li>
+              </ol>
+              <p class="note" style="margin:0">「프롬프트 재사용」이 안 보이면 지난주 장면을 한 줄로 직접 쓰고(예: The person walks along the river.) 그 아래에 붙여도 됩니다.</p>
+            </div>
+          </div>
+          <div id="myPrompts"></div>
+        </div>
+      </div>
+    </div>
+    <div class="card" id="s1-idea">
+      <h3>대사가 떠오르지 않으면</h3>
+      <p class="note">단추를 누르면 마지막으로 누른 대사 칸(처음엔 클립 1)에 들어갑니다.</p>
+      <h4>첫 장면 · 인사</h4>
+      <div class="chips" data-fill="1"><button class="chip">안녕하세요, 같이 가요!</button><button class="chip">여기 정말 예쁘죠?</button><button class="chip">제가 좋아하는 곳이에요.</button></div>
+      <h4>감탄</h4>
+      <div class="chips"><button class="chip">와, 정말 멋져요!</button><button class="chip">공기가 참 좋네요.</button><button class="chip">이 색 좀 보세요.</button></div>
+      <h4>마지막 장면 · 마무리</h4>
+      <div class="chips" data-fill="2"><button class="chip">오늘, 정말 행복했어요.</button><button class="chip">또 오고 싶어요.</button><button class="chip">다음에 또 만나요!</button></div>
+    </div>
+    <div class="card warn" id="s1-warn">
+      <h3><span class="tag t-warn">주의</span> 이럴 땐 이렇게</h3>
+      <table class="t"><tr><th>보이는 문제</th><th>할 일</th></tr>
+        <tr><td>대사가 다른 말로 나와요</td><td>그대로 다시 생성합니다.</td></tr>
+        <tr><td>말이 중간에 잘려요</td><td>대사를 10자 안팎으로 줄입니다. 다른 예제는 불러온 움직임 문장을 짧게 고칩니다.</td></tr>
+        <tr><td>사람 얼굴·옷이 바뀌었어요</td><td>시작 프레임에 지난주 이미지가 들어갔는지 확인합니다.</td></tr>
+        <tr><td>말을 안 해요</td><td>대사가 큰따옴표 안에 있는지, <code>says in Korean</code>이 있는지 확인합니다.</td></tr>
+        <tr><td>두 클립이 다른 사람 목소리 같아요</td><td>Voice 줄이 두 클립에 <b>똑같이</b> 들어갔는지 확인하고 다시 생성합니다.</td></tr>
+      </table>
+    </div>
+    <div class="card ext wide" id="s1-ext">
+      <h3><span class="tag t-ext">🔵 한 걸음 더</span> 말투 · 카메라 · 목소리 실험</h3>
+      <ul class="dot">
+        <li><b>말투 넣기</b>: ② 줄의 <code>says in Korean:</code>을 아래처럼 바꿔 봅니다. 같은 대사도 느낌이 달라집니다.</li>
+      </ul>
+      <div class="chips"><button class="chip" onclick="cpc(this)">says in Korean with a soft laugh:</button><button class="chip" onclick="cpc(this)">whispers in Korean:</button><button class="chip" onclick="cpc(this)">says excitedly in Korean:</button></div>
+      <ul class="dot">
+        <li><b>카메라 다가가기</b>: ④ 줄 앞에 <code>Slow push-in while speaking.</code>을 한 줄 넣습니다. 말하는 동안 화면이 천천히 다가갑니다.</li>
+        <li><b>목소리 줄 실험</b>: ③ Voice 줄을 뺀 클립을 하나 더 만들어, 넣은 클립과 목소리가 얼마나 다른지 STEP 3에서 비교합니다.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- STEP 2 -->
+<section class="step" data-title="1차 연습 · 캡컷 기본 3종">
+  <div class="shead"><span class="no">STEP 2</span><h2>1차 연습 — 지난주 영상으로 캡컷 기본 3종</h2><p>전환 · 자막 · 음악을 한 번씩만 손에 익힙니다. 꾸미기는 STEP 5에서 제대로 합니다.</p></div>
+  <div class="grid">
+    <div class="card wide" id="s2-flow">
+      <h3>순서 한 줄</h3>
+      <div class="flow"><span>가져오기</span><i>→</i><span>순서 맞추기</span><i>→</i><span>원본 소리 끄기</span><i>→</i><span>전환 1개</span><i>→</i><span>자막 1줄</span><i>→</i><span>픽사베이 음악</span><i>→</i><span>내보내기</span></div>
+      <p class="def"><b>전환(트랜지션)</b> = 한 장면에서 다음 장면으로 넘어가는 순간의 효과. 장면이 뚝 끊기지 않고 부드럽게 이어집니다.</p>
+    </div>
+    <div class="card com" id="s2-do">
+      <h3><span class="tag t-com">🟢 다 같이</span> 강사 화면 그대로 따라 하기</h3>
+      <ol class="do">
+        <li><span class="menu">새 프로젝트</span> → <span class="menu">가져오기</span>로 지난주 영상 2개를 불러옵니다. 없으면 <a href="https://drive.google.com/file/d/1CllIJN3-GOLRC2K3R0OtHynR5iRQWYpv/view?usp=sharing" target="_blank" rel="noopener">강사 예제</a>의 영상 2개를 씁니다.</li>
+        <li>두 영상을 타임라인 <b>같은 줄</b>에 순서대로, 빈틈 없이 붙여 놓습니다.</li>
+        <li>타임라인 왼쪽의 <span class="menu">스피커</span> 아이콘을 눌러 원본 소리를 끕니다.</li>
+        <li>위쪽 <span class="menu">전환</span>에서 <b>믹스·디졸브</b>처럼 섞이듯 넘어가는 것을 하나 골라 두 영상 사이 이음새에 끌어 놓습니다.</li>
+        <li><span class="menu">텍스트</span> → <span class="menu">기본 텍스트</span>를 첫 영상 위에 놓고 "아말피 레몬 골목"처럼 장소 이름을 씁니다.</li>
+        <li>픽사베이 음악을 가져와 영상 아래 줄에 놓습니다.</li>
+        <li>음악 끝을 영상 끝에 맞춰 <span class="menu">분할</span>하고 남는 부분을 지웁니다.</li>
+        <li><span class="menu">내보내기</span>로 저장합니다. 파일 이름은 "1차 연습"으로 합니다.</li>
+      </ol>
+      <p style="margin-top:8px;font-size:.85rem;color:var(--sub)">시간이 모자라면 음악까지만 넣어 두고, 내보내기는 STEP 6 직전에 합니다.</p>
+    </div>
+    <div class="card" id="s2-pix">
+      <h3>픽사베이 음악 받기</h3>
+      <ol class="do">
+        <li><a href="https://pixabay.com/music/" target="_blank" rel="noopener"><b>pixabay.com/music</b></a> 에 들어갑니다. (누르면 새 창으로 열립니다)</li>
+        <li>아래 검색어 하나를 눌러 복사하고 검색창에 붙여 넣습니다.</li>
+        <li>재생해 보고 마음에 드는 곡의 <span class="menu">다운로드</span>를 누릅니다.</li>
+        <li>캡컷 <span class="menu">가져오기</span>로 불러옵니다.</li>
+      </ol>
+      <div class="chips">
+        <button class="chip" onclick="cpc(this)">travel acoustic</button>
+        <button class="chip" onclick="cpc(this)">summer ukulele</button>
+        <button class="chip" onclick="cpc(this)">italian mandolin</button>
+        <button class="chip" onclick="cpc(this)">happy guitar</button>
+        <button class="chip" onclick="cpc(this)">ocean breeze</button>
+        <button class="chip" onclick="cpc(this)">korean traditional calm</button>
+      </div>
+      <p style="font-size:.8rem;color:var(--sub)">픽사베이 음악은 무료로 쓸 수 있고 출처 표기도 필요 없습니다. 다만 일부 곡은 유튜브 저작권 확인(Content ID)이 걸릴 수 있으니, 곡 페이지에 그런 안내가 있는 곡은 피하세요.</p>
+    </div>
+    <div class="card" id="s2-pick">
+      <h3>음악 고르는 기준</h3>
+      <ul class="dot">
+        <li><b>가사 없는 곡</b>을 고릅니다. 나중에 대사·나레이션과 겹치지 않습니다.</li>
+        <li><b>영상보다 긴 곡</b>을 고릅니다. 짧으면 중간에 끊깁니다.</li>
+        <li>장면 분위기와 같은 <b>밝은 템포</b>를 고릅니다.</li>
+      </ul>
+    </div>
+    <div class="card warn" id="s2-warn">
+      <h3><span class="tag t-warn">주의</span> 막히면 여기</h3>
+      <table class="t"><tr><th>보이는 문제</th><th>할 일</th></tr>
+        <tr><td>전환·자막 오른쪽 위에 왕관·다이아·Pro 표시</td><td>유료입니다. 표시 없는 것으로 고릅니다.</td></tr>
+        <tr><td>픽사베이에서 로그인하라고 해요</td><td>구글 계정으로 로그인합니다.</td></tr>
+        <tr><td>음악이 영상보다 길게 남아요</td><td>영상 끝에서 음악을 분할하고 뒤쪽을 지웁니다.</td></tr>
+        <tr><td>음악 소리가 안 나요</td><td>음악 줄의 스피커 아이콘이 꺼져 있는지 봅니다.</td></tr>
+      </table>
+    </div>
+    <div class="card ext" id="s2-ext">
+      <h3><span class="tag t-ext">🔵 한 걸음 더</span> 장면 바뀌는 순간에 박자 맞추기</h3>
+      <ul class="dot">
+        <li>음악을 들으며 강한 박자(쿵 하는 소리)가 나오는 곳을 찾습니다.</li>
+        <li>음악 줄을 좌우로 옮겨, 그 박자가 두 영상이 바뀌는 순간에 오게 합니다. 같은 영상인데 훨씬 리듬감 있게 보입니다.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- STEP 3 -->
+<section class="step" data-title="결과 듣기 · 관찰표">
+  <div class="shead"><span class="no">STEP 3</span><h2>말하는 영상 결과 듣기</h2><p>STEP 1 영상 두 개를 내려받아 캡컷 타임라인에 붙여 놓고, 소리를 켜고 이어서 들어 봅니다.</p></div>
+  <div class="grid">
+    <div class="card wide" id="s3-table">
+      <h3>관찰표 — 그렇다면 체크</h3>
+      <table class="t">
+        <tr><th>확인할 것</th><th class="c">클립 1</th><th class="c">클립 2</th></tr>
+        <tr><td>대사가 프롬프트 그대로 나왔나요?</td><td class="c"><input type="checkbox"></td><td class="c"><input type="checkbox"></td></tr>
+        <tr><td>한국어 발음이 자연스럽나요?</td><td class="c"><input type="checkbox"></td><td class="c"><input type="checkbox"></td></tr>
+        <tr><td>입 모양이 말과 맞나요?</td><td class="c"><input type="checkbox"></td><td class="c"><input type="checkbox"></td></tr>
+        <tr><td>움직임이 내 장면과 어울리나요?</td><td class="c"><input type="checkbox"></td><td class="c"><input type="checkbox"></td></tr>
+        <tr><td>두 클립 목소리가 같은 사람 같나요?</td><td class="c" colspan="2"><input type="checkbox"></td></tr>
+        <tr><td>두 클립을 이어 들으면 음악이 자연스럽게 이어지나요?</td><td class="c" colspan="2"><input type="checkbox"></td></tr>
+        <tr><td>옆자리 분과 목소리가 같나요?</td><td class="c" colspan="2"><input type="checkbox"></td></tr>
+      </table>
+    </div>
+    <div class="card" id="s3-why">
+      <h3>왜 이렇게 될까요?</h3>
+      <p class="def"><b>AI는 클립마다 새로 만듭니다.</b> 얼굴은 시작 이미지가 붙잡아 주지만, 목소리와 음악은 붙잡아 줄 사진이 없습니다.</p>
+      <p>그래서 Voice 줄을 똑같이 넣어도 옆자리와 목소리가 다르고, 내 클립 1과 클립 2도 목소리·음악이 조금씩 달라질 수 있습니다.</p>
+      <p>옆자리와 다른 건 정상입니다. 문제는 <b>내 클립 두 개가 서로 다를 때</b>입니다.</p>
+    </div>
+    <div class="card" id="s3-next">
+      <h3>이럴 땐 이렇게</h3>
+      <table class="t"><tr><th>결과</th><th>할 일</th></tr>
+        <tr><td>음악이 이음새에서 튄다</td><td>음악은 캡컷에서 한 곡으로 깝니다. (규칙 1)</td></tr>
+        <tr><td>대사·발음이 이상하다</td><td>다시 생성합니다.</td></tr>
+        <tr><td>두 클립 목소리가 다르다</td><td>Voice 줄이 똑같은지 확인 → 다시 생성 → 그래도 다르면 <b>다음 주 소리 따로 입히기(후시더빙)</b>로 해결합니다.</td></tr>
+      </table>
+    </div>
+    <div class="card com wide" id="s3-ext">
+      <h3><span class="tag t-com">🟢 다 같이</span> 음악 없이 다시 만들기</h3>
+      <p>클립 속 음악은 목소리와 한 덩어리라 캡컷에서 따로 뺄 수 없습니다. 관찰이 끝나면 두 클립을 음악 없이 다시 생성합니다. <b>STEP 4에서는 이 음악 없는 클립을 씁니다.</b></p>
+      <ol class="do">
+        <li>STEP 1 <b>내 차례 프롬프트 만들기</b>로 돌아가 <b>「배경음악 빼기」</b>를 켭니다. 마지막 줄이 <code>No background music.</code>으로 바뀝니다.</li>
+        <li>클립 1 · 클립 2 프롬프트를 다시 복사해 같은 이미지로 생성합니다.</li>
+      </ol>
+      <div class="pbox"><div class="pt">직접 고칠 때 — 마지막 줄을 이것으로 <button class="cp" onclick="cp(this)">복사</button></div><pre>Natural ambient sound of the place. No background music.</pre><div class="ko">그 장소의 자연스러운 소리만, 배경음악 없음.</div></div>
+      <p style="font-size:.85rem;color:var(--sub)">그래도 음악이 남아 있으면 한 번 더 생성합니다.</p>
+    </div>
+  </div>
+</section>
+
+<!-- STEP 4 -->
+<section class="step" data-title="최종 조립 ① 재료 놓기">
+  <div class="shead"><span class="no">STEP 4</span><h2>최종 조립 ① 재료 놓기</h2><p>사진 슬라이드 + 나레이션 + 음악 없는 말하는 영상 2개를 한 타임라인에 놓습니다.</p></div>
+  <div class="grid">
+    <div class="card wide" id="s4-time">
+      <h3>최종 한 편 타임라인 (강사 시연)</h3>
+      <div class="stage" id="stageB"></div>
+      <div class="ctrl"><button class="pri" data-act="play">▶ 재생</button><button data-act="prev">◀ 이전</button><button data-act="next">다음 ▶</button><button data-act="reset">처음부터</button></div>
+      <div class="cap" id="capB"><b>재생을 누르면 빨간 막대가 지나가며 무엇이 들리는지 보여 줍니다.</b><span>사진에서는 나레이터가, 말하는 영상에서는 주인공이 말합니다.</span></div>
+    </div>
+    <div class="card" id="s4-narr">
+      <h3>강사 시연 대본 — 아말피</h3>
+      <p style="font-size:.82rem;color:var(--sub)">사진 나레이션은 영상을 다 만든 뒤 목소리를 입히는 <b>소리 따로 입히기(후시더빙)</b> 방식입니다. 오늘은 캡컷 목소리로 맛만 보고, 다음 주에 원하는 목소리로 제대로 만듭니다.</p>
+      <div id="demoNarr"></div>
+    </div>
+    <div class="card com" id="s4-do">
+      <h3><span class="tag t-com">🟢 다 같이</span> 강사 화면 그대로 따라 하기</h3>
+      <ol class="do">
+        <li>플로우에서 STEP 3에서 다시 만든 <b>음악 없는 말하는 영상 2개</b>를 내려받습니다.</li>
+        <li>캡컷에서 <span class="menu">새 프로젝트</span>를 만듭니다.</li>
+        <li>사진 3장과 말하는 영상 2개를 <span class="menu">가져오기</span>로 불러옵니다.</li>
+        <li>타임라인에 <b>사진1 → 클립1 → 사진2 → 사진3 → 클립2</b> 순서로 놓습니다.</li>
+        <li>사진 길이는 우선 3초로 둡니다. 목소리를 넣은 뒤 목소리 길이에 맞춰 다시 늘립니다.</li>
+        <li>사진을 선택하고 <span class="menu">애니메이션</span> → <span class="menu">인</span>에서 <b>줌 인(확대)</b> 계열을 고른 뒤, 아래 길이 막대를 오른쪽 끝까지 끕니다. 사진 전체 길이 동안 천천히 다가옵니다.</li>
+        <li><span class="menu">텍스트</span> → <span class="menu">기본 텍스트</span>를 사진1 위에 놓고 나레이션 문장을 씁니다.</li>
+        <li>그 자막을 선택하고 오른쪽 <span class="menu">텍스트 음성 변환</span>에서 <b>한국어</b> 목소리 중 왕관 없는 것을 골라 적용합니다. 아래에 목소리 줄이 생깁니다.</li>
+        <li>사진2, 사진3도 같은 방법으로 자막과 목소리를 넣습니다. 목소리는 세 장 모두 같은 것으로 합니다.</li>
+        <li>말하는 영상의 원본 소리는 <b>끄지 않습니다.</b> 주인공 목소리가 들어 있습니다.</li>
+      </ol>
+      <p style="margin-top:8px;font-size:.85rem;color:var(--sub)">시간이 모자라면 나레이션 목소리는 사진1에만 넣고, 사진2·3은 자막만 둡니다.</p>
+    </div>
+    <div class="card my wide" id="s4-my">
+      <h3><span class="tag t-my">내 차례</span> 내 영상 대본 만들기</h3>
+      <div id="narrBuilder">
+        <div class="bstep"><b><i>1</i>지난주(6회차)에 어떤 예제로 만들었나요?</b>
+          <div class="srcbtns" data-sync="src"></div>
+          <p class="note" style="margin:6px 0 0">STEP 1에서 고른 것이 그대로 들어와 있습니다. 클립 대사도 STEP 1에서 쓴 대로 들어갑니다.</p>
+        </div>
+        <div class="bstep oth-box"><b><i>2</i>내 장면을 네 칸에 적으세요</b>
+          <div class="mini">
+            <div><label for="o_first">첫 장소의 모습 (사진 1)</label><input id="o_first" placeholder="단풍이 물든 산책길"></div>
+            <div><label for="o_look">멈춰서 바라본 것 (사진 2)</label><input id="o_look" placeholder="붉은 노을"></div>
+            <div><label for="o_next">두 번째 장소 (사진 3)</label><input id="o_next" placeholder="야경 전망대"></div>
+            <div><label for="o_place">장소 이름 (엔딩)</label><input id="o_place" placeholder="남산"></div>
+          </div>
+          <p class="note" style="margin:6px 0 0">빈칸이면 회색 예시로 만들어집니다. 만들어진 문장을 캡컷 자막에 붙여 넣은 뒤 자연스럽게 고쳐도 됩니다.</p>
+        </div>
+        <div class="bstep"><b><i class="nstep">2</i>사진 순서대로 붙여 넣기</b>
+          <table class="seq" id="seqT"></table>
+        </div>
+      </div>
+    </div>
+    <div class="card" id="s4-ideas">
+      <h3>다른 소재 나레이션 예시</h3>
+      <p class="note">직접 만든 장면이 아래와 비슷하면 눌러서 복사해 쓰세요.</p>
+      <h4>동네 카페</h4>
+      <div class="chips"><button class="chip" onclick="cpc(this)">햇살 드는 창가에 자리를 잡습니다.</button><button class="chip" onclick="cpc(this)">따뜻한 커피 향이 퍼집니다.</button><button class="chip" onclick="cpc(this)">오늘 오후는 천천히 흘러갑니다.</button></div>
+      <h4>전통시장</h4>
+      <div class="chips"><button class="chip" onclick="cpc(this)">고소한 냄새가 가득한 시장 골목입니다.</button><button class="chip" onclick="cpc(this)">오늘의 간식은 갓 구운 호떡.</button><button class="chip" onclick="cpc(this)">사람 사는 소리가 정겹습니다.</button></div>
+      <h4>한강 공원</h4>
+      <div class="chips"><button class="chip" onclick="cpc(this)">강바람이 시원한 한강 공원입니다.</button><button class="chip" onclick="cpc(this)">잔디 위에 잠시 앉아 쉬어 갑니다.</button><button class="chip" onclick="cpc(this)">강물 위로 노을이 내려앉습니다.</button></div>
+      <h4>꽃 축제</h4>
+      <div class="chips"><button class="chip" onclick="cpc(this)">온통 분홍빛, 꽃길이 열렸습니다.</button><button class="chip" onclick="cpc(this)">꽃잎이 바람에 흩날립니다.</button><button class="chip" onclick="cpc(this)">올봄의 기억을 사진에 담습니다.</button></div>
+    </div>
+    <div class="card warn" id="s4-warn">
+      <h3><span class="tag t-warn">주의</span> 막히면 여기</h3>
+      <table class="t"><tr><th>보이는 문제</th><th>할 일</th></tr>
+        <tr><td>목소리가 사진보다 길어요</td><td>사진 끝을 끌어 목소리 길이만큼 늘립니다.</td></tr>
+        <tr><td>나레이션이 너무 길게 읽혀요</td><td>한 줄을 15자 안팎으로 줄입니다. 3~4초 안에 읽힙니다.</td></tr>
+        <tr><td>목소리 목록에 왕관 표시</td><td>유료 목소리입니다. 표시 없는 것을 고릅니다.</td></tr>
+        <tr><td>주인공 목소리가 안 들려요</td><td>1차 연습 때처럼 소리를 끄지 않았는지 스피커 아이콘을 봅니다.</td></tr>
+        <tr><td>텍스트 음성 변환이 안 보여요</td><td>자막을 먼저 선택해야 오른쪽에 메뉴가 나타납니다.</td></tr>
+      </table>
+    </div>
+    <div class="card ext wide" id="s4-ext">
+      <h3><span class="tag t-ext">🔵 한 걸음 더</span> 엔딩 컷 · 나레이터 목소리 · 제미나이 대본</h3>
+      <ul class="dot">
+        <li><b>엔딩 컷</b>: 네 번째 사진(장면 2 끝 이미지)을 맨 끝에 붙이고, 위 대본표의 🔵 엔딩 줄을 나레이션으로 넣습니다. 이때 STEP 5의 페이드 아웃·음악 페이드 아웃은 엔딩 컷 끝으로 옮깁니다.</li>
+        <li><b>나레이터 목소리 고르기</b>: 나레이터는 주인공과 다른 성별·나이의 목소리로 고르면 누가 말하는지 바로 구분됩니다. 두 가지로 바꿔 들어 보고 고릅니다.</li>
+        <li><b>제미나이에 대본 부탁하기</b>: 제미나이에 내 사진 4장을 올리고 아래 문장을 붙여 넣으면 내 사진에 맞는 나레이션을 받을 수 있습니다.</li>
+      </ul>
+      <div class="pbox"><div class="pt">제미나이에 붙여 넣기 (사진 4장 첨부) <button class="cp" onclick="cp(this)">복사</button></div><pre id="gemP"></pre></div>
+    </div>
+  </div>
+</section>
+
+<!-- STEP 5 -->
+<section class="step" data-title="최종 조립 ② 꾸미기">
+  <div class="shead"><span class="no">STEP 5</span><h2>최종 조립 ② 꾸미기</h2><p>1차 때 배운 전환·자막에 스티커와 효과를 얹습니다. 자리를 정해 두고 그 자리에만 넣습니다.</p></div>
+  <div class="grid">
+    <div class="card wide" id="s5-map">
+      <h3>어디에 무엇을 넣나요? (강사 시연 · 아말피)</h3>
+      <div class="tblw"><table class="t">
+        <tr><th>순서</th><th>다음 장면으로 (전환)</th><th>자막</th><th>스티커</th><th>효과 · 끝맺음</th></tr>
+        <tr><td>사진 1</td><td>섞이듯 넘어가기</td><td><b>제목 「아말피의 하루」</b>(위쪽) + 나레이션(아래쪽)</td><td>위치 핀 + "Amalfi, Italy"</td><td>—</td></tr>
+        <tr><td>클립 1</td><td>밀어내며 넘어가기</td><td>대사</td><td>손 인사</td><td>—</td></tr>
+        <tr><td>사진 2</td><td>섞이듯 넘어가기</td><td>나레이션</td><td>레몬</td><td>—</td></tr>
+        <tr><td>사진 3</td><td>밀어내며 넘어가기</td><td>나레이션</td><td>파도 또는 해</td><td>—</td></tr>
+        <tr><td>클립 2</td><td>— (마지막 장면)</td><td>대사</td><td>하트</td><td><b>빛 번짐·반짝임</b> 한 번 + 애니메이션 아웃 <b>페이드 아웃</b> + 음악 페이드 아웃</td></tr>
+        <tr><td>전체</td><td colspan="4">사진의 천천히 확대는 STEP 4에서 넣은 애니메이션 · 필터 하나로 색감 통일 · 픽사베이 음악 한 곡을 작게</td></tr>
+      </table></div>
+      <p class="note" style="margin-top:8px">내 영상은 제목을 「[내 장소]의 하루」로, 위치 핀 글자는 장소의 영문 이름(예: Jeju, Korea)으로 바꿉니다.</p>
+    </div>
+    <div class="card com" id="s5-do">
+      <h3><span class="tag t-com">🟢 다 같이</span> 강사 화면 그대로 따라 하기</h3>
+      <ol class="do">
+        <li><span class="menu">텍스트</span> → <span class="menu">텍스트 템플릿</span>에서 제목을 하나 골라 사진1 화면 <b>위쪽</b>에 놓고 "아말피의 하루"로 바꿉니다. 나레이션 자막은 아래쪽에 둡니다.</li>
+        <li>템플릿에 움직임이 없으면 <span class="menu">애니메이션</span> → <span class="menu">인</span>에서 나타나는 효과를 하나 고릅니다. 이미 움직이면 건너뜁니다.</li>
+        <li><span class="menu">전환</span>에서 <b>믹스·디졸브</b>(섞이듯)와 <b>슬라이드</b>(밀어내며) 두 가지만 골라 위 표처럼 번갈아 넣습니다.</li>
+        <li><span class="menu">스티커</span>에서 검색어로 찾아 장면마다 하나씩 놓습니다.</li>
+        <li><span class="menu">효과</span>에서 빛 번짐이나 반짝임 계열을 골라 클립2 위 줄에 놓습니다.</li>
+        <li>클립2를 선택하고 <span class="menu">애니메이션</span> → <span class="menu">아웃</span>에서 <b>페이드 아웃</b>을 골라 화면이 서서히 어두워지며 끝나게 합니다.</li>
+        <li><span class="menu">필터</span>를 하나 골라 영상 전체 길이만큼 늘립니다.</li>
+        <li>STEP 2에서 받아 둔 <b>픽사베이 음악</b>을 <span class="menu">가져오기</span>로 다시 불러와 맨 아래 줄에 깔고, 볼륨을 낮춘 뒤 끝에 <span class="menu">페이드 아웃</span>을 넣습니다. 다른 곡을 쓰고 싶으면 STEP 2의 검색어로 새로 받습니다.</li>
+        <li><span class="menu">내보내기</span>로 저장합니다. 파일 이름은 "최종본"으로 합니다.</li>
+      </ol>
+    </div>
+    <div class="card" id="s5-music">
+      <h3>음악 바꾸기 · 전환 고르기</h3>
+      <h4>음악이 장면과 안 맞으면 바꿉니다</h4>
+      <ol class="do">
+        <li><a href="https://pixabay.com/music/" target="_blank" rel="noopener"><b>pixabay.com/music</b></a> 을 엽니다.</li>
+        <li>아래 검색어를 눌러 복사해 검색하고, 들어 본 뒤 <span class="menu">다운로드</span>합니다.</li>
+        <li>캡컷 타임라인에서 기존 음악 줄을 선택해 지우고, 새 곡을 <span class="menu">가져오기</span>로 불러와 그 자리에 놓습니다.</li>
+        <li>볼륨을 낮추고 끝에 <span class="menu">페이드 아웃</span>을 다시 넣습니다.</li>
+      </ol>
+      <div class="chips">
+        <button class="chip" onclick="cpc(this)">travel vlog</button>
+        <button class="chip" onclick="cpc(this)">acoustic happy</button>
+        <button class="chip" onclick="cpc(this)">calm piano</button>
+        <button class="chip" onclick="cpc(this)">ocean breeze</button>
+        <button class="chip" onclick="cpc(this)">korean traditional calm</button>
+        <button class="chip" onclick="cpc(this)">japanese koto</button>
+      </div>
+      <h4>음악 느낌에 맞춰 전환을 고릅니다</h4>
+      <table class="t"><tr><th>음악 느낌</th><th>어울리는 전환</th></tr>
+        <tr><td>잔잔한 곡 (피아노·어쿠스틱)</td><td><b>믹스·디졸브</b> — 섞이듯 부드럽게</td></tr>
+        <tr><td>경쾌한 곡 (우쿨렐레·기타)</td><td><b>슬라이드</b> — 밀어내며 넘기기</td></tr>
+        <tr><td>박자가 센 곡</td><td><b>줌·흔들림</b> 계열 — 박자에 맞춰 장면 바뀌는 곳에만</td></tr>
+      </table>
+      <p class="note" style="margin-top:8px">곡을 바꿨으면 전환도 그 느낌에 맞춰 두 가지로 다시 고릅니다. 규칙 2(전환은 두 가지만)는 그대로이고, 왕관·다이아·Pro 표시가 없는 것만 씁니다.</p>
+    </div>
+    <div class="card" id="s5-sticker">
+      <h3>스티커 검색어</h3>
+      <p>누르면 복사됩니다. 스티커 검색창에 붙여 넣으세요.</p>
+      <div class="chips">
+        <button class="chip" onclick="cpc(this)">location</button>
+        <button class="chip" onclick="cpc(this)">lemon</button>
+        <button class="chip" onclick="cpc(this)">hello</button>
+        <button class="chip" onclick="cpc(this)">wave</button>
+        <button class="chip" onclick="cpc(this)">sun</button>
+        <button class="chip" onclick="cpc(this)">heart</button>
+        <button class="chip" onclick="cpc(this)">orange</button>
+        <button class="chip" onclick="cpc(this)">flower</button>
+        <button class="chip" onclick="cpc(this)">leaf</button>
+        <button class="chip" onclick="cpc(this)">travel</button>
+      </div>
+      <p style="font-size:.8rem;color:var(--sub)">장소별로 바꿔 쓰기: 제주 orange · 경주 leaf · 부산 wave · 산토리니 flower · 교토 leaf. 한글 검색이 되면 "위치", "하트"로 찾아도 됩니다.</p>
+    </div>
+    <div class="card" id="s5-rule">
+      <h3>꾸미기 규칙 두 가지</h3>
+      <p class="def"><b>정한 자리에만, 같은 건 통일.</b> 빛 번짐 같은 효과는 영상 전체에서 한 번만 씁니다. 전환은 두 가지만 번갈아 쓰고, 자막 글꼴은 하나로 고정합니다(제목 템플릿만 예외). 장면마다 다른 걸 넣으면 바로 어수선해집니다.</p>
+      <p class="def"><b>왕관·다이아·Pro 표시가 없는 것만.</b> 유료 항목을 하나라도 쓰면 내보내기에서 결제 창이 뜹니다.</p>
+    </div>
+    <div class="card warn" id="s5-warn">
+      <h3><span class="tag t-warn">주의</span> 내보내기에서 결제 창이 떠요</h3>
+      <ol class="do">
+        <li>결제하지 말고 창을 닫습니다.</li>
+        <li>타임라인에서 왕관·다이아·Pro 표시가 붙은 항목을 찾습니다. 전환·스티커·효과·글꼴·목소리를 차례로 봅니다.</li>
+        <li>그 항목을 지우거나 표시 없는 것으로 바꿉니다.</li>
+        <li>다시 내보내기를 누릅니다.</li>
+      </ol>
+    </div>
+    <div class="card set" id="s5-short">
+      <h3><span class="tag t-set">시간이 모자라면</span></h3>
+      <p>스티커와 효과는 건너뛰고 <b>제목 자막 · 전환 · 음악</b>까지만 넣어 내보냅니다.</p>
+      <p>그래도 사진 슬라이드 · 나레이션 · 말하는 영상이 모두 들어간 한 편이 완성됩니다.</p>
+    </div>
+    <div class="card ext wide" id="s5-ext">
+      <h3><span class="tag t-ext">🔵 한 걸음 더</span></h3>
+      <ul class="dot">
+        <li><b>키프레임 확대</b>: 먼저 STEP 4의 확대 애니메이션을 지웁니다. 사진 시작에 키프레임 → 끝으로 가서 크기를 조금 키우고 키프레임. 확대 속도와 방향을 내 마음대로 정할 수 있습니다.</li>
+        <li><b>말할 때 음악 줄이기</b>: 음악 줄에서 대사·나레이션이 나오는 구간만 키프레임으로 볼륨을 낮춥니다. 목소리가 또렷해집니다.</li>
+        <li><b>자막 강조</b>: 대사 자막에서 중요한 단어 하나만 색을 바꿉니다.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- STEP 6 -->
+<section class="step" data-title="감상 · 정리">
+  <div class="shead"><span class="no">STEP 6</span><h2>감상 · 정리</h2><p>1차 연습본과 최종본을 나란히 틀어 봅니다.</p></div>
+  <div class="grid">
+    <div class="card" id="s6-see">
+      <h3>나란히 보며 이야기하기</h3>
+      <ul class="dot">
+        <li>소리 없는 영상과 목소리가 있는 영상, 어느 쪽이 더 오래 보고 싶나요?</li>
+        <li>내 클립 두 개의 목소리가 같은 사람처럼 들렸나요?</li>
+        <li>내 장소에 맞춘 대사가 장면과 잘 어울렸나요?</li>
+        <li>효과가 너무 많아 보이는 장면은 없나요?</li>
+      </ul>
+    </div>
+    <div class="card" id="s6-rule">
+      <h3>오늘의 규칙 세 줄</h3>
+      <ol class="rules">
+        <li>영상에는 대사·효과음만, 음악은 캡컷에서 한 곡으로 깝니다.</li>
+        <li>빛 번짐 같은 효과는 영상 전체에서 한 번만, 전환은 두 가지만, 글꼴은 하나로 씁니다.</li>
+        <li>왕관·다이아·Pro 표시가 없는 것만 고릅니다. (유료)</li>
+      </ol>
+    </div>
+    <div class="card set" id="s6-next">
+      <h3><span class="tag t-set">다음 주 예고</span> 8회차 · 다큐 영상 — 소리 따로 입히기(후시더빙)</h3>
+      <p>오늘 두 클립 목소리가 달랐다면, 다음 주에 해결합니다.</p>
+      <p>AI 스튜디오에서 <b>내가 원하는 목소리</b>로 나레이션을 만들어 영상에 입히는 법을 배웁니다. 오늘 만든 최종본을 그대로 가져오세요.</p>
+    </div>
+    <div class="card ext" id="s6-home">
+      <h3><span class="tag t-ext">🔵 집에서 한 번 더</span></h3>
+      <ul class="dot">
+        <li>국내·해외 중 오늘 안 한 장소로 사진 3장 + 나레이션 슬라이드를 하나 더 만들어 봅니다.</li>
+        <li>Voice 줄을 넣은 클립과 뺀 클립을 비교해 둡니다. 다음 주 수업 때 이야기 나눕니다.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+</main>
+<aside class="side" id="side"><p>이 STEP 카드</p><div id="sideList"></div></aside>
+</div>
+
+<div class="bnav"><div><button id="pv" onclick="go(cur-1)">◀ 이전 STEP</button><span class="where" id="where"></span><button id="nx" class="nx" onclick="go(cur+1)">다음 STEP ▶</button></div></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+/* ---------- 데이터 ---------- */
+var PL=[
+ {id:'jeju',k:'제주',sub:'국내',name:'제주',en:'Jeju, Korea',col:['#F7B267','#7BC6CC'],
+  am:{name:'귤밭',talk:'picks the tangerine from the branch, turns to the camera with a bright smile',talkKo:'가지에서 귤을 따서 카메라 쪽으로 돌아 환하게 웃으며',line:'제주 귤, 하나 따 볼게요.',sound:'birds chirping',soundKo:'새소리'},
+  pm:{name:'협재 바다',talk:'slows down, stops and turns toward the camera with the sea behind',talkKo:'걸음을 늦추고 멈춰 바다를 등지고 카메라 쪽으로 돌며',line:'바다 색이 정말 예뻐요.',sound:'gentle waves and wind',soundKo:'잔잔한 파도와 바람'},
+  narr:['가을 귤밭, 주황빛이 가득합니다.','손안에 담긴 작은 햇살 하나.','오후에는 협재 바다로 향합니다.','제주의 하루가 천천히 저뭅니다.']},
+ {id:'gyeongju',k:'경주',sub:'국내',name:'경주',en:'Gyeongju, Korea',col:['#C9A27E','#E8A0BF'],
+  am:{name:'한옥 돌담 골목',talk:'walks a few steps along the stone wall, stops and looks at the camera with a calm smile',talkKo:'돌담을 따라 몇 걸음 걷다 멈춰 카메라를 보고 잔잔히 웃으며',line:'골목이 참 조용하고 좋아요.',sound:'footsteps and birds',soundKo:'발소리와 새소리'},
+  pm:{name:'핑크뮬리 들판',talk:'turns around toward the camera with a big smile',talkKo:'카메라 쪽으로 돌아서며 활짝 웃으며',line:'여기, 꼭 다시 올래요.',sound:'wind in the grass',soundKo:'풀 사이 바람'},
+  narr:['천 년의 돌담길을 천천히 걷습니다.','기와지붕 위로 가을 하늘이 열립니다.','오후에는 분홍빛 들판으로 향합니다.','경주의 가을을 마음에 담습니다.']},
+ {id:'busan',k:'부산',sub:'국내',name:'부산',en:'Busan, Korea',col:['#F4D35E','#5DA9E9'],
+  am:{name:'감천문화마을',talk:'turns from the railing toward the camera and waves one hand',talkKo:'난간에서 카메라 쪽으로 돌아 한 손을 흔들며',line:'부산에 왔어요, 안녕하세요!',sound:'distant city sounds and birds',soundKo:'먼 도시 소리와 새소리'},
+  pm:{name:'광안리 해변',talk:'steps into a small wave, laughs and looks at the camera',talkKo:'작은 파도에 발을 담그고 웃으며 카메라를 보며',line:'앗, 차가워! 그래도 좋아요.',sound:'waves',soundKo:'파도'},
+  narr:['알록달록한 감천마을이 내려다보입니다.','언덕 위에서 반갑게 손을 흔듭니다.','오후에는 광안리 바다를 맨발로 걷습니다.','부산의 바다가 오늘을 기억합니다.']},
+ {id:'amalfi',k:'아말피',sub:'해외 · 시연',name:'아말피',en:'Amalfi, Italy',col:['#F9E07F','#3E7CB1'],
+  am:{name:'레몬 골목 계단',talk:'climbs one more step and turns back to the camera with a warm smile',talkKo:'한 계단 더 오른 뒤 카메라 쪽으로 돌아 따뜻하게 웃으며',line:'안녕하세요, 레몬 골목이에요.',sound:'birds and distant church bells',soundKo:'새소리와 먼 성당 종소리'},
+  pm:{name:'바다 테라스',talk:'turns from the sea toward the camera, smiling brightly',talkKo:'바다를 보다 카메라 쪽으로 돌아 환하게 웃으며',line:'오늘, 정말 행복했어요.',sound:'sea breeze and waves below',soundKo:'바닷바람과 아래 파도'},
+  narr:['레몬 향이 가득한 골목을 오릅니다.','잠시 멈춰, 지나온 길을 돌아봅니다.','그리고 마침내, 아말피의 바다.','다음 여행도, 함께해요.']},
+ {id:'santorini',k:'산토리니',sub:'해외',name:'산토리니',en:'Santorini, Greece',col:['#F4F1EA','#2F6DB5'],
+  am:{name:'하얀 골목',talk:'stops beside the blue door and turns to the camera with a smile',talkKo:'파란 문 옆에 멈춰 카메라 쪽으로 돌아 웃으며',line:'파란 문이 정말 예뻐요.',sound:'soft wind and footsteps',soundKo:'부드러운 바람과 발소리'},
+  pm:{name:'파란 지붕 계단',talk:'stays seated on the steps, turns toward the camera with a calm smile',talkKo:'계단에 앉은 채 카메라 쪽으로 돌아 잔잔히 웃으며',line:'이 바다, 오래 기억할게요.',sound:'distant waves and wind',soundKo:'먼 파도와 바람'},
+  narr:['하얀 골목에 분홍 꽃이 피었습니다.','꽃 아래 멈춰, 잠시 하늘을 봅니다.','파란 지붕 너머로 바다가 펼쳐집니다.','산토리니의 오후가 저물어 갑니다.']},
+ {id:'kyoto',k:'교토',sub:'해외',name:'교토',en:'Kyoto, Japan',col:['#7FB77E','#C8553D'],
+  am:{name:'대나무숲',talk:'stops on the bamboo path and looks at the camera softly',talkKo:'대나무숲 길에 멈춰 카메라를 부드럽게 보며',line:'바람 소리, 들리세요?',sound:'bamboo rustling in the wind',soundKo:'바람에 흔들리는 대나무'},
+  pm:{name:'단풍 돌길',talk:'stops on the stone street and turns back to the camera with a gentle smile',talkKo:'돌길에 멈춰 카메라 쪽으로 돌아 다정하게 웃으며',line:'가을이 참 곱네요.',sound:'footsteps and soft wind',soundKo:'발소리와 부드러운 바람'},
+  narr:['바람에 흔들리는 대나무숲을 걷습니다.','눈을 감고, 잠시 바람을 느낍니다.','오후에는 단풍 든 돌길을 오릅니다.','교토의 가을이 깊어 갑니다.']}
+];
+var OTHER=PL.length, DEMO=3;
+var TONES=[{k:'bright',ko:'밝고 상냥한',en:'a bright, friendly'},{k:'calm',ko:'차분하고 부드러운',en:'a calm, soft'},{k:'warm',ko:'따뜻하고 다정한',en:'a warm, kind'},{k:'low',ko:'낮고 안정된',en:'a low, steady'},{k:'lively',ko:'활기찬',en:'a lively, cheerful'}];
+var PRESETS=[{k:'서윤 (30대 여성)',g:'w',a:30,t:'bright'},{k:'60대 은발 신사',g:'m',a:60,t:'low'},{k:'40대 긴 웨이브',g:'w',a:40,t:'warm'},{k:'50대 베레모',g:'w',a:50,t:'lively'},{k:'20대 야구모자',g:'m',a:20,t:'lively'},{k:'70대 꽃무늬 스카프',g:'w',a:70,t:'warm'}];
+var S={src:0,g:'w',a:40,t:'warm',l1:PL[0].am.line,l2:PL[0].pm.line,nomusic:false,fill:'l1'};
+
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function tone(k){for(var i=0;i<TONES.length;i++)if(TONES[i].k===k)return TONES[i];return TONES[0]}
+function voiceEN(v){var t=tone(v.t);return 'Voice: '+t.en+' voice of a Korean '+(v.g==='w'?'woman':'man')+' in '+(v.g==='w'?'her':'his')+' '+v.a+'s, speaking clearly at a calm pace.'}
+function voiceKO(v){return '목소리: '+v.a+'대 한국 '+(v.g==='w'?'여성':'남성')+'의 '+tone(v.t).ko+' 목소리, 또렷하고 차분한 속도.'}
+function soundEN(snd,nm){return 'Natural ambient sound'+(snd?': '+snd:' of the place')+'. '+(nm?'No background music.':'Soft acoustic background music.')}
+function soundKO(snd,nm){return (snd?'현장음('+snd+')':'그 장소의 자연스러운 소리')+', '+(nm?'배경음악 없음.':'잔잔한 어쿠스틱 배경음악.')}
+function fullEN(sc,line,v,nm){return 'Keep the same person, outfit and place as the start frame.\nThe person '+sc.talk+', then says in Korean: "'+line+'"\n'+voiceEN(v)+'\n'+soundEN(sc.sound,nm)}
+function fullKO(sc,line,v,nm){return '시작 이미지와 같은 사람·옷·장소. '+sc.talkKo+' 한국어로 "'+line+'" '+voiceKO(v)+' '+soundKO(sc.soundKo,nm)}
+function addEN(line,v,nm){return 'Then the person looks at the camera and says in Korean: "'+line+'"\n'+voiceEN(v)+'\n'+soundEN('',nm)}
+function addKO(line,v,nm){return '이어서 카메라를 보며 한국어로 "'+line+'" '+voiceKO(v)+' '+soundKO('',nm)}
+function pb(title,en,ko){return '<div class="pbox"><div class="pt">'+esc(title)+' <button class="cp" onclick="cp(this)">복사</button></div><pre>'+esc(en)+'</pre>'+(ko?'<div class="ko">'+esc(ko)+'</div>':'')+'</div>'}
+
+/* 장면 카드 그림 (사진 자리) */
+function thumbURL(text,emoji,c1,c2){
+  var c=document.createElement('canvas');c.width=320;c.height=180;var g=c.getContext('2d');
+  var gr=g.createLinearGradient(0,0,320,180);gr.addColorStop(0,c1);gr.addColorStop(1,c2);g.fillStyle=gr;g.fillRect(0,0,320,180);
+  g.fillStyle='rgba(255,255,255,.18)';g.beginPath();g.arc(250,40,60,0,Math.PI*2);g.fill();
+  g.font='64px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif';g.textAlign='center';g.textBaseline='middle';g.fillText(emoji,160,72);
+  g.fillStyle='rgba(255,255,255,.92)';g.fillRect(0,128,320,52);
+  g.fillStyle='#22262C';g.font='700 24px "Noto Sans KR","Malgun Gothic",sans-serif';g.fillText(text,160,155);
+  return c.toDataURL('image/png');
+}
+var DEMO_PHOTOS=[['레몬 계단 오르기','🍋'],['뒤돌아보기','👀'],['바다 테라스','🌊'],['활짝 웃음','😊']];
+var demoThumbs=[];
+
+/* ---------- 프롬프트 만들기 ---------- */
+function renderSrc(){
+  document.querySelectorAll('[data-sync=src]').forEach(function(box){
+    box.innerHTML=PL.map(function(p,i){return '<button type="button" data-i="'+i+'" class="'+(S.src===i?'on':'')+'">'+p.k+'<small>'+p.sub+'</small></button>'}).join('')+'<button type="button" data-i="'+OTHER+'" class="oth'+(S.src===OTHER?' on':'')+'">다른 예제<small>내가 직접 만든 장면</small></button>';
+  });
+  ['builder','narrBuilder'].forEach(function(id){document.getElementById(id).classList.toggle('is-oth',S.src===OTHER)});
+  document.querySelectorAll('.nstep').forEach(function(n){n.textContent=S.src===OTHER?'3':'2'});
+}
+function setSrc(i){
+  S.src=i;
+  if(i<OTHER){S.l1=PL[i].am.line;S.l2=PL[i].pm.line}
+  else{S.l1='';S.l2=''}
+  document.getElementById('l1').value=S.l1;document.getElementById('l2').value=S.l2;
+  renderSrc();renderAll();
+}
+function renderVoice(){
+  document.getElementById('vg').value=S.g;document.getElementById('va').value=String(S.a);document.getElementById('vt').value=S.t;
+  document.querySelectorAll('#vpre .chip').forEach(function(b,i){var p=PRESETS[i];b.classList.toggle('on',p.g===S.g&&p.a===S.a&&p.t===S.t)});
+}
+function lineOr(s,ph){return (s&&s.trim())?s.trim():ph}
+function renderCount(){
+  [['l1','c1'],['l2','c2']].forEach(function(a){var v=(S[a[0]]||'').replace(/\s/g,'');var el=document.getElementById(a[1]);
+    el.textContent=v.length?(v.length+'자'+(v.length>15?' · 길면 말이 잘릴 수 있어요':'')):'비어 있으면 예시 대사로 만들어집니다';el.classList.toggle('long',v.length>15)});
+}
+function renderMy(){
+  var v={g:S.g,a:S.a,t:S.t},nm=S.nomusic,h='';
+  if(S.src<OTHER){
+    var p=PL[S.src];
+    h+=pb('클립 1 · '+p.k+' '+p.am.name+' (시작 프레임: 장면 1 이미지)',fullEN(p.am,lineOr(S.l1,p.am.line),v,nm),fullKO(p.am,lineOr(S.l1,p.am.line),v,nm));
+    h+=pb('클립 2 · '+p.k+' '+p.pm.name+' (시작 프레임: 장면 2 이미지)',fullEN(p.pm,lineOr(S.l2,p.pm.line),v,nm),fullKO(p.pm,lineOr(S.l2,p.pm.line),v,nm));
+  }else{
+    h+=pb('클립 1 · 불러온 문장 끝에 덧붙이기',addEN(lineOr(S.l1,'여기 정말 예쁘죠?'),v,nm),addKO(lineOr(S.l1,'여기 정말 예쁘죠?'),v,nm));
+    h+=pb('클립 2 · 불러온 문장 끝에 덧붙이기',addEN(lineOr(S.l2,'오늘, 정말 행복했어요.'),v,nm),addKO(lineOr(S.l2,'오늘, 정말 행복했어요.'),v,nm));
+  }
+  document.getElementById('myPrompts').innerHTML=h;
+}
+function josa(w,a,b){if(!w)return a;var c=w.charCodeAt(w.length-1);if(c<0xAC00||c>0xD7A3)return b;return (c-0xAC00)%28?a:b}
+function ro(w){if(!w)return '로';var c=w.charCodeAt(w.length-1);if(c<0xAC00||c>0xD7A3)return '로';var j=(c-0xAC00)%28;return (j===0||j===8)?'로':'으로'}
+function narrLines(){
+  if(S.src<OTHER)return PL[S.src].narr;
+  function val(id){var e=document.getElementById(id);return (e.value.trim()||e.placeholder)}
+  var f=val('o_first'),l=val('o_look'),n=val('o_next'),p=val('o_place');
+  return [f+josa(f,'을','를')+' 따라 걷습니다.','잠시 멈춰, '+l+josa(l,'을','를')+' 바라봅니다.','그리고 '+n+ro(n)+' 향합니다.',p+'의 하루가 천천히 저뭅니다.'];
+}
+function seqRow(cls,k,t,copy){return '<tr class="'+cls+'"><td class="k">'+k+'</td><td>'+esc(t)+'</td><td class="b">'+(copy?'<button class="cp" data-t="'+esc(t)+'" onclick="cpt(this,this.dataset.t)">복사</button>':'')+'</td></tr>'}
+function renderSeq(){
+  var n=narrLines(),isP=S.src<OTHER,p=isP?PL[S.src]:null;
+  var l1=lineOr(S.l1,isP?p.am.line:'여기 정말 예쁘죠?'),l2=lineOr(S.l2,isP?p.pm.line:'오늘, 정말 행복했어요.');
+  var h='';
+  h+=seqRow('','사진 1 · 나레이터<br><small>장면 1 시작 이미지</small>',n[0],1);
+  h+=seqRow('v','클립 1 · 주인공',l1+'  (영상 속 목소리 그대로)',0);
+  h+=seqRow('','사진 2 · 나레이터<br><small>장면 1 끝 이미지</small>',n[1],1);
+  h+=seqRow('','사진 3 · 나레이터<br><small>장면 2 시작 이미지</small>',n[2],1);
+  h+=seqRow('v','클립 2 · 주인공',l2+'  (영상 속 목소리 그대로)',0);
+  h+=seqRow('e','🔵 엔딩 · 사진 4<br><small>장면 2 끝 이미지</small>',n[3],1);
+  document.getElementById('seqT').innerHTML=h;
+  var place=isP?p.name:(document.getElementById('o_place').value.trim()||'내 여행지');
+  document.getElementById('gemP').textContent='첨부한 사진 4장은 '+place+' 여행 영상의 장면 순서입니다.\n사진마다 영상 나레이션을 한 줄씩 써 주세요.\n- 한 줄은 15자 안팎, "~합니다" 존댓말\n- 1번은 장소 소개, 2번은 멈춰서 느낀 것, 3번은 다음 장소로 이동, 4번은 여운이 남는 마무리\n- 주인공이 직접 말하는 대사 "'+l1+'", "'+l2+'"와 겹치지 않게\n- 세 가지 버전으로 보여 주세요';
+}
+function renderDemo(){
+  var p=PL[DEMO],v={g:'m',a:40,t:'warm'};
+  document.getElementById('demoPrompts').innerHTML=pb('시연 클립 1 · 레몬 골목 계단',fullEN(p.am,p.am.line,v,false),fullKO(p.am,p.am.line,v,false))+pb('시연 클립 2 · 바다 테라스',fullEN(p.pm,p.pm.line,v,false),fullKO(p.pm,p.pm.line,v,false));
+  var rows=[[0,'사진 1',p.narr[0]],['v','클립 1 · 주인공',p.am.line],[1,'사진 2 · 클립1 다음',p.narr[1]],[2,'사진 3',p.narr[2]],['v','클립 2 · 주인공',p.pm.line]];
+  document.getElementById('demoNarr').innerHTML=rows.map(function(r){
+    if(r[0]==='v')return '<div class="narr who-v"><div class="vbadge">말하는 영상<br>주인공 목소리</div><div><small>'+r[1]+'</small>'+esc(r[2])+'</div></div>';
+    return '<div class="narr"><img src="'+demoThumbs[r[0]]+'" alt="'+DEMO_PHOTOS[r[0]][0]+'"><div><small>'+r[1]+'</small>'+esc(r[2])+'</div><button class="cp" data-t="'+esc(r[2])+'" onclick="cpt(this,this.dataset.t)">복사</button></div>';
+  }).join('')+'<div class="narr"><img src="'+demoThumbs[3]+'" alt="'+DEMO_PHOTOS[3][0]+'"><div><small>🔵 엔딩 컷</small>'+esc(p.narr[3])+'</div><button class="cp" data-t="'+esc(p.narr[3])+'" onclick="cpt(this,this.dataset.t)">복사</button></div>';
+}
+function renderAll(){renderVoice();renderCount();renderMy();renderSeq()}
+function initBuilder(){
+  document.getElementById('vt').innerHTML=TONES.map(function(t){return '<option value="'+t.k+'">'+t.ko+'</option>'}).join('');
+  document.getElementById('vpre').innerHTML=PRESETS.map(function(p,i){return '<button type="button" class="chip" data-i="'+i+'">'+p.k+'</button>'}).join('');
+  document.getElementById('vpre').addEventListener('click',function(e){var b=e.target.closest('.chip');if(!b)return;var p=PRESETS[+b.dataset.i];S.g=p.g;S.a=p.a;S.t=p.t;renderAll()});
+  ['vg','va','vt'].forEach(function(id){document.getElementById(id).addEventListener('change',function(){S.g=document.getElementById('vg').value;S.a=+document.getElementById('va').value;S.t=document.getElementById('vt').value;renderAll()})});
+  ['l1','l2'].forEach(function(id){var el=document.getElementById(id);el.value=S[id];el.addEventListener('input',function(){S[id]=el.value;renderCount();renderMy();renderSeq()});el.addEventListener('focus',function(){S.fill=id})});
+  document.getElementById('nomusic').addEventListener('change',function(e){S.nomusic=e.target.checked;renderMy()});
+  ['o_first','o_look','o_next','o_place'].forEach(function(id){document.getElementById(id).addEventListener('input',renderSeq)});
+  document.addEventListener('click',function(e){var b=e.target.closest('[data-sync=src] button');if(b)setSrc(+b.dataset.i)});
+  document.getElementById('s1-idea').addEventListener('click',function(e){var b=e.target.closest('.chip');if(!b)return;var id=S.fill||'l1';var el=document.getElementById(id);el.value=b.textContent;S[id]=b.textContent;
+    b.classList.add('ok');setTimeout(function(){b.classList.remove('ok')},700);renderCount();renderMy();renderSeq();
+    if(id==='l1'){S.fill='l2'}});
+  renderSrc();renderAll();
+}
+
+/* ---------- 탭 · 복사 ---------- */
+var steps=[].slice.call(document.querySelectorAll('.step')),cur=0,fs=20;
+var tabs=document.getElementById('tabs');
+steps.forEach(function(s,i){var b=document.createElement('button');b.className='tab';b.innerHTML='<b>'+i+'</b>'+s.dataset.title;b.onclick=function(){go(i)};tabs.appendChild(b)});
+function setTopH(){document.documentElement.style.setProperty('--topH',document.getElementById('top').offsetHeight+'px')}
+function go(i){
+  if(i<0||i>=steps.length)return;cur=i;
+  steps.forEach(function(s,k){s.classList.toggle('on',k===i)});
+  [].forEach.call(tabs.children,function(t,k){t.classList.toggle('on',k===i);if(k===i&&t.scrollIntoView)t.scrollIntoView({block:'nearest',inline:'center'})});
+  var list=document.getElementById('sideList');list.innerHTML='';
+  [].forEach.call(steps[i].querySelectorAll('.card[id]'),function(c){var h=c.querySelector('h3');if(!h)return;var a=document.createElement('a');a.href='#'+c.id;a.textContent=h.textContent.replace(/\s+/g,' ').trim();a.onclick=function(e){e.preventDefault();c.scrollIntoView({behavior:'smooth',block:'start'})};list.appendChild(a)});
+  document.getElementById('pv').disabled=i===0;document.getElementById('nx').disabled=i===steps.length-1;
+  document.getElementById('where').textContent='STEP '+i+' · '+steps[i].dataset.title;
+  var m=document.getElementById('main');var y=m.getBoundingClientRect().top+window.pageYOffset-document.getElementById('top').offsetHeight-10;if(window.pageYOffset>y)window.scrollTo(0,y);
+  setTimeout(function(){scenes.forEach(function(sc){sc.resize()})},30);
+}
+function fz(d){fs=Math.max(18,Math.min(28,fs+d*2));document.documentElement.style.fontSize=fs+'px';setTimeout(setTopH,50)}
+function copyRaw(t,el){
+  function done(){el.classList.add('ok');var o=el.textContent;el.textContent='복사됨';setTimeout(function(){el.classList.remove('ok');el.textContent=o},1200)}
+  function fb(){var ta=document.createElement('textarea');ta.value=t;ta.style.position='absolute';ta.style.left='-9999px';document.body.appendChild(ta);ta.select();try{document.execCommand('copy')}catch(e){}document.body.removeChild(ta);done()}
+  if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(t).then(done,fb)}else fb();
+}
+function cp(b){copyRaw(b.closest('.pbox').querySelector('pre').textContent.trim(),b)}
+function cpc(b){var t=b.dataset.t||b.textContent;b.dataset.t=t;copyRaw(t,b)}
+function cpt(b,t){copyRaw(t,b)}
+window.addEventListener('resize',function(){setTopH();scenes.forEach(function(sc){sc.resize()})});
+
+/* ---------- three.js ---------- */
+var scenes=[];
+function label(text,opt){
+  opt=opt||{};var c=document.createElement('canvas');c.width=512;c.height=128;var g=c.getContext('2d');
+  g.fillStyle=opt.bg||'rgba(255,255,255,0.96)';var r=28;g.beginPath();g.moveTo(r,6);g.lineTo(512-r,6);g.quadraticCurveTo(506,6,506,r+6);g.lineTo(506,122-r);g.quadraticCurveTo(506,122,512-r,122);g.lineTo(r,122);g.quadraticCurveTo(6,122,6,122-r);g.lineTo(6,r+6);g.quadraticCurveTo(6,6,r,6);g.fill();
+  g.strokeStyle=opt.line||'#D9DCE1';g.lineWidth=3;g.stroke();
+  g.fillStyle=opt.ink||'#22262C';g.font='700 50px "Noto Sans KR","Malgun Gothic",sans-serif';g.textAlign='center';g.textBaseline='middle';g.fillText(text,256,66);
+  var t=new THREE.CanvasTexture(c);t.anisotropy=4;return t;
+}
+function Stage(el,capEl,cfg){
+  var self=this;this.el=el;this.cap=capEl;this.cfg=cfg;this.idx=-1;this.playing=false;this.t=0;this.acc=0;
+  var R=new THREE.WebGLRenderer({antialias:true,alpha:true});R.setPixelRatio(Math.min(2,window.devicePixelRatio||1));el.appendChild(R.domElement);this.R=R;
+  var S3=new THREE.Scene();this.S=S3;
+  var C=new THREE.PerspectiveCamera(38,2,0.1,100);this.C=C;
+  S3.add(new THREE.HemisphereLight(0xffffff,0xdfe3ea,0.9));var d=new THREE.DirectionalLight(0xffffff,0.55);d.position.set(4,10,6);S3.add(d);
+  var floor=new THREE.Mesh(new THREE.PlaneGeometry(90,50),new THREE.MeshLambertMaterial({color:0xF1F2F4}));floor.rotation.x=-Math.PI/2;floor.position.y=-0.01;S3.add(floor);
+  this.items=[];
+  cfg.items.forEach(function(it){
+    var base=new THREE.MeshLambertMaterial({color:it.color,emissive:0x000000});
+    var top=it.tex?new THREE.MeshLambertMaterial({map:it.tex,emissive:0x000000}):base;
+    var mats=[base,base,top,base,base,base];
+    var m=new THREE.Mesh(new THREE.BoxGeometry(it.w,it.h||0.45,it.d||1.3),mats);m.position.set(it.x,(it.h||0.45)/2,it.z||0);S3.add(m);
+    var sp=null;if(it.label){sp=new THREE.Sprite(new THREE.SpriteMaterial({map:label(it.label,it.lab),depthTest:false}));var sw=it.lw||2.2;sp.scale.set(sw,sw/4,1);sp.position.set(it.x,(it.h||0.45)+0.55,(it.z||0)+(it.lz||0));sp.renderOrder=2;S3.add(sp)}
+    self.items.push({it:it,m:m,sp:sp,base:base,top:top});
+  });
+  cfg.extra&&cfg.extra(S3,this);
+  var mk=cfg.marker==='bar'?new THREE.Mesh(new THREE.BoxGeometry(0.05,0.9,2.8),new THREE.MeshBasicMaterial({color:0xD9473B})):new THREE.Mesh(new THREE.SphereGeometry(0.22,24,16),new THREE.MeshLambertMaterial({color:0xD9473B,emissive:0x551510}));
+  mk.position.set(cfg.items[0].x,1.3,cfg.items[0].z||0);if(cfg.marker==='bar')mk.position.set(cfg.x0,0.45,0.8);S3.add(mk);this.mk=mk;this.target=mk.position.clone();
+  this.resize();
+}
+Stage.prototype.resize=function(){var w=this.el.clientWidth,h=this.el.clientHeight;if(!w||!h)return;this.R.setSize(w,h,false);this.C.aspect=w/h;var cp=this.cfg.cam;var k=this.k=Math.max(1,(this.cfg.fit||2.4)/(w/h));this.C.position.set(cp[0]*k,cp[1]*k,cp[2]*k);this.C.lookAt(0,0,this.cfg.lookZ||0);this.C.updateProjectionMatrix()};
+Stage.prototype.select=function(i,fromTime){
+  var n=this.items.length;i=(i+n)%n;this.idx=i;
+  this.items.forEach(function(o,k){var on=k===i;o.m.position.y=(o.it.h||0.45)/2+(on?0.25:0);o.base.emissive.setHex(on?0x2a2a2a:0x000000);if(o.top!==o.base)o.top.emissive.setHex(on?0x222222:0x000000)});
+  var it=this.items[i].it;this.cap.innerHTML='<b>'+(it.title||it.label)+'</b><span>'+it.desc+'</span>';
+  if(this.cfg.marker==='bar'){if(!fromTime){this.t=it.t0;}}else{this.target.set(it.x,1.25,(it.z||0))}
+};
+Stage.prototype.step=function(dt){
+  if(this.cfg.marker==='bar'){
+    if(this.playing){this.t+=dt*this.cfg.speed;if(this.t>=this.cfg.total){this.t=0}var ti=this.cfg.items.findIndex(function(x){return this.t>=x.t0&&this.t<x.t0+x.dur}.bind(this));if(ti>=0&&ti!==this.idx)this.select(ti,true)}
+    this.mk.position.x=this.cfg.x0+this.t*this.cfg.unit;
+  }else{
+    if(this.playing){this.acc+=dt;if(this.acc>1.9){this.acc=0;this.select(this.idx+1)}}
+    this.mk.position.lerp(this.target,Math.min(1,dt*5));this.mk.position.y=1.25+Math.sin(performance.now()/300)*0.08;
+  }
+  if(this.playing){var a=Math.sin(performance.now()/4000)*0.6;var cp=this.cfg.cam;var k=this.k||1;this.C.position.x=(cp[0]+a)*k;this.C.lookAt(0,0,this.cfg.lookZ||0)}
+  this.R.render(this.S,this.C);
+};
+function bindCtrl(card,st){
+  card.querySelectorAll('.ctrl button').forEach(function(b){b.onclick=function(){var a=b.dataset.act;
+    if(a==='play'){st.playing=!st.playing;b.textContent=st.playing?'⏸ 멈춤':'▶ 재생';if(st.playing&&st.idx<0)st.select(0)}
+    else if(a==='next')st.select(st.idx+1);else if(a==='prev')st.select(st.idx<0?0:st.idx-1);
+    else if(a==='reset'){st.select(0);st.acc=0}}});
+}
+function initScenes(){
+  if(!window.THREE){['stageA','stageB'].forEach(function(id){document.getElementById(id).innerHTML='<div class="fallback">입체 도식을 불러오지 못했습니다. 아래 설명과 표를 보며 진행하세요.</div>'});return}
+  var T1=0x5FB3A6,T2=0x8E84D8;
+  var A=[
+    {x:-2.7,z:-1.5,w:2.3,color:T1,label:'지난주 영상 2개',title:'1차 ① 지난주 영상 2개',desc:'지난주 만든 두 장면 영상을 캡컷으로 가져옵니다. 소리는 거의 없는 영상입니다.'},
+    {x:0,z:-1.5,w:2.3,color:T1,label:'기본 3종',title:'1차 ② 기본 3종',desc:'전환 1개 · 자막 1줄 · 픽사베이 음악. 한 번씩만 손에 익힙니다.'},
+    {x:2.7,z:-1.5,w:2.3,color:T1,label:'연습본',title:'1차 ③ 연습본 내보내기',desc:'"1차 연습"으로 저장합니다. 마지막에 최종본과 비교합니다.'},
+    {x:-5.6,z:1.5,w:2.3,color:T2,label:'생성 걸기',title:'2차 ① 말하는 영상 생성 걸기',desc:'오늘 제일 먼저 하는 일입니다. 내 장면에 맞는 움직임과 대사로 다시 만들고, 기다리는 동안 1차 연습을 합니다.'},
+    {x:-2.8,z:1.5,w:2.3,color:T2,label:'결과 듣기',title:'2차 ② 결과 듣기',desc:'관찰표로 대사 · 발음 · 두 클립 목소리 · 음악 이음새를 확인하고, 음악 없이 다시 생성합니다.'},
+    {x:0,z:1.5,w:2.3,color:T2,label:'재료 놓기',title:'2차 ③ 재료 놓기',desc:'사진 3장 + 나레이션 + 말하는 영상 2개를 한 타임라인에 놓습니다.'},
+    {x:2.8,z:1.5,w:2.3,color:T2,label:'꾸미기',title:'2차 ④ 꾸미기',desc:'제목 자막 · 전환 두 가지 · 스티커 · 효과 · 필터 · 음악 페이드 아웃.'},
+    {x:5.6,z:1.5,w:2.3,color:T2,label:'최종 한 편',title:'2차 ⑤ 최종 한 편 (약 30초)',desc:'"최종본"으로 저장하고 1차 연습본과 나란히 봅니다.'}
+  ];
+  var sa=new Stage(document.getElementById('stageA'),document.getElementById('capA'),{items:A,cam:[0,6.6,8.2],fit:2.3,marker:'ball',
+    extra:function(S3){var l1=new THREE.Mesh(new THREE.BoxGeometry(9,0.04,0.12),new THREE.MeshBasicMaterial({color:0x9FD3CB}));l1.position.set(0,0.02,-1.5);S3.add(l1);var l2=new THREE.Mesh(new THREE.BoxGeometry(14,0.04,0.12),new THREE.MeshBasicMaterial({color:0xC3BDEB}));l2.position.set(0,0.02,1.5);S3.add(l2);
+      var s1=new THREE.Sprite(new THREE.SpriteMaterial({map:label('1차 연습',{bg:'#E3F3F0',line:'#9FD3CB',ink:'#1F6B60'})}));s1.scale.set(2,0.5,1);s1.position.set(-5.6,0.6,-1.5);S3.add(s1);
+      var s2=new THREE.Sprite(new THREE.SpriteMaterial({map:label('2차 작품',{bg:'#EEEBFA',line:'#C3BDEB',ink:'#4B3C99'})}));s2.scale.set(2,0.5,1);s2.position.set(-5.6,1.55,3.0);S3.add(s2);}});
+  bindCtrl(document.getElementById('s0-map'),sa);scenes.push(sa);
+
+  var loader=new THREE.TextureLoader();var unit=0.46,x0=-6.7;var p=PL[DEMO];var seq=[
+    {k:'p',dur:3,img:demoThumbs[0],label:'사진 1',title:'사진 1 · 나레이터',desc:'"'+p.narr[0]+'" 제목 자막(위) + 위치 핀 스티커. 사진이 천천히 확대됩니다.'},
+    {k:'v',dur:10,label:'말하는 클립 1',title:'말하는 클립 1 · 주인공',desc:'"'+p.am.line+'" 음악 없는 클립의 원본 소리를 살립니다. 손 인사 스티커.'},
+    {k:'p',dur:3,img:demoThumbs[1],label:'사진 2',title:'사진 2 · 나레이터',desc:'"'+p.narr[1]+'" 레몬 스티커.'},
+    {k:'p',dur:3,img:demoThumbs[2],label:'사진 3',title:'사진 3 · 나레이터',desc:'"'+p.narr[2]+'" 파도 또는 해 스티커.'},
+    {k:'v',dur:10,label:'말하는 클립 2',title:'말하는 클립 2 · 주인공',desc:'"'+p.pm.line+'" 빛 번짐 효과 한 번 + 하트 스티커, 페이드 아웃으로 화면과 음악이 함께 끝납니다.'}
+  ];var t0=0;var B=seq.map(function(s){var w=s.dur*unit-0.08;var o={x:x0+(t0+s.dur/2)*unit,z:0,w:w,d:1.4,h:s.k==='p'?0.25:0.45,color:s.k==='p'?0xE9EBEE:T2,t0:t0,dur:s.dur,title:s.title,desc:s.desc,label:s.label,lw:s.k==='p'?1.45:2.2,lz:-0.2,lab:s.k==='p'?{}:{bg:'#EEEBFA',line:'#C3BDEB',ink:'#4B3C99'}};
+    if(s.img){o.tex=loader.load(s.img)}t0+=s.dur;return o});
+  var sb=new Stage(document.getElementById('stageB'),document.getElementById('capB'),{items:B,cam:[0,5.4,7.0],fit:2.75,lookZ:0.6,marker:'bar',x0:x0,unit:unit,total:t0,speed:2.2,
+    extra:function(S3){var mus=new THREE.Mesh(new THREE.BoxGeometry(t0*unit,0.18,0.5),new THREE.MeshLambertMaterial({color:0x9FD3CB}));mus.position.set(x0+t0*unit/2,0.09,1.6);S3.add(mus);
+      var ml=new THREE.Sprite(new THREE.SpriteMaterial({map:label('픽사베이 음악 한 곡',{bg:'#E3F3F0',line:'#9FD3CB',ink:'#1F6B60'}),depthTest:false}));ml.scale.set(2.6,0.65,1);ml.position.set(0,0.75,2.35);S3.add(ml);}});
+  bindCtrl(document.getElementById('s4-time'),sb);scenes.push(sb);
+  var last=performance.now();(function loop(now){var dt=Math.min(0.05,(now-last)/1000);last=now;scenes.forEach(function(sc){if(sc.el.offsetParent!==null)sc.step(dt)});requestAnimationFrame(loop)})(last);
+}
+demoThumbs=["img01.jpg","img02.jpg","img03.jpg","img04.jpg"];
+setTopH();go(0);renderDemo();initBuilder();initScenes();setTimeout(function(){setTopH();scenes.forEach(function(s){s.resize()})},300);
+</script>
+</body>
+</html>

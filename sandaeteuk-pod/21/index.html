@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>전자책 그림책을 종이책(POD)으로</title>
+<style>
+:root{--fs:20px;--ink:#23262d;--sub:#5b616e;--line:#e3e5ea;--bg:#fbfaf7;--card:#ffffff;--pt:#3f5fbf;--pt-soft:#eef2fb;--know:#eef4fb;--know-line:#c9daf0;--know-ink:#24507f;--do:#eef7f1;--do-line:#c6e2d1;--do-ink:#23634a;--warn:#fbf1f0;--warn-line:#eccfcb;--warn-ink:#8a3a31;--more:#f4f0fa;--more-line:#d9cff0;--more-ink:#55408c}
+*{box-sizing:border-box}
+html{font-size:var(--fs)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Pretendard","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;line-height:1.7}
+.top{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding:.5rem .9rem}
+.top-row{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap}
+.brand{font-weight:700;font-size:.95rem;margin-right:auto}
+.zoom button{font-size:.8rem;border:1px solid var(--line);background:var(--card);border-radius:8px;padding:.15rem .6rem;cursor:pointer;color:var(--ink)}
+.tabs{display:flex;gap:.35rem;flex-wrap:wrap;margin-top:.45rem}
+.tabs button{font-size:.8rem;border:1px solid var(--line);background:var(--card);color:var(--sub);border-radius:999px;padding:.2rem .75rem;cursor:pointer;font-family:inherit}
+.tabs button.on{background:var(--pt);border-color:var(--pt);color:#fff;font-weight:700}
+.wrap{max-width:1280px;margin:0 auto;padding:1rem .9rem 2rem;display:grid;grid-template-columns:minmax(0,1fr) 11rem;gap:1.1rem;align-items:start}
+.side{position:sticky;top:6.2rem;border:1px solid var(--line);background:var(--card);border-radius:12px;padding:.7rem .8rem;font-size:.8rem}
+.side b{display:block;margin:.3rem 0 .15rem}
+.side a{display:block;color:var(--sub);text-decoration:none;padding:.12rem 0 .12rem .6rem;border-left:2px solid var(--line)}
+.side a:hover{color:var(--pt);border-left-color:var(--pt)}
+.side .k{color:var(--know-ink)}.side .d{color:var(--do-ink)}
+.step{display:none}.step.on{display:block}
+.step-head{display:flex;align-items:baseline;gap:.6rem;flex-wrap:wrap;margin:.2rem 0 .8rem}
+.step-head .no{font-size:.8rem;font-weight:700;color:var(--pt);background:var(--pt-soft);border-radius:999px;padding:.1rem .7rem}
+.step-head h2{font-size:1.4rem;margin:0}
+.step-head p{margin:0;color:var(--sub);font-size:.9rem;flex-basis:100%}
+.zone{border-radius:14px;padding:.9rem;margin-bottom:1rem;border:1px solid}
+.zone.know{background:var(--know);border-color:var(--know-line)}
+.zone.do{background:var(--do);border-color:var(--do-line)}
+.zone-title{font-weight:700;font-size:1rem;margin:0 0 .6rem;display:flex;align-items:center;gap:.5rem}
+.know .zone-title{color:var(--know-ink)}.do .zone-title{color:var(--do-ink)}
+.zone-title span{font-size:.75rem;font-weight:400;color:var(--sub)}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.8rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:.85rem .95rem;scroll-margin-top:7rem}
+.card.wide{grid-column:1/-1}
+.card h3{font-size:1rem;margin:0 0 .4rem}
+.card p{margin:.3rem 0;font-size:.9rem}
+.card ul,.card ol{margin:.3rem 0;padding-left:1.2rem;font-size:.9rem}
+.num{display:inline-block;min-width:1.5rem;height:1.5rem;line-height:1.5rem;text-align:center;border-radius:50%;background:var(--do-ink);color:#fff;font-size:.75rem;font-weight:700;margin-right:.35rem}
+table{width:100%;border-collapse:collapse;font-size:.8rem;margin:.4rem 0}
+th,td{border:1px solid var(--line);padding:.35rem .5rem;text-align:left;vertical-align:top}
+th{background:#f5f6f8;font-weight:700}
+.box{border-radius:10px;padding:.55rem .75rem;font-size:.85rem;margin:.5rem 0;border:1px solid}
+.box.warn{background:var(--warn);border-color:var(--warn-line);color:var(--warn-ink)}
+.box.more{background:var(--more);border-color:var(--more-line);color:var(--more-ink)}
+.box.pad{background:var(--pt-soft);border-color:#cfd9f3;color:#2c4590}
+pre{white-space:pre-wrap;word-break:keep-all;background:#f7f8fa;border:1px solid var(--line);border-radius:10px;padding:.8rem;font-size:.8rem;line-height:1.65;font-family:inherit;margin:.4rem 0;max-width:100%}
+.copy{font-family:inherit;font-size:.8rem;border:1px solid var(--pt);background:var(--pt);color:#fff;border-radius:8px;padding:.25rem .9rem;cursor:pointer}
+.links a{display:inline-block;font-size:.8rem;color:var(--pt);border:1px solid #cfd9f3;background:var(--pt-soft);border-radius:8px;padding:.15rem .6rem;margin:.15rem .2rem .15rem 0;text-decoration:none}
+figure{margin:.6rem 0}.grid>figure,.grid>div>figure{grid-column:1/-1}
+figure img{width:100%;border:1px solid var(--line);border-radius:8px;display:block}
+figcaption{font-size:.75rem;color:var(--sub);margin-top:.25rem}
+svg{width:100%;height:auto;display:block}
+.nav-btm{display:flex;justify-content:space-between;margin-top:.5rem}
+.nav-btm button{font-family:inherit;font-size:.85rem;border:1px solid var(--line);background:var(--card);border-radius:8px;padding:.3rem .9rem;cursor:pointer;color:var(--ink)}
+.todo{border:1px dashed var(--line);border-radius:12px;padding:1.2rem;color:var(--sub);background:var(--card);font-size:.9rem}
+@media(max-width:900px){.wrap{grid-template-columns:minmax(0,1fr)}.side{position:static;order:-1}.grid{grid-template-columns:minmax(0,1fr)}}
+</style>
+</head>
+<body>
+<div class="top">
+  <div class="top-row">
+    <div class="brand">전자책 그림책을 종이책(POD)으로</div>
+    <div class="zoom"><button type="button" data-z="-1">가 −</button> <button type="button" data-z="1">가 +</button></div>
+  </div>
+  <div class="tabs" id="tabs"></div>
+</div>
+
+<div class="wrap">
+<main id="main">
+<section class="step on" data-title="목표"><div class="step-head"><span class="no">STEP 0</span><h2>학습 목표와 전체 흐름</h2><p>내가 만든 전자책 그림책을 POD(주문이 들어오면 한 권씩 찍어 주는 종이책)로 내기 전에, 어느 길로 갈지와 어떤 판형으로 갈지를 정합니다.</p></div><div class="zone know"><p class="zone-title">알아보기 <span>읽고 이해하는 구역</span></p><div class="grid"><div class="card wide" id="s0k1" data-nav="k" data-label="학습 목표"><h3>오늘의 학습 목표</h3><ol><li>내가 직접 조사한 부크크와 교보문고 바로출판의 최소 쪽수와 판형(책의 크기와 모양)을 공식 정보와 맞춰 볼 수 있다.</li><li>내 동화책과 계획서를 AI에 넣고, 종이책으로 바꾸는 데 필요한 것을 내 말로 물어볼 수 있다.</li><li>판정 프롬프트(AI에게 주는 지시문)로 「A 보강」과 「B 새로 만들기」 판정을 받고, 내 길을 이유와 함께 정할 수 있다.</li><li>판형에 따라 그림의 뷰·샷·앵글이 달라지는 것을 이해하고, 내 책의 판형을 이유와 함께 정할 수 있다.</li><li>두 곳의 파일 규격(재단 여백, 오른쪽 시작, 표지 구성)으로 내 책을 점검할 수 있다.</li></ol></div><div class="card wide" id="s0k2" data-nav="k" data-label="전체 흐름"><h3>전체 흐름</h3><svg viewBox="0 0 900 250" role="img" aria-label="전체 흐름: 조사, 질문, 판정, 판형 정보, 판형 고민, 파일 규격, 그다음 글과 그림 다시 만들기"><g font-family="inherit" fill="#23262d"><rect x="6" y="30" width="116" height="92" rx="10" fill="#eef2fb" stroke="#3f5fbf"/><text x="64" y="56" text-anchor="middle" font-size="13" fill="#3f5fbf" font-weight="700">STEP 1</text><text x="64" y="82" text-anchor="middle" font-size="16" font-weight="700">조사 점검</text><text x="64" y="106" text-anchor="middle" font-size="12.5" fill="#5b616e">올린 보고서 확인</text><path d="M124 76 l8 0 m-4 -4 l4 4 l-4 4" stroke="#3f5fbf" stroke-width="2" fill="none"/><rect x="134" y="30" width="116" height="92" rx="10" fill="#eef2fb" stroke="#3f5fbf"/><text x="192" y="56" text-anchor="middle" font-size="13" fill="#3f5fbf" font-weight="700">STEP 2</text><text x="192" y="82" text-anchor="middle" font-size="16" font-weight="700">직접 질문</text><text x="192" y="106" text-anchor="middle" font-size="12.5" fill="#5b616e">내 말로 묻기</text><path d="M252 76 l8 0 m-4 -4 l4 4 l-4 4" stroke="#3f5fbf" stroke-width="2" fill="none"/><rect x="262" y="30" width="116" height="92" rx="10" fill="#eef2fb" stroke="#3f5fbf"/><text x="320" y="56" text-anchor="middle" font-size="13" fill="#3f5fbf" font-weight="700">STEP 3</text><text x="320" y="82" text-anchor="middle" font-size="16" font-weight="700">판정 받기</text><text x="320" y="106" text-anchor="middle" font-size="12.5" fill="#5b616e">보강 / 새로</text><path d="M380 76 l8 0 m-4 -4 l4 4 l-4 4" stroke="#3f5fbf" stroke-width="2" fill="none"/><rect x="390" y="30" width="116" height="92" rx="10" fill="#eef2fb" stroke="#3f5fbf"/><text x="448" y="56" text-anchor="middle" font-size="13" fill="#3f5fbf" font-weight="700">STEP 4</text><text x="448" y="82" text-anchor="middle" font-size="16" font-weight="700">쪽수 정보</text><text x="448" y="106" text-anchor="middle" font-size="12.5" fill="#5b616e">최소 쪽수</text><path d="M508 76 l8 0 m-4 -4 l4 4 l-4 4" stroke="#3f5fbf" stroke-width="2" fill="none"/><rect x="518" y="30" width="116" height="92" rx="10" fill="#eef2fb" stroke="#3f5fbf"/><text x="576" y="56" text-anchor="middle" font-size="13" fill="#3f5fbf" font-weight="700">STEP 5</text><text x="576" y="82" text-anchor="middle" font-size="16" font-weight="700">판형 정보</text><text x="576" y="106" text-anchor="middle" font-size="12.5" fill="#5b616e">두 곳의 판형</text><path d="M636 76 l8 0 m-4 -4 l4 4 l-4 4" stroke="#3f5fbf" stroke-width="2" fill="none"/><rect x="646" y="30" width="116" height="92" rx="10" fill="#eef2fb" stroke="#3f5fbf"/><text x="704" y="56" text-anchor="middle" font-size="13" fill="#3f5fbf" font-weight="700">STEP 6</text><text x="704" y="82" text-anchor="middle" font-size="16" font-weight="700">판형 고민</text><text x="704" y="106" text-anchor="middle" font-size="12.5" fill="#5b616e">모양과 구도</text><path d="M764 76 l8 0 m-4 -4 l4 4 l-4 4" stroke="#3f5fbf" stroke-width="2" fill="none"/><rect x="774" y="30" width="116" height="92" rx="10" fill="#eef2fb" stroke="#3f5fbf"/><text x="832" y="56" text-anchor="middle" font-size="13" fill="#3f5fbf" font-weight="700">STEP 7·8</text><text x="832" y="82" text-anchor="middle" font-size="16" font-weight="700">파일 규격</text><text x="832" y="106" text-anchor="middle" font-size="12.5" fill="#5b616e">내지 · 표지</text><path d="M832 122 v36 h-382 v22 m-5 -6 l5 6 l5 -6" stroke="#5b616e" stroke-width="1.5" fill="none" stroke-dasharray="5 4"/><rect x="250" y="184" width="400" height="56" rx="10" fill="#fff" stroke="#b9bdc7" stroke-dasharray="6 4"/><text x="450" y="208" text-anchor="middle" font-size="16" font-weight="700" fill="#5b616e">다음 시간: 글과 그림 다시 만들기</text><text x="450" y="229" text-anchor="middle" font-size="12.5" fill="#5b616e">정한 길과 판형에 맞춰 장면과 그림을 새로 계획합니다</text></g></svg><p>처음부터 완성된 프롬프트를 받지 않고, 먼저 스스로 찾고 스스로 물어봅니다. 그래야 다른 책을 만들 때도 혼자 할 수 있습니다. 판정을 받은 뒤에 판형을 고민하는 까닭은, 판형이 그림의 구도를 정하기 때문입니다.</p></div></div></div><div class="zone do"><p class="zone-title">해 보기 <span>직접 따라 하는 구역</span></p><div class="grid"><div class="card" id="s0d1" data-nav="d" data-label="① 준비물 확인"><h3><span class="num">1</span>준비물 확인하기</h3><ul><li>완성해서 올린 내 전자책 그림책 PDF</li><li>전자책을 만들 때의 계획서 (제미나이와 나눈 대화창을 그대로 이어서 써도 됩니다)</li><li>장면마다 확정한 최종 글</li><li>부크크 계정, 교보문고 파트너시스템 계정</li><li>패들렛에 올린 내 「POD 출판 정보 조사 보고서」</li></ul></div><div class="card" id="s0d2" data-nav="d" data-label="② 패들렛에 올릴 세 가지"><h3><span class="num">2</span>패들렛에 올릴 세 가지</h3><p>패들렛에는 모두 세 가지를 올립니다.</p><table><tr><th style="width:2.5rem">순서</th><th>제목</th><th>올리는 때</th></tr><tr><td>①</td><td>POD 출판 정보 조사 보고서</td><td>이미 올렸습니다</td></tr><tr><td>②</td><td>POD 분석 보고서 · 보강/새로 제작</td><td>STEP 3을 마치고</td></tr><tr><td>③</td><td>POD 판형 계획서</td><td>STEP 8을 마치고</td></tr></table></div></div></div><div class="nav-btm"><span></span><button type="button" data-go="1">STEP 1 →</button></div></section>
+<section class="step" data-title="조사 점검"><div class="step-head"><span class="no">STEP 1</span><h2>조사 보고서 점검하기</h2><p>종이책은 출판하는 곳마다 조건이 다릅니다. 이미 직접 조사해서 패들렛에 올린 보고서를 꺼내, 빠진 것이 없는지 확인합니다.</p></div><div class="zone know"><p class="zone-title">알아보기 <span>읽고 이해하는 구역</span></p><div class="grid"><div class="card wide" id="s1k1" data-nav="k" data-label="책의 구조"><h3>종이책은 이렇게 생겼습니다</h3><svg viewBox="0 0 900 250" role="img" aria-label="종이책의 구조: 표지, 면지, 내지. 내지 1쪽은 오른쪽에서 시작"><g font-family="inherit" fill="#23262d" font-size="14">
+<rect x="20" y="40" width="110" height="150" rx="4" fill="#3f5fbf"/><text x="75" y="120" text-anchor="middle" fill="#fff" font-weight="700">앞표지</text><text x="75" y="212" text-anchor="middle" font-size="12.5" fill="#5b616e">쪽수에 안 들어감</text>
+<rect x="150" y="40" width="110" height="150" rx="4" fill="#f5f6f8" stroke="#b9bdc7"/><text x="205" y="120" text-anchor="middle">면지</text><text x="205" y="212" text-anchor="middle" font-size="12.5" fill="#5b616e">쪽수에 안 들어감</text>
+<rect x="300" y="40" width="110" height="150" fill="#fff" stroke="#b9bdc7" stroke-dasharray="5 4"/><text x="355" y="120" text-anchor="middle" fill="#8b909b">(빈 면)</text>
+<rect x="410" y="40" width="110" height="150" fill="#eef7f1" stroke="#23634a" stroke-width="2"/><text x="465" y="112" text-anchor="middle" font-weight="700" fill="#23634a">내지 1쪽</text><text x="465" y="132" text-anchor="middle" font-size="12.5" fill="#23634a">오른쪽에서 시작</text>
+<rect x="560" y="40" width="110" height="150" fill="#eef4fb" stroke="#24507f"/><text x="615" y="112" text-anchor="middle" font-weight="700" fill="#24507f">2쪽 (왼쪽)</text><text x="615" y="132" text-anchor="middle" font-size="12.5" fill="#24507f">그림</text>
+<rect x="670" y="40" width="110" height="150" fill="#fff" stroke="#24507f"/><text x="725" y="112" text-anchor="middle" font-weight="700" fill="#24507f">3쪽 (오른쪽)</text><text x="725" y="132" text-anchor="middle" font-size="12.5" fill="#24507f">글</text>
+<text x="465" y="212" text-anchor="middle" font-size="12.5" fill="#5b616e">여기부터 쪽수를 셉니다</text><text x="670" y="212" text-anchor="middle" font-size="12.5" fill="#5b616e">한 장면 = 두 쪽 (짝수 쪽 그림 + 홀수 쪽 글)</text>
+<text x="820" y="120" text-anchor="middle" font-size="22" fill="#8b909b">…</text></g></svg><p>최소 쪽수는 내지(책 속 종이)의 쪽수를 말합니다. 표지와 면지(표지 안쪽의 빈 종이)는 세지 않습니다. 내지 1쪽은 책을 펼쳤을 때 오른쪽에 놓입니다.</p></div><div class="card wide" id="s1k2" data-nav="k" data-label="쪽수 세는 법"><h3>내 책의 내지 쪽수 계산하기</h3><svg viewBox="0 0 900 140" role="img" aria-label="내지 쪽수 계산: 앞부속 더하기 장면 수 곱하기 2 더하기 펼침 그림 수 곱하기 2 더하기 뒷부속"><g font-family="inherit" font-size="14" fill="#23262d">
+<rect x="10" y="20" width="150" height="56" rx="8" fill="#f5f6f8" stroke="#b9bdc7"/><text x="85" y="44" text-anchor="middle" font-weight="700">앞부속</text><text x="85" y="64" text-anchor="middle" font-size="12.5" fill="#5b616e">속표지·판권 등, 홀수 쪽</text>
+<text x="178" y="54" font-size="20">+</text>
+<rect x="200" y="20" width="230" height="56" rx="8" fill="#eef4fb" stroke="#24507f"/><text x="315" y="44" text-anchor="middle" font-weight="700">장면 수 × 2</text><text x="315" y="64" text-anchor="middle" font-size="12.5" fill="#5b616e">그림 한 쪽 + 글 한 쪽</text>
+<text x="448" y="54" font-size="20">+</text>
+<rect x="470" y="20" width="210" height="56" rx="8" fill="#eef4fb" stroke="#24507f"/><text x="575" y="44" text-anchor="middle" font-weight="700">펼침 그림 수 × 2</text><text x="575" y="64" text-anchor="middle" font-size="12.5" fill="#5b616e">글 없이 두 쪽을 잇는 그림</text>
+<text x="698" y="54" font-size="20">+</text>
+<rect x="720" y="20" width="170" height="56" rx="8" fill="#f5f6f8" stroke="#b9bdc7"/><text x="805" y="44" text-anchor="middle" font-weight="700">뒷부속</text><text x="805" y="64" text-anchor="middle" font-size="12.5" fill="#5b616e">작가의 말 등, 홀수 쪽</text>
+<text x="450" y="106" text-anchor="middle" font-size="13.5" fill="#5b616e">지금 전자책 예: 앞부속 3 + 장면 10 × 2 + 뒷부속 1 = 내지 24쪽 → 50쪽에는 26쪽이 모자랍니다</text><text x="450" y="128" text-anchor="middle" font-size="13.5" fill="#5b616e">종이책 목표 예: 앞부속 5 + 장면 20 × 2 + 뒷부속 5 = 내지 50쪽</text></g></svg><p>부속은 본문 앞뒤에 붙는 쪽입니다(속표지, 판권 쪽, 작가의 말 등). 그림이 늘 왼쪽(짝수 쪽)에 오게 하려면 앞부속은 홀수 쪽으로 맞춥니다. 전자책은 부속이 적었지만, 종이책은 앞뒤 부속을 5쪽 안팎으로 잡고 계산합니다. STEP 3의 판정 프롬프트도 이 기준으로 계산합니다.</p></div><div class="card" id="s1k3" data-nav="k" data-label="찾을 곳"><h3>어디서 찾나</h3><table><tr><th style="width:8rem">곳</th><th>보는 화면</th></tr><tr><td>부크크</td><td>bookk.co.kr → 책만들기 → 종이책. 판형·표지·날개 선택 칸과 그 아래 안내 글, 「원고서식 받기」로 받는 서식 파일, 고객센터의 자주 묻는 질문</td></tr><tr><td>교보문고</td><td>파트너시스템에 로그인 → 바로출판POD관리 → POD등록. Step1 준비하기, Step2 책형태정하기, Step3 원고등록하기 화면을 끝까지 내려 봅니다. 바로출판 자주 묻는 질문과 공지사항도 봅니다.</td></tr></table><div class="links">바로 가기 <a href="https://bookk.co.kr/author/make/paperBook" target="_blank" rel="noopener">부크크 책 만들기</a><a href="https://partner.kyobobook.co.kr/" target="_blank" rel="noopener">교보문고 파트너</a><a href="https://app.notion.com/p/POD-2567fd9fbff480898fefc5994e8a4b25" target="_blank" rel="noopener">교보 바로출판 자주 묻는 질문</a></div></div><div class="card" id="s1k4" data-nav="k" data-label="출처 표시"><h3>(공)과 (남)으로 출처 나누기</h3><p>블로그 글이나 AI의 답은 서로 다른 숫자를 말할 때가 많습니다.</p><ul><li><b>(공)</b> 공식 화면·공지에서 직접 본 것</li><li><b>(남)</b> 블로그·AI 답변 등 남의 글에서 본 것</li></ul><div class="box warn">(남)만 있는 칸은 아직 확인이 안 된 칸입니다. 공식 화면에서 다시 찾아 (공)으로 바꿉니다.</div><p>무선 제본은 책등을 풀로 붙이는 일반 책, 양장은 두꺼운 표지의 책, 재단 여백은 인쇄한 뒤 잘려 나가는 가장자리입니다.</p></div></div></div><div class="zone do"><p class="zone-title">해 보기 <span>직접 따라 하는 구역</span></p><div class="grid"><div class="card wide" id="s1d1" data-nav="d" data-label="① 조사 보고서 점검"><h3><span class="num">1</span>내 조사 보고서를 10항목으로 점검하기</h3><p>패들렛에 올린 내 조사 보고서를 옆에 펴 둡니다. 아래 10항목 가운데 보고서에 이미 있는 것은 옮겨 적고, 빠진 것만 새로 찾습니다. 숫자만 적지 말고 어디서 찾았는지도 함께 적습니다.</p><table><tr><th>항목</th><th>부크크</th><th>교보문고 바로출판</th><th>어디서 찾았나</th></tr><tr><td>1. 종이책 최소 쪽수</td><td></td><td></td><td></td></tr><tr><td>2. 종이책 최대 쪽수</td><td></td><td></td><td></td></tr><tr><td>3. 쪽수 조건(짝수, 4의 배수 등)이 있는가</td><td></td><td></td><td></td></tr><tr><td>4. 고를 수 있는 판형 수</td><td></td><td></td><td></td></tr><tr><td>5. 가로형·정사각형 판형이 있는가</td><td></td><td></td><td></td></tr><tr><td>6. 내 그림책에 맞을 판형과 크기(mm)</td><td></td><td></td><td></td></tr><tr><td>7. 제본 종류(무선·날개·양장)</td><td></td><td></td><td></td></tr><tr><td>8. 원고 파일 형식과 용량</td><td></td><td></td><td></td></tr><tr><td>9. 재단 여백(사방 몇 mm)</td><td></td><td></td><td></td></tr><tr><td>10. AI로 만든 책이라는 표시를 해야 하는가</td><td></td><td></td><td></td></tr></table><div class="box more">찾는 요령: 화면을 맨 아래까지 내립니다. 작은 글씨 안내문에 조건이 숨어 있습니다. 쪽수 칸에 숫자를 직접 넣어 보는 것도 방법입니다.</div></div><div class="card wide" id="s1d2" data-nav="d" data-label="② AI 답과 비교하기"><h3><span class="num">2</span>AI에게도 물어보고 비교하기</h3><p>같은 것을 AI에게 물어보고, 내가 공식 화면에서 찾은 숫자와 같은지 봅니다. 다르면 조사표에 (남)으로 따로 적어 둡니다. <button type="button" class="copy" data-copy="p1">프롬프트 복사</button></p><pre id="p1">부크크 종이책과 교보문고 바로출판(POD)의 최소 쪽수를 알려 줘.
+- 각각 공식 화면이나 공지의 주소를 함께 적어 줘.
+- 주소를 모르면 "출처 모름"이라고 적어 줘. 짐작해서 채우지 마.
+- 두 곳의 숫자가 다르면 어디가 다른지 표로 보여 줘.</pre></div></div></div><div class="nav-btm"><button type="button" data-go="0">← STEP 0</button><button type="button" data-go="2">STEP 2 →</button></div></section>
+<section class="step" data-title="직접 질문"><div class="step-head"><span class="no">STEP 2</span><h2>직접 물어보기</h2><p>이번에는 완성된 프롬프트 없이 AI에게 내 말로 물어봅니다. 무엇을 물을지만 정해 두었습니다.</p></div><div class="zone know"><p class="zone-title">알아보기 <span>읽고 이해하는 구역</span></p><div class="grid"><div class="card wide" id="s2k1" data-nav="k" data-label="두 갈래 길"><h3>종이책으로 가는 두 갈래 길</h3><svg viewBox="0 0 900 250" role="img" aria-label="두 갈래 길: A 보강은 지금 이야기에 장면을 보태고, B 새로 만들기는 모티브만 가져와 다시 만든다"><g font-family="inherit" font-size="14" fill="#23262d">
+<rect x="20" y="90" width="170" height="70" rx="10" fill="#f5f6f8" stroke="#b9bdc7"/><text x="105" y="120" text-anchor="middle" font-weight="700">내 전자책</text><text x="105" y="142" text-anchor="middle" font-size="12.5" fill="#5b616e">10장면 안팎</text>
+<path d="M190 115 C250 115 250 60 310 60" stroke="#24507f" stroke-width="2" fill="none"/><path d="M190 135 C250 135 250 190 310 190" stroke="#55408c" stroke-width="2" fill="none"/>
+<rect x="310" y="20" width="570" height="84" rx="10" fill="#eef4fb" stroke="#24507f"/><text x="330" y="48" font-weight="700" fill="#24507f">A 보강</text><text x="330" y="70" font-size="13">지금 이야기는 그대로 두고, 사이사이에 장면을 보태서 늘립니다.</text><text x="330" y="90" font-size="13" fill="#5b616e">그림과 인물 설정을 이어서 씁니다. 보탤 재료가 내 자료에 있어야 합니다.</text>
+<rect x="310" y="148" width="570" height="84" rx="10" fill="#f4f0fa" stroke="#55408c"/><text x="330" y="176" font-weight="700" fill="#55408c">B 새로 만들기</text><text x="330" y="198" font-size="13">지금 이야기에서 모티브(소재와 마음)만 가져와 새 이야기로 다시 만듭니다.</text><text x="330" y="218" font-size="13" fill="#5b616e">글과 그림을 처음부터 다시 만듭니다. 늘리면 어색해지는 책에 맞습니다.</text>
+</g></svg><p>쪽수가 모자라는 책을 종이책으로 만드는 길은 둘입니다. 어느 길이 맞는지는 책마다 다릅니다. 그래서 먼저 내 책이 어떤 책인지 AI와 함께 살펴봅니다.</p></div><div class="card" id="s2k2" data-nav="k" data-label="질문 잘하는 법"><h3>질문을 잘하는 네 가지</h3><ol><li>조건은 숫자로 알려 줍니다. "쪽수가 모자라"보다 "내지 ○쪽 이상이어야 해"가 낫습니다. 조사표의 숫자를 씁니다.</li><li>한 번에 하나씩 묻습니다.</li><li>근거를 달라고 합니다. "내 자료의 어느 부분을 보고 그렇게 말했는지 알려 줘."</li><li>모르면 모른다고 하게 합니다. "자료에 없으면 없다고 말해 줘. 지어내지 마."</li></ol></div><div class="card" id="s2k3" data-nav="k" data-label="넣을 자료"><h3>AI에 넣을 자료 세 가지</h3><table><tr><th style="width:7rem">자료</th><th>설명</th></tr><tr><td>① 내 동화책</td><td>완성해서 올린 전자책 PDF</td></tr><tr><td>② 계획서</td><td>전자책을 만들 때의 기획 자료. 제미나이와 나눈 대화창을 그대로 이어서 써도 됩니다.</td></tr><tr><td>③ 최종 글</td><td>장면마다 확정한 글. PDF 속 글자가 그림으로 들어가 있으면 AI가 글을 놓칠 수 있어서 따로 붙여 넣습니다.</td></tr></table></div></div></div><div class="zone do"><p class="zone-title">해 보기 <span>직접 따라 하는 구역</span></p><div class="grid"><div class="card" id="s2d1" data-nav="d" data-label="① 자료 넣고 첫 마디"><h3><span class="num">1</span>자료를 넣고 첫 마디 건네기</h3><p>자료 세 가지를 넣고, 이 한 줄로 시작합니다. 그다음부터는 내 말로 이어 갑니다. <button type="button" class="copy" data-copy="p2">첫 마디 복사</button></p><pre id="p2">첨부한 것은 내가 만든 전자책 그림책과 그 계획서야. 이 책을 종이책으로 내려고 해. 먼저 이 책이 몇 장면, 몇 쪽인지 말해 줘.</pre></div><div class="card" id="s2d2" data-nav="d" data-label="② 여섯 가지 물어보기"><h3><span class="num">2</span>물어볼 거리 여섯 가지</h3><p>아래를 내 말로 바꿔 하나씩 물어봅니다. 문장은 일부러 적어 두지 않았습니다.</p><table><tr><th>물어볼 거리</th><th>왜 물어보나</th></tr><tr><td>내 책은 지금 몇 장면, 몇 쪽인가</td><td>AI가 내 책을 제대로 읽었는지 확인</td></tr><tr><td>내가 조사한 최소 쪽수에 맞추려면 몇 쪽이 모자라는가</td><td>늘려야 할 양을 숫자로 알기</td></tr><tr><td>지금 이야기에서 늘릴 수 있는 장면은 어디인가</td><td>보강이 되는 책인지 가늠</td></tr><tr><td>늘리면 어색해지거나 같은 그림이 반복될 곳은 어디인가</td><td>보강의 한계 알기</td></tr><tr><td>새로 만든다면 지금 책에서 무엇을 가져갈 수 있는가</td><td>새로 만들기의 모습 미리 보기</td></tr><tr><td>판형이 바뀌면 지금 그림은 어떻게 되는가</td><td>그림을 다시 그려야 하는지 알기</td></tr></table></div><div class="card wide" id="s2d3" data-nav="d" data-label="③ 돌아보기"><h3><span class="num">3</span>돌아보기</h3><ul><li>AI가 잘 답한 질문 하나와, 엉뚱하게 답한 질문 하나를 고릅니다.</li><li>엉뚱한 답이 나온 까닭을 한 줄로 적습니다. 내가 빠뜨린 정보가 있었는지 봅니다.</li><li>STEP 3의 프롬프트를 볼 때, 내 질문에 없던 것이 무엇인지 찾아봅니다.</li></ul><div class="box more">이 단계는 패들렛에 따로 올리지 않습니다. 잘 통한 질문과 안 통한 질문은 STEP 3의 분석 보고서에 한 줄씩 넣습니다.</div></div></div></div><div class="nav-btm"><button type="button" data-go="1">← STEP 1</button><button type="button" data-go="3">STEP 3 →</button></div></section>
+<section class="step" data-title="판정 받기"><div class="step-head"><span class="no">STEP 3</span><h2>판정 받기</h2><p>STEP 2에서 내 말로 물어봤다면, 이제 같은 일을 한 번에 시키는 프롬프트를 씁니다. 내 질문과 무엇이 다른지 비교하며 읽으세요.</p></div><div class="zone know"><p class="zone-title">알아보기 <span>읽고 이해하는 구역</span></p><div class="grid"><div class="card wide" id="s3k1" data-nav="k" data-label="프롬프트 구조"><h3>판정 프롬프트는 이렇게 짜여 있습니다</h3><svg viewBox="0 0 900 260" role="img" aria-label="판정 프롬프트의 구조: 넣는 자료 세 가지, 판정 방법, 나오는 것 여섯 가지"><g font-family="inherit" font-size="13.5" fill="#23262d">
+<text x="100" y="22" text-anchor="middle" font-weight="700" fill="#5b616e">넣는 것</text>
+<rect x="10" y="34" width="180" height="46" rx="8" fill="#f5f6f8" stroke="#b9bdc7"/><text x="100" y="62" text-anchor="middle">① 기획 자료</text>
+<rect x="10" y="92" width="180" height="46" rx="8" fill="#f5f6f8" stroke="#b9bdc7"/><text x="100" y="120" text-anchor="middle">② 전자책 PDF</text>
+<rect x="10" y="150" width="180" height="46" rx="8" fill="#f5f6f8" stroke="#b9bdc7"/><text x="100" y="178" text-anchor="middle">③ 최종 글</text>
+<path d="M196 115 h44 m-6 -6 l6 6 l-6 6" stroke="#3f5fbf" stroke-width="2" fill="none"/>
+<text x="375" y="22" text-anchor="middle" font-weight="700" fill="#3f5fbf">AI가 하는 일</text>
+<rect x="250" y="34" width="250" height="162" rx="10" fill="#eef2fb" stroke="#3f5fbf"/>
+<text x="270" y="62">1. 필요한 장면 수 계산</text><text x="270" y="88">2. 지금 자료로 세울 수 있는</text><text x="286" y="108">장면 수 세기</text><text x="270" y="134">3. 기준에 따라 판정</text><text x="270" y="162" font-size="12.5" fill="#5b616e">판정만 하고 글은 고치지 않음</text><text x="270" y="182" font-size="12.5" fill="#5b616e">자료에 없는 것은 지어내지 않음</text>
+<path d="M506 115 h44 m-6 -6 l6 6 l-6 6" stroke="#3f5fbf" stroke-width="2" fill="none"/>
+<text x="725" y="22" text-anchor="middle" font-weight="700" fill="#23634a">나오는 것 (순서 고정)</text>
+<rect x="560" y="34" width="330" height="34" rx="8" fill="#eef7f1" stroke="#23634a" stroke-width="2"/><text x="576" y="56" font-weight="700" fill="#23634a">1 판정 — 맨 첫 줄에 나옴</text>
+<rect x="560" y="74" width="160" height="34" rx="8" fill="#fff" stroke="#c6e2d1"/><text x="576" y="96">2 판정 근거표</text>
+<rect x="730" y="74" width="160" height="34" rx="8" fill="#fff" stroke="#c6e2d1"/><text x="746" y="96">3 쪽수 계산</text>
+<rect x="560" y="114" width="160" height="34" rx="8" fill="#fff" stroke="#c6e2d1"/><text x="576" y="136">4 미리 보기</text>
+<rect x="730" y="114" width="160" height="34" rx="8" fill="#fff" stroke="#c6e2d1"/><text x="746" y="136">5 반대쪽으로 가면</text>
+<rect x="560" y="154" width="330" height="34" rx="8" fill="#fff" stroke="#c6e2d1"/><text x="576" y="176">6 마무리 질문: 이 판정대로 갈까요?</text>
+<text x="450" y="236" text-anchor="middle" font-size="13" fill="#5b616e">판정 기준: 가능한 장면 수가 필요한 수 이상이면 A · 70% 이상이면 A(조건부) · 그보다 적거나 반복이 생기면 B</text>
+</g></svg><p>이 프롬프트에는 역할(그림책 편집자), 넣은 자료, 할 일과 하지 말 일, 판정하는 방법, 지킬 것, 출력 순서가 들어 있습니다. STEP 2의 내 질문에 빠져 있던 것이 무엇인지 표시해 보세요.</p></div><div class="card wide" id="s3k2" data-nav="k" data-label="결과 읽는 법"><h3>나온 결과 읽는 법</h3><table><tr><th>출력</th><th>무엇인가</th><th>내가 확인할 것</th></tr><tr><td>1 판정</td><td>A 보강 / A 보강(조건부) / B 새로 만들기와 이유 세 줄</td><td>이유가 내 책 이야기인지, 어느 책에나 할 수 있는 말인지</td></tr><tr><td>2 판정 근거표</td><td>여섯 기준으로 본 내 책의 상태</td><td>"남은 재료"가 내가 실제로 말한 것인지</td></tr><tr><td>3 쪽수 계산</td><td>모자라는 쪽수와 채우는 조합</td><td>덧셈을 직접 해 보기</td></tr><tr><td>4 미리 보기</td><td>A면 보강 지도와 추가 질문, B면 모티브와 방향 3가지</td><td>보탤 장면이 자료에서 나온 것인지</td></tr><tr><td>5 반대쪽으로 가면</td><td>판정과 다르게 갈 때의 문제</td><td>내가 감당할 수 있는 문제인지</td></tr><tr><td>6 마무리</td><td>어느 쪽으로 갈지 묻는 질문</td><td>내 선택을 답하기</td></tr></table><p>길면 "계속"이라고 입력해 끝까지 받습니다.</p></div><div class="card wide" id="s3k3" data-nav="k" data-label="판정별 다음 행동"><h3>판정에 따라 이렇게 합니다</h3><table><tr><th style="width:9rem">판정</th><th>할 일</th></tr><tr><td>A 보강</td><td>추가 질문 5개에 답할 수 있는지 봅니다. 답할 기억이 있으면 A로 갑니다. 떠오르는 것이 없으면 B도 생각해 봅니다.</td></tr><tr><td>A 보강(조건부)</td><td>추가 질문에 먼저 답해 봅니다. 장면이 채워지면 A, 채워지지 않으면 B입니다.</td></tr><tr><td>B 새로 만들기</td><td>방향 3가지 가운데 마음이 가는 것이 있는지 봅니다. 지금 이야기를 꼭 지키고 싶다면 출력 5를 읽고 A로 갈 수도 있습니다.</td></tr></table><div class="box warn">AI의 판정은 참고 자료이고, 길은 내가 정합니다. 쪽수 계산과 "자료에 있다"고 한 내용은 사람이 한 번 더 확인합니다. 내 기억으로 쓴 책인데 AI가 없던 일을 넣었다면 그 줄은 지웁니다.</div></div></div></div><div class="zone do"><p class="zone-title">해 보기 <span>직접 따라 하는 구역</span></p><div class="grid"><div class="card wide" id="s3d1" data-nav="d" data-label="① 쪽수 칸 확인"><h3><span class="num">1</span>쪽수 칸을 확인하기</h3><p>첫머리의 【50】은 목표 내지 쪽수입니다. 부크크는 50쪽부터이고 교보문고도 50쪽 이상을 권하므로 50으로 둡니다. 쪽수는 짝수로 맞춥니다(홀수면 마지막 장 뒷면이 빕니다). 나머지 【 】는 넣은 자료를 가리키는 자리입니다.</p></div><div class="card wide" id="s3d2" data-nav="d" data-label="② 판정 프롬프트 보내기"><h3><span class="num">2</span>판정 프롬프트 붙여 넣기</h3><p>자료 세 가지를 넣고 아래 프롬프트를 붙여 넣으면, 맨 첫 줄에 판정부터 나옵니다. <button type="button" class="copy" data-copy="p3">프롬프트 복사</button></p><pre id="p3">너는 그림책 편집자야. 내가 만든 전자책 그림책을 종이책(POD)으로 낼 거야.
+종이책은 내지가 【50】쪽 이상이고 짝수여야 해서, 지금 분량으로는 모자라.
+
+[넣은 자료]
+① 전자책을 만들 때의 기획 자료: 【이 대화의 앞부분 / 첨부 파일】
+② 전자책 PDF: 【첨부】
+③ 확정한 최종 글(장면별): 【붙여 넣기 — PDF 속 글자가 그림으로 들어가 있으면 꼭 넣기】
+
+[네가 할 일]
+아래 둘 가운데 어느 쪽이 맞는지 네가 먼저 판정해 줘.
+A 보강: 지금 이야기는 그대로 두고, 사이사이에 장면을 보태서 늘린다.
+B 새로 만들기: 지금 이야기에서 모티브(소재와 마음)만 가져와 새 이야기로 다시 만든다.
+오늘은 판정만 해. 글을 고치거나 새로 쓰지 마.
+
+[판정하는 방법]
+1. 필요한 장면 수를 계산해. 책은 왼쪽 쪽에 그림, 오른쪽 쪽에 글이 들어가.
+   내지 쪽수 = 앞부속(홀수 쪽) + 장면 수 × 2 + 글 없는 펼침 그림 수 × 2 + 뒷부속(홀수 쪽)
+   (내지 1쪽은 오른쪽 쪽이고, 표지는 내지에 넣지 않아. 앞부속 5쪽, 뒷부속 5~7쪽을 기준으로 계산해.)
+2. 지금 자료만으로 세울 수 있는 장면 수를 세어 봐. 세울 수 있는 것은 세 가지뿐이야.
+   - 한 장면에 뭉쳐 있는 일을 2~3박자로 나누기
+   - 기획 자료에 있지만 책에서는 한 줄로 지나간 소리 · 냄새 · 생김새를 한 장면으로 세우기
+   - 기획 자료에 있는데 책에 안 쓰인 재료
+   실제 기억으로 쓴 책이면 자료에 없는 사건은 세지 마.
+3. 아래 기준으로 판정해.
+   - 가능한 장면 수가 필요한 장면 수 이상이면 → A 보강
+   - 필요한 장면 수의 70% 이상이고, 내가 질문에 답하면 채울 수 있어 보이면 → A 보강(조건부)
+   - 70%에 못 미치거나, 늘리면 같은 그림이 반복될 수밖에 없으면 → B 새로 만들기
+
+[끝까지 지킬 것]
+- 자료에 없는 사건 · 사람 · 말을 지어내지 마. 못 찾은 것은 "자료에 없음"이라고 적어.
+- (중략) · (생략)을 쓰지 마. 길면 "이번 출력 범위"를 적고 끝까지 쓴 뒤 "계속"을 안내해.
+- 아래 출력 순서를 바꾸지 마. 판정이 반드시 맨 위에 와야 해.
+
+[출력 1 — 판정]
+첫 줄에 한 줄로만 적어: "판정: A 보강" / "판정: A 보강(조건부)" / "판정: B 새로 만들기"
+바로 아래에 이유 세 줄.
+
+[출력 2 — 판정 근거표]
+표: 기준 | 내 책의 상태 | 어느 쪽에 유리(A · B · 중립)
+① 책의 종류 (실제 기억 · 창작 · 섞임)
+② 사건이 하나인지 여럿인지
+③ 기획 자료에 남아 있는 재료의 양
+④ 쪼갤 수 있는 장면의 수
+⑤ 늘렸을 때 같은 그림이 반복될 위험
+⑥ 필요한 장면 수와 가능한 장면 수 (숫자로)
+
+[출력 3 — 쪽수 계산]
+지금 장면 수와 내지 쪽수 / 모자라는 쪽수 / 목표를 채우는 조합 2가지(앞부속 · 장면 수 · 펼침 그림 수 · 뒷부속)를 표로. 조합마다 합계가 짝수인지 확인해.
+
+[출력 4 — 판정에 따른 미리 보기]
+- 판정이 A면: 보강 지도를 표로 — 기존 장면 | 무엇을 보탤지 | 근거가 되는 자료 | 늘어나는 장면 수. 그 아래에 나에게 물어볼 추가 질문 5개.
+- 판정이 B면: 가져갈 모티브 4가지(소재 · 정서 · 인물 관계 · 구조)와, 새 이야기 방향 3가지를 한 줄씩. 하나는 다른 실제 기억, 하나는 창작 이야기, 하나는 같은 이야기를 다른 사람의 눈으로.
+- 판정이 A(조건부)면: 둘 다 짧게.
+
+[출력 5 — 반대쪽으로 가면]
+내가 판정과 반대로 가기로 했을 때 생길 문제를 두 줄로.
+
+[출력 6 — 마무리]
+마지막 줄에 이렇게 물어봐: "이 판정대로 갈까요, 다른 쪽으로 갈까요?"</pre><div class="box more">복사 버튼이 안 눌리면 프롬프트 상자 안을 마우스로 끌어 선택한 뒤 Ctrl+C로 복사하세요.</div></div><div class="card wide" id="s3d3" data-nav="d" data-label="③ 분석 보고서 올리기"><h3><span class="num">3</span>분석 보고서를 만들어 패들렛에 올리기</h3><p>AI가 준 결과를 그대로 붙이지 않고, 내가 확인한 내용으로 보고서를 만듭니다. 양식은 자유입니다.</p><table><tr><th style="width:9rem">넣을 것</th><th>내용</th></tr><tr><td>내 전자책 분석</td><td>지금 장면 수와 내지 쪽수, 목표 쪽수까지 모자라는 쪽수</td></tr><tr><td>판정과 이유</td><td>A 보강 / A 보강(조건부) / B 새로 만들기, 이유 세 줄</td></tr><tr><td>판정 근거표</td><td>여섯 기준으로 본 내 책의 상태</td></tr><tr><td>쪽수 계산</td><td>목표를 채우는 조합(앞부속·장면 수·펼침 그림 수·뒷부속)</td></tr><tr><td>내 선택</td><td>"저는 A(또는 B)로 갑니다. 이유는 ○○입니다." AI의 판정과 다르면 그 까닭</td></tr><tr><td>질문 돌아보기</td><td>STEP 2에서 잘 통한 질문 하나, 안 통한 질문 하나</td></tr></table><div class="box pad"><b>패들렛에 올리기</b><br>게시물 제목: <b>POD 분석 보고서 · 보강/새로 제작</b></div></div></div></div><div class="nav-btm"><button type="button" data-go="2">← STEP 2</button><button type="button" data-go="4">STEP 4 →</button></div></section>
+<section class="step" data-title="쪽수 정보"><div class="step-head"><span class="no">STEP 4</span><h2>쪽수 정보</h2><p>길을 정했으면 이제 두 곳의 조건을 확인합니다. 먼저 쪽수입니다. 내가 올린 조사 보고서와 맞춰 봅니다.</p></div><div class="zone know"><p class="zone-title">알아보기 <span>읽고 이해하는 구역</span></p><div class="grid"><div class="card wide" id="s4k1" data-nav="k" data-label="최소 쪽수"><h3>최소 쪽수 한눈에 보기</h3><svg viewBox="0 0 900 190" role="img" aria-label="최소 쪽수 비교: 부크크는 50쪽부터, 교보문고는 30쪽부터 등록되지만 50쪽 이상 권장"><g font-family="inherit" font-size="14" fill="#23262d">
+<text x="10" y="50" font-weight="700">부크크</text><rect x="130" y="30" width="350" height="30" fill="#fbf1f0" stroke="#eccfcb"/><rect x="480" y="30" width="400" height="30" fill="#eef7f1" stroke="#23634a"/><text x="305" y="50" text-anchor="middle" fill="#8a3a31">50쪽 미만은 출판할 수 없음</text><text x="680" y="50" text-anchor="middle" fill="#23634a">50쪽부터 가능</text>
+<text x="10" y="110" font-weight="700">교보문고</text><rect x="130" y="90" width="210" height="30" fill="#fbf1f0" stroke="#eccfcb"/><rect x="340" y="90" width="140" height="30" fill="#f4f0fa" stroke="#55408c"/><rect x="480" y="90" width="400" height="30" fill="#eef7f1" stroke="#23634a"/><text x="235" y="110" text-anchor="middle" fill="#8a3a31">30쪽 미만 불가</text><text x="410" y="110" text-anchor="middle" fill="#55408c" font-size="12.5">30~49쪽: 조건부</text><text x="680" y="110" text-anchor="middle" fill="#23634a">50쪽 이상 권장</text>
+<path d="M130 135 h750" stroke="#b9bdc7"/><text x="130" y="154" text-anchor="middle" font-size="12.5" fill="#5b616e">0</text><text x="340" y="154" text-anchor="middle" font-size="12.5" fill="#5b616e">30쪽</text><text x="480" y="154" text-anchor="middle" font-size="12.5" fill="#5b616e">50쪽</text>
+<path d="M480 22 v118" stroke="#3f5fbf" stroke-width="2" stroke-dasharray="5 4"/><text x="486" y="180" font-size="13" fill="#3f5fbf" font-weight="700">우리 수업의 목표: 두 곳 모두 내지 50쪽 이상</text></g></svg><table><tr><th style="width:8rem">곳</th><th>최소 쪽수</th><th>근거</th></tr><tr><td>부크크</td><td>50쪽</td><td>책 만들기 화면의 안내 문구 "50페이지 미만은 도서출판 불가능합니다"</td></tr><tr><td>교보문고</td><td>30쪽 (50쪽 이상 권장)</td><td>파트너시스템 POD등록 화면, 바로출판 자주 묻는 질문, 검수 체크리스트</td></tr></table><div class="links">원문 보기 <a href="https://bookk.co.kr/author/make/paperBook" target="_blank" rel="noopener">부크크 책 만들기</a><a href="https://app.notion.com/p/POD-2567fd9fbff480898fefc5994e8a4b25" target="_blank" rel="noopener">교보 자주 묻는 질문</a><a href="https://accidental-thought-b51.notion.site/2b57fd9fbff480248cb9d29d17161f6d" target="_blank" rel="noopener">교보 납본 제외·종이 빠짐 확인</a><a href="https://accidental-thought-b51.notion.site/1537fd9fbff48024865ad429003f93f7" target="_blank" rel="noopener">교보 바로출판 필수체크</a></div></div><div class="card" id="s4k2" data-nav="k" data-label="부크크 근거 화면"><h3>부크크: 50쪽 미만은 안 됩니다</h3><figure><img alt="부크크 책만들기 화면: 50페이지 미만은 도서출판 불가능합니다" src="img01.jpg"><figcaption>부크크 책 만들기 화면. 쪽수 칸에 50보다 작은 수를 넣으면 이 문구가 나옵니다.</figcaption></figure><div class="links">원문 보기 <a href="https://bookk.co.kr/author/make/paperBook" target="_blank" rel="noopener">부크크 책 만들기</a></div></div><div class="card" id="s4k3" data-nav="k" data-label="교보 근거 화면 ①"><h3>교보문고: 30쪽부터 등록됩니다</h3><figure><img alt="교보문고 원고 등록 화면: 원고 파일 페이지 수는 최소 30p에서 최대 1,000p" src="img02.jpg"><figcaption>파트너시스템 POD등록 Step3 「총 페이지수를 확인해 주세요」</figcaption></figure><figure><img alt="교보문고 준비 화면: 무선제본 30p~1000p, 양장제본 30p~900p" src="img03.jpg"><figcaption>파트너시스템 POD등록 Step1 「표지디자인」</figcaption></figure><div class="links">원문 보기 <a href="https://partner.kyobobook.co.kr/" target="_blank" rel="noopener">교보문고 파트너</a><a href="https://app.notion.com/p/POD-2567fd9fbff480898fefc5994e8a4b25" target="_blank" rel="noopener">교보 자주 묻는 질문</a></div></div><div class="card wide" id="s4k4" data-nav="k" data-label="교보 30~49쪽"><h3>교보문고에서 30~49쪽으로 낼 때</h3><div class="grid"><figure><img alt="교보 바로출판 자주 묻는 질문: 최소 50페이지 이상 권장" src="img04.jpg"><figcaption>바로출판POD 자주 묻는 질문 「최소/최대 페이지수를 알고 싶어요」</figcaption></figure><figure><img alt="교보 검수 체크리스트: 개인저자 납본 제외·종이 빠짐 확인" src="img05.jpg"><figcaption>검수 체크리스트 「[주의] 개인저자 납본 제외·종이 빠짐 확인」</figcaption></figure></div><ul><li>30쪽부터 등록은 되지만, 실물 책이 안정감 있게 만들어지려면 50쪽 이상을 권장합니다.</li><li>50쪽이 안 되는 책은 판매 승인은 되지만 국립중앙도서관 납본에서 빠지고, 너무 얇아 제작할 때 종이가 빠지는 오류가 생길 수 있습니다.</li><li>50쪽 미만으로 등록하려면 POD등록 STEP5 요청사항에 <b>「50p 미만 도서의 납본 제외와 30p 미만 도서의 종이 빠짐 현상을 숙지하였습니다」</b>라고 적어야 검수와 판매 승인이 진행됩니다.</li></ul><div class="box warn">그래서 우리 수업은 부크크든 교보문고든 내지 50쪽 이상을 목표로 잡습니다. 쪽수가 홀수면 마지막 장 뒷면이 비게 되니 짝수로 맞춥니다.</div><div class="links">원문 보기 <a href="https://app.notion.com/p/POD-2567fd9fbff480898fefc5994e8a4b25" target="_blank" rel="noopener">교보 자주 묻는 질문</a><a href="https://accidental-thought-b51.notion.site/2b57fd9fbff480248cb9d29d17161f6d" target="_blank" rel="noopener">교보 납본 제외·종이 빠짐 확인</a><a href="https://partner.kyobobook.co.kr/" target="_blank" rel="noopener">교보문고 파트너</a></div></div></div></div><div class="zone do"><p class="zone-title">해 보기 <span>직접 따라 하는 구역</span></p><div class="grid"><div class="card" id="s4d1" data-nav="d" data-label="① 쪽수 맞춰 보기"><h3><span class="num">1</span>내 조사 보고서의 쪽수 맞춰 보기</h3><ul><li>내 조사 보고서의 최소 쪽수, 최대 쪽수, 쪽수 조건을 위 표와 비교합니다.</li><li>맞으면 ○, 다르면 고친 값을 옆에 적습니다.</li><li>다른 칸은 어디서 찾았는지 다시 봅니다. (남)에서 가져온 값이었는지 확인합니다.</li><li>내 조사 결과가 위 표와 다르고 출처가 (공)이라면, 어디서 찾았는지 함께 이야기해 봅니다. 화면은 바뀔 수 있습니다.</li></ul></div><div class="card" id="s4d2" data-nav="d" data-label="② 모자라는 쪽수 계산"><h3><span class="num">2</span>내 책에 모자라는 쪽수 계산시키기</h3><p>【 】 안을 바꿔서 보내고, 덧셈은 직접 한 번 더 해 봅니다. <button type="button" class="copy" data-copy="p4a">프롬프트 복사</button></p><pre id="p4a">내 책은 지금 내지 【현재 쪽수】쪽이야. 부크크는 내지 50쪽 이상이어야 하고, 교보문고 바로출판은 30쪽부터 되지만 50쪽 이상을 권장해.
+1. 두 곳에 각각 내려면 몇 쪽이 모자라는지 계산해 줘.
+2. 50쪽을 채우려면 장면(한 장면 = 그림 한 쪽 + 글 한 쪽)이 몇 개 더 필요한지 알려 줘.
+3. 합계가 짝수인지 확인해 줘.
+계산 과정을 한 줄씩 보여 줘.</pre></div></div></div><div class="nav-btm"><button type="button" data-go="3">← STEP 3</button><button type="button" data-go="5">STEP 5 →</button></div></section>
+<section class="step" data-title="판형 정보"><div class="step-head"><span class="no">STEP 5</span><h2>판형 정보</h2><p>쪽수 다음은 판형입니다. 두 곳에서 고를 수 있는 판형을 모두 확인하고, 내 조사 보고서와 맞춰 봅니다.</p></div><div class="zone know"><p class="zone-title">알아보기 <span>읽고 이해하는 구역</span></p><div class="grid"><div class="card wide" id="s5bk5" data-nav="k" data-label="판형 크기 비교"><h3>판형 크기 한눈에 보기</h3><svg viewBox="0 0 900 330" role="img" aria-label="판형 크기 비교: 세로형 판형들과 정사각판, 가로판을 같은 비율로 나란히 그린 그림"><g font-family="inherit" font-size="12.5" fill="#23262d"><rect x="10" y="112" width="105" height="148" fill="#eef4fb" stroke="#24507f"/><text x="62" y="280" text-anchor="middle" font-weight="700">A4</text><text x="62" y="298" text-anchor="middle" fill="#5b616e">210×297</text><rect x="127" y="133" width="94" height="127" fill="#eef4fb" stroke="#24507f"/><text x="174" y="280" text-anchor="middle" font-weight="700">교보 B5</text><text x="174" y="298" text-anchor="middle" fill="#5b616e">188×254</text><rect x="233" y="136" width="88" height="124" fill="#eef4fb" stroke="#24507f"/><text x="277" y="280" text-anchor="middle" font-weight="700">크라운판</text><text x="277" y="298" text-anchor="middle" fill="#5b616e">176×248</text><rect x="333" y="148" width="76" height="112" fill="#eef4fb" stroke="#24507f"/><text x="371" y="280" text-anchor="middle" font-weight="700">신국판</text><text x="371" y="298" text-anchor="middle" fill="#5b616e">152×225</text><rect x="421" y="155" width="74" height="105" fill="#eef4fb" stroke="#24507f"/><text x="458" y="280" text-anchor="middle" font-weight="700">A5</text><text x="458" y="298" text-anchor="middle" fill="#5b616e">148×210</text><rect x="507" y="166" width="64" height="94" fill="#eef4fb" stroke="#24507f"/><text x="539" y="280" text-anchor="middle" font-weight="700">B6</text><text x="539" y="298" text-anchor="middle" fill="#5b616e">128×188</text><rect x="583" y="186" width="52" height="74" fill="#eef4fb" stroke="#24507f"/><text x="609" y="280" text-anchor="middle" font-weight="700">A6</text><text x="609" y="298" text-anchor="middle" fill="#5b616e">105×148</text><rect x="648" y="155" width="105" height="105" fill="#f4f0fa" stroke="#55408c"/><text x="700" y="280" text-anchor="middle" font-weight="700">정사각판</text><text x="700" y="298" text-anchor="middle" fill="#5b616e">210×210</text><rect x="764" y="166" width="127" height="94" fill="#f4f0fa" stroke="#55408c"/><text x="828" y="280" text-anchor="middle" font-weight="700">가로판</text><text x="828" y="298" text-anchor="middle" fill="#5b616e">254×188</text><text x="10" y="322" fill="#5b616e">같은 비율로 줄여 그렸습니다(단위 mm). 파란색은 세로형, 보라색은 교보문고에만 있는 정사각판·가로판입니다. 부크크 46판은 127×188, 부크크 B5는 182×257입니다.</text></g></svg><div class="links">원문 보기 <a href="https://bookk.co.kr/author/make/paperBook" target="_blank" rel="noopener">부크크 책 만들기</a><a href="https://kyobobookpod.github.io/baro-publishing-guide/" target="_blank" rel="noopener">교보 제작 스튜디오</a></div></div><div class="card wide" id="s5bk6" data-nav="k" data-label="부크크 판형"><h3>부크크 종이책 판형 4가지</h3><figure><img alt="부크크 책만들기 화면의 책 규격 선택: 46판, A5, B5, A4" src="img06.jpg"><figcaption>부크크 책 만들기 화면의 「책 규격」 부분</figcaption></figure><figure><img alt="부크크 책만들기 화면 전체: 색상, 책 규격, 표지 재질, 책날개, 쪽수와 두께" src="img07.jpg"><figcaption>부크크 책 만들기 화면. 가운데에서 책 규격·표지 재질·책날개를 고르고, 오른쪽에 쪽수·날개·두께·가격이 나옵니다.</figcaption></figure><figure><img alt="부크크 책만들기 화면의 표지 재질과 책날개 선택. 무료표지는 책날개를 지원하지 않습니다. A4사이즈에서는 날개를 사용할 수 없습니다." src="img08.jpg"><figcaption>부크크 책 만들기 화면의 「표지 재질」과 「책날개」. 아래 두 줄에 무료 표지와 A4의 날개 조건이 적혀 있습니다.</figcaption></figure><table><tr><th>판형</th><th>크기(mm)</th><th>부크크가 권하는 책</th><th>원고 서식의 문서 크기(mm)</th><th>지금 그림(3:4)을 꽉 채우면</th></tr><tr><td>46판</td><td>127 × 188</td><td>시, 에세이</td><td>133 × 194</td><td>좌우 약 10% 잘림</td></tr><tr><td>A5</td><td>148 × 210</td><td>소설, 에세이</td><td>154 × 216</td><td>좌우 약 6% 잘림</td></tr><tr><td>B5</td><td>182 × 257</td><td>문제집, 잡지</td><td>188 × 263</td><td>좌우 약 6% 잘림</td></tr><tr><td>A4</td><td>210 × 297</td><td>문제집, 잡지</td><td>216 × 303</td><td>좌우 약 6% 잘림</td></tr></table><ul><li>무선 제본(풀로 붙이는 일반 책)이고, 판형은 모두 세로형입니다.</li><li>문서 크기가 판형보다 사방 3mm씩 큽니다. 그림을 쪽 끝까지 채우려면 이 크기로 만듭니다.</li><li>책날개는 있음·없음을 고릅니다. 무료 표지는 책날개가 안 되고, A4는 책날개를 쓸 수 없습니다.</li><li>책 두께와 가격은 쪽수를 넣으면 화면이 계산해 줍니다.</li></ul><div class="links">원문 보기 <a href="https://bookk.co.kr/author/make/paperBook" target="_blank" rel="noopener">부크크 책 만들기</a></div></div><div class="card wide" id="s5bk7" data-nav="k" data-label="교보 판형"><h3>교보문고 바로출판 판형 10가지</h3><figure><img alt="교보문고 제작 스튜디오의 판형 선택 화면: 판형 10가지와 크기" src="img09.jpg"><figcaption>교보문고 제작 스튜디오 「02 판형」. 파트너시스템 「책 사이즈 결정」과 같은 10가지이고, 판형마다 권하는 책 종류와 크기가 적혀 있습니다.</figcaption></figure><table><tr><th>판형</th><th>크기(mm)</th><th>모양</th><th>교보가 권하는 책</th><th>지금 그림(3:4)을 꽉 채우면</th></tr><tr><td>정사각판</td><td>210 × 210</td><td>정사각형</td><td>그림책, 포토북, 아트북</td><td>위아래 약 25% 잘림 → 다시 그리기</td></tr><tr><td>가로판</td><td>254 × 188</td><td>가로형</td><td>동화책, 교재, 사진집</td><td>위아래 약 45% 잘림 → 다시 그리기</td></tr><tr><td>크라운판</td><td>176 × 248</td><td>세로형</td><td>교재, 어린이</td><td>좌우 약 5% 잘림</td></tr><tr><td>B5(46배판)</td><td>188 × 254</td><td>세로형</td><td>학습, 참고서</td><td>좌우 약 1% 잘림</td></tr><tr><td>변형신국판</td><td>152 × 210</td><td>세로형</td><td>단어장</td><td>좌우 약 4% 잘림</td></tr><tr><td>A5(국판)</td><td>148 × 210</td><td>세로형</td><td>소설, 수필, 시집</td><td>좌우 약 6% 잘림</td></tr><tr><td>A4(국배판)</td><td>210 × 297</td><td>세로형</td><td>문제집, 논문집</td><td>좌우 약 6% 잘림</td></tr><tr><td>NEW A5(신국판)</td><td>152 × 225</td><td>세로형</td><td>소설, 에세이</td><td>좌우 약 10% 잘림</td></tr><tr><td>B6(46판)</td><td>128 × 188</td><td>세로형</td><td>시집, 에세이</td><td>좌우 약 9% 잘림</td></tr><tr><td>A6(국반판)</td><td>105 × 148</td><td>세로형</td><td>포켓북</td><td>좌우 약 5% 잘림</td></tr></table><p>잘리는 양은 판형 크기로 어림한 값입니다. 같은 B5라도 부크크(182 × 257)와 교보문고(188 × 254)는 크기가 다릅니다.</p><div class="links">원문 보기 <a href="https://kyobobookpod.github.io/baro-publishing-guide/" target="_blank" rel="noopener">교보 제작 스튜디오</a><a href="https://partner.kyobobook.co.kr/" target="_blank" rel="noopener">교보문고 파트너</a><a href="https://app.notion.com/p/POD-2567fd9fbff480898fefc5994e8a4b25" target="_blank" rel="noopener">교보 자주 묻는 질문</a></div></div><div class="card wide" id="s5bk8" data-nav="k" data-label="두 곳 비교"><h3>두 곳 비교표</h3><table><tr><th style="width:6rem">항목</th><th>부크크</th><th>교보문고 바로출판</th></tr><tr><td>판형</td><td>4가지, 모두 세로형</td><td>10가지, 정사각형·가로형 있음</td></tr><tr><td>제본</td><td>무선 (양장은 500부 이상일 때 따로 문의)</td><td>무선 10개 판형, 날개 7개 판형, 양장 9개 판형. 양장은 무선보다 3배 넘게 비쌈</td></tr><tr><td>쪽수</td><td>50쪽 이상</td><td>30쪽~1,000쪽 (양장은 30쪽~900쪽), 50쪽 이상 권장</td></tr><tr><td>4의 배수 조건</td><td>공식 화면·안내에서 찾지 못함</td><td>공식 화면·공지에서 찾지 못함</td></tr><tr><td>원고 파일</td><td>한글, 워드, PDF</td><td>PDF만, 200MB 이하. 한 쪽씩 만든 파일</td></tr><tr><td>재단 여백</td><td>사방 3mm (원고 서식의 문서 크기)</td><td>사방 3mm</td></tr><tr><td>첫 쪽</td><td>–</td><td>PDF 첫 쪽이 책의 오른쪽에 놓임</td></tr><tr><td>내지 종이</td><td>미색모조 100g (흑백 화면 기준)</td><td>7가지. 컬러에는 스노우 100g·백색모조 100g, 그림책에는 백색모조 150g이 맞다고 적혀 있음</td></tr><tr><td>표지 종이</td><td>아르떼 210g 무광, 스노우 250g 무광, 스노우 250g 유광</td><td>등록 화면에서 4가지 가운데 선택</td></tr><tr><td>AI 표시</td><td>–</td><td>원고나 표지에 AI를 일부라도 썼으면 「AI 생성·활용 도서」를 꼭 선택</td></tr><tr><td>ISBN</td><td>부크크에서 무료 등록</td><td>교보가 무료로 대신 발급. 다른 곳에서 낸 책도 새 ISBN이 필요</td></tr></table><div class="links">원문 보기 <a href="https://bookk.co.kr/author/make/paperBook" target="_blank" rel="noopener">부크크 책 만들기</a><a href="https://partner.kyobobook.co.kr/" target="_blank" rel="noopener">교보문고 파트너</a><a href="https://app.notion.com/p/POD-2567fd9fbff480898fefc5994e8a4b25" target="_blank" rel="noopener">교보 자주 묻는 질문</a><a href="https://accidental-thought-b51.notion.site/1537fd9fbff48024865ad429003f93f7" target="_blank" rel="noopener">교보 바로출판 필수체크</a><a href="https://accidental-thought-b51.notion.site/2a77fd9fbff4809fbd8edbee5268eb89" target="_blank" rel="noopener">교보 검수 체크리스트</a></div></div></div></div><div class="zone do"><p class="zone-title">해 보기 <span>직접 따라 하는 구역</span></p><div class="grid"><div class="card" id="s5bd1" data-nav="d" data-label="① 조사표 맞춰 보기"><h3><span class="num">1</span>내 조사표와 맞춰 보기</h3><ul><li>내 조사 보고서의 판형, 제본, 원고 파일, 재단 여백, AI 표시 내용을 위 표와 하나씩 비교합니다.</li><li>맞은 칸에는 ○, 다른 칸에는 고친 값을 옆에 적습니다.</li><li>다른 칸은 내가 어디서 찾았는지 다시 봅니다. (남)에서 가져온 값이었는지 확인합니다.</li><li>내 조사 결과가 위 표와 다르고 출처가 (공)이라면, 어디서 찾았는지 함께 이야기해 봅니다. 화면은 바뀔 수 있습니다.</li></ul></div><div class="card" id="s5bd2" data-nav="d" data-label="② AI와 비교하기"><h3><span class="num">2</span>AI에게 비교시키기</h3><p>내 조사 보고서 내용을 붙여 넣고 보냅니다. <button type="button" class="copy" data-copy="p4">프롬프트 복사</button></p><pre id="p4">아래는 내가 직접 조사한 표와, 수업에서 받은 공식 정보야. 둘을 비교해 줘.
+
+[내 조사표]
+【채운 조사표를 붙여 넣기】
+
+[공식 정보]
+- 부크크: 최소 50쪽, 판형 4가지(46판 127×188, A5 148×210, B5 182×257, A4 210×297), 무선 제본, 재단 여백 사방 3mm
+- 교보문고 바로출판: 최소 30쪽(50쪽 이상 권장), 최대 1,000쪽(양장 900쪽), 판형 10가지(정사각판 210×210, 가로판 254×188 포함), PDF만 200MB 이하, 재단 여백 사방 3mm, AI 활용 도서 표시 필수
+
+[네가 할 일]
+1. 내 조사표에서 공식 정보와 다른 칸을 표로 보여 줘: 항목 | 내가 적은 것 | 공식 정보 | 왜 달랐을지
+2. 내 책(내지 【현재 쪽수】쪽)이 두 곳에 각각 내려면 몇 쪽이 모자라는지 계산해 줘.
+3. 내 조사표에 비어 있는 칸이 있으면 어디서 찾으면 되는지 알려 줘.
+
+[지킬 것]
+- 공식 정보에 없는 숫자는 지어내지 마.
+- 쉬운 말로, 표를 중심으로 답해 줘.</pre></div></div></div><div class="nav-btm"><button type="button" data-go="4">← STEP 4</button><button type="button" data-go="6">STEP 6 →</button></div></section>
+<section class="step" data-title="판형 고민">
+  <div class="step-head">
+    <span class="no">STEP 6</span><h2>판형 고민하기</h2>
+    <p>판형(책의 크기와 모양)이 바뀌면 그림을 잡는 방법이 달라집니다. 그림을 다시 만들기 전에 판형부터 정합니다.</p>
+  </div>
+
+  <div class="zone know">
+    <p class="zone-title">알아보기 <span>읽고 이해하는 구역</span></p>
+    <div class="grid">
+
+      <div class="card wide" id="s5k1" data-nav="k" data-label="판형과 구도">
+        <h3>판형 모양에 따라 같은 장면이 이렇게 달라집니다</h3>
+        <svg viewBox="0 0 900 330" role="img" aria-label="같은 장면을 세로형, 정사각, 가로형 판형에 담았을 때의 구도 비교">
+          <g font-family="inherit" font-size="15" fill="#23262d">
+            <rect x="60" y="20" width="150" height="212" rx="4" fill="#fff" stroke="#24507f" stroke-width="2"/>
+            <rect x="72" y="150" width="126" height="70" fill="#eef4fb"/>
+            <circle cx="135" cy="72" r="20" fill="#c9daf0"/><rect x="112" y="94" width="46" height="96" rx="10" fill="#c9daf0"/>
+            <rect x="162" y="168" width="34" height="22" rx="3" fill="#3f5fbf"/>
+            <text x="135" y="256" text-anchor="middle" font-weight="700">세로형</text>
+            <text x="135" y="278" text-anchor="middle" font-size="13" fill="#5b616e">인물이 크게, 위아래 여유</text>
+            <text x="135" y="298" text-anchor="middle" font-size="13" fill="#5b616e">전신·상반신 샷이 편함</text>
+            <text x="135" y="318" text-anchor="middle" font-size="13" fill="#5b616e">올려다보기·내려다보기에 강함</text>
+
+            <rect x="350" y="26" width="200" height="200" rx="4" fill="#fff" stroke="#24507f" stroke-width="2"/>
+            <rect x="362" y="150" width="176" height="64" fill="#eef4fb"/>
+            <circle cx="430" cy="96" r="22" fill="#c9daf0"/><rect x="405" y="120" width="50" height="70" rx="10" fill="#c9daf0"/>
+            <rect x="468" y="150" width="46" height="30" rx="3" fill="#3f5fbf"/>
+            <text x="450" y="256" text-anchor="middle" font-weight="700">정사각</text>
+            <text x="450" y="278" text-anchor="middle" font-size="13" fill="#5b616e">가운데로 모이는 구도</text>
+            <text x="450" y="298" text-anchor="middle" font-size="13" fill="#5b616e">인물과 사물을 나란히</text>
+            <text x="450" y="318" text-anchor="middle" font-size="13" fill="#5b616e">정면·눈높이 장면이 안정적</text>
+
+            <rect x="630" y="50" width="240" height="176" rx="4" fill="#fff" stroke="#24507f" stroke-width="2"/>
+            <rect x="642" y="160" width="216" height="54" fill="#eef4fb"/>
+            <rect x="770" y="66" width="70" height="56" rx="3" fill="none" stroke="#c9daf0" stroke-width="2"/>
+            <circle cx="690" cy="118" r="15" fill="#c9daf0"/><rect x="673" y="134" width="34" height="56" rx="8" fill="#c9daf0"/>
+            <rect x="730" y="166" width="34" height="22" rx="3" fill="#3f5fbf"/>
+            <text x="750" y="256" text-anchor="middle" font-weight="700">가로형</text>
+            <text x="750" y="278" text-anchor="middle" font-size="13" fill="#5b616e">배경이 넓게, 인물은 작게</text>
+            <text x="750" y="298" text-anchor="middle" font-size="13" fill="#5b616e">방 전체·풍경 샷이 편함</text>
+            <text x="750" y="318" text-anchor="middle" font-size="13" fill="#5b616e">옆에서 보는 장면, 이동 장면에 강함</text>
+          </g>
+        </svg>
+        <table><tr><th>모양</th><th>잘 맞는 그림</th><th>조심할 그림</th><th>새 그림 비율</th></tr><tr><td style="white-space:nowrap">세로형</td><td>서 있는 인물, 얼굴 클로즈업, 위아래로 긴 것</td><td>넓은 풍경을 멀리서 잡은 그림은 좁아 보임</td><td>3:4</td></tr><tr><td style="white-space:nowrap">정사각</td><td>한 대상에 집중, 사물 클로즈업, 마주 보는 두 얼굴</td><td>위아래나 좌우로 길게 펼치는 구도</td><td>1:1</td></tr><tr><td style="white-space:nowrap">가로형</td><td>풍경, 마당·방 전체, 나란히 앉은 사람들</td><td>얼굴 클로즈업은 양옆이 비어 보임</td><td>4:3</td></tr></table><p>인물·소품 시트는 판형과 상관없이 가로 16:9로 뽑습니다. 그림 도구 화면에 위 비율이 없으면 가장 가까운 비율을 고릅니다.</p><p>세 그림은 같은 장면입니다. 판형이 달라지면 인물의 크기와 배경의 양이 달라지고, 그래서 그림을 다시 만들 때 쓰는 지시문도 달라집니다.</p>
+      </div>
+
+      <div class="card" id="s5k2" data-nav="k" data-label="뷰·샷·앵글">
+        <h3>뷰 · 샷 · 앵글, 세 가지만 기억하기</h3>
+        <table>
+          <tr><th style="width:5rem">말</th><th>뜻</th><th>예</th></tr>
+          <tr><td>뷰</td><td>어디서 보는가 (보는 방향)</td><td>정면, 옆, 뒤, 위에서</td></tr>
+          <tr><td>샷</td><td>얼마나 크게 담는가</td><td>얼굴만, 상반신, 전신, 방 전체</td></tr>
+          <tr><td>앵글</td><td>카메라 높이</td><td>눈높이, 올려다보기, 내려다보기</td></tr>
+        </table>
+        <p>판형을 정하면 장면마다 이 세 가지를 다시 정하게 됩니다.</p>
+      </div>
+
+      <div class="card" id="s5k3" data-nav="k" data-label="지금 그림이 잘리는 정도">
+        <h3>지금 그림(3:4)을 쪽에 꽉 채우면 잘리는 정도</h3>
+        <svg viewBox="0 0 480 250" role="img" aria-label="판형별로 기존 3대4 그림이 잘리는 비율 막대 그림">
+          <g font-family="inherit" font-size="13" fill="#23262d">
+            <text x="0" y="16">교보 B5</text><rect x="135" y="5" width="5" height="14" fill="#23634a"/><text x="146" y="16">약 1%</text>
+            <text x="0" y="43">변형신국판</text><rect x="135" y="32" width="20" height="14" fill="#23634a"/><text x="161" y="43">약 4%</text>
+            <text x="0" y="70">크라운판 · A6</text><rect x="135" y="59" width="25" height="14" fill="#23634a"/><text x="166" y="70">약 5%</text>
+            <text x="0" y="97">A5 · A4 · 부크크 B5</text><rect x="135" y="86" width="30" height="14" fill="#23634a"/><text x="171" y="97">약 6%</text>
+            <text x="0" y="124">B6</text><rect x="135" y="113" width="45" height="14" fill="#23634a"/><text x="186" y="124">약 9%</text>
+            <text x="0" y="151">46판 · 신국판</text><rect x="135" y="140" width="50" height="14" fill="#23634a"/><text x="191" y="151">약 10%</text>
+            <text x="0" y="178">정사각판</text><rect x="135" y="167" width="125" height="14" fill="#8a3a31"/><text x="266" y="178">약 25% (위아래)</text>
+            <text x="0" y="205">가로판</text><rect x="135" y="194" width="225" height="14" fill="#8a3a31"/><text x="366" y="205">약 45% (위아래)</text>
+            <text x="0" y="244" font-size="12" fill="#5b616e">초록: 좌우가 조금 잘림 · 붉은색: 다시 그려야 함</text>
+          </g>
+        </svg>
+        <p>세로형은 지금 그림을 조금만 손봐서 쓸 수 있습니다. 정사각판과 가로판은 그림을 새로 만든다고 보면 됩니다.</p>
+      </div>
+
+      <div class="card wide" id="s5k4" data-nav="k" data-label="어디서 낼 수 있나">
+        <h3>모양별로 낼 수 있는 곳과 조건</h3>
+        <table>
+          <tr><th style="white-space:nowrap">모양</th><th>부크크</th><th>교보문고 바로출판</th><th style="white-space:nowrap">새 그림 비율</th><th>걸리는 점</th></tr>
+          <tr><td style="white-space:nowrap">세로형</td><td>46판 127×188, A5 148×210, B5 182×257, A4 210×297</td><td>A4 210×297, B5 188×254, 크라운판 176×248, 신국판 152×225, 변형신국판 152×210, A5 148×210, B6 128×188, A6 105×148</td><td>3:4</td><td>부크크와 교보의 B5는 크기가 다릅니다. A4는 날개가 안 됩니다.</td></tr>
+          <tr><td style="white-space:nowrap">정사각</td><td>없음</td><td>정사각판 210×210</td><td>1:1</td><td>날개와 무료 표지가 안 됩니다.</td></tr>
+          <tr><td style="white-space:nowrap">가로형</td><td>없음</td><td>가로판 254×188</td><td>4:3</td><td>날개와 무료 표지가 안 됩니다.</td></tr>
+        </table>
+        <div class="box warn">파일을 만들 때는 판형보다 사방 3mm씩 크게 만듭니다(예: 신국판 152×225 → 158×231). 바깥 3mm는 잘려 나가므로 얼굴과 글자는 안쪽에 둡니다. 자세한 내용은 STEP 7에서 다룹니다.</div>
+        <div class="links">원문 보기
+          <a href="https://bookk.co.kr/author/make/paperBook" target="_blank" rel="noopener">부크크 책 만들기</a>
+          <a href="https://partner.kyobobook.co.kr/" target="_blank" rel="noopener">교보문고 파트너</a>
+          <a href="https://accidental-thought-b51.notion.site/1537fd9fbff48024865ad429003f93f7" target="_blank" rel="noopener">교보 바로출판 필수체크</a>
+          <a href="https://kyobobookpod.github.io/baro-publishing-guide/" target="_blank" rel="noopener">교보 제작 스튜디오</a>
+        </div>
+      </div>
+
+      <div class="card wide" id="s5k5" data-nav="k" data-label="판형 선택 화면"><h3>두 곳의 판형 선택 화면</h3><div class="grid"><figure><img alt="부크크 책만들기 화면의 책 규격 선택: 46판, A5, B5, A4" src="img06.jpg"><figcaption>부크크 책 만들기 화면의 「책 규격」. 세로형 4가지입니다.</figcaption></figure><figure><img alt="교보문고 제작 스튜디오의 판형 선택 화면: 판형 10가지와 크기" src="img09.jpg"><figcaption>교보문고 제작 스튜디오 「02 판형」. 정사각판과 가로판이 있습니다.</figcaption></figure></div><div class="links">원문 보기 <a href="https://bookk.co.kr/author/make/paperBook" target="_blank" rel="noopener">부크크 책 만들기</a><a href="https://kyobobookpod.github.io/baro-publishing-guide/" target="_blank" rel="noopener">교보 제작 스튜디오</a><a href="https://partner.kyobobook.co.kr/" target="_blank" rel="noopener">교보문고 파트너</a></div></div>
+    </div>
+  </div>
+
+  <div class="zone do">
+    <p class="zone-title">해 보기 <span>직접 따라 하는 구역</span></p>
+    <div class="grid">
+
+      <div class="card wide" id="s5d1" data-nav="d" data-label="① 후보 2개 고르기">
+        <h3><span class="num">1</span>판형 후보 2개 고르기</h3>
+        <p>아래 세 가지를 스스로 답해 보고 후보를 2개 적습니다.</p>
+        <ol>
+          <li>내 이야기는 인물의 표정이 중요한가, 장소와 풍경이 중요한가?</li>
+          <li>지금 그림을 살릴 것인가, 새로 만들 것인가? (STEP 3 판정 결과)</li>
+          <li>부크크와 교보문고 중 어디에 낼 것인가? 두 곳 모두라면 두 곳에 다 있는 판형인가?</li>
+        </ol>
+        <div class="box more">두 곳 모두 낼 수 있는 크기는 A5(148×210)와 A4(210×297)입니다.</div>
+      </div>
+
+      <div class="card wide" id="s5d2" data-nav="d" data-label="② 판형 고민 프롬프트">
+        <h3><span class="num">2</span>판형 고민 프롬프트 (AI에게 시키는 글)</h3>
+        <p>전자책 PDF, STEP 3 판정 결과, 내 조사표를 함께 넣고 【 】 안만 바꿔서 보냅니다. <button type="button" class="copy" data-copy="p5">프롬프트 복사</button></p>
+<pre id="p5">너는 그림책 편집 디자이너이자 그림 연출가야.
+내 전자책 그림책을 종이책(POD)으로 바꾸려고 해. 판형(책의 크기와 모양)을 정하기 전에, 판형에 따라 그림이 어떻게 달라지는지 비교해 줘.
+
+[넣은 자료]
+① 전자책 PDF
+② 판정 결과: 【보강 / 새로 만들기 중 내가 정한 길】
+③ 내 조사표 (부크크·교보문고 최소 쪽수와 판형)
+
+[내가 고민하는 판형 후보]
+- 후보 1: 【예: A5 148×210mm, 세로형, 부크크와 교보문고】
+- 후보 2: 【예: 정사각판 210×210mm, 교보문고】
+
+[네가 할 일]
+1. 한눈 비교표: 후보별 모양, 새 그림 비율, 책을 펼쳤을 때 크기, 내 이야기와 맞는 점, 안 맞는 점
+2. 장면별 연출표: 내 책의 장면마다 후보 1과 후보 2에서 뷰(보는 방향)·샷(담는 크기)·앵글(카메라 높이)을 각각 어떻게 잡을지 적어 줘. 두 후보가 다른 장면은 이유를 한 줄로 붙여 줘.
+3. 지금 그림 다시 쓰기: 그대로 쓸 수 있는 장면과, 잘려서 다시 그려야 하는 장면을 후보별로 나눠 줘.
+4. 글 자리: 왼쪽 쪽은 그림, 오른쪽 쪽은 글을 기본으로 하되, 후보별로 더 어울리는 글 자리와 한 쪽에 들어갈 글 분량을 알려 줘.
+5. 펼침 그림(두 쪽을 이어 쓰는 그림)으로 쓰면 좋은 장면 2~3개를 고르고, 가운데 접히는 곳에 얼굴과 글자가 걸리지 않게 하는 방법을 알려 줘.
+6. 정리: 후보별 좋은 점 3개와 걸리는 점 3개
+
+[끝까지 지킬 것]
+- 판형은 네가 정하지 마. 비교만 하고, 마지막에 "어느 판형으로 갈까요?"라고 물어봐.
+- 판형 크기는 내 조사표를 따르고, 네가 아는 것과 다르면 다른 점만 따로 알려 줘.
+- 사방 3mm는 잘려 나가는 부분이니, 중요한 그림과 글자는 안쪽에 두는 것으로 계산해 줘.
+- 그림은 아직 만들지 마.
+- 쉬운 말로, 표를 중심으로 답해 줘.</pre>
+      </div>
+
+      <div class="card wide" id="s5d3" data-nav="d" data-label="③ 결과 읽고 정하기">
+        <h3><span class="num">3</span>결과 읽고 정하기</h3>
+        <ul>
+          <li>장면별 연출표에서 두 후보의 뷰·샷·앵글이 다르게 나온 장면에 표시합니다.</li>
+          <li>다시 그려야 하는 장면이 몇 개인지 셉니다.</li>
+          <li>AI가 말한 판형 크기가 내 조사표와 같은지 확인합니다. 다르면 조사표가 기준입니다.</li>
+          <li>판형은 선생님이 정합니다. 정한 이유를 한 줄로 적습니다.</li>
+        </ul>
+        <div class="box more">정한 판형과 이유는 여기서 올리지 않습니다. STEP 8을 마친 뒤 「POD 판형 계획서」에 넣어 올립니다.</div>
+      </div>
+
+
+    </div>
+  </div>
+  <div class="nav-btm"><button type="button" data-go="5">← STEP 5</button><button type="button" data-go="7">STEP 7 →</button></div>
+</section>
+<section class="step" data-title="내지 규격"><div class="step-head"><span class="no">STEP 7</span><h2>내지 파일 규격</h2><p>판형을 정했으면, 그 판형으로 책 속(내지) 파일을 만들 때 지킬 것을 확인합니다. 그림을 다시 만들기 전에 알아야 그림을 두 번 만들지 않습니다.</p></div><div class="zone know"><p class="zone-title">알아보기 <span>읽고 이해하는 구역</span></p><div class="grid"><div class="card" id="s6k1" data-nav="k" data-label="재단 여백 3mm"><h3>파일은 판형보다 사방 3mm 크게</h3><svg viewBox="0 0 440 300" role="img" aria-label="재단 여백: 판형보다 사방 3mm 크게 만들고, 중요한 것은 안쪽에 둔다"><g font-family="inherit" font-size="13" fill="#23262d">
+<rect x="60" y="20" width="220" height="250" fill="#fbf1f0" stroke="#8a3a31" stroke-dasharray="5 4"/>
+<rect x="72" y="32" width="196" height="226" fill="#eef4fb" stroke="#24507f" stroke-width="2"/>
+<rect x="100" y="60" width="140" height="170" fill="#fff" stroke="#23634a" stroke-dasharray="3 3"/>
+<text x="170" y="140" text-anchor="middle" fill="#23634a" font-weight="700">글이 들어가는 자리</text><text x="170" y="160" text-anchor="middle" fill="#23634a" font-size="12">가장자리에서 20~30mm 안쪽</text>
+<path d="M280 26 h30" stroke="#8a3a31"/><text x="316" y="30" fill="#8a3a31">파일 크기</text><text x="316" y="47" fill="#8a3a31" font-size="12">판형 + 사방 3mm</text>
+<path d="M268 80 h42" stroke="#24507f"/><text x="316" y="84" fill="#24507f">재단선 = 판형</text><text x="316" y="101" fill="#24507f" font-size="12">여기서 잘립니다</text>
+<path d="M240 200 h70" stroke="#23634a"/><text x="316" y="204" fill="#23634a">안전한 자리</text>
+<text x="170" y="290" text-anchor="middle" font-size="12" fill="#5b616e">붉은 띠(3mm)는 잘려 나갑니다. 그림은 여기까지 채웁니다.</text></g></svg><p>인쇄한 뒤 가장자리를 잘라 냅니다. 1~2mm 어긋날 수 있어서, 그림이 쪽 끝까지 가는 책은 바깥 3mm까지 색을 채워야 흰 띠가 생기지 않습니다. 부크크와 교보문고 모두 3mm입니다.</p><div class="links">원문 보기 <a href="https://accidental-thought-b51.notion.site/PDF-3mm-2a77fd9fbff48182b3b3e39703a8d834" target="_blank" rel="noopener">도련 3mm 여분 작업 점검</a><a href="https://accidental-thought-b51.notion.site/1537fd9fbff48024865ad429003f93f7" target="_blank" rel="noopener">교보 바로출판 필수체크</a><a href="https://bookk.co.kr/author/make/paperBook" target="_blank" rel="noopener">부크크 책 만들기</a></div></div><div class="card" id="s6k2" data-nav="k" data-label="오른쪽 시작과 펼침"><h3>PDF 1쪽은 책의 오른쪽</h3><svg viewBox="0 0 440 300" role="img" aria-label="PDF 1쪽은 책의 오른쪽, 2쪽과 3쪽이 마주 보는 펼침면"><g font-family="inherit" font-size="13" fill="#23262d">
+<rect x="130" y="20" width="90" height="110" fill="#fff" stroke="#b9bdc7" stroke-dasharray="5 4"/><text x="175" y="80" text-anchor="middle" fill="#8b909b">(면지)</text>
+<rect x="220" y="20" width="90" height="110" fill="#eef7f1" stroke="#23634a" stroke-width="2"/><text x="265" y="72" text-anchor="middle" font-weight="700" fill="#23634a">PDF 1쪽</text><text x="265" y="92" text-anchor="middle" font-size="12" fill="#23634a">오른쪽</text>
+<rect x="130" y="160" width="90" height="110" fill="#eef4fb" stroke="#24507f"/><text x="175" y="212" text-anchor="middle" font-weight="700" fill="#24507f">PDF 2쪽</text><text x="175" y="232" text-anchor="middle" font-size="12" fill="#24507f">왼쪽 · 그림</text>
+<rect x="220" y="160" width="90" height="110" fill="#fff" stroke="#24507f"/><text x="265" y="212" text-anchor="middle" font-weight="700" fill="#24507f">PDF 3쪽</text><text x="265" y="232" text-anchor="middle" font-size="12" fill="#24507f">오른쪽 · 글</text>
+<path d="M220 150 v130" stroke="#8a3a31" stroke-width="2" stroke-dasharray="4 3"/><text x="325" y="200" fill="#8a3a31" font-size="12">가운데 접히는 곳</text><text x="325" y="217" fill="#8a3a31" font-size="12">얼굴·글자 피하기</text>
+<text x="20" y="80" font-size="12" fill="#5b616e">첫 장</text><text x="20" y="218" font-size="12" fill="#5b616e">다음 장</text>
+<text x="220" y="294" text-anchor="middle" font-size="12" fill="#5b616e">홀수 쪽은 늘 오른쪽, 짝수 쪽은 늘 왼쪽입니다.</text></g></svg><p>쪽 번호는 원고에 적은 번호가 아니라 PDF 파일의 쪽 번호가 기준입니다. 교보문고는 양쪽 그림이 이어지지 않으면 반려할 수 있습니다. ezPDF의 「보기 → 페이지 보기 → 양면보기」로 실제 책처럼 확인할 수 있습니다.</p><div class="links">원문 보기 <a href="https://accidental-thought-b51.notion.site/2a77fd9fbff4812496abce796f99af18" target="_blank" rel="noopener">양쪽 페이지 이미지 이어짐 체크</a><a href="https://kyobobookpod.github.io/baro-publishing-guide/" target="_blank" rel="noopener">교보 제작 스튜디오</a></div></div><div class="card wide" id="s6k3" data-nav="k" data-label="여백 근거 화면"><h3>근거 화면: 재단 여백과 글 여백</h3><div class="grid"><figure><img alt="교보문고 검수 체크리스트의 내지 재단 여백 3mm 그림" src="img10.jpg"><figcaption>검수 체크리스트 「원고 PDF 파일 도련 3mm 여분 작업 점검」</figcaption></figure><figure><img alt="교보 바로출판 필수체크: 신국판 152×225mm로 등록 시 원고 PDF는 158×231mm" src="img11.jpg"><figcaption>바로출판 필수체크의 사방여백 설명</figcaption></figure></div><table><tr><th>판형 예</th><th>판형 크기</th><th>만들 파일 크기</th></tr><tr><td>46판(부크크)</td><td>127 × 188</td><td>133 × 194</td></tr><tr><td>A5</td><td>148 × 210</td><td>154 × 216</td></tr><tr><td>신국판(교보)</td><td>152 × 225</td><td>158 × 231</td></tr><tr><td>정사각판(교보)</td><td>210 × 210</td><td>216 × 216</td></tr><tr><td>가로판(교보)</td><td>254 × 188</td><td>260 × 194</td></tr></table><p>글 여백은 교보문고가 상하좌우 30mm를 권하고, 좁게 만들더라도 최소 20mm까지입니다.</p><div class="links">원문 보기 <a href="https://accidental-thought-b51.notion.site/PDF-3mm-2a77fd9fbff48182b3b3e39703a8d834" target="_blank" rel="noopener">도련 3mm 여분 작업 점검</a><a href="https://accidental-thought-b51.notion.site/2a77fd9fbff481a7ae2adadf366447c8" target="_blank" rel="noopener">원고 최소여백 체크</a><a href="https://accidental-thought-b51.notion.site/2a77fd9fbff4812496abce796f99af18" target="_blank" rel="noopener">양쪽 페이지 이미지 이어짐 체크</a><a href="https://accidental-thought-b51.notion.site/1537fd9fbff48024865ad429003f93f7" target="_blank" rel="noopener">바로출판 필수체크</a></div></div><div class="card wide" id="s6k7" data-nav="k" data-label="제본선"><h3>제본선: 책 가운데 쪽은 여백을 더 넓게</h3><svg viewBox="0 0 900 230" role="img" aria-label="제본선: 펼친 책의 가운데 쪽은 풀로 붙어 다 펴지지 않으므로 여백을 더 넓게 둔다"><g font-family="inherit" font-size="13" fill="#23262d"><rect x="150" y="20" width="300" height="170" fill="#fff" stroke="#24507f"/><rect x="450" y="20" width="300" height="170" fill="#fff" stroke="#24507f"/><rect x="410" y="20" width="80" height="170" fill="#fbf1f0"/><path d="M450 12 v186" stroke="#8a3a31" stroke-width="2" stroke-dasharray="5 4"/><rect x="185" y="45" width="215" height="120" fill="#eef7f1" stroke="#23634a" stroke-dasharray="3 3"/><rect x="500" y="45" width="215" height="120" fill="#eef7f1" stroke="#23634a" stroke-dasharray="3 3"/><text x="292" y="110" text-anchor="middle" fill="#23634a">글·얼굴이 들어갈 자리</text><text x="607" y="110" text-anchor="middle" fill="#23634a">글·얼굴이 들어갈 자리</text><text x="450" y="216" text-anchor="middle" fill="#8a3a31" font-weight="700">제본선 (책 가운데 쪽)</text><text x="60" y="100" text-anchor="middle" fill="#5b616e">바깥쪽</text><text x="60" y="118" text-anchor="middle" fill="#5b616e">20mm</text><text x="840" y="100" text-anchor="middle" fill="#5b616e">바깥쪽</text><text x="840" y="118" text-anchor="middle" fill="#5b616e">20mm</text><path d="M110 105 h38 M752 105 h38" stroke="#b9bdc7"/><text x="450" y="60" text-anchor="middle" font-size="12" fill="#8a3a31">각 26mm</text></g></svg><p>제본선은 쪽과 쪽이 묶이는 책 가운데 선입니다. 무선 제본은 가운데를 풀로 붙이기 때문에 책이 끝까지 펴지지 않고, 가운데 쪽 그림과 글이 안으로 말려 들어갑니다. 그래서 가운데 쪽 여백을 바깥쪽보다 넓게 잡습니다.</p><figure><img alt="교보문고 제작 스튜디오 내지 제작 가이드: 내지 파일 154×216mm, 책 가운데 쪽 26mm, 상·하·책 바깥쪽 20mm" src="img12.jpg"><figcaption>제작 스튜디오 「내지 가이드」(A5·무선). 내지 파일 154 × 216mm, 책 가운데 쪽 26mm 권장, 위·아래·바깥쪽 20mm 권장, 원고 1쪽은 오른쪽에서 시작.</figcaption></figure><ul><li>오른쪽 쪽(홀수)은 왼쪽이 제본선이고, 왼쪽 쪽(짝수)은 오른쪽이 제본선입니다. 쪽마다 넓은 여백의 방향이 반대입니다.</li><li>그림이 쪽에 꽉 차는 책은 그림을 제본선까지 채우되, 얼굴·손·글자 같은 중요한 것은 제본선에서 26mm 안쪽으로 둡니다.</li><li>두 쪽을 잇는 펼침 그림은 가운데가 말려 들어가므로, 주인공을 한쪽으로 몰아서 그립니다. 그림을 만들 때 지시문에 이 조건을 넣습니다.</li><li>표지에도 접히는 선이 있습니다. 책등과 앞·뒤표지가 만나는 선(접지선)에는 글자를 걸치지 않습니다.</li></ul><div class="links">원문 보기 <a href="https://kyobobookpod.github.io/baro-publishing-guide/" target="_blank" rel="noopener">교보 제작 스튜디오</a><a href="https://accidental-thought-b51.notion.site/2a77fd9fbff481a7ae2adadf366447c8" target="_blank" rel="noopener">원고 최소여백 체크</a><a href="https://accidental-thought-b51.notion.site/2a77fd9fbff4812496abce796f99af18" target="_blank" rel="noopener">양쪽 페이지 이미지 이어짐 체크</a></div></div></div></div><div class="zone do"><p class="zone-title">해 보기 <span>직접 따라 하는 구역</span></p><div class="grid"><div class="card wide" id="s6d2" data-nav="d" data-label="① 점검 프롬프트"><h3><span class="num">1</span>AI에게 내지 PDF 점검시키기</h3><p>내 원고 PDF를 넣고 【 】 안을 바꿔서 보냅니다. <button type="button" class="copy" data-copy="p6">프롬프트 복사</button></p><pre id="p6">너는 종이책(POD) 제작 검수자야. 첨부한 내 원고 PDF를 아래 기준으로 점검해 줘.
+
+[내 책 정보]
+- 낼 곳: 【부크크 / 교보문고 바로출판 / 두 곳 모두】
+- 판형: 【예: A5 148×210mm】
+- 제본과 날개: 【예: 무선, 날개 없음】
+
+[점검 기준]
+1. 내지 쪽수가 50쪽 이상이고 짝수인가
+2. 판권 쪽이 원고 앞이나 뒤에 있는가
+3. 쪽 크기가 판형보다 사방 3mm씩 큰가 (예: 148×210 → 154×216)
+4. 쪽에 꽉 차는 그림이 바깥 3mm까지 채워져 있는가
+5. 글이 가장자리에서 20mm 이상 안쪽에 있는가
+6. PDF 1쪽을 오른쪽으로 보고 펼쳤을 때, 그림은 왼쪽(짝수 쪽)·글은 오른쪽(홀수 쪽)에 오는가
+7. 두 쪽을 잇는 그림이 있으면, 가운데 접히는 곳(제본선)에 얼굴이나 글자가 걸리는가
+8. 글과 얼굴이 책 가운데 쪽(제본선)에서 26mm 이상 떨어져 있는가
+
+[출력]
+- 표: 기준 | 결과(맞음 · 안 맞음 · 확인 못 함) | 해당 쪽 번호 | 고칠 방법
+- 그 아래에 가장 먼저 고칠 것 세 가지
+
+[지킬 것]
+- PDF에서 확인할 수 없는 것은 "확인 못 함"이라고 적어. 짐작으로 "맞음"이라고 하지 마.
+- 쪽 번호는 PDF의 쪽 번호로 적어 줘.
+- 원고는 고치지 말고 점검만 해.</pre></div><div class="card" id="s6d4" data-nav="d" data-label="② 직접 확인하기"><h3><span class="num">2</span>크기는 내 눈으로 확인하기</h3><ul><li>PDF를 연 프로그램의 「문서 속성」에서 쪽 크기(mm)를 직접 확인합니다. AI는 PDF의 실제 크기를 잘못 읽을 때가 있습니다.</li><li>양면 보기로 바꿔, PDF 1쪽이 오른쪽에 오고 그림이 왼쪽 쪽에 오는지 봅니다.</li><li>지금 전자책 PDF는 안 맞는 항목이 많은 게 당연합니다. 새로 만들 책이 지킬 규격을 아는 것이 목적입니다.</li></ul></div></div></div><div class="nav-btm"><button type="button" data-go="6">← STEP 6</button><button type="button" data-go="8">STEP 8 →</button></div></section>
+<section class="step" data-title="표지·판권"><div class="step-head"><span class="no">STEP 8</span><h2>표지 · 판권 · 등록 규칙</h2><p>내지 다음은 표지와 판권 쪽, 그리고 등록할 때의 규칙입니다. 여기까지 확인하고 판형 계획서를 올립니다.</p></div><div class="zone know"><p class="zone-title">알아보기 <span>읽고 이해하는 구역</span></p><div class="grid"><div class="card wide" id="s6k4" data-nav="k" data-label="표지 펼침면"><h3>표지는 한 장으로 펼쳐서 만듭니다</h3><svg viewBox="0 0 900 250" role="img" aria-label="표지 펼침면: 뒷날개, 뒤표지, 책등, 앞표지, 앞날개. 뒤표지 오른쪽 아래에 바코드 자리"><g font-family="inherit" font-size="13.5" fill="#23262d">
+<rect x="20" y="30" width="130" height="170" fill="#f5f6f8" stroke="#b9bdc7"/><text x="85" y="110" text-anchor="middle">뒷날개</text><text x="85" y="130" text-anchor="middle" font-size="12" fill="#5b616e">100mm</text>
+<rect x="150" y="30" width="270" height="170" fill="#eef4fb" stroke="#24507f"/><text x="285" y="100" text-anchor="middle" font-weight="700" fill="#24507f">뒤표지</text>
+<rect x="318" y="152" width="92" height="40" fill="#fff" stroke="#8a3a31" stroke-dasharray="4 3"/><text x="364" y="170" text-anchor="middle" font-size="11.5" fill="#8a3a31">바코드 자리</text><text x="364" y="185" text-anchor="middle" font-size="11.5" fill="#8a3a31">55×35mm</text>
+<rect x="420" y="30" width="40" height="170" fill="#3f5fbf"/><text x="440" y="120" text-anchor="middle" fill="#fff" font-size="12" transform="rotate(90 440 116)">책등(세네카)</text>
+<rect x="460" y="30" width="270" height="170" fill="#eef4fb" stroke="#24507f"/><text x="595" y="100" text-anchor="middle" font-weight="700" fill="#24507f">앞표지</text><text x="595" y="122" text-anchor="middle" font-size="12" fill="#5b616e">제목 · 지은이 · 그림</text>
+<rect x="730" y="30" width="130" height="170" fill="#f5f6f8" stroke="#b9bdc7"/><text x="795" y="110" text-anchor="middle">앞날개</text><text x="795" y="130" text-anchor="middle" font-size="12" fill="#5b616e">100mm</text>
+<text x="440" y="226" text-anchor="middle" font-size="12.5" fill="#5b616e">책등 두께는 쪽수와 종이에 따라 달라집니다. 교보문고 개인 작가는 앞표지와 책등에 퍼플 로고를 넣습니다.</text>
+<text x="440" y="244" text-anchor="middle" font-size="12.5" fill="#5b616e">날개가 없는 책은 가운데 세 칸(뒤표지·책등·앞표지)만 만듭니다.</text></g></svg><div class="grid"><figure><img alt="교보 바로출판 필수체크의 바코드 영역 안내: 스티커 45×25mm, 권장 확보 영역 55×35mm 이상" src="img13.jpg"><figcaption>바로출판 필수체크의 바코드 안내. 뒤표지 오른쪽 아래에 물류 바코드 스티커(45 × 25mm)가 붙습니다.</figcaption></figure><div><ul><li>뒤표지 오른쪽 아래 55 × 35mm 이상은 중요한 그림과 글자를 비워 둡니다.</li><li>바코드를 다른 자리에 두고 싶은 개인 작가는 POD등록 Step5 요청사항에 원하는 자리를 적습니다.</li><li>부크크는 책날개 있음·없음을 고릅니다. 무료 표지는 책날개가 안 되고, A4는 책날개를 쓸 수 없습니다(화면 캡처는 STEP 5).</li><li>표지 크기와 책등 두께는 교보문고 제작 스튜디오에서 계산할 수 있습니다(이 화면의 「책등(세네카)」 카드).</li></ul></div></div><figure><img alt="교보 자주 묻는 질문: 좌우 각 날개는 10cm(100mm), 국반판은 6cm(60mm), 국배판(A4)·정사각판·가로판 제외" src="img14.jpg"><figcaption>교보 자주 묻는 질문 「표지 날개 길이는 어떻게 설정해야 하나요?」</figcaption></figure><figure><img alt="교보 자주 묻는 질문: 개인작가는 표지 인쇄용 파일의 앞과 옆에 퍼플 로고를 넣어주세요" src="img15.jpg"><figcaption>교보 자주 묻는 질문 「퍼플 로고는 어디서 다운로드받나요?」. 앞(앞표지)과 옆(책등)에 넣습니다.</figcaption></figure><figure><img alt="교보 자주 묻는 질문: 무료표지 기능은 개인저자만 이용 가능합니다" src="img16.jpg"><figcaption>교보 자주 묻는 질문 「무료표지를 사용하고 싶어요」</figcaption></figure><div class="links">원문 보기 <a href="https://app.notion.com/p/POD-2567fd9fbff480898fefc5994e8a4b25" target="_blank" rel="noopener">교보 자주 묻는 질문</a><a href="https://accidental-thought-b51.notion.site/1537fd9fbff48024865ad429003f93f7" target="_blank" rel="noopener">교보 바로출판 필수체크</a><a href="https://kyobobookpod.github.io/baro-publishing-guide/" target="_blank" rel="noopener">교보 제작 스튜디오</a><a href="https://bookk.co.kr/author/make/paperBook" target="_blank" rel="noopener">부크크 책 만들기</a></div></div><div class="card wide" id="s6k6" data-nav="k" data-label="책등(세네카)"><h3>책등(세네카) 두께는 쪽수와 종이가 정합니다</h3><p>책등은 책을 꽂았을 때 보이는 옆면입니다. 인쇄 현장에서는 세네카라고도 부릅니다. 표지 파일의 가로 길이에 책등 두께가 들어가므로, <b>표지는 내지 쪽수를 확정한 뒤에 만듭니다.</b> 쪽수가 바뀌면 책등이 바뀌고 표지도 다시 만들어야 합니다.</p><figure><img alt="교보문고 제작 스튜디오: A5, 스노우 100g, 50페이지의 예상 책등 두께 3.2mm" src="img17.jpg"><figcaption>교보문고 제작 스튜디오 「04 페이지 수」. A5·무선·컬러·스노우 100g·50쪽을 넣으면 예상 책등 두께 3.2mm가 나옵니다.</figcaption></figure><table><tr><th style="width:11rem">무엇</th><th>교보문고 제작 스튜디오의 계산</th></tr><tr><td>책등 두께 (무선·날개)</td><td>내지 종이 한 장 두께 × 쪽수 ÷ 2 + 0.78mm (면지 0.28mm + 표지 0.5mm)</td></tr><tr><td>책등 두께 (양장)</td><td>위 값 + 6mm, 최소 11mm</td></tr><tr><td>표지 파일 가로 (무선)</td><td>판형 가로 × 2 + 책등 + 6mm</td></tr><tr><td>표지 파일 가로 (날개)</td><td>판형 가로 × 2 + 책등 + 날개 × 2 + 6mm</td></tr><tr><td>표지 파일 세로</td><td>판형 세로 + 6mm</td></tr></table><p>예: A5(148 × 210), 무선, 스노우 100g, 50쪽 → 책등 3.2mm, 표지 파일 305.2 × 216mm</p><p>무선 제본일 때 종이와 쪽수에 따른 책등 두께(위 계산식으로 구한 값):</p><table><tr><th>내지 종이</th><th>50쪽</th><th>60쪽</th><th>80쪽</th><th>100쪽</th></tr><tr><td>스노우 100g</td><td>3.2mm</td><td>3.7mm</td><td>4.6mm</td><td>5.6mm</td></tr><tr><td>백색모조 80g</td><td>3.0mm</td><td>3.5mm</td><td>4.4mm</td><td>5.3mm</td></tr><tr><td>백색모조 100g</td><td>3.6mm</td><td>4.2mm</td><td>5.3mm</td><td>6.5mm</td></tr><tr><td>백색모조 150g</td><td>5.0mm</td><td>5.8mm</td><td>7.5mm</td><td>9.1mm</td></tr><tr><td>미색모조 80g</td><td>3.0mm</td><td>3.5mm</td><td>4.4mm</td><td>5.3mm</td></tr><tr><td>미색모조 100g</td><td>3.6mm</td><td>4.2mm</td><td>5.3mm</td><td>6.5mm</td></tr><tr><td>이라이트 80g</td><td>3.9mm</td><td>4.5mm</td><td>5.8mm</td><td>7.0mm</td></tr></table><figure><img alt="교보문고 제작 스튜디오 표지 제작 가이드: 뒤표지 148mm, 책등 3.2mm, 앞표지 148mm, 표지 전개도 305.2×216mm" src="img18.jpg"><figcaption>제작 스튜디오 「표지 가이드」. 뒤표지·책등·앞표지 크기와 바코드 자리, 로고 자리, 재단선이 한 장에 나옵니다. 「맞춤 표지 PPT 다운로드」로 이 크기의 표지 틀을 받을 수 있습니다.</figcaption></figure><ul><li>그림책 50쪽은 책등이 3~5mm로 얇습니다. 책등에 글자를 넣을지는 실제 두께를 보고 정합니다.</li><li>교보문고는 책등이 10mm 이하이면 책등의 퍼플 로고를 생략할 수 있습니다. 앞표지 로고는 그대로 넣습니다.</li><li>부크크는 책 만들기 화면에 쪽수를 넣으면 「두께」 칸에 책등 두께가 나옵니다(예: 46판, 미색모조 100g, 100쪽 → 7.1mm). 두 곳의 종이가 달라 두께도 다르므로, 표지는 낼 곳마다 따로 만듭니다.</li></ul><div class="links">원문 보기 <a href="https://kyobobookpod.github.io/baro-publishing-guide/" target="_blank" rel="noopener">교보 제작 스튜디오</a><a href="https://bookk.co.kr/author/make/paperBook" target="_blank" rel="noopener">부크크 책 만들기</a></div></div><div class="card wide" id="s6k8" data-nav="k" data-label="판권 쪽"><h3>판권 쪽은 두 곳 모두 꼭 넣습니다</h3><p>판권 쪽(판권지)은 책 제목, 지은이, 펴낸 곳, 펴낸 날, ISBN, 저작권 표시를 적는 쪽입니다. 두 곳 모두 판권 쪽이 없으면 반려됩니다.</p><table><tr><th style="width:7rem">항목</th><th>부크크</th><th>교보문고 바로출판</th></tr><tr><td>꼭 넣어야 하나</td><td>넣어야 합니다. 판권지가 없거나 부크크에 등록한 정보와 다르면 책 등록 때 반려됩니다.</td><td>넣어야 합니다. 판권 쪽은 필수이고, 빠지면 반려됩니다(반려 사유 2위).</td></tr><tr><td>어디에 두나</td><td>부크크 원고 서식에는 2쪽에 들어 있습니다.</td><td>원고 파일의 앞이나 뒤</td></tr><tr><td>무엇을 고치나</td><td>서식의 제목, 발행일, 저자, ⓒ 줄만 고칩니다. 펴낸이·펴낸곳(주식회사 부크크)·주소 등은 그대로 둡니다. ISBN 칸은 비워 둡니다.</td><td>교보문고가 주는 예시에서 빨간색 부분만 내 책에 맞게 고칩니다. 개인 작가는 발행처가 퍼플입니다.</td></tr><tr><td>맞춰야 할 것</td><td>판권지의 제목·저자가 표지, 등록 정보와 같아야 합니다.</td><td>등록 화면에서 「원고에 판권 정보를 입력하셨나요?」를 묻습니다.</td></tr></table><figure><img alt="부크크 클래스 2강: 판권지가 없거나 부크크에 등록한 정보와 다르면 책 등록 시에 반려됩니다" src="img19.jpg"><figcaption>부크크 클래스 「2강 - 부크크 원고 등록시 유의 사항」의 「3. 판권지 입력확인」. 붉은색 글자만 고치고 ISBN은 비워 둡니다.</figcaption></figure><figure><img alt="교보 바로출판 필수체크: 원고 파일 앞, 혹은 뒤쪽에 판권 페이지를 반드시 넣어주세요" src="img20.jpg"><figcaption>교보문고 바로출판 필수체크. 판권 쪽은 꼭 넣어야 하고 반려가 잦은 항목이라고 적혀 있습니다.</figcaption></figure><div class="box warn">판권 쪽도 내지 쪽수에 들어갑니다. 두 곳의 판권 내용(펴낸 곳)이 다르므로, 두 곳에 모두 낼 때는 원고 PDF를 곳마다 따로 만듭니다.</div><div class="links">원문 보기 <a href="https://bookkclass.co.kr/52/?bmode=view&idx=163828650" target="_blank" rel="noopener">부크크 클래스 2강</a><a href="https://bookk.co.kr/author/make/paperBook" target="_blank" rel="noopener">부크크 책 만들기(원고서식 받기)</a><a href="https://accidental-thought-b51.notion.site/1537fd9fbff48024865ad429003f93f7" target="_blank" rel="noopener">교보 바로출판 필수체크</a><a href="https://kyobobookpod.github.io/baro-publishing-guide/" target="_blank" rel="noopener">교보 제작 스튜디오(판권 샘플)</a></div></div><div class="card wide" id="s6k5" data-nav="k" data-label="등록 규칙"><h3>교보문고 등록 규칙 모음</h3><table><tr><th style="width:9rem">항목</th><th>교보문고 바로출판 규칙</th></tr><tr><td>파일 형식</td><td>PDF만, 200MB 이하. 한 쪽씩 만든 파일이어야 하고, 두 쪽을 한 장에 붙인 모아찍기는 안 됩니다.</td></tr><tr><td>글꼴</td><td>글꼴을 PDF에 포함하거나 윤곽선으로 바꿉니다.</td></tr><tr><td>색</td><td>흑백을 고르면 PDF도 흑백(그레이스케일)으로 만듭니다. 부분 컬러는 이어서 최대 10쪽까지이고 홀수 쪽에서 시작해 짝수 쪽에서 끝납니다.</td></tr><tr><td>판권 쪽</td><td>원고 앞이나 뒤에 꼭 넣습니다. 빠지면 반려됩니다(반려 사유 2위).</td></tr><tr><td>판형</td><td>등록한 판형과 PDF 크기가 다르면 반려됩니다(반려 사유 1위).</td></tr><tr><td>면지</td><td>쪽수에 넣지 않습니다. 교보문고가 앞뒤에 한 장씩 붙여 줍니다.</td></tr><tr><td>날개</td><td>좌우 각 100mm(A6은 60mm). A4·정사각판·가로판은 날개를 쓸 수 없습니다.</td></tr><tr><td>무료 표지</td><td>개인 작가만 쓸 수 있고, 가로판·변형신국판·정사각판·양장에는 쓸 수 없습니다.</td></tr><tr><td>퍼플 로고</td><td>개인 작가는 앞표지와 책등에 퍼플(PubPle) 로고를 넣어야 합니다.</td></tr><tr><td>앞표지만 올리기</td><td>펼침면 표지를 만들기 어려우면 앞표지 PDF만 올려도 됩니다. 책등과 뒤표지는 흰 바탕으로 만들어집니다.</td></tr><tr><td>KC 마크</td><td>어린이 책에 KC 마크가 필요하면 작가가 직접 마크를 받아 표지에 넣습니다. 교보문고가 인증번호를 받아 주지는 않습니다.</td></tr><tr><td>AI 표시</td><td>원고나 표지에 AI를 일부라도 썼으면 「AI 생성·활용 도서」를 꼭 선택합니다. 표시하지 않아 독자 항의가 생기면 정산에서 차감될 수 있습니다.</td></tr><tr><td>승인 뒤</td><td>쪽수·판형·종이·가격을 바꿀 수 없습니다. 원고 파일 교체는 승인일로부터 90일 안에 3번까지, 개정판은 6개월 뒤부터 낼 수 있습니다.</td></tr><tr><td>ISBN</td><td>판매 승인 뒤 10영업일 안에 발급됩니다.</td></tr></table><figure><img alt="교보문고 POD등록 화면의 AI 활용도서 여부 선택" src="img21.jpg"><figcaption>파트너시스템 POD등록 Step3 「AI 활용도서 여부를 선택해 주세요」</figcaption></figure><figure><img alt="교보 자주 묻는 질문: 면지는 페이지수 계산시 포함하지 않습니다. 앞뒤 각각 1장씩 120g 밍크지 백회색 면지 적용" src="img22.jpg"><figcaption>교보 자주 묻는 질문 「면지는 페이지수 계산시 포함하나요?」</figcaption></figure><figure><img alt="교보 자주 묻는 질문: 제작옵션(책크기, 종이재질, 페이지수 변경 등)과 가격정보는 수정할 수 없고, 파일교체는 3개월 이내 3회까지" src="img23.jpg"><figcaption>교보 자주 묻는 질문 「판매중인데 파일교체를 하고 싶어요」</figcaption></figure><div class="links">원문 보기 <a href="https://app.notion.com/p/POD-2567fd9fbff480898fefc5994e8a4b25" target="_blank" rel="noopener">교보 자주 묻는 질문</a><a href="https://accidental-thought-b51.notion.site/1537fd9fbff48024865ad429003f93f7" target="_blank" rel="noopener">바로출판 필수체크</a><a href="https://accidental-thought-b51.notion.site/2a77fd9fbff4809fbd8edbee5268eb89" target="_blank" rel="noopener">검수 체크리스트</a><a href="https://accidental-thought-b51.notion.site/KC-2a77fd9fbff48112a5fbcb1be376f85b" target="_blank" rel="noopener">어린이 도서 KC 인증</a></div></div></div></div><div class="zone do"><p class="zone-title">해 보기 <span>직접 따라 하는 구역</span></p><div class="grid"><div class="card wide" id="s8d1" data-nav="d" data-label="① 내 책 점검표"><h3><span class="num">1</span>내 책 점검표</h3><p>새로 만들 책이 지켜야 할 것들입니다. 계획서를 쓰기 전에 하나씩 읽고, 내 계획에서 빠진 것에 표시합니다.</p><ol><li>내지가 50쪽 이상이고 짝수인가</li><li>판권 쪽이 있는가 (부크크는 서식의 2쪽, 교보문고는 원고 앞이나 뒤). 제목과 지은이가 표지와 같은가</li><li>PDF 크기가 고른 판형 + 사방 3mm인가</li><li>쪽에 꽉 차는 그림이 바깥 3mm까지 채워져 있는가</li><li>얼굴과 글자가 재단선 안쪽에 있는가. 글은 가장자리에서 20mm 이상 떨어져 있는가</li><li>PDF 1쪽이 오른쪽에 온다는 것을 생각하고 순서를 짰는가 (그림은 짝수 쪽, 글은 홀수 쪽)</li><li>얼굴과 글자가 책 가운데 쪽(제본선)에서 26mm 이상 떨어져 있는가</li><li>두 쪽을 잇는 그림의 가운데에 얼굴과 글자가 걸리지 않는가</li><li>표지는 내지 쪽수를 확정한 뒤, 계산된 책등 두께로 만들었는가</li><li>한 쪽씩 만든 PDF인가 (모아찍기가 아닌가)</li><li>뒤표지 오른쪽 아래 55×35mm가 비어 있는가</li><li>교보문고: 앞표지와 책등에 퍼플 로고를 넣었는가</li><li>교보문고: 「AI 생성·활용 도서」를 선택했는가</li><li>어린이 책이면 KC 마크가 필요한지 확인했는가</li></ol></div><div class="card wide" id="s8d2" data-nav="d" data-label="② 계획서 프롬프트"><h3><span class="num">2</span>AI에게 계획서 초안 받기</h3><p>지금까지의 대화창에서 이어서 보냅니다. 초안은 내가 확인하고 고쳐서 올립니다. <button type="button" class="copy" data-copy="p6b">프롬프트 복사</button></p><pre id="p6b">지금까지 이 대화에서 나온 판정 결과, 판형 비교, 파일 점검 결과를 바탕으로 「POD 판형 계획서」 초안을 한 장으로 정리해 줘.
+
+[내가 정한 것]
+- 길: 【A 보강 / B 새로 만들기】
+- 판형과 낼 곳: 【예: A5 148×210mm, 부크크와 교보문고】
+- 제본과 날개: 【예: 무선, 날개 없음】
+- 목표 내지 쪽수: 【예: 52쪽】
+
+[계획서에 넣을 것]
+1. 판형과 낼 곳, 고른 이유(비교한 후보 2개 포함)
+2. 쪽수 계획: 앞부속 · 장면 수 · 펼침 그림 수 · 뒷부속 · 판권 쪽을 표로, 합계가 목표 쪽수와 맞는지 확인
+3. 그림 계획: 새 그림 비율, 그대로 쓸 장면과 다시 그릴 장면, 장면별 뷰·샷·앵글 방향을 표로
+4. 파일 규격: 만들 파일 크기(판형 + 사방 3mm), 제본선 쪽 여백, 예상 책등 두께는 "제작 화면에서 확인"이라고 적기
+5. 점검에서 고칠 것 세 가지
+
+[지킬 것]
+- 내가 정하지 않은 것은 네가 정하지 말고 "미정"이라고 적어.
+- 이 대화에 없는 숫자는 지어내지 마.
+- 쉬운 말로, 표를 중심으로.</pre></div><div class="card wide" id="s8d3" data-nav="d" data-label="③ 판형 계획서 올리기"><h3><span class="num">3</span>판형 계획서를 만들어 패들렛에 올리기</h3><p>STEP 6에서 정한 판형과 STEP 7·8에서 확인한 규격를 한 장의 계획서로 묶습니다. 양식은 자유입니다.</p><table><tr><th style="width:9rem">넣을 것</th><th>내용</th></tr><tr><td>판형과 낼 곳</td><td>고른 판형과 크기(mm), 부크크·교보문고 가운데 낼 곳, 제본과 날개</td></tr><tr><td>고른 이유</td><td>비교한 후보 2개와, 이 판형을 고른 이유</td></tr><tr><td>쪽수 계획</td><td>목표 내지 쪽수와 구성(앞부속·장면 수·펼침 그림 수·뒷부속·판권 쪽)</td></tr><tr><td>그림 계획</td><td>새 그림 비율, 그대로 쓸 장면과 다시 그릴 장면, 장면별 뷰·샷·앵글 방향</td></tr><tr><td>파일 규격</td><td>만들 파일 크기(판형 + 사방 3mm), 제본선 여백, 예상 책등 두께</td></tr><tr><td>점검에서 고칠 것</td><td>점검표에서 안 맞은 항목과 먼저 고칠 것 세 가지</td></tr></table><div class="box pad"><b>패들렛에 올리기</b><br>게시물 제목: <b>POD 판형 계획서</b></div></div></div></div><div class="nav-btm"><button type="button" data-go="7">← STEP 7</button><button type="button" data-go="9">STEP 9 →</button></div></section>
+<section class="step" data-title="막힐 때"><div class="step-head"><span class="no">STEP 9</span><h2>막힐 때 · 한 걸음 더</h2><p>따라 하다 막히면 왼쪽을, 더 해 보고 싶으면 오른쪽을 봅니다.</p></div><div class="zone know"><p class="zone-title">알아보기 <span>읽고 이해하는 구역</span></p><div class="grid"><div class="card wide" id="s7k1" data-nav="k" data-label="막힐 때"><h3>막힐 때</h3><table><tr><th>이럴 때</th><th>이렇게 말합니다</th></tr><tr><td>판정이 첫 줄에 안 나올 때</td><td>"출력 순서를 지켜. 첫 줄에 판정부터 다시 적어 줘."</td></tr><tr><td>AI가 글을 고치기 시작할 때</td><td>"오늘은 판정만 해. 고치지 말고 출력 1부터 다시 해 줘."</td></tr><tr><td>표가 중간에 끊길 때</td><td>"계속"</td></tr><tr><td>AI가 판형을 정해 버릴 때</td><td>"판형은 내가 정해. 비교표만 다시 보여 줘."</td></tr><tr><td>AI가 말한 판형 크기가 내 조사표와 다를 때</td><td>"판형 크기는 내 조사표가 기준이야. 조사표 숫자로 다시 계산해 줘."</td></tr><tr><td>기획 자료를 못 찾겠을 때</td><td>최종 글과 PDF만 넣습니다. 이때 남은 재료는 "자료에 없음"으로 나옵니다.</td></tr><tr><td>복사 버튼이 안 눌릴 때</td><td>프롬프트 상자 안을 마우스로 끌어 선택한 뒤 Ctrl+C로 복사합니다.</td></tr></table></div><div class="card wide" id="s7k2" data-nav="k" data-label="제작 스튜디오"><h3>교보문고 제작 스튜디오</h3><figure><img alt="교보문고 바로출판POD 제작 스튜디오 첫 화면" src="img24.jpg"><figcaption>바로출판POD 제작 스튜디오. 로그인 없이 쓸 수 있습니다.</figcaption></figure><p>제본·판형·종이·쪽수를 고르면 책등 두께와 표지·내지 파일 크기를 계산해 주고, 표지용 PPTX와 내지 템플릿을 내려받을 수 있습니다.</p><div class="links">바로 가기 <a href="https://kyobobookpod.github.io/baro-publishing-guide/" target="_blank" rel="noopener">교보 제작 스튜디오</a></div></div></div></div><div class="zone do"><p class="zone-title">해 보기 <span>직접 따라 하는 구역</span></p><div class="grid"><div class="card" id="s7d1" data-nav="d" data-label="① 조건 바꿔 다시 판정"><h3><span class="num">1</span>쪽수 조건을 바꿔 한 번 더</h3><p>판정 프롬프트의 【50】을 【30】으로 바꿔 한 번 더 돌립니다. 판정이 어떻게 달라지는지 비교합니다. 교보문고에서 30~49쪽으로 낼 때의 조건(STEP 4)을 감수할 만한지 생각해 봅니다.</p></div><div class="card" id="s7d2" data-nav="d" data-label="② 판정에 반대해 보기"><h3><span class="num">2</span>판정에 반대해 보기</h3><p><button type="button" class="copy" data-copy="p7">프롬프트 복사</button></p><pre id="p7">방금 한 판정에 나는 반대해. 나는 【A 보강 / B 새로 만들기】가 맞다고 생각해.
+1. 내 생각이 맞을 수 있는 근거를 내 자료에서 세 가지 찾아 줘.
+2. 그쪽으로 갈 때 가장 좋은 방법을 세 줄로 말해 줘.
+3. 그래도 처음 판정을 지키겠다면 이유를 한 줄로 말해 줘.
+자료에 없는 것은 지어내지 마.</pre></div><div class="card" id="s7d3" data-nav="d" data-label="③ 내 기준 더하기"><h3><span class="num">3</span>판정 근거표에 내 기준 하나 더하기</h3><p>판정 근거표의 여섯 기준에 내 책만의 기준을 하나 더해 다시 판정받습니다. 예: "읽어 줄 아이의 나이에 맞는 분량인지".</p></div><div class="card" id="s7d4" data-nav="d" data-label="④ 제작 스튜디오 써 보기"><h3><span class="num">4</span>제작 스튜디오에서 내 책 크기 뽑기</h3><p>STEP 6에서 정한 판형과 목표 쪽수를 넣고, 내지 파일 크기와 책등 두께를 적어 둡니다. 그림을 다시 만들 때 이 숫자를 씁니다.</p></div></div></div><div class="nav-btm"><button type="button" data-go="8">← STEP 8</button><span></span></div></section>
+</main>
+<aside class="side" id="side"></aside>
+</div>
+
+<script>
+(function(){
+  var steps=[].slice.call(document.querySelectorAll('.step')),tabs=document.getElementById('tabs'),side=document.getElementById('side');
+  function show(i){
+    steps.forEach(function(s,n){s.classList.toggle('on',n===i)});
+    [].forEach.call(tabs.children,function(b,n){b.classList.toggle('on',n===i)});
+    var h='',k=steps[i].querySelectorAll('[data-nav="k"]'),d=steps[i].querySelectorAll('[data-nav="d"]');
+    if(k.length){h+='<b class="k">알아보기</b>';[].forEach.call(k,function(e){h+='<a href="#'+e.id+'">'+e.getAttribute('data-label')+'</a>'})}
+    if(d.length){var arr=[].slice.call(d).sort(function(a,b){return a.getAttribute('data-label')<b.getAttribute('data-label')?-1:1});h+='<b class="d">해 보기</b>';arr.forEach(function(e){h+='<a href="#'+e.id+'">'+e.getAttribute('data-label')+'</a>'})}
+    side.innerHTML=h||'<span style="color:#5b616e">이 화면의 목차</span>';
+    window.scrollTo(0,0);
+  }
+  steps.forEach(function(s,i){var b=document.createElement('button');b.type='button';b.textContent=i+' '+s.getAttribute('data-title');b.onclick=function(){show(i)};tabs.appendChild(b)});
+  document.addEventListener('click',function(e){
+    var t=e.target;
+    if(t.getAttribute('data-go')){show(+t.getAttribute('data-go'))}
+    if(t.getAttribute('data-z')){var r=document.documentElement,c=parseFloat(getComputedStyle(r).fontSize)+2*(+t.getAttribute('data-z'));r.style.setProperty('--fs',Math.max(18,Math.min(28,c))+'px')}
+    if(t.getAttribute('data-copy')){var tx=document.getElementById(t.getAttribute('data-copy')).textContent;var lab=t.textContent;var done=function(){t.textContent='복사됨';setTimeout(function(){t.textContent=lab},1500)};if(navigator.clipboard){navigator.clipboard.writeText(tx).then(done,function(){fb()})}else{fb()}function fb(){var a=document.createElement('textarea');a.value=tx;document.body.appendChild(a);a.select();try{document.execCommand('copy');done()}catch(x){}document.body.removeChild(a)}}
+  });
+  show(0);
+})();
+</script>
+</body>
+</html>

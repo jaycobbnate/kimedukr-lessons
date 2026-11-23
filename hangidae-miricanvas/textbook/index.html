@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PPT보다 쉬운 미리캔버스 교안 교과서 · 온라인 교재</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+:root{--fs:21px;--bg:#fbfbf8;--line:#e3e5e8;--ink:#1f2933;--sub:#5b6673;--point:#1d6fb8;--point-soft:#e9f2fb;--book:#f4f6f8}
+*{box-sizing:border-box}html{font-size:var(--fs)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Pretendard,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;line-height:1.65;word-break:keep-all}
+button{font-family:inherit}
+.wrap{max-width:1200px;margin:0 auto;padding:0 20px}
+.hero{padding:26px 20px 16px;border-bottom:1px solid var(--line)}
+.hero small{color:var(--point);font-weight:700;font-size:.8rem}
+.hero h1{margin:4px 0 4px;font-size:1.5rem;line-height:1.3}
+.hero p{margin:0;color:var(--sub);font-size:.9rem}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(251,251,248,.97);border-bottom:1px solid var(--line)}
+.topbar .wrap{display:flex;align-items:center;gap:8px;padding-top:9px;padding-bottom:9px}
+.jump{display:flex;gap:6px;flex:1;overflow-x:auto}
+.jump a{flex:none;border:1px solid var(--line);background:#fff;color:var(--sub);border-radius:999px;padding:.25rem .7rem;font-size:.76rem;text-decoration:none;white-space:nowrap}
+.jump a b{color:var(--point);margin-right:.25rem}
+.jump a:hover{background:var(--point-soft);color:var(--point)}
+.tools{display:flex;gap:6px;align-items:center;flex:none}
+.tools span{font-size:.74rem;color:var(--sub);font-weight:700}
+.tools button{border:1px solid var(--line);background:#fff;border-radius:8px;padding:.25rem .6rem;font-size:.78rem;cursor:pointer;color:var(--ink)}
+.tools .ed.on{background:var(--point-soft);border-color:var(--point);color:var(--point);font-weight:700}
+main{padding:20px 0 30px}
+.box{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px 20px;margin-bottom:16px}
+.box h2{margin:0 0 6px;font-size:1.08rem}
+.band{margin-bottom:16px}
+#scene{position:relative;width:100%;height:170px;border-radius:14px;overflow:hidden;background:linear-gradient(#f7fafd,#eef3f8);border:1px solid var(--line)}
+#scene canvas{display:block}
+.lbl{position:absolute;transform:translate(-50%,0);background:#fff;border:1px solid var(--line);border-radius:999px;padding:.1rem .6rem;font-size:.72rem;white-space:nowrap;cursor:pointer}
+.lbl.on{border-color:var(--point);color:var(--point);font-weight:700}
+.ctrl{position:absolute;top:8px;right:8px;display:flex;gap:4px;z-index:2}
+.ctrl button{border:1px solid var(--line);background:rgba(255,255,255,.9);border-radius:8px;width:1.7rem;height:1.6rem;padding:0;font-size:.72rem;cursor:pointer}
+.ctrl button.primary{background:var(--point);color:#fff;border-color:var(--point)}
+.caption{display:none;position:absolute;left:12px;bottom:8px;font-size:.78rem;background:rgba(255,255,255,.85);border-radius:999px;padding:.1rem .7rem;z-index:2}.caption b{color:var(--point)}
+.nogl{display:none;padding:20px;color:var(--sub)}
+.intro{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.intro ol{margin:0;padding-left:1.2rem;font-size:.92rem}
+.edition{display:flex;gap:8px;margin-top:8px}
+.edition button{flex:1;border:1px solid var(--line);background:#fff;border-radius:12px;padding:.6rem .8rem;text-align:left;cursor:pointer;font-size:.86rem;line-height:1.4;color:var(--ink)}
+.edition button.on{border-color:var(--point);background:var(--point-soft)}
+.edition button b{display:block;color:var(--point)}
+.legend{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px;font-size:.84rem}
+.legend div{border-radius:10px;padding:.45rem .7rem}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px 20px;display:flex;flex-direction:column;scroll-margin-top:70px}
+.card .top{display:flex;align-items:baseline;gap:.6rem}
+.card .no{font-size:2.2rem;font-weight:900;color:var(--point);line-height:1}
+.card .pp{margin-left:auto;background:var(--point-soft);color:var(--point);border-radius:999px;padding:.1rem .7rem;font-weight:800;font-size:.85rem;white-space:nowrap}
+.card h3{margin:.4rem 0 .3rem;font-size:1.05rem;line-height:1.35}
+.card p{margin:0 0 .6rem;color:var(--sub);font-size:.86rem}
+.card ul{margin:0 0 .8rem;padding:0;list-style:none;font-size:.82rem}
+.card li{padding:.22rem 0;border-top:1px dashed var(--line)}
+.card li b{color:var(--point);margin-right:.35rem}
+.card .meta{font-size:.76rem;color:var(--sub);margin-bottom:.7rem}
+.card a.go{margin-top:auto;display:block;text-align:center;background:var(--point);color:#fff;text-decoration:none;border-radius:10px;padding:.55rem;font-weight:700;font-size:.9rem}
+.card a.go:hover{background:#155c99}
+.card.flash{animation:fl 1.6s ease}@keyframes fl{0%{box-shadow:0 0 0 3px var(--point)}100%{box-shadow:none}}
+footer{color:var(--sub);font-size:.75rem;text-align:center;padding:10px 0 24px}
+@media (max-width:980px){.grid{grid-template-columns:1fr 1fr}.legend{grid-template-columns:1fr 1fr}}
+@media (max-width:640px){.topbar .wrap{flex-wrap:wrap}.jump{flex-basis:100%}.grid,.intro,.legend{grid-template-columns:1fr}#scene{height:120px}.caption{display:none}.ctrl{top:auto;bottom:6px}}
+</style></head><body>
+<header class="wrap hero"><small>한기대 교직 과정 · 온라인 교재</small>
+<h1>PPT보다 쉬운 미리캔버스 교안 교과서</h1>
+<p>종이 교재 쪽수 그대로, 지금 화면으로 다시 보기 · 아래에서 장을 골라 들어가세요.</p></header>
+<nav class="topbar"><div class="wrap"><div class="jump" id="jump"></div>
+<div class="tools"><span>내 교재</span><button class="ed on" data-ed="0">13쪽판</button><button class="ed" data-ed="4">17쪽판</button><button id="fsDown" title="글자 작게">가−</button><button id="fsUp" title="글자 크게">가+</button></div></div></nav>
+<main class="wrap">
+<div class="band"><div id="scene"><div class="nogl" id="nogl">입체 그림을 불러오지 못했어요. 아래 카드에서 장을 골라 주세요.</div>
+<div class="ctrl"><button class="primary" id="play" title="재생">▶</button><button id="pause" title="멈춤">⏸</button><button id="reset" title="처음">↺</button><button id="spin" title="회전">⟳</button></div>
+<div class="caption" id="caption"></div></div></div>
+<div class="grid" id="grid"></div>
+<div class="intro" style="margin-top:16px"><div class="box"><h2>이렇게 보세요</h2><ol>
+<li>아래 <b>장 카드</b>에서 「이 장 열기」를 눌러요. <b>새 탭</b>으로 열려요.</li>
+<li>각 장 안에서는 위 <b>절 탭</b>과 오른쪽 <b>목차</b>로 이동해요.</li>
+<li>항목마다 <b>📖 교재 쪽수</b>가 있어요. 종이 교재를 함께 펴 보세요.</li>
+<li>절 끝 <b>✍️ 해 볼 것</b>에서 내 과목으로 실습하고 체크해요.</li></ol></div>
+<div class="box"><h2>내 교재는 어느 버전?</h2><p style="margin:0;font-size:.88rem;color:var(--sub)">내용은 같고 앞쪽 안내 페이지 수만 달라 <b>쪽수가 4쪽씩</b> 차이 나요. 「미리캔버스 로그인 설명」이 몇 쪽에서 시작하나요? 각 장 페이지에서도 같은 버튼을 한 번 눌러 주세요.</p>
+<div class="edition"><button class="ed on" data-ed="0"><b>13쪽에서 시작</b>원래 판</button><button class="ed" data-ed="4"><b>17쪽에서 시작</b>4쪽 늘어난 판</button></div></div></div>
+<div class="box"><h2>각 장 안의 상자 색깔</h2><div class="legend">
+<div style="background:#e9f2fb">🔄 <b>지금 화면에서는</b> · 교재와 달라진 화면</div>
+<div style="background:#f3effa">✏️ <b>바르게 알아 두기</b> · 헷갈리는 곳 바로잡기</div>
+<div style="background:#e7f4f1">🧩 <b>막힐 때</b> · 안 될 때 먼저 볼 것</div>
+<div style="background:#eef0fb">🚀 <b>한 걸음 더</b> · 익숙한 분을 위한 응용</div>
+<div style="background:#f1f4f7">💼 <b>내 직종에 쓰면</b> · 훈련 과목별 활용 예</div>
+<div style="background:#fff;border:2px solid #1d6fb8">✍️ <b>실습 포인트</b> · 내 과목으로 해 볼 것</div></div></div>
+</main><footer>김에듀 · 김충효 강사 · kimedu.kr</footer>
+<script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js"></script>
+<script>
+const CH=[{"no": "01", "name": "본 수업의 이해", "p": [1, 12], "goal": "왜 PPT 대신 미리캔버스로 교안을 만드는지, 훈련생·훈련교사·기관 입장에서 무엇이 좋아지는지 알아봐요.", "secs": [{"no": "01-1", "t": "기존 교안 작성법과 비교하여 장점 이해하기"}], "url": "https://www.kimedu.kr/%ED%95%9C%EA%B8%B0%EB%8C%80%EA%B5%90%EC%A7%81%EA%B3%BC%EC%A0%95/%EB%AF%B8%EB%A6%AC%EC%BA%94%EB%B2%84%EC%8A%A4-%EA%B5%90%EC%95%88-%EC%A0%9C%EC%9E%91/%EA%B5%90%EC%95%88-%EC%A0%9C%EC%9E%91-%EC%98%A8%EB%9D%BC%EC%9D%B8-%EA%B5%90%EC%9E%AC/01-%EB%B3%B8-%EC%88%98%EC%97%85%EC%9D%98-%EC%9D%B4%ED%95%B4", "n": 5}, {"no": "02", "name": "교안 작성 툴 기능의 이해", "p": [13, 71], "goal": "로그인부터 워크스페이스, 에디터 화면, 템플릿, 사진, 요소, 표·차트, 글자, QR, 배경, 다운로드, 공유까지. 교재 순서대로 따라가되, 화면이 바뀐 곳은 2026년 10월 지금 화면으로 설명해요.", "secs": [{"no": "02-1", "t": "로그인, 워크스페이스, 구성 메뉴 및 템플릿의 이해"}, {"no": "02-2", "t": "요소 활용 및 데이터 메뉴 활용"}, {"no": "02-3", "t": "텍스트 및 배경 활용"}, {"no": "02-4", "t": "협업, 다운로드 및 배포 방법"}], "url": "https://www.kimedu.kr/%ED%95%9C%EA%B8%B0%EB%8C%80%EA%B5%90%EC%A7%81%EA%B3%BC%EC%A0%95/%EB%AF%B8%EB%A6%AC%EC%BA%94%EB%B2%84%EC%8A%A4-%EA%B5%90%EC%95%88-%EC%A0%9C%EC%9E%91/%EA%B5%90%EC%95%88-%EC%A0%9C%EC%9E%91-%EC%98%A8%EB%9D%BC%EC%9D%B8-%EA%B5%90%EC%9E%AC/02-%EA%B5%90%EC%95%88%EC%9E%91%EC%84%B1%ED%88%B4%EA%B8%B0%EB%8A%A5", "n": 32}, {"no": "03", "name": "저작권 가이드 이해 및 템플릿 활용 교안 제작", "p": [72, 108], "goal": "안심하고 쓰는 저작권 규칙을 알고, 템플릿으로 실제 교안을 만드는 순서를 따라가요.", "secs": [{"no": "03-1", "t": "미리캔버스 저작권 가이드"}, {"no": "03-2", "t": "템플릿을 활용한 교안 제작"}], "url": "https://www.kimedu.kr/%ED%95%9C%EA%B8%B0%EB%8C%80%EA%B5%90%EC%A7%81%EA%B3%BC%EC%A0%95/%EB%AF%B8%EB%A6%AC%EC%BA%94%EB%B2%84%EC%8A%A4-%EA%B5%90%EC%95%88-%EC%A0%9C%EC%9E%91/%EA%B5%90%EC%95%88-%EC%A0%9C%EC%9E%91-%EC%98%A8%EB%9D%BC%EC%9D%B8-%EA%B5%90%EC%9E%AC/03-%EC%A0%80%EC%9E%91%EA%B6%8C%EA%B3%BC-%ED%85%9C%ED%94%8C%EB%A6%BF%EA%B5%90%EC%95%88", "n": 14}, {"no": "04", "name": "인공지능 기능 활용", "p": [109, 182], "goal": "미리캔버스 안의 AI 도구와 교재에 소개된 바깥 무료 AI 도구를 알아보고, 지금은 무엇으로 대신하는지 정리해요.", "secs": [{"no": "04-1", "t": "인공지능 기능 활용 (미리캔버스 AI 도구)"}, {"no": "04-2", "t": "인공지능 기능 활용 (무료 생성형 AI 도구 활용)"}], "url": "https://www.kimedu.kr/%ED%95%9C%EA%B8%B0%EB%8C%80%EA%B5%90%EC%A7%81%EA%B3%BC%EC%A0%95/%EB%AF%B8%EB%A6%AC%EC%BA%94%EB%B2%84%EC%8A%A4-%EA%B5%90%EC%95%88-%EC%A0%9C%EC%9E%91/%EA%B5%90%EC%95%88-%EC%A0%9C%EC%9E%91-%EC%98%A8%EB%9D%BC%EC%9D%B8-%EA%B5%90%EC%9E%AC/04-ai-%EA%B8%B0%EB%8A%A5", "n": 10}, {"no": "05", "name": "멀티미디어, 클라우드 배포", "p": [183, 192], "goal": "교안에 유튜브 · 동영상 · 음악을 넣고, 완성한 교안을 저장하고 나눠 주는 방법을 알아봐요.", "secs": [{"no": "05-1", "t": "멀티미디어 첨부"}, {"no": "05-2", "t": "클라우드 배포"}], "url": "https://www.kimedu.kr/%ED%95%9C%EA%B8%B0%EB%8C%80%EA%B5%90%EC%A7%81%EA%B3%BC%EC%A0%95/%EB%AF%B8%EB%A6%AC%EC%BA%94%EB%B2%84%EC%8A%A4-%EA%B5%90%EC%95%88-%EC%A0%9C%EC%9E%91/%EA%B5%90%EC%95%88-%EC%A0%9C%EC%9E%91-%EC%98%A8%EB%9D%BC%EC%9D%B8-%EA%B5%90%EC%9E%AC/05-%EB%A9%80%ED%8B%B0%EB%AF%B8%EB%94%94%EC%96%B4%EC%99%80-%EB%B0%B0%ED%8F%AC", "n": 8}, {"no": "06", "name": "실제 교안 제작 및 FAQ", "p": [193, 233], "goal": "내 교안을 기획하고 만들고, 점검 목록으로 다듬은 뒤, PPT와 비교하며 마무리해요.", "secs": [{"no": "06-1", "t": "교안 제작 실습 (기획 및 제작)"}, {"no": "06-2", "t": "교안 제작 실습 (보완 및 피드백)"}, {"no": "06-3", "t": "정리 및 FAQ"}], "url": "https://www.kimedu.kr/%ED%95%9C%EA%B8%B0%EB%8C%80%EA%B5%90%EC%A7%81%EA%B3%BC%EC%A0%95/%EB%AF%B8%EB%A6%AC%EC%BA%94%EB%B2%84%EC%8A%A4-%EA%B5%90%EC%95%88-%EC%A0%9C%EC%9E%91/%EA%B5%90%EC%95%88-%EC%A0%9C%EC%9E%91-%EC%98%A8%EB%9D%BC%EC%9D%B8-%EA%B5%90%EC%9E%AC/06-%EA%B5%90%EC%95%88-%EC%A0%9C%EC%9E%91-%EC%8B%A4%EC%8A%B5", "n": 17}];
+const SH=['수업 이해','기본 기능','저작권 · 템플릿','AI 도구','영상 · 배포','교안 완성'];
+let ed=0,fs=21;
+const pt=(a,b)=>{a+=ed;b+=ed;return a===b?a+'쪽':a+'~'+b+'쪽'};
+document.getElementById('jump').innerHTML=CH.map((c,i)=>`<a href="#c${c.no}"><b>${c.no}</b>${SH[i]}</a>`).join('');
+document.getElementById('grid').innerHTML=CH.map(c=>`<article class="card" id="c${c.no}"><div class="top"><span class="no">${c.no}</span><span class="pp" data-a="${c.p[0]}" data-b="${c.p[1]}">📖 ${pt(c.p[0],c.p[1])}</span></div>
+<h3>${c.name}</h3><p>${c.goal}</p><ul>${c.secs.map(s=>`<li><b>${s.no}</b>${s.t}</li>`).join('')}</ul>
+<div class="meta">절 ${c.secs.length}개 · 항목 ${c.n}개</div><a class="go" href="${c.url}" target="_blank" rel="noopener">이 장 열기 →</a></article>`).join('');
+function setEd(v){ed=v;try{localStorage.setItem('mc-ed',v)}catch(e){}document.querySelectorAll('.ed').forEach(b=>b.classList.toggle('on',+b.dataset.ed===ed));document.querySelectorAll('.pp').forEach(el=>el.textContent='📖 '+pt(+el.dataset.a,+el.dataset.b));if(window.__cap)window.__cap()}
+try{if(+(localStorage.getItem('mc-ed')||0)===4)setEd(4)}catch(e){}
+function goCard(id){const el=document.getElementById(id);if(!el)return;el.scrollIntoView({behavior:'smooth',block:'start'});el.classList.remove('flash');void el.offsetWidth;el.classList.add('flash')}
+document.addEventListener('click',e=>{const b=e.target.closest('.ed');if(b){setEd(+b.dataset.ed);return}
+ const j=e.target.closest('.jump a');if(j){e.preventDefault();goCard(j.getAttribute('href').slice(1))}});
+document.getElementById('fsUp').onclick=()=>{fs=Math.min(28,fs+2);document.documentElement.style.setProperty('--fs',fs+'px')};
+document.getElementById('fsDown').onclick=()=>{fs=Math.max(18,fs-2);document.documentElement.style.setProperty('--fs',fs+'px')};
+(function(){
+  const box=document.getElementById('scene');if(!window.THREE){document.getElementById('nogl').style.display='block';return}
+  let renderer;try{renderer=new THREE.WebGLRenderer({antialias:true,alpha:true})}catch(e){document.getElementById('nogl').style.display='block';return}
+  renderer.setPixelRatio(Math.min(2,window.devicePixelRatio||1));box.appendChild(renderer.domElement);
+  const scene=new THREE.Scene(),cam=new THREE.PerspectiveCamera(30,6,.1,100);cam.position.set(0,1.5,6);cam.lookAt(0,.62,0);
+  scene.add(new THREE.HemisphereLight(0xffffff,0xdde6ef,.95));const sun=new THREE.DirectionalLight(0xffffff,.75);sun.position.set(4,8,6);scene.add(sun);
+  const BLUE=0x1d6fb8,LIGHT=0x9cc3e8,GRAY=0xc9d1da,WHITE=0xffffff,GREEN=0x5aa874,PURPLE=0x8a72c4,GOLD=0xe0b43c,RED=0xd9534f;
+  const mat=c=>new THREE.MeshStandardMaterial({color:c,roughness:.55,metalness:.05});
+  const world=new THREE.Group();scene.add(world);
+  const path=new THREE.Mesh(new THREE.BoxGeometry(14,.06,1.9),mat(0xe7edf3));path.position.y=-.03;world.add(path);
+  function compare(){const g=new THREE.Group();const a=new THREE.Mesh(new THREE.BoxGeometry(.6,.42,.04),mat(WHITE));a.position.set(-.38,.5,0);a.rotation.y=.3;g.add(a);
+    for(let i=0;i<3;i++){const l=new THREE.Mesh(new THREE.BoxGeometry(.45,.03,.02),mat(GRAY));l.position.set(-.38,.6-i*.09,.03);l.rotation.y=.3;g.add(l)}
+    const b=new THREE.Mesh(new THREE.BoxGeometry(.6,.42,.04),mat(WHITE));b.position.set(.38,.5,0);b.rotation.y=-.3;const p=new THREE.Mesh(new THREE.BoxGeometry(.22,.18,.03),mat(LIGHT));p.position.set(.3,.52,.04);p.rotation.y=-.3;const c=new THREE.Mesh(new THREE.SphereGeometry(.07,14,10),mat(GREEN));c.position.set(.5,.55,.05);g.add(b,p,c);return g}
+  function folder(){const g=new THREE.Group();const back=new THREE.Mesh(new THREE.BoxGeometry(1,.7,.06),mat(BLUE));back.position.set(0,.42,-.06);const tab=new THREE.Mesh(new THREE.BoxGeometry(.35,.1,.06),mat(BLUE));tab.position.set(-.3,.81,-.06);const paper=new THREE.Mesh(new THREE.BoxGeometry(.85,.6,.02),mat(WHITE));paper.position.set(0,.5,-.02);const front=new THREE.Mesh(new THREE.BoxGeometry(1,.55,.06),mat(LIGHT));front.position.set(0,.33,.03);front.rotation.x=-.18;g.add(back,tab,paper,front);g.userData.tick=(t,on)=>{paper.position.y=.5+(on?Math.sin(t/260)*.06+.05:0)};return g}
+  function shield(){const g=new THREE.Group();const sh=new THREE.Mesh(new THREE.CylinderGeometry(.45,.45,.12,6),mat(BLUE));sh.rotation.x=Math.PI/2;sh.position.y=.6;const ring=new THREE.Mesh(new THREE.TorusGeometry(.18,.05,12,24),mat(WHITE));ring.position.set(0,.6,.08);const crown=new THREE.Group();for(let i=0;i<3;i++){const p=new THREE.Mesh(new THREE.ConeGeometry(.06,.18,8),mat(GOLD));p.position.set(-.12+i*.12,1.2,0);crown.add(p)}const cb=new THREE.Mesh(new THREE.BoxGeometry(.36,.08,.08),mat(GOLD));cb.position.y=1.1;crown.add(cb);g.add(sh,ring,crown);g.userData.tick=(t,on)=>{crown.rotation.y=on?t/600:0};return g}
+  function wand(){const g=new THREE.Group();const st=new THREE.Mesh(new THREE.CylinderGeometry(.05,.05,1,12),mat(0x2b3a4a));st.rotation.z=-.6;st.position.set(-.1,.5,0);const tip=new THREE.Mesh(new THREE.OctahedronGeometry(.17),mat(PURPLE));tip.position.set(.3,.92,0);g.add(st,tip);g.userData.tick=t=>{tip.rotation.y=t/400};return g}
+  function player(){const g=new THREE.Group();const sc=new THREE.Mesh(new THREE.BoxGeometry(1.1,.7,.1),mat(0x2b3a4a));sc.position.y=.5;const btn=new THREE.Mesh(new THREE.BoxGeometry(.36,.26,.04),mat(RED));btn.position.set(0,.5,.06);const tri=new THREE.Mesh(new THREE.CylinderGeometry(.08,.08,.03,3),mat(WHITE));tri.rotation.x=Math.PI/2;tri.rotation.y=Math.PI/2;tri.position.set(.02,.5,.09);g.add(sc,btn,tri);return g}
+  function check(){const g=new THREE.Group();const d=new THREE.Mesh(new THREE.BoxGeometry(.75,.95,.06),mat(WHITE));d.position.y=.52;for(let i=0;i<3;i++){const l=new THREE.Mesh(new THREE.BoxGeometry(.45,.04,.02),mat(GRAY));l.position.set(-.05,.82-i*.12,.04);g.add(l)}const c1=new THREE.Mesh(new THREE.BoxGeometry(.16,.07,.07),mat(GREEN));c1.position.set(-.08,.36,.07);c1.rotation.z=-.8;const c2=new THREE.Mesh(new THREE.BoxGeometry(.32,.07,.07),mat(GREEN));c2.position.set(.08,.42,.07);c2.rotation.z=.9;g.add(d,c1,c2);return g}
+  const F=[compare,folder,shield,wand,player,check];const props=[],labels=[];
+  CH.forEach((c,i)=>{const g=F[i]();g.scale.setScalar(1.3);g.position.set(-5.5+i*2.2,0,0);g.userData.i=i;world.add(g);props.push(g);
+    const pad=new THREE.Mesh(new THREE.CylinderGeometry(.8,.8,.05,32),mat(0xdfe7ef));pad.position.set(g.position.x,.02,0);world.add(pad);g.userData.pad=pad;
+    const el=document.createElement('div');el.className='lbl';el.textContent=c.no+' '+SH[i];el.onclick=()=>{setActive(i);goCard('c'+c.no)};box.appendChild(el);labels.push(el)});
+  let active=0,playing=false,spin=false,t0=0,last=performance.now();const cap=document.getElementById('caption');
+  window.__cap=()=>{const c=CH[active];cap.innerHTML=`<b>${c.no}장 ${c.name}</b> · ${pt(c.p[0],c.p[1])} · 절 ${c.secs.length}개, 항목 ${c.n}개`};
+  function setActive(i){active=i;props.forEach((p,k)=>p.userData.pad.material.color.setHex(k===i?LIGHT:0xdfe7ef));labels.forEach((l,k)=>l.classList.toggle('on',k===i));window.__cap()}
+  setActive(0);
+  function resize(){const w=box.clientWidth,h=box.clientHeight;if(!w)return;renderer.setSize(w,h);cam.aspect=w/h;cam.position.z=Math.max(4.6,14.5/(2*Math.tan(15*Math.PI/180)*cam.aspect));cam.updateProjectionMatrix()}
+  window.addEventListener('resize',resize);resize();const v=new THREE.Vector3();
+  function loop(now){const dt=Math.min(.05,(now-last)/1000);last=now;if(playing){t0+=dt;if(t0>2.2){t0=0;setActive((active+1)%CH.length)}}if(spin)world.rotation.y+=dt*.25;
+    props.forEach((p,k)=>{const tg=k===active?.25+Math.sin(now/300)*.06:0;p.position.y+=(tg-p.position.y)*.12;p.rotation.y=k===active?Math.sin(now/700)*.35:p.rotation.y*.9;if(p.userData.tick)p.userData.tick(now,k===active)});
+    renderer.render(scene,cam);const w=box.clientWidth,h=box.clientHeight;
+    props.forEach((p,k)=>{v.set(p.position.x,p.position.y-.15,p.position.z+.7);v.applyMatrix4(world.matrixWorld);v.project(cam);const x=(v.x*.5+.5)*w,y=(-v.y*.5+.5)*h+6;const l=labels[k];l.style.left=Math.max(50,Math.min(w-50,x))+'px';l.style.top=Math.min(h-26,y)+'px';l.style.display=(v.z<1&&(w>=900||k===active))?'block':'none'});
+    requestAnimationFrame(loop)}
+  requestAnimationFrame(loop);
+  const ray=new THREE.Raycaster(),m=new THREE.Vector2();
+  renderer.domElement.addEventListener('click',e=>{const r=renderer.domElement.getBoundingClientRect();m.x=((e.clientX-r.left)/r.width)*2-1;m.y=-((e.clientY-r.top)/r.height)*2+1;ray.setFromCamera(m,cam);const hit=ray.intersectObjects(props,true)[0];if(!hit)return;let o=hit.object;while(o&&o.userData.i===undefined)o=o.parent;if(o){setActive(o.userData.i);goCard('c'+CH[o.userData.i].no)}});
+  document.getElementById('play').onclick=()=>playing=true;document.getElementById('pause').onclick=()=>playing=false;
+  document.getElementById('reset').onclick=()=>{playing=false;t0=0;world.rotation.y=0;setActive(0)};document.getElementById('spin').onclick=()=>{spin=!spin;if(!spin)world.rotation.y=0};
+})();
+</script></body></html>

@@ -1,0 +1,1712 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>미드저니 6차시 PNG 요소</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@500;600;700&family=Noto+Sans+KR:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* 레이아웃: 상단 sticky(제목+STEP 탭) / 본문 카드 그리드 + 오른쪽 sticky 카드 메뉴 / 하단 sticky 이동 줄. position:fixed 없음, 문서 스크롤 */
+:root{
+  --bg:#FAFAF8; --surface:#FFFFFF; --line:#E3E5E8; --line-2:#D3D7DC;
+  --fg:#1E2329; --fg-2:#4D5560; --fg-3:#7A828C;
+  --accent:#2C5FA8; --accent-ink:#FFFFFF; --accent-soft:#EAF1FA;
+  --set:#EEF4FB; --set-line:#C9DAF0;
+  --warn:#FBEFF1; --warn-line:#EDCAD1; --warn-ink:#9B3448;
+  --ext:#EEF7F1; --ext-line:#C6E3D0; --ext-ink:#2E7048;
+  --code:#F3F4F6;
+  --stk-gray:#D9D9D9; --stk-white:#FFFFFF; --stk-out:#4A4A4A;
+  --f-display:"IBM Plex Sans KR","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --f-body:"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --f-mono:"IBM Plex Mono",Consolas,"Malgun Gothic",monospace;
+  --fs:20px;
+  --hdr:120px;
+}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+img{max-width:100%;display:block}
+html{font-size:var(--fs)}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:1rem;line-height:1.7;word-break:keep-all;overflow-wrap:anywhere}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;line-height:1.35;margin:0}
+p{margin:0}
+button,select{font:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+
+/* 상단 */
+.top{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--line)}
+.top-in{max-width:1360px;margin:0 auto;padding-inline:16px}
+.bar{display:flex;align-items:center;gap:12px;padding-block:10px;flex-wrap:wrap}
+.brand{display:flex;flex-direction:column;min-width:0;flex:1}
+.brand small{font-size:.66rem;color:var(--fg-3);letter-spacing:.06em}
+.brand b{font-family:var(--f-display);font-size:.98rem;font-weight:700}
+.fsz{display:flex;gap:4px}
+.fsz button{border:1px solid var(--line-2);background:var(--surface);color:var(--fg-2);border-radius:8px;padding:2px 10px;font-size:.7rem;cursor:pointer}
+.fsz button:hover{border-color:var(--accent);color:var(--accent)}
+.tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:10px;scrollbar-width:thin}
+.tab{flex:none;border:1px solid var(--line-2);background:var(--surface);color:var(--fg-2);border-radius:999px;padding:4px 14px;font-size:.74rem;cursor:pointer;white-space:nowrap}
+.tab b{font-family:var(--f-display);margin-right:6px;color:var(--fg-3)}
+.tab[aria-selected="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.tab[aria-selected="true"] b{color:var(--accent-ink)}
+.prog{height:3px;background:var(--line)}
+.prog i{display:block;height:100%;background:var(--accent);transition:width .25s}
+
+/* 본문 */
+.wrap{max-width:1360px;margin:0 auto;padding-inline:16px;padding-block:24px 32px;display:grid;grid-template-columns:minmax(0,1fr) 230px;gap:28px;align-items:start}
+.step-head{display:flex;flex-direction:column;gap:6px;margin-bottom:18px}
+.eyebrow{font-size:.66rem;letter-spacing:.12em;color:var(--accent);font-weight:700}
+.step-head h2{font-size:1.5rem}
+.step-head p{color:var(--fg-2);max-width:62ch}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:22px;display:flex;flex-direction:column;gap:14px;min-width:0;scroll-margin-top:calc(var(--hdr) + 12px)}
+.card.wide{grid-column:1/-1}
+.card-h{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.card-h .no{font-family:var(--f-mono);font-size:.7rem;color:var(--fg-3)}
+.card-h h3{font-size:1.08rem;flex:1;min-width:0}
+.tag{font-size:.62rem;font-weight:700;border-radius:6px;padding:1px 8px;letter-spacing:.04em}
+.tag.do{background:var(--accent-soft);color:var(--accent)}
+.tag.read{background:var(--code);color:var(--fg-2)}
+.tag.adv{background:var(--ext);color:var(--ext-ink)}
+.card ul,.card ol{margin:0;padding-left:1.3em;display:flex;flex-direction:column;gap:4px}
+.muted{color:var(--fg-2)}
+.small{font-size:.8rem}
+code{font-family:var(--f-mono);font-size:.82em;background:var(--code);padding:1px 6px;border-radius:5px}
+
+.box{border:1px solid;border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;gap:6px;font-size:.88rem}
+.box .bt{font-weight:700;font-size:.74rem;letter-spacing:.04em}
+.box.set{background:var(--set);border-color:var(--set-line)}
+.box.set .bt{color:var(--accent)}
+.box.warn{background:var(--warn);border-color:var(--warn-line)}
+.box.warn .bt{color:var(--warn-ink)}
+.box.ext{background:var(--ext);border-color:var(--ext-line)}
+.box.ext .bt{color:var(--ext-ink)}
+.box.easy{background:var(--surface);border-color:var(--line-2);border-style:dashed}
+.box.easy .bt{color:var(--fg-2)}
+
+.pr{border:1px solid var(--line-2);border-radius:10px;overflow:hidden;background:var(--code)}
+.pr-h{display:flex;align-items:center;gap:8px;padding:6px 10px 6px 14px;border-bottom:1px solid var(--line);background:var(--surface)}
+.pr-h span{flex:1;font-size:.72rem;font-weight:700;color:var(--fg-2);min-width:0}
+.pr-h em{font-style:normal;font-size:.62rem;color:var(--fg-3);border:1px solid var(--line-2);border-radius:5px;padding:0 6px}
+.cp{border:1px solid var(--accent);color:var(--accent);background:var(--surface);border-radius:7px;padding:1px 12px;font-size:.68rem;cursor:pointer;font-weight:700}
+.cp.ok{background:var(--accent);color:var(--accent-ink)}
+.pr pre{margin:0;padding:12px 14px;font-family:var(--f-mono);font-size:.76rem;line-height:1.65;white-space:pre-wrap;word-break:break-word;color:var(--fg)}
+.pr pre .hx{color:var(--accent);font-weight:500}
+
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:10px}
+table{border-collapse:collapse;width:100%;font-size:.8rem;min-width:520px}
+th,td{border-bottom:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+th{background:var(--code);font-weight:700;color:var(--fg-2);font-size:.72rem}
+tr:last-child td{border-bottom:none}
+td[contenteditable]{background:var(--surface);min-width:70px}
+td[contenteditable]:empty::before{content:"입력";color:var(--fg-3)}
+
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-size:.72rem;border:1px solid var(--line-2);border-radius:999px;padding:1px 10px;background:var(--surface);color:var(--fg-2)}
+.swatch{display:inline-block;width:.9em;height:.9em;border-radius:3px;border:1px solid var(--line-2);vertical-align:-.1em;margin-right:4px}
+.checks{list-style:none;padding:0!important}
+.checks li{display:flex;gap:10px;align-items:flex-start}
+.checks input{width:1.1em;height:1.1em;margin-top:.35em;accent-color:var(--accent);flex:none}
+.fig{overflow-x:auto}
+.fig svg{display:block;width:100%;height:auto;min-width:560px}
+.fig.sm svg{min-width:0;max-width:520px;margin-inline:auto}
+.svg-t{fill:var(--fg);font-family:var(--f-body)}
+.svg-s{fill:var(--fg-2);font-family:var(--f-body)}
+.svg-box{fill:var(--surface);stroke:var(--line-2)}
+.svg-acc{fill:var(--accent-soft);stroke:var(--accent)}
+.svg-ln{stroke:var(--fg-3);fill:none}
+.svg-al{stroke:var(--accent);fill:none}
+.svg-af{fill:var(--accent)}
+
+.ex{border:1px solid var(--line);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:8px;background:var(--bg)}
+.ex-h{font-size:.7rem;font-weight:700;color:var(--fg-2);letter-spacing:.04em}
+.ex-l{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:8px}
+.ex-l a{display:flex;flex-direction:column;gap:2px;text-decoration:none;border:1px solid var(--line-2);border-radius:8px;padding:8px 10px;background:var(--surface);color:var(--fg);min-width:0}
+.ex-l a:hover{border-color:var(--accent)}
+.ex-l a b{font-size:.76rem;color:var(--accent)}
+.ex-l a b::after{content:" ↗"}
+.ex-l small{font-size:.62rem;color:var(--fg-3);line-height:1.4}
+.ex-n{font-size:.62rem;color:var(--fg-3)}
+
+.art{margin:0;display:flex;flex-direction:column;gap:6px;min-width:0}
+.art svg{width:100%;height:auto;display:block;border:1px solid var(--line);border-radius:10px;background:#FFFFFF}
+.art figcaption{font-size:.64rem;color:var(--fg-2);text-align:center;line-height:1.45}
+.gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px}
+.gal.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+.art-cr{font-size:.6rem;color:var(--fg-3);letter-spacing:.03em}
+.motion{max-width:420px;width:100%;margin-inline:auto}
+.motion.w{max-width:560px}
+.a-dash{stroke-dasharray:7 6;animation:dash 1.1s linear infinite}
+@keyframes dash{to{stroke-dashoffset:-26}}
+.a-wipe{transform-box:fill-box;transform-origin:right center;animation:wipe 6s ease-in-out infinite}
+@keyframes wipe{0%,18%{transform:scaleX(1)}55%,88%{transform:scaleX(0)}100%{transform:scaleX(1)}}
+.a-scan{animation:scan 6s ease-in-out infinite}
+@keyframes scan{0%,18%{transform:translateX(0);opacity:1}55%{transform:translateX(160px);opacity:1}57%,96%{transform:translateX(160px);opacity:0}100%{transform:translateX(0);opacity:0}}
+.a-ping{transform-box:fill-box;transform-origin:center;animation:ping 2.4s ease-in-out infinite}
+@keyframes ping{0%,100%{opacity:.35}50%{opacity:1}}
+.a-pop{transform-box:fill-box;transform-origin:center;animation:pop 2.4s ease-in-out infinite}
+@keyframes pop{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
+.a-dark{animation:dark 5s ease-in-out infinite}
+@keyframes dark{0%,22%{opacity:0}38%,84%{opacity:1}100%{opacity:0}}
+.a-ping2{animation:ping2 5s ease-in-out infinite}
+@keyframes ping2{0%,40%{opacity:0}50%,84%{opacity:1}100%{opacity:0}}
+.a-fade{animation:fade 5s ease-in-out infinite}
+@keyframes fade{0%,25%{opacity:1}45%,85%{opacity:0}100%{opacity:1}}
+.a-s1{animation:s1 9s ease-in-out infinite}
+@keyframes s1{0%,28%{opacity:1}36%,94%{opacity:0}100%{opacity:1}}
+.a-s2{opacity:0;animation:s2 9s ease-in-out infinite}
+@keyframes s2{0%,28%{opacity:0}36%,94%{opacity:1}100%{opacity:0}}
+.a-s3{animation:s3 9s ease-in-out infinite}
+@keyframes s3{0%,58%{opacity:1}68%,94%{opacity:0}100%{opacity:1}}
+.k1{animation:k1 9s infinite}.k2{opacity:0;animation:k2 9s infinite}.k3{opacity:0;animation:k3 9s infinite}
+@keyframes k1{0%,30%{opacity:1}34%,100%{opacity:0}}
+@keyframes k2{0%,32%{opacity:0}36%,60%{opacity:1}64%,100%{opacity:0}}
+@keyframes k3{0%,62%{opacity:0}66%,94%{opacity:1}98%,100%{opacity:0}}
+.k1-t{animation:k1t 9s infinite}.k2-t{animation:k2t 9s infinite}.k3-t{animation:k3t 9s infinite}
+@keyframes k1t{0%,30%{fill:#FFFFFF}34%,100%{fill:#1E2329}}
+@keyframes k2t{0%,32%{fill:#1E2329}36%,60%{fill:#FFFFFF}64%,100%{fill:#1E2329}}
+@keyframes k3t{0%,62%{fill:#1E2329}66%,94%{fill:#FFFFFF}98%,100%{fill:#1E2329}}
+@media (prefers-reduced-motion:reduce){.art *,.fig *{animation:none!important}.a-s2,.k2,.k3{opacity:0}}
+@media (max-width:520px){.gal.two{grid-template-columns:minmax(0,1fr)}}
+.pl{border:1px solid var(--line);border-radius:12px;background:var(--surface);overflow:hidden;display:flex;flex-direction:column}
+.pl-t{font-family:var(--f-display);font-weight:700;font-size:.8rem;padding:10px 14px;border-bottom:1px solid var(--line)}
+.pl-stage{background:var(--bg);padding:14px;display:flex;flex-direction:column;gap:8px;align-items:center}
+.pl-stage svg{width:100%;max-width:520px;height:auto;display:block;border-radius:8px;background:#FFFFFF}
+.pl-cap{min-height:2.8em;font-size:.78rem;font-weight:700;color:var(--accent);text-align:center;line-height:1.4}
+.pl-bar{display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:10px 12px;border-top:1px solid var(--line)}
+.pl-b{border:1px solid var(--line-2);background:var(--surface);color:var(--fg);border-radius:8px;padding:2px 10px;font-size:.68rem;cursor:pointer;white-space:nowrap}
+.pl-b.pri{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.pl-r{flex:1;min-width:120px;accent-color:var(--accent)}
+/* 오른쪽 카드 메뉴 */
+.side{position:sticky;top:calc(var(--hdr) + 16px);border:1px solid var(--line);border-radius:12px;background:var(--surface);padding:14px;display:flex;flex-direction:column;gap:2px;max-height:calc(100vh - var(--hdr) - 40px);overflow:auto}
+.side .st{font-size:.66rem;letter-spacing:.1em;color:var(--fg-3);font-weight:700;margin-bottom:6px}
+.side a{display:flex;gap:8px;text-decoration:none;color:var(--fg-2);font-size:.72rem;padding:5px 8px;border-radius:7px;line-height:1.45}
+.side a span{font-family:var(--f-mono);color:var(--fg-3);flex:none}
+.side a:hover{background:var(--code);color:var(--fg)}
+.side a.on{background:var(--accent-soft);color:var(--accent);font-weight:700}
+
+/* 하단 */
+.foot{position:sticky;bottom:0;z-index:20;background:var(--bg);border-top:1px solid var(--line)}
+.foot-in{max-width:1360px;margin:0 auto;padding-inline:16px;padding-block:10px;display:flex;gap:8px;align-items:center}
+.nav{border:1px solid var(--line-2);background:var(--surface);color:var(--fg);border-radius:9px;padding:4px 16px;font-size:.76rem;cursor:pointer;white-space:nowrap}
+.nav.pri{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.nav:disabled{opacity:.4;cursor:default}
+.foot select{flex:1;min-width:0;border:1px solid var(--line-2);background:var(--surface);color:var(--fg);border-radius:9px;padding:4px 8px;font-size:.72rem}
+
+@media (max-width:1000px){.wrap{grid-template-columns:minmax(0,1fr)}.side{display:none}}
+@media (max-width:760px){:root{--fs:18px}.grid{grid-template-columns:minmax(0,1fr)}.card{padding:16px}.foot-in{flex-wrap:wrap}.foot select{flex-basis:40%}}
+@media (max-height:820px){.brand small{display:none}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style></head><body>
+<header class="top" id="top">
+  <div class="top-in">
+    <div class="bar">
+      <div class="brand"><small>AI 이미지 수익화 · 미드저니 · 6차시</small><b>사진 한 장으로 PNG 두 장 — 실사 요소와 스티커 요소</b></div>
+      <div class="fsz" aria-label="글자 크기"><button type="button" data-fs="-1" aria-label="글자 작게">가−</button><button type="button" data-fs="0" aria-label="기본 크기">가</button><button type="button" data-fs="1" aria-label="글자 크게">가+</button></div>
+    </div>
+    <nav class="tabs" id="tabs" role="tablist" aria-label="STEP"></nav>
+  </div>
+  <div class="prog"><i id="prog"></i></div>
+</header>
+
+<div class="wrap">
+  <main id="main"></main>
+  <aside class="side" id="side" aria-label="카드 목록"></aside>
+</div>
+
+<footer class="foot">
+  <div class="foot-in">
+    <button type="button" class="nav" id="prev">◀ 이전</button>
+    <select id="selStep" aria-label="STEP 이동"></select>
+    <select id="selCard" aria-label="카드 이동"></select>
+    <button type="button" class="nav pri" id="next">다음 ▶</button>
+  </div>
+</footer>
+<script>
+function _toConsumableArray(r) { return _arrayWithoutHoles(r) || _iterableToArray(r) || _unsupportedIterableToArray(r) || _nonIterableSpread(); }
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _iterableToArray(r) { if ("undefined" != typeof Symbol && null != r[Symbol.iterator] || null != r["@@iterator"]) return Array.from(r); }
+function _arrayWithoutHoles(r) { if (Array.isArray(r)) return _arrayLikeToArray(r); }
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t.return && (u = t.return(), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+(function () {
+  var esc = function esc(s) {
+    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  };
+  var hl = function hl(s) {
+    return esc(s).replace(/(#[0-9A-Fa-f]{6})/g, '<span class="hx">$1</span>');
+  };
+  var PID = 0;
+  function P(label, text, tool) {
+    PID++;
+    return "<div class=\"pr\"><div class=\"pr-h\"><span>".concat(label, "</span>").concat(tool ? "<em>".concat(tool, "</em>") : '', "<button type=\"button\" class=\"cp\" data-p=\"p").concat(PID, "\">\uBCF5\uC0AC</button></div><pre id=\"p").concat(PID, "\">").concat(hl(text), "</pre></div>");
+  }
+  var B = function B(k, t, h) {
+    return "<div class=\"box ".concat(k, "\"><div class=\"bt\">").concat(t, "</div><div>").concat(h, "</div></div>");
+  };
+  var PX = function PX(q) {
+    return ['Pexels', 'https://www.pexels.com/search/' + encodeURIComponent(q) + '/'];
+  };
+  var US = function US(q) {
+    return ['Unsplash', 'https://unsplash.com/s/photos/' + q.trim().replace(/\s+/g, '-')];
+  };
+  var PI = function PI(q) {
+    return ['Pinterest', 'https://www.pinterest.com/search/pins/?q=' + encodeURIComponent(q)];
+  };
+  function EX(title, items) {
+    return "<div class=\"ex\"><div class=\"ex-h\">\uC608\uC2DC \uC774\uBBF8\uC9C0 \xB7 ".concat(title, "</div><div class=\"ex-l\">").concat(items.map(function (_ref) {
+      var _ref2 = _slicedToArray(_ref, 3),
+        lab = _ref2[0],
+        q = _ref2[1],
+        fn = _ref2[2];
+      var _fn = fn(q),
+        _fn2 = _slicedToArray(_fn, 2),
+        src = _fn2[0],
+        u = _fn2[1];
+      return "<a href=\"".concat(u, "\" target=\"_blank\" rel=\"noopener\"><b>").concat(lab, "</b><small>\uCD9C\uCC98: ").concat(src, " \uAC80\uC0C9 \u201C").concat(q, "\u201D</small></a>");
+    }).join(''), "</div><div class=\"ex-n\">\uC0C8 \uCC3D\uC5D0\uC11C \uC5F4\uB9BD\uB2C8\uB2E4. \uBE44\uC2B7\uD55C \uC608\uC2DC\uB97C \uBCF4\uC5EC \uC8FC\uB294 \uCC38\uACE0\uC6A9\uC774\uBA70, \uC800\uC791\uAD8C\uC740 \uAC01 \uC0AC\uC774\uD2B8\uC758 \uC791\uAC00\uC5D0\uAC8C \uC788\uC2B5\uB2C8\uB2E4.</div></div>");
+  }
+  var UID = 0;
+  var uid = function uid(p) {
+    return (p || 'g') + ++UID;
+  };
+  var CK = function CK(id) {
+    return "<pattern id=\"".concat(id, "\" width=\"16\" height=\"16\" patternUnits=\"userSpaceOnUse\"><rect width=\"16\" height=\"16\" fill=\"#FFFFFF\"/><path d=\"M0 0h8v8H0zM8 8h8v8H8z\" fill=\"#C3C8CF\"/></pattern>");
+  };
+  var FIGC = function FIGC(svg, cap) {
+    return "<figure class=\"art\">".concat(svg, "<figcaption>").concat(cap, "</figcaption></figure>");
+  };
+  var CREDIT = '<div class="art-cr">예시 그림 · 강의용 자체 제작 도식 (실제 생성 결과와 다를 수 있음)</div>';
+  var MB = 'M58 70 H142 V138 Q142 160 120 160 H80 Q58 160 58 138 Z';
+  var MH = 'M142 90 Q174 90 174 114 Q174 138 142 136';
+  var HEART = 'M100 79 C91 73 87 67 93 63.5 C96.5 61.5 100 64 100 66.5 C100 64 103.5 61.5 107 63.5 C113 67 109 73 100 79Z';
+  function mug(st) {
+    var d = [],
+      id = uid('m');
+    var g = '';
+    var P = {
+      photo: {
+        body: "url(#".concat(id, "b)"),
+        hc: '#7FA78D',
+        lat: '#D7B38C',
+        coa: "url(#".concat(id, "c)"),
+        hrt: '#F6EADB',
+        ol: null
+      },
+      flat: {
+        body: '#7FB08E',
+        hc: '#7FB08E',
+        lat: '#D9A86C',
+        coa: '#B07A4F',
+        hrt: '#FFF4E6',
+        ol: '#2A2A2A',
+        ow: 4
+      },
+      wc: {
+        body: '#A9CDB3',
+        hc: '#A9CDB3',
+        lat: '#EBCBA4',
+        coa: '#D8B08A',
+        hrt: '#FFF7EE',
+        ol: '#8C8279',
+        ow: 1.2
+      },
+      clay: {
+        body: "url(#".concat(id, "r)"),
+        hc: '#78AE88',
+        lat: "url(#".concat(id, "l)"),
+        coa: "url(#".concat(id, "k)"),
+        hrt: '#FFF3E4',
+        ol: null
+      },
+      retro: {
+        body: '#2F7F7A',
+        hc: '#2F7F7A',
+        lat: '#D9A441',
+        coa: '#B5523B',
+        hrt: '#F3E3C3',
+        ol: '#3B2F2A',
+        ow: 5
+      },
+      crayon: {
+        body: '#4CB25A',
+        hc: '#4CB25A',
+        lat: '#F2B134',
+        coa: '#E5533D',
+        hrt: '#FFFFFF',
+        ol: '#1F3A93',
+        ow: 3
+      },
+      toon: {
+        body: '#73C08E',
+        hc: '#73C08E',
+        lat: '#E2B884',
+        coa: '#B88456',
+        hrt: '#FFF6EA',
+        ol: '#222222',
+        ow: 2.4
+      }
+    }[st];
+    if (st === 'photo') {
+      d.push("<linearGradient id=\"".concat(id, "b\" x1=\"0\" x2=\"1\"><stop offset=\"0\" stop-color=\"#A9CDB4\"/><stop offset=\".55\" stop-color=\"#8DB89B\"/><stop offset=\"1\" stop-color=\"#5F8C70\"/></linearGradient><linearGradient id=\"").concat(id, "c\" x1=\"0\" x2=\"1\"><stop offset=\"0\" stop-color=\"#C99B6C\"/><stop offset=\"1\" stop-color=\"#9B6C44\"/></linearGradient>"));
+    }
+    if (st === 'clay') {
+      d.push("<radialGradient id=\"".concat(id, "r\" cx=\".35\" cy=\".3\" r=\".8\"><stop offset=\"0\" stop-color=\"#BFE3C9\"/><stop offset=\"1\" stop-color=\"#5F9671\"/></radialGradient><radialGradient id=\"").concat(id, "l\" cx=\".4\" cy=\".3\"><stop offset=\"0\" stop-color=\"#F1D3AC\"/><stop offset=\"1\" stop-color=\"#C99A64\"/></radialGradient><radialGradient id=\"").concat(id, "k\" cx=\".4\" cy=\".3\"><stop offset=\"0\" stop-color=\"#D3A77A\"/><stop offset=\"1\" stop-color=\"#946440\"/></radialGradient>"));
+    }
+    var flt = '';
+    if (st === 'wc') {
+      d.push("<filter id=\"".concat(id, "f\" x=\"-10%\" y=\"-10%\" width=\"120%\" height=\"120%\"><feTurbulence type=\"fractalNoise\" baseFrequency=\".035\" numOctaves=\"3\" seed=\"4\"/><feDisplacementMap in=\"SourceGraphic\" scale=\"7\"/><feGaussianBlur stdDeviation=\".7\"/></filter>"));
+      flt = "filter=\"url(#".concat(id, "f)\"");
+    }
+    if (st === 'crayon') {
+      d.push("<filter id=\"".concat(id, "f\"><feTurbulence type=\"fractalNoise\" baseFrequency=\".8\" numOctaves=\"2\" seed=\"2\"/><feDisplacementMap in=\"SourceGraphic\" scale=\"3.5\"/></filter><pattern id=\"").concat(id, "h\" width=\"6\" height=\"6\" patternUnits=\"userSpaceOnUse\" patternTransform=\"rotate(35)\"><rect width=\"6\" height=\"6\" fill=\"#4CB25A\"/><rect width=\"2.2\" height=\"6\" fill=\"#2E8B3D\"/></pattern>"));
+      flt = "filter=\"url(#".concat(id, "f)\"");
+      P.body = "url(#".concat(id, "h)");
+    }
+    if (st === 'retro') {
+      d.push("<pattern id=\"".concat(id, "t\" width=\"7\" height=\"7\" patternUnits=\"userSpaceOnUse\"><circle cx=\"3.5\" cy=\"3.5\" r=\"1.6\" fill=\"#1D5754\"/></pattern><clipPath id=\"").concat(id, "cl\"><path d=\"").concat(MB, "\"/></clipPath>"));
+    }
+    if (st === 'toon') {
+      d.push("<clipPath id=\"".concat(id, "cl\"><path d=\"").concat(MB, "\"/></clipPath>"));
+    }
+    var ol = P.ol,
+      ow = P.ow || 0;
+    g += "<g ".concat(flt, ">");
+    g += "<ellipse cx=\"100\" cy=\"162\" rx=\"60\" ry=\"11\" fill=\"".concat(P.coa, "\" ").concat(ol ? "stroke=\"".concat(ol, "\" stroke-width=\"").concat(ow, "\"") : '', "/>");
+    if (ol) g += "<path d=\"".concat(MH, "\" fill=\"none\" stroke=\"").concat(ol, "\" stroke-width=\"").concat(12 + ow * 2, "\" stroke-linecap=\"round\"/>");
+    g += "<path d=\"".concat(MH, "\" fill=\"none\" stroke=\"").concat(P.hc, "\" stroke-width=\"12\" stroke-linecap=\"round\"/>");
+    g += "<path d=\"".concat(MB, "\" fill=\"").concat(P.body, "\" ").concat(ol ? "stroke=\"".concat(ol, "\" stroke-width=\"").concat(ow, "\" stroke-linejoin=\"round\"") : '', "/>");
+    if (st === 'retro') g += "<rect x=\"104\" y=\"70\" width=\"40\" height=\"92\" fill=\"url(#".concat(id, "t)\" clip-path=\"url(#").concat(id, "cl)\"/>");
+    if (st === 'toon') g += "<rect x=\"120\" y=\"70\" width=\"24\" height=\"92\" fill=\"#4F9A6A\" clip-path=\"url(#".concat(id, "cl)\"/><rect x=\"68\" y=\"84\" width=\"5\" height=\"48\" rx=\"2.5\" fill=\"#FFFFFF\" opacity=\".55\"/>");
+    if (st === 'clay') g += "<ellipse cx=\"76\" cy=\"104\" rx=\"7\" ry=\"20\" fill=\"#FFFFFF\" opacity=\".45\"/>";
+    if (st === 'photo') g += "<rect x=\"64\" y=\"80\" width=\"6\" height=\"56\" rx=\"3\" fill=\"#FFFFFF\" opacity=\".35\"/>";
+    g += "<ellipse cx=\"100\" cy=\"70\" rx=\"42\" ry=\"9\" fill=\"".concat(P.lat, "\" ").concat(ol ? "stroke=\"".concat(ol, "\" stroke-width=\"").concat(Math.max(1, ow - 1), "\"") : '', "/>");
+    g += "<path d=\"".concat(HEART, "\" fill=\"").concat(P.hrt, "\" transform=\"translate(100 70) scale(1 .55) translate(-100 -70)\"/>");
+    g += "</g>";
+    if (st === 'photo') g += "<path d=\"M86 52 Q80 42 86 32 Q92 22 86 12 M112 52 Q106 42 112 32 Q118 22 112 12\" fill=\"none\" stroke=\"#D0D0D0\" stroke-width=\"3\" stroke-linecap=\"round\" opacity=\".8\"/>";
+    return {
+      defs: d.join(''),
+      g: g
+    };
+  }
+  function stickerUnder(w, planB) {
+    var lay = function lay(c, ww) {
+      return "<g fill=\"".concat(c, "\" stroke=\"").concat(c, "\" stroke-width=\"").concat(ww, "\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><ellipse cx=\"100\" cy=\"162\" rx=\"60\" ry=\"11\"/><path d=\"").concat(MB, "\"/><ellipse cx=\"100\" cy=\"70\" rx=\"42\" ry=\"9\"/><path d=\"").concat(MH, "\" fill=\"none\" stroke-width=\"").concat(12 + ww, "\"/></g>");
+    };
+    return (planB ? lay('#4A4A4A', w + 6) : '') + lay('#FFFFFF', w);
+  }
+  var MUG = function MUG(st, bg) {
+    var m = mug(st);
+    return "<svg viewBox=\"0 0 200 200\" role=\"img\" aria-label=\"\uBA38\uADF8\uCEF5 ".concat(st, "\"><defs>").concat(m.defs, "</defs><rect width=\"200\" height=\"200\" fill=\"").concat(bg || '#FFFFFF', "\"/>").concat(m.g, "</svg>");
+  };
+  var STICKER = function STICKER(st, bg, planB, cls) {
+    var m = mug(st);
+    return "<svg viewBox=\"0 0 200 200\" role=\"img\" aria-label=\"\uC2A4\uD2F0\uCEE4\"><defs>".concat(m.defs, "</defs><rect width=\"200\" height=\"200\" fill=\"").concat(bg, "\"/><g transform=\"translate(100 104) scale(.82) translate(-100 -104)\">").concat(stickerUnder(20, planB)).concat(m.g, "</g></svg>");
+  };
+  function OBJ(k) {
+    var id = uid('o');
+    var s = '';
+    if (k === 'gift') {
+      s = "<defs><linearGradient id=\"".concat(id, "\" x1=\"0\" x2=\"1\"><stop offset=\"0\" stop-color=\"#F3ECE0\"/><stop offset=\"1\" stop-color=\"#D9CDB8\"/></linearGradient></defs>\n  <path d=\"M40 92 L100 70 L160 92 L100 114Z\" fill=\"#EADFCB\"/><path d=\"M40 92 V150 L100 172 V114Z\" fill=\"url(#").concat(id, ")\"/><path d=\"M160 92 V150 L100 172 V114Z\" fill=\"#CDBFA6\"/>\n  <path d=\"M40 92 L100 50 L118 56 L58 98Z\" fill=\"#E7DCCA\" opacity=\".9\"/>\n  ").concat([0, 1, 2, 3, 4].map(function (i) {
+        return "<rect x=\"".concat(62 + i * 9, "\" y=\"").concat(74 + i * 3, "\" width=\"6\" height=\"34\" rx=\"3\" fill=\"#C98B3F\" transform=\"rotate(-8 ").concat(65 + i * 9, " ").concat(90 + i * 3, ")\"/>");
+      }).join(''), "\n  <circle cx=\"122\" cy=\"94\" r=\"10\" fill=\"#F4D7DE\"/><circle cx=\"138\" cy=\"99\" r=\"10\" fill=\"#C9DDB2\"/><circle cx=\"128\" cy=\"108\" r=\"10\" fill=\"#F4D7DE\"/>\n  <path d=\"M100 114 V172\" stroke=\"#D2263A\" stroke-width=\"7\"/><path d=\"M40 112 L100 134 L160 112\" fill=\"none\" stroke=\"#D2263A\" stroke-width=\"7\"/>\n  <path d=\"M100 120 C86 104 74 112 82 122 C88 128 98 124 100 120 C102 124 112 128 118 122 C126 112 114 104 100 120Z\" fill=\"#E53246\"/>");
+    }
+    if (k === 'cabbage') {
+      s = "<path d=\"M48 150 C40 120 50 70 92 52 C120 44 150 60 156 92 C160 120 140 146 110 156 C88 162 60 164 48 150Z\" fill=\"#7FB05A\"/>\n  <path d=\"M60 148 C58 118 70 84 102 70 C126 62 146 78 146 100 C146 126 124 146 98 152 C82 156 66 156 60 148Z\" fill=\"#B9D88A\"/>\n  <path d=\"M72 150 C74 124 86 98 110 88 C128 82 138 96 134 112 C128 134 104 148 86 152Z\" fill=\"#EEF0C9\"/>\n  <path d=\"M74 150 C90 128 108 108 130 98 M84 152 C98 136 112 122 128 114\" stroke=\"#D8DCA8\" stroke-width=\"2.5\" fill=\"none\"/>\n  <path d=\"M120 168 L150 136 Q158 130 164 136 L170 142 Q174 148 168 154 L140 180 Z\" fill=\"#D7262E\"/><path d=\"M150 136 L146 126 Q146 120 152 120 Q156 120 158 126 L162 134Z\" fill=\"#D7262E\"/>\n  <path d=\"M104 176 L126 150 Q132 144 138 150 L142 154 Q146 160 140 164 L118 186Z\" fill=\"#B91E26\"/>";
+    }
+    if (k === 'pepero') {
+      s = "".concat(_toConsumableArray(Array(9)).map(function (_, i) {
+        var a = -28 + i * 7;
+        return "<g transform=\"rotate(".concat(a, " 100 150)\"><rect x=\"97\" y=\"40\" width=\"6\" height=\"96\" rx=\"3\" fill=\"#E9C996\"/><rect x=\"96.5\" y=\"40\" width=\"7\" height=\"52\" rx=\"3.5\" fill=\"").concat(i % 3 === 1 ? '#F2A7B8' : '#5A3826', "\"/></g>");
+      }).join(''), "\n  <path d=\"M62 112 L138 112 L112 182 L88 182Z\" fill=\"#F5B7C6\"/><path d=\"M62 112 L138 112 L130 126 L70 126Z\" fill=\"#EE9FB2\"/>\n  <path d=\"M100 140 C84 126 70 134 80 146 C86 152 96 146 100 142 C104 146 114 152 120 146 C130 134 116 126 100 140Z\" fill=\"#E2486B\"/><path d=\"M98 142 L88 166 M102 142 L112 166\" stroke=\"#E2486B\" stroke-width=\"4\" stroke-linecap=\"round\"/>");
+    }
+    if (k === 'xmas') {
+      s = "<rect x=\"52\" y=\"86\" width=\"96\" height=\"78\" rx=\"4\" fill=\"#1F5C3F\"/><rect x=\"46\" y=\"72\" width=\"108\" height=\"20\" rx=\"4\" fill=\"#24704C\"/>\n  <rect x=\"93\" y=\"72\" width=\"14\" height=\"92\" fill=\"#E2B23C\"/><rect x=\"46\" y=\"78\" width=\"108\" height=\"8\" fill=\"#E2B23C\" opacity=\"0\"/>\n  <path d=\"M100 72 C80 46 60 58 74 70 C82 76 94 74 100 72 C106 74 118 76 126 70 C140 58 120 46 100 72Z\" fill=\"#F0C34D\" stroke=\"#C9952A\" stroke-width=\"2\"/>\n  <path d=\"M122 96 Q132 88 140 96 Q132 104 122 96Z M128 108 Q138 102 144 110 Q134 116 128 108Z\" fill=\"#2E8B57\"/><circle cx=\"124\" cy=\"104\" r=\"4.5\" fill=\"#D62839\"/><circle cx=\"131\" cy=\"102\" r=\"4.5\" fill=\"#D62839\"/>";
+    }
+    if (k === 'mug') return MUG('photo');
+    return "<svg viewBox=\"0 0 200 200\" role=\"img\"><rect width=\"200\" height=\"200\" fill=\"#FFFFFF\"/>".concat(s, "</svg>");
+  }
+  function PERSON(k) {
+    var o = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    var id = uid('p');
+    var C = {
+      mom: {
+        top: '#24365C',
+        bot: '#D8C3A0',
+        hair: '#2B2220',
+        hs: 'bun',
+        pose: 'heart'
+      },
+      granny: {
+        top: '#B34E6E',
+        bot: '#4A4D52',
+        hair: '#BDBDBD',
+        hs: 'short',
+        pose: 'hold',
+        sleeve: '#8E9AAF',
+        dots: 1
+      },
+      worker: {
+        top: '#9EC3E6',
+        bot: '#26324A',
+        hair: '#1E1A18',
+        hs: 'short',
+        pose: 'thumb'
+      },
+      student: {
+        top: '#26324F',
+        bot: '#26324F',
+        hair: '#1E1A18',
+        hs: 'short',
+        pose: 'fist',
+        bag: 1
+      }
+    }[k];
+    if (o.pose) C.pose = o.pose;
+    if (o.white) {
+      C.top = '#FFFFFF';
+      C.sleeve = '#FFFFFF';
+    }
+    var sk = '#F0C3A0',
+      sl = C.sleeve || C.top;
+    var arm = function arm(d) {
+      return "<path d=\"".concat(d, "\" fill=\"none\" stroke=\"").concat(sl, "\" stroke-width=\"11\" stroke-linecap=\"round\" stroke-linejoin=\"round\"").concat(o.white ? ' style="filter:drop-shadow(0 0 .6px #BBB)"' : '', "/>");
+    };
+    var hand = function hand(x, y, r) {
+      return "<circle cx=\"".concat(x, "\" cy=\"").concat(y, "\" r=\"").concat(r || 5.5, "\" fill=\"").concat(sk, "\"/>");
+    };
+    var back = '',
+      front = '';
+    if (C.bag) back += "<rect x=\"58\" y=\"74\" width=\"44\" height=\"50\" rx=\"8\" fill=\"#C0392B\"/>";
+    if (C.pose === 'heart') {
+      front += arm('M64 78 C40 66 44 30 78 25') + arm('M96 78 C120 66 116 30 82 25') + hand(80, 25, 6);
+    }
+    if (C.pose === 'hold') {
+      front += arm('M62 78 L56 106 L64 116') + arm('M98 78 L104 106 L96 116') + "<rect x=\"54\" y=\"108\" width=\"52\" height=\"34\" rx=\"4\" fill=\"#D23B3B\"/><rect x=\"51\" y=\"103\" width=\"58\" height=\"9\" rx=\"3\" fill=\"#B52E2E\"/>" + hand(62, 118) + hand(98, 118);
+    }
+    if (C.pose === 'thumb') {
+      front += arm('M98 78 L114 100 L116 86') + "<rect x=\"113.5\" y=\"69\" width=\"5\" height=\"12\" rx=\"2.5\" fill=\"".concat(sk, "\"/>") + hand(116, 84, 6.5) + arm('M62 78 L54 108') + "<rect x=\"34\" y=\"100\" width=\"24\" height=\"32\" rx=\"3\" fill=\"#2E3440\"/><rect x=\"37\" y=\"103\" width=\"18\" height=\"26\" rx=\"1.5\" fill=\"#6F8FBF\"/>" + hand(54, 110);
+    }
+    if (C.pose === 'fist') {
+      front += arm('M98 78 L112 58 L114 40') + hand(114, 35, 7) + arm('M62 78 L56 114') + "<path d=\"M56 118 L49 138\" stroke=\"#F2C14E\" stroke-width=\"3.5\" stroke-linecap=\"round\"/>" + hand(56, 118);
+    }
+    var torso = "<path d=\"M60 78 Q60 70 67 70 H93 Q100 70 100 78 V128 H60 Z\" fill=\"".concat(C.top, "\"").concat(o.white ? ' stroke="#EDEDED" stroke-width="1"' : '', "/>");
+    var dots = C.dots ? "<defs><pattern id=\"".concat(id, "d\" width=\"8\" height=\"8\" patternUnits=\"userSpaceOnUse\"><circle cx=\"4\" cy=\"4\" r=\"1.5\" fill=\"#F6D2DC\"/></pattern></defs><path d=\"M60 78 Q60 70 67 70 H93 Q100 70 100 78 V128 H60 Z\" fill=\"url(#").concat(id, "d)\"/><path d=\"M76 70 L80 96 L84 70Z\" fill=\"#8E9AAF\"/>") : '';
+    var straps = C.bag ? "<path d=\"M67 72 L65 112 M93 72 L95 112\" stroke=\"#A93226\" stroke-width=\"4\"/><path d=\"M74 70 L80 80 L86 70Z\" fill=\"#E8ECF2\"/>" : '';
+    var hairD = {
+      short: 'M64 52 Q63 34 80 34 Q97 34 96 52 Q94 44 86 42 Q76 46 66 47 Z',
+      bun: 'M64 54 Q63 34 80 34 Q97 34 96 54 Q94 42 80 41 Q66 42 64 54 Z'
+    }[C.hs];
+    var bun = C.hs === 'bun' ? "<circle cx=\"96\" cy=\"60\" r=\"6\" fill=\"".concat(C.hair, "\"/>") : '';
+    var fly = o.fly ? "<path d=\"M68 40 Q58 30 52 34 M76 36 Q72 22 64 22 M90 38 Q100 26 108 30 M95 46 Q108 40 112 46\" stroke=\"".concat(C.hair, "\" stroke-width=\"1.4\" fill=\"none\"/>") : '';
+    var shadow = o.shadow ? "<ellipse cx=\"80\" cy=\"186\" rx=\"44\" ry=\"7\" fill=\"#000\" opacity=\".16\"/>" : '';
+    var body = "".concat(shadow).concat(back, "<rect x=\"63\" y=\"124\" width=\"15\" height=\"54\" rx=\"5\" fill=\"").concat(C.bot, "\"/><rect x=\"82\" y=\"124\" width=\"15\" height=\"54\" rx=\"5\" fill=\"").concat(C.bot, "\"/><ellipse cx=\"69\" cy=\"181\" rx=\"10\" ry=\"5\" fill=\"#2B2B2B\"/><ellipse cx=\"91\" cy=\"181\" rx=\"10\" ry=\"5\" fill=\"#2B2B2B\"/>").concat(torso).concat(dots).concat(straps, "<rect x=\"76\" y=\"63\" width=\"8\" height=\"9\" fill=\"").concat(sk, "\"/>").concat(bun, "<circle cx=\"80\" cy=\"52\" r=\"15\" fill=\"").concat(sk, "\"/><path d=\"").concat(hairD, "\" fill=\"").concat(C.hair, "\"/>").concat(fly, "<circle cx=\"74.5\" cy=\"53\" r=\"1.7\" fill=\"#2B2B2B\"/><circle cx=\"85.5\" cy=\"53\" r=\"1.7\" fill=\"#2B2B2B\"/><path d=\"M75 58.5 Q80 62.5 85 58.5\" stroke=\"#9A4B3C\" stroke-width=\"1.6\" fill=\"none\" stroke-linecap=\"round\"/>").concat(front);
+    var tf = o.crop ? ' transform="translate(-34 18) scale(1.42)"' : '';
+    return "<svg viewBox=\"0 0 160 200\" role=\"img\"><rect width=\"160\" height=\"200\" fill=\"#FFFFFF\"/><g".concat(tf, ">").concat(body, "</g></svg>");
+  }
+  function GOODBAD() {
+    var pin = function pin(x, y, n, dl) {
+      return "<g class=\"a-ping\" style=\"animation-delay:".concat(dl, "s\"><circle cx=\"").concat(x, "\" cy=\"").concat(y, "\" r=\"13\" fill=\"none\" stroke=\"#D93A4E\" stroke-width=\"2.5\"/><circle cx=\"").concat(x + 12, "\" cy=\"").concat(y - 12, "\" r=\"8\" fill=\"#D93A4E\"/><text x=\"").concat(x + 12, "\" y=\"").concat(y - 8.5, "\" text-anchor=\"middle\" font-size=\"10\" font-weight=\"700\" fill=\"#FFFFFF\">").concat(n, "</text></g>");
+    };
+    var good = PERSON('worker').replace('<svg viewBox="0 0 160 200" role="img">', '').replace('</svg>', '');
+    var bad = PERSON('worker', {
+      white: 1,
+      fly: 1,
+      shadow: 1,
+      crop: 1
+    }).replace('<svg viewBox="0 0 160 200" role="img">', '').replace('</svg>', '');
+    return "<div class=\"gal two\">\n  ".concat(FIGC("<svg viewBox=\"0 0 160 200\" role=\"img\" aria-label=\"\uC88B\uC740 \uC6D0\uBCF8\">".concat(good, "<g class=\"a-pop\"><circle cx=\"138\" cy=\"22\" r=\"13\" fill=\"#2E7048\"/><path d=\"M131 22 L136 27 L145 17\" stroke=\"#FFFFFF\" stroke-width=\"3\" fill=\"none\" stroke-linecap=\"round\"/></g></svg>"), '좋은 원본 — 전신·여백·색 옷·그림자 없음'), "\n  ").concat(FIGC("<svg viewBox=\"0 0 160 200\" role=\"img\" aria-label=\"\uB098\uC05C \uC6D0\uBCF8\">".concat(bad).concat(pin(62, 188, 1, 0)).concat(pin(80, 158, 2, .5)).concat(pin(58, 58, 3, 1)).concat(pin(20, 118, 4, 1.5), "</svg>"), '나쁜 원본 — ①발 잘림 ②흰 옷 ③잔머리 ④화면 꽉 참'), "\n  </div>");
+  }
+  var TL = {};
+  var seg = function seg(t, a, b) {
+    return Math.max(0, Math.min(1, (t - a) / (b - a)));
+  };
+  function PLAYER(key, title, svg, dur, draw) {
+    TL[key] = {
+      dur: dur,
+      draw: draw
+    };
+    return "<div class=\"pl\" data-pl=\"".concat(key, "\"><div class=\"pl-t\">\uC6C0\uC9C1\uC774\uB294 \uC124\uBA85 \u2014 ").concat(title, "</div><div class=\"pl-stage\">").concat(svg, "<div class=\"pl-cap\" aria-live=\"polite\"></div></div>\n  <div class=\"pl-bar\"><button type=\"button\" class=\"pl-b pri\" data-a=\"play\">\u25B6 \uC7AC\uC0DD</button><button type=\"button\" class=\"pl-b\" data-a=\"pause\">\u275A\u275A \uC77C\uC2DC\uC815\uC9C0</button><button type=\"button\" class=\"pl-b\" data-a=\"stop\">\u25A0 \uC815\uC9C0</button><button type=\"button\" class=\"pl-b\" data-a=\"rew\">\u23EA \uB418\uAC10\uAE30</button><input type=\"range\" class=\"pl-r\" min=\"0\" max=\"1000\" value=\"0\" aria-label=\"").concat(title, " \uC9C4\uD589\"></div></div>");
+  }
+  var R = function R(root, n) {
+    return root.querySelector("[data-r=\"".concat(n, "\"]"));
+  };
+  var op = function op(el, v) {
+    return el && el.setAttribute('opacity', v.toFixed(3));
+  };
+  function WIPE() {
+    var c = uid('ck');
+    var p = PERSON('mom').replace('<svg viewBox="0 0 160 200" role="img"><rect width="160" height="200" fill="#FFFFFF"/>', '').replace('</svg>', '');
+    var svg = "<svg viewBox=\"0 0 160 200\" role=\"img\" aria-label=\"\uBC30\uACBD \uC81C\uAC70 \uACFC\uC815\"><defs>".concat(CK(c), "</defs><rect width=\"160\" height=\"200\" fill=\"url(#").concat(c, ")\"/><rect data-r=\"cover\" x=\"0\" width=\"160\" height=\"200\" fill=\"#FFFFFF\"/>").concat(p, "<g data-r=\"scan\" opacity=\"0\"><rect x=\"-14\" y=\"0\" width=\"12\" height=\"200\" fill=\"#2C5FA8\" opacity=\".14\"/><rect x=\"-2\" y=\"0\" width=\"4\" height=\"200\" fill=\"#2C5FA8\"/></g></svg>");
+    return PLAYER('wipe', '배경 제거', svg, 6500, function (r, t) {
+      var x = 160 * seg(t, .15, .72);
+      var cv = R(r, 'cover');
+      cv.setAttribute('x', x);
+      cv.setAttribute('width', 160 - x);
+      var sc = R(r, 'scan');
+      sc.setAttribute('transform', "translate(".concat(x, " 0)"));
+      op(sc, t > .14 && t < .74 ? 1 : 0);
+      return t < .15 ? '① 흰 배경 #FFFFFF 원본 사진' : t < .72 ? '② 도구가 사람과 배경의 경계를 찾아 배경을 지우는 중' : '③ 투명 PNG 완성 — 체크무늬는 "여기 투명함" 표시';
+    });
+  }
+  function HALO() {
+    var c = uid('ck');
+    var m = mug('flat');
+    var svg = "<svg viewBox=\"0 0 200 200\" role=\"img\" aria-label=\"\uAC80\uC815 \uBC30\uACBD \uAC80\uC218\"><defs>".concat(CK(c)).concat(m.defs, "</defs><rect width=\"200\" height=\"200\" fill=\"url(#").concat(c, ")\"/><rect data-r=\"dark\" width=\"200\" height=\"200\" fill=\"#111111\" opacity=\"0\"/><g opacity=\".92\">").concat(stickerUnder(13, false), "</g>").concat(m.g, "<g data-r=\"ring\" opacity=\"0\"><circle cx=\"172\" cy=\"140\" r=\"20\" fill=\"none\" stroke=\"#FF5A6E\" stroke-width=\"3\"/><text x=\"150\" y=\"190\" text-anchor=\"middle\" font-size=\"12\" font-weight=\"700\" fill=\"#FF8A99\">\uD770 \uC794\uC0C1!</text></g></svg>");
+    return PLAYER('halo', '검정 배경 검수', svg, 6000, function (r, t) {
+      op(R(r, 'dark'), seg(t, .3, .55));
+      op(R(r, 'ring'), seg(t, .62, .72));
+      return t < .3 ? '① 체크무늬 위에서는 깨끗해 보입니다' : t < .62 ? '② 아래에 검정 레이어를 깔면…' : '③ 가장자리에 남은 흰 잔상(할로)이 드러납니다 → 다듬기';
+    });
+  }
+  function WHYGRAY_A() {
+    var a = uid('ck'),
+      b = uid('ck');
+    var m1 = mug('flat'),
+      m2 = mug('flat');
+    var panel = function panel(x, ck, bg, m, k) {
+      return "<g transform=\"translate(".concat(x, " 0)\"><rect width=\"200\" height=\"200\" fill=\"url(#").concat(ck, ")\"/><rect data-r=\"bg").concat(k, "\" width=\"200\" height=\"200\" fill=\"").concat(bg, "\"/><rect width=\"200\" height=\"200\" fill=\"none\" stroke=\"#D3D7DC\"/><g transform=\"translate(100 104) scale(.8) translate(-100 -104)\"><g data-r=\"bd").concat(k, "\">").concat(stickerUnder(20, false), "</g>").concat(m.g, "</g></g>");
+    };
+    var mark = function mark(x, ok, k) {
+      return "<g data-r=\"mk".concat(k, "\" opacity=\"0\"><circle cx=\"").concat(x, "\" cy=\"24\" r=\"15\" fill=\"").concat(ok ? '#2E7048' : '#D93A4E', "\"/>").concat(ok ? "<path d=\"M".concat(x - 7, " 24 L").concat(x - 2, " 29 L").concat(x + 8, " 18\" stroke=\"#FFF\" stroke-width=\"3\" fill=\"none\" stroke-linecap=\"round\"/>") : "<path d=\"M".concat(x - 6, " 18 L").concat(x + 6, " 30 M").concat(x + 6, " 18 L").concat(x - 6, " 30\" stroke=\"#FFF\" stroke-width=\"3\" stroke-linecap=\"round\"/>"), "</g>");
+    };
+    var svg = "<svg viewBox=\"0 0 420 236\" role=\"img\" aria-label=\"\uD770 \uBC30\uACBD\uACFC \uC5F0\uD68C\uC0C9 \uBC30\uACBD \uBE44\uAD50\"><defs>".concat(CK(a)).concat(CK(b)).concat(m1.defs).concat(m2.defs, "</defs>").concat(panel(0, a, '#FFFFFF', m1, 'L')).concat(panel(220, b, '#D9D9D9', m2, 'R')).concat(mark(180, 0, 'L')).concat(mark(400, 1, 'R'), "\n  <text x=\"100\" y=\"224\" text-anchor=\"middle\" font-size=\"14\" font-weight=\"700\" fill=\"#1E2329\">\uD770 \uBC30\uACBD #FFFFFF</text><text x=\"320\" y=\"224\" text-anchor=\"middle\" font-size=\"14\" font-weight=\"700\" fill=\"#1E2329\">\uC5F0\uD68C\uC0C9 #D9D9D9</text></svg>");
+    return PLAYER('gray', '흰 배경 vs 연회색', svg, 6500, function (r, t) {
+      var p = seg(t, .3, .65);
+      op(R(r, 'bgL'), 1 - p);
+      op(R(r, 'bgR'), 1 - p);
+      op(R(r, 'bdL'), 1 - p);
+      var m = seg(t, .7, .8);
+      op(R(r, 'mkL'), m);
+      op(R(r, 'mkR'), m);
+      return t < .3 ? '① 같은 흰 테두리 스티커, 배경색만 다릅니다' : t < .7 ? '② 배경 제거 실행' : '③ 흰 배경은 테두리까지 사라지고, 연회색은 흰 테두리가 남습니다';
+    });
+  }
+  function MORPH() {
+    var c = uid('ck');
+    var m1 = mug('photo'),
+      m2 = mug('toon');
+    var chip = function chip(x, t, k) {
+      return "<g><rect x=\"".concat(x, "\" y=\"208\" width=\"94\" height=\"26\" rx=\"13\" fill=\"#EAF1FA\"/><rect data-r=\"c").concat(k, "\" x=\"").concat(x, "\" y=\"208\" width=\"94\" height=\"26\" rx=\"13\" fill=\"#2C5FA8\" opacity=\"0\"/><text data-r=\"t").concat(k, "\" x=\"").concat(x + 47, "\" y=\"225.5\" text-anchor=\"middle\" font-size=\"12\" font-weight=\"700\" fill=\"#1E2329\">").concat(t, "</text></g>");
+    };
+    var svg = "<svg viewBox=\"0 0 300 240\" role=\"img\" aria-label=\"\uC2E4\uC0AC\uC5D0\uC11C \uC2A4\uD2F0\uCEE4, \uD22C\uBA85 PNG\uB85C\"><defs>".concat(CK(c)).concat(m1.defs).concat(m2.defs, "</defs>\n  <rect x=\"50\" y=\"0\" width=\"200\" height=\"200\" fill=\"url(#").concat(c, ")\"/>\n  <g data-r=\"s1\"><rect x=\"50\" width=\"200\" height=\"200\" fill=\"#FFFFFF\"/><g transform=\"translate(50 0)\">").concat(m1.g, "</g></g>\n  <g data-r=\"s2\" opacity=\"0\"><rect data-r=\"gray\" x=\"50\" width=\"200\" height=\"200\" fill=\"#D9D9D9\"/><g transform=\"translate(50 0)\"><g transform=\"translate(100 104) scale(.82) translate(-100 -104)\">").concat(stickerUnder(20, false)).concat(m2.g, "</g></g></g>\n  <rect x=\"50\" width=\"200\" height=\"200\" fill=\"none\" stroke=\"#D3D7DC\"/>").concat(chip(6, '① 실사 원본', 0)).concat(chip(103, '② 스티커', 1)).concat(chip(200, '③ 투명 PNG', 2), "</svg>");
+    return PLAYER('morph', '실사 → 스티커 → 투명 PNG', svg, 9000, function (r, t) {
+      var a = seg(t, .28, .42);
+      op(R(r, 's1'), 1 - a);
+      op(R(r, 's2'), a);
+      op(R(r, 'gray'), 1 - seg(t, .62, .78));
+      var k = t < .36 ? 0 : t < .7 ? 1 : 2;
+      [0, 1, 2].forEach(function (i) {
+        op(R(r, 'c' + i), i === k ? 1 : 0);
+        R(r, 't' + i).setAttribute('fill', i === k ? '#FFFFFF' : '#1E2329');
+      });
+      return k === 0 ? '① 미드저니 실사 원본 (흰 배경 #FFFFFF)' : k === 1 ? '② Attach to Prompt + 화풍 카드 → 흰 테두리 스티커, 배경 #D9D9D9' : '③ 회색 배경만 지우면 흰 테두리가 남은 투명 PNG 완성';
+    });
+  }
+  function SEVEN() {
+    var cp = uid('cp'),
+      f = uid('bl'),
+      rg = uid('rg');
+    var strip = function strip(s) {
+      return s.replace(/^<svg[^>]*><rect width="160" height="200" fill="#FFFFFF"\/>/, '').replace(/<\/svg>$/, '');
+    };
+    var good = strip(PERSON('worker')),
+      white = strip(PERSON('worker', {
+        white: 1
+      }));
+    var IT = [['전체가 화면 안에', '발이 잘렸어요', 'zoomed out, full body, feet visible'], ['가운데, 여백 넉넉히', '테두리에 붙어 몸이 잘려요', 'centered with generous margin'], ['단색 배경', '방 배경이 섞여 있어요', 'seamless pure white background (#FFFFFF)'], ['바닥 그림자 없음', '그림자도 물체로 남아요', '--no cast shadow'], ['초점 또렷하게', '흐린 가장자리는 반투명으로 남아요', 'sharp focus, crisp clean edges'], ['흰 옷 피하기', '흰 옷이 흰 배경에 녹아요', 'light blue shirt (색 있는 옷)'], ['머리카락 정돈', '잔머리가 날려요', 'hair neatly tied, no flyaway hair']];
+    var N = '①②③④⑤⑥⑦';
+    var dots = IT.map(function (_, i) {
+      return "<circle data-r=\"d".concat(i, "\" cx=\"").concat(30 + i * 30, "\" cy=\"20\" r=\"11\" fill=\"#D3D7DC\"/><text data-r=\"n").concat(i, "\" x=\"").concat(30 + i * 30, "\" y=\"24.5\" text-anchor=\"middle\" font-size=\"12\" font-weight=\"700\" fill=\"#4D5560\">").concat(i + 1, "</text>");
+    }).join('');
+    var svg = "<svg viewBox=\"0 0 240 254\" role=\"img\" aria-label=\"\uC798 \uC9C0\uC6CC\uC9C0\uB294 \uC0AC\uC9C4 7\uAC00\uC9C0 \uC870\uAC74\"><defs><clipPath id=\"".concat(cp, "\"><rect x=\"40\" y=\"44\" width=\"160\" height=\"200\" rx=\"6\"/></clipPath><filter id=\"").concat(f, "\" x=\"-20%\" y=\"-20%\" width=\"140%\" height=\"140%\"><feGaussianBlur data-r=\"blur\" stdDeviation=\"0\"/></filter><linearGradient id=\"").concat(rg, "\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#D8CFC1\"/><stop offset=\"1\" stop-color=\"#A39987\"/></linearGradient></defs>\n  ").concat(dots, "\n  <g clip-path=\"url(#").concat(cp, ")\"><g transform=\"translate(40 44)\"><rect width=\"160\" height=\"200\" fill=\"#FFFFFF\"/>\n   <g data-r=\"room\" opacity=\"0\"><rect width=\"160\" height=\"200\" fill=\"url(#").concat(rg, ")\"/><rect x=\"98\" y=\"18\" width=\"48\" height=\"58\" fill=\"#EEE9DE\" stroke=\"#8A8072\" stroke-width=\"3\"/><path d=\"M122 18 V76 M98 47 H146\" stroke=\"#8A8072\" stroke-width=\"2\"/><line x1=\"0\" y1=\"152\" x2=\"160\" y2=\"152\" stroke=\"#7A7062\" stroke-width=\"2\"/><rect x=\"8\" y=\"104\" width=\"28\" height=\"48\" rx=\"3\" fill=\"#6E8F5A\"/><rect x=\"0\" y=\"152\" width=\"160\" height=\"48\" fill=\"#8C7F6C\"/></g>\n   <g data-r=\"pos\"><g filter=\"url(#").concat(f, ")\"><ellipse data-r=\"shadow\" cx=\"100\" cy=\"183\" rx=\"56\" ry=\"8\" fill=\"#000000\" opacity=\"0\"/>").concat(good, "<g data-r=\"white\" opacity=\"0\">").concat(white, "</g><path data-r=\"fly\" opacity=\"0\" d=\"M68 40 Q58 30 52 34 M76 36 Q72 22 64 22 M90 38 Q100 26 108 30 M95 46 Q108 40 112 46 M66 46 Q56 46 54 54\" stroke=\"#1E1A18\" stroke-width=\"1.4\" fill=\"none\"/></g></g>\n  </g></g>\n  <rect x=\"40\" y=\"44\" width=\"160\" height=\"200\" rx=\"6\" fill=\"none\" stroke=\"#C9CDD2\"/>\n  <g data-r=\"bad\"><circle cx=\"186\" cy=\"58\" r=\"11\" fill=\"#D93A4E\"/><path d=\"M181 53 L191 63 M191 53 L181 63\" stroke=\"#FFFFFF\" stroke-width=\"2.6\" stroke-linecap=\"round\"/></g>\n  <g data-r=\"ok\" opacity=\"0\"><circle cx=\"186\" cy=\"58\" r=\"11\" fill=\"#2E7048\"/><path d=\"M180.5 58 L184.5 62 L192 54\" stroke=\"#FFFFFF\" stroke-width=\"2.6\" fill=\"none\" stroke-linecap=\"round\"/></g></svg>");
+    return PLAYER('seven', '잘 지워지는 사진 7가지 조건', svg, 22400, function (r, t) {
+      var ph = Math.min(6, Math.floor(t * 7)),
+        u = t * 7 - ph,
+        b = t >= 1 ? 0 : 1 - seg(u, .42, .7);
+      var tf = '';
+      op(R(r, 'room'), 0);
+      op(R(r, 'shadow'), 0);
+      R(r, 'blur').setAttribute('stdDeviation', 0);
+      op(R(r, 'white'), 0);
+      op(R(r, 'fly'), 0);
+      if (ph === 0) tf = "translate(".concat(-34 * b, " ").concat(18 * b, ") scale(").concat(1 + .42 * b, ")");
+      if (ph === 1) tf = "translate(".concat(60 * b, " 0)");
+      if (ph === 2) op(R(r, 'room'), b);
+      if (ph === 3) op(R(r, 'shadow'), .35 * b);
+      if (ph === 4) R(r, 'blur').setAttribute('stdDeviation', (2.6 * b).toFixed(2));
+      if (ph === 5) op(R(r, 'white'), b);
+      if (ph === 6) op(R(r, 'fly'), b);
+      R(r, 'pos').setAttribute('transform', tf);
+      var bad = b > .5;
+      op(R(r, 'bad'), bad ? 1 : 0);
+      op(R(r, 'ok'), bad ? 0 : 1);
+      IT.forEach(function (_, i) {
+        var c = i < ph || i === ph && !bad ? '#2E7048' : i === ph ? '#D93A4E' : '#D3D7DC';
+        R(r, 'd' + i).setAttribute('fill', c);
+        R(r, 'n' + i).setAttribute('fill', c === '#D3D7DC' ? '#4D5560' : '#FFFFFF');
+      });
+      var it = IT[ph];
+      return bad ? "".concat(N[ph], " ").concat(it[0], " \u2014 \u2717 ").concat(it[1]) : "".concat(N[ph], " ").concat(it[0], " \u2014 \u2713 \uD504\uB86C\uD504\uD2B8: ").concat(it[2]);
+    });
+  }
+  function SCENES(key, title, w, h, scenes, ms) {
+    var n = scenes.length,
+      gap = 22,
+      x0 = w / 2 - (n - 1) * gap / 2;
+    var dots = scenes.map(function (_, i) {
+      return "<circle data-r=\"d".concat(i, "\" cx=\"").concat(x0 + i * gap, "\" cy=\"14\" r=\"7\" fill=\"#D3D7DC\"/>");
+    }).join('');
+    var body = scenes.map(function (s, i) {
+      return "<g data-r=\"s".concat(i, "\" opacity=\"").concat(i ? 0 : 1, "\">").concat(s.g, "</g>");
+    }).join('');
+    var svg = "<svg viewBox=\"0 0 ".concat(w, " ").concat(h + 30, "\" role=\"img\" aria-label=\"").concat(title, "\">").concat(dots, "<g transform=\"translate(0 30)\"><rect width=\"").concat(w, "\" height=\"").concat(h, "\" fill=\"#FFFFFF\"/>").concat(body, "</g></svg>");
+    return PLAYER(key, title, svg, (ms || 3000) * n, function (r, t) {
+      var x = Math.max(0, Math.min(n - .0001, t * n)),
+        i = Math.floor(x),
+        u = x - i;
+      scenes.forEach(function (_, j) {
+        var o = 0;
+        if (j === i) o = i < n - 1 ? 1 - seg(u, .86, 1) : 1;else if (j === i + 1) o = seg(u, .86, 1);
+        var g = R(r, 's' + j);
+        op(g, o);
+        g.setAttribute('transform', "translate(0 ".concat((6 * (1 - o)).toFixed(2), ")"));
+        R(r, 'd' + j).setAttribute('fill', j <= i ? '#2C5FA8' : '#D3D7DC');
+      });
+      return scenes[i].cap;
+    });
+  }
+  var TX = function TX(x, y, s, sz, o) {
+    o = o || {};
+    return "<text x=\"".concat(x, "\" y=\"").concat(y, "\" font-size=\"").concat(sz || 12, "\"").concat(o.a ? " text-anchor=\"".concat(o.a, "\"") : '', " font-weight=\"").concat(o.w || 500, "\" fill=\"").concat(o.c || '#1E2329', "\"").concat(o.f ? " font-family=\"".concat(o.f, "\"") : '', ">").concat(s, "</text>");
+  };
+  var BX = function BX(x, y, w, h, f, st, rx, sw) {
+    return "<rect x=\"".concat(x, "\" y=\"").concat(y, "\" width=\"").concat(w, "\" height=\"").concat(h, "\" rx=\"").concat(rx == null ? 8 : rx, "\" fill=\"").concat(f || '#FFFFFF', "\" stroke=\"").concat(st || '#D3D7DC', "\" stroke-width=\"").concat(sw || 1, "\"/>");
+  };
+  var AR = function AR(x1, y, x2, c) {
+    return "<line x1=\"".concat(x1, "\" y1=\"").concat(y, "\" x2=\"").concat(x2 - 7, "\" y2=\"").concat(y, "\" stroke=\"").concat(c || '#2C5FA8', "\" stroke-width=\"2.5\"/><path d=\"M").concat(x2, " ").concat(y, " L").concat(x2 - 9, " ").concat(y - 5, " L").concat(x2 - 9, " ").concat(y + 5, "Z\" fill=\"").concat(c || '#2C5FA8', "\"/>");
+  };
+  var ARD = function ARD(x, y1, y2) {
+    return "<line x1=\"".concat(x, "\" y1=\"").concat(y1, "\" x2=\"").concat(x, "\" y2=\"").concat(y2 - 7, "\" stroke=\"#2C5FA8\" stroke-width=\"2.5\"/><path d=\"M").concat(x, " ").concat(y2, " L").concat(x - 5, " ").concat(y2 - 9, " L").concat(x + 5, " ").concat(y2 - 9, "Z\" fill=\"#2C5FA8\"/>");
+  };
+  var OKM = function OKM(x, y) {
+    return "<circle cx=\"".concat(x, "\" cy=\"").concat(y, "\" r=\"10\" fill=\"#2E7048\"/><path d=\"M").concat(x - 5, " ").concat(y, " L").concat(x - 1.5, " ").concat(y + 3.5, " L").concat(x + 5.5, " ").concat(y - 4, "\" stroke=\"#FFF\" stroke-width=\"2.4\" fill=\"none\" stroke-linecap=\"round\"/>");
+  };
+  var NGM = function NGM(x, y) {
+    return "<circle cx=\"".concat(x, "\" cy=\"").concat(y, "\" r=\"10\" fill=\"#D93A4E\"/><path d=\"M").concat(x - 4.5, " ").concat(y - 4.5, " L").concat(x + 4.5, " ").concat(y + 4.5, " M").concat(x + 4.5, " ").concat(y - 4.5, " L").concat(x - 4.5, " ").concat(y + 4.5, "\" stroke=\"#FFF\" stroke-width=\"2.4\" stroke-linecap=\"round\"/>");
+  };
+  var CKR = function CKR(ck, x, y, w, h, rx) {
+    return "<rect x=\"".concat(x, "\" y=\"").concat(y, "\" width=\"").concat(w, "\" height=\"").concat(h, "\" rx=\"").concat(rx || 0, "\" fill=\"url(#").concat(ck, ")\"/>");
+  };
+  var STRIPP = function STRIPP(s) {
+    return s.replace(/^<svg[^>]*><rect width="160" height="200" fill="#FFFFFF"\/>/, '').replace(/<\/svg>$/, '');
+  };
+  var OB = function OB(k) {
+    return OBJ(k).replace(/<svg[^>]*>/, '').replace('</svg>', '').replace('<rect width="200" height="200" fill="#FFFFFF"/>', '');
+  };
+  var MM = function MM(cx, cy, s, mode, st) {
+    var m = mug(st || 'flat');
+    return "<defs>".concat(m.defs, "</defs><g transform=\"translate(").concat(cx, " ").concat(cy, ") scale(").concat(s, ") translate(-100 -110)\">").concat(mode === 'stk' ? stickerUnder(20, false) : '').concat(mode === 'stkB' ? stickerUnder(20, true) : '').concat(m.g, "</g>");
+  };
+  var PP = function PP(x, y, s, k, o) {
+    return "<g transform=\"translate(".concat(x, " ").concat(y, ") scale(").concat(s, ")\">").concat(STRIPP(PERSON(k, o)), "</g>");
+  };
+  var FD = function FD(x, y, lab, c) {
+    return "<path d=\"M".concat(x, " ").concat(y + 8, " q0 -6 6 -6 h14 l6 6 h28 q6 0 6 6 v28 q0 6 -6 6 h-48 q-6 0 -6 -6z\" fill=\"").concat(c || '#F2C14E', "\"/><path d=\"M").concat(x, " ").concat(y + 16, " h60 v20 q0 6 -6 6 h-48 q-6 0 -6 -6z\" fill=\"#F7D57A\"/>").concat(TX(x + 30, y + 58, lab, 10, {
+      a: 'middle',
+      w: 700
+    }));
+  };
+  var TH = function TH(ck, x, y, mode) {
+    var bg = mode === 'w' ? "<rect x=\"".concat(x, "\" y=\"").concat(y, "\" width=\"46\" height=\"46\" rx=\"5\" fill=\"#FFFFFF\"/>") : mode === 'g' ? "<rect x=\"".concat(x, "\" y=\"").concat(y, "\" width=\"46\" height=\"46\" rx=\"5\" fill=\"#D9D9D9\"/>") : CKR(ck, x, y, 46, 46, 5);
+    return bg + "<rect x=\"".concat(x, "\" y=\"").concat(y, "\" width=\"46\" height=\"46\" rx=\"5\" fill=\"none\" stroke=\"#C9CDD2\"/>") + MM(x + 23, y + 24, .19, mode === 'g' || mode === 'cs' ? 'stk' : '');
+  };
+  function P_FOLDER() {
+    var ck = uid('ck');
+    var xs = [18, 108, 198, 288],
+      labs = ['01_원본사진', '02_PNG실사', '03_스티커원본', '04_PNG스티커'],
+      md = ['w', 'c', 'g', 'cs'];
+    var tree = "".concat(FD(150, 4, '06_PNG요소'), "<path d=\"M180 66 V76 M48 76 H318 M48 76 V88 M138 76 V88 M228 76 V88 M318 76 V88\" stroke=\"#C9CDD2\" stroke-width=\"2\" fill=\"none\"/>").concat(xs.map(function (x, i) {
+      return FD(x, 88, labs[i]);
+    }).join(''));
+    return SCENES('folder', '오늘 쓸 폴더 만들기', 360, 230, [{
+      g: "<defs>".concat(CK(ck), "</defs>").concat(TX(180, 40, '바탕화면 또는 USB', 11, {
+        a: 'middle',
+        c: '#7A828C'
+      }), "<g transform=\"translate(150 70)\">").concat(FD(0, 0, '06_PNG요소'), "</g>"),
+      cap: '① 바탕화면(또는 USB)에 06_PNG요소 폴더를 만듭니다'
+    }, {
+      g: tree,
+      cap: '② 안에 4칸: 01 원본 · 02 PNG실사 · 03 스티커원본 · 04 PNG스티커'
+    }, {
+      g: tree + xs.map(function (x, i) {
+        return TH(ck, x + 7, 160, md[i]) + (i < 3 ? AR(x + 58, 183, x + 95) : '');
+      }).join(''),
+      cap: '③ 작업이 진행될수록 파일이 01 → 04 순서로 쌓입니다'
+    }, {
+      g: "".concat(BX(60, 40, 240, 40, '#EEF7F1', '#C6E3D0')).concat(OKM(84, 60)).concat(TX(104, 65, 'cheer_mom_01.png', 15, {
+        w: 700,
+        f: 'IBM Plex Mono, monospace'
+      })).concat(BX(60, 100, 240, 40, '#FBEFF1', '#EDCAD1')).concat(NGM(84, 120)).concat(TX(104, 125, '응원엄마 최종(1).png', 15, {
+        w: 700,
+        c: '#9B3448'
+      })).concat(TX(180, 176, '파일 이름은 영어·숫자 + 밑줄(_)', 13, {
+        a: 'middle',
+        w: 700
+      })).concat(TX(180, 198, '한글·띄어쓰기·괄호는 업로드 때 깨질 수 있어요', 11, {
+        a: 'middle',
+        c: '#4D5560'
+      })),
+      cap: '④ 이름 규칙: 영어·숫자·밑줄(_)만 씁니다'
+    }], 2800);
+  }
+  function P_PROMPT() {
+    var parts = [['① 대상', 'A gift box with yeot taffy', '#EAF1FA'], ['② 색·소재', 'bright red satin ribbon', '#FBEFF1'], ['③ 전체 보이기', 'entire subject visible', '#EEF7F1'], ['④ 배경', 'pure white background (#FFFFFF)', '#EEF4FB'], ['⑤ 조명·초점', 'soft even lighting, sharp focus', '#F4F0FA'], ['⑥ 파라미터', '--raw --s 50 --no cast shadow', '#F3F4F6']];
+    var caps = ['① 누가/무엇이 — 대상부터 씁니다', '② 색·소재 — 배경과 다른 색으로', '③ 전체 보이기 — 모서리·발끝이 잘리지 않게', '④ 배경 — 헥스 코드 #FFFFFF 까지', '⑤ 조명·초점 — 그림자 줄이고 경계 또렷하게', '⑥ 파라미터 — 2차시 레시피 --raw --s 50 재사용'];
+    return SCENES('prompt', '실사 프롬프트 조립', 360, 200, parts.map(function (_, k) {
+      var g = parts.slice(0, k + 1).map(function (p, i) {
+        return "".concat(BX(6, 8 + i * 31, 254, 26, p[2], i === k ? '#2C5FA8' : '#D3D7DC', 6, i === k ? 2 : 1)).concat(TX(13, 25.5 + i * 31, p[0], 10, {
+          w: 700,
+          c: '#4D5560'
+        })).concat(TX(88, 25.5 + i * 31, p[1], 9, {
+          f: 'IBM Plex Mono, monospace'
+        }));
+      }).join('');
+      var bg = k >= 3 ? '#FFFFFF' : '#D8CFC1';
+      g += "<g transform=\"translate(268 40)\"><rect width=\"84\" height=\"84\" rx=\"6\" fill=\"".concat(bg, "\" stroke=\"#C9CDD2\"/>").concat(k < 5 ? '<ellipse cx="47" cy="74" rx="28" ry="4" fill="#000" opacity=".18"/>' : '', "<g transform=\"scale(.42)\"").concat(k < 4 ? ' style="filter:blur(1.2px)"' : '', ">").concat(OB('gift'), "</g></g>").concat(TX(310, 144, '결과 미리보기', 10, {
+        a: 'middle',
+        c: '#7A828C'
+      }));
+      return {
+        g: g,
+        cap: caps[k]
+      };
+    }), 2600);
+  }
+  function P_POSES() {
+    var card = function card(x, y, s, pose, lab) {
+      return "".concat(BX(x, y, 160 * s, 200 * s, '#FFFFFF', '#C9CDD2', 6)).concat(PP(x, y, s, 'worker', {
+        pose: pose
+      })).concat(lab ? TX(x + 80 * s, y + 200 * s + 16, lab, 10.5, {
+        a: 'middle',
+        w: 700
+      }) : '');
+    };
+    return SCENES('poses', '같은 인물 포즈 세트', 360, 210, [{
+      g: card(130, 10, .62, 'thumb', '원본 1장 (엄지척)'),
+      cap: '① 마음에 든 인물 원본 1장'
+    }, {
+      g: "".concat(card(8, 10, .58, 'thumb', '원본 (Attach)')).concat(AR(104, 68, 120)).concat(BX(122, 36, 114, 64, '#EEF4FB', '#C9DAF0', 6)).concat(TX(179, 56, 'same person,', 9, {
+        a: 'middle',
+        f: 'IBM Plex Mono, monospace'
+      })).concat(TX(179, 70, 'same outfit,', 9, {
+        a: 'middle',
+        f: 'IBM Plex Mono, monospace'
+      })).concat(TX(179, 84, 'now raising a fist', 9, {
+        a: 'middle',
+        f: 'IBM Plex Mono, monospace',
+        w: 700
+      })).concat(AR(238, 68, 254)).concat(card(256, 10, .58, 'fist', '새 포즈')),
+      cap: '② 원본을 첨부하고 "포즈만 바꿔" 라고 씁니다'
+    }, {
+      g: "".concat(card(14, 10, .6, 'thumb', '엄지척')).concat(card(124, 10, .6, 'fist', '파이팅')).concat(card(234, 10, .6, 'heart', '하트')),
+      cap: '③ 같은 사람·같은 옷으로 포즈 3종 = 인물 세트'
+    }], 3000);
+  }
+  function P_MASK() {
+    var ck = uid('ck'),
+      sil = uid('sil');
+    var P = function P(x) {
+      return PP(x + 2, 22, .85, 'worker');
+    };
+    var left = function left(bg, hole) {
+      return "".concat(bg === 'w' ? BX(20, 20, 140, 174, '#FFFFFF', '#C9CDD2', 6) : CKR(ck, 20, 20, 140, 174, 6) + BX(20, 20, 140, 174, 'none', '#C9CDD2', 6)).concat(P(20)).concat(hole ? "<circle cx=\"120.6\" cy=\"88\" r=\"14\" fill=\"url(#".concat(ck, ")\"/>") : '').concat(TX(90, 212, '사진(레이어)', 11, {
+        a: 'middle',
+        w: 700
+      }));
+    };
+    var right = function right(st) {
+      return st === 0 ? "".concat(BX(200, 20, 140, 174, '#F3F4F6', '#C9CDD2', 6)).concat(TX(270, 110, '아직 없음', 12, {
+        a: 'middle',
+        c: '#7A828C'
+      })).concat(TX(270, 212, '마스크', 11, {
+        a: 'middle',
+        w: 700
+      })) : "".concat(BX(200, 20, 140, 174, '#111111', '#C9CDD2', 6), "<g filter=\"url(#").concat(sil, ")\">").concat(PP(202, 22, .85, 'worker'), "</g>").concat(st === 2 ? '<circle cx="300.6" cy="88" r="14" fill="#111111"/>' : '').concat(TX(270, 212, '마스크  흰색=보이기 · 검정=가리기', 10.5, {
+        a: 'middle',
+        w: 700
+      }));
+    };
+    var brush = "<g transform=\"translate(306 58) rotate(35)\"><rect x=\"-3\" y=\"-30\" width=\"6\" height=\"26\" rx=\"2\" fill=\"#8C6A4A\"/><path d=\"M-5 -4 h10 l-2 12 h-6z\" fill=\"#FFFFFF\" stroke=\"#999\"/></g><circle cx=\"300.6\" cy=\"88\" r=\"16\" fill=\"none\" stroke=\"#2C5FA8\" stroke-width=\"2\" stroke-dasharray=\"4 3\"/>";
+    return SCENES('mask', '포토샵 웹 — 마스크 다듬기', 360, 220, [{
+      g: "<defs>".concat(CK(ck), "<filter id=\"").concat(sil, "\"><feFlood flood-color=\"#FFFFFF\"/><feComposite in2=\"SourceAlpha\" operator=\"in\"/></filter></defs>").concat(left('w')).concat(right(0)),
+      cap: '① 원본 사진을 엽니다'
+    }, {
+      g: "".concat(left('c')).concat(right(1)),
+      cap: '② 배경 제거 = 마스크가 생깁니다. 흰색은 보이고, 검정은 가려집니다'
+    }, {
+      g: "".concat(left('c', 1)).concat(right(2)).concat(NGM(150, 30)),
+      cap: '③ 손까지 지워졌다면? 마스크에서 그 부분이 검정입니다'
+    }, {
+      g: "".concat(left('c')).concat(right(1)).concat(brush).concat(OKM(150, 30)),
+      cap: '④ 흰 붓으로 마스크를 칠하면 손이 돌아옵니다 — 지우개가 아니라 가리개'
+    }], 3000);
+  }
+  function P_JPG() {
+    var ck = uid('ck');
+    var fr = function fr(x, mode, lab, mk) {
+      return "".concat(mode === 'c' ? CKR(ck, x, 30, 120, 120, 6) : BX(x, 30, 120, 120, '#FFFFFF', 'none', 6)).concat(BX(x, 30, 120, 120, 'none', '#C9CDD2', 6)).concat(MM(x + 60, 92, .48, '')).concat(TX(x + 60, 172, lab, 12, {
+        a: 'middle',
+        w: 700
+      })).concat(mk || '');
+    };
+    var tpl = function tpl(x, jpg, lab, mk) {
+      return "<rect x=\"".concat(x, "\" y=\"30\" width=\"120\" height=\"120\" rx=\"6\" fill=\"#F7D6DE\"/>").concat(TX(x + 60, 52, '수능 대박!', 13, {
+        a: 'middle',
+        w: 700,
+        c: '#B03A5B'
+      })).concat(jpg ? "<rect x=\"".concat(x + 24, "\" y=\"62\" width=\"72\" height=\"72\" fill=\"#FFFFFF\"/>") : '').concat(MM(x + 60, 100, .34, '')).concat(TX(x + 60, 172, lab, 12, {
+        a: 'middle',
+        w: 700
+      })).concat(mk);
+    };
+    return SCENES('jpg', 'PNG로 저장해야 하는 이유', 360, 200, [{
+      g: "<defs>".concat(CK(ck), "</defs>").concat(fr(120, 'c', '배경을 지운 상태')),
+      cap: '① 배경을 지우면 체크무늬(투명)가 됩니다'
+    }, {
+      g: "".concat(fr(40, 'c', 'PNG로 저장', OKM(150, 36))).concat(fr(200, 'w', 'JPG로 저장', NGM(310, 36))),
+      cap: '② JPG는 투명을 저장하지 못해 흰색으로 채웁니다'
+    }, {
+      g: "".concat(tpl(40, 0, 'PNG → 템플릿', OKM(150, 36))).concat(tpl(200, 1, 'JPG → 템플릿', NGM(310, 36))),
+      cap: '③ 템플릿에 올리면 JPG는 흰 네모가 생깁니다 → 꼭 PNG로'
+    }], 3000);
+  }
+  function P_S2T() {
+    var m = mug('retro');
+    var pin = function pin(x, y, s) {
+      return "<g transform=\"translate(".concat(x, " ").concat(y, ") scale(").concat(s, ")\">").concat(BX(0, 0, 130, 160, '#FFFFFF', '#C9CDD2', 10), "<rect x=\"8\" y=\"8\" width=\"114\" height=\"114\" rx=\"6\" fill=\"#F3E3C3\"/><g transform=\"translate(65 66) scale(.5) translate(-100 -110)\">").concat(m.g, "</g>").concat(TX(65, 142, '참고 이미지', 11, {
+        a: 'middle',
+        w: 700,
+        c: '#4D5560'
+      }), "</g>");
+    };
+    var rows = [['선', '굵고 진한 잉크선'], ['채색', '단색 면'], ['명암', '망점(하프톤)'], ['색', ''], ['질감', '빈티지 인쇄'], ['비율', '귀여운 데포르메'], ['분위기', '레트로·따뜻함']];
+    var sw = ['#D9A441', '#2F7F7A', '#B5523B', '#3B2F2A', '#F3E3C3'];
+    var panel = "".concat(BX(150, 8, 200, 186, '#F7F8FA', '#D3D7DC', 8)).concat(TX(162, 28, 'GPT · 화풍 7항목 분석', 11, {
+      w: 700,
+      c: '#2C5FA8'
+    })).concat(rows.map(function (r, i) {
+      return "".concat(TX(162, 52 + i * 20, r[0], 10.5, {
+        w: 700,
+        c: '#4D5560'
+      })).concat(i === 3 ? sw.map(function (c, j) {
+        return "<rect x=\"".concat(206 + j * 18, "\" y=\"").concat(42 + i * 20, "\" width=\"14\" height=\"13\" rx=\"2\" fill=\"").concat(c, "\" stroke=\"#999\" stroke-width=\".5\"/>");
+      }).join('') : TX(206, 52 + i * 20, r[1], 10.5));
+    }).join(''));
+    var sent = ['1970s retro cartoon style,', 'thick dark ink outlines,', 'muted vintage palette of', 'mustard (#D9A441), teal', '(#2F7F7A), brick red (#B5523B),', 'halftone dot shading'];
+    return SCENES('s2t', '핀터레스트 화풍을 글로 바꾸기', 360, 200, [{
+      g: "<defs>".concat(m.defs, "</defs>").concat(pin(30, 16, 1)).concat(BX(190, 70, 140, 40, '#EEF4FB', '#C9DAF0', 8)).concat(TX(260, 95, 'Win + Shift + S', 13, {
+        a: 'middle',
+        w: 700,
+        f: 'IBM Plex Mono, monospace'
+      })).concat(TX(260, 130, '화면 캡처 → GPT에 붙여넣기', 10.5, {
+        a: 'middle',
+        c: '#4D5560'
+      })),
+      cap: '① 핀터레스트에서 마음에 드는 화풍을 캡처합니다'
+    }, {
+      g: "".concat(pin(10, 30, .8)).concat(AR(118, 95, 146)).concat(panel),
+      cap: '② GPT가 선·채색·명암·색·질감·비율·분위기로 나눠 분석합니다'
+    }, {
+      g: "".concat(panel.replace('#F7F8FA', '#FFFFFF'), "<g opacity=\".25\">").concat(pin(10, 30, .8), "</g>").concat(BX(6, 40, 200, 120, '#EEF4FB', '#2C5FA8', 8, 2)).concat(TX(20, 60, '영어 화풍 문장', 10.5, {
+        w: 700,
+        c: '#2C5FA8'
+      })).concat(sent.map(function (l, i) {
+        return TX(20, 80 + i * 14, l, 9.5, {
+          f: 'IBM Plex Mono, monospace'
+        });
+      }).join('')),
+      cap: '③ 분석 결과를 영어 화풍 문장 1줄로 받습니다 = 화풍 카드'
+    }, {
+      g: "".concat(BX(20, 30, 320, 60, '#FFFFFF', '#2C5FA8', 10, 2)).concat(TX(34, 54, '/imagine', 11, {
+        w: 700,
+        c: '#2C5FA8',
+        f: 'IBM Plex Mono, monospace'
+      })).concat(TX(34, 74, '... 1970s retro cartoon style, thick dark ink ...', 10, {
+        f: 'IBM Plex Mono, monospace'
+      })).concat(OKM(326, 30), "<g transform=\"translate(150 118)\">").concat(BX(0, 0, 60, 50, '#F3F4F6', '#C9CDD2', 6), "<path d=\"M10 40 L24 24 L34 34 L42 28 L52 40Z\" fill=\"#9AA3AE\"/><circle cx=\"42\" cy=\"14\" r=\"5\" fill=\"#9AA3AE\"/><line x1=\"-6\" y1=\"56\" x2=\"66\" y2=\"-6\" stroke=\"#D93A4E\" stroke-width=\"4\"/></g>").concat(TX(180, 190, '참고 이미지는 미드저니에 넣지 않습니다', 11, {
+        a: 'middle',
+        w: 700,
+        c: '#9B3448'
+      })),
+      cap: '④ 미드저니에는 글만 넣습니다 — 남의 그림은 첨부하지 않기'
+    }], 3200);
+  }
+  function P_ATTACH() {
+    var ck = uid('ck');
+    var bar = function bar(txt, ring, thumb) {
+      return "".concat(BX(14, 10, 332, 40, '#FFFFFF', '#C9CDD2', 20), "<g transform=\"translate(30 18)\"><rect width=\"24\" height=\"24\" rx=\"6\" fill=\"#F3F4F6\"/><path d=\"M5 18 L10 12 L14 16 L17 13 L20 18Z\" fill=\"#7A828C\"/><circle cx=\"17\" cy=\"8\" r=\"2.5\" fill=\"#7A828C\"/></g>").concat(ring ? '<circle cx="42" cy="30" r="17" fill="none" stroke="#2C5FA8" stroke-width="2.5"/>' : '').concat(thumb ? "<rect x=\"62\" y=\"16\" width=\"28\" height=\"28\" rx=\"4\" fill=\"#FFFFFF\" stroke=\"#C9CDD2\"/>".concat(MM(76, 31, .11, '', 'photo')) : '').concat(TX(thumb ? 98 : 64, 35, txt, 10.5, {
+        c: txt.startsWith('What') ? '#7A828C' : '#1E2329',
+        f: txt.startsWith('What') ? null : 'IBM Plex Mono, monospace'
+      }));
+    };
+    var pop = "".concat(BX(14, 58, 200, 120, '#FFFFFF', '#C9CDD2', 10), "<rect x=\"24\" y=\"68\" width=\"80\" height=\"80\" rx=\"6\" fill=\"#FFFFFF\" stroke=\"#C9CDD2\"/>").concat(MM(64, 110, .36, '', 'photo')).concat(BX(114, 74, 90, 26, '#2C5FA8', '#2C5FA8', 13)).concat(TX(159, 91, 'Attach to Prompt', 9.5, {
+      a: 'middle',
+      w: 700,
+      c: '#FFFFFF'
+    })).concat(TX(114, 124, '흰 배경 원본 JPG', 9.5, {
+      c: '#4D5560'
+    })).concat(TX(114, 140, '(투명 PNG 아님)', 9.5, {
+      c: '#9B3448',
+      w: 700
+    }));
+    var cell = function cell(x, y, ok, pick, v) {
+      return "<rect x=\"".concat(x, "\" y=\"").concat(y, "\" width=\"72\" height=\"72\" rx=\"4\" fill=\"#D9D9D9\"/>").concat(ok ? MM(x + 36, y + 38, .27, 'stk', v) : MM(x + 36, y + 38, .27, '', v)).concat(pick ? "<rect x=\"".concat(x - 2, "\" y=\"").concat(y - 2, "\" width=\"76\" height=\"76\" rx=\"6\" fill=\"none\" stroke=\"#2C5FA8\" stroke-width=\"3\"/>") : '').concat(ok ? '' : NGM(x + 64, y + 8));
+    };
+    return SCENES('attach', '미드저니 Attach to Prompt 순서', 360, 200, [{
+      g: "<defs>".concat(CK(ck), "</defs>").concat(bar('What will you imagine?', 1, 0)).concat(TX(180, 110, '입력창 왼쪽 이미지 버튼', 13, {
+        a: 'middle',
+        w: 700
+      })),
+      cap: '① 입력창의 이미지 추가 버튼을 누릅니다'
+    }, {
+      g: "".concat(bar('What will you imagine?', 0, 0)).concat(pop),
+      cap: '② 흰 배경 원본을 올리고 Attach to Prompt 로 지정합니다'
+    }, {
+      g: "".concat(bar('The same mug ... redrawn as a sticker ...', 0, 1)).concat(BX(14, 62, 332, 96, '#F7F8FA', '#D3D7DC', 8)).concat(TX(26, 82, '붙여넣을 3줄', 10.5, {
+        w: 700,
+        c: '#2C5FA8'
+      })).concat(TX(26, 104, '1) The same mug from the attached image ...', 9.5, {
+        f: 'IBM Plex Mono, monospace'
+      })).concat(TX(26, 122, '2) 화풍 카드 (예: flat vector illustration ...)', 9.5, {
+        f: 'IBM Plex Mono, monospace'
+      })).concat(TX(26, 140, '3) 스티커 꼬리 문장 (#D9D9D9 배경)', 9.5, {
+        f: 'IBM Plex Mono, monospace'
+      })),
+      cap: '③ 원본 유지 문장 + 화풍 카드 + 스티커 꼬리 문장 → Enter'
+    }, {
+      g: "".concat(cell(96, 14, 1, 0, 'flat')).concat(cell(176, 14, 0, 0, 'flat')).concat(cell(96, 94, 1, 1, 'toon')).concat(cell(176, 94, 1, 0, 'clay')).concat(TX(268, 96, '테두리가', 11, {
+        w: 700
+      })).concat(TX(268, 112, '안 끊긴 것', 11, {
+        w: 700
+      })).concat(TX(268, 128, '1장 고르기', 11, {
+        w: 700,
+        c: '#2C5FA8'
+      })),
+      cap: '④ 4장 중 흰 테두리가 끊기지 않은 1장을 고릅니다'
+    }, {
+      g: "<rect x=\"40\" y=\"20\" width=\"140\" height=\"140\" rx=\"6\" fill=\"#D9D9D9\"/>".concat(MM(110, 94, .55, 'stk', 'toon')).concat(BX(196, 50, 80, 30, '#2C5FA8', '#2C5FA8', 15)).concat(TX(236, 70, '업스케일', 12, {
+        a: 'middle',
+        w: 700,
+        c: '#FFFFFF'
+      })).concat(AR(236, 96, 236), "<g transform=\"translate(206 100)\">").concat(FD(0, 0, '03_스티커원본'), "</g>"),
+      cap: '⑤ 업스케일 → 03_스티커원본 폴더에 저장'
+    }], 3000);
+  }
+  function P_CYCLE() {
+    var ph = mug('photo');
+    var left = "<defs>".concat(ph.defs, "</defs><rect x=\"20\" y=\"20\" width=\"140\" height=\"140\" rx=\"6\" fill=\"#FFFFFF\" stroke=\"#C9CDD2\"/><g transform=\"translate(90 92) scale(.6) translate(-100 -110)\">").concat(ph.g, "</g>").concat(TX(90, 182, '원본 (Attach)', 11, {
+      a: 'middle',
+      w: 700
+    })).concat(AR(166, 90, 196));
+    return SCENES('cycle', '같은 원본, 화풍 카드 6종', 360, 200, STYLE_KEYS.map(function (_ref3) {
+      var _ref4 = _slicedToArray(_ref3, 2),
+        k = _ref4[0],
+        n = _ref4[1];
+      return {
+        g: "".concat(left, "<rect x=\"200\" y=\"20\" width=\"140\" height=\"140\" rx=\"6\" fill=\"#D9D9D9\"/>").concat(MM(270, 94, .55, 'stk', k)).concat(TX(270, 182, '화풍 ' + n, 12, {
+          a: 'middle',
+          w: 700,
+          c: '#2C5FA8'
+        })),
+        cap: "\uAC19\uC740 \uC6D0\uBCF8 + \uD654\uD48D \uCE74\uB4DC ".concat(n, " \u2192 \uC2A4\uD2F0\uCEE4")
+      };
+    }), 2200);
+  }
+  function P_PLANB() {
+    var ck = uid('ck');
+    var fr = function fr(bg, mode, holes, mk, lab) {
+      return "".concat(bg === 'c' ? CKR(ck, 100, 10, 160, 160, 6) : "<rect x=\"100\" y=\"10\" width=\"160\" height=\"160\" rx=\"6\" fill=\"".concat(bg, "\"/>")).concat(BX(100, 10, 160, 160, 'none', '#C9CDD2', 6)).concat(MM(180, 92, .62, mode)).concat(holes ? [[180 + (186 - 100) * .62, 92 + (114 - 110) * .62], [180 + (42 - 100) * .62, 92 + (166 - 110) * .62], [180 + (54 - 100) * .62, 92 + (64 - 110) * .62]].map(function (_ref5) {
+        var _ref6 = _slicedToArray(_ref5, 2),
+          x = _ref6[0],
+          y = _ref6[1];
+        return "<circle cx=\"".concat(x, "\" cy=\"").concat(y, "\" r=\"10\" fill=\"url(#").concat(ck, ")\"/><circle cx=\"").concat(x, "\" cy=\"").concat(y, "\" r=\"13\" fill=\"none\" stroke=\"#D93A4E\" stroke-width=\"2\" stroke-dasharray=\"3 3\"/>");
+      }).join('') : '').concat(mk).concat(TX(180, 192, lab, 11.5, {
+        a: 'middle',
+        w: 700
+      }));
+    };
+    return SCENES('planb', '흰 테두리가 약할 때 — 플랜 B', 360, 200, [{
+      g: "<defs>".concat(CK(ck), "</defs>").concat(fr('#D9D9D9', 'stk', 0, '', '기본: 흰 테두리 + #D9D9D9')),
+      cap: '① 기본 스티커 (흰 테두리, 연회색 배경)'
+    }, {
+      g: fr('c', 'stk', 1, NGM(250, 20), '배경 제거 후 — 테두리가 군데군데 파임'),
+      cap: '② 지웠더니 흰 테두리가 군데군데 파였습니다'
+    }, {
+      g: fr('#C8C8C8', 'stkB', 0, '', '플랜 B: 바깥 선 #4A4A4A + 배경 #C8C8C8'),
+      cap: '③ 플랜 B 문장을 붙여 다시 생성 — 바깥에 진회색 선'
+    }, {
+      g: fr('c', 'stkB', 0, OKM(250, 20), '배경 제거 후 — 테두리 그대로'),
+      cap: '④ 진회색 선이 경계를 잡아 줘서 테두리가 남습니다'
+    }], 3000);
+  }
+  function P_SET() {
+    var sb = uid('sb');
+    var objS = function objS(x, k, s) {
+      return "<rect x=\"".concat(x, "\" y=\"40\" width=\"74\" height=\"74\" rx=\"5\" fill=\"#D9D9D9\"/><g transform=\"translate(").concat(x + 7, " 47) scale(").concat(s, ")\" filter=\"url(#").concat(sb, ")\">").concat(OB(k), "</g>");
+    };
+    var photo = function photo(x, k) {
+      return "<rect x=\"".concat(x, "\" y=\"60\" width=\"60\" height=\"60\" rx=\"5\" fill=\"#FFFFFF\" stroke=\"#C9CDD2\"/><g transform=\"translate(").concat(x, " 60) scale(.3)\">").concat(OB(k), "</g>");
+    };
+    return SCENES('set', '세트 4종 화풍 통일', 360, 180, [{
+      g: "<defs><filter id=\"".concat(sb, "\" x=\"-20%\" y=\"-20%\" width=\"140%\" height=\"140%\"><feMorphology in=\"SourceAlpha\" operator=\"dilate\" radius=\"9\" result=\"d\"/><feFlood flood-color=\"#FFFFFF\"/><feComposite in2=\"d\" operator=\"in\" result=\"w\"/><feMerge><feMergeNode in=\"w\"/><feMergeNode in=\"SourceGraphic\"/></feMerge></filter></defs><rect x=\"120\" y=\"14\" width=\"120\" height=\"120\" rx=\"6\" fill=\"#D9D9D9\"/>").concat(MM(180, 76, .48, 'stk', 'flat')).concat(TX(180, 156, '내 결과물 1장 → 스타일 참조', 12, {
+        a: 'middle',
+        w: 700,
+        c: '#2C5FA8'
+      })),
+      cap: '① 가장 잘 나온 내 스티커 1장을 스타일 참조로 겁니다'
+    }, {
+      g: "<rect x=\"10\" y=\"50\" width=\"80\" height=\"80\" rx=\"6\" fill=\"#D9D9D9\"/>".concat(MM(50, 92, .32, 'stk', 'flat')).concat(TX(50, 148, '스타일 참조', 10.5, {
+        a: 'middle',
+        w: 700
+      })).concat(TX(108, 96, '+', 22, {
+        a: 'middle',
+        w: 700
+      })).concat(photo(128, 'gift')).concat(photo(198, 'cabbage')).concat(photo(268, 'xmas')).concat(TX(233, 148, '다른 원본 3장 (차례로 Attach)', 10.5, {
+        a: 'middle',
+        w: 700
+      })),
+      cap: '② 다른 원본을 하나씩 첨부해 같은 화풍으로 만듭니다'
+    }, {
+      g: "<rect x=\"12\" y=\"40\" width=\"74\" height=\"74\" rx=\"5\" fill=\"#D9D9D9\"/>".concat(MM(49, 79, .29, 'stk', 'flat')).concat(objS(98, 'gift', .3)).concat(objS(184, 'cabbage', .3)).concat(objS(270, 'xmas', .3)).concat(TX(180, 140, '같은 화풍으로 묶인 세트 4종', 13, {
+        a: 'middle',
+        w: 700,
+        c: '#2E7048'
+      })),
+      cap: '③ 화풍이 통일된 세트 = 검색·노출에 유리'
+    }], 3000);
+  }
+  function P_FNAME() {
+    var parts = [['exam', '시리즈', '#EAF1FA'], ['mom', '대상', '#FBEFF1'], ['webtoon', '화풍', '#EEF7F1'], ['01', '번호', '#F4F0FA']];
+    var build = function build(k) {
+      var x = 24,
+        g = '';
+      parts.forEach(function (p, i) {
+        if (i > k) return;
+        var w = p[0].length * 10 + 22;
+        g += "".concat(BX(x, 40, w, 34, p[2], i === k ? '#2C5FA8' : '#D3D7DC', 6, i === k ? 2 : 1)).concat(TX(x + w / 2, 62, p[0], 14, {
+          a: 'middle',
+          w: 700,
+          f: 'IBM Plex Mono, monospace'
+        })).concat(TX(x + w / 2, 92, p[1], 10.5, {
+          a: 'middle',
+          c: '#4D5560',
+          w: 700
+        }));
+        x += w;
+        if (i < 3) {
+          g += TX(x + 5, 62, '_', 14, {
+            w: 700
+          });
+          x += 12;
+        }
+      });
+      if (k === 3) g += TX(x + 2, 62, '.png', 14, {
+        w: 700,
+        f: 'IBM Plex Mono, monospace',
+        c: '#2C5FA8'
+      });
+      return g;
+    };
+    return SCENES('fname', '파일 이름 규칙', 360, 150, [].concat(_toConsumableArray(parts.map(function (p, k) {
+      return {
+        g: build(k),
+        cap: "".concat(['①', '②', '③', '④'][k], " ").concat(p[1], " \u2014 ").concat(p[0])
+      };
+    })), [{
+      g: "".concat(TX(24, 36, '예시', 11, {
+        w: 700,
+        c: '#4D5560'
+      })).concat(['exam_mom_real_01.png', 'exam_mom_webtoon_01.png', 'kimjang_cabbage_clay_01.png'].map(function (n, i) {
+        return TX(24, 64 + i * 26, n, 13, {
+          w: 700,
+          f: 'IBM Plex Mono, monospace'
+        });
+      }).join('')).concat(TX(270, 64, '수능 엄마 실사', 10.5, {
+        c: '#4D5560'
+      })).concat(TX(270, 90, '수능 엄마 웹툰', 10.5, {
+        c: '#4D5560'
+      })).concat(TX(270, 116, '김장 배추 클레이', 10.5, {
+        c: '#4D5560'
+      })),
+      cap: '⑤ 이름만 봐도 무슨 그림인지 알게 — 다음 주 대량 업로드가 빨라집니다'
+    }]), 2400);
+  }
+  function P_UPLOAD() {
+    var ck = uid('ck');
+    var win = function win(c) {
+      return "".concat(BX(10, 6, 340, 190, '#FFFFFF', '#C9CDD2', 10), "<rect x=\"10\" y=\"6\" width=\"340\" height=\"28\" rx=\"10\" fill=\"#F3F4F6\"/><rect x=\"10\" y=\"24\" width=\"340\" height=\"10\" fill=\"#F3F4F6\"/>").concat(TX(24, 25, '디자인허브 · 콘텐츠 업로드', 11, {
+        w: 700,
+        c: '#4D5560'
+      })).concat(c);
+    };
+    var typ = ['사진', '요소', '템플릿'].map(function (t, i) {
+      return "".concat(BX(40 + i * 96, 70, 84, 40, i === 1 ? '#2C5FA8' : '#FFFFFF', i === 1 ? '#2C5FA8' : '#C9CDD2', 8)).concat(TX(82 + i * 96, 95, t, 13, {
+        a: 'middle',
+        w: 700,
+        c: i === 1 ? '#FFFFFF' : '#1E2329'
+      }));
+    }).join('');
+    return SCENES('upload', '디자인허브 등록 순서', 360, 200, [{
+      g: "<defs>".concat(CK(ck), "</defs>").concat(win(typ + TX(180, 140, '콘텐츠 유형: 요소', 12, {
+        a: 'middle',
+        w: 700,
+        c: '#2C5FA8'
+      }))),
+      cap: '① 콘텐츠 업로드 → 유형에서 「요소」 선택'
+    }, {
+      g: win("".concat(CKR(ck, 30, 46, 110, 110, 6)).concat(MM(85, 104, .42, 'stk', 'toon')).concat(TX(156, 80, 'exam_mom_webtoon_01.png', 10.5, {
+        w: 700,
+        f: 'IBM Plex Mono, monospace'
+      })).concat(TX(156, 104, '미리보기 체크무늬 = 투명 ✓', 11, {
+        c: '#2E7048',
+        w: 700
+      })).concat(TX(156, 128, '규격은 업로드 화면 안내 확인', 10.5, {
+        c: '#9B3448'
+      }))),
+      cap: '② PNG 업로드 → 미리보기에서 체크무늬(투명) 확인'
+    }, {
+      g: win("".concat(TX(30, 62, '제목', 11, {
+        w: 700,
+        c: '#4D5560'
+      })).concat(BX(30, 68, 300, 28, '#FFFFFF', '#C9CDD2', 6)).concat(TX(40, 87, '수능 응원 엄마 웹툰 스티커', 11.5)).concat(TX(30, 118, '키워드 (25개, 쉼표 구분)', 11, {
+        w: 700,
+        c: '#4D5560'
+      })).concat(BX(30, 124, 300, 48, '#FFFFFF', '#C9CDD2', 6)).concat(TX(40, 143, '수능, 응원, 엄마, 하트, 합격, 시험, 가족,', 10.5)).concat(TX(40, 161, '일러스트, 스티커, 안내문, 카드뉴스 …', 10.5))),
+      cap: '③ GPT로 뽑은 제목·키워드 붙여넣기'
+    }, {
+      g: win("".concat(BX(30, 60, 90, 30, '#FFFFFF', '#C9CDD2', 15)).concat(TX(75, 80, '무료', 12, {
+        a: 'middle',
+        w: 700
+      })).concat(BX(124, 60, 90, 30, '#2C5FA8', '#2C5FA8', 15)).concat(TX(169, 80, '유료', 12, {
+        a: 'middle',
+        w: 700,
+        c: '#FFFFFF'
+      })).concat(BX(240, 60, 90, 30, '#1E2329', '#1E2329', 8)).concat(TX(285, 80, '제출', 12, {
+        a: 'middle',
+        w: 700,
+        c: '#FFFFFF'
+      })).concat(AR(180, 118, 212)).concat(BX(214, 104, 110, 30, '#EEF4FB', '#C9DAF0', 15)).concat(TX(269, 124, '심사 대기', 12, {
+        a: 'middle',
+        w: 700,
+        c: '#2C5FA8'
+      })).concat(TX(180, 170, '심사 대기 중에는 삭제하고 다시 올릴 수 있어요', 11, {
+        a: 'middle',
+        c: '#4D5560'
+      }))),
+      cap: '④ 무료/유료 선택 → 제출 → 「심사 대기」'
+    }], 3000);
+  }
+  function initPlayers() {
+    var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    document.querySelectorAll('.pl').forEach(function (root) {
+      var T = TL[root.dataset.pl];
+      if (!T) return;
+      var rng = root.querySelector('.pl-r'),
+        cap = root.querySelector('.pl-cap');
+      var t = 0,
+        raf = 0,
+        last = 0,
+        playing = false,
+        played = false;
+      var render = function render() {
+        cap.textContent = T.draw(root, t);
+        rng.value = Math.round(t * 1000);
+      };
+      var _tick = function tick(now) {
+        if (!playing) return;
+        t = Math.max(0, t + Math.max(0, now - last) / T.dur);
+        last = now;
+        if (t >= 1) {
+          t = 1;
+          playing = false;
+          render();
+          return;
+        }
+        render();
+        raf = requestAnimationFrame(_tick);
+      };
+      var play = function play() {
+        if (t >= 1) t = 0;
+        playing = true;
+        played = true;
+        last = performance.now();
+        cancelAnimationFrame(raf);
+        raf = requestAnimationFrame(_tick);
+      };
+      var pause = function pause() {
+        playing = false;
+        cancelAnimationFrame(raf);
+      };
+      root.querySelector('.pl-bar').addEventListener('click', function (e) {
+        var b = e.target.closest('button');
+        if (!b) return;
+        var a = b.dataset.a;
+        if (a === 'play') play();
+        if (a === 'pause') pause();
+        if (a === 'stop') {
+          pause();
+          t = 0;
+          render();
+        }
+        if (a === 'rew') {
+          t = Math.max(0, t - .2);
+          render();
+        }
+      });
+      rng.addEventListener('input', function () {
+        pause();
+        t = rng.value / 1000;
+        render();
+      });
+      if (reduce) {
+        t = 1;
+      }
+      render();
+      if (!reduce && 'IntersectionObserver' in window) {
+        new IntersectionObserver(function (es, o) {
+          es.forEach(function (en) {
+            if (en.isIntersecting && !played) {
+              play();
+              o.disconnect();
+            }
+          });
+        }, {
+          threshold: .6
+        }).observe(root);
+      }
+    });
+  }
+  var STYLE_KEYS = [['flat', 'A 플랫 벡터'], ['wc', 'B 수채화'], ['clay', 'C 3D 클레이'], ['retro', 'D 레트로 만화'], ['crayon', 'E 크레파스'], ['toon', 'F 웹툰 셀']];
+  var STYLEGAL = function STYLEGAL() {
+    return CREDIT + "<div class=\"gal\">".concat(STYLE_KEYS.map(function (_ref7) {
+      var _ref8 = _slicedToArray(_ref7, 2),
+        k = _ref8[0],
+        n = _ref8[1];
+      return FIGC(STICKER(k, '#D9D9D9'), n);
+    }).join(''), "</div>");
+  };
+  var PLANB = function PLANB() {
+    return "<div class=\"gal two\">".concat(FIGC(STICKER('flat', '#D9D9D9'), '기본 — 흰 테두리 #FFFFFF')).concat(FIGC(STICKER('flat', '#C8C8C8', true), '플랜 B — 바깥 선 #4A4A4A + 배경 #C8C8C8'), "</div>");
+  };
+  var OBJGAL = function OBJGAL() {
+    return CREDIT + "<div class=\"gal\">".concat([['gift', '합격 엿·찹쌀떡 상자'], ['pepero', '막대 과자 꽃다발'], ['cabbage', '배추 + 고무장갑'], ['xmas', '크리스마스 선물'], ['mug', '초록 머그 라테']].map(function (_ref9) {
+      var _ref0 = _slicedToArray(_ref9, 2),
+        k = _ref0[0],
+        n = _ref0[1];
+      return FIGC(OBJ(k), n);
+    }).join(''), "</div>");
+  };
+  var PPLGAL = function PPLGAL() {
+    return CREDIT + "<div class=\"gal\">".concat([['mom', '양손 하트 엄마'], ['granny', '김치통 든 할머니'], ['worker', '엄지척 직장인'], ['student', '파이팅 수험생']].map(function (_ref1) {
+      var _ref10 = _slicedToArray(_ref1, 2),
+        k = _ref10[0],
+        n = _ref10[1];
+      return FIGC(PERSON(k), n);
+    }).join(''), "</div>");
+  };
+  var SW = function SW(c) {
+    return "<span class=\"swatch\" style=\"background:".concat(c, "\"></span>");
+  };
+  var WHITE_TAIL = "entire subject visible, centered with generous margin, isolated on a seamless pure white background (#FFFFFF), soft even studio lighting, sharp focus, crisp clean edges --ar 1:1 --raw --s 50 --no text, cast shadow, gradient";
+  var WHITE_TAIL_P = "full body from head to toe, feet visible, standing, facing camera, centered with generous margin, isolated on a seamless pure white background (#FFFFFF), soft even studio lighting, sharp focus, crisp clean silhouette --ar 4:5 --raw --s 50 --no text, cast shadow, gradient";
+  var STK = "die-cut sticker design, one single sticker, a thick continuous white border (#FFFFFF) following the whole silhouette, clean closed outline, placed on a solid flat light gray background (#D9D9D9), no texture on the background, centered, entire sticker visible with generous margin --ar 1:1 --s 50 --no text, drop shadow, gradient, frame";
+  var STYLES = [['A', '플랫 벡터', '템플릿·안내문에 가장 무난, 판매 범용성 1순위', 'flat vector illustration style, bold clean outlines of uniform thickness, solid flat color fills, limited palette of 5 colors, minimal shading, simple geometric shapes'], ['B', '수채화', '감성 카드뉴스·초대장', 'soft watercolor illustration style, light pencil line art, gentle color bleeding inside the shapes, pastel palette, delicate paper-like softness inside the subject only'], ['C', '3D 클레이', '귀여운 홍보물·키즈·SNS', 'cute 3D clay figure style, soft rounded forms, matte plasticine texture, chunky friendly proportions, warm soft lighting'], ['D', '레트로 만화', '카페·소상공인 홍보물', '1970s retro cartoon style, thick dark ink outlines, muted vintage palette of mustard (#D9A441), teal (#2F7F7A) and brick red (#B5523B), halftone dot shading inside the subject'], ['E', '크레파스 손그림', '학교·유치원·가정통신문', 'children\'s crayon drawing style, waxy crayon strokes, slightly wobbly hand-drawn outlines, bright primary colors, playful and warm'], ['F', '웹툰 셀 셰이딩', '표정이 중요한 인물 요소', 'Korean webtoon style, clean digital line art, two-tone cel shading, bright clear colors, expressive face and gestures']];
+  var FLOW = "<div class=\"fig\"><svg viewBox=\"0 0 960 300\" role=\"img\" aria-label=\"\uC624\uB298\uC758 \uD750\uB984: \uC2E4\uC0AC \uC0AC\uC9C4\uC5D0\uC11C PNG \uB450 \uC7A5\">\n<defs><marker id=\"ar\" viewBox=\"0 0 10 10\" refX=\"9\" refY=\"5\" markerWidth=\"7\" markerHeight=\"7\" orient=\"auto\"><path d=\"M0 0L10 5L0 10z\" class=\"svg-af\"/></marker></defs>\n<rect x=\"10\" y=\"100\" width=\"170\" height=\"96\" rx=\"12\" class=\"svg-acc\"/>\n<text x=\"95\" y=\"135\" text-anchor=\"middle\" class=\"svg-t\" font-size=\"17\" font-weight=\"700\">\u2460 \uC2E4\uC0AC \uC0AC\uC9C4</text>\n<text x=\"95\" y=\"160\" text-anchor=\"middle\" class=\"svg-s\" font-size=\"13\">\uD770 \uBC30\uACBD #FFFFFF</text>\n<text x=\"95\" y=\"180\" text-anchor=\"middle\" class=\"svg-s\" font-size=\"13\">\uC120\uC774 \uB610\uB837\uD558\uAC8C</text>\n<path d=\"M180 130 C230 130 230 60 280 60\" class=\"svg-al a-dash\" stroke-width=\"2\" marker-end=\"url(#ar)\"/>\n<path d=\"M180 168 C230 168 230 236 280 236\" class=\"svg-al a-dash\" stroke-width=\"2\" marker-end=\"url(#ar)\"/>\n<rect x=\"282\" y=\"22\" width=\"190\" height=\"76\" rx=\"12\" class=\"svg-box\"/>\n<text x=\"377\" y=\"55\" text-anchor=\"middle\" class=\"svg-t\" font-size=\"16\" font-weight=\"700\">\u2461 \uBC30\uACBD \uC81C\uAC70</text>\n<text x=\"377\" y=\"79\" text-anchor=\"middle\" class=\"svg-s\" font-size=\"13\">\uB3C4\uAD6C 3\uAC1C \uBE44\uAD50</text>\n<rect x=\"282\" y=\"190\" width=\"190\" height=\"92\" rx=\"12\" class=\"svg-box\"/>\n<text x=\"377\" y=\"220\" text-anchor=\"middle\" class=\"svg-t\" font-size=\"16\" font-weight=\"700\">\u2462 \uD654\uD48D \uBC14\uAFB8\uAE30</text>\n<text x=\"377\" y=\"244\" text-anchor=\"middle\" class=\"svg-s\" font-size=\"13\">Attach to Prompt</text>\n<text x=\"377\" y=\"265\" text-anchor=\"middle\" class=\"svg-s\" font-size=\"13\">+ \uD540\uD130\uB808\uC2A4\uD2B8 \uD654\uD48D \uCE74\uB4DC</text>\n<path d=\"M472 60 L600 60\" class=\"svg-al a-dash\" stroke-width=\"2\" marker-end=\"url(#ar)\"/>\n<path d=\"M472 236 L520 236\" class=\"svg-al a-dash\" stroke-width=\"2\" marker-end=\"url(#ar)\"/>\n<rect x=\"522\" y=\"196\" width=\"150\" height=\"80\" rx=\"12\" class=\"svg-box\"/>\n<text x=\"597\" y=\"228\" text-anchor=\"middle\" class=\"svg-t\" font-size=\"15\" font-weight=\"700\">\u2463 \uD68C\uC0C9 \uBC30\uACBD \uC81C\uAC70</text>\n<text x=\"597\" y=\"252\" text-anchor=\"middle\" class=\"svg-s\" font-size=\"13\">#D9D9D9 \u2192 \uD22C\uBA85</text>\n<path d=\"M672 236 L778 236\" class=\"svg-al a-dash\" stroke-width=\"2\" marker-end=\"url(#ar)\"/>\n<rect x=\"602\" y=\"22\" width=\"346\" height=\"76\" rx=\"12\" class=\"svg-acc\"/>\n<text x=\"775\" y=\"55\" text-anchor=\"middle\" class=\"svg-t\" font-size=\"17\" font-weight=\"700\">PNG-A \uC2E4\uC0AC \uC694\uC18C</text>\n<text x=\"775\" y=\"79\" text-anchor=\"middle\" class=\"svg-s\" font-size=\"13\">\uC0AC\uBB3C\xB7\uC778\uBB3C \uD22C\uBA85 PNG \u2192 \uB514\uC790\uC778\uD5C8\uBE0C</text>\n<rect x=\"780\" y=\"196\" width=\"168\" height=\"80\" rx=\"12\" class=\"svg-acc\"/>\n<text x=\"864\" y=\"228\" text-anchor=\"middle\" class=\"svg-t\" font-size=\"16\" font-weight=\"700\">PNG-B \uC2A4\uD2F0\uCEE4</text>\n<text x=\"864\" y=\"252\" text-anchor=\"middle\" class=\"svg-s\" font-size=\"13\">\uD770 \uD14C\uB450\uB9AC + \uD22C\uBA85</text>\n<text x=\"480\" y=\"146\" text-anchor=\"middle\" class=\"svg-s\" font-size=\"13\">\uAC19\uC740 \uC6D0\uBCF8 1\uC7A5 \u2192 \uC694\uC18C 2\uC885 (\uC6D0\uC18C\uC2A4 \uBA40\uD2F0\uC720\uC988)</text>\n</svg></div>";
+  var WHYGRAY = "<div class=\"fig sm\"><svg viewBox=\"0 0 520 210\" role=\"img\" aria-label=\"\uD770 \uBC30\uACBD\uACFC \uD68C\uC0C9 \uBC30\uACBD\uC5D0\uC11C \uD770 \uD14C\uB450\uB9AC \uC2A4\uD2F0\uCEE4 \uBE44\uAD50\">\n<rect x=\"10\" y=\"10\" width=\"240\" height=\"160\" rx=\"10\" fill=\"#FFFFFF\" stroke=\"#C9CDD2\"/>\n<path d=\"M130 40 C175 40 200 70 200 100 C200 135 170 150 130 150 C88 150 60 132 60 100 C60 68 88 40 130 40Z\" fill=\"#FFFFFF\" stroke=\"#FFFFFF\" stroke-width=\"12\"/>\n<circle cx=\"130\" cy=\"96\" r=\"38\" fill=\"#E8A0A8\"/><circle cx=\"117\" cy=\"88\" r=\"5\" fill=\"#3A3A3A\"/><circle cx=\"143\" cy=\"88\" r=\"5\" fill=\"#3A3A3A\"/><path d=\"M116 108 Q130 118 144 108\" stroke=\"#3A3A3A\" stroke-width=\"3\" fill=\"none\"/>\n<rect x=\"270\" y=\"10\" width=\"240\" height=\"160\" rx=\"10\" fill=\"#D9D9D9\" stroke=\"#C9CDD2\"/>\n<path d=\"M390 40 C435 40 460 70 460 100 C460 135 430 150 390 150 C348 150 320 132 320 100 C320 68 348 40 390 40Z\" fill=\"#FFFFFF\"/>\n<circle cx=\"390\" cy=\"96\" r=\"38\" fill=\"#E8A0A8\"/><circle cx=\"377\" cy=\"88\" r=\"5\" fill=\"#3A3A3A\"/><circle cx=\"403\" cy=\"88\" r=\"5\" fill=\"#3A3A3A\"/><path d=\"M376 108 Q390 118 404 108\" stroke=\"#3A3A3A\" stroke-width=\"3\" fill=\"none\"/>\n<text x=\"130\" y=\"196\" text-anchor=\"middle\" class=\"svg-t\" font-size=\"14\" font-weight=\"700\">\uD770 \uBC30\uACBD #FFFFFF \u2192 \uD14C\uB450\uB9AC \uC0AC\uB77C\uC9D0</text>\n<text x=\"390\" y=\"196\" text-anchor=\"middle\" class=\"svg-t\" font-size=\"14\" font-weight=\"700\">\uC5F0\uD68C\uC0C9 #D9D9D9 \u2192 \uD14C\uB450\uB9AC \uB610\uB837</text>\n</svg></div>";
+  var FORMULA = "<div class=\"fig\"><svg viewBox=\"0 0 900 170\" role=\"img\" aria-label=\"\uD654\uD48D \uBC14\uAFB8\uAE30 \uACF5\uC2DD\">\n<rect x=\"10\" y=\"30\" width=\"200\" height=\"100\" rx=\"12\" class=\"svg-acc\"/>\n<text x=\"110\" y=\"68\" text-anchor=\"middle\" class=\"svg-t\" font-size=\"16\" font-weight=\"700\">\uCCA8\uBD80 \uC6D0\uBCF8</text>\n<text x=\"110\" y=\"94\" text-anchor=\"middle\" class=\"svg-s\" font-size=\"13\">\uBB34\uC5C7\uC744 (\uC0AC\uB78C\xB7\uC0AC\uBB3C\xB7\uD3EC\uC988)</text>\n<text x=\"230\" y=\"88\" text-anchor=\"middle\" class=\"svg-t\" font-size=\"26\">+</text>\n<rect x=\"250\" y=\"30\" width=\"200\" height=\"100\" rx=\"12\" class=\"svg-box\"/>\n<text x=\"350\" y=\"68\" text-anchor=\"middle\" class=\"svg-t\" font-size=\"16\" font-weight=\"700\">\uD654\uD48D \uCE74\uB4DC</text>\n<text x=\"350\" y=\"94\" text-anchor=\"middle\" class=\"svg-s\" font-size=\"13\">\uC5B4\uB5BB\uAC8C (\uC120\xB7\uC0C9\xB7\uC9C8\uAC10)</text>\n<text x=\"470\" y=\"88\" text-anchor=\"middle\" class=\"svg-t\" font-size=\"26\">+</text>\n<rect x=\"490\" y=\"30\" width=\"200\" height=\"100\" rx=\"12\" class=\"svg-box\"/>\n<text x=\"590\" y=\"68\" text-anchor=\"middle\" class=\"svg-t\" font-size=\"16\" font-weight=\"700\">\uC2A4\uD2F0\uCEE4 \uADDC\uCE59</text>\n<text x=\"590\" y=\"94\" text-anchor=\"middle\" class=\"svg-s\" font-size=\"13\">\uD770 \uD14C\uB450\uB9AC + #D9D9D9</text>\n<text x=\"710\" y=\"88\" text-anchor=\"middle\" class=\"svg-t\" font-size=\"26\">=</text>\n<rect x=\"730\" y=\"30\" width=\"160\" height=\"100\" rx=\"12\" class=\"svg-acc\"/>\n<text x=\"810\" y=\"68\" text-anchor=\"middle\" class=\"svg-t\" font-size=\"16\" font-weight=\"700\">\uC2A4\uD2F0\uCEE4 \uC6D0\uBCF8</text>\n<text x=\"810\" y=\"94\" text-anchor=\"middle\" class=\"svg-s\" font-size=\"13\">\u2192 \uBC30\uACBD \uC81C\uAC70 \u2192 PNG</text>\n<text x=\"450\" y=\"160\" text-anchor=\"middle\" class=\"svg-s\" font-size=\"13\">\uC6D0\uBCF8\uC740 \"\uBB34\uC5C7\", \uD504\uB86C\uD504\uD2B8\uB294 \"\uC5B4\uB5BB\uAC8C\"\uB9CC \uB9D0\uD569\uB2C8\uB2E4. \uB458\uC774 \uC2F8\uC6B0\uC9C0 \uC54A\uAC8C \uC5ED\uD560\uC744 \uB098\uB215\uB2C8\uB2E4.</text>\n</svg></div>";
+  var STEPS = [{
+    id: 's0',
+    tab: '시작',
+    title: '오늘의 지도',
+    lead: '오늘은 사진 한 장으로 판매용 PNG 요소 두 종류를 만듭니다. 하나는 실사 그대로, 하나는 화풍을 바꾼 스티커입니다.',
+    cards: [{
+      t: '오늘 완성할 결과물 4장',
+      k: 'read',
+      w: 1,
+      h: "".concat(FLOW, "\n <div class=\"tbl\"><table><tr><th>\uACB0\uACFC\uBB3C</th><th>\uC6D0\uBCF8</th><th>\uBC30\uACBD</th><th>\uD30C\uC77C</th></tr>\n <tr><td>\u2460 \uC0AC\uBB3C \uC2E4\uC0AC PNG</td><td>STEP 1\uC5D0\uC11C \uB9CC\uB4E0 \uC0AC\uBB3C \uC0AC\uC9C4</td><td>").concat(SW('#FFFFFF'), "#FFFFFF \u2192 \uD22C\uBA85</td><td>.png</td></tr>\n <tr><td>\u2461 \uC778\uBB3C \uC2E4\uC0AC PNG</td><td>STEP 1\uC5D0\uC11C \uB9CC\uB4E0 \uC778\uBB3C \uC0AC\uC9C4</td><td>").concat(SW('#FFFFFF'), "#FFFFFF \u2192 \uD22C\uBA85</td><td>.png</td></tr>\n <tr><td>\u2462 \uC0AC\uBB3C \uC2A4\uD2F0\uCEE4 PNG</td><td>\u2460\uC758 \uC6D0\uBCF8 + \uD654\uD48D \uCE74\uB4DC</td><td>").concat(SW('#D9D9D9'), "#D9D9D9 \u2192 \uD22C\uBA85</td><td>.png</td></tr>\n <tr><td>\u2463 \uC778\uBB3C \uC2A4\uD2F0\uCEE4 PNG</td><td>\u2461\uC758 \uC6D0\uBCF8 + \uD654\uD48D \uCE74\uB4DC</td><td>").concat(SW('#D9D9D9'), "#D9D9D9 \u2192 \uD22C\uBA85</td><td>.png</td></tr></table></div>")
+    }, {
+      t: 'PNG는 왜 값이 다른가',
+      k: 'read',
+      h: "<p>\uBC30\uACBD\uC774 \uD22C\uBA85\uD55C PNG\uB294 \uC5B4\uB5A4 \uD15C\uD50C\uB9BF \uC704\uC5D0\uB3C4 \uBC14\uB85C \uC62C\uB77C\uAC11\uB2C8\uB2E4. \uACE0\uAC1D\uC774 \uC9C1\uC811 \uBC30\uACBD\uC744 \uC9C0\uC6B8 \uD544\uC694\uAC00 \uC5C6\uC73C\uB2C8 <b>\uC4F8 \uACF3\uC774 \uB9CE\uACE0, \uAC80\uC0C9\uC5D0\uB3C4 \uB354 \uC790\uC8FC \uAC78\uB9BD\uB2C8\uB2E4.</b></p>\n ".concat(B('easy', '쉽게 말하면', 'JPG 사진은 "액자에 끼운 그림", PNG 요소는 "오려 낸 스티커"입니다. 스티커는 어디에나 붙습니다.'), "\n ").concat(B('warn', '오늘의 핵심 한 줄', '배경을 잘 지우려면 <b>처음부터 지우기 쉬운 그림</b>을 만들어야 합니다. 도구보다 원본이 먼저입니다.'))
+    }, {
+      t: '오늘 쓸 폴더 만들기',
+      k: 'do',
+      h: "".concat(CREDIT, "<div class=\"motion\">").concat(P_FOLDER(), "</div><p>\uBC14\uD0D5\uD654\uBA74(\uB610\uB294 USB)\uC5D0 \uD3F4\uB354\uB97C \uD558\uB098 \uB9CC\uB4E4\uACE0, \uC548\uC5D0 4\uCE78\uC744 \uB098\uB215\uB2C8\uB2E4.</p>\n <pre class=\"pr\" style=\"padding:12px 14px;font-family:var(--f-mono);font-size:.76rem;margin:0;white-space:pre-wrap\">06_PNG\uC694\uC18C\n \u251C 01_\uC6D0\uBCF8\uC0AC\uC9C4      (\uBBF8\uB4DC\uC800\uB2C8 \uD770 \uBC30\uACBD \uC6D0\uBCF8)\n \u251C 02_PNG\uC2E4\uC0AC       (\uBC30\uACBD \uC9C0\uC6B4 \uC2E4\uC0AC)\n \u251C 03_\uC2A4\uD2F0\uCEE4\uC6D0\uBCF8    (\uD68C\uC0C9 \uBC30\uACBD \uC2A4\uD2F0\uCEE4)\n \u2514 04_PNG\uC2A4\uD2F0\uCEE4     (\uBC30\uACBD \uC9C0\uC6B4 \uC2A4\uD2F0\uCEE4)</pre>\n ").concat(B('set', '설정', '파일 이름은 영어·숫자로: <code>cheer_mom_01.png</code>. 한글 이름은 업로드할 때 깨지는 경우가 있습니다.'))
+    }, {
+      t: '준비 확인',
+      k: 'do',
+      h: "<ul class=\"checks\">\n <li><input type=\"checkbox\" id=\"c0a\"><label for=\"c0a\">\uBBF8\uB4DC\uC800\uB2C8 \uC6F9(midjourney.com) \uB85C\uADF8\uC778, \uC720\uB8CC \uAD6C\uB3C5 \uC0C1\uD0DC</label></li>\n <li><input type=\"checkbox\" id=\"c0b\"><label for=\"c0b\">\uC5B4\uB3C4\uBE44 \uBB34\uB8CC \uACC4\uC815 \uB85C\uADF8\uC778 (\uD3EC\uD1A0\uC0F5 \uC6F9\xB7Adobe Express \uACF5\uC6A9)</label></li>\n <li><input type=\"checkbox\" id=\"c0c\"><label for=\"c0c\">\uCC57GPT \uB610\uB294 \uC81C\uBBF8\uB098\uC774 (\uC9C0\uB09C\uC8FC \uB514\uC790\uC778\uD5C8\uBE0C \uD504\uB85C\uC81D\uD2B8 \uBC29)</label></li>\n <li><input type=\"checkbox\" id=\"c0d\"><label for=\"c0d\">\uD540\uD130\uB808\uC2A4\uD2B8 \uB85C\uADF8\uC778 (\uD654\uD48D \uCC3E\uAE30\uC6A9)</label></li>\n <li><input type=\"checkbox\" id=\"c0e\"><label for=\"c0e\">\uB514\uC790\uC778\uD5C8\uBE0C \uAE30\uC5EC\uC790 \uD654\uBA74 \uB85C\uADF8\uC778</label></li></ul>\n ".concat(B('easy', '어도비 로그인이 막히면', '오늘은 로그인 없이 쓰는 <b>윈도우 그림판</b>도 함께 배웁니다. 막혀도 멈추지 않습니다.'))
+    }]
+  }, {
+    id: 's1',
+    tab: '지우기 쉬운 사진',
+    title: '배경 지우기 쉬운 실사 사진 만들기',
+    lead: '배경 제거 도구는 "피사체와 배경의 경계"를 찾습니다. 경계가 또렷할수록 결과가 깨끗합니다. 사물로 먼저 연습하고 인물로 넘어갑니다.',
+    cards: [{
+      t: '잘 지워지는 사진의 7가지 조건',
+      k: 'read',
+      h: "".concat(CREDIT).concat(GOODBAD(), "<div class=\"motion\">").concat(SEVEN(), "</div><ol>\n <li><b>\uC804\uCCB4\uAC00 \uD654\uBA74 \uC548\uC5D0</b> \u2014 \uBC1C\uB05D\xB7\uBB3C\uAC74 \uBAA8\uC11C\uB9AC\uAC00 \uC798\uB9AC\uC9C0 \uC54A\uAC8C</li>\n <li><b>\uAC00\uC6B4\uB370, \uC5EC\uBC31 \uB109\uB109\uD788</b> \u2014 \uD14C\uB450\uB9AC \uAC00\uAE4C\uC774 \uBD99\uC73C\uBA74 \uC798\uB9BC</li>\n <li><b>\uB2E8\uC0C9 \uBC30\uACBD</b> \u2014 \uC2E4\uC0AC\uB294 ").concat(SW('#FFFFFF'), "<code>#FFFFFF</code> \uD4E8\uC5B4 \uD654\uC774\uD2B8</li>\n <li><b>\uBC14\uB2E5 \uADF8\uB9BC\uC790 \uC5C6\uC74C</b> \u2014 \uADF8\uB9BC\uC790\uB3C4 \"\uBB3C\uCCB4\"\uB85C \uB0A8\uC2B5\uB2C8\uB2E4</li>\n <li><b>\uCD08\uC810 \uB610\uB837, \uD754\uB4E4\uB9BC \uC5C6\uC74C</b> \u2014 \uD750\uB9B0 \uAC00\uC7A5\uC790\uB9AC\uB294 \uBC18\uD22C\uBA85\uC73C\uB85C \uB0A8\uC74C</li>\n <li><b>\uD770 \uC637\xB7\uD770 \uBB3C\uAC74 \uD53C\uD558\uAE30</b> \u2014 \uD770 \uBC30\uACBD\uC5D0 \uB179\uC544 \uAC19\uC774 \uC9C0\uC6CC\uC9D0</li>\n <li><b>\uBA38\uB9AC\uCE74\uB77D\uC740 \uBB36\uAC70\uB098 \uC9E7\uAC8C</b> \u2014 \uB0A0\uB9AC\uB294 \uC794\uBA38\uB9AC\uAC00 \uAC00\uC7A5 \uC5B4\uB835\uC2B5\uB2C8\uB2E4</li></ol>\n ").concat(EX('흰 배경 단독 사진은 이렇게 생겼습니다', [['흰 배경 단독 사물', 'product isolated white background', PX], ['흰 배경 전신 인물', 'person full body white background', PX], ['스튜디오 흰 배경', 'studio white background object', US]]), "\n ").concat(B('warn', '주의', '유리·연기·물·레이스처럼 비치는 소재는 오늘은 피합니다. 투명한 부분을 배경으로 착각합니다.'))
+    }, {
+      t: '실사 프롬프트 공식',
+      k: 'read',
+      h: "".concat(CREDIT, "<div class=\"motion\">").concat(P_PROMPT(), "</div><div class=\"tbl\"><table><tr><th>\uCE78</th><th>\uBB34\uC5C7\uC744 \uC4F0\uB098</th><th>\uC608\uC2DC</th></tr>\n <tr><td>\u2460 \uB300\uC0C1</td><td>\uB204\uAC00/\uBB34\uC5C7\uC774, \uBB34\uC5C7\uC744 \uD558\uB294\uC9C0</td><td>A gift box with yeot taffy</td></tr>\n <tr><td>\u2461 \uC0C9\xB7\uC18C\uC7AC</td><td>\uBC30\uACBD\uACFC \uB2E4\uB978 \uC0C9\uC73C\uB85C</td><td>red ribbon, navy cardigan</td></tr>\n <tr><td>\u2462 \uC804\uCCB4 \uBCF4\uC774\uAE30</td><td>\uC798\uB9BC \uBC29\uC9C0</td><td>entire subject visible / full body</td></tr>\n <tr><td>\u2463 \uBC30\uACBD</td><td>\uD5E5\uC2A4 \uCF54\uB4DC\uAE4C\uC9C0</td><td>pure white background (#FFFFFF)</td></tr>\n <tr><td>\u2464 \uC870\uBA85\xB7\uCD08\uC810</td><td>\uADF8\uB9BC\uC790 \uC904\uC774\uAE30</td><td>soft even studio lighting, sharp focus</td></tr>\n <tr><td>\u2465 \uD30C\uB77C\uBBF8\uD130</td><td>\uC9C0\uB09C\uC8FC \uB808\uC2DC\uD53C \uC7AC\uC0AC\uC6A9</td><td>--raw --s 50 --no cast shadow</td></tr></table></div>\n ").concat(B('set', '설정', '<code>--raw</code> + <code>--s 50</code> 은 2차시에 정한 "광고 사진 톤" 레시피입니다. 실사 요소는 꾸밈이 적을수록 잘 팔립니다.'), "\n ").concat(B('warn', '쓰면 안 되는 단어', '<code>transparent background</code> 라고 쓰면 미드저니가 <b>회색 체크무늬를 그림으로 그려 넣습니다.</b> 진짜 투명이 아닙니다. 투명은 배경 제거 도구가 만듭니다.'))
+    }, {
+      t: '다 같이 ① 사물 — 11월·연말 시즌 5종',
+      k: 'do',
+      w: 1,
+      h: "<p class=\"muted\">\uD558\uB098\uB97C \uACE8\uB77C \uBCF5\uC0AC \u2192 \uBBF8\uB4DC\uC800\uB2C8 \uC785\uB825\uCC3D\uC5D0 \uBD99\uC5EC\uB123\uAE30. \uB9C8\uC74C\uC5D0 \uB4DC\uB294 1\uC7A5\uC744 \uC5C5\uC2A4\uCF00\uC77C \uD6C4 <code>01_\uC6D0\uBCF8\uC0AC\uC9C4</code>\uC5D0 \uC800\uC7A5\uD569\uB2C8\uB2E4.</p>\n ".concat(OBJGAL(), "\n <div class=\"grid\">\n ").concat(P('수능 응원 — 합격 엿·찹쌀떡 선물 상자', "A Korean exam good-luck gift box with traditional yeot taffy sticks and round chapssal-tteok rice cakes, lid open, bright red satin ribbon, product photography, ".concat(WHITE_TAIL), '사물'), "\n ").concat(P('빼빼로데이 — 막대 과자 꽃다발', "A bouquet of chocolate-dipped stick biscuits wrapped in pink kraft paper with a satin bow, product photography, ".concat(WHITE_TAIL), '사물'), "\n ").concat(P('김장 — 배추 한 포기와 빨간 고무장갑', "A whole fresh napa cabbage lying next to a pair of red rubber kitchen gloves, top-down 45 degree view, food photography, ".concat(WHITE_TAIL), '사물'), "\n ").concat(P('크리스마스 — 선물 상자', "A small dark green Christmas gift box tied with a gold ribbon bow and a sprig of red holly berries, product photography, ".concat(WHITE_TAIL), '사물'), "\n ").concat(P('일상 — 초록 머그컵 라테', "A sage green ceramic mug of latte with heart latte art on a small wooden coaster, 45 degree view, ".concat(WHITE_TAIL), '사물'), "\n ").concat(EX('사물 예시', [['선물 상자 (흰 배경)', 'gift box white background', PX], ['배추', 'napa cabbage', PX], ['빨간 고무장갑', 'red rubber gloves', PX], ['크리스마스 선물', 'christmas gift box white background', PX], ['초록 머그 라테', 'green mug latte', PX], ['막대 과자 다발', 'chocolate sticks bouquet', PX]]), "\n ").concat(B('easy', '왜 사물 먼저?', '사물은 가장자리가 단단해서 배경 제거가 거의 100% 됩니다. 성공 경험을 먼저 만들고 인물로 넘어갑니다.'), "\n </div>")
+    }, {
+      t: '다 같이 ② 인물 — 템플릿에 자주 쓰이는 4종',
+      k: 'do',
+      w: 1,
+      h: "<p class=\"muted\">\uC778\uBB3C\uC740 <b>\uC138\uB85C 4:5</b>\uB85C \uC804\uC2E0\uC774 \uB4E4\uC5B4\uAC00\uAC8C \uD569\uB2C8\uB2E4. \uC637 \uC0C9\uC740 \uD770\uC0C9\uC744 \uD53C\uD558\uACE0, \uBA38\uB9AC\uB294 \uBB36\uAC70\uB098 \uC9E7\uAC8C \uC9C0\uC815\uD588\uC2B5\uB2C8\uB2E4.</p>\n ".concat(PPLGAL(), "\n <div class=\"grid\">\n ").concat(P('수능 응원 엄마 — 머리 위 양손 하트', "A cheerful Korean woman in her 50s making a big heart shape with both arms above her head, wearing a navy cardigan and beige trousers, hair neatly tied back in a low bun, ".concat(WHITE_TAIL_P), '인물'), "\n ").concat(P('김장 할머니 — 김치통 들고 미소', "A smiling Korean grandmother in her 70s holding a large red plastic kimchi container with both hands, wearing a floral quilted vest and dark gray trousers, short neat gray hair, ".concat(WHITE_TAIL_P), '인물'), "\n ").concat(P('직장인 — 엄지척 (안내문·교육 자료용)', "A friendly Korean office worker in his 30s giving a thumbs-up with one hand, holding a tablet in the other, wearing a light blue shirt and dark navy slacks, short neat hair, ".concat(WHITE_TAIL_P), '인물'), "\n ").concat(P('수험생 — 주먹 쥐고 파이팅', "A determined Korean high school student in a navy school uniform raising one fist in a fighting pose, holding a pencil, short neat hair, backpack on, ".concat(WHITE_TAIL_P), '인물'), "\n </div>\n ").concat(EX('인물 예시', [['양손 하트', 'woman heart hands white background', PX], ['엄지척 직장인', 'man thumbs up white background', PX], ['파이팅 포즈', 'fist pump white background', PX], ['시니어 전신', 'senior woman full body white background', PX]]), "\n ").concat(B('set', '설정', '<code>--ar 4:5</code> 세로 비율 = 전신 인물. 1:1로 하면 발이 잘리기 쉽습니다.'))
+    }, {
+      t: '망한 사진 고치기 표',
+      k: 'read',
+      w: 1,
+      h: "<div class=\"tbl\"><table><tr><th>\uC774\uB807\uAC8C \uB098\uC654\uB2E4</th><th>\uC65C</th><th>\uD504\uB86C\uD504\uD2B8\uC5D0 \uC774\uB807\uAC8C \uCD94\uAC00</th></tr>\n <tr><td>\uBC1C\xB7\uBAA8\uC11C\uB9AC\uAC00 \uC798\uB9BC</td><td>\uD654\uBA74\uC744 \uAF49 \uCC44\uC6C0</td><td><code>zoomed out, full body, feet visible, generous margin</code></td></tr>\n <tr><td>\uBC14\uB2E5\uC5D0 \uADF8\uB9BC\uC790</td><td>\uC2A4\uD29C\uB514\uC624 \uC870\uBA85 \uD574\uC11D</td><td><code>--no cast shadow</code> + <code>floating, shadowless</code></td></tr>\n <tr><td>\uBC30\uACBD\uC774 \uD68C\uC0C9 \uADF8\uB77C\uB370\uC774\uC158</td><td>\uC0AC\uC9C4 \uB290\uB08C \uC0B4\uB9AC\uB824 \uD568</td><td><code>seamless flat pure white background (#FFFFFF)</code> + <code>--no gradient</code></td></tr>\n <tr><td>\uD770 \uC637\uC774 \uBC30\uACBD\uC5D0 \uB179\uC74C</td><td>\uC637=\uBC30\uACBD \uAC19\uC740 \uC0C9</td><td>\uC637 \uC0C9\uC744 <code>navy</code>, <code>olive green</code> \uB4F1\uC73C\uB85C</td></tr>\n <tr><td>\uC794\uBA38\uB9AC\uAC00 \uB0A0\uB9BC</td><td>\uC790\uC5F0\uC2A4\uB7EC\uC6C0 \uC5F0\uCD9C</td><td><code>hair neatly tied back, no flyaway hair</code></td></tr>\n <tr><td>\uC0AC\uB78C\uC774 2\uBA85 \uB098\uC634</td><td>\uC7A5\uBA74\uC73C\uB85C \uD574\uC11D</td><td><code>one person only, single subject</code></td></tr>\n <tr><td>\uB108\uBB34 \uC601\uD654 \uAC19\uACE0 \uC5B4\uB450\uC6C0</td><td>\uBBF8\uB4DC\uC800\uB2C8 \uAE30\uBCF8 \uBBF8\uAC10</td><td><code>--raw --s 50</code> \uD655\uC778, <code>bright high-key lighting</code></td></tr></table></div>"
+    }, {
+      t: '한 걸음 더 — 내 시리즈로 바꾸기',
+      k: 'adv',
+      h: "".concat(CREDIT, "<div class=\"motion\">").concat(P_POSES(), "</div><p>\uC704 \uC608\uC2DC\uC758 <b>\u2460\uB300\uC0C1</b>\uB9CC \uB0B4 \uC2DC\uB9AC\uC988\uB85C \uBC14\uAFB8\uACE0 \uB098\uBA38\uC9C0\uB294 \uADF8\uB300\uB85C \uB450\uBA74 \uB429\uB2C8\uB2E4. \uAF2C\uB9AC \uBB38\uC7A5\uC744 \uBA54\uBAA8\uC7A5\uC5D0 \"\uC2E4\uC0AC \uB808\uC2DC\uD53C\"\uB85C \uC800\uC7A5\uD574 \uB450\uC138\uC694.</p>\n ").concat(P('실사 레시피 (꼬리 문장만)', WHITE_TAIL, '재사용'), "\n ").concat(B('ext', '심화', '같은 인물로 포즈만 바꾼 3장을 원하면, 첫 장을 Attach 해서 <code>same person, same outfit, now waving hello</code> 처럼 포즈만 바꿉니다. 인물 세트가 됩니다.'))
+    }]
+  }, {
+    id: 's2',
+    tab: '배경 제거',
+    title: '배경 제거 — 같은 사진, 도구 3개',
+    lead: '같은 사진을 여러 도구로 지워 보고 직접 비교합니다. 도구마다 경계 처리와 저장 해상도가 다릅니다.',
+    cards: [{
+      t: '오늘 쓰는 도구 지도',
+      k: 'read',
+      w: 1,
+      h: "<div class=\"tbl\"><table><tr><th>\uB3C4\uAD6C</th><th>\uC8FC\uC18C / \uC704\uCE58</th><th>\uB85C\uADF8\uC778</th><th>\uAC15\uC810</th><th>\uC8FC\uC758</th></tr>\n <tr><td><b>\uD3EC\uD1A0\uC0F5 \uC6F9</b></td><td>photoshop.adobe.com</td><td>\uC5B4\uB3C4\uBE44</td><td>\uACBD\uACC4 \uB2E4\uB4EC\uAE30(\uB9C8\uC2A4\uD06C) \uAC00\uB2A5, \uAC00\uC7A5 \uC815\uBC00</td><td>\uBA54\uB274\uAC00 \uB9CE\uC544 \uCC98\uC74C\uC5D4 \uB0AF\uC126</td></tr>\n <tr><td><b>Adobe Express</b></td><td>express.adobe.com \u2192 \uBE60\uB978 \uC791\uC5C5 \u2192 \uBC30\uACBD \uC81C\uAC70</td><td>\uC5B4\uB3C4\uBE44</td><td>\uC5C5\uB85C\uB4DC \uD55C \uBC88\uC774\uBA74 \uB05D, \uAC00\uC7A5 \uBE60\uB984</td><td>\uC138\uBC00\uD55C \uC218\uC815\uC740 \uC57D\uD568</td></tr>\n <tr><td><b>MS \uB514\uC790\uC774\uB108</b></td><td>designer.microsoft.com \u2192 \uBC30\uACBD \uC81C\uAC70</td><td>MS</td><td>\uBB34\uB8CC, \uACB0\uACFC \uAE54\uB054</td><td>MS \uACC4\uC815 \uD544\uC694</td></tr>\n <tr><td><b>\uC708\uB3C4\uC6B0 \uADF8\uB9BC\uD310</b> \u2605</td><td>\uC2DC\uC791 \u2192 \uADF8\uB9BC\uD310 \u2192 \uC774\uBBF8\uC9C0 \u2192 \uBC30\uACBD \uC81C\uAC70</td><td>\uC5C6\uC74C</td><td>\uC124\uCE58\xB7\uB85C\uADF8\uC778 \uC5C6\uC774 \uBC14\uB85C</td><td>\uC708\uB3C4\uC6B0 11 \uCD5C\uC2E0 \uC5C5\uB370\uC774\uD2B8 \uD544\uC694</td></tr>\n <tr><td>\uD3EC\uD1A0\uD53C\uC544</td><td>photopea.com</td><td>\uC5C6\uC74C</td><td>\uC9C0\uB09C\uC8FC \uC4F0\uB358 \uB3C4\uAD6C, \uAC80\uC218\uC5D0 \uC88B\uC74C</td><td>\uBC30\uACBD \uC81C\uAC70 \uBA54\uB274 \uC704\uCE58\uB294 \uAC15\uC0AC \uC548\uB0B4</td></tr>\n <tr><td>remove.bg</td><td>remove.bg</td><td>\uC120\uD0DD</td><td>\uACB0\uACFC \uAE54\uB054</td><td><b>\uBB34\uB8CC \uB2E4\uC6B4\uB85C\uB4DC\uB294 \uC800\uD574\uC0C1\uB3C4</b> \u2192 \uD310\uB9E4\uC6A9 \uBD80\uC801\uD569</td></tr></table></div>\n ".concat(EX('배경 제거 전·후 / 투명 체크무늬', [['배경 제거 전후', 'background removal before after', PI], ['투명 PNG 체크무늬', 'transparent png checkerboard', PI], ['오려 낸 인물 컷아웃', 'cutout person png', PI]]), "\n ").concat(B('easy', '쉽게 말하면', '빠르게는 Express, 정밀하게는 포토샵 웹, 막히면 그림판. 이 세 줄만 기억하면 됩니다.'))
+    }, {
+      t: '다 같이 ① Adobe Express — 가장 빠른 길',
+      k: 'do',
+      h: "".concat(CREDIT, "<div class=\"motion\">").concat(WIPE(), "</div><ol><li>express.adobe.com \uC811\uC18D \u2192 \uB85C\uADF8\uC778</li><li><b>\uBE60\uB978 \uC791\uC5C5</b> \u2192 <b>\uBC30\uACBD \uC81C\uAC70</b></li><li>STEP 1 \uC0AC\uBB3C \uC0AC\uC9C4 \uC5C5\uB85C\uB4DC</li><li>\uC790\uB3D9\uC73C\uB85C \uC9C0\uC6CC\uC9D0 \u2192 <b>\uB2E4\uC6B4\uB85C\uB4DC</b> (PNG)</li><li><code>02_PNG\uC2E4\uC0AC</code> \uD3F4\uB354\uC5D0 \uC800\uC7A5</li></ol>\n ").concat(B('set', '설정', '다운로드 형식이 PNG인지 꼭 확인. JPG로 받으면 투명이 흰색으로 다시 채워집니다.'))
+    }, {
+      t: '다 같이 ② 포토샵 웹 — 경계 다듬기',
+      k: 'do',
+      h: "".concat(CREDIT, "<div class=\"motion\">").concat(P_MASK(), "</div><ol><li>photoshop.adobe.com \u2192 <b>\uD30C\uC77C \uC5F4\uAE30</b> \u2192 \uAC19\uC740 \uC0AC\uC9C4</li><li>\uC0AC\uC9C4 \uC544\uB798 \uB5A0 \uC788\uB294 \uC791\uC5C5 \uD45C\uC2DC\uC904\uC5D0\uC11C <b>\uBC30\uACBD \uC81C\uAC70</b></li><li>\uB808\uC774\uC5B4\uC5D0 <b>\uB9C8\uC2A4\uD06C</b>\uAC00 \uC0DD\uAE40 \u2192 \uACBD\uACC4\uAC00 \uC544\uC26C\uC6B0\uBA74 \uBE0C\uB7EC\uC2DC\uB85C \uB9C8\uC2A4\uD06C \uB2E4\uB4EC\uAE30 (\uD770\uC0C9=\uBCF4\uC774\uAE30, \uAC80\uC815=\uC9C0\uC6B0\uAE30)</li><li><b>\uD30C\uC77C \u2192 \uB2E4\uC6B4\uB85C\uB4DC \u2192 PNG</b></li></ol>\n ").concat(B('easy', '쉽게 말하면', '마스크는 "지우개가 아니라 가리개"입니다. 잘못 지워도 흰 붓으로 다시 칠하면 살아납니다.'))
+    }, {
+      t: '다 같이 ③ MS 디자이너 · 그림판 (플랜 B)',
+      k: 'do',
+      h: "".concat(CREDIT, "<div class=\"motion\">").concat(P_JPG(), "</div><p><b>MS \uB514\uC790\uC774\uB108</b>: designer.microsoft.com \u2192 \uBC30\uACBD \uC81C\uAC70 \u2192 \uC5C5\uB85C\uB4DC \u2192 \uB2E4\uC6B4\uB85C\uB4DC</p>\n <p><b>\uADF8\uB9BC\uD310</b>: \uC0AC\uC9C4 \uC624\uB978\uCABD \uD074\uB9AD \u2192 \uC5F0\uACB0 \uD504\uB85C\uADF8\uB7A8 \u2192 \uADF8\uB9BC\uD310 \u2192 \uC0C1\uB2E8 <b>\uC774\uBBF8\uC9C0</b> \uBB36\uC74C\uC758 <b>\uBC30\uACBD \uC81C\uAC70</b> \u2192 <b>\uD30C\uC77C \u2192 \uB2E4\uB978 \uC774\uB984\uC73C\uB85C \uC800\uC7A5 \u2192 PNG</b></p>\n ").concat(B('warn', '그림판 저장 주의', '"다른 이름으로 저장"에서 반드시 <b>PNG 그림</b>을 고르세요. JPEG로 저장하면 투명이 사라집니다.'))
+    }, {
+      t: '검수 3단계 — 팔기 전에 꼭',
+      k: 'do',
+      w: 1,
+      h: "".concat(CREDIT, "<div class=\"motion\">").concat(HALO(), "</div><div class=\"grid\">\n <div><p><b>\u2460 \uAC80\uC815 \uBC30\uACBD\uC5D0 \uC62C\uB824 \uBCF4\uAE30</b></p><p class=\"muted small\">\uD3EC\uD1A0\uD53C\uC544\uC5D0\uC11C PNG \uC5F4\uAE30 \u2192 \uC0C8 \uB808\uC774\uC5B4 \u2192 \uAC80\uC815\uC73C\uB85C \uCC44\uC6B0\uAE30 \u2192 \uB808\uC774\uC5B4\uB97C PNG \uC544\uB798\uB85C. \uD770 \uC794\uC0C1(\uD560\uB85C), \uB35C \uC9C0\uC6B4 \uADF8\uB9BC\uC790\uAC00 \uD55C\uB208\uC5D0 \uBCF4\uC785\uB2C8\uB2E4.</p></div>\n <div><p><b>\u2461 \uD574\uC0C1\uB3C4 \uD655\uC778</b></p><p class=\"muted small\">\uD30C\uC77C \uC624\uB978\uCABD \uD074\uB9AD \u2192 \uC18D\uC131 \u2192 \uC790\uC138\uD788 \u2192 \uAC00\uB85C\xB7\uC138\uB85C \uD53D\uC140. \uC6D0\uBCF8\uBCF4\uB2E4 \uC791\uC544\uC84C\uB2E4\uBA74 \uADF8 \uB3C4\uAD6C\uB294 \uD310\uB9E4\uC6A9\uC5D0\uC11C \uC81C\uC678\uD569\uB2C8\uB2E4.</p></div>\n <div><p><b>\u2462 200% \uD655\uB300</b></p><p class=\"muted small\">\uC190\uAC00\uB77D \uC0AC\uC774, \uADC0 \uC606, \uB9AC\uBCF8 \uACE0\uB9AC \uC548\uCABD\uCC98\uB7FC \"\uAD6C\uBA4D\"\uC774 \uC788\uB294 \uACF3\uC774 \uC81C\uB300\uB85C \uB6AB\uB838\uB294\uC9C0 \uBD05\uB2C8\uB2E4.</p></div>\n <div><p><b>\u2463 \uCCB4\uD06C\uBB34\uB2AC \uCC29\uAC01 \uC8FC\uC758</b></p><p class=\"muted small\">\uD68C\uC0C9\xB7\uD770\uC0C9 \uCCB4\uD06C\uBB34\uB2AC\uB294 \"\uC5EC\uAE30 \uD22C\uBA85\uD568\" \uD45C\uC2DC\uC785\uB2C8\uB2E4. \uADF8\uB9BC \uC77C\uBD80\uAC00 \uC544\uB2D9\uB2C8\uB2E4. \uC0AC\uC9C4 \uC571\uC5D0\uC11C\uB294 \uD770\uC0C9\uC73C\uB85C \uBCF4\uC77C \uC218 \uC788\uC2B5\uB2C8\uB2E4.</p></div></div>")
+    }, {
+      t: '도구 비교 기록표',
+      k: 'do',
+      w: 1,
+      h: "<p class=\"muted small\">\uCE78\uC744 \uB20C\uB7EC \uC9C1\uC811 \uC801\uC5B4 \uBCF4\uC138\uC694(\u25CB \u25B3 \xD7). \uC0C8\uB85C\uACE0\uCE68\uD558\uBA74 \uC9C0\uC6CC\uC9C0\uB2C8 \uACB0\uACFC\uB294 \uBA54\uBAA8\uC7A5\uC5D0 \uC62E\uACA8 \uB450\uC138\uC694.</p>\n <div class=\"tbl\"><table><tr><th>\uB3C4\uAD6C</th><th>\uC0AC\uBB3C \uACBD\uACC4</th><th>\uC778\uBB3C \uBA38\uB9AC\uCE74\uB77D</th><th>\uC190\uAC00\uB77D \uC0AC\uC774</th><th>\uC800\uC7A5 \uD53D\uC140</th><th>\uAC78\uB9B0 \uC218\uACE0</th><th>\uB0B4 \uC120\uD0DD</th></tr>\n ".concat(['Adobe Express', '포토샵 웹', 'MS 디자이너', '그림판'].map(function (n) {
+        return "<tr><td>".concat(n, "</td>").concat('<td contenteditable="true"></td>'.repeat(6), "</tr>");
+      }).join(''), "</table></div>\n ").concat(B('ext', '심화', '인물 사진은 도구마다 차이가 크게 납니다. 가장 잘 된 도구 결과를 포토샵 웹으로 가져와 마스크만 다듬는 "2단 조합"이 실무에서 가장 깔끔합니다.'))
+    }]
+  }, {
+    id: 's3',
+    tab: '화풍 분석',
+    title: '핀터레스트에서 화풍을 찾아 "말"로 바꾸기',
+    lead: '남의 그림은 넣지 않습니다. 화풍을 글로 분석해 "화풍 카드"를 만들고, 그 글만 미드저니에 씁니다.',
+    cards: [{
+      t: '왜 그림을 넣지 않고 말로 바꾸나',
+      k: 'read',
+      h: "<p>\uD540\uD130\uB808\uC2A4\uD2B8 \uADF8\uB9BC\uC744 \uADF8\uB300\uB85C \uCCA8\uBD80\uD558\uAC70\uB098 \uC2A4\uD0C0\uC77C \uCC38\uC870\uB85C \uB123\uC5B4 \uB9CC\uB4E0 \uACB0\uACFC\uBB3C\uC744 \uD314\uBA74, \uC6D0\uC791\uACFC \uB2EE\uC544 <b>\uC800\uC791\uAD8C \uBB38\uC81C\uC640 \uC2EC\uC0AC \uBC18\uB824</b> \uC704\uD5D8\uC774 \uC0DD\uAE41\uB2C8\uB2E4.</p>\n <p>\"\uC120\uC774 \uAD75\uACE0 \uC0C9\uC774 5\uAC1C\uC778 \uD50C\uB7AB \uC2A4\uD0C0\uC77C\"\uCC98\uB7FC <b>\uD2B9\uC9D5\uC744 \uAE00\uB85C \uC62E\uAE30\uBA74</b> \uADF8\uAC74 \uB204\uAD6C\uB098 \uC4F8 \uC218 \uC788\uB294 \uD654\uD48D \uC124\uBA85\uC774 \uB429\uB2C8\uB2E4.</p>\n ".concat(B('warn', '지킬 것', '작가 이름, 캐릭터 이름, 브랜드 이름은 프롬프트에 쓰지 않습니다. 화풍 분석에 쓴 핀터레스트 이미지는 미드저니에 올리지 않습니다.'))
+    }, {
+      t: '핀터레스트 검색어',
+      k: 'do',
+      h: "<p class=\"muted\">\uC601\uC5B4\uB85C \uAC80\uC0C9\uD574\uC57C \uACB0\uACFC\uAC00 \uB9CE\uC2B5\uB2C8\uB2E4.</p>\n <div class=\"chips\">".concat(['flat vector sticker', 'kawaii sticker illustration', 'watercolor sticker', '3d clay character', 'retro cartoon sticker', 'crayon doodle illustration', 'webtoon sticker', 'die cut sticker design', 'korean cute sticker', 'pastel sticker set'].map(function (x) {
+        return "<span class=\"chip\">".concat(x, "</span>");
+      }).join(''), "</div>\n ").concat(B('set', '설정', '마음에 드는 그림을 찾으면 <b>Win + Shift + S</b>로 화면 캡처 → 챗GPT/제미나이에 붙여넣기. 지난주 키워드 뽑을 때 쓴 그 단축키입니다.'))
+    }, {
+      t: '다 같이 — 화풍 분석 프롬프트',
+      k: 'do',
+      w: 1,
+      h: "".concat(CREDIT, "<div class=\"motion\">").concat(P_S2T(), "</div>").concat(P('챗GPT / 제미나이에 캡처와 함께 붙여넣기', "[\uC0C1\uD669] \uBBF8\uB9AC\uCE94\uBC84\uC2A4 \uB514\uC790\uC778\uD5C8\uBE0C\uC5D0 \uD310\uB9E4\uD560 \uC2A4\uD2F0\uCEE4\uD615 PNG \uC694\uC18C\uB97C \uB9CC\uB4E4\uACE0 \uC788\uB2E4. \uCCA8\uBD80\uD55C \uC774\uBBF8\uC9C0\uB294 \uD654\uD48D \uCC38\uACE0\uC6A9\uC774\uBA70, \uADF8\uB9BC\xB7\uCE90\uB9AD\uD130\uB97C \uADF8\uB300\uB85C \uB530\uB77C \uADF8\uB9AC\uC9C0 \uC54A\uB294\uB2E4.\n\n[\uC694\uCCAD] \uCCA8\uBD80 \uC774\uBBF8\uC9C0\uC758 \"\uD654\uD48D\"\uB9CC \uC544\uB798 7\uAC00\uC9C0\uB85C \uBD84\uC11D\uD574 \uC918.\n1. \uC120: \uAD75\uAE30, \uC0C9, \uADE0\uC77C\uD55C\uC9C0/\uC190\uB9DB\uC774 \uC788\uB294\uC9C0\n2. \uCC44\uC0C9 \uBC29\uC2DD: \uB2E8\uC0C9 \uBA74 / \uADF8\uB77C\uB370\uC774\uC158 / \uC218\uCC44 \uBC88\uC9D0 \uB4F1\n3. \uBA85\uC554: \uC5C6\uC74C / 2\uB2E8 \uC140 / \uBD80\uB4DC\uB7EC\uC6B4 \uC785\uCCB4\n4. \uC0C9: \uC0AC\uC6A9\uB41C \uB300\uD45C \uC0C9 5\uAC1C\uB97C \uD5E5\uC2A4 \uCF54\uB4DC\uB85C\n5. \uC9C8\uAC10: \uB9E4\uB048\uD568 / \uC885\uC774 / \uC810\uD1A0 / \uD06C\uB808\uD30C\uC2A4 \uB4F1\n6. \uD615\uD0DC \uBE44\uC728: \uC0AC\uC2E4\uC801 / \uADC0\uC5EC\uC6B4 2~3\uB4F1\uC2E0 \uB4F1\n7. \uBD84\uC704\uAE30: \uD615\uC6A9\uC0AC 3\uAC1C\n\n[\uC870\uAC74]\n- \uC791\uAC00\xB7\uBE0C\uB79C\uB4DC\xB7\uCE90\uB9AD\uD130 \uC774\uB984\uC740 \uC808\uB300 \uC4F0\uC9C0 \uB9D0 \uAC83\n- \uB9C8\uC9C0\uB9C9\uC5D0 \uBBF8\uB4DC\uC800\uB2C8\uC5D0 \uBD99\uC77C \"\uC601\uC5B4 \uD654\uD48D \uBB38\uC7A5\" 1\uC904(40\uB2E8\uC5B4 \uC774\uB0B4)\uC744 \uB9CC\uB4E4 \uAC83\n- \uADF8 \uBB38\uC7A5\uC5D0\uB294 \uBC30\uACBD\xB7\uD14C\uB450\uB9AC\xB7\uBE44\uC728 \uAD00\uB828 \uB2E8\uC5B4\uB97C \uB123\uC9C0 \uB9D0 \uAC83 (\uBC30\uACBD\uC740 \uB0B4\uAC00 \uB530\uB85C \uC815\uD568)\n- \uD45C\uB85C \uC815\uB9AC\uD558\uACE0, \uC601\uC5B4 \uBB38\uC7A5\uC740 \uBCF5\uC0AC\uD558\uAE30 \uC27D\uAC8C \uCF54\uB4DC \uBE14\uB85D\uC5D0", 'GPT·제미나이'))
+    }, {
+      t: '바로 쓰는 화풍 카드 6종',
+      k: 'do',
+      w: 1,
+      h: "<p class=\"muted\">\uBD84\uC11D\uC774 \uB9C9\uD788\uBA74 \uC544\uB798 \uCE74\uB4DC\uB97C \uADF8\uB300\uB85C \uC368\uB3C4 \uB429\uB2C8\uB2E4. \uD310\uB9E4 \uC6A9\uB3C4\uB97C \uBCF4\uACE0 \uACE0\uB974\uC138\uC694.</p>\n ".concat(EX('화풍별 참고 (분석용, 미드저니에 넣지 않기)', [['A 플랫 벡터', 'flat vector sticker illustration', PI], ['B 수채화', 'watercolor sticker illustration', PI], ['C 3D 클레이', '3d clay character cute', PI], ['D 레트로 만화', '70s retro cartoon sticker', PI], ['E 크레파스', 'crayon doodle illustration', PI], ['F 웹툰 셀 셰이딩', 'webtoon cel shading sticker', PI]]), "\n ").concat(STYLEGAL(), "\n <div class=\"grid\">").concat(STYLES.map(function (s) {
+        return P("\uD654\uD48D ".concat(s[0], " \xB7 ").concat(s[1], " \u2014 ").concat(s[2]), s[3], '화풍 카드');
+      }).join(''), "</div>")
+    }, {
+      t: '한 걸음 더 — 내 화풍 카드 저장',
+      k: 'adv',
+      h: "<p>\uBD84\uC11D\uC5D0\uC11C \uB098\uC628 \uC601\uC5B4 \uBB38\uC7A5\uC744 \uBA54\uBAA8\uC7A5 <code>\uD654\uD48D\uCE74\uB4DC.txt</code>\uC5D0 \uC774\uB984 \uBD99\uC5EC \uC800\uC7A5\uD569\uB2C8\uB2E4.</p>\n <pre style=\"margin:0;font-family:var(--f-mono);font-size:.74rem;background:var(--code);padding:10px 12px;border-radius:8px;white-space:pre-wrap\">[\uD654\uD48D_\uD30C\uC2A4\uD154\uD50C\uB7AB] flat vector ...\n[\uD654\uD48D_\uBE48\uD2F0\uC9C0\uC218\uCC44] soft watercolor ...</pre>\n ".concat(B('ext', '심화', '같은 화풍 카드로 사물 4개를 만들면 "시리즈 세트"가 됩니다. 디자인허브는 낱장보다 세트가 검색·노출에 유리합니다.'))
+    }]
+  }, {
+    id: 's4',
+    tab: '화풍 바꾸기',
+    title: 'Attach to Prompt로 화풍 바꾸고 스티커로',
+    lead: 'STEP 1의 실사 원본을 첨부하고, 화풍 카드와 스티커 규칙을 붙입니다. 스티커 배경은 흰색이 아니라 연회색 #D9D9D9 입니다.',
+    cards: [{
+      t: '공식 — 원본은 "무엇", 글은 "어떻게"',
+      k: 'read',
+      w: 1,
+      h: FORMULA + CREDIT + "<div class=\"motion w\">".concat(MORPH(), "</div>")
+    }, {
+      t: '왜 스티커 배경은 연회색 #D9D9D9 인가',
+      k: 'read',
+      h: "".concat(CREDIT).concat(WHYGRAY_A(), "\n ").concat(EX('흰 테두리 다이컷 스티커 모양', [['다이컷 스티커', 'die cut sticker white border', PI], ['흰 테두리 캐릭터 스티커', 'white border character sticker', PI], ['사물 스티커 세트', 'object sticker set white outline', PI]]), "\n <p>\uD770 \uD14C\uB450\uB9AC \uC2A4\uD2F0\uCEE4\uB97C \uD770 \uBC30\uACBD\uC5D0 \uADF8\uB9AC\uBA74, \uBC30\uACBD \uC81C\uAC70 \uB3C4\uAD6C\uAC00 <b>\uD14C\uB450\uB9AC\uAE4C\uC9C0 \uBC30\uACBD\uC73C\uB85C \uBCF4\uACE0 \uC9C0\uC6CC \uBC84\uB9BD\uB2C8\uB2E4.</b> \uC5F0\uD68C\uC0C9 \uC704\uC5D0\uC11C\uB294 \uD770 \uD14C\uB450\uB9AC\uAC00 \uB610\uB837\uD558\uAC8C \uAD6C\uBD84\uB429\uB2C8\uB2E4.</p>\n ").concat(B('set', '헥스 코드 세트', "".concat(SW('#D9D9D9'), "<code>#D9D9D9</code> \uBC30\uACBD \xB7 ").concat(SW('#FFFFFF'), "<code>#FFFFFF</code> \uD14C\uB450\uB9AC \xB7 (\uD50C\uB79C B) ").concat(SW('#4A4A4A'), "<code>#4A4A4A</code> \uBC14\uAE65 \uC120")))
+    }, {
+      t: '다 같이 — 첨부 순서',
+      k: 'do',
+      h: "".concat(CREDIT, "<div class=\"motion\">").concat(P_ATTACH(), "</div><ol><li>\uBBF8\uB4DC\uC800\uB2C8 \uC6F9 \uC785\uB825\uCC3D\uC758 <b>\uC774\uBBF8\uC9C0 \uCD94\uAC00</b> \u2192 STEP 1 <b>\uD770 \uBC30\uACBD \uC6D0\uBCF8</b>(\uBC30\uACBD \uC9C0\uC6B4 PNG \uB9D0\uACE0) \uC5C5\uB85C\uB4DC</li><li>\uC62C\uB9B0 \uC774\uBBF8\uC9C0\uB97C <b>Attach to Prompt</b> \uB85C \uC9C0\uC815</li><li>\uC544\uB798 \uC608\uC2DC \uD504\uB86C\uD504\uD2B8 \uBD99\uC5EC\uB123\uAE30 \u2192 \uC0DD\uC131</li><li>4\uC7A5 \uC911 \uD14C\uB450\uB9AC\uAC00 \uB04A\uAE30\uC9C0 \uC54A\uC740 1\uC7A5 \uC5C5\uC2A4\uCF00\uC77C \u2192 <code>03_\uC2A4\uD2F0\uCEE4\uC6D0\uBCF8</code> \uC800\uC7A5</li></ol>\n ").concat(B('warn', '주의', '투명 PNG를 첨부하면 투명 부분이 검정·체크무늬로 해석될 수 있습니다. 첨부는 <b>흰 배경 원본 JPG</b>로 합니다.'), "\n ").concat(B('easy', '쉽게 말하면', '"이 사진 속 사람(물건)을, 이 화풍으로, 스티커처럼 다시 그려 줘"를 영어로 쓰는 것입니다.'))
+    }, {
+      t: '스티커 규칙 (꼬리 문장)',
+      k: 'read',
+      h: "<p class=\"muted\">\uBAA8\uB4E0 \uC2A4\uD2F0\uCEE4 \uD504\uB86C\uD504\uD2B8 \uB4A4\uC5D0 \uADF8\uB300\uB85C \uBD99\uC774\uB294 \uACE0\uC815 \uBB38\uC7A5\uC785\uB2C8\uB2E4.</p>".concat(P('스티커 꼬리 문장', STK, '고정'), "\n ").concat(B('set', '설정', '스티커는 <code>--raw</code>를 빼서 화풍이 살아나게 합니다. <code>--s 50</code>은 유지해 과한 장식을 막습니다.'))
+    }, {
+      t: '다 같이 ① 사물 스티커 3종',
+      k: 'do',
+      w: 1,
+      h: "".concat(CREDIT, "<div class=\"motion\">").concat(P_CYCLE(), "</div><p class=\"muted\">STEP 1\uC758 \uC0AC\uBB3C \uC6D0\uBCF8\uC744 \uCCA8\uBD80\uD55C \uB4A4 \uBD99\uC5EC\uB123\uC2B5\uB2C8\uB2E4. \uCCAB \uC904\uC740 \"\uC6D0\uBCF8\uC744 \uC720\uC9C0\uD558\uB77C\", \uB458\uC9F8 \uC904\uC740 \uD654\uD48D, \uC14B\uC9F8 \uC904\uC740 \uC2A4\uD2F0\uCEE4 \uADDC\uCE59\uC785\uB2C8\uB2E4.</p>\n <div class=\"grid\">\n ").concat(P('합격 엿 상자 × 수채화(B)', "The same gift box with yeot taffy and rice cakes from the attached image, same shape and ribbon, redrawn as a sticker. ".concat(STYLES[1][3], ". ").concat(STK), 'Attach + 사물'), "\n ").concat(P('배추·고무장갑 × 3D 클레이(C)', "The same napa cabbage and red rubber gloves from the attached image, same arrangement, redrawn as a sticker. ".concat(STYLES[2][3], ". ").concat(STK), 'Attach + 사물'), "\n ").concat(P('빼빼로 꽃다발 × 레트로 만화(D)', "The same stick biscuit bouquet from the attached image, same wrapping and bow, redrawn as a sticker. ".concat(STYLES[3][3], ". ").concat(STK), 'Attach + 사물'), "\n ").concat(P('크리스마스 선물 상자 × 플랫 벡터(A)', "The same Christmas gift box from the attached image, same gold bow and holly, redrawn as a sticker. ".concat(STYLES[0][3], ". ").concat(STK), 'Attach + 사물'), "\n </div>")
+    }, {
+      t: '다 같이 ② 인물 스티커 4종',
+      k: 'do',
+      w: 1,
+      h: "<p class=\"muted\">\uC778\uBB3C\uC740 \uC5BC\uAD74\xB7\uC637\xB7\uD3EC\uC988\uB97C \uC720\uC9C0\uD558\uB77C\uB294 \uB9D0\uC744 \uAF2D \uB123\uC2B5\uB2C8\uB2E4. \uD654\uD48D\uC774 \uBC14\uB00C\uBA74 \uC5BC\uAD74\uC740 \uC870\uAE08 \uB2EC\uB77C\uC9C0\uB294 \uAC83\uC774 \uC815\uC0C1\uC785\uB2C8\uB2E4.</p>\n <div class=\"grid\">\n ".concat(P('하트 엄마 × 웹툰(F)', "The same woman from the attached image, same pose with a heart above her head, same navy cardigan and hair bun, redrawn as a sticker. ".concat(STYLES[5][3], ". ").concat(STK), 'Attach + 인물'), "\n ").concat(P('김장 할머니 × 크레파스(E)', "The same grandmother from the attached image, same pose holding the red kimchi container, same floral vest, redrawn as a sticker. ".concat(STYLES[4][3], ". ").concat(STK), 'Attach + 인물'), "\n ").concat(P('엄지척 직장인 × 플랫 벡터(A)', "The same office worker from the attached image, same thumbs-up pose with a tablet, same light blue shirt, redrawn as a sticker. ".concat(STYLES[0][3], ". ").concat(STK), 'Attach + 인물'), "\n ").concat(P('파이팅 수험생 × 3D 클레이(C)', "The same student from the attached image, same fist-raised fighting pose, same navy uniform and backpack, redrawn as a sticker. ".concat(STYLES[2][3], ". ").concat(STK), 'Attach + 인물'), "\n </div>")
+    }, {
+      t: '흰 테두리가 약할 때 — 플랜 B',
+      k: 'do',
+      h: "".concat(CREDIT, "<div class=\"motion\">").concat(P_PLANB(), "</div><p>\uD14C\uB450\uB9AC\uAC00 \uBC30\uACBD\uC5D0 \uBB3B\uD788\uAC70\uB098 \uB04A\uAE30\uBA74, \uD14C\uB450\uB9AC \uBC14\uAE65\uC5D0 <b>\uC587\uC740 \uC9C4\uD68C\uC0C9 \uC120</b>\uC744 \uD558\uB098 \uB354 \uB458\uB7EC \uACBD\uACC4\uB97C \uAC15\uC81C\uB85C \uB9CC\uB4ED\uB2C8\uB2E4.</p>\n \n ").concat(P('플랜 B 추가 문장 (꼬리 앞에 붙이기)', "a thick continuous white border (#FFFFFF) with a thin dark gray outer line (#4A4A4A) around the whole sticker, background slightly darker light gray (#C8C8C8)", '플랜 B'), "\n ").concat(B('easy', '언제 쓰나', '배경 제거 후 검정 배경에 올렸을 때 흰 테두리가 군데군데 파였으면 플랜 B로 다시 만듭니다.'))
+    }, {
+      t: '망한 스티커 고치기 표',
+      k: 'read',
+      h: "<div class=\"tbl\"><table><tr><th>\uC99D\uC0C1</th><th>\uCD94\uAC00\xB7\uC218\uC815</th></tr>\n <tr><td>\uC6D0\uBCF8\uACFC \uC804\uD600 \uB2E4\uB978 \uADF8\uB9BC</td><td>\uCCAB \uC904\uC5D0 <code>same ... from the attached image</code> \uB97C \uB354 \uAD6C\uCCB4\uC801\uC73C\uB85C(\uC637 \uC0C9\xB7\uC18C\uD488)</td></tr>\n <tr><td>\uC2A4\uD2F0\uCEE4\uAC00 \uC5EC\uB7EC \uC7A5</td><td><code>one single sticker, single subject only</code></td></tr>\n <tr><td>\uD14C\uB450\uB9AC\uAC00 \uB04A\uAE40</td><td><code>continuous unbroken white border</code> / \uD50C\uB79C B</td></tr>\n <tr><td>\uBC30\uACBD\uC5D0 \uBB34\uB2AC\xB7\uC885\uC774 \uC9C8\uAC10</td><td><code>solid flat light gray background (#D9D9D9), no texture</code></td></tr>\n <tr><td>\uAE00\uC790\uAC00 \uC0DD\uAE40</td><td><code>--no text, letters, watermark</code></td></tr>\n <tr><td>\uADF8\uB9BC\uC790\uAC00 \uBD99\uC74C</td><td><code>--no drop shadow</code>, <code>flat sticker</code></td></tr></table></div>"
+    }, {
+      t: '한 걸음 더 — 세트 4종 통일',
+      k: 'adv',
+      h: "".concat(CREDIT, "<div class=\"motion\">").concat(P_SET(), "</div><p>\uC2A4\uD2F0\uCEE4 1\uC7A5\uC774 \uB9C8\uC74C\uC5D0 \uB4E4\uBA74, <b>\uADF8 \uC2A4\uD2F0\uCEE4(\uB0B4 \uACB0\uACFC\uBB3C)</b>\uB97C \uC2A4\uD0C0\uC77C \uCC38\uC870\uB85C \uAC78\uACE0 \uB2E4\uB978 \uC6D0\uBCF8 3\uC7A5\uC744 \uCC28\uB840\uB85C \uCCA8\uBD80\uD569\uB2C8\uB2E4. 4\uC7A5\uC774 \uAC19\uC740 \uD654\uD48D\uC73C\uB85C \uBB36\uC785\uB2C8\uB2E4.</p>\n ").concat(B('ext', '심화', '스타일 참조에는 내가 만든 결과물만 넣습니다. 핀터레스트 원본은 넣지 않습니다. <code>--sw</code> 로 화풍 강도를 조절해 보세요(3차시 복습).'))
+    }]
+  }, {
+    id: 's5',
+    tab: '완성·등록',
+    title: '스티커 PNG 완성하고 디자인허브에 올리기',
+    lead: '회색 배경 스티커의 배경을 지우고, 검수한 뒤 디자인허브에 등록합니다.',
+    cards: [{
+      t: '다 같이 — 회색 배경 지우기',
+      k: 'do',
+      h: "<ol><li>STEP 2\uC5D0\uC11C \uAC00\uC7A5 \uC798 \uB410\uB358 \uB3C4\uAD6C\uB85C <code>03_\uC2A4\uD2F0\uCEE4\uC6D0\uBCF8</code>\uC758 \uADF8\uB9BC \uC5F4\uAE30</li><li>\uBC30\uACBD \uC81C\uAC70 \u2192 \uD770 \uD14C\uB450\uB9AC\uAC00 \uB0A8\uC558\uB294\uC9C0 \uD655\uC778</li><li>PNG\uB85C \uC800\uC7A5 \u2192 <code>04_PNG\uC2A4\uD2F0\uCEE4</code></li></ol>\n ".concat(B('set', '확인', '흰 테두리 바깥이 투명하고, <b>테두리 자체는 흰색으로 남아 있어야</b> 성공입니다.'))
+    }, {
+      t: '검수 체크리스트',
+      k: 'do',
+      h: "<ul class=\"checks\">\n <li><input type=\"checkbox\" id=\"c5a\"><label for=\"c5a\">\uAC80\uC815 \uBC30\uACBD \uC704\uC5D0\uC11C \uD770 \uD14C\uB450\uB9AC\uAC00 \uB04A\uAE34 \uACF3 \uC5C6\uC74C</label></li>\n <li><input type=\"checkbox\" id=\"c5b\"><label for=\"c5b\">\uD68C\uC0C9 \uC794\uC0C1(#D9D9D9 \uCC0C\uAEBC\uAE30)\uC774 \uD14C\uB450\uB9AC \uBC14\uAE65\uC5D0 \uC5C6\uC74C</label></li>\n <li><input type=\"checkbox\" id=\"c5c\"><label for=\"c5c\">\uD314\xB7\uB2E4\uB9AC \uC0AC\uC774 \"\uAD6C\uBA4D\" \uBD80\uBD84\uB3C4 \uD22C\uBA85</label></li>\n <li><input type=\"checkbox\" id=\"c5d\"><label for=\"c5d\">\uAE00\uC790\xB7\uC6CC\uD130\uB9C8\uD06C\xB7\uC774\uC0C1\uD55C \uC190\uAC00\uB77D \uC5C6\uC74C</label></li>\n <li><input type=\"checkbox\" id=\"c5e\"><label for=\"c5e\">\uD53D\uC140 \uD06C\uAE30\uAC00 \uC6D0\uBCF8\uACFC \uAC19\uC74C (\uC18D\uC131 \u2192 \uC790\uC138\uD788)</label></li>\n <li><input type=\"checkbox\" id=\"c5f\"><label for=\"c5f\">\uD30C\uC77C \uD615\uC2DD .png, \uC774\uB984\uC740 \uC601\uC5B4\xB7\uC22B\uC790</label></li></ul>"
+    }, {
+      t: '파일 이름 규칙',
+      k: 'read',
+      h: "".concat(CREDIT, "<div class=\"motion\">").concat(P_FNAME(), "</div><p><code>\uC2DC\uB9AC\uC988_\uB300\uC0C1_\uD654\uD48D_\uBC88\uD638.png</code></p>\n <div class=\"tbl\"><table style=\"min-width:0\"><tr><th>\uC608\uC2DC</th><th>\uB73B</th></tr>\n <tr><td><code>exam_mom_real_01.png</code></td><td>\uC218\uB2A5 \uC5C4\uB9C8 \uC2E4\uC0AC</td></tr>\n <tr><td><code>exam_mom_webtoon_01.png</code></td><td>\uC218\uB2A5 \uC5C4\uB9C8 \uC6F9\uD230 \uC2A4\uD2F0\uCEE4</td></tr>\n <tr><td><code>kimjang_cabbage_clay_01.png</code></td><td>\uAE40\uC7A5 \uBC30\uCD94 \uD074\uB808\uC774 \uC2A4\uD2F0\uCEE4</td></tr></table></div>\n ").concat(B('easy', '쉽게 말하면', '이름만 봐도 무슨 그림인지 알게 하면, 다음 주 대량 업로드 때 시간이 반으로 줄어듭니다.'))
+    }, {
+      t: '다 같이 — 제목·키워드 뽑기',
+      k: 'do',
+      h: "".concat(P('디자인허브 프로젝트 방에 PNG 첨부 후', "[\uC0C1\uD669] \uBBF8\uB9AC\uCE94\uBC84\uC2A4 \uB514\uC790\uC778\uD5C8\uBE0C\uC5D0 \uD22C\uBA85 \uBC30\uACBD PNG \uC694\uC18C\uB97C \uB4F1\uB85D\uD55C\uB2E4. \uCCA8\uBD80\uD55C \uADF8\uB9BC\uC774 \uADF8 \uC694\uC18C\uB2E4.\n\n[\uC694\uCCAD] \uC81C\uBAA9 1\uAC1C(15\uC790 \uC774\uB0B4)\uC640 \uAC80\uC0C9 \uD0A4\uC6CC\uB4DC 25\uAC1C\uB97C \uB9CC\uB4E4\uC5B4 \uC918.\n\n[\uC870\uAC74]\n- \uD0A4\uC6CC\uB4DC\uB294 \uC27C\uD45C(,)\uB85C\uB9CC \uAD6C\uBD84, \uD55C \uC904\uB85C\n- \uB300\uC0C1 \u2192 \uD589\uB3D9 \u2192 \uAC10\uC815 \u2192 \uC2DC\uC98C\xB7\uD589\uC0AC \u2192 \uC4F0\uC784\uC0C8(\uCE74\uB4DC\uB274\uC2A4, \uC548\uB0B4\uBB38, \uC0C1\uC138\uD398\uC774\uC9C0, \uD559\uAD50 \uAC00\uC815\uD1B5\uC2E0\uBB38) \uC21C\uC11C\uB85C \uC11E\uC744 \uAC83\n- \"AI\", \"\uBBF8\uB4DC\uC800\uB2C8\", \"\uC0DD\uC131\" \uAC19\uC740 \uB3C4\uAD6C \uC774\uB984\uC740 \uB123\uC9C0 \uB9D0 \uAC83\n- \uAC19\uC740 \uB73B \uBC18\uBCF5 \uAE08\uC9C0, \uC2E4\uC0AC/\uC77C\uB7EC\uC2A4\uD2B8 \uAD6C\uBD84 \uB2E8\uC5B4 1\uAC1C \uD3EC\uD568", 'GPT 프로젝트'))
+    }, {
+      t: '디자인허브 등록',
+      k: 'do',
+      h: "".concat(CREDIT, "<div class=\"motion\">").concat(P_UPLOAD(), "</div><ol><li>\uB514\uC790\uC778\uD5C8\uBE0C \uAE30\uC5EC\uC790 \uD654\uBA74 \u2192 \uCF58\uD150\uCE20 \uC5C5\uB85C\uB4DC \u2192 <b>\uC694\uC18C</b> \uC120\uD0DD</li><li>PNG \uC5C5\uB85C\uB4DC \u2192 \uBBF8\uB9AC\uBCF4\uAE30\uC5D0\uC11C \uBC30\uACBD\uC774 \uD22C\uBA85(\uCCB4\uD06C\uBB34\uB2AC)\uC778\uC9C0 \uD655\uC778</li><li>\uC81C\uBAA9\xB7\uD0A4\uC6CC\uB4DC \uBD99\uC5EC\uB123\uAE30</li><li>\uBB34\uB8CC/\uC720\uB8CC \uC120\uD0DD \u2192 \uC81C\uCD9C</li></ol>\n ").concat(B('warn', '규격 확인', 'PNG 요소의 최소 크기·용량은 <b>업로드 화면 안내 문구</b>를 기준으로 합니다. 사진(JPG)의 2500px·120DPI 규칙과 다를 수 있습니다.'), "\n ").concat(B('set', '지난주 복습', '"심사 대기" 상태일 때는 자유롭게 삭제할 수 있습니다. 올린 뒤 문제를 발견하면 그때 지우고 다시 올립니다.'))
+    }, {
+      t: '오늘 마무리',
+      k: 'read',
+      h: "<ul class=\"checks\">\n <li><input type=\"checkbox\" id=\"c5g\"><label for=\"c5g\">\uC2E4\uC0AC PNG 2\uC7A5 (\uC0AC\uBB3C\xB7\uC778\uBB3C)</label></li>\n <li><input type=\"checkbox\" id=\"c5h\"><label for=\"c5h\">\uC2A4\uD2F0\uCEE4 PNG 2\uC7A5 (\uC0AC\uBB3C\xB7\uC778\uBB3C)</label></li>\n <li><input type=\"checkbox\" id=\"c5i\"><label for=\"c5i\">\uD654\uD48D\uCE74\uB4DC.txt \uC800\uC7A5</label></li>\n <li><input type=\"checkbox\" id=\"c5j\"><label for=\"c5j\">\uB514\uC790\uC778\uD5C8\uBE0C \uB4F1\uB85D 1\uAC74 \uC774\uC0C1</label></li></ul>\n ".concat(B('ext', '다음 시간', '오늘 만든 원본·스티커가 "나만의 화가"의 재료가 됩니다. 폴더를 지우지 말고 USB나 드라이브에 보관해 오세요.'))
+    }]
+  }, {
+    id: 's6',
+    tab: '막힘 사전',
+    title: '막힘 사전',
+    lead: '막히면 여기서 같은 증상을 찾으세요. 화면 → 원인 → 조치 순서입니다.',
+    cards: [{
+      t: '배경 제거·저장 관련',
+      k: 'read',
+      w: 1,
+      h: "<div class=\"tbl\"><table><tr><th>\uC774\uB7F0 \uD654\uBA74/\uC99D\uC0C1</th><th>\uC6D0\uC778</th><th>\uC870\uCE58</th></tr>\n <tr><td>\uD770 \uC2A4\uD2F0\uCEE4 \uD14C\uB450\uB9AC\uAE4C\uC9C0 \uC9C0\uC6CC\uC9D0</td><td>\uBC30\uACBD\uC774 \uD770\uC0C9\uC774\uB77C \uAD6C\uBD84 \uBABB \uD568</td><td>\uBC30\uACBD <code>#D9D9D9</code>\uB85C \uB2E4\uC2DC \uC0DD\uC131, \uADF8\uB798\uB3C4 \uC548 \uB418\uBA74 \uD50C\uB79C B(<code>#4A4A4A</code> \uBC14\uAE65 \uC120)</td></tr>\n <tr><td>\uC800\uC7A5\uD55C PNG\uB97C \uC5F4\uC5C8\uB354\uB2C8 \uBC30\uACBD\uC774 \uD770\uC0C9</td><td>\uC0AC\uC9C4 \uC571\uC740 \uD22C\uBA85\uC744 \uD770\uC0C9\uC73C\uB85C \uBCF4\uC5EC \uC90C</td><td>\uC815\uC0C1. \uD3EC\uD1A0\uD53C\uC544\xB7\uB514\uC790\uC778\uD5C8\uBE0C \uBBF8\uB9AC\uBCF4\uAE30\uC5D0\uC11C \uCCB4\uD06C\uBB34\uB2AC\uB85C \uD655\uC778</td></tr>\n <tr><td>\uC800\uC7A5\uD588\uB294\uB370 \uD22C\uBA85\uC774 \uC0AC\uB77C\uC9D0</td><td>JPG\uB85C \uC800\uC7A5\uB428</td><td>\uB2E4\uB978 \uC774\uB984\uC73C\uB85C \uC800\uC7A5 \u2192 PNG</td></tr>\n <tr><td>\uADF8\uB9BC \uC548\uC5D0 \uCCB4\uD06C\uBB34\uB2AC\uAC00 \"\uADF8\uB824\uC838\" \uC788\uC74C</td><td>\uD504\uB86C\uD504\uD2B8\uC5D0 transparent\uB97C \uC500</td><td>transparent \uB2E8\uC5B4 \uC0AD\uC81C, \uD770/\uD68C\uC0C9 \uB2E8\uC0C9 \uBC30\uACBD\uC73C\uB85C \uB2E4\uC2DC \uC0DD\uC131</td></tr>\n <tr><td>\uC800\uC7A5 \uD6C4 \uD53D\uC140\uC774 \uC791\uC544\uC9D0</td><td>\uBB34\uB8CC \uB3C4\uAD6C\uC758 \uC800\uD574\uC0C1\uB3C4 \uB2E4\uC6B4\uB85C\uB4DC</td><td>Express\xB7\uD3EC\uD1A0\uC0F5 \uC6F9\xB7\uADF8\uB9BC\uD310\uC73C\uB85C \uBC14\uAFD4\uC11C \uB2E4\uC2DC</td></tr>\n <tr><td>\uBA38\uB9AC\uCE74\uB77D \uC8FC\uBCC0 \uD770 \uD14C\uB450\uB9AC(\uD560\uB85C)</td><td>\uC794\uBA38\uB9AC\xB7\uD750\uB9B0 \uACBD\uACC4</td><td>\uD3EC\uD1A0\uC0F5 \uC6F9 \uB9C8\uC2A4\uD06C \uB2E4\uB4EC\uAE30, \uB610\uB294 \uBB36\uC740 \uBA38\uB9AC\uB85C \uC7AC\uC0DD\uC131</td></tr>\n <tr><td>\uBC14\uB2E5 \uADF8\uB9BC\uC790\uAC00 \uAC19\uC774 \uB0A8\uC74C</td><td>\uADF8\uB9BC\uC790\uB97C \uBB3C\uCCB4\uB85C \uC778\uC2DD</td><td><code>--no cast shadow</code> \uB85C \uC7AC\uC0DD\uC131, \uB610\uB294 \uB9C8\uC2A4\uD06C\uB85C \uC9C0\uC6B0\uAE30</td></tr>\n <tr><td>\uADF8\uB9BC\uD310\uC5D0 \"\uBC30\uACBD \uC81C\uAC70\" \uBC84\uD2BC\uC774 \uC5C6\uC74C</td><td>\uC708\uB3C4\uC6B0 \uC5C5\uB370\uC774\uD2B8 \uC804 \uBC84\uC804</td><td>Express \uB610\uB294 MS \uB514\uC790\uC774\uB108 \uC0AC\uC6A9</td></tr></table></div>"
+    }, {
+      t: '미드저니·첨부 관련',
+      k: 'read',
+      w: 1,
+      h: "<div class=\"tbl\"><table><tr><th>\uC774\uB7F0 \uD654\uBA74/\uC99D\uC0C1</th><th>\uC6D0\uC778</th><th>\uC870\uCE58</th></tr>\n <tr><td>\uCCA8\uBD80\uD55C \uC0AC\uB78C \uC5BC\uAD74\uC774 \uB9CE\uC774 \uB2EC\uB77C\uC9D0</td><td>\uD654\uD48D\uC774 \uBC14\uB00C\uBA74 \uC5BC\uAD74 \uD45C\uD604\uB3C4 \uBC14\uB01C</td><td>\uC815\uC0C1 \uBC94\uC704. \uC637 \uC0C9\xB7\uC18C\uD488\xB7\uD3EC\uC988\uB97C \uCCAB \uC904\uC5D0 \uB354 \uAD6C\uCCB4\uC801\uC73C\uB85C</td></tr>\n <tr><td>\uC6D0\uBCF8\uC744 \uBB34\uC2DC\uD558\uACE0 \uC0C8 \uADF8\uB9BC\uC744 \uADF8\uB9BC</td><td>\uCCA8\uBD80\uAC00 Attach\uB85C \uC9C0\uC815\uB418\uC9C0 \uC54A\uC74C</td><td>\uC774\uBBF8\uC9C0\uAC00 Attach to Prompt \uCE78\uC5D0 \uB4E4\uC5B4\uAC14\uB294\uC9C0 \uD655\uC778</td></tr>\n <tr><td>\uD22C\uBA85 PNG\uB97C \uCCA8\uBD80\uD588\uB354\uB2C8 \uBC30\uACBD\uC774 \uAC80\uC815</td><td>\uD22C\uBA85 \uBD80\uBD84\uC744 \uAC80\uC815\uC73C\uB85C \uD574\uC11D</td><td>\uD770 \uBC30\uACBD \uC6D0\uBCF8 JPG\uB97C \uCCA8\uBD80</td></tr>\n <tr><td>\uBC30\uACBD\uC774 \uD68C\uC0C9 \uADF8\uB77C\uB370\uC774\uC158</td><td>\uC0AC\uC9C4 \uB290\uB08C \uC5F0\uCD9C</td><td><code>seamless flat</code> + <code>--no gradient</code>. \uC57D\uD55C \uADF8\uB77C\uB370\uC774\uC158\uC740 \uBC30\uACBD \uC81C\uAC70\uAC00 \uCC98\uB9AC\uD558\uB2C8 \uB118\uC5B4\uAC00\uB3C4 \uB428</td></tr>\n <tr><td>\uC2A4\uD2F0\uCEE4\uAC00 2~4\uC7A5 \uBD99\uC5B4 \uB098\uC634</td><td>\"\uC2A4\uD2F0\uCEE4 \uC2DC\uD2B8\"\uB85C \uD574\uC11D</td><td><code>one single sticker, single subject only</code></td></tr>\n <tr><td>\uAE00\uC790\xB7\uC11C\uBA85\uC774 \uC0DD\uAE40</td><td>\uC2A4\uD2F0\uCEE4\xB7\uD3EC\uC2A4\uD130 \uD559\uC2B5 \uC601\uD5A5</td><td><code>--no text, letters, watermark</code></td></tr>\n <tr><td>\uB108\uBB34 \uC5B4\uB461\uACE0 \uC601\uD654 \uAC19\uC74C</td><td>\uAE30\uBCF8 \uBBF8\uAC10\uC774 \uAC15\uD568</td><td>\uC2E4\uC0AC\uB294 <code>--raw --s 50</code>, <code>bright high-key lighting</code></td></tr></table></div>"
+    }]
+  }];
+  var tabsEl = document.getElementById('tabs'),
+    mainEl = document.getElementById('main'),
+    sideEl = document.getElementById('side');
+  var selStep = document.getElementById('selStep'),
+    selCard = document.getElementById('selCard');
+  var cur = 0;
+  var tagTxt = {
+    do: '다 같이',
+    read: '읽기',
+    adv: '한 걸음 더'
+  };
+  STEPS.forEach(function (s, i) {
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'tab';
+    b.setAttribute('role', 'tab');
+    b.id = 'tab-' + s.id;
+    b.innerHTML = "<b>STEP ".concat(i, "</b>").concat(s.tab);
+    b.onclick = function () {
+      return go(i, true);
+    };
+    tabsEl.appendChild(b);
+    var o = document.createElement('option');
+    o.value = i;
+    o.textContent = "STEP ".concat(i, " \xB7 ").concat(s.tab);
+    selStep.appendChild(o);
+    var sec = document.createElement('section');
+    sec.id = s.id;
+    sec.hidden = true;
+    sec.setAttribute('role', 'tabpanel');
+    sec.innerHTML = "<div class=\"step-head\"><span class=\"eyebrow\">STEP ".concat(i, " / ").concat(STEPS.length - 1, "</span><h2>").concat(s.title, "</h2><p>").concat(s.lead, "</p></div>\n  <div class=\"grid\">").concat(s.cards.map(function (c, j) {
+      return "<article class=\"card".concat(c.w ? ' wide' : '', "\" id=\"").concat(s.id, "-c").concat(j + 1, "\"><div class=\"card-h\"><span class=\"no\">").concat(i, "-").concat(j + 1, "</span><h3>").concat(c.t, "</h3><span class=\"tag ").concat(c.k, "\">").concat(tagTxt[c.k], "</span></div>").concat(c.h, "</article>");
+    }).join(''), "</div>");
+    mainEl.appendChild(sec);
+  });
+  function setHdr() {
+    document.documentElement.style.setProperty('--hdr', document.getElementById('top').offsetHeight + 'px');
+  }
+  function go(i, scroll) {
+    cur = Math.max(0, Math.min(STEPS.length - 1, i));
+    STEPS.forEach(function (s, k) {
+      document.getElementById(s.id).hidden = k !== cur;
+      document.getElementById('tab-' + s.id).setAttribute('aria-selected', k === cur);
+    });
+    var s = STEPS[cur];
+    sideEl.innerHTML = "<div class=\"st\">STEP ".concat(cur, " \uCE74\uB4DC</div>") + s.cards.map(function (c, j) {
+      return "<a href=\"#".concat(s.id, "-c").concat(j + 1, "\" data-c=\"").concat(s.id, "-c").concat(j + 1, "\"><span>").concat(cur, "-").concat(j + 1, "</span>").concat(c.t, "</a>");
+    }).join('');
+    selCard.innerHTML = s.cards.map(function (c, j) {
+      return "<option value=\"".concat(s.id, "-c").concat(j + 1, "\">").concat(cur, "-").concat(j + 1, " ").concat(c.t, "</option>");
+    }).join('');
+    selStep.value = cur;
+    document.getElementById('prog').style.width = cur / (STEPS.length - 1) * 100 + '%';
+    document.getElementById('prev').disabled = cur === 0;
+    document.getElementById('next').disabled = cur === STEPS.length - 1;
+    {
+      var tb = document.getElementById('tab-' + s.id);
+      var l = tb.offsetLeft - tabsEl.offsetLeft;
+      if (l < tabsEl.scrollLeft || l + tb.offsetWidth > tabsEl.scrollLeft + tabsEl.clientWidth) tabsEl.scrollLeft = l - 16;
+    }
+    if (scroll) window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+    observe();
+  }
+  function jump(id) {
+    var el = document.getElementById(id);
+    if (el) {
+      setHdr();
+      var y = el.getBoundingClientRect().top + window.pageYOffset - document.getElementById('top').offsetHeight - 12;
+      window.scrollTo({
+        top: y,
+        behavior: 'smooth'
+      });
+    }
+  }
+  sideEl.addEventListener('click', function (e) {
+    var a = e.target.closest('a');
+    if (a) {
+      e.preventDefault();
+      jump(a.dataset.c);
+    }
+  });
+  selCard.onchange = function () {
+    return jump(selCard.value);
+  };
+  selStep.onchange = function () {
+    return go(+selStep.value, true);
+  };
+  document.getElementById('prev').onclick = function () {
+    return go(cur - 1, true);
+  };
+  document.getElementById('next').onclick = function () {
+    return go(cur + 1, true);
+  };
+  var io;
+  function observe() {
+    if (io) io.disconnect();
+    if (!('IntersectionObserver' in window)) return;
+    io = new IntersectionObserver(function (es) {
+      es.forEach(function (en) {
+        if (en.isIntersecting) {
+          var id = en.target.id;
+          sideEl.querySelectorAll('a').forEach(function (a) {
+            return a.classList.toggle('on', a.dataset.c === id);
+          });
+          if (selCard.value !== id) selCard.value = id;
+        }
+      });
+    }, {
+      rootMargin: '-30% 0px -60% 0px'
+    });
+    document.querySelectorAll('#' + STEPS[cur].id + ' .card').forEach(function (c) {
+      return io.observe(c);
+    });
+  }
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('.cp');
+    if (!b) return;
+    var pre = document.getElementById(b.dataset.p);
+    var txt = pre.textContent;
+    var done = function done() {
+      b.textContent = '복사됨';
+      b.classList.add('ok');
+      setTimeout(function () {
+        b.textContent = '복사';
+        b.classList.remove('ok');
+      }, 1600);
+    };
+    var fallback = function fallback() {
+      var r = document.createRange();
+      r.selectNodeContents(pre);
+      var s = getSelection();
+      s.removeAllRanges();
+      s.addRange(r);
+      try {
+        document.execCommand('copy');
+        done();
+      } catch (_) {
+        b.textContent = 'Ctrl+C';
+      }
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(txt).then(done, fallback);
+    } else fallback();
+  });
+  var fs = 20;
+  function applyFs() {
+    document.documentElement.style.setProperty('--fs', fs + 'px');
+    setHdr();
+  }
+  document.querySelectorAll('.fsz button').forEach(function (b) {
+    return b.onclick = function () {
+      var d = +b.dataset.fs;
+      fs = d === 0 ? 20 : Math.max(16, Math.min(28, fs + d * 2));
+      applyFs();
+    };
+  });
+  if (fs !== 20) applyFs();
+  var start = 0;
+  initPlayers();
+  go(start, false);
+  setHdr();
+  addEventListener('resize', setHdr);
+})();
+</script>
+</body></html>

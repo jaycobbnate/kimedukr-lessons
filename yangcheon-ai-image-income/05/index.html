@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>미드저니 5차시 · 레퍼런스 묶음 분석과 규격 보정</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --fs:20px;
+  --bg:#FCFCFA; --paper:#FFFFFF; --ink:#2A2826; --sub:#68645F; --line:#E5E2DC; --line2:#EFEDE8;
+  --accent:#A44E3C; --accent-soft:#F7ECE8;
+  --set:#EDF2F6; --set-line:#C9D7E2;
+  --warn:#F6EEF3; --warn-line:#E0CBD7;
+  --ext:#EEF3EC; --ext-line:#CADBC5;
+  --ok:#4F7A55; --no:#A44E3C;
+}
+*{box-sizing:border-box}
+html{font-size:var(--fs)}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;line-height:1.7;word-break:keep-all}
+h1,h2,h3,h4{font-family:"Gowun Batang","Nanum Myeongjo",serif;line-height:1.35;margin:0}
+a{color:#2F5E8A}
+button,select{font:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+code{font-family:"Pretendard",monospace;background:#F3F1EC;border-radius:5px;padding:1px 6px;font-size:.88em}
+
+/* 상단 (sticky) */
+.top{position:sticky;top:0;z-index:20;background:#FCFCFA;border-bottom:1px solid var(--line)}
+.top-row{display:flex;align-items:center;gap:16px;max-width:1280px;margin:0 auto;padding:12px 24px 6px}
+.top-title{font-family:"Gowun Batang",serif;font-weight:700;font-size:1.05rem;flex:1}
+.top-title small{display:block;font-family:"Pretendard",sans-serif;font-weight:400;font-size:.7rem;color:var(--sub)}
+.zoom{display:flex;gap:6px;align-items:center}
+.zoom span{font-size:.7rem;color:var(--sub);margin-right:2px}
+.zoom button{border:1px solid var(--line);background:var(--paper);border-radius:8px;padding:2px 12px;font-size:.8rem}
+.tabs{display:flex;gap:4px;overflow-x:auto;max-width:1280px;margin:0 auto;padding:4px 24px 0;scrollbar-width:thin}
+.tab{flex:0 0 auto;border:0;background:none;padding:8px 14px 10px;font-size:.8rem;color:var(--sub);border-bottom:3px solid transparent;white-space:nowrap}
+.tab b{display:block;font-size:.62rem;font-weight:600;letter-spacing:.02em;color:#9A958F}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent);font-weight:600}
+.tab[aria-selected="true"] b{color:var(--accent)}
+
+/* 본문 + 오른쪽 sticky 카드 메뉴 */
+.wrap{max-width:1280px;margin:0 auto;padding:28px 24px 40px;display:grid;grid-template-columns:minmax(0,1fr) 240px;gap:32px;align-items:start}
+.side{position:sticky;top:132px;border-left:1px solid var(--line);padding:4px 0 4px 18px;max-height:calc(100vh - 220px);overflow:auto}
+.side p{margin:0 0 8px;font-size:.68rem;color:var(--sub)}
+.side a{display:block;color:var(--sub);text-decoration:none;font-size:.74rem;padding:6px 0 6px 10px;border-left:2px solid transparent;margin-left:-20px;line-height:1.45;cursor:pointer}
+.side a.on{color:var(--accent);border-left-color:var(--accent);font-weight:600}
+.step{display:none}
+.step.on{display:block}
+
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:22px 24px}
+.card.wide{grid-column:1 / -1}
+.card h3{font-size:1.08rem;margin-bottom:10px}
+.card p{margin:0 0 10px}
+.card p:last-child{margin-bottom:0}
+.card ul,.card ol{margin:4px 0 10px;padding-left:1.3em}
+.card li{margin:4px 0}
+.note{font-size:.8rem;color:var(--sub);margin-top:12px!important}
+
+/* 칩 */
+.chip{display:inline-block;font-family:"Pretendard",sans-serif;font-size:.62rem;font-weight:700;border-radius:99px;padding:2px 10px;margin-right:8px;vertical-align:3px}
+.c-read{background:#ECEAE5;color:var(--sub)}
+.c-all{background:var(--accent-soft);color:var(--accent)}
+.c-more{background:#EEF3EC;color:#46684A}
+.c-chk{background:#EDF2F6;color:#3D5A70}
+
+/* 박스 */
+.box{border-radius:10px;padding:14px 18px;border:1px solid;margin-top:12px}
+.box h4{font-family:"Pretendard",sans-serif;font-size:.84rem;font-weight:700;margin:0 0 4px}
+.box p,.box li{font-size:.86rem}
+.box p{margin:0 0 6px}
+.box p:last-child{margin:0}
+.box ul,.box ol{margin:2px 0 0;padding-left:1.2em}
+.box.set{background:var(--set);border-color:var(--set-line)}.box.set h4{color:#3D5A70}
+.box.warn{background:var(--warn);border-color:var(--warn-line)}.box.warn h4{color:#7D4566}
+.box.ext{background:var(--ext);border-color:var(--ext-line)}.box.ext h4{color:#46684A}
+.key{background:var(--accent-soft);border:1px solid #E8CFC6;border-left:5px solid var(--accent);border-radius:10px;padding:16px 20px;font-size:1.02rem}
+.key strong{color:var(--accent)}
+
+/* 프롬프트 */
+.prompt{position:relative;background:#F7F6F3;border:1px solid var(--line);border-radius:10px;padding:42px 18px 16px;font-size:.8rem;line-height:1.65;white-space:pre-wrap;font-family:"Pretendard",sans-serif;margin:6px 0 4px}
+.prompt .copy{position:absolute;top:10px;right:10px;border:1px solid var(--line);background:var(--paper);border-radius:8px;font-size:.66rem;padding:3px 10px}
+.prompt .copy.done{color:var(--ok);border-color:var(--ok)}
+.plabel{font-size:.72rem;color:var(--sub);margin:14px 0 4px!important;font-weight:700}
+.plabel b{color:var(--accent)}
+
+/* 표 */
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table.cmp{width:100%;border-collapse:collapse;font-size:.8rem}
+table.cmp th,table.cmp td{border-bottom:1px solid var(--line2);padding:9px 8px;text-align:left;vertical-align:top}
+table.cmp th{font-weight:600;color:var(--sub);font-size:.72rem;background:#FAF9F6}
+table.cmp td b{color:var(--accent)}
+
+/* 시작 화면 */
+.hero{padding:22px 0 30px;margin-bottom:24px;border-bottom:1px solid var(--line)}
+.hero-kicker{margin:0 0 12px;font-size:.78rem;color:var(--accent);font-weight:700}
+.hero-line{font-size:2rem;line-height:1.45;font-weight:700}
+.hero-line em{font-style:normal;color:var(--accent);border-bottom:3px solid #E8CFC6}
+.hero-sub{margin:16px 0 0;font-size:1.02rem;color:var(--sub);max-width:46em}
+.band{display:flex;gap:18px;align-items:center;background:var(--accent-soft)!important;border-color:#E8CFC6!important}
+.band-no{flex:0 0 auto;background:var(--accent);color:#fff;border-radius:10px;padding:8px 14px;font-weight:700;font-size:.9rem}
+.band h3{margin:0 0 4px!important;font-size:1.2rem!important}
+.band p{margin:0!important;color:var(--sub);font-size:.9rem}
+
+/* 흐름 도식 */
+.csflow{display:flex;align-items:stretch;gap:0;flex-wrap:nowrap}
+.csflow div{flex:1;border:1px solid var(--line);border-radius:12px;padding:12px 8px;text-align:center;background:#fff;font-size:.8rem;font-weight:600;line-height:1.4}
+.csflow div b{display:block;font-family:"Gowun Batang",serif;color:#9A958F;font-size:1.05rem}
+.csflow div small{display:block;font-weight:400;font-size:.66rem;color:var(--sub);margin-top:2px}
+.csflow div.hot{border:2px solid var(--accent);background:var(--accent-soft)}.csflow div.hot b{color:var(--accent)}
+.csflow div.done{background:#FAF9F6}
+.csflow span{flex:0 0 18px;position:relative}.csflow span:after{content:"";position:absolute;left:3px;right:3px;top:50%;height:2px;background:#C9C5BF}
+
+/* 블록 도식 */
+.blocks{display:grid;grid-template-columns:repeat(var(--n,4),1fr);gap:8px}
+.blocks span{border-radius:10px;padding:12px 8px;text-align:center;font-weight:700;font-size:.86rem}
+.blocks small{display:block;font-weight:400;font-size:.66rem;color:var(--sub)}
+.b1{background:#F7ECE8}.b2{background:#EDF2F6}.b3{background:#EEF3EC}.b4{background:#F6EEF3}.b5{background:#F3F0E8}
+
+/* 비교 두 칸 */
+.split{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.split > div{border-radius:10px;padding:14px 16px;border:1px solid var(--line)}
+.split .yes{background:#F3F7F2}
+.split .nope{background:#FAF2F0}
+.split h4{margin:0 0 6px;font-size:.88rem}
+.split p,.split li{font-size:.84rem}
+.split ul{margin:0;padding-left:1.1em}
+
+/* 단계 목록 */
+ol.steps{margin:0;padding-left:1.4em}
+ol.steps li{margin:7px 0}
+ol.steps li b{color:var(--ink)}
+.path{display:inline-block;background:#F3F1EC;border-radius:6px;padding:0 8px;font-size:.86em;font-weight:600}
+
+/* 막힘 사전 */
+.trouble{border-bottom:1px solid var(--line2);padding:12px 0}
+.trouble:last-child{border:0}
+.trouble h4{font-family:"Pretendard",sans-serif;font-size:.9rem;margin-bottom:6px}
+.trouble dl{display:grid;grid-template-columns:64px 1fr;gap:4px 10px;margin:0;font-size:.84rem}
+.trouble dt{font-weight:700;color:var(--sub);font-size:.74rem;padding-top:2px}
+.trouble dd{margin:0}
+
+/* 퀴즈 */
+.q{border-bottom:1px solid var(--line2);padding:12px 0}.q p{margin:0 0 8px!important}
+.qops{display:flex;flex-wrap:wrap;gap:8px}
+.qo{border:1px solid var(--line);background:#fff;border-radius:99px;padding:6px 14px;font-size:.82rem}
+.qo.right{background:#E2EDE2;border-color:#9EBE9F;color:#2F5A35}.qo.wrong{background:#F3E3DF;border-color:#E0B8AE;color:var(--no)}
+.qex{display:none;font-size:.8rem;color:var(--sub);margin-top:8px!important}.q.done .qex{display:block}
+
+/* 체크리스트 */
+ul.chk{list-style:none;margin:0;padding:0}ul.chk li{padding:6px 0;border-bottom:1px solid var(--line2);font-size:.88rem}ul.chk li:last-child{border:0}
+ul.chk input{width:18px;height:18px;vertical-align:-3px;margin-right:8px;accent-color:var(--accent)}
+
+/* 링크 카드 */
+.lcard{display:block;border:1px solid var(--line);border-radius:10px;background:#fff;padding:10px 14px;text-decoration:none;margin-top:8px}
+.lcard b{display:block;color:#2F5E8A;font-size:.88rem}.lcard span{display:block;color:var(--sub);font-size:.72rem;margin-top:2px}
+
+/* 대화 말풍선 */
+.chat{display:flex;flex-direction:column;gap:10px}
+.bub{max-width:82%;border-radius:14px;padding:10px 14px}
+.bub p{margin:0!important;font-size:.84rem;line-height:1.6}
+.bub .who{display:block;font-size:.64rem;font-weight:700;margin-bottom:2px}
+.bub.u{align-self:flex-end;background:#EDF2F6;border:1px solid #C9D7E2}.bub.u .who{color:#3D5A70}
+.bub.a{align-self:flex-start;background:#fff;border:1px solid var(--line)}.bub.a .who{color:var(--accent)}
+
+/* 화면 모형 */
+.mock{border:1px solid var(--line);border-radius:10px;background:#FAFAF8;padding:10px 12px;font-size:.78rem}
+.mock .bar{display:flex;gap:6px;flex-wrap:wrap}
+.mock .bar span{border:1px solid var(--line);background:#fff;border-radius:6px;padding:2px 8px}
+.mock .bar span.on{border-color:var(--accent);color:var(--accent);font-weight:700}
+.diagram svg{width:100%;height:auto;display:block}
+
+/* 하단 이동 (sticky) */
+.pager{position:sticky;bottom:0;z-index:15;background:#FCFCFA;border-top:1px solid var(--line)}
+.pager-in{max-width:1280px;margin:0 auto;padding:8px 24px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.pager button{border:1px solid var(--line);background:var(--paper);border-radius:10px;padding:7px 16px;font-size:.78rem;flex:0 0 auto}
+.pager button.next{background:var(--accent);border-color:var(--accent);color:#fff}
+.pager button:disabled{opacity:.35;cursor:default}
+.pager-mid{display:flex;gap:8px;flex:1;justify-content:center;min-width:0}
+.pager select{border:1px solid var(--line);background:#fff;border-radius:8px;padding:6px 8px;font-size:.72rem;max-width:300px;min-width:0;flex:1}
+
+@media (max-width:1000px){
+  .wrap{grid-template-columns:1fr}
+  .side{display:none}
+  .csflow{flex-wrap:wrap;gap:8px}.csflow span{display:none}.csflow div{flex:1 1 30%}
+}
+@media (max-width:720px){
+  :root{--fs:18px}
+  .grid,.split{grid-template-columns:1fr}
+  .blocks{grid-template-columns:1fr 1fr}
+  .hero-line{font-size:1.5rem}
+  .top-row,.tabs,.wrap,.pager-in{padding-left:14px;padding-right:14px}
+  .pager button{padding:7px 10px}
+  .band{flex-direction:column;align-items:flex-start}
+  .csflow div{flex:1 1 45%}
+}
+@media (max-height:700px){.top-row{display:none}.side{top:70px}}
+@media (max-width:600px){table.cmp{min-width:420px}}
+@media (max-width:720px){.top-title small{display:none}.top-title{font-size:.88rem}.zoom span{display:none}.zoom button{padding:2px 8px}}
+/* 녹화 영상 */
+.vbox{position:relative;width:100%;aspect-ratio:16/9;border-radius:10px;overflow:hidden;background:#1E1C1A;border:1px solid var(--line)}
+.vbox iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.vfoot{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:12px;flex-wrap:wrap}
+.vfoot span{font-size:.82rem;color:var(--sub)}
+.vbtn{display:inline-block;background:var(--accent);color:#fff!important;text-decoration:none;border-radius:10px;padding:8px 18px;font-size:.8rem;font-weight:600}
+.card.video{max-width:none}
+
+</style></head><body>
+<header class="top" id="top"><div class="top-row"><div class="top-title">미드저니 5차시 · 레퍼런스 묶음 분석과 규격 보정<small>AI 이미지 수익화 · GoFullPage · 수능 응원 사진 · 16:9 보정 · 배경 제거 예고</small></div>
+<div class="zoom" role="group" aria-label="글자 크기"><span>글자</span><button type="button" id="zDown" aria-label="글자 작게">가−</button><button type="button" id="zReset" aria-label="기본 크기">가</button><button type="button" id="zUp" aria-label="글자 크게">가+</button></div></div>
+<nav class="tabs" id="tabs" role="tablist" aria-label="단계 이동"><button class="tab" role="tab" type="button" data-i="0"><b>STEP 0</b><span>시작</span></button><button class="tab" role="tab" type="button" data-i="1"><b>STEP 1</b><span>무료 한도와 zip</span></button><button class="tab" role="tab" type="button" data-i="2"><b>STEP 2</b><span>레퍼런스 사이트</span></button><button class="tab" role="tab" type="button" data-i="3"><b>STEP 3</b><span>GoFullPage</span></button><button class="tab" role="tab" type="button" data-i="4"><b>STEP 4</b><span>수능 응원 기획</span></button><button class="tab" role="tab" type="button" data-i="5"><b>STEP 5</b><span>생성·고르기</span></button><button class="tab" role="tab" type="button" data-i="6"><b>STEP 6</b><span>키워드</span></button><button class="tab" role="tab" type="button" data-i="7"><b>STEP 7</b><span>승인 확인</span></button><button class="tab" role="tab" type="button" data-i="8"><b>STEP 8</b><span>16:9 보정</span></button><button class="tab" role="tab" type="button" data-i="9"><b>STEP 9</b><span>배경 제거 맛보기</span></button><button class="tab" role="tab" type="button" data-i="10"><b>STEP 10</b><span>막힘 사전</span></button><button class="tab" role="tab" type="button" data-i="11"><b>STEP 11</b><span>확인</span></button></nav></header>
+<div class="wrap"><main id="main">
+<section class="step" data-label="STEP 0" data-title="시작">
+<div class="hero"><p class="hero-kicker">5차시 · 레퍼런스 묶음 분석과 규격 보정</p>
+<h2 class="hero-line">레퍼런스는 <em>한 번에 묶어서</em>,<br>규격은 <em>정확하게</em> 맞춥니다.</h2>
+<p class="hero-sub">여러 사이트의 레퍼런스를 한 번에 모아 분석시키고, 수능 응원 사진 2장을 만들어 16:9 보정까지 마쳐 제출해요. 끝에는 다음 시간(PNG 요소)을 위한 배경 제거를 미리 맛봐요.</p></div>
+<div class="grid">
+<div class="card wide video" id="vid"><h3><span class="chip c-read">읽기</span>5차시 녹화 영상</h3><div class="vbox"><iframe src="https://www.youtube-nocookie.com/embed/YhuiezPcdVg?rel=0" title="5차시 녹화 영상" loading="lazy" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div><div class="vfoot"><span>[현장강의] 수능 응원 레퍼런스 수집부터 사진 요소·포토피아 120DPI 규격까지</span><a class="vbtn" href="https://youtu.be/YhuiezPcdVg" target="_blank" rel="noopener">유튜브에서 보기 ↗</a></div><p class="note">영상이 재생되지 않으면 "유튜브에서 보기"를 눌러 주세요. 복습할 때는 교안의 STEP 순서대로 영상을 따라가면 돼요.</p></div>
+
+<div class="card wide" id="c1"><h3><span class="chip c-read">읽기</span>우리 과정 전체 지도</h3>
+<div class="csflow"><div class="done"><b>1</b>미드저니 기초<small>구독·둘러보기·설정</small></div><span></span><div class="done"><b>2</b>판매처·화풍<small>디자인허브·프로필·무드보드</small></div><span></span><div class="done"><b>3</b>참조·AI 도우미<small>Attach to Prompt·GPT 프로젝트</small></div><span></span><div class="done"><b>4</b>첫 업로드<small>패턴 학습·규격·심사 제출</small></div><span></span><div class="hot"><b>5</b>규격 보정<small>레퍼런스 묶음·16:9·배경 제거 예고</small></div><span></span><div><b>6</b>PNG 요소<small>배경 제거·스티커 화풍</small></div></div></div>
+<div class="card" id="c2"><h3><span class="chip c-read">읽기</span>오늘의 흐름</h3>
+<ol class="steps"><li><b>GPT 무료 한도</b>와 zip 묶음</li><li><b>레퍼런스 사이트</b> 넓히기</li><li><b>GoFullPage</b>로 한 번에 캡처</li><li><b>수능 응원 기획</b> — 1·3·4명</li><li><b>생성·고르기·내려받기</b></li><li><b>키워드</b> 각각 25개</li><li><b>승인 확인</b></li><li><b>16:9 보정</b> + 제출</li><li><b>배경 제거 맛보기</b></li></ol></div>
+<div class="card" id="c3"><h3><span class="chip c-chk">확인</span>준비물</h3>
+<ul class="chk"><li><label><input type="checkbox">크롬 브라우저 (엣지는 확장 설치 방법이 달라요)</label></li><li><label><input type="checkbox">GPT 디자인허브 프로젝트</label></li><li><label><input type="checkbox">지난주 제출한 요소의 심사 결과</label></li><li><label><input type="checkbox">포토피아</label></li></ul></div>
+</div></section>
+
+<section class="step" data-label="STEP 1" data-title="무료 한도와 zip">
+<div class="grid">
+<div class="card band wide" id="c4"><span class="band-no">STEP 1</span><div><h3>GPT 무료 플랜 한도 알기</h3><p>모두 같은 조건으로 하려고 무료 플랜을 써요. 한도를 알고 요령껏.</p></div></div>
+<div class="card" id="c5"><h3><span class="chip c-read">읽기</span>수업 당일 확인한 한도</h3>
+<div class="tw"><table class="cmp"><tr><th>항목</th><th>한도</th></tr>
+<tr><td>파일 첨부 횟수</td><td>하루 약 3회 (시간이 지나면 풀림)</td></tr>
+<tr><td>한 번에 첨부</td><td>최대 10개 (한 번으로 셈)</td></tr>
+<tr><td>프로젝트 소스</td><td>5개</td></tr></table></div>
+<p class="note">정책이 자주 바뀌어요. 정확한 숫자는 그날 GPT에게 물어보거나 화면 안내로 확인하세요.</p></div>
+<div class="card" id="c6"><h3><span class="chip c-all">다 같이</span>zip으로 묶으면 한 번에</h3>
+<ol class="steps"><li>레퍼런스 이미지 여러 장을 폴더에 모으기</li><li>모두 선택 → 마우스 오른쪽 → <span class="path">압축(ZIP)</span></li><li>zip 파일 하나를 GPT에 첨부</li></ol>
+<div class="prompt"><button class="copy" type="button">복사</button>첨부한 zip 파일 안의 이미지들을 모두 열어서 분석하고, 사람·사물·동물·배경으로 분류해 줘. 각 분류에 몇 장인지도 알려 줘.</div>
+<p class="note">수업에서 사진 20장 zip을 넣었더니 제대로 분류했어요. zip도 분석 잘해요.</p></div>
+<div class="card wide" id="c7"><h3><span class="chip c-more">한 걸음 더</span>폴더째 읽히기</h3>
+<p>유료 기능(GPT 데스크톱의 워크 기능, 클로드 코워크 등)을 쓰면 컴퓨터 폴더를 연결해서 수천 장도 읽힐 수 있어요. 레퍼런스가 아주 많아지면 그때 고려하세요.</p></div>
+</div></section>
+
+<section class="step" data-label="STEP 2" data-title="레퍼런스 사이트">
+<div class="grid">
+<div class="card band wide" id="c8"><span class="band-no">STEP 2</span><div><h3>레퍼런스 사이트 넓히기</h3><p>주제: 수능을 앞둔 학생 응원. 사진으로 검색해요.</p></div></div>
+<div class="card wide" id="c9"><h3><span class="chip c-all">다 같이</span>어디서, 어떻게 찾나</h3>
+<div class="tw"><table class="cmp"><tr><th>사이트</th><th>검색 팁</th></tr>
+<tr><td><b>미리캔버스</b></td><td>본진. 사진에서 "공부 응원". 이제 PPT 업로드 기능도 생겼어요</td></tr>
+<tr><td>크라우드픽</td><td>"학생 공부 파이팅", "공부 응원" — 사진 필터</td></tr>
+<tr><td>핀터레스트</td><td>"시험 응원", "학생 응원", "고등학생 공부". 공용 PC에선 로그인 요구가 뜰 수 있어요</td></tr>
+<tr><td>게티이미지</td><td>해외 스톡 사진의 구도 참고</td></tr>
+<tr><td>클립아트코리아</td><td>한국스러운 사진. 콘텐츠 타입을 <b>포토</b>로</td></tr></table></div></div>
+<div class="card" id="c10"><h3><span class="chip c-all">다 같이</span>내 요소 찾아보기</h3>
+<ol class="steps"><li>디자인허브 화면 위의 <b>내 아이디</b> 확인 (이메일과 달라요)</li><li>미리캔버스 검색창에 <code>@아이디</code></li><li>내가 올린 요소가 판매 화면에 어떻게 보이는지 확인</li></ol></div>
+<div class="card" id="c11"><h3><span class="chip c-read">읽기</span>이번엔 배경 있는 사진으로</h3>
+<p>처음부터 배경 없는 이미지를 만드는 건 어려우니, 오늘은 <b>배경이 있는 응원 사진</b>으로 가요. 배경 없는 것은 끝 STEP에서 맛보고 다음 시간에 본격적으로.</p></div>
+</div></section>
+
+<section class="step" data-label="STEP 3" data-title="GoFullPage">
+<div class="grid">
+<div class="card band wide" id="c12"><span class="band-no">STEP 3</span><div><h3>GoFullPage — 검색 결과 한 장으로</h3><p>하나씩 캡처하기 귀찮죠. 검색 결과 페이지 전체를 한 장으로 저장해요.</p></div></div>
+<div class="card" id="c13"><h3><span class="chip c-all">다 같이</span>설치</h3>
+<ol class="steps"><li>크롬 오른쪽 위 <span class="path">⋮</span></li><li><span class="path">확장 프로그램 → Chrome 웹 스토어 방문하기</span></li><li>"<b>GoFullPage</b>" 검색 (Full Page Screen Capture)</li><li><span class="path">Chrome에 추가</span> → 확장 프로그램 추가</li><li>계정 연동은 원치 않으면 안 해도 돼요</li><li>오른쪽 위 <b>퍼즐 조각</b> 아이콘 → GoFullPage <b>핀(고정)</b></li></ol></div>
+<div class="card" id="c14"><h3><span class="chip c-all">다 같이</span>캡처하기</h3>
+<ol class="steps"><li>핀터레스트·클립아트코리아 등에서 검색 결과 띄우기</li><li>GoFullPage 아이콘 누르기 → 페이지가 자동으로 내려가며 찍혀요</li><li>새 탭에 결과 → 위쪽에서 <b>PDF 저장</b> 또는 <b>이미지 저장</b>, 편집(Edit)도 가능</li><li>마우스 오른쪽 → 복사해서 GPT에 바로 붙여도 돼요</li></ol>
+<p class="note">작아 보여도 내려받아 보면 AI가 읽기에 충분한 크기예요.</p></div>
+<div class="card wide" id="c15"><h3><span class="chip c-all">다 같이</span>레퍼런스로 분석 + 기획</h3>
+<p>GoFullPage로 저장한 이미지들(또는 zip)을 GPT 프로젝트에 첨부하고:</p>
+<div class="prompt"><button class="copy" type="button">복사</button>첨부된 이미지를 먼저 분석해 줘. 그다음, 미리캔버스 디자인허브 "사진" 요소에 적합한 수능 응원 이미지를 만들고 싶어.
+등장인물은 학생 중심으로 최대 4명 이하.
+1명 / 3명 / 4명 버전으로 미드저니 프롬프트 3가지를 추천해 줘. 글자는 넣지 않아.</div>
+<p class="note">흐름만 이해하면 문장은 내 말로 바꿔 써도 돼요.</p></div>
+</div></section>
+
+<section class="step" data-label="STEP 4" data-title="수능 응원 기획">
+<div class="grid">
+<div class="card band wide" id="c16"><span class="band-no">STEP 4</span><div><h3>기획 결과 읽기</h3><p>핵심 방향: 수능을 앞둔 실제 고등학생들의 <b>응원의 순간</b>을 찍기. 글자는 피하기.</p></div></div>
+<div class="card wide" id="c17"><h3><span class="chip c-read">읽기</span>샷의 종류</h3>
+<div class="tw"><table class="cmp"><tr><th>인원</th><th>샷</th><th>담는 범위</th></tr>
+<tr><td>1명</td><td>클로즈업</td><td>얼굴 중심 — 표정이 주인공</td></tr>
+<tr><td>3명</td><td>미디엄 샷</td><td>상체까지 — 손동작(파이팅)이 보임</td></tr>
+<tr><td>4명</td><td>와이드 / 미디엄 와이드</td><td>장소까지 — 교실·교문 분위기</td></tr></table></div></div>
+<div class="card wide" id="c18"><h3><span class="chip c-all">다 같이</span>예시 프롬프트 (수업 흐름 기준)</h3>
+<p class="plabel"><b>1명</b></p><div class="prompt"><button class="copy" type="button">복사</button>a Korean high school student smiling with a determined look, making a fighting pose with a fist, in a bright classroom, close-up, soft natural window light, realistic photo, no text --ar 3:4 --v 8.2</div>
+<p class="plabel"><b>3명</b></p><div class="prompt"><button class="copy" type="button">복사</button>three Korean high school students cheering each other before the college entrance exam, high-fiving in a classroom, medium shot, eye level, bright natural light, realistic photo, no text --ar 4:3 --v 8.2</div>
+<p class="plabel"><b>4명</b></p><div class="prompt"><button class="copy" type="button">복사</button>four Korean high school students in school uniforms cheering together in front of the school gate on an autumn morning, medium wide shot, slightly low angle, warm natural light, realistic photo, no text --ar 16:9 --v 8.2</div>
+<p class="note">GPT가 준 프롬프트를 그대로 써도 돼요. 위 예시는 막혔을 때 쓰세요.</p></div>
+</div></section>
+
+<section class="step" data-label="STEP 5" data-title="생성·고르기">
+<div class="grid">
+<div class="card band wide" id="c19"><span class="band-no">STEP 5</span><div><h3>만들고, 고르고, 내려받기</h3><p>Raw와 Stylize를 바꿔 가며 비교한 뒤 2장을 골라요: 혼자 파이팅 1장 + 3~4명 1장.</p></div></div>
+<div class="card" id="c20"><h3><span class="chip c-read">읽기</span>미드저니가 한국어가 됐어요</h3>
+<p>미드저니에 한국어 화면이 생겼어요. 번역이 덜 된 곳도 있고 어색해요. 영어가 편하면 <span class="path">⋯ → 언어</span>에서 English로 바꿔요.</p></div>
+<div class="card" id="c21"><h3><span class="chip c-all">다 같이</span>Raw · Stylize 비교</h3>
+<ol class="steps"><li>프롬프트 그대로 1번</li><li>프롬프트 아래 <span class="path">프롬프트 사용</span> → Raw 끄고 Stylize <b>150</b>으로 1번</li><li>비교: Stylize를 올리면 화장·헤어가 과해지고 "선남선녀"가 돼요</li></ol>
+<p class="note">Stylize 기본은 100. 끝까지 올리면 현실에 없는 사람이 나와요.</p></div>
+<div class="card" id="c22"><h3><span class="chip c-read">읽기</span>편집기 (Editor)</h3>
+<p>고치고 싶은 부분을 칠하면 그 부분만 다시 그려요(인페인팅). <b>배경을 투명하게 하는 기능은 없어요.</b></p>
+<p>마음에 드는 사진이 조금 아쉬우면 편집으로 고치기보다 <b>다시 생성</b>하는 게 나을 때가 많아요.</p></div>
+<div class="card" id="c23"><h3><span class="chip c-all">다 같이</span>고른 것만 한 번에 내려받기</h3>
+<ol class="steps"><li>마음에 드는 이미지에 <b>좋아요</b></li><li><span class="path">Organize</span>(정리) → 좋아요 필터</li><li>마우스로 <b>드래그해서 여러 장 선택</b></li><li>아래 <span class="path">다운로드</span> → zip으로 받아져요</li></ol>
+<div class="box warn"><h4>손 확인</h4><p>고르기 전에 손가락을 꼭 보세요. 손이 이상하면 상품성이 없어요.</p></div></div>
+</div></section>
+
+<section class="step" data-label="STEP 6" data-title="키워드">
+<div class="grid">
+<div class="card band wide" id="c24"><span class="band-no">STEP 6</span><div><h3>키워드 25개 — 이미지마다 따로</h3><p>고른 이미지 zip을 GPT 프로젝트에 넣어요.</p></div></div>
+<div class="card wide" id="c25"><h3><span class="chip c-all">다 같이</span>키워드 요청</h3>
+<div class="prompt"><button class="copy" type="button">복사</button>내가 선택한 이미지입니다. 사진 두 장 각각 따로, 디자인허브 업로드용 제목 1개와 검색 키워드 25개를 쉼표로 구분해서 추천해 주세요.</div>
+<p class="note">한꺼번에 섞어 주면 "각각 따로"를 다시 말해요.</p></div>
+<div class="card wide" id="c26"><h3><span class="chip c-read">읽기</span>GPT 프로젝트 vs 제미나이 젬</h3>
+<div class="split"><div class="yes"><h4>GPT 프로젝트</h4><p>대화가 프로젝트 안에 쭉 모여 있어요. 업무에 쓰기 편해요.</p></div><div class="nope"><h4>제미나이 젬</h4><p>최근 대화가 몇 개만 보이고 다른 대화와 섞여요. 노트북에 넣으면 "결과물"이 아니라 "지식"으로 저장돼요.</p></div></div>
+<p class="note">파일 첨부 한도가 스트레스라면 제미나이를 써도 괜찮아요.</p></div>
+</div></section>
+
+<section class="step" data-label="STEP 7" data-title="승인 확인">
+<div class="grid">
+<div class="card band wide" id="c27"><span class="band-no">STEP 7</span><div><h3>지난주 제출한 요소 확인</h3><p>요즘은 패턴을 파악하고 올려서 거부가 별로 없어요.</p></div></div>
+<div class="card" id="c28"><h3><span class="chip c-all">다 같이</span>디자인허브에서</h3>
+<ol class="steps"><li>로그인 → 오른쪽에 <b>거부됨</b> 있는지</li><li><span class="path">요소</span> → 상태 <b>승인</b> / 전체 보기</li><li>요소를 클릭하면 저장한 메타데이터까지 보여요</li></ol></div>
+<div class="card" id="c29"><h3><span class="chip c-all">다 같이</span>미리캔버스에서</h3>
+<ol class="steps"><li>새 디자인 → <span class="path">사진</span></li><li>검색창에 <code>@내아이디</code></li><li>내 요소의 <span class="path">⋯</span> → 제공자·키워드 확인</li><li><span class="path">비슷한 사진 찾기</span> → 나와 결이 비슷한 작가들 보기</li></ol>
+<p class="note">한 사람이 만든 요소는 결이 비슷해요. 그게 내 시리즈의 힘이에요.</p></div>
+</div></section>
+
+<section class="step" data-label="STEP 8" data-title="16:9 보정">
+<div class="grid">
+<div class="card band wide" id="c30"><span class="band-no">STEP 8</span><div><h3>업스케일 + 포토피아 보정</h3><p>그냥 올리면 안 돼요. 해상도와 비율을 맞춰요.</p></div></div>
+<div class="card" id="c31"><h3><span class="chip c-all">다 같이</span>① 업스케일</h3>
+<ol class="steps"><li>미드저니에서 고른 이미지 → <span class="path">Upscale</span> (Subtle 또는 Creative)</li><li>"HD로 일괄 생성"과 헷갈리지 마세요 — 그건 새 그림을 만들어요</li><li>완료되면 내려받기</li></ol></div>
+<div class="card" id="c32"><h3><span class="chip c-all">다 같이</span>② 포토피아에서 두 장 열기</h3>
+<ol class="steps"><li>photopea.com → <span class="path">파일 → 열기</span> (새 프로젝트 아님)</li><li>두 파일을 함께 선택 → 탭 두 개로 열려요</li></ol>
+<p class="note">1:1, 3:4는 비율 걱정 없이 DPI만 바꾸면 돼요. <b>16:9가 애매해요.</b></p></div>
+<div class="card wide" id="c33"><h3><span class="chip c-all">다 같이</span>③ 16:9 정확히 맞추기 (QHD 2560×1440)</h3>
+<p>AI가 만든 16:9는 미묘하게 정확한 16:9가 아니에요. 이미지 크기를 2560×1440으로 바로 넣으면 비율이 찌그러져요. 그래서 <b>캔버스</b>를 잘라 맞춰요.</p>
+<ol class="steps"><li><span class="path">이미지 → 캔버스 크기</span></li><li><b>상대값</b> 체크 해제, 비율 사슬 해제</li><li>폭 <b>2560</b>, 높이 <b>1440</b></li><li>기준점은 <b>가운데</b> → 확인 (가장자리가 조금 잘려요. 사람 얼굴이 중요하지 주변은 괜찮아요)</li><li><span class="path">이미지 → 이미지 크기</span> → 단위는 픽셀</li><li><b>리샘플 끄고</b> DPI <b>120</b>으로 → 리샘플 다시 켜고 픽셀 값이 그대로인지 확인 → 확인</li><li><span class="path">파일 → 내보내기 형식 → JPG</span>, 품질 최대</li></ol>
+<div class="split"><div class="yes"><h4>리샘플 끄고 DPI 변경</h4><p>픽셀은 그대로, DPI 숫자만 바뀌어요. 이미지가 뭉개지지 않아요.</p></div><div class="nope"><h4>리샘플 켜고 DPI 변경</h4><p>픽셀이 같이 불어나요. 가로 2,500이 안 될 때만 이렇게 — 대신 약간 뭉개질 수 있어요.</p></div></div></div>
+<div class="card wide" id="c34"><h3><span class="chip c-all">다 같이</span>④ 두 번째 이미지 (16:9 아님)</h3>
+<ol class="steps"><li>비율은 그대로</li><li>이미지 크기에서 리샘플 끄고 DPI 120</li><li>가로가 2,500보다 작으면 → 리샘플 켜고 DPI 120 (픽셀이 같이 늘어나요)</li><li>JPG 최고 품질로 내보내기</li></ol></div>
+<div class="card wide" id="c35"><h3><span class="chip c-all">다 같이</span>⑤ 제출</h3>
+<ol class="steps"><li>디자인허브 <span class="path">콘텐츠 업로드</span> → 두 장 올리기 → 빨간 마크 확인</li><li>여러 개를 한꺼번에 올릴 때는 <b>CSV 업로드</b> 방법도 있어요</li><li>유형 사진 · <b>AI 체크 꼭</b> · 유료/무료 선택</li><li>요소 이름 AI 채우기 → 키워드는 GPT 것을 붙여넣고 Enter → 필요 없는 것 지우기</li><li>메타데이터 저장 → 제출 → <b>심사 대기</b> 확인</li></ol></div>
+</div></section>
+
+<section class="step" data-label="STEP 9" data-title="배경 제거 맛보기">
+<div class="grid">
+<div class="card band wide" id="c36"><span class="band-no">STEP 9</span><div><h3>배경 제거 맛보기</h3><p>다음 시간 PNG 요소 준비. 오늘은 일부러 배경 있는 사진으로 해 보며 "왜 처음부터 계획해야 하는지" 느껴 봐요.</p></div></div>
+<div class="card" id="c37"><h3><span class="chip c-all">다 같이</span>① 편집기 스마트 선택</h3>
+<ol class="steps"><li>이미지 클릭 → <span class="path">편집기 열기</span></li><li><span class="path">스마트 선택</span> → 사람을 찍어 보기</li><li>잘 안 잡히면 <span class="path">레이어 초기화</span> → 지우기 브러시로 배경을 대충 지우기</li><li>"배경을 순수 흰색으로" → 잘 안 바뀌어요</li></ol>
+<p class="note">개체가 많은 사진이라 그래요. 단순한 이미지는 한 번에 잡혀요.</p></div>
+<div class="card" id="c38"><h3><span class="chip c-all">다 같이</span>② Attach to Prompt로 흰 배경</h3>
+<ol class="steps"><li>이미지를 입력창 위 <b>Attach to Prompt</b> 칸으로 끌어오기</li><li>아래 문장 보내기</li></ol>
+<div class="prompt"><button class="copy" type="button">복사</button>change the background to a plain white wall, nothing else in the background</div>
+<p class="note">배경이 깨끗한 흰색이면 배경 빼기가 쉬워요.</p></div>
+<div class="card" id="c39"><h3><span class="chip c-all">다 같이</span>③ 어도비 배경 제거</h3>
+<ol class="steps"><li>흰 배경 이미지 PNG로 내려받기</li><li>새 창에서 "어도비 배경 제거" 검색 → 업로드</li><li>결과 내려받기</li></ol>
+<div class="tw"><table class="cmp"><tr><th>도구</th><th>결과</th></tr><tr><td><b>어도비 배경 제거</b></td><td>가장 깔끔, 원본 해상도 유지</td></tr><tr><td>remove.bg</td><td>깔끔하지만 해상도가 확 줄어요</td></tr></table></div></div>
+<div class="card" id="c40"><h3><span class="chip c-read">읽기</span>③-1 책상까지 날아가면</h3>
+<p>사람 앞의 책상 같은 물건이 같이 지워질 때가 있어요. 포토피아에서 열어 <span class="path">자르기(크롭)</span>로 아래를 잘라내면 자연스러워요. 대신 이미지가 작아지니 다시 키워야 해요.</p></div>
+<div class="card wide" id="c41"><h3><span class="chip c-read">읽기</span>결론 — 처음부터 단색 배경으로</h3>
+<div class="key">배경을 뺄 이미지는 <strong>생성할 때부터</strong> 배경 조건을 넣어야 해요. 그러데이션이 생기면 빼기 힘들어요.</div>
+<div class="prompt"><button class="copy" type="button">복사</button>[내 주제], isolated on a solid flat background, no background objects, no shadow, no gradient, background color #FFFFFF</div>
+<p class="note">GPT에게 프롬프트를 받을 때도 "배경을 제거할 거라 단색 배경으로"라는 조건을 함께 줘요. 6차시에서는 흰 테두리가 살도록 연회색(#D9D9D9) 배경을 써요.</p></div>
+<div class="card wide" id="c42"><h3><span class="chip c-more">한 걸음 더</span>Retexture가 없어졌어요 — 화풍 바꾸기</h3>
+<p>예전엔 Retexture로 사진을 만화로 바꿨는데 메뉴가 없어졌어요. 이제는 이미지를 <b>Attach to Prompt</b>에 넣고 화풍을 지시해요.</p>
+<div class="prompt"><button class="copy" type="button">복사</button>change this image to a cute 2D SD character illustration style, keep the same pose and composition</div>
+<p class="note">흐름(포즈·구도)은 거의 유지되면서 캐릭터로 바뀌어요. 다음 시간 스티커 요소의 출발점이에요.</p></div>
+</div></section>
+
+<section class="step" data-label="STEP 10" data-title="막힘 사전">
+<div class="grid">
+<div class="card band wide" id="c43"><span class="band-no">STEP 10</span><div><h3>막힘 사전</h3><p>화면 → 원인 → 조치</p></div></div>
+<div class="card wide" id="c44"><h3><span class="chip c-chk">확인</span>자주 만나는 화면</h3>
+<div class="trouble"><h4>GPT에서 "첨부 한도에 도달" 안내</h4><dl><dt>원인</dt><dd>무료 플랜 하루 첨부 횟수 초과</dd><dt>조치</dt><dd>여러 장은 zip 하나로 묶기, 급하면 제미나이 사용</dd></dl></div>
+<div class="trouble"><h4>크롬 웹스토어 메뉴가 안 보임</h4><dl><dt>원인</dt><dd>엣지 브라우저 사용 중</dd><dt>조치</dt><dd>크롬으로 열기 (엣지는 방법이 달라요)</dd></dl></div>
+<div class="trouble"><h4>16:9로 맞췄더니 얼굴이 찌그러짐</h4><dl><dt>원인</dt><dd>이미지 크기에서 사슬을 풀고 2560×1440 입력</dd><dt>조치</dt><dd>되돌리고 <b>캔버스 크기</b>로 자르기</dd></dl></div>
+<div class="trouble"><h4>DPI를 바꿨더니 픽셀이 엄청 커짐</h4><dl><dt>원인</dt><dd>리샘플이 켜진 상태</dd><dt>조치</dt><dd>리샘플 끄고 DPI만 120</dd></dl></div>
+<div class="trouble"><h4>"HD로 일괄 생성"을 눌렀더니 다른 그림이 나옴</h4><dl><dt>원인</dt><dd>업스케일이 아니라 새로 생성</dd><dt>조치</dt><dd>같은 그림을 키우려면 <b>업스케일</b></dd></dl></div>
+<div class="trouble"><h4>스마트 선택이 사람을 못 잡음</h4><dl><dt>원인</dt><dd>배경에 개체가 많음</dd><dt>조치</dt><dd>Attach to Prompt로 흰 벽 배경 만든 뒤 어도비 배경 제거</dd></dl></div>
+<div class="trouble"><h4>배경 제거 후 책상·목 일부가 사라짐</h4><dl><dt>원인</dt><dd>원본 기획이 배경 제거용이 아님</dd><dt>조치</dt><dd>크롭으로 정리하거나, 단색 배경 프롬프트로 다시 생성</dd></dl></div></div>
+</div></section>
+
+<section class="step" data-label="STEP 11" data-title="확인">
+<div class="grid">
+<div class="card band wide" id="c45"><span class="band-no">STEP 11</span><div><h3>오늘 정리</h3><p>레퍼런스는 묶어서 → 기획 → 2장 생성 → 키워드 → 16:9 보정 → 제출 → 배경 제거는 처음부터 계획</p></div></div>
+<div class="card wide" id="c46"><h3><span class="chip c-chk">확인</span>퀴즈</h3>
+<div class="q"><p><b>1.</b> 여러 레퍼런스 이미지를 첨부 한도 걱정 없이 한 번에 넣는 방법은?</p><div class="qops"><button type="button" class="qo" data-ok="1">zip으로 묶기</button><button type="button" class="qo" data-ok="0">한 장씩 10번</button><button type="button" class="qo" data-ok="0">PDF로 인쇄</button></div><p class="qex">zip 하나는 첨부 한 번으로 세요.</p></div>
+<div class="q"><p><b>2.</b> 검색 결과 페이지 전체를 한 장으로 저장하는 크롬 확장은?</p><div class="qops"><button type="button" class="qo" data-ok="0">DeepL</button><button type="button" class="qo" data-ok="1">GoFullPage</button><button type="button" class="qo" data-ok="0">포토피아</button></div><p class="qex">PDF·이미지로 저장할 수 있어요.</p></div>
+<div class="q"><p><b>3.</b> 16:9 이미지를 정확히 2560×1440으로 맞출 때 쓰는 메뉴는?</p><div class="qops"><button type="button" class="qo" data-ok="0">이미지 크기</button><button type="button" class="qo" data-ok="1">캔버스 크기</button></div><p class="qex">캔버스로 잘라야 비율이 찌그러지지 않아요.</p></div>
+<div class="q"><p><b>4.</b> 픽셀은 그대로 두고 DPI 숫자만 바꾸려면 리샘플은?</p><div class="qops"><button type="button" class="qo" data-ok="1">끈다</button><button type="button" class="qo" data-ok="0">켠다</button></div><p class="qex">켜 두면 픽셀이 같이 불어나요.</p></div>
+<div class="q"><p><b>5.</b> 배경을 뺄 이미지는 언제 배경을 정하나요?</p><div class="qops"><button type="button" class="qo" data-ok="1">생성할 때부터 단색으로</button><button type="button" class="qo" data-ok="0">다 만든 뒤 편집기에서</button></div><p class="qex">처음부터 단색·그러데이션 없는 배경이어야 깔끔하게 빠져요.</p></div></div>
+<div class="card wide" id="c47"><h3><span class="chip c-chk">확인</span>다음 시간 준비</h3>
+<ol class="steps"><li>오늘 제출한 2장의 심사 상태 보기</li><li>배경 빼기 쉬운 사진 1장 미리 생각해 오기 (사람·사물 하나, 선이 분명한 것)</li><li>다음 시간: <b>사진 한 장으로 PNG 두 장</b> — 실사 요소 + 스티커 요소</li></ol></div>
+</div></section>
+
+</main>
+<aside class="side" aria-label="이 화면의 카드 목록"><p>이 STEP 카드</p><div id="sideList"></div></aside></div>
+<nav class="pager" aria-label="앞뒤 이동"><div class="pager-in">
+<button type="button" id="prev">◀ 이전</button>
+<div class="pager-mid"><select id="stepSel" aria-label="STEP 고르기"></select><select id="cardSel" aria-label="카드 고르기"></select></div>
+<button type="button" id="next" class="next">다음 ▶</button>
+</div></nav>
+<script>
+(function(){
+  /* 구글 사이트 임베드용: position:fixed / scrollIntoView / localStorage / 주소 # 이동 없음 */
+  var steps=[].slice.call(document.querySelectorAll('.step'));
+  var tabs=[].slice.call(document.querySelectorAll('.tab'));
+  var tabBar=document.getElementById('tabs');
+  var side=document.getElementById('sideList');
+  var stepSel=document.getElementById('stepSel');
+  var cardSel=document.getElementById('cardSel');
+  var top=document.getElementById('top');
+  var cur=0, cards=[], links=[], ticking=false;
+
+  function headH(){return top.offsetHeight+12;}
+  function pageY(){return window.pageYOffset||document.documentElement.scrollTop||0;}
+  function cardTitle(c){var h=c.querySelector('h3');if(!h)return '';var t='';for(var i=0;i<h.childNodes.length;i++){var n=h.childNodes[i];if(n.nodeType===3)t+=n.textContent;}t=t.trim();return t||h.textContent.trim();}
+  function goCard(c){var y=c.getBoundingClientRect().top+pageY()-headH();window.scrollTo(0,Math.max(0,y));}
+
+  steps.forEach(function(s,i){var o=document.createElement('option');o.value=i;o.textContent=s.getAttribute('data-label')+' · '+s.getAttribute('data-title');stepSel.appendChild(o);});
+
+  function build(sec){
+    side.innerHTML='';cardSel.innerHTML='';links=[];
+    cards=[].slice.call(sec.querySelectorAll('.card[id]')).filter(function(c){return c.querySelector('h3');});
+    var o0=document.createElement('option');o0.value='';o0.textContent='카드로 바로 가기';cardSel.appendChild(o0);
+    cards.forEach(function(c,i){
+      var t=cardTitle(c);
+      var a=document.createElement('a');a.setAttribute('role','button');a.tabIndex=0;a.textContent=t;
+      a.addEventListener('click',function(e){e.preventDefault();goCard(c);});
+      a.addEventListener('keydown',function(e){if(e.keyCode===13){goCard(c);}});
+      side.appendChild(a);links.push(a);
+      var o=document.createElement('option');o.value=i;o.textContent=(i+1)+'. '+t;cardSel.appendChild(o);
+    });
+    mark();
+  }
+  function mark(){
+    if(!cards.length)return;
+    var line=headH()+40,k=0;
+    for(var i=0;i<cards.length;i++){if(cards[i].getBoundingClientRect().top<=line)k=i;}
+    links.forEach(function(a,i){a.className=(i===k)?'on':'';});
+  }
+  window.addEventListener('scroll',function(){if(!ticking){ticking=true;setTimeout(function(){ticking=false;mark();},80);}});
+
+  function show(i,scroll){
+    cur=Math.max(0,Math.min(steps.length-1,i));
+    steps.forEach(function(s,k){s.classList.toggle('on',k===cur);});
+    tabs.forEach(function(t,k){t.setAttribute('aria-selected',k===cur?'true':'false');});
+    var t=tabs[cur];tabBar.scrollLeft=t.offsetLeft-(tabBar.clientWidth-t.offsetWidth)/2;
+    stepSel.value=cur;
+    build(steps[cur]);
+    document.getElementById('prev').disabled=cur===0;
+    document.getElementById('next').disabled=cur===steps.length-1;
+    var sd=document.querySelector('.side');if(sd)sd.style.top=headH()+'px';
+    if(scroll){var m=document.getElementById('main');var y=m.getBoundingClientRect().top+pageY()-headH()-10;if(pageY()>y)window.scrollTo(0,Math.max(0,y));}
+  }
+  tabs.forEach(function(t){t.addEventListener('click',function(){show(+t.getAttribute('data-i'),true);});});
+  document.getElementById('prev').addEventListener('click',function(){show(cur-1,true);});
+  document.getElementById('next').addEventListener('click',function(){show(cur+1,true);});
+  stepSel.addEventListener('change',function(){show(+stepSel.value,true);});
+  cardSel.addEventListener('change',function(){var v=cardSel.value;if(v!==''){goCard(cards[+v]);}cardSel.value='';});
+
+  /* 글자 크기 */
+  var fs=20;
+  function setFs(v){fs=Math.max(16,Math.min(28,v));document.documentElement.style.setProperty('--fs',fs+'px');var sd=document.querySelector('.side');if(sd)sd.style.top=headH()+'px';}
+  document.getElementById('zUp').addEventListener('click',function(){setFs(fs+2);});
+  document.getElementById('zDown').addEventListener('click',function(){setFs(fs-2);});
+  document.getElementById('zReset').addEventListener('click',function(){setFs(20);});
+
+  /* 복사 */
+  [].slice.call(document.querySelectorAll('.prompt .copy')).forEach(function(b){
+    b.addEventListener('click',function(){
+      var box=b.parentNode,txt='';
+      for(var i=0;i<box.childNodes.length;i++){if(box.childNodes[i]!==b)txt+=box.childNodes[i].textContent;}
+      txt=txt.replace(/^\s+|\s+$/g,'');
+      function ok(){b.textContent='복사됨';b.classList.add('done');setTimeout(function(){b.textContent='복사';b.classList.remove('done');},1600);}
+      function fb(){var t=document.createElement('textarea');t.value=txt;t.style.position='absolute';t.style.left='-9999px';document.body.appendChild(t);t.select();try{document.execCommand('copy');ok();}catch(e){}document.body.removeChild(t);}
+      if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(ok,fb);}else fb();
+    });
+  });
+
+  /* 퀴즈 */
+  [].slice.call(document.querySelectorAll('.q')).forEach(function(q){
+    [].slice.call(q.querySelectorAll('.qo')).forEach(function(b){
+      b.addEventListener('click',function(){
+        if(q.classList.contains('done'))return;q.classList.add('done');
+        [].slice.call(q.querySelectorAll('.qo')).forEach(function(x){if(x.getAttribute('data-ok')==='1')x.classList.add('right');});
+        if(b.getAttribute('data-ok')!=='1')b.classList.add('wrong');
+      });
+    });
+  });
+
+  show(0,false);
+})();
+
+</script>
+</body></html>

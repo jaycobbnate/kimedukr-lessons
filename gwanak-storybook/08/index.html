@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>내 이야기 한 번에 · 글부터 그림책까지</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
+<style>
+:root{--pt:#2c6e7f;--pt2:#7aa9b6;--bg:#fbfaf7;--line:#e4e1da;--ink:#25292d;--sub:#5d636a;--fs:20px}
+*{box-sizing:border-box}
+html{font-size:var(--fs)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Pretendard,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;line-height:1.7;word-break:keep-all}
+a{color:var(--pt)}
+.top{position:sticky;top:0;z-index:30;background:rgba(251,250,247,.97);border-bottom:1px solid var(--line)}
+.top-row{max-width:1320px;margin:0 auto;display:flex;align-items:center;gap:1rem;padding:.45rem 1.2rem}
+.top-title{font-weight:700;font-size:.9rem;flex:1}
+.top-title span{color:var(--pt)}
+.nowpill{font-size:.72rem;background:#eef5f7;color:var(--pt);border-radius:99px;padding:.15rem .7rem;max-width:22rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.zoom button{font:inherit;font-size:.75rem;border:1px solid var(--line);background:#fff;border-radius:8px;padding:.15rem .55rem;cursor:pointer}
+.tabs{max-width:1320px;margin:0 auto;display:flex;gap:.35rem;padding:0 1.2rem .5rem;overflow-x:auto}
+.tab{font:inherit;font-size:.8rem;border:1px solid var(--line);background:#fff;border-radius:10px;padding:.35rem .8rem;cursor:pointer;white-space:nowrap;color:var(--ink)}
+.tab b{color:var(--pt);margin-right:.35rem}
+.tab.on{background:var(--pt);color:#fff;border-color:var(--pt)}
+.tab.on b{color:#fff}
+.wrap{max-width:1320px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr) 250px;gap:2rem;padding:1.2rem}
+.side{position:sticky;top:6.2rem;align-self:start;background:#fff;border:1px solid var(--line);border-radius:14px;padding:.8rem 1rem;font-size:.78rem}
+.side .sh{font-weight:700;color:var(--pt);margin-bottom:.4rem}
+.side a{display:block;text-decoration:none;color:var(--ink);padding:.25rem .3rem;border-radius:6px}
+.side a:hover{background:#eef5f7}
+.step{display:none}.step.on{display:block}
+.step-head .kicker{color:var(--pt);font-weight:700;font-size:.8rem}
+.step-head h2{margin:.2rem 0 .4rem;font-size:1.5rem;line-height:1.35}
+.step-head p{margin:0 0 1rem;color:var(--sub)}
+h3.sec{font-size:1.12rem;margin:2.2rem 0 .8rem;padding-top:.6rem;border-top:1px solid var(--line);scroll-margin-top:7rem}
+h3.sec .no{display:inline-block;background:#eef5f7;color:var(--pt);border-radius:8px;padding:0 .5rem;margin-right:.5rem;font-size:.9rem}
+.muted{color:var(--sub);font-size:.85rem}
+.howto{background:#fff;border:1px solid var(--pt2);border-radius:14px;padding:.7rem 1.1rem;margin:.8rem 0 1rem}
+.howto-lab{font-weight:700;color:var(--pt)}
+.howto ol{margin:.3rem 0 0;padding-left:1.3rem}
+.proc{display:flex;flex-wrap:wrap;align-items:center;gap:.35rem;margin:.6rem 0 1rem}
+.pc{background:#fff;border:1px solid var(--line);border-radius:10px;padding:.2rem .7rem;font-size:.82rem}
+.arr{color:var(--pt);font-weight:700}
+.ovwrap{background:#fff;border:1px solid var(--line);border-radius:14px;padding:.6rem;margin:.6rem 0}
+.ovwrap svg{width:100%;height:auto;display:block}
+.fnode:hover rect{stroke:var(--pt)}
+.tint{border-radius:14px;padding:.7rem 1.1rem;margin:1rem 0;font-size:.92rem}
+.tint .lab{display:block;font-weight:700;margin-bottom:.25rem}
+.tint ul,.tint ol{margin:.2rem 0;padding-left:1.2rem}
+.tint.set{background:#eef5f7}.tint.warn{background:#fbeeee}.tint.warn .lab{color:#a24b4b}
+.tint.check{background:#eef6f0}.tint.check .lab{color:#3f7a52}
+.tint.help{background:#f3f1ec}.tint.more{background:#f2eff8}.tint.more .lab{color:#6a55a0}
+ul.ck{list-style:none;padding-left:0}
+ul.ck input{width:1.05rem;height:1.05rem;vertical-align:-2px;accent-color:var(--pt)}
+.pbox{background:#fff;border:1px solid var(--line);border-radius:14px;margin:1rem 0;overflow:hidden}
+.phead{display:flex;flex-wrap:wrap;align-items:center;gap:.6rem;padding:.55rem .9rem;border-bottom:1px solid var(--line);background:#fcfbf8}
+.phead b{flex:1}
+.pwhere{font-size:.7rem;border-radius:99px;padding:.1rem .6rem;font-weight:700}
+.pwhere.gm{background:#eef5f7;color:var(--pt)}.pwhere.fl{background:#eef6f0;color:#3f7a52}
+.copy{font:inherit;font-size:.82rem;border:1px solid var(--pt);background:var(--pt);color:#fff;border-radius:10px;padding:.3rem .9rem;cursor:pointer}
+.copy.done{background:#3f7a52;border-color:#3f7a52}
+.pnote{margin:.5rem .9rem 0;font-size:.82rem;color:var(--sub)}
+pre.tpl{margin:0;padding:.8rem .9rem;white-space:pre-wrap;font-family:inherit;font-size:.86rem;line-height:1.65}
+pre.tpl mark{background:#e3f0f3;color:var(--pt);border-radius:4px;padding:0 .15rem}
+ol.do{padding-left:1.4rem}ol.do li{margin:.25rem 0}
+.tbl{overflow-x:auto;margin:.8rem 0}
+table{border-collapse:collapse;width:100%;background:#fff;font-size:.82rem}
+th,td{border:1px solid var(--line);padding:.35rem .55rem;text-align:left;vertical-align:top}
+th{background:#f4f2ed}
+.form{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}
+.form label,.mystyle label{display:block;font-size:.85rem}
+input[type=text],textarea{width:100%;font:inherit;font-size:.9rem;border:1px solid var(--line);border-radius:10px;padding:.4rem .6rem;background:#fff;margin-top:.2rem}
+.sfilter{display:flex;gap:.35rem;flex-wrap:wrap;margin:.6rem 0}
+.sfilter button{font:inherit;font-size:.8rem;border:1px solid var(--line);background:#fff;border-radius:99px;padding:.2rem .8rem;cursor:pointer}
+.sfilter button.on{background:var(--pt);color:#fff;border-color:var(--pt)}
+.sgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(205px,1fr));gap:.7rem}
+.scard{font:inherit;text-align:left;background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:.6rem .8rem;cursor:pointer;display:flex;flex-direction:column;gap:.2rem;color:var(--ink)}
+.scard:hover{border-color:var(--pt2)}
+.scard.on{border-color:var(--pt);background:#f4f9fa}
+.scard .sk{font-size:.68rem;color:var(--sub)}
+.scard b{font-size:.95rem}
+.scard .sd{font-size:.76rem;color:var(--sub);line-height:1.5}
+.scard .pick{margin-top:.3rem;font-size:.72rem;color:var(--pt);font-weight:700}
+.scard.on .pick::before{content:"✔ 고름 · "}
+.sw{height:34px;border-radius:8px;display:block}
+.mystyle{background:#fff;border:1px dashed #cfc9bd;border-radius:14px;padding:.7rem 1rem;margin:1rem 0}
+.nowstyle{font-size:.8rem;color:var(--sub);margin-top:.5rem}
+.nowstyle span{color:var(--pt)}
+.bgpick{display:grid;grid-template-columns:repeat(3,1fr);gap:.7rem}
+.bgopt{background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:.6rem .8rem;cursor:pointer;font-size:.85rem}
+.bgopt span{display:block;font-size:.76rem;color:var(--sub)}
+.bgopt.on{border-color:var(--pt);box-shadow:0 0 0 3px #d6e8ec}
+.sample{background:#fcfbf8;border:1px dashed #d8d3c8;border-radius:12px;padding:.6rem .9rem;margin:.8rem 0}
+.sample .lab{font-size:.75rem;font-weight:700;color:#8a7e66}
+code{background:#f1efe9;border-radius:5px;padding:0 .3rem;font-size:.85em}
+.bottom{position:sticky;bottom:0;z-index:20;background:rgba(251,250,247,.97);border-top:1px solid var(--line);margin-top:2rem}
+.bottom-in{max-width:1320px;margin:0 auto;display:flex;justify-content:space-between;gap:1rem;padding:.5rem 1.2rem}
+.bottom button{font:inherit;font-size:.85rem;border:1px solid var(--pt);background:#fff;color:var(--pt);border-radius:10px;padding:.35rem 1.1rem;cursor:pointer}
+.bottom button:disabled{opacity:.35;cursor:default}
+.bottom .where{font-size:.8rem;color:var(--sub);align-self:center}
+@media (max-width:900px){.wrap{grid-template-columns:1fr}.side{display:none}.form,.bgpick{grid-template-columns:1fr}}
+.sw-s1{background:linear-gradient(90deg,#cfe3ec,#f3d9c9,#e8efd9)}.sw-s2{background:linear-gradient(90deg,#c98f6b,#e6cf9e,#7d9b86)}.sw-s3{background:linear-gradient(90deg,#f1d6dc,#e3e0f2,#f7ecd2)}.sw-s4{background:linear-gradient(90deg,#e9a35c,#f2c86d,#8fb07a)}.sw-s5{background:linear-gradient(90deg,#d9b48f,#f3eadf,#9cb6c9)}.sw-s6{background:linear-gradient(90deg,#d6d6d6,#efefef 60%,#f0d8c4)}.sw-s7{background:linear-gradient(90deg,#f0a98c,#f4ece0,#8cc3b5)}.sw-s8{background:linear-gradient(180deg,#8fbfa8 0 33%,#e7c27d 33% 66%,#d97d6a 66%)}.sw-s9{background:linear-gradient(90deg,#c0392b 0 25%,#2e6f8e 25% 50%,#e3b04b 50% 75%,#3c8d5a 75%)}.sw-c1{background:linear-gradient(90deg,#cfe3ec,#f3d9c9,#e8efd9);border-bottom:3px solid #8a8a8a}.sw-c2{background:linear-gradient(90deg,#cfe3ec,#f3d9c9,#e8efd9);border-bottom:3px solid #222}.sw-c3{background:linear-gradient(90deg,#cfe3ec,#f3d9c9,#e8efd9);border-bottom:3px dashed #b07a4f}.sw-c4{background:linear-gradient(90deg,#c98f6b,#e6cf9e,#7d9b86);border-bottom:3px solid #8a8a8a}.sw-c5{background:linear-gradient(90deg,#c98f6b,#e6cf9e,#7d9b86);border-bottom:3px solid #222}.sw-c6{background:linear-gradient(90deg,#c98f6b,#e6cf9e,#7d9b86);border-bottom:3px dashed #b07a4f}.sw-c7{background:linear-gradient(90deg,#f1d6dc,#e3e0f2,#f7ecd2);border-bottom:3px solid #8a8a8a}.sw-c8{background:linear-gradient(90deg,#f1d6dc,#e3e0f2,#f7ecd2);border-bottom:3px dashed #b07a4f}.sw-c9{background:linear-gradient(90deg,#e9a35c,#f2c86d,#8fb07a);border-bottom:3px solid #8a8a8a}.sw-c10{background:linear-gradient(90deg,#e9a35c,#f2c86d,#8fb07a);border-bottom:3px solid #222}.form{grid-template-columns:1fr 1fr}</style></head><body>
+<div class="top" id="top"><div class="top-row"><div class="top-title"><span>내 이야기 한 번에</span> · 글부터 그림책까지</div>
+<div class="zoom" aria-label="글자 크기"><button type="button" data-z="-1">가−</button> <button type="button" data-z="0">기본</button> <button type="button" data-z="1">가+</button></div></div>
+<nav class="tabs"><button class="tab on" type="button"><b>0</b>내 이야기 칸</button><button class="tab" type="button"><b>1</b>인터뷰</button><button class="tab" type="button"><b>2</b>줄거리·제목</button><button class="tab" type="button"><b>3</b>12장</button><button class="tab" type="button"><b>4</b>글 초안</button><button class="tab" type="button"><b>5</b>퇴고·윤문·교정</button><button class="tab" type="button"><b>6</b>장면 표</button><button class="tab" type="button"><b>7</b>그림 한 번에</button><button class="tab" type="button"><b>8</b>그리기·책</button></nav></div>
+<div class="wrap"><main><section class="step on" id="m0"><div class="step-head"><div class="kicker">STEP 0 · 시작</div><h2>내 이야기 칸 채우기</h2><p>내 이야기로 그림책 한 권을 처음부터 끝까지 만드는 페이지예요. 글은 <b>한 단계씩</b> 다듬고, 그림 준비는 <b>프롬프트 한 방</b>으로 받아요. 모든 프롬프트는 <b>새 제미나이 채팅 하나</b>에서 이어서 보내요.<br><span class="muted">※ 프롬프트 = AI에게 하는 부탁 글 · 코드 블록 = 제미나이 답 속에 회색 상자로 따로 나오는 글 (오른쪽 위 복사 단추로 복사)</span></p></div><div class="howto"><span class="howto-lab">👆 이 화면 사용법</span><ol><li>아래 칸에 <b>기억나는 것만</b> 적어요. 빈칸은 비워 둬도 돼요 — 제미나이가 물어봐요</li><li>제미나이에서 <b>새 채팅</b>을 열어요 (왼쪽 위 「새 채팅」)</li><li>STEP 1부터 순서대로 복사 → 붙여 넣기 → 답하기</li></ol></div><h3 class="sec" id="t0-1"><span class="no">0-1</span>전체 순서 한눈에</h3><div class="ovwrap"><svg viewBox="0 0 1000 152" role="img" aria-label="내 이야기 한 번에 순서"><g class="fnode" data-go="0" style="cursor:pointer"><rect x="10" y="20" width="100" height="74" rx="14" fill="#fff" stroke="#9fb7bf" stroke-width="1.5"/><text x="60" y="46" text-anchor="middle" font-size="14" fill="#2c6e7f" font-weight="700">STEP 0</text><text x="60" y="72" text-anchor="middle" font-size="13.5" fill="#25292d" font-weight="700">내 이야기 칸</text></g><path d="M111,57 L118,57" stroke="#2c6e7f" stroke-width="3"/><g class="fnode" data-go="1" style="cursor:pointer"><rect x="120" y="20" width="100" height="74" rx="14" fill="#fff" stroke="#9fb7bf" stroke-width="1.5"/><text x="170" y="46" text-anchor="middle" font-size="14" fill="#2c6e7f" font-weight="700">STEP 1</text><text x="170" y="72" text-anchor="middle" font-size="13.5" fill="#25292d" font-weight="700">인터뷰</text></g><path d="M221,57 L228,57" stroke="#2c6e7f" stroke-width="3"/><g class="fnode" data-go="2" style="cursor:pointer"><rect x="230" y="20" width="100" height="74" rx="14" fill="#fff" stroke="#9fb7bf" stroke-width="1.5"/><text x="280" y="46" text-anchor="middle" font-size="14" fill="#2c6e7f" font-weight="700">STEP 2</text><text x="280" y="72" text-anchor="middle" font-size="13.5" fill="#25292d" font-weight="700">줄거리·제목</text></g><path d="M331,57 L338,57" stroke="#2c6e7f" stroke-width="3"/><g class="fnode" data-go="3" style="cursor:pointer"><rect x="340" y="20" width="100" height="74" rx="14" fill="#fff" stroke="#9fb7bf" stroke-width="1.5"/><text x="390" y="46" text-anchor="middle" font-size="14" fill="#2c6e7f" font-weight="700">STEP 3</text><text x="390" y="72" text-anchor="middle" font-size="13.5" fill="#25292d" font-weight="700">12장</text></g><path d="M441,57 L448,57" stroke="#2c6e7f" stroke-width="3"/><g class="fnode" data-go="4" style="cursor:pointer"><rect x="450" y="20" width="100" height="74" rx="14" fill="#fff" stroke="#9fb7bf" stroke-width="1.5"/><text x="500" y="46" text-anchor="middle" font-size="14" fill="#2c6e7f" font-weight="700">STEP 4</text><text x="500" y="72" text-anchor="middle" font-size="13.5" fill="#25292d" font-weight="700">글 초안</text></g><path d="M551,57 L558,57" stroke="#2c6e7f" stroke-width="3"/><g class="fnode" data-go="5" style="cursor:pointer"><rect x="560" y="20" width="100" height="74" rx="14" fill="#fff" stroke="#9fb7bf" stroke-width="1.5"/><text x="610" y="46" text-anchor="middle" font-size="14" fill="#2c6e7f" font-weight="700">STEP 5</text><text x="610" y="72" text-anchor="middle" font-size="13.5" fill="#25292d" font-weight="700">퇴고·윤문·교정</text></g><path d="M661,57 L668,57" stroke="#2c6e7f" stroke-width="3"/><g class="fnode" data-go="6" style="cursor:pointer"><rect x="670" y="20" width="100" height="74" rx="14" fill="#fff" stroke="#9fb7bf" stroke-width="1.5"/><text x="720" y="46" text-anchor="middle" font-size="14" fill="#2c6e7f" font-weight="700">STEP 6</text><text x="720" y="72" text-anchor="middle" font-size="13.5" fill="#25292d" font-weight="700">장면 표</text></g><path d="M771,57 L778,57" stroke="#2c6e7f" stroke-width="3"/><g class="fnode" data-go="7" style="cursor:pointer"><rect x="780" y="20" width="100" height="74" rx="14" fill="#2c6e7f" stroke="#9fb7bf" stroke-width="1.5"/><text x="830" y="46" text-anchor="middle" font-size="14" fill="#cfe2e7" font-weight="700">STEP 7</text><text x="830" y="72" text-anchor="middle" font-size="13.5" fill="#fff" font-weight="700">그림 한 번에</text></g><path d="M881,57 L888,57" stroke="#2c6e7f" stroke-width="3"/><g class="fnode" data-go="8" style="cursor:pointer"><rect x="890" y="20" width="100" height="74" rx="14" fill="#fff" stroke="#9fb7bf" stroke-width="1.5"/><text x="940" y="46" text-anchor="middle" font-size="14" fill="#2c6e7f" font-weight="700">STEP 8</text><text x="940" y="72" text-anchor="middle" font-size="13.5" fill="#25292d" font-weight="700">그리기·책</text></g><rect x="10" y="110" width="580" height="34" rx="10" fill="#eef5f7"/><text x="300" y="132" text-anchor="middle" font-size="14" fill="#25292d">STEP 1~6 · 글쓰기는 <tspan font-weight="700" fill="#2c6e7f">한 단계씩</tspan></text><rect x="600" y="110" width="390" height="34" rx="10" fill="#2c6e7f"/><text x="795" y="132" text-anchor="middle" font-size="14" fill="#fff">STEP 7 · 그림은 프롬프트 <tspan font-weight="700">한 방</tspan></text></svg></div><div class="tint set"><span class="lab">💬 제미나이가 거꾸로 물어봐요</span>이 페이지의 프롬프트는 <b>내 내용이 부족하면 제미나이가 먼저 질문</b>하게 만들어져 있어요. 질문이 나오면 <b>보기 번호(①②③)나 내 말로 답하세요.</b> 모르면 "모르겠어", 그만 묻고 진행하려면 "이대로 진행해 줘"라고 하면 돼요.</div><h3 class="sec" id="t0-2"><span class="no">0-2</span>내 이야기 칸</h3><div class="form"><label>책 제목 (임시) <input type="text" data-k="title" placeholder="예) 렌즈 뒤의 아빠에게"></label><label>지은이 (이름 또는 필명) <input type="text" data-k="author" placeholder="예) 봄날"></label><label>이야기의 주인공 · 중심 물건 <input type="text" data-k="who" placeholder="예) 아버지와 아버지의 은색 카메라"></label><label>언제 · 어디 <input type="text" data-k="when" placeholder="예) 1980년대 중반, 충청도 시골집 마당"></label><label>또 누가 나오나요 <input type="text" data-k="people" placeholder="예) 어머니, 남동생, 어린 나(7살)"></label><label>중심 물건(또는 사람)의 생김새 <input type="text" data-k="look" placeholder="예) 은색 몸통, 검은 가죽, 모서리 흠집"></label><label>기억나는 소리 · 냄새 <input type="text" data-k="sense" placeholder="예) 셔터 찰칵, 필름 감는 드르륵, 기름 냄새"></label><label>잊히지 않는 한 순간 <input type="text" data-k="moment" placeholder="예) 소풍날 가족을 다 넣으려 자꾸 뒤로 물러나던 모습"></label><label>그때 들은 말 <input type="text" data-k="words" placeholder="예) &quot;자, 웃어 봐.&quot;"></label><label>그때 마음 → 지금 마음 <input type="text" data-k="feel" placeholder="예) 사진 기다리던 일주일이 길었다 → 앨범에 아버지 사진이 없다는 걸 알았다"></label><label>이 책을 들려줄 사람 <input type="text" data-k="reader" placeholder="예) 다섯 살 손주"></label></div><p class="muted">여기 적은 것은 STEP 1 프롬프트에 자동으로 들어가요. 새로 고치면 지워질 수 있으니, 길게 적었으면 메모장에도 한 번 복사해 두세요.</p><button type="button" class="copy" id="clearAll" style="background:#fff;color:#a24b4b;border-color:#d9a3a3">🧹 내가 적은 칸 모두 지우기</button><div class="tint warn"><span class="lab">⚠ 센터 컴퓨터를 쓰면</span>이 칸에 적은 내용은 <b>이 컴퓨터에 남을 수 있어요.</b> 여러 사람이 같이 쓰는 컴퓨터라면 다 쓴 뒤 <b>「🧹 모두 지우기」</b>를 눌러 주세요. 제미나이도 <b>내 구글 계정</b>으로 로그인했는지 꼭 확인하세요.</div><div class="tint set"><span class="lab">📝 대화가 길어지면</span>한 채팅에서 책 한 권을 다 만들어서 대화가 아주 길어져요. 제미나이가 앞 내용을 잊은 것 같으면, <b>이야기 씨앗 메모</b>와 <b>최종본 코드 블록</b>을 다시 붙이고 "이걸로 이어 가자"라고 하세요. 메모와 최종본은 메모장(또는 한글 파일)에 따로 저장해 두면 든든해요.</div><div class="tint help"><span class="lab">🙋 막힐 때</span><ul><li><b>무엇을 써야 할지 모르겠어요</b> → 주인공 한 칸만 적어도 돼요. 나머지는 제미나이가 하나씩 물어봐요.</li><li><b>여러 이야기가 떠올라요</b> → 이번 책은 <b>한 사람, 한 물건, 한 순간</b>으로 좁혀요. 나머지는 다음 책으로.</li></ul></div><div class="tint more"><span class="lab">🚀 한 걸음 더</span><ul><li>옛날 사진이 있으면 꺼내 놓고 칸을 채워 보세요. 생김새 · 옷 · 장소가 훨씬 구체적으로 나와요.</li></ul></div></section><section class="step" id="m1"><div class="step-head"><div class="kicker">STEP 1 · 인터뷰</div><h2>제미나이가 묻고, 내가 답해요</h2><p>제미나이가 빈칸만 골라서 하나씩 물어봐요. 다 답하면 <b>「이야기 씨앗 메모」</b>(이야기 재료를 한 장에 모은 것)로 정리해 줘요.</p></div><div class="pbox"><div class="phead"><span class="pwhere gm">제미나이에 붙여 넣기</span><b>인터뷰 → 이야기 씨앗 메모</b><button class="copy" type="button">📋 복사하기</button></div><pre class="tpl" data-key="w1">[나·상황] 나는 내 이야기로 그림 에세이(그림책)를 만들려고 해. 아래는 내가 미리 적어 둔 것이야.
+{{SEED}}
+
+[목표] 이 이야기의 재료를 모아 「이야기 씨앗 메모」를 만들어 줘.
+
+[진행 방식] 미리 적은 것은 다시 묻지 말고, 비어 있거나 부족한 것만 한 번에 하나씩 물어봐. 고르기 쉬운 보기(①②③)도 함께 주고 내 답을 기다려.
+물어볼 것: 언제 · 어디 / 누가 나오는지 / 중심 물건의 생김새 / 소리 · 냄새 / 잊히지 않는 한 순간 / 그때 들은 말 / 그때 마음과 지금 마음 / 이 책을 들려줄 사람
+재료가 다 모이거나 내가 &quot;이대로 정리해 줘&quot;라고 하면 메모로 정리해.
+
+[지킬 것] 내가 말하지 않은 사실은 지어내지 마. 비어 있는 곳은 [확인 필요]로 둬.
+
+[결과 모양] 「이야기 씨앗 메모」를 코드 블록 하나로 (항목마다 한 줄).</pre></div><div class="tint check"><span class="lab">✍ 이 단계 실습</span><ol><li>복사해서 <b>새 제미나이 채팅</b>에 보내요</li><li>질문에 하나씩 답해요 (보기 번호로 답해도 돼요)</li><li>메모에 <b>[확인 필요]</b>가 남았으면 "○○은 이거야"라고 알려 줘요</li></ol></div><div class="tint help"><span class="lab">🙋 막힐 때</span><ul><li><b>질문이 끝없이 나와요</b> → "이대로 정리해 줘"라고 보내면 멈추고 메모로 정리해요.</li><li><b>기억이 흐려요</b> → "잘 기억 안 나"라고 답해도 돼요. [확인 필요]로 남겨 두고 나중에 채워요.</li></ul></div><div class="tint more"><span class="lab">🚀 한 걸음 더</span><ul><li>메모를 받은 뒤 "이 메모에서 독자가 가장 궁금해할 빈 곳 3개를 더 물어봐 줘"라고 해 보세요. 이야기가 훨씬 깊어져요.</li></ul></div><div class="tint check"><span class="lab">✅ 다 됐는지 점검</span><ul class="ck"><li><label><input type="checkbox"> 「이야기 씨앗 메모」 코드 블록을 받았다</label></li><li><label><input type="checkbox"> 내가 말하지 않은 내용이 들어가 있지 않다</label></li></ul></div></section><section class="step" id="m2"><div class="step-head"><div class="kicker">STEP 2 · 줄거리와 제목</div><h2>줄거리 한 편, 제목 고르기</h2><p>메모로 줄거리를 만들어요. 제미나이가 먼저 <b>이야기 구조</b>와 <b>말투</b>를 물어봐요.</p></div><div class="pbox"><div class="phead"><span class="pwhere gm">제미나이에 붙여 넣기</span><b>줄거리 + 제목 후보</b><button class="copy" type="button">📋 복사하기</button></div><pre class="tpl" data-key="w2">[목표] 위 「이야기 씨앗 메모」로 그림책 줄거리 한 편을 만들어 줘.
+
+[진행 방식] 만들기 전에 두 가지를 나에게 물어봐.
+① 이야기 구조: 지금 → 옛날 회상 → 다시 지금 / 처음부터 순서대로 / 다른 방식
+② 말투: &quot;~했다&quot; 에세이 말투 / &quot;~했어요&quot; 들려주는 말투 / 다른 말투
+내 답을 들은 뒤 만들어.
+
+[지킬 것] 내용이 부족하거나 애매하면 네가 정하지 말고 나에게 먼저 물어봐 (한 번에 하나씩, 고르기 쉬운 보기 ①②③와 함께). 메모에 없는 사건은 넣지 마. 400자 안쪽.
+
+[결과 모양] ① 줄거리 ② 이 이야기의 주제 한 줄 ③ 책 제목 후보 3개</pre></div><div class="tint check"><span class="lab">✍ 이 단계 실습</span><ol><li>구조와 말투 질문에 답해요</li><li>줄거리를 읽고, 마음에 안 들면 "줄거리를 다시 써 줘. ○○은 빼고 ○○을 넣어서"</li><li>제목이 별로면 <b>"제목만 다시 부탁해"</b> — 줄거리는 그대로 두고 제목만 새로 받아요</li><li>고르면 <b>"제목은 ○번으로 정했어"</b>라고 보내요</li></ol></div><div class="tint help"><span class="lab">🙋 막힐 때</span><ul><li><b>줄거리에 없던 일이 들어갔어요</b> → "○○은 실제로 없었어. 빼고 다시"라고 바로 말해요.</li><li><b>제목이 다 별로예요</b> → "좀 더 따뜻하게", "짧게 다섯 글자 안으로"처럼 느낌을 말해 주면 다시 줘요.</li></ul></div><div class="tint more"><span class="lab">🚀 한 걸음 더</span><ul><li>"이 줄거리의 가장 뭉클한 순간 하나를 골라 줘"라고 물어보세요. 그 장면이 나중에 느낌표 장면이 돼요.</li></ul></div><div class="tint check"><span class="lab">✅ 다 됐는지 점검</span><ul class="ck"><li><label><input type="checkbox"> 줄거리가 내 기억과 맞다</label></li><li><label><input type="checkbox"> 제목을 정했다</label></li></ul></div></section><section class="step" id="m3"><div class="step-head"><div class="kicker">STEP 3 · 12장 나누기</div><h2>표지 · 목차 · 장면 10개</h2><p>줄거리를 12장으로 나눠요. 제미나이가 먼저 장면을 어떻게 나눌지 제안하고 내 확인을 받아요.</p></div><div class="pbox"><div class="phead"><span class="pwhere gm">제미나이에 붙여 넣기</span><b>12장 나누기</b><button class="copy" type="button">📋 복사하기</button></div><pre class="tpl" data-key="w3">[목표] 이 줄거리를 12장으로 나눠 줘. 1장은 표지, 2장은 목차, 3~12장은 장면 10개야.
+
+[진행 방식] 먼저 장면 10개를 어떻게 나눌지(시작 · 가운데 · 끝을 몇 장씩) 제안하고 내 확인을 받아. 내가 좋다고 하면 표로 만들어.
+
+[지킬 것] 내용이 부족하거나 애매하면 네가 정하지 말고 나에게 먼저 물어봐 (한 번에 하나씩, 고르기 쉬운 보기 ①②③와 함께). 장면 수를 정확히 지켜. 줄거리에 없는 장면은 만들지 마.
+
+[결과 모양] 표: 장 | 쪽 제목 | 이 쪽에서 일어나는 일 (한 줄)</pre></div><div class="tint check"><span class="lab">✍ 이 단계 실습</span><ol><li>제안이 마음에 들면 "좋아", 아니면 "시작을 1장 줄이고 끝을 1장 늘려 줘"처럼</li><li>표를 받으면 장면 10개가 맞는지 세어 봐요</li></ol></div><div class="tint help"><span class="lab">🙋 막힐 때</span><ul><li><b>장면이 10개가 아니에요</b> → "장면을 정확히 10개로 다시"라고 해요.</li><li><b>쪽 제목이 어려워요</b> → "쪽 제목을 손주도 알아듣게 쉽게"라고 해요.</li></ul></div><div class="tint more"><span class="lab">🚀 한 걸음 더</span><ul><li>장면 하나에 한 가지 일만 일어나는지 보세요. 두 가지가 섞인 장면은 둘로 나누고 비슷한 장면은 합쳐 달라고 해요.</li></ul></div><div class="tint check"><span class="lab">✅ 다 됐는지 점검</span><ul class="ck"><li><label><input type="checkbox"> 표지 · 목차 · 장면 10개 표를 받았다</label></li></ul></div></section><section class="step" id="m4"><div class="step-head"><div class="kicker">STEP 4 · 글 초안</div><h2>장면 글을 두 번에 나눠 받아요</h2><p>한 번에 10장을 다 쓰게 하면 뒤로 갈수록 글이 짧아지고 엉뚱해져요. 그래서 <b>3~7장, 8~12장</b> 두 번에 나눠 받아요.</p></div><h3 class="sec" id="t4-1"><span class="no">4-1</span>3~7장</h3><div class="pbox"><div class="phead"><span class="pwhere gm">제미나이에 붙여 넣기</span><b>글 초안 3~7장</b><button class="copy" type="button">📋 복사하기</button></div><pre class="tpl" data-key="w4a">[목표] 3~7장에 들어갈 글 초안을 써 줘. (나머지 장은 다음에 따로 부탁할게)
+
+[진행 방식] 장마다 오른쪽 쪽에 들어갈 글 2~4문장. 대사가 필요한 장은 따옴표로 한 줄. 말투는 앞에서 정한 말투로.
+
+[지킬 것] 내용이 부족하거나 애매하면 네가 정하지 말고 나에게 먼저 물어봐 (한 번에 하나씩, 고르기 쉬운 보기 ①②③와 함께). 메모와 줄거리에 없는 사실은 쓰지 마. &quot;슬펐다 · 행복했다&quot; 같은 감정 낱말 대신 소리 · 냄새 · 물건으로 마음이 느껴지게.
+
+[결과 모양] 표: 장 | 쪽 제목 | 글</pre></div><h3 class="sec" id="t4-2"><span class="no">4-2</span>8~12장</h3><div class="pbox"><div class="phead"><span class="pwhere gm">제미나이에 붙여 넣기</span><b>글 초안 8~12장</b><button class="copy" type="button">📋 복사하기</button></div><pre class="tpl" data-key="w4b">[목표] 8~12장에 들어갈 글 초안을 써 줘. (나머지 장은 다음에 따로 부탁할게)
+
+[진행 방식] 장마다 오른쪽 쪽에 들어갈 글 2~4문장. 대사가 필요한 장은 따옴표로 한 줄. 말투는 앞에서 정한 말투로.
+
+[지킬 것] 내용이 부족하거나 애매하면 네가 정하지 말고 나에게 먼저 물어봐 (한 번에 하나씩, 고르기 쉬운 보기 ①②③와 함께). 메모와 줄거리에 없는 사실은 쓰지 마. &quot;슬펐다 · 행복했다&quot; 같은 감정 낱말 대신 소리 · 냄새 · 물건으로 마음이 느껴지게.
+
+[결과 모양] 표: 장 | 쪽 제목 | 글</pre></div><div class="tint check"><span class="lab">✍ 이 단계 실습</span><ol><li>두 번 다 받은 뒤 소리 내어 읽어 봐요</li><li>사실과 다른 곳이 있으면 "○장에 ○○은 없었어. 빼 줘"라고 바로 고쳐요</li></ol></div><div class="tint help"><span class="lab">🙋 막힐 때</span><ul><li><b>8~12장 말투가 3~7장과 달라요</b> → "3~7장과 같은 말투로 8~12장을 다시"라고 해요.</li><li><b>글이 너무 길어요</b> → "장마다 3문장 안으로"라고 해요.</li></ul></div><div class="tint more"><span class="lab">🚀 한 걸음 더</span><ul><li>한 장은 직접 써 보세요. 내가 쓴 문장을 붙이고 "이 장은 내가 쓴 글로 바꿔 줘. 맞춤법만 봐 줘"라고 하면 내 목소리가 책에 남아요.</li></ul></div><div class="tint check"><span class="lab">✅ 다 됐는지 점검</span><ul class="ck"><li><label><input type="checkbox"> 3~12장 글 초안을 다 받았다</label></li></ul></div></section><section class="step" id="m5"><div class="step-head"><div class="kicker">STEP 5 · 글 다듬기</div><h2>퇴고 → 윤문 → 교정, 이 순서로</h2><p>글 다듬기는 큰 것부터 작은 것 순서예요. <b>퇴고</b>(이야기 큰 틀 고치기) → <b>윤문</b>(문장 다듬기) → <b>교정</b>(맞춤법 · 띄어쓰기). 매번 <b>표로 먼저 보고, 내가 고른 것만</b> 반영해요.</p></div><div class="proc"><span class="pc">퇴고: 찾기</span><span class="arr">→</span><span class="pc">내가 골라 반영</span><span class="arr">→</span><span class="pc">윤문: 찾기</span><span class="arr">→</span><span class="pc">내가 골라 반영</span><span class="arr">→</span><span class="pc">교정 + 최종본</span></div><h3 class="sec" id="t5-1"><span class="no">5-1</span>퇴고 — 큰 틀 찾기</h3><div class="pbox"><div class="phead"><span class="pwhere gm">제미나이에 붙여 넣기</span><b>퇴고 (찾기만)</b><button class="copy" type="button">📋 복사하기</button></div><pre class="tpl" data-key="w5">[목표] 3~12장 글 전체를 퇴고(이야기의 큰 틀 고치기)해 줘. 이번에는 고칠 곳을 찾기만 하고 아직 고치지 마.
+
+[진행 방식] 이런 것을 찾아 줘: 흐름이 끊기는 곳 / 장과 장 사이에 연결이 빠진 곳 / 앞뒤가 안 맞는 사실(나이 · 때 · 곳 · 사람) / 같은 말 반복 / 메모에 없는 내용 / 들려줄 사람이 이해하기 어려운 곳
+
+[지킬 것] 내용이 부족하거나 애매하면 네가 정하지 말고 나에게 먼저 물어봐 (한 번에 하나씩, 고르기 쉬운 보기 ①②③와 함께). 
+
+[결과 모양] 표: 연번 | 장 | 무엇이 문제인지 | 이렇게 고치면 어떨지</pre></div><div class="pbox"><div class="phead"><span class="pwhere gm">제미나이에 붙여 넣기</span><b>내가 고른 것만 반영</b><button class="copy" type="button">📋 복사하기</button></div><p class="pnote">퇴고 표를 보고 ○ 자리에 연번을 적어 보내요. 윤문 뒤에도 이 상자를 한 번 더 써요.</p><pre class="tpl" data-key="w5b">[목표] 위 표에서 아래 연번만 반영해서 글을 고쳐 줘.
+- 반영할 것: 연번 ○, ○, ○
+- 반영하지 않을 것: 연번 ○
+
+[지킬 것] 내용이 부족하거나 애매하면 네가 정하지 말고 나에게 먼저 물어봐 (한 번에 하나씩, 고르기 쉬운 보기 ①②③와 함께). 고르지 않은 곳은 그대로 둬.
+
+[결과 모양] 표: 연번 | 장 | 고치기 전 | 고친 후 | 비고(무엇을 왜 바꿨는지)
+표 아래에 3~12장 글을 장마다 따로 코드 블록으로, 맨 위에 「글-3장 · 쪽 제목」처럼 구분 제목.</pre></div><h3 class="sec" id="t5-2"><span class="no">5-2</span>윤문 — 문장 다듬기</h3><div class="pbox"><div class="phead"><span class="pwhere gm">제미나이에 붙여 넣기</span><b>윤문 (표로 먼저)</b><button class="copy" type="button">📋 복사하기</button></div><pre class="tpl" data-key="w6">[목표] 위에서 고친 글을 윤문(문장 다듬기)해 줘. 이번에도 고칠 곳을 표로 먼저 보여 주고, 반영은 내가 고른 것만 할게.
+
+[진행 방식] 문장을 숨 쉬기 편한 길이로, 이 책을 들려줄 사람 나이에 맞는 낱말로, 소리 · 냄새 · 물건이 더 잘 보이게.
+
+[지킬 것] 내용이 부족하거나 애매하면 네가 정하지 말고 나에게 먼저 물어봐 (한 번에 하나씩, 고르기 쉬운 보기 ①②③와 함께). 사실이나 사건을 새로 넣지 마. 내 말투는 살려.
+
+[결과 모양] 표: 연번 | 장 | 고치기 전 | 고친 후 | 비고(무엇을 왜 바꿨는지)</pre></div><p class="muted">윤문 표를 보고 위 「내가 고른 것만 반영」 상자를 다시 복사해, 연번만 바꿔 보내요.</p><h3 class="sec" id="t5-3"><span class="no">5-3</span>교정 — 맞춤법 · 띄어쓰기 + 최종본</h3><div class="pbox"><div class="phead"><span class="pwhere gm">제미나이에 붙여 넣기</span><b>교정 + 최종본</b><button class="copy" type="button">📋 복사하기</button></div><pre class="tpl" data-key="w7">[목표] 위 글에서 맞춤법과 띄어쓰기를 교정해 줘. 그다음 고친 것을 반영한 최종본을 만들어 줘.
+
+[지킬 것] 내용이 부족하거나 애매하면 네가 정하지 말고 나에게 먼저 물어봐 (한 번에 하나씩, 고르기 쉬운 보기 ①②③와 함께). 낱말이나 문장 내용은 바꾸지 마. 고친 곳마다 근거(국립국어원 표준국어대사전 등)를 한 줄로. 고칠 곳이 없는 장은 &quot;없음&quot;.
+
+[결과 모양] ① 표: 장 | 틀린 곳 | 바르게 | 이유(근거)
+② 3~12장 최종본을 장마다 따로 코드 블록으로, 맨 위에 「글-3장 · 쪽 제목」
+③ 맨 아래에 전체 최종본 코드 블록 하나</pre></div><div class="tint set"><span class="lab">🔍 직접 확인하기</span><ul><li>최종본이 <b>장마다 따로 코드 블록</b>으로 나왔나요? 미리캔버스에 한 장씩 붙일 거예요.</li><li>고친 이유(비고 · 근거)를 읽어 보고 이상하면 "연번 ○은 원래대로"라고 해요.</li></ul></div><h3 class="sec" id="t5-4"><span class="no">5-4</span>책 앞뒤에 들어갈 글</h3><div class="pbox"><div class="phead"><span class="pwhere gm">제미나이에 붙여 넣기</span><b>앞표지 · 속표지 · 목차 · 판권 · 맺는 글 · 뒷표지 글</b><button class="copy" type="button">📋 복사하기</button></div><pre class="tpl" data-key="fin4">[나·상황] 위 최종본으로 표지까지 포함한 26쪽 전자책을 만들어. 1쪽 앞표지, 2쪽 앞속표지, 3쪽 목차, 4~23쪽은 장면(그림은 왼쪽 짝수 쪽, 글은 오른쪽 홀수 쪽), 24쪽 판권, 25쪽 맺는 글, 26쪽 뒷표지야.
+
+[목표] 장면 글 말고, 책 앞뒤에 들어가는 글을 만들어 줘.
+
+[먼저 물어볼 것] 만들기 전에 나에게 하나씩 물어봐 줘: 지은이 이름(또는 필명), 맺는 글을 건넬 사람, 맺는 글에 꼭 넣고 싶은 말, 펴낸 날. 내가 답하지 않은 것은 네가 정하지 말고 [빈칸]으로 둬.
+
+[만들 것]
+① 앞표지 글: 제목 「{{TITLE}}」, 지은이 {{AUTHOR}} (비어 있으면 위 질문으로)
+② 앞속표지 글: 제목과 지은이
+③ 목차: 장면 제목 10개와 쪽 번호 (장면 그림 쪽 4 · 6 · 8 … 22)
+④ 판권: 제목 · 글 · 그림(AI 도구 활용) · 펴낸 날 · ⓒ (ISBN·펴낸곳은 [나중에])
+⑤ 맺는 글: 이 책을 들려줄 사람에게 건네는 3~5줄
+⑥ 뒷표지 소개: 2~3줄
+
+[지킬 것] 글에 없는 사건은 만들지 마. 본문과 같은 말투로.
+
+[결과 모양] ①~⑥을 각각 코드 블록으로, 맨 위에 「앞뒤-① 앞표지」처럼 구분 제목.</pre></div><div class="tint help"><span class="lab">🙋 막힐 때</span><ul><li><b>표가 너무 많아요</b> → 퇴고에서는 <b>사실이 틀린 곳</b>만 먼저 고쳐도 돼요.</li><li><b>윤문이 내 말투를 바꿔 버렸어요</b> → 그 연번은 반영하지 마세요. "내 말투는 그대로 두고 문장 길이만"이라고 다시 해요.</li></ul></div><div class="tint more"><span class="lab">🚀 한 걸음 더</span><ul><li>퇴고 · 윤문 · 교정이 왜 이 순서인지: 집을 고칠 때 <b>구조(퇴고) → 인테리어(윤문) → 마감 청소(교정)</b> 순서인 것과 같아요. 맞춤법을 먼저 고치면 문장이 바뀔 때 또 고쳐야 해요.</li></ul></div><div class="tint check"><span class="lab">✅ 다 됐는지 점검</span><ul class="ck"><li><label><input type="checkbox"> 퇴고 → 윤문 → 교정을 차례로 했다</label></li><li><label><input type="checkbox"> 장마다 최종본 코드 블록이 있다</label></li><li><label><input type="checkbox"> 앞뒤 쪽 글을 받았다</label></li></ul></div></section><section class="step" id="m6"><div class="step-head"><div class="kicker">STEP 6 · 장면 표</div><h2>그림을 어떻게 보여 줄지 정해요</h2><p>장면마다 독자가 꼭 봐야 할 것과 카메라(뷰 · 샷 · 앵글)를 정해요. 느낌표 장면(클로즈업 같은 극적인 장면)은 제미나이가 후보를 보여 주고 물어봐요.</p></div><div class="pbox"><div class="phead"><span class="pwhere gm">제미나이에 붙여 넣기</span><b>장면 표 (뷰 · 샷 · 앵글)</b><button class="copy" type="button">📋 복사하기</button></div><pre class="tpl" data-key="w8">[나·상황] 위 최종본으로 그림 에세이를 만들어. 장면 10개(3~12장)는 펼쳤을 때 왼쪽 쪽에 그림(3:4 세로, 쪽을 꽉 채움), 오른쪽 쪽에 글이 들어가.
+
+[목표] 장마다 어떤 그림이 좋을지, 그리고 카메라(뷰 · 샷 · 앵글)를 정해 줘.
+
+[지킬 것] 내용이 부족하거나 애매하면 네가 정하지 말고 나에게 먼저 물어봐 (한 번에 하나씩, 고르기 쉬운 보기 ①②③와 함께). 
+· 첫 장면은 멀리서(롱샷 · 풀샷), 마지막 장면은 한 걸음 뒤에서(미디엄샷 이상)
+· 클로즈업 · 로우 앵글 · 하이 앵글 · 1인칭은 모두 &quot;느낌표 장면&quot;으로 세서 2~3장만. 어느 장면을 느낌표로 할지 후보를 보여 주고 나에게 물어봐
+· 같은 샷 3장 연속 금지 · 장마다 지금/옛날을 빛과 색으로 구분 · 글에 없는 사건은 그리지 않기
+
+[결과 모양] 표: 장 | 꼭 봐야 할 것 | 뷰 | 샷 | 앵글 | 느낌표 | 빛 · 색 | 이유. 표 아래에 샷 순서 한 줄.</pre></div><div class="tint set"><span class="lab">뷰 · 샷 · 앵글 한 줄 복습</span><b>뷰</b> = 인물이 보는 방향 · <b>샷</b> = 얼마나 가까이 · <b>앵글</b> = 카메라 높이. 대부분은 상황이 잘 보이게(롱 · 풀 · 미디엄), 느낌표는 2~3장만.</div><div class="tint help"><span class="lab">🙋 막힐 때</span><ul><li><b>다 비슷한 샷이에요</b> → "같은 샷 3장 연속 금지 규칙으로 다시 점검해 줘"라고 해요.</li></ul></div><div class="tint more"><span class="lab">🚀 한 걸음 더</span><ul><li>느낌표 장면 하나는 1인칭(내 눈으로 본 장면)으로 해 보세요. 독자가 그 순간 안에 들어가요.</li></ul></div><div class="tint check"><span class="lab">✅ 다 됐는지 점검</span><ul class="ck"><li><label><input type="checkbox"> 장면 10개 표를 받았다</label></li><li><label><input type="checkbox"> 느낌표 장면을 내가 골랐다</label></li></ul></div></section><section class="step" id="m7"><div class="step-head"><div class="kicker">STEP 7 · 그림 준비 한 방</div><h2>화풍 → 고정 문장 → 플로우 프롬프트, 한 번에</h2><p>그림 준비는 <b>프롬프트 하나</b>로 끝까지 가요. 제미나이가 ① 화풍 ② 사람 · 물건 생김새 ③ 플로우 프롬프트 A~J 순서로, 단계마다 <b>나에게 확인을 받으며</b> 진행해요.</p></div><h3 class="sec" id="t7-1"><span class="no">7-1</span>먼저 두 가지만 골라요</h3><div class="mystyle"><label><b>✍ 정해 둔 화풍 문장이 있으면</b> <span class="muted">(없으면 비워 두세요. 제미나이가 묻고 추천해 줘요. 화풍을 직접 비교해 보고 싶으면 「내 이야기 그림책 · 화풍부터 미리캔버스까지」 페이지 STEP 1의 화풍 카드 19개를 보세요)</span><textarea id="fStyle" rows="2" placeholder="예) Watercolor illustration with light graphite pencil outlines, ..."></textarea></label></div><p><b>글 쪽 배경</b></p><div class="bgpick"><label class="bgopt"><input type="radio" name="bg" value="bg1" checked> <b>① 종이 질감만</b><span>아주 옅은 종이 바탕. 글이 가장 잘 읽혀요.</span></label><label class="bgopt"><input type="radio" name="bg" value="bg2" > <b>② 종이 + 가장자리 작은 소품</b><span>아래쪽 가장자리에만 이야기 속 작은 물건을 흐리게. 가운데는 비워요.</span></label><label class="bgopt"><input type="radio" name="bg" value="bg3" > <b>③ 배경 없이 흰 바탕</b><span>그림을 만들지 않아요. 미리캔버스에서 흰 바탕에 글만 넣어요.</span></label></div><h3 class="sec" id="t7-2"><span class="no">7-2</span>그림 준비 한 방 프롬프트</h3><div class="pbox"><div class="phead"><span class="pwhere gm">제미나이에 붙여 넣기</span><b>화풍 → 고정 문장 → A~J 한 번에</b><button class="copy" type="button">📋 복사하기</button></div><pre class="tpl" data-key="g1">[나·상황] 위 최종본과 장면 표로 표지까지 포함한 26쪽 그림 에세이를 만들어. 그림은 구글 플로우에서 그릴 거야. (1쪽 앞표지, 2쪽 앞속표지, 3쪽 목차, 4~23쪽 장면 — 그림은 왼쪽 짝수 쪽 · 글은 오른쪽 홀수 쪽, 24쪽 판권, 25쪽 맺는 글, 26쪽 뒷표지)
+
+[목표] 그림 준비를 한 번에 진행해 줘. 아래 ①→②→③ 순서로, 한 단계가 끝날 때마다 내 확인을 받고 다음 단계로 가.
+
+① 화풍 정하기: 나에게 하나씩 물어봐 (누구와 볼 책인지 · 원하는 분위기 · 좋은 그림 느낌과 싫은 그림 느낌). 그다음 화풍 3가지를 추천하고 내가 고르면 「화풍 고정 문장」(영어 한 문장)을 코드 블록으로 확정해. 내가 미리 정한 화풍 문장이 있으면 그걸 써: {{STYLE}}
+② 고정 문장: 등장인물(같은 사람이라도 나이가 다르면 따로)과 중심 물건 목록을 보여 주고 빠진 게 없는지 물어봐. 글에 없는 생김새는 한 사람씩 물어봐. 내가 &quot;모르겠어&quot;라고 한 것만 정하고 [견본]으로 표시. 결과는 표 + 코드 블록(「P-1 · 이름」, 「O-1 · 물건」).
+③ 플로우 프롬프트:
+A 캐릭터 시트: 사람마다 1개, 16:9, 앞 · 옆 · 뒤 + 표정 3가지, 흰 바탕
+B 소품 앵커: 물건마다 1개, 16:9, 앞 · 옆 · 위 · 가까이, 흰 바탕
+C 장면 10개: 3:4 세로, 장면 표의 뷰 · 샷 · 앵글 · 빛 · 색 그대로 (5장씩 나눠서 보여 주기)
+D 앞표지: D-1 위쪽 1/3 제목 자리 비우기(글자 없음) / D-2 제목 「{{TITLE}}」과 지은이 {{AUTHOR}} 글자까지
+E 앞속표지: 중심 물건 하나를 작게, 여백 넉넉히
+F 목차 배경: 가운데 70% 비우고 가장자리에만 작은 소품
+{{BG}}
+H 판권 배경: 아주 연하고 거의 빈 바탕
+I 맺는 글 배경: 위쪽 비우고 아래쪽에 마지막 장면을 작게
+J 뒷표지: 앞표지와 짝, 가운데 아래 소개 글 자리 비우기
+
+[지킬 것] 내용이 부족하거나 애매하면 네가 정하지 말고 나에게 먼저 물어봐 (한 번에 하나씩, 고르기 쉬운 보기 ①②③와 함께). 
+· 모든 그림 프롬프트 맨 앞에 화풍 고정 문장, 사람 · 물건은 고정 문장을 줄이지 말고 그대로
+· D-2를 뺀 모든 그림 프롬프트 끝에 Full-bleed, edge to edge, no text, no letters, no frame, no border, no vignette.
+· 글에 없는 사건 · 물건은 그리지 않기
+
+[결과 모양] 코드 블록마다 맨 위에 「A-1 · 아버지(옛날)」, 「C-3 · 5장 쪽 제목」처럼 구분 제목. 장면 블록 아래에는 &quot;첨부할 기준 그림: A-1, B-1&quot; 한 줄. 마지막에 표: 구분 | 무엇 | 책 몇 쪽 | 비율</pre></div><div class="tint check"><span class="lab">✍ 이 단계 실습</span><ol><li>복사해서 <b>같은 채팅</b>에 보내요</li><li>① 화풍 질문에 답하고 화풍을 골라요</li><li>② 생김새 질문에 답해요 (모르면 "모르겠어")</li><li>③ A~J 프롬프트가 나오면 블록마다 <b>구분 제목 · 맨 앞 화풍 문장 · 고정 문장</b>을 확인해요</li><li>중간에 끊기면 <b>"이어서 계속해 줘"</b></li></ol></div><div class="tbl"><table><tr><th>쪽</th><th>무엇</th><th>그림 (플로우 구분)</th><th>글 (미리캔버스)</th></tr><tr><td>1</td><td>앞표지</td><td>D-1 (또는 D-2)</td><td>제목 · 지은이 (D-1이면 미리캔버스에서 넣기)</td></tr><tr><td>2 (왼쪽)</td><td>앞속표지</td><td>E</td><td>제목 · 지은이</td></tr><tr><td>3 (오른쪽)</td><td>목차</td><td>F</td><td>장면 제목 10개 + 쪽 번호</td></tr><tr><td>4·6·8 … 22 (왼쪽)</td><td>장면 그림 1~10</td><td>C-1 ~ C-10 (쪽을 꽉 채움)</td><td>없음</td></tr><tr><td>5·7·9 … 23 (오른쪽)</td><td>장면 글 1~10</td><td>G (②·①) / ③이면 없음</td><td>최종본 글 (장면마다 하나씩)</td></tr><tr><td>24 (왼쪽)</td><td>판권</td><td>H (아주 연하게)</td><td>제목 · 글 · 그림 · 펴낸 날 · ⓒ</td></tr><tr><td>25 (오른쪽)</td><td>맺는 글</td><td>I</td><td>들려줄 사람에게 건네는 3~5줄</td></tr><tr><td>26</td><td>뒷표지</td><td>J</td><td>짧은 소개 2~3줄</td></tr></table></div><div class="tint help"><span class="lab">🙋 막힐 때</span><ul><li><b>한 번에 너무 길어요</b> → "③은 A와 B만 먼저 줘"처럼 나눠 달라고 해도 돼요. 단계별로 하고 싶으면 「내 이야기 그림책 · 화풍부터 미리캔버스까지」 페이지 STEP 3을 따라 하세요.</li><li><b>고정 문장이 줄어 있어요</b> → "C-4에 고정 문장이 줄었어. 그대로 넣어서 다시"</li></ul></div><div class="tint more"><span class="lab">🚀 한 걸음 더</span><ul><li>화풍을 고르기 어려우면, 추천 3개로 <b>같은 장면을 1장씩 그려 비교</b>해 보세요. 「내 이야기 그림책 · 화풍부터 미리캔버스까지」 페이지 STEP 1-3에 비교 프롬프트가 있어요.</li></ul></div><div class="tint check"><span class="lab">✅ 다 됐는지 점검</span><ul class="ck"><li><label><input type="checkbox"> 화풍 고정 문장을 정했다</label></li><li><label><input type="checkbox"> 사람 · 물건 고정 문장을 받았다</label></li><li><label><input type="checkbox"> A~J 프롬프트를 다 받았다</label></li></ul></div></section><section class="step" id="m8"><div class="step-head"><div class="kicker">STEP 8 · 그리기와 책 만들기</div><h2>플로우에서 그리고, 미리캔버스에서 26쪽으로</h2><p>이제 받은 프롬프트로 그림을 그리고 책으로 앉혀요. 자세한 화면 설명은 「내 이야기 그림책 · 화풍부터 미리캔버스까지」 페이지 <b>STEP 4 · 5 · 6</b>에 있어요.</p></div><h3 class="sec" id="t8-1"><span class="no">8-1</span>26쪽 책 지도</h3><div class="ovwrap"><svg viewBox="0 0 960 305" role="img" aria-label="표지 포함 26쪽 책 지도"><rect x="71.0" y="16" width="59.0" height="78" rx="3" fill="#2c6e7f"/><text x="100.5" y="60.0" text-anchor="middle" font-size="12.5" fill="#fff" font-weight="700">앞표지</text><text x="71.0" y="114" text-anchor="middle" font-size="13" fill="#5d636a">1쪽</text><rect x="148.0" y="16" width="59.0" height="78" fill="#cfe2e7" stroke="#9fb7bf" stroke-width="1.2"/><text x="177.5" y="60.0" text-anchor="middle" font-size="12.5" fill="#25292d">앞속표지</text><rect x="207.0" y="16" width="59.0" height="78" fill="#fff" stroke="#9fb7bf" stroke-width="1.2"/><text x="236.5" y="60.0" text-anchor="middle" font-size="12.5" fill="#25292d">목차</text><text x="207.0" y="114" text-anchor="middle" font-size="13" fill="#5d636a">2·3쪽</text><rect x="284.0" y="16" width="59.0" height="78" fill="#cfe2e7" stroke="#9fb7bf" stroke-width="1.2"/><text x="313.5" y="60.0" text-anchor="middle" font-size="12.5" fill="#25292d">그림 1</text><rect x="343.0" y="16" width="59.0" height="78" fill="#fff" stroke="#9fb7bf" stroke-width="1.2"/><text x="372.5" y="60.0" text-anchor="middle" font-size="12.5" fill="#25292d">글 1</text><text x="343.0" y="114" text-anchor="middle" font-size="13" fill="#5d636a">4·5쪽</text><rect x="420.0" y="16" width="59.0" height="78" fill="#cfe2e7" stroke="#9fb7bf" stroke-width="1.2"/><text x="449.5" y="60.0" text-anchor="middle" font-size="12.5" fill="#25292d">그림 2</text><rect x="479.0" y="16" width="59.0" height="78" fill="#fff" stroke="#9fb7bf" stroke-width="1.2"/><text x="508.5" y="60.0" text-anchor="middle" font-size="12.5" fill="#25292d">글 2</text><text x="479.0" y="114" text-anchor="middle" font-size="13" fill="#5d636a">6·7쪽</text><rect x="556.0" y="16" width="59.0" height="78" fill="#cfe2e7" stroke="#9fb7bf" stroke-width="1.2"/><text x="585.5" y="60.0" text-anchor="middle" font-size="12.5" fill="#25292d">그림 3</text><rect x="615.0" y="16" width="59.0" height="78" fill="#fff" stroke="#9fb7bf" stroke-width="1.2"/><text x="644.5" y="60.0" text-anchor="middle" font-size="12.5" fill="#25292d">글 3</text><text x="615.0" y="114" text-anchor="middle" font-size="13" fill="#5d636a">8·9쪽</text><rect x="692.0" y="16" width="59.0" height="78" fill="#cfe2e7" stroke="#9fb7bf" stroke-width="1.2"/><text x="721.5" y="60.0" text-anchor="middle" font-size="12.5" fill="#25292d">그림 4</text><rect x="751.0" y="16" width="59.0" height="78" fill="#fff" stroke="#9fb7bf" stroke-width="1.2"/><text x="780.5" y="60.0" text-anchor="middle" font-size="12.5" fill="#25292d">글 4</text><text x="751.0" y="114" text-anchor="middle" font-size="13" fill="#5d636a">10·11쪽</text><rect x="828.0" y="16" width="59.0" height="78" fill="#cfe2e7" stroke="#9fb7bf" stroke-width="1.2"/><text x="857.5" y="60.0" text-anchor="middle" font-size="12.5" fill="#25292d">그림 5</text><rect x="887.0" y="16" width="59.0" height="78" fill="#fff" stroke="#9fb7bf" stroke-width="1.2"/><text x="916.5" y="60.0" text-anchor="middle" font-size="12.5" fill="#25292d">글 5</text><text x="887.0" y="114" text-anchor="middle" font-size="13" fill="#5d636a">12·13쪽</text><rect x="12.0" y="146" width="59.0" height="78" fill="#cfe2e7" stroke="#9fb7bf" stroke-width="1.2"/><text x="41.5" y="190.0" text-anchor="middle" font-size="12.5" fill="#25292d">그림 6</text><rect x="71.0" y="146" width="59.0" height="78" fill="#fff" stroke="#9fb7bf" stroke-width="1.2"/><text x="100.5" y="190.0" text-anchor="middle" font-size="12.5" fill="#25292d">글 6</text><text x="71.0" y="244" text-anchor="middle" font-size="13" fill="#5d636a">14·15쪽</text><rect x="148.0" y="146" width="59.0" height="78" fill="#cfe2e7" stroke="#9fb7bf" stroke-width="1.2"/><text x="177.5" y="190.0" text-anchor="middle" font-size="12.5" fill="#25292d">그림 7</text><rect x="207.0" y="146" width="59.0" height="78" fill="#fff" stroke="#9fb7bf" stroke-width="1.2"/><text x="236.5" y="190.0" text-anchor="middle" font-size="12.5" fill="#25292d">글 7</text><text x="207.0" y="244" text-anchor="middle" font-size="13" fill="#5d636a">16·17쪽</text><rect x="284.0" y="146" width="59.0" height="78" fill="#cfe2e7" stroke="#9fb7bf" stroke-width="1.2"/><text x="313.5" y="190.0" text-anchor="middle" font-size="12.5" fill="#25292d">그림 8</text><rect x="343.0" y="146" width="59.0" height="78" fill="#fff" stroke="#9fb7bf" stroke-width="1.2"/><text x="372.5" y="190.0" text-anchor="middle" font-size="12.5" fill="#25292d">글 8</text><text x="343.0" y="244" text-anchor="middle" font-size="13" fill="#5d636a">18·19쪽</text><rect x="420.0" y="146" width="59.0" height="78" fill="#cfe2e7" stroke="#9fb7bf" stroke-width="1.2"/><text x="449.5" y="190.0" text-anchor="middle" font-size="12.5" fill="#25292d">그림 9</text><rect x="479.0" y="146" width="59.0" height="78" fill="#fff" stroke="#9fb7bf" stroke-width="1.2"/><text x="508.5" y="190.0" text-anchor="middle" font-size="12.5" fill="#25292d">글 9</text><text x="479.0" y="244" text-anchor="middle" font-size="13" fill="#5d636a">20·21쪽</text><rect x="556.0" y="146" width="59.0" height="78" fill="#cfe2e7" stroke="#9fb7bf" stroke-width="1.2"/><text x="585.5" y="190.0" text-anchor="middle" font-size="12.5" fill="#25292d">그림 10</text><rect x="615.0" y="146" width="59.0" height="78" fill="#fff" stroke="#9fb7bf" stroke-width="1.2"/><text x="644.5" y="190.0" text-anchor="middle" font-size="12.5" fill="#25292d">글 10</text><text x="615.0" y="244" text-anchor="middle" font-size="13" fill="#5d636a">22·23쪽</text><rect x="692.0" y="146" width="59.0" height="78" fill="#fff" stroke="#9fb7bf" stroke-width="1.2"/><text x="721.5" y="190.0" text-anchor="middle" font-size="12.5" fill="#25292d">판권</text><rect x="751.0" y="146" width="59.0" height="78" fill="#fff" stroke="#9fb7bf" stroke-width="1.2"/><text x="780.5" y="190.0" text-anchor="middle" font-size="12.5" fill="#25292d">맺는 글</text><text x="751.0" y="244" text-anchor="middle" font-size="13" fill="#5d636a">24·25쪽</text><rect x="828" y="146" width="59.0" height="78" rx="3" fill="#2c6e7f"/><text x="857.5" y="190.0" text-anchor="middle" font-size="12.5" fill="#fff" font-weight="700">뒷표지</text><text x="887.0" y="244" text-anchor="middle" font-size="13" fill="#5d636a">26쪽</text><g transform="translate(12,280)"><rect width="22" height="16" fill="#cfe2e7" stroke="#9fb7bf"/><text x="30" y="13" font-size="14" fill="#25292d">그림 (왼쪽 · 짝수 쪽)</text><rect x="220" width="22" height="16" fill="#fff" stroke="#9fb7bf"/><text x="250" y="13" font-size="14" fill="#25292d">글 (오른쪽 · 홀수 쪽)</text><rect x="430" width="22" height="16" fill="#2c6e7f"/><text x="460" y="13" font-size="14" fill="#25292d">표지 (혼자 한 쪽)</text></g></svg></div><div class="tint warn"><span class="lab">⚠ 쪽 규칙</span>표지 다음 앞부분(2 · 3쪽)은 꼭 <b>2쪽</b>이어야 그림이 왼쪽에 와요. 부크크에 낼 때도 <b>표지를 빼지 말고 26쪽 그대로</b> 올리고, 앞표지 JPG는 따로 한 장 더 준비해요.</div><h3 class="sec" id="t8-2"><span class="no">8-2</span>구글 플로우에서 그리기</h3><ol class="do"><li><a href="https://labs.google/fx/ko/tools/flow" target="_blank" rel="noopener">구글 플로우</a> → 새 프로젝트 → <b>이미지</b> 만들기</li><li><b>16:9</b>로 A(사람) → B(물건)를 먼저 그려 저장 (이름: A-1_아버지)</li><li><b>3:4</b>로 바꾸고, 장면마다 ＋로 「첨부할 기준 그림」을 올린 뒤 C 프롬프트 + 끝에 아래 첨부 문장</li><li>D-1 · E · F · G · H · I · J도 3:4로. 파일 이름 앞에 쪽 번호 (04_C-1, 01_D-1 …)</li><li>테두리 · 글자가 생긴 그림은 버리고 다시</li></ol><div class="pbox"><div class="phead"><span class="pwhere fl">플로우에 붙여 넣기</span><b>첨부 문장 — 장면 프롬프트 맨 끝에</b><button class="copy" type="button">📋 복사하기</button></div><p class="pnote">뜻: 첨부한 기준 그림의 사람과 물건을 똑같이 유지해 줘.</p><pre class="tpl" data-key="attach">Keep the people and objects exactly the same as in the attached reference images (same face, hair, clothes, age, colors and shape).</pre></div><h3 class="sec" id="t8-3"><span class="no">8-3</span>미리캔버스에서 26쪽 만들기</h3><ol class="do"><li><a href="https://www.miricanvas.com" target="_blank" rel="noopener">미리캔버스</a> → 새 디자인 → 직접 입력 <b>148 × 210 mm</b> → 26쪽</li><li>짝수 쪽(4 · 6 … 22)에 장면 그림을 꽉 채우기</li><li>홀수 쪽(5 · 7 … 23)에 G 배경 + 최종본 글 (5쪽을 만든 뒤 페이지 복제)</li><li>1 앞표지 · 2 속표지 · 3 목차 · 24 판권 · 25 맺는 글 · 26 뒷표지</li><li>다운로드 → PDF → 헤이진에서 넘겨 보며 점검 → 수업 패들렛에 링크 올리기</li></ol><div class="tint check"><span class="lab">✅ 다 됐는지 점검</span><ul class="ck"><li><label><input type="checkbox"> 그림을 다 그렸다</label></li><li><label><input type="checkbox"> 26쪽 PDF를 만들었다</label></li><li><label><input type="checkbox"> 헤이진에서 왼쪽 그림 · 오른쪽 글로 보인다</label></li></ul></div></section></main><aside class="side"><div class="sh">이 STEP 안에서 이동</div><div id="sideList"></div></aside></div>
+<div class="bottom"><div class="bottom-in"><button type="button" id="prev">◀ 이전 STEP</button><span class="where" id="where"></span><button type="button" id="next">다음 STEP ▶</button></div></div>
+<script>
+(function(){
+var BG={"bg1": "G 글 쪽 배경: plain warm off-white paper texture, almost empty, very light and even, nothing in the center.", "bg2": "G 글 쪽 배경: warm off-white paper texture with a few tiny props from the story drawn faintly along the bottom edge only, the center 80% left completely empty.", "bg3": "G 글 쪽 배경: 만들지 마. 글 쪽은 흰 바탕으로 할 거야."}, LAB={"title": "책 제목 (임시)", "author": "지은이 (이름 또는 필명)", "who": "이야기의 주인공 · 중심 물건", "when": "언제 · 어디", "people": "또 누가 나오나요", "look": "중심 물건(또는 사람)의 생김새", "sense": "기억나는 소리 · 냄새", "moment": "잊히지 않는 한 순간", "words": "그때 들은 말", "feel": "그때 마음 → 지금 마음", "reader": "이 책을 들려줄 사람"};
+var store={get:function(k){try{return localStorage.getItem('gw7_'+k)}catch(e){return null}},set:function(k,v){try{localStorage.setItem('gw7_'+k,v)}catch(e){}}};
+var st={my:store.get('my')||'',bg:store.get('bg')||'bg1'};
+var flds=[].slice.call(document.querySelectorAll('input[data-k]'));
+flds.forEach(function(el){var k=el.getAttribute('data-k');st[k]=store.get(k)||'';el.value=st[k];el.addEventListener('input',function(){st[k]=el.value;store.set(k,el.value);render()})});
+var tabs=[].slice.call(document.querySelectorAll('.tab')),steps=[].slice.call(document.querySelectorAll('.step'));var cur=0;
+function topOff(){var t=document.getElementById('top');return t?t.offsetHeight+8:0}
+function go(n,keep){cur=n;tabs.forEach(function(t,i){t.classList.toggle('on',i===n)});steps.forEach(function(s,i){s.classList.toggle('on',i===n)});side();
+ document.getElementById('prev').disabled=n===0;document.getElementById('next').disabled=n===steps.length-1;
+ document.getElementById('where').textContent=tabs[n].textContent.replace(/^\d+/,'').trim();if(!keep)window.scrollTo(0,0)}
+function side(){var box=document.getElementById('sideList');box.innerHTML='';
+ [].slice.call(steps[cur].querySelectorAll('h3.sec')).forEach(function(h){var a=document.createElement('a');a.href='#'+h.id;var n=h.querySelector('.no');a.textContent=(n?n.textContent+'  ':'')+h.textContent.replace(n?n.textContent:'','');
+  a.addEventListener('click',function(e){e.preventDefault();window.scrollTo(0,h.getBoundingClientRect().top+window.pageYOffset-topOff())});box.appendChild(a)});
+ document.querySelector('.side').style.display=box.children.length?'':'none'}
+tabs.forEach(function(t,i){t.addEventListener('click',function(){go(i)})});
+document.getElementById('prev').addEventListener('click',function(){if(cur>0)go(cur-1)});
+document.getElementById('next').addEventListener('click',function(){if(cur<steps.length-1)go(cur+1)});
+[].slice.call(document.querySelectorAll('.fnode')).forEach(function(g){g.addEventListener('click',function(){go(+g.getAttribute('data-go'))})});
+function seed(){var out=[];Object.keys(LAB).forEach(function(k){if(k==='author')return;var v=(st[k]||'').trim();out.push('· '+LAB[k]+': '+(v||'[비어 있음]'))});return out.join('\n')}
+function esc(s){return s.replace(/[&<>]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c]})}
+function fill(t,mark){var v={STYLE:(st.my.trim()||'(아직 없음 — ①에서 같이 정하기)'),TITLE:(st.title||'').trim()||'위 채팅에서 정한 제목',AUTHOR:(st.author||'').trim()||'[지은이 이름]',BG:BG[st.bg],SEED:seed()};
+ return t.replace(/\{\{(STYLE|TITLE|AUTHOR|BG|SEED)\}\}/g,function(m,k){return mark?'\u0001'+v[k]+'\u0002':v[k]})}
+var pres=[].slice.call(document.querySelectorAll('pre.tpl'));pres.forEach(function(p){p._t=p.textContent});
+function render(){pres.forEach(function(p){p.innerHTML=esc(fill(p._t,true)).replace(/\u0001/g,'<mark>').replace(/\u0002/g,'</mark>')})}
+var fs=document.getElementById('fStyle');fs.value=st.my;fs.addEventListener('input',function(){st.my=fs.value;store.set('my',fs.value);render()});
+[].slice.call(document.querySelectorAll('input[name=bg]')).forEach(function(r){r.checked=r.value===st.bg;r.parentNode.classList.toggle('on',r.checked);
+ r.addEventListener('change',function(){if(r.checked){st.bg=r.value;store.set('bg',r.value);[].slice.call(document.querySelectorAll('.bgopt')).forEach(function(l){l.classList.toggle('on',l.contains(r))});render()}})});
+var inFrame=false;try{inFrame=window.self!==window.top}catch(e){inFrame=true}
+function canClip(){try{if(inFrame)return false;if(!navigator.clipboard||!window.isSecureContext)return false;var pp=document.permissionsPolicy||document.featurePolicy;if(pp&&pp.allowsFeature&&!pp.allowsFeature('clipboard-write'))return false;return true}catch(e){return false}}
+function showSel(btn){var p=btn.closest('.pbox').querySelector('pre.tpl');try{var r=document.createRange();r.selectNodeContents(p);var sel=window.getSelection();sel.removeAllRanges();sel.addRange(r)}catch(e){}btn.textContent='글이 선택됐어요 → Ctrl+C'}
+function copyText(txt,btn){function ok(){btn.textContent='✔ 복사됐어요';btn.classList.add('done');setTimeout(function(){btn.textContent='📋 복사하기';btn.classList.remove('done')},1800)}
+ var box=btn.closest('.pbox');var ta=document.createElement('textarea');ta.value=txt;ta.setAttribute('readonly','');ta.style.cssText='position:absolute;left:0;top:0;width:1px;height:1px;opacity:0;font-size:16px;border:0;padding:0';
+ box.style.position='relative';box.appendChild(ta);var r=false;try{ta.focus({preventScroll:true})}catch(e){}
+ try{ta.select();ta.setSelectionRange(0,txt.length);r=document.execCommand('copy')}catch(e){r=false}box.removeChild(ta);try{btn.focus({preventScroll:true})}catch(e){}
+ if(r){ok();return}if(canClip()){try{navigator.clipboard.writeText(txt).then(ok,function(){showSel(btn)})}catch(e){showSel(btn)}}else showSel(btn)}
+var cb=document.getElementById('clearAll');if(cb)cb.addEventListener('click',function(){flds.forEach(function(el){var k=el.getAttribute('data-k');el.value='';st[k]='';store.set(k,'')});fs.value='';st.my='';store.set('my','');render();cb.textContent='✔ 지웠어요';setTimeout(function(){cb.textContent='🧹 내가 적은 칸 모두 지우기'},1800)});
+[].slice.call(document.querySelectorAll('.pbox .copy')).forEach(function(b){b.addEventListener('click',function(){var p=b.closest('.pbox').querySelector('pre.tpl');copyText(fill(p._t,false),b)})});
+var z=0;[].slice.call(document.querySelectorAll('.zoom button')).forEach(function(b){b.addEventListener('click',function(){var d=+b.getAttribute('data-z');z=d===0?0:Math.max(-2,Math.min(4,z+d));document.documentElement.style.setProperty('--fs',(20+z*2)+'px')})});
+render();go(0,true);
+})();
+</script></body></html>

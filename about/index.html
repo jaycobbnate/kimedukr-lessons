@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>김충효 강사 소개</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<style>
+/* 구글 사이트 "웹에서 삽입"용. position:fixed 없음, 높이 고정 없음, 일반 문서 스크롤. */
+:root{
+  --navy:#1f2d4d; --navy-deep:#16213a; --gold:#c9a227; --gold-soft:#f6efd6;
+  --paper:#f5f4f0; --card:#ffffff; --ink:#1e2230; --ink-soft:#5a6070; --line:#dfe2e8;
+  --font:"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:var(--font);color:var(--ink);background:var(--paper);font-size:17px;line-height:1.65;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1040px;margin:0 auto;padding:16px;overflow-x:hidden}
+a{color:inherit}
+
+/* ───── 1. 명함 블록 ───── */
+.card-hero{display:grid;grid-template-columns:300px minmax(0,1fr);min-width:0;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.side{background:var(--navy);color:#fff;padding:28px 26px;display:flex;flex-direction:column;gap:18px}
+.photo{aspect-ratio:1/1;width:100%;max-width:240px;align-self:center;background:transparent;border:0;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;overflow:hidden}
+.photo img{width:100%;height:100%;object-fit:cover;display:block}
+.name{font-size:38px;font-weight:900;line-height:1.1;margin:0}
+.role{font-size:17px;font-weight:700;color:var(--gold);line-height:1.4;margin:0}
+.tag{font-size:14px;color:#c9d0e0;margin:0}
+.affil{font-size:14px;color:#dfe4ef;margin:0;border-top:1px solid rgba(255,255,255,.18);padding-top:14px;line-height:1.7}
+.main{padding:24px 28px;display:flex;flex-direction:column;gap:22px;min-width:0}
+
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.stat{padding:16px 8px;text-align:center;border-left:1px solid var(--line);min-width:0}
+.stat:first-child{border-left:0}
+.stat b{display:block;font-size:clamp(24px,3.2vw,34px);white-space:nowrap;font-weight:900;line-height:1.1;color:var(--navy);font-variant-numeric:tabular-nums}
+.stat.gold b{color:var(--gold)}
+.stat span{display:block;font-size:13px;color:var(--ink-soft);margin-top:6px;letter-spacing:.02em}
+
+.cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:26px}
+.col h3{font-size:15px;font-weight:900;color:var(--navy);margin:0 0 10px;letter-spacing:.04em;display:flex;align-items:center;gap:8px}
+.col h3::before{content:"";width:18px;height:3px;background:var(--gold);border-radius:2px}
+.col ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px;font-size:15.5px}
+.col li{padding-left:14px;position:relative}
+.col li::before{content:"";position:absolute;left:0;top:.72em;width:5px;height:5px;border-radius:50%;background:var(--gold)}
+
+.reach{display:flex;flex-wrap:wrap;gap:10px 22px;padding:14px 18px;min-width:0;overflow-wrap:anywhere;background:var(--gold-soft);border-radius:8px;font-size:15px}
+.reach b{color:var(--navy);font-weight:900;margin-right:6px}
+
+.quote{min-width:0;overflow-wrap:anywhere;border:1px solid var(--gold);border-radius:8px;padding:18px 22px;font-size:19px;font-weight:700;color:var(--navy);line-height:1.5;text-wrap:balance;margin:0}
+.quote em{font-style:normal;color:var(--gold)}
+
+/* ───── 2. 하는 일 다섯 가지 ───── */
+.band{background:var(--navy);color:#fff;border-radius:10px 10px 0 0;padding:26px 28px 24px;margin-top:22px}
+.band h2{margin:0 0 6px;font-size:28px;font-weight:900;line-height:1.2}
+.band p{margin:0;color:#c9d0e0;font-size:15px}
+.band p b{color:var(--gold)}
+.cards{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;background:var(--navy-deep);padding:0 16px 20px;border-radius:0 0 10px 10px}
+.cards{margin-top:0}
+.cards .c{background:var(--card);border-radius:8px;padding:20px 16px 18px;min-width:0;border-top:3px solid var(--gold)}
+.c .ic{width:40px;height:40px;border-radius:8px;background:var(--gold-soft);color:var(--navy);display:flex;align-items:center;justify-content:center;margin-bottom:12px}
+.c .ic svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.c h4{margin:0 0 8px;font-size:17px;font-weight:900;color:var(--navy);line-height:1.3}
+.c ul{margin:0;padding:0;list-style:none;font-size:14px;color:var(--ink-soft);line-height:1.65}
+.c li{padding-left:10px;position:relative}
+.c li::before{content:"·";position:absolute;left:0;color:var(--gold);font-weight:900}
+
+/* ───── 3. 철학 + CTA ───── */
+.philo-wrap{display:grid;grid-template-columns:150px minmax(0,1fr);gap:18px;align-items:end;margin-top:22px}
+.mascot{min-width:0}
+.mascot img{width:100%;max-width:150px;display:block;margin:0 auto}
+.philo{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.philo .p{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:16px 18px;min-width:0}
+.philo .p b{display:block;font-size:15px;color:var(--navy);font-weight:900;margin-bottom:4px}
+.philo .p span{font-size:14.5px;color:var(--ink-soft)}
+.cta{display:grid;grid-template-columns:150px minmax(0,1fr);gap:0 20px;align-items:end;margin-top:22px;background:var(--navy);color:#fff;border-radius:10px;padding:0 26px 0 18px;overflow:hidden}
+.cta-img{align-self:end;min-width:0;margin-top:14px}
+.cta-img img{width:100%;max-width:150px;display:block;margin:0 auto}
+.cta-body{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;padding:22px 0}
+.cta p{margin:0;font-size:17px;font-weight:700;line-height:1.4;text-wrap:balance}
+.cta p small{display:block;font-weight:400;color:#c9d0e0;font-size:14px;margin-top:4px}
+.btns{display:flex;flex-wrap:wrap;gap:10px}
+.btn{display:inline-block;padding:12px 20px;border-radius:8px;font-weight:900;font-size:15.5px;text-decoration:none;line-height:1.2;white-space:nowrap}
+.btn.gold{background:var(--gold);color:var(--navy-deep)}
+.btn.ghost{border:2px solid rgba(255,255,255,.7);color:#fff}
+.btn:focus-visible{outline:3px solid #fff;outline-offset:2px}
+
+/* ───── 반응형 ───── */
+@media (max-width:900px){
+  .card-hero{grid-template-columns:minmax(0,1fr)}
+  .side{flex-direction:row;flex-wrap:wrap;align-items:flex-start;padding:22px 18px;min-width:0}
+  .photo{width:110px;flex:0 0 110px;align-self:flex-start}
+  .side .txt{flex:1 1 150px;min-width:0;display:flex;flex-direction:column;gap:10px}
+  .main{padding:20px 16px}
+  .name{font-size:30px}
+  .affil{width:100%}
+  .cards{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .stat:nth-child(3){border-left:0}
+  .stat:nth-child(n+3){border-top:1px solid var(--line)}
+  .philo{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:560px){
+  .philo-wrap{grid-template-columns:110px minmax(0,1fr);align-items:start}
+  .cta{grid-template-columns:minmax(0,1fr);padding:0 18px}
+  .cta-img{display:none}
+  .cols{grid-template-columns:minmax(0,1fr)}
+  .cards{grid-template-columns:minmax(0,1fr)}
+  .stat b{font-size:28px}
+  .name{font-size:32px}
+  .role{font-size:15px}
+  .tag{font-size:13px}
+  .quote{font-size:17px}
+}
+@media (prefers-reduced-motion:no-preference){.btn{transition:transform .12s}.btn:hover{transform:translateY(-1px)}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- 1. 명함 블록 -->
+  <section class="card-hero" aria-label="강사 소개">
+    <div class="side">
+      <div class="photo" id="photo"><img src="img01.webp" alt="김충효 강사 캐릭터"></div>
+      <div class="txt">
+        <h1 class="name">김충효</h1>
+        <p class="role">생성형 AI · 디지털 리터러시<br>전문 강사</p>
+        <p class="tag">UNLearning — 버려야, 새로 배웁니다</p>
+      </div>
+      <p class="affil">언러닝컴퍼니 · 에이비랩 대표<br>kimedu.kr · 유튜브 '김에듀'</p>
+    </div>
+
+    <div class="main">
+      <div class="stats" aria-label="핵심 숫자">
+        <div class="stat"><b>20년+</b><span>직업훈련 현장 경력</span></div>
+        <div class="stat gold"><b>3종</b><span>공인 AI 자격 (KPC)</span></div>
+        <div class="stat"><b>13종</b><span>자격 · 인증 보유</span></div>
+        <div class="stat"><b>6개 유형</b><span>출강 기관 유형</span></div>
+      </div>
+
+      <div class="cols">
+        <div class="col">
+          <h3>대표 자격</h3>
+          <ul>
+            <li>공인 AI 자격 — AI-POT 1급·2급 · AIBT 2급</li>
+            <li>직업능력개발훈련교사 2급 (고용노동부)</li>
+            <li>중등 영어교사 (교육부)</li>
+            <li>ITQ OA Master · MOS Master · PTI</li>
+            <li>교육공학(에듀테크) 전공 이학석사</li>
+          </ul>
+        </div>
+        <div class="col">
+          <h3>지금 하고 있는 일</h3>
+          <ul>
+            <li>고용노동부 산대특 — AI 과정 2개 전담</li>
+            <li>한기대 능개원 — 전국 교강사 보수교육</li>
+            <li>양천구 평생학습관 — AI 과정 다수 운영</li>
+            <li>50플러스센터 — AI 동화책·디자인 과정</li>
+            <li>유튜브 '김에듀' — AI 교육 채널 운영</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="reach">
+        <div><b>출강</b>기업 HRD · 공공 · 평생교육 · 직업훈련 등 6개 유형</div>
+        <div><b>지역</b>서울 · 부산 · 전주 · 제주 · 천안 등 전국 다수 도시</div>
+      </div>
+
+      <p class="quote">"같은 훈련교사로서, 여러분의 <em>AI 퀀텀점프</em>에 디딤돌이 되겠습니다"</p>
+    </div>
+  </section>
+
+  <!-- 2. 하는 일 다섯 가지 -->
+  <section aria-label="하는 일">
+    <div class="band">
+      <h2>제가 하는 일, 다섯 가지</h2>
+      <p><b>손에 남는 수업</b> — 끝나면 결과물 하나는 들고 갑니다</p>
+    </div>
+    <div class="cards">
+      <div class="c">
+        <div class="ic"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H8l-4 4z"/><path d="M8 9h8M8 12h5"/></svg></div>
+        <h4>AI, 제대로 쓰기</h4>
+        <ul><li>ChatGPT · 클로드 실무</li><li>프롬프트 잘 쓰는 법</li><li>나만의 AI 챗봇 만들기</li><li>구글 AI 스튜디오</li></ul>
+      </div>
+      <div class="c">
+        <div class="ic"><svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.3-5.6"/><path d="M20 4v5h-5"/></svg></div>
+        <h4>반복 업무 자동화</h4>
+        <ul><li>챗GPT + 엑셀 자동화</li><li>노션 · 협업툴 스마트워크</li><li>클릭만으로 잇는 자동화</li><li>AI 보고서 · 행정문서</li></ul>
+      </div>
+      <div class="c">
+        <div class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M10 9l5 3-5 3z"/></svg></div>
+        <h4>AI 영상 만들기</h4>
+        <ul><li>촬영 없이 수업 영상 제작</li><li>유튜브 쇼츠 · 릴스</li><li>AI 영화 · 움직이는 웹툰</li><li>AI 목소리 · 더빙 · 음악</li></ul>
+      </div>
+      <div class="c">
+        <div class="ic"><svg viewBox="0 0 24 24"><path d="M3 5h7a3 3 0 0 1 3 3v12a2 2 0 0 0-2-2H3z"/><path d="M21 5h-7a3 3 0 0 0-3 3v12a2 2 0 0 1 2-2h8z"/></svg></div>
+        <h4>내 책, 내 콘텐츠</h4>
+        <ul><li>AI 동화책 · 전자책 출판</li><li>이모티콘 · 굿즈 디자인</li><li>오디오북 · 플립북 제작</li><li>스토리 창작 · 웹툰</li></ul>
+      </div>
+      <div class="c">
+        <div class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="1"/><path d="M12 16v4M8 20h8"/><path d="M7 12l3-3 2 2 4-4"/></svg></div>
+        <h4>AI 교안 만들기</h4>
+        <ul><li>미리캔버스 교안 제작</li><li>AI 활용 강의자료 개발</li><li>AI 강사 양성 · 교수법</li><li>교재 편집 · 1인 출판</li></ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. 철학 -->
+  <section class="philo-wrap" aria-label="교육 철학">
+    <div class="mascot"><img src="img02.webp" alt=""></div>
+    <div class="philo">
+      <div class="p"><b>버려야, 새로 배웁니다</b><span>낡은 방법을 버리는 것부터 시작합니다. UNLearning.</span></div>
+      <div class="p"><b>손에 남는 수업</b><span>동화책, 영상, 자동화 시트. 결과물 하나는 가져갑니다.</span></div>
+      <div class="p"><b>사람이 검증합니다</b><span>AI 결과물은 반드시 사람이 확인하고 고칩니다.</span></div>
+      <div class="p"><b>누구나 따라옵니다</b><span>40~60대 이상 학습자도 처음부터 함께 갑니다.</span></div>
+    </div>
+  </section>
+
+  <!-- 4. CTA -->
+  <section class="cta" aria-label="문의">
+    <div class="cta-img"><img src="img03.webp" alt=""></div>
+    <div class="cta-body">
+      <p>기관·단체 맞춤 AI 교육을 찾으시나요?<small>강의 · 커리큘럼 설계 · 교재 개발 · 강사 양성까지 한 번에</small></p>
+      <div class="btns">
+        <a class="btn gold" href="/강의-문의">강의 문의</a>
+        <a class="btn ghost" href="https://www.youtube.com/@김에듀" target="_blank" rel="noopener">유튜브 '김에듀'</a>
+      </div>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

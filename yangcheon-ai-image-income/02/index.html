@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>미드저니 2차시 · 디자인허브 준비와 화풍 만들기</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --fs:20px;
+  --bg:#FCFCFA; --paper:#FFFFFF; --ink:#2A2826; --sub:#68645F; --line:#E5E2DC; --line2:#EFEDE8;
+  --accent:#A44E3C; --accent-soft:#F7ECE8;
+  --set:#EDF2F6; --set-line:#C9D7E2;
+  --warn:#F6EEF3; --warn-line:#E0CBD7;
+  --ext:#EEF3EC; --ext-line:#CADBC5;
+  --ok:#4F7A55; --no:#A44E3C;
+}
+*{box-sizing:border-box}
+html{font-size:var(--fs)}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;line-height:1.7;word-break:keep-all}
+h1,h2,h3,h4{font-family:"Gowun Batang","Nanum Myeongjo",serif;line-height:1.35;margin:0}
+a{color:#2F5E8A}
+button,select{font:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+code{font-family:"Pretendard",monospace;background:#F3F1EC;border-radius:5px;padding:1px 6px;font-size:.88em}
+
+/* 상단 (sticky) */
+.top{position:sticky;top:0;z-index:20;background:#FCFCFA;border-bottom:1px solid var(--line)}
+.top-row{display:flex;align-items:center;gap:16px;max-width:1280px;margin:0 auto;padding:12px 24px 6px}
+.top-title{font-family:"Gowun Batang",serif;font-weight:700;font-size:1.05rem;flex:1}
+.top-title small{display:block;font-family:"Pretendard",sans-serif;font-weight:400;font-size:.7rem;color:var(--sub)}
+.zoom{display:flex;gap:6px;align-items:center}
+.zoom span{font-size:.7rem;color:var(--sub);margin-right:2px}
+.zoom button{border:1px solid var(--line);background:var(--paper);border-radius:8px;padding:2px 12px;font-size:.8rem}
+.tabs{display:flex;gap:4px;overflow-x:auto;max-width:1280px;margin:0 auto;padding:4px 24px 0;scrollbar-width:thin}
+.tab{flex:0 0 auto;border:0;background:none;padding:8px 14px 10px;font-size:.8rem;color:var(--sub);border-bottom:3px solid transparent;white-space:nowrap}
+.tab b{display:block;font-size:.62rem;font-weight:600;letter-spacing:.02em;color:#9A958F}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent);font-weight:600}
+.tab[aria-selected="true"] b{color:var(--accent)}
+
+/* 본문 + 오른쪽 sticky 카드 메뉴 */
+.wrap{max-width:1280px;margin:0 auto;padding:28px 24px 40px;display:grid;grid-template-columns:minmax(0,1fr) 240px;gap:32px;align-items:start}
+.side{position:sticky;top:132px;border-left:1px solid var(--line);padding:4px 0 4px 18px;max-height:calc(100vh - 220px);overflow:auto}
+.side p{margin:0 0 8px;font-size:.68rem;color:var(--sub)}
+.side a{display:block;color:var(--sub);text-decoration:none;font-size:.74rem;padding:6px 0 6px 10px;border-left:2px solid transparent;margin-left:-20px;line-height:1.45;cursor:pointer}
+.side a.on{color:var(--accent);border-left-color:var(--accent);font-weight:600}
+.step{display:none}
+.step.on{display:block}
+
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:22px 24px}
+.card.wide{grid-column:1 / -1}
+.card h3{font-size:1.08rem;margin-bottom:10px}
+.card p{margin:0 0 10px}
+.card p:last-child{margin-bottom:0}
+.card ul,.card ol{margin:4px 0 10px;padding-left:1.3em}
+.card li{margin:4px 0}
+.note{font-size:.8rem;color:var(--sub);margin-top:12px!important}
+
+/* 칩 */
+.chip{display:inline-block;font-family:"Pretendard",sans-serif;font-size:.62rem;font-weight:700;border-radius:99px;padding:2px 10px;margin-right:8px;vertical-align:3px}
+.c-read{background:#ECEAE5;color:var(--sub)}
+.c-all{background:var(--accent-soft);color:var(--accent)}
+.c-more{background:#EEF3EC;color:#46684A}
+.c-chk{background:#EDF2F6;color:#3D5A70}
+
+/* 박스 */
+.box{border-radius:10px;padding:14px 18px;border:1px solid;margin-top:12px}
+.box h4{font-family:"Pretendard",sans-serif;font-size:.84rem;font-weight:700;margin:0 0 4px}
+.box p,.box li{font-size:.86rem}
+.box p{margin:0 0 6px}
+.box p:last-child{margin:0}
+.box ul,.box ol{margin:2px 0 0;padding-left:1.2em}
+.box.set{background:var(--set);border-color:var(--set-line)}.box.set h4{color:#3D5A70}
+.box.warn{background:var(--warn);border-color:var(--warn-line)}.box.warn h4{color:#7D4566}
+.box.ext{background:var(--ext);border-color:var(--ext-line)}.box.ext h4{color:#46684A}
+.key{background:var(--accent-soft);border:1px solid #E8CFC6;border-left:5px solid var(--accent);border-radius:10px;padding:16px 20px;font-size:1.02rem}
+.key strong{color:var(--accent)}
+
+/* 프롬프트 */
+.prompt{position:relative;background:#F7F6F3;border:1px solid var(--line);border-radius:10px;padding:42px 18px 16px;font-size:.8rem;line-height:1.65;white-space:pre-wrap;font-family:"Pretendard",sans-serif;margin:6px 0 4px}
+.prompt .copy{position:absolute;top:10px;right:10px;border:1px solid var(--line);background:var(--paper);border-radius:8px;font-size:.66rem;padding:3px 10px}
+.prompt .copy.done{color:var(--ok);border-color:var(--ok)}
+.plabel{font-size:.72rem;color:var(--sub);margin:14px 0 4px!important;font-weight:700}
+.plabel b{color:var(--accent)}
+
+/* 표 */
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table.cmp{width:100%;border-collapse:collapse;font-size:.8rem}
+table.cmp th,table.cmp td{border-bottom:1px solid var(--line2);padding:9px 8px;text-align:left;vertical-align:top}
+table.cmp th{font-weight:600;color:var(--sub);font-size:.72rem;background:#FAF9F6}
+table.cmp td b{color:var(--accent)}
+
+/* 시작 화면 */
+.hero{padding:22px 0 30px;margin-bottom:24px;border-bottom:1px solid var(--line)}
+.hero-kicker{margin:0 0 12px;font-size:.78rem;color:var(--accent);font-weight:700}
+.hero-line{font-size:2rem;line-height:1.45;font-weight:700}
+.hero-line em{font-style:normal;color:var(--accent);border-bottom:3px solid #E8CFC6}
+.hero-sub{margin:16px 0 0;font-size:1.02rem;color:var(--sub);max-width:46em}
+.band{display:flex;gap:18px;align-items:center;background:var(--accent-soft)!important;border-color:#E8CFC6!important}
+.band-no{flex:0 0 auto;background:var(--accent);color:#fff;border-radius:10px;padding:8px 14px;font-weight:700;font-size:.9rem}
+.band h3{margin:0 0 4px!important;font-size:1.2rem!important}
+.band p{margin:0!important;color:var(--sub);font-size:.9rem}
+
+/* 흐름 도식 */
+.csflow{display:flex;align-items:stretch;gap:0;flex-wrap:nowrap}
+.csflow div{flex:1;border:1px solid var(--line);border-radius:12px;padding:12px 8px;text-align:center;background:#fff;font-size:.8rem;font-weight:600;line-height:1.4}
+.csflow div b{display:block;font-family:"Gowun Batang",serif;color:#9A958F;font-size:1.05rem}
+.csflow div small{display:block;font-weight:400;font-size:.66rem;color:var(--sub);margin-top:2px}
+.csflow div.hot{border:2px solid var(--accent);background:var(--accent-soft)}.csflow div.hot b{color:var(--accent)}
+.csflow div.done{background:#FAF9F6}
+.csflow span{flex:0 0 18px;position:relative}.csflow span:after{content:"";position:absolute;left:3px;right:3px;top:50%;height:2px;background:#C9C5BF}
+
+/* 블록 도식 */
+.blocks{display:grid;grid-template-columns:repeat(var(--n,4),1fr);gap:8px}
+.blocks span{border-radius:10px;padding:12px 8px;text-align:center;font-weight:700;font-size:.86rem}
+.blocks small{display:block;font-weight:400;font-size:.66rem;color:var(--sub)}
+.b1{background:#F7ECE8}.b2{background:#EDF2F6}.b3{background:#EEF3EC}.b4{background:#F6EEF3}.b5{background:#F3F0E8}
+
+/* 비교 두 칸 */
+.split{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.split > div{border-radius:10px;padding:14px 16px;border:1px solid var(--line)}
+.split .yes{background:#F3F7F2}
+.split .nope{background:#FAF2F0}
+.split h4{margin:0 0 6px;font-size:.88rem}
+.split p,.split li{font-size:.84rem}
+.split ul{margin:0;padding-left:1.1em}
+
+/* 단계 목록 */
+ol.steps{margin:0;padding-left:1.4em}
+ol.steps li{margin:7px 0}
+ol.steps li b{color:var(--ink)}
+.path{display:inline-block;background:#F3F1EC;border-radius:6px;padding:0 8px;font-size:.86em;font-weight:600}
+
+/* 막힘 사전 */
+.trouble{border-bottom:1px solid var(--line2);padding:12px 0}
+.trouble:last-child{border:0}
+.trouble h4{font-family:"Pretendard",sans-serif;font-size:.9rem;margin-bottom:6px}
+.trouble dl{display:grid;grid-template-columns:64px 1fr;gap:4px 10px;margin:0;font-size:.84rem}
+.trouble dt{font-weight:700;color:var(--sub);font-size:.74rem;padding-top:2px}
+.trouble dd{margin:0}
+
+/* 퀴즈 */
+.q{border-bottom:1px solid var(--line2);padding:12px 0}.q p{margin:0 0 8px!important}
+.qops{display:flex;flex-wrap:wrap;gap:8px}
+.qo{border:1px solid var(--line);background:#fff;border-radius:99px;padding:6px 14px;font-size:.82rem}
+.qo.right{background:#E2EDE2;border-color:#9EBE9F;color:#2F5A35}.qo.wrong{background:#F3E3DF;border-color:#E0B8AE;color:var(--no)}
+.qex{display:none;font-size:.8rem;color:var(--sub);margin-top:8px!important}.q.done .qex{display:block}
+
+/* 체크리스트 */
+ul.chk{list-style:none;margin:0;padding:0}ul.chk li{padding:6px 0;border-bottom:1px solid var(--line2);font-size:.88rem}ul.chk li:last-child{border:0}
+ul.chk input{width:18px;height:18px;vertical-align:-3px;margin-right:8px;accent-color:var(--accent)}
+
+/* 링크 카드 */
+.lcard{display:block;border:1px solid var(--line);border-radius:10px;background:#fff;padding:10px 14px;text-decoration:none;margin-top:8px}
+.lcard b{display:block;color:#2F5E8A;font-size:.88rem}.lcard span{display:block;color:var(--sub);font-size:.72rem;margin-top:2px}
+
+/* 대화 말풍선 */
+.chat{display:flex;flex-direction:column;gap:10px}
+.bub{max-width:82%;border-radius:14px;padding:10px 14px}
+.bub p{margin:0!important;font-size:.84rem;line-height:1.6}
+.bub .who{display:block;font-size:.64rem;font-weight:700;margin-bottom:2px}
+.bub.u{align-self:flex-end;background:#EDF2F6;border:1px solid #C9D7E2}.bub.u .who{color:#3D5A70}
+.bub.a{align-self:flex-start;background:#fff;border:1px solid var(--line)}.bub.a .who{color:var(--accent)}
+
+/* 화면 모형 */
+.mock{border:1px solid var(--line);border-radius:10px;background:#FAFAF8;padding:10px 12px;font-size:.78rem}
+.mock .bar{display:flex;gap:6px;flex-wrap:wrap}
+.mock .bar span{border:1px solid var(--line);background:#fff;border-radius:6px;padding:2px 8px}
+.mock .bar span.on{border-color:var(--accent);color:var(--accent);font-weight:700}
+.diagram svg{width:100%;height:auto;display:block}
+
+/* 하단 이동 (sticky) */
+.pager{position:sticky;bottom:0;z-index:15;background:#FCFCFA;border-top:1px solid var(--line)}
+.pager-in{max-width:1280px;margin:0 auto;padding:8px 24px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.pager button{border:1px solid var(--line);background:var(--paper);border-radius:10px;padding:7px 16px;font-size:.78rem;flex:0 0 auto}
+.pager button.next{background:var(--accent);border-color:var(--accent);color:#fff}
+.pager button:disabled{opacity:.35;cursor:default}
+.pager-mid{display:flex;gap:8px;flex:1;justify-content:center;min-width:0}
+.pager select{border:1px solid var(--line);background:#fff;border-radius:8px;padding:6px 8px;font-size:.72rem;max-width:300px;min-width:0;flex:1}
+
+@media (max-width:1000px){
+  .wrap{grid-template-columns:1fr}
+  .side{display:none}
+  .csflow{flex-wrap:wrap;gap:8px}.csflow span{display:none}.csflow div{flex:1 1 30%}
+}
+@media (max-width:720px){
+  :root{--fs:18px}
+  .grid,.split{grid-template-columns:1fr}
+  .blocks{grid-template-columns:1fr 1fr}
+  .hero-line{font-size:1.5rem}
+  .top-row,.tabs,.wrap,.pager-in{padding-left:14px;padding-right:14px}
+  .pager button{padding:7px 10px}
+  .band{flex-direction:column;align-items:flex-start}
+  .csflow div{flex:1 1 45%}
+}
+@media (max-height:700px){.top-row{display:none}.side{top:70px}}
+@media (max-width:600px){table.cmp{min-width:420px}}
+@media (max-width:720px){.top-title small{display:none}.top-title{font-size:.88rem}.zoom span{display:none}.zoom button{padding:2px 8px}}
+/* 녹화 영상 */
+.vbox{position:relative;width:100%;aspect-ratio:16/9;border-radius:10px;overflow:hidden;background:#1E1C1A;border:1px solid var(--line)}
+.vbox iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.vfoot{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:12px;flex-wrap:wrap}
+.vfoot span{font-size:.82rem;color:var(--sub)}
+.vbtn{display:inline-block;background:var(--accent);color:#fff!important;text-decoration:none;border-radius:10px;padding:8px 18px;font-size:.8rem;font-weight:600}
+.card.video{max-width:none}
+
+</style></head><body>
+<header class="top" id="top"><div class="top-row"><div class="top-title">미드저니 2차시 · 디자인허브 준비와 화풍 만들기<small>AI 이미지 수익화 · 미리캔버스 디자인허브 · 프로필 · 무드보드</small></div>
+<div class="zoom" role="group" aria-label="글자 크기"><span>글자</span><button type="button" id="zDown" aria-label="글자 작게">가−</button><button type="button" id="zReset" aria-label="기본 크기">가</button><button type="button" id="zUp" aria-label="글자 크게">가+</button></div></div>
+<nav class="tabs" id="tabs" role="tablist" aria-label="단계 이동"><button class="tab" role="tab" type="button" data-i="0"><b>STEP 0</b><span>시작</span></button><button class="tab" role="tab" type="button" data-i="1"><b>STEP 1</b><span>판매처 가입</span></button><button class="tab" role="tab" type="button" data-i="2"><b>STEP 2</b><span>요소란?</span></button><button class="tab" role="tab" type="button" data-i="3"><b>STEP 3</b><span>등록 규격</span></button><button class="tab" role="tab" type="button" data-i="4"><b>STEP 4</b><span>AI 제작 도우미</span></button><button class="tab" role="tab" type="button" data-i="5"><b>STEP 5</b><span>프로필</span></button><button class="tab" role="tab" type="button" data-i="6"><b>STEP 6</b><span>무드보드</span></button><button class="tab" role="tab" type="button" data-i="7"><b>STEP 7</b><span>시즌 소재 비교</span></button><button class="tab" role="tab" type="button" data-i="8"><b>STEP 8</b><span>막힘 사전</span></button><button class="tab" role="tab" type="button" data-i="9"><b>STEP 9</b><span>확인</span></button></nav></header>
+<div class="wrap"><main id="main">
+<section class="step" data-label="STEP 0" data-title="시작">
+<div class="hero"><p class="hero-kicker">2차시 · 디자인허브 준비와 화풍 만들기</p>
+<h2 class="hero-line"><em>파는 곳</em>을 먼저 보고,<br>그다음에 만듭니다.</h2>
+<p class="hero-sub">판매처 미리캔버스 디자인허브에 가입하고 등록 기준을 읽은 뒤, 미드저니에서 나만의 화풍 장치(프로필·무드보드)를 만들어요.</p></div>
+<div class="grid">
+<div class="card wide video" id="vid"><h3><span class="chip c-read">읽기</span>2차시 녹화 영상</h3><div class="vbox"><iframe src="https://www.youtube-nocookie.com/embed/Jtf0CGlu8n8?rel=0" title="2차시 녹화 영상" loading="lazy" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div><div class="vfoot"><span>[현장강의] 디자인허브 요소 제작 준비 — 가입부터 프로필·무드보드까지</span><a class="vbtn" href="https://youtu.be/Jtf0CGlu8n8" target="_blank" rel="noopener">유튜브에서 보기 ↗</a></div><p class="note">영상이 재생되지 않으면 "유튜브에서 보기"를 눌러 주세요. 복습할 때는 교안의 STEP 순서대로 영상을 따라가면 돼요.</p></div>
+
+<div class="card wide" id="c1"><h3><span class="chip c-read">읽기</span>우리 과정 전체 지도</h3>
+<div class="csflow"><div class="done"><b>1</b>미드저니 기초<small>구독·둘러보기·설정</small></div><span></span><div class="hot"><b>2</b>판매처·화풍<small>디자인허브·프로필·무드보드</small></div><span></span><div><b>3</b>참조·AI 도우미<small>Attach to Prompt·GPT 프로젝트</small></div><span></span><div><b>4</b>첫 업로드<small>패턴 학습·규격·심사 제출</small></div><span></span><div><b>5</b>규격 보정<small>레퍼런스 묶음·16:9·배경 제거 예고</small></div><span></span><div><b>6</b>PNG 요소<small>배경 제거·스티커 화풍</small></div></div></div>
+<div class="card" id="c2"><h3><span class="chip c-read">읽기</span>오늘의 흐름</h3>
+<ol class="steps"><li><b>판매처 가입</b> — 디자인허브 기여자</li><li><b>요소란?</b> — 템플릿을 뜯어 보기</li><li><b>등록 규격</b> — 사진 / 배경 제거 사진</li><li><b>AI 제작 도우미</b> — 가이드를 AI에게</li><li><b>프로필</b> — 내 취향 고르기</li><li><b>무드보드</b> — 같은 화풍 모으기</li><li><b>시즌 소재로 비교</b></li></ol></div>
+<div class="card" id="c3"><h3><span class="chip c-chk">확인</span>준비물</h3>
+<ul class="chk"><li><label><input type="checkbox">자주 쓰는 이메일 (인증 메일 받기)</label></li><li><label><input type="checkbox">미드저니 로그인</label></li><li><label><input type="checkbox">지난 시간 ♡ 해 둔 화풍</label></li><li><label><input type="checkbox">구글 계정 (제미나이)</label></li></ul></div>
+</div></section>
+
+<section class="step" data-label="STEP 1" data-title="판매처 가입">
+<div class="grid">
+<div class="card band wide" id="c4"><span class="band-no">STEP 1</span><div><h3>미리캔버스 디자인허브 가입</h3><p>우리가 만든 이미지 요소를 등록하고 파는 "기여자" 페이지예요.</p></div></div>
+<div class="card" id="c5"><h3><span class="chip c-all">다 같이</span>기여자 가입 순서</h3>
+<ol class="steps"><li>검색창에 <b>미리캔버스 디자인허브</b> 검색</li><li><span class="path">기여자 가입</span> — 닉네임(입력란에 보이는 형식대로), 이메일</li><li>필수 약관 확인 → 가입</li><li>메일함에서 <b>인증 메일 버튼</b> 누르기</li><li>로그인 → <b>콘텐츠 관리</b> 화면</li></ol>
+<div class="box warn"><h4>이메일 인증을 꼭</h4><p>인증을 안 하면 로그인해도 다음 단계가 막혀요. 지금 쓰는 메일 주소로 가입하세요.</p></div></div>
+<div class="card" id="c6"><h3><span class="chip c-read">읽기</span>콘텐츠 관리 화면</h3>
+<div class="mock"><div class="bar"><span class="on">단일 요소</span><span>조합 요소</span></div><p style="margin:8px 0 0">제출 예정 → 심사 대기 → 심사 중 → 승인 / 거부</p></div>
+<p class="note">앞으로 여기서 요소를 올리고 심사 상태를 봐요. 우리 수업은 주로 <b>단일 요소</b>를 올립니다.</p></div>
+</div></section>
+
+<section class="step" data-label="STEP 2" data-title="요소란?">
+<div class="grid">
+<div class="card band wide" id="c7"><span class="band-no">STEP 2</span><div><h3>요소 = 디자인의 재료</h3><p>파는 사람이 되기 전에, 사는 사람(디자인하는 사람) 입장에서 먼저 봐요.</p></div></div>
+<div class="card" id="c8"><h3><span class="chip c-all">다 같이</span>템플릿 뜯어 보기</h3>
+<ol class="steps"><li>미리캔버스에서 템플릿 하나 열기 (예: 채용 포스터)</li><li>인물 그림, 아이콘, 사진을 하나씩 눌러 보기 — <b>따로 선택되는 것이 하나의 요소</b></li><li>이 요소가 포스터 안에서 어떤 역할을 하는지 말해 보기</li></ol></div>
+<div class="card" id="c9"><h3><span class="chip c-all">다 같이</span>빈 페이지에서 찾아보기</h3>
+<ol class="steps"><li>새 디자인 → 빈 페이지</li><li>왼쪽 <span class="path">요소</span>에서 같은 주제로 <b>사진</b>과 <b>일러스트</b>를 번갈아 넣어 보기</li><li>같은 주제라도 전하는 느낌이 어떻게 다른지 비교</li></ol></div>
+<div class="card wide" id="c10"><h3><span class="chip c-read">읽기</span>잘 팔리는 요소의 조건</h3>
+<div class="split"><div class="yes"><h4>좋은 요소</h4><ul><li>주제와 구도가 분명</li><li>다른 디자인에 넣기 편함 (단순한 배경)</li><li>글자·로고·상표가 없음</li></ul></div><div class="nope"><h4>아쉬운 요소</h4><ul><li>무엇을 찍었는지 애매</li><li>배경이 복잡해서 다른 디자인과 안 어울림</li><li>깨진 글자, 상표 노출</li></ul></div></div></div>
+</div></section>
+
+<section class="step" data-label="STEP 3" data-title="등록 규격">
+<div class="grid">
+<div class="card band wide" id="c11"><span class="band-no">STEP 3</span><div><h3>등록 규격 읽기</h3><p>만들기 전에 기준을 알아야 다시 만드는 일이 줄어요.</p></div></div>
+<div class="card wide" id="c12"><h3><span class="chip c-all">다 같이</span>유형별로 다른 파일</h3>
+<div class="tw"><table class="cmp"><tr><th>유형</th><th>파일</th><th>핵심</th></tr>
+<tr><td><b>사진</b></td><td>JPG</td><td>배경이 있는 사진. 최소 해상도 120 DPI + 가로·세로 픽셀 기준</td></tr>
+<tr><td><b>배경 제거 사진</b></td><td>PNG</td><td>배경 없이 대상(오브젝트)만. 다른 디자인 위에 얹어 쓰는 용도</td></tr>
+<tr><td>그 밖의 유형</td><td>-</td><td>가이드의 "자세히 보기"에서 하나씩 확인</td></tr></table></div>
+<div class="box set"><h4>제출 대기는 최대 20개</h4><p>심사가 빠지지 않으면 더 못 올려요. 한 번에 몰아 올리지 말고 조금씩 올려요.</p></div>
+<p class="note">숫자 기준은 바뀔 수 있어요. 올리기 전에 업로드 화면의 안내와 가이드 원문을 다시 확인하세요.</p></div>
+<div class="card" id="c13"><h3><span class="chip c-all">다 같이</span>디자인허브 가이드 열기</h3>
+<ol class="steps"><li>업로드 화면 → <span class="path">가이드 자세히 보기</span></li><li>슬래시페이지로 된 가이드가 열려요</li><li>"등록 전에 알아야 할 내용", "AI 요소 유의사항", "제출할 수 없는 사례" 읽기</li></ol></div>
+<div class="card" id="c14"><h3><span class="chip c-read">읽기</span>제출할 수 없는 사례</h3>
+<ul><li>깨짐(글리치), 왜곡된 손·얼굴</li><li>부적절한 내용</li><li>글자·로고·상표가 들어간 이미지</li><li>유형에 맞지 않는 이미지 (예: 사진 유형인데 배경이 없음)</li></ul></div>
+</div></section>
+
+<section class="step" data-label="STEP 4" data-title="AI 제작 도우미">
+<div class="grid">
+<div class="card band wide" id="c15"><span class="band-no">STEP 4</span><div><h3>긴 가이드를 AI에게 맡기기</h3><p>가이드를 다 외우지 않고, AI에게 넣어 두고 질문하며 써요.</p></div></div>
+<div class="card" id="c16"><h3><span class="chip c-all">다 같이</span>제미나이 노트북 만들기</h3>
+<ol class="steps"><li>제미나이 → 노트북 새로 만들기</li><li>이름: <b>미리캔버스 디자인허브 제작 도우미</b></li><li>소스 추가: 디자인허브 가이드 주소</li><li>소스가 들어갔는지 확인</li></ol></div>
+<div class="card" id="c17"><h3><span class="chip c-read">읽기</span>질문은 구체적으로</h3>
+<p>막연히 "알려 줘" 대신 <b>무엇을 만들고 어디에 쓸지</b>를 함께 적어요.</p>
+<div class="box warn"><h4>다음 시간에 알게 된 점</h4><p>이 노트북은 가이드의 <b>첫 페이지만</b> 읽고 나머지는 자기 지식으로 답한 경우가 있었어요. 그래서 3차시부터는 GPT 프로젝트로 도우미를 다시 만듭니다. 답은 항상 가이드 원문과 대조하세요.</p></div></div>
+<div class="card wide" id="c18"><h3><span class="chip c-all">다 같이</span>질문 두 개</h3>
+<p class="plabel"><b>질문 1</b> 제작 기준</p>
+<div class="prompt"><button class="copy" type="button">복사</button>나는 미드저니로 미리캔버스 디자인허브에 올릴 "사진" 유형 요소를 만들 거야.
+소스의 가이드를 근거로 아래를 정리해 줘.
+1. 사진 요소의 파일 형식·해상도·크기 기준
+2. 심사에서 자주 거절되는 경우
+3. 미드저니 프롬프트를 쓸 때 주의할 점 (배경, 글자, 로고, 비율)
+각 항목 끝에 근거가 된 가이드 문장을 붙여 줘.</div>
+<p class="plabel"><b>질문 2</b> 무엇을 만들까</p>
+<div class="prompt"><button class="copy" type="button">복사</button>한국에서 11월에 디자인 수요가 많은 행사·시즌을 골라, 디자인허브 "사진" 요소로 만들 소재 3가지를 추천해 줘.
+조건: 대상 국가 한국 / 사용 시기 11월 / 용도 포스터·카드뉴스·현수막의 사진 재료
+각 소재마다 ① 어떤 물건과 장면으로 표현할지 ② 구도 ③ 미드저니용 영문 프롬프트(Korean 포함, 글자·로고 없음)를 적어 줘.</div>
+<p class="note">수업에서는 수능 응원 선물, 초콜릿 스틱, 김치(김장) 소재가 나왔어요. 첫 답이 원하는 방향과 다르면 조건을 바꿔 다시 물어보세요.</p></div>
+</div></section>
+
+<section class="step" data-label="STEP 5" data-title="프로필">
+<div class="grid">
+<div class="card band wide" id="c19"><span class="band-no">STEP 5</span><div><h3>프로필 — 내 취향을 알려 주기</h3><p>미드저니에는 화풍에 관여하는 장치가 두 개 있어요. 먼저 차이부터.</p></div></div>
+<div class="card wide" id="c20"><h3><span class="chip c-read">읽기</span>프로필 vs 무드보드</h3>
+<div class="split"><div class="yes"><h4>프로필 (Profile)</h4><ul><li>미드저니가 보여 주는 이미지 중에서 <b>고르기</b></li><li>고를수록 내 취향이 쌓임</li><li>열어야(활성화해야) 쓸 수 있음</li></ul></div><div class="nope"><h4>무드보드 (Moodboard)</h4><ul><li>참고할 이미지를 <b>내가 직접 모으기</b></li><li>내가 만든 결과도 넣을 수 있음</li><li>특정 화풍을 반복할 때</li></ul></div></div>
+<p class="note">순서: 프로필로 <b>취향을 찾고</b> → 그 화풍을 모아 무드보드로 <b>고정</b>해요.</p></div>
+<div class="card" id="c21"><h3><span class="chip c-all">다 같이</span>먼저 둘러보기</h3>
+<ol class="steps"><li><span class="path">Explore</span>에서 추천·인기 목록을 바꿔 가며 보기</li><li>사진풍 / 평면 그림 / 입체 표현을 비교</li><li><span class="path">Organize</span>에서 내가 지난번 만든 것도 열어 보기</li><li>색감·선·질감 중 무엇이 계속 눈에 들어오는지 메모</li></ol></div>
+<div class="card" id="c22"><h3><span class="chip c-all">다 같이</span>V8 프로필 새로 만들기</h3>
+<ol class="steps"><li><span class="path">Personalize</span> → 새 프로필 (V8)</li><li>두 장씩 나오는 이미지 중 <b>마음에 드는 쪽</b>을 계속 고르기 — 주제보다 색감·표현을 보고</li><li>진행 표시가 차면 "프로필을 사용할 수 있다" 안내</li><li>프로필 이름을 알아보기 쉽게 바꾸기</li><li><span class="path">Create</span>에서 프로필을 켜고 생성</li></ol>
+<div class="box set"><h4>설정 기록 습관</h4><p>결과가 마음에 들면 버전·프로필·비율·Stylize를 적어 두세요. 다음에 똑같이 비교할 수 있어요.</p></div></div>
+</div></section>
+
+<section class="step" data-label="STEP 6" data-title="무드보드">
+<div class="grid">
+<div class="card band wide" id="c23"><span class="band-no">STEP 6</span><div><h3>무드보드 — 같은 화풍 모으기</h3><p>마음에 든 결과 하나를 출발점으로, 비슷한 그림을 늘려서 보드에 담아요.</p></div></div>
+<div class="card" id="c24"><h3><span class="chip c-all">다 같이</span>재료 늘리기</h3>
+<ol class="steps"><li>프로필로 만든 결과 중 색감·선이 마음에 드는 것 고르기</li><li>마우스를 올려 <span class="path">Vary Subtle</span> / <span class="path">Vary Strong</span></li><li>원본과 나란히 놓고 "계열이 유지되는지" 보기</li><li>마음에 드는 결과에서 다시 변형 — 반복</li></ol>
+<p class="note">모든 결과를 다 넣지 않아요. 원하는 분위기에 맞는 것만.</p></div>
+<div class="card" id="c25"><h3><span class="chip c-all">다 같이</span>보드 만들기</h3>
+<ol class="steps"><li><span class="path">Moodboards</span> → 새 보드</li><li>기존 생성물에서 비슷한 화풍 <b>20~100장</b> 담기</li><li>보드 이름에 <b>색감 + 선 특징</b> 적기 (예: 파스텔 굵은선)</li><li>Create에서 무드보드 켜고 생성</li></ol>
+<div class="box ext"><h4>한 걸음 더</h4><p>인물 말고 사물·풍경에도 같은 무드보드를 적용해 보세요. 주제가 달라도 이어지는 표현이 있으면 그게 내 시리즈의 "얼굴"이에요.</p></div></div>
+</div></section>
+
+<section class="step" data-label="STEP 7" data-title="시즌 소재 비교">
+<div class="grid">
+<div class="card band wide" id="c26"><span class="band-no">STEP 7</span><div><h3>기획한 소재를 실제로 만들기</h3><p>제미나이에서 받은 시즌 소재를 프로필 / 무드보드로 각각 만들어 비교해요.</p></div></div>
+<div class="card wide" id="c27"><h3><span class="chip c-all">다 같이</span>같은 소재, 두 가지 화풍 장치</h3>
+<p class="plabel"><b>소재 1</b> 수능 응원 선물</p>
+<div class="prompt"><button class="copy" type="button">복사</button>a gift box with chocolates and a small cheering card for a Korean high school student before the college entrance exam, on a clean wooden desk, soft natural light, top view, no text, no logo --ar 1:1</div>
+<p class="plabel"><b>소재 2</b> 초콜릿 스틱 데이</p>
+<div class="prompt"><button class="copy" type="button">복사</button>a bundle of chocolate-coated biscuit sticks tied with a ribbon, held by a Korean woman's hands, late autumn mood, warm soft light, close-up, plain background, no brand name, no text --ar 1:1</div>
+<p class="plabel"><b>소재 3</b> 김장</p>
+<div class="prompt"><button class="copy" type="button">복사</button>freshly made Korean kimchi in a large bowl with napa cabbage, red pepper paste, Korean family kimjang day, bright natural light, medium shot, no text --ar 4:3</div>
+<p class="note">각 프롬프트를 ① 프로필 켜고 ② 무드보드 켜고 한 번씩. 버전과 비율은 똑같이 두세요.</p></div>
+<div class="card wide" id="c28"><h3><span class="chip c-chk">확인</span>비교표 채우기</h3>
+<div class="tw"><table class="cmp"><tr><th>소재</th><th>프로필 결과</th><th>무드보드 결과</th><th>판매용으로 더 나은 쪽 / 이유</th></tr>
+<tr><td>수능 응원 선물</td><td></td><td></td><td></td></tr><tr><td>초콜릿 스틱</td><td></td><td></td><td></td></tr><tr><td>김장</td><td></td><td></td><td></td></tr></table></div>
+<p class="note">프로필은 "선호 이미지 선택"이 출발점, 무드보드는 "직접 모은 이미지"가 출발점이에요. 어느 쪽이 내 판매 이미지에 맞는지는 결과로 판단해요.</p></div>
+</div></section>
+
+<section class="step" data-label="STEP 8" data-title="막힘 사전">
+<div class="grid">
+<div class="card band wide" id="c29"><span class="band-no">STEP 8</span><div><h3>막힘 사전</h3><p>화면 → 원인 → 조치</p></div></div>
+<div class="card wide" id="c30"><h3><span class="chip c-chk">확인</span>자주 만나는 화면</h3>
+<div class="trouble"><h4>디자인허브에 로그인해도 업로드 화면이 안 열림</h4><dl><dt>원인</dt><dd>이메일 인증 전</dd><dt>조치</dt><dd>메일함(스팸함 포함)에서 인증 메일 버튼 누르기</dd></dl></div>
+<div class="trouble"><h4>프로필을 켤 수 없음</h4><dl><dt>원인</dt><dd>아직 활성화 전 (고르기 부족)</dd><dt>조치</dt><dd>Personalize에서 이미지 고르기를 더 진행</dd></dl></div>
+<div class="trouble"><h4>무드보드를 켰는데 결과가 엉뚱함</h4><dl><dt>원인</dt><dd>보드 안 이미지들의 화풍이 섞여 있음, 또는 Raw 켜짐</dd><dt>조치</dt><dd>보드에서 결이 다른 이미지 빼기, Raw 끄고 다시</dd></dl></div>
+<div class="trouble"><h4>제미나이 답이 가이드와 다름</h4><dl><dt>원인</dt><dd>소스를 다 읽지 못하고 일반 지식으로 답함</dd><dt>조치</dt><dd>"근거 문장을 붙여 줘"라고 요청, 가이드 원문과 대조</dd></dl></div>
+<div class="trouble"><h4>사진 유형인데 배경 없는 이미지가 나옴</h4><dl><dt>원인</dt><dd>프롬프트에 배경 지시가 없음</dd><dt>조치</dt><dd>사진은 배경이 있어야 해요. 장소·배경을 문장에 넣기</dd></dl></div></div>
+</div></section>
+
+<section class="step" data-label="STEP 9" data-title="확인">
+<div class="grid">
+<div class="card band wide" id="c31"><span class="band-no">STEP 9</span><div><h3>오늘 정리</h3><p>판매처 가입 → 규격 → AI 도우미 → 화풍 장치 두 개</p></div></div>
+<div class="card wide" id="c32"><h3><span class="chip c-chk">확인</span>퀴즈</h3>
+<div class="q"><p><b>1.</b> 배경이 있는 "사진" 요소의 파일 형식은?</p><div class="qops"><button type="button" class="qo" data-ok="1">JPG</button><button type="button" class="qo" data-ok="0">PNG</button><button type="button" class="qo" data-ok="0">GIF</button></div><p class="qex">배경 있는 사진은 JPG, 배경 제거 사진은 PNG예요.</p></div>
+<div class="q"><p><b>2.</b> 내가 직접 모은 이미지로 화풍을 고정하는 장치는?</p><div class="qops"><button type="button" class="qo" data-ok="0">프로필</button><button type="button" class="qo" data-ok="1">무드보드</button></div><p class="qex">프로필은 고르기, 무드보드는 모으기예요.</p></div>
+<div class="q"><p><b>3.</b> 제출 대기에 한 번에 둘 수 있는 최대 개수는?</p><div class="qops"><button type="button" class="qo" data-ok="0">5개</button><button type="button" class="qo" data-ok="1">20개</button><button type="button" class="qo" data-ok="0">100개</button></div><p class="qex">수업 당일 화면 기준 20개. 조금씩 나눠 올려요.</p></div>
+<div class="q"><p><b>4.</b> 무드보드 이름에 적어 두면 좋은 것은?</p><div class="qops"><button type="button" class="qo" data-ok="0">만든 날짜</button><button type="button" class="qo" data-ok="1">색감과 선 특징</button></div><p class="qex">나중에 화풍을 골라 쓸 때 바로 알아볼 수 있어요.</p></div></div>
+<div class="card wide" id="c33"><h3><span class="chip c-chk">확인</span>다음 시간 준비</h3>
+<ol class="steps"><li>디자인허브 가입·이메일 인증 끝내기</li><li>프로필 V8 활성화 (가능하면 V7도)</li><li>무드보드 1개 이상</li><li>다음 시간: 미드저니 8.2 새 기능 <b>Attach to Prompt</b>, GPT로 제작 도우미 다시 만들기, 첫 사진 기획</li></ol></div>
+</div></section>
+
+</main>
+<aside class="side" aria-label="이 화면의 카드 목록"><p>이 STEP 카드</p><div id="sideList"></div></aside></div>
+<nav class="pager" aria-label="앞뒤 이동"><div class="pager-in">
+<button type="button" id="prev">◀ 이전</button>
+<div class="pager-mid"><select id="stepSel" aria-label="STEP 고르기"></select><select id="cardSel" aria-label="카드 고르기"></select></div>
+<button type="button" id="next" class="next">다음 ▶</button>
+</div></nav>
+<script>
+(function(){
+  /* 구글 사이트 임베드용: position:fixed / scrollIntoView / localStorage / 주소 # 이동 없음 */
+  var steps=[].slice.call(document.querySelectorAll('.step'));
+  var tabs=[].slice.call(document.querySelectorAll('.tab'));
+  var tabBar=document.getElementById('tabs');
+  var side=document.getElementById('sideList');
+  var stepSel=document.getElementById('stepSel');
+  var cardSel=document.getElementById('cardSel');
+  var top=document.getElementById('top');
+  var cur=0, cards=[], links=[], ticking=false;
+
+  function headH(){return top.offsetHeight+12;}
+  function pageY(){return window.pageYOffset||document.documentElement.scrollTop||0;}
+  function cardTitle(c){var h=c.querySelector('h3');if(!h)return '';var t='';for(var i=0;i<h.childNodes.length;i++){var n=h.childNodes[i];if(n.nodeType===3)t+=n.textContent;}t=t.trim();return t||h.textContent.trim();}
+  function goCard(c){var y=c.getBoundingClientRect().top+pageY()-headH();window.scrollTo(0,Math.max(0,y));}
+
+  steps.forEach(function(s,i){var o=document.createElement('option');o.value=i;o.textContent=s.getAttribute('data-label')+' · '+s.getAttribute('data-title');stepSel.appendChild(o);});
+
+  function build(sec){
+    side.innerHTML='';cardSel.innerHTML='';links=[];
+    cards=[].slice.call(sec.querySelectorAll('.card[id]')).filter(function(c){return c.querySelector('h3');});
+    var o0=document.createElement('option');o0.value='';o0.textContent='카드로 바로 가기';cardSel.appendChild(o0);
+    cards.forEach(function(c,i){
+      var t=cardTitle(c);
+      var a=document.createElement('a');a.setAttribute('role','button');a.tabIndex=0;a.textContent=t;
+      a.addEventListener('click',function(e){e.preventDefault();goCard(c);});
+      a.addEventListener('keydown',function(e){if(e.keyCode===13){goCard(c);}});
+      side.appendChild(a);links.push(a);
+      var o=document.createElement('option');o.value=i;o.textContent=(i+1)+'. '+t;cardSel.appendChild(o);
+    });
+    mark();
+  }
+  function mark(){
+    if(!cards.length)return;
+    var line=headH()+40,k=0;
+    for(var i=0;i<cards.length;i++){if(cards[i].getBoundingClientRect().top<=line)k=i;}
+    links.forEach(function(a,i){a.className=(i===k)?'on':'';});
+  }
+  window.addEventListener('scroll',function(){if(!ticking){ticking=true;setTimeout(function(){ticking=false;mark();},80);}});
+
+  function show(i,scroll){
+    cur=Math.max(0,Math.min(steps.length-1,i));
+    steps.forEach(function(s,k){s.classList.toggle('on',k===cur);});
+    tabs.forEach(function(t,k){t.setAttribute('aria-selected',k===cur?'true':'false');});
+    var t=tabs[cur];tabBar.scrollLeft=t.offsetLeft-(tabBar.clientWidth-t.offsetWidth)/2;
+    stepSel.value=cur;
+    build(steps[cur]);
+    document.getElementById('prev').disabled=cur===0;
+    document.getElementById('next').disabled=cur===steps.length-1;
+    var sd=document.querySelector('.side');if(sd)sd.style.top=headH()+'px';
+    if(scroll){var m=document.getElementById('main');var y=m.getBoundingClientRect().top+pageY()-headH()-10;if(pageY()>y)window.scrollTo(0,Math.max(0,y));}
+  }
+  tabs.forEach(function(t){t.addEventListener('click',function(){show(+t.getAttribute('data-i'),true);});});
+  document.getElementById('prev').addEventListener('click',function(){show(cur-1,true);});
+  document.getElementById('next').addEventListener('click',function(){show(cur+1,true);});
+  stepSel.addEventListener('change',function(){show(+stepSel.value,true);});
+  cardSel.addEventListener('change',function(){var v=cardSel.value;if(v!==''){goCard(cards[+v]);}cardSel.value='';});
+
+  /* 글자 크기 */
+  var fs=20;
+  function setFs(v){fs=Math.max(16,Math.min(28,v));document.documentElement.style.setProperty('--fs',fs+'px');var sd=document.querySelector('.side');if(sd)sd.style.top=headH()+'px';}
+  document.getElementById('zUp').addEventListener('click',function(){setFs(fs+2);});
+  document.getElementById('zDown').addEventListener('click',function(){setFs(fs-2);});
+  document.getElementById('zReset').addEventListener('click',function(){setFs(20);});
+
+  /* 복사 */
+  [].slice.call(document.querySelectorAll('.prompt .copy')).forEach(function(b){
+    b.addEventListener('click',function(){
+      var box=b.parentNode,txt='';
+      for(var i=0;i<box.childNodes.length;i++){if(box.childNodes[i]!==b)txt+=box.childNodes[i].textContent;}
+      txt=txt.replace(/^\s+|\s+$/g,'');
+      function ok(){b.textContent='복사됨';b.classList.add('done');setTimeout(function(){b.textContent='복사';b.classList.remove('done');},1600);}
+      function fb(){var t=document.createElement('textarea');t.value=txt;t.style.position='absolute';t.style.left='-9999px';document.body.appendChild(t);t.select();try{document.execCommand('copy');ok();}catch(e){}document.body.removeChild(t);}
+      if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(ok,fb);}else fb();
+    });
+  });
+
+  /* 퀴즈 */
+  [].slice.call(document.querySelectorAll('.q')).forEach(function(q){
+    [].slice.call(q.querySelectorAll('.qo')).forEach(function(b){
+      b.addEventListener('click',function(){
+        if(q.classList.contains('done'))return;q.classList.add('done');
+        [].slice.call(q.querySelectorAll('.qo')).forEach(function(x){if(x.getAttribute('data-ok')==='1')x.classList.add('right');});
+        if(b.getAttribute('data-ok')!=='1')b.classList.add('wrong');
+      });
+    });
+  });
+
+  show(0,false);
+})();
+
+</script>
+</body></html>

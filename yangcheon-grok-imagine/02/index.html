@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>2회차 · 통합 프로젝트 작업실 + 3컷 한 바퀴 (100분)</title>
+  <style>
+    :root {
+      --bg: #f4efe6;
+      --paper: #fffdf8;
+      --ink: #1c1915;
+      --muted: #6b6358;
+      --line: #e6dccb;
+      --brand: #c45c26;
+      --brand-dark: #9a3f14;
+      --good: #2f6b45;
+      --good-bg: #e7f3eb;
+      --warn: #8a4b12;
+      --warn-bg: #f8ead8;
+      --stop: #8b2e2e;
+      --stop-bg: #f8e4e2;
+      --nav: #2a2420;
+      --shadow: 0 10px 30px rgba(40, 24, 8, 0.08);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: 84px; }
+    body {
+      margin: 0;
+      font-family: "Pretendard", "Noto Sans KR", "Apple SD Gothic Neo", sans-serif;
+      background:
+        radial-gradient(1200px 500px at 10% -10%, #f8d9b8 0%, transparent 50%),
+        var(--bg);
+      color: var(--ink);
+      line-height: 1.65;
+    }
+    a { color: var(--brand-dark); }
+    .wrap { max-width: 980px; margin: 0 auto; padding: 24px 18px 80px; }
+    header.hero {
+      background: var(--nav);
+      color: #f8f1e8;
+      border-radius: 28px;
+      padding: 28px 28px 22px;
+      box-shadow: var(--shadow);
+    }
+    header.hero .eyebrow {
+      letter-spacing: .12em;
+      font-size: 12px;
+      color: #e0b48a;
+      text-transform: uppercase;
+    }
+    header.hero h1 {
+      margin: 8px 0 10px;
+      font-size: clamp(26px, 4vw, 38px);
+      line-height: 1.25;
+    }
+    header.hero p { margin: 0; color: #d9cfc3; }
+    .meta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+    .chip {
+      background: #3b332e;
+      border: 1px solid #564b43;
+      color: #f3e7d8;
+      border-radius: 999px;
+      padding: 6px 12px;
+      font-size: 13px;
+    }
+    nav.toc {
+      position: sticky; top: 0; z-index: 20;
+      display: flex; gap: 8px; overflow: auto;
+      padding: 10px 0 12px;
+      margin: 0 -4px;
+      background: var(--bg);
+      border-bottom: 1px solid transparent;
+    }
+    nav.toc button {
+      flex: 0 0 auto;
+      appearance: none;
+      text-decoration: none;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      color: var(--ink);
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    nav.toc button.active {
+      background: var(--nav);
+      border-color: var(--nav);
+      color: #fff;
+    }
+    section.card {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 22px 22px 18px;
+      margin: 16px 0;
+      box-shadow: var(--shadow);
+      scroll-margin-top: 84px;
+    }
+    h2 { margin: 0 0 8px; font-size: 22px; }
+    h3 { margin: 18px 0 8px; font-size: 17px; }
+    .lead { color: var(--muted); margin-top: 0; }
+    .goal-grid, .shot-grid, .split {
+      display: grid; gap: 10px;
+    }
+    @media (min-width: 720px) {
+      .goal-grid { grid-template-columns: 1fr 1fr 1fr; }
+      .shot-grid { grid-template-columns: 1fr 1fr 1fr; }
+      .split { grid-template-columns: 1fr 1fr; }
+    }
+    .goal, .shot, .note, .ok, .warn, .stop, .path {
+      border-radius: 16px;
+      padding: 14px 14px 12px;
+    }
+    .goal, .path { background: #f7f1e8; border: 1px solid var(--line); }
+    .goal strong, .path strong { display: block; margin-bottom: 4px; }
+    label.check { display: flex; gap: 10px; align-items: flex-start; margin: 8px 0; }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    th, td {
+      border-bottom: 1px solid var(--line);
+      text-align: left; padding: 10px 8px; vertical-align: top;
+    }
+    th { color: var(--muted); font-weight: 600; }
+    .prompt {
+      background: #2a2420;
+      color: #f6efe6;
+      border-radius: 16px;
+      padding: 14px 14px 12px;
+      margin: 10px 0 8px;
+    }
+    .prompt pre {
+      white-space: pre-wrap;
+      word-break: break-word;
+      margin: 0;
+      font-family: ui-monospace, "Nanum Gothic Coding", Menlo, monospace;
+      font-size: 13.5px;
+      line-height: 1.55;
+    }
+    .row-btns { display: flex; gap: 8px; flex-wrap: wrap; margin: 6px 0 16px; }
+    button.copy {
+      border: 0; cursor: pointer;
+      border-radius: 999px;
+      padding: 8px 13px;
+      font-weight: 700;
+      font-size: 13px;
+      background: var(--brand); color: white;
+    }
+    button.copy.done { background: var(--good); }
+    .ok { background: var(--good-bg); color: #214d32; }
+    .warn { background: var(--warn-bg); color: var(--warn); }
+    .stop { background: var(--stop-bg); color: var(--stop); }
+    .note { background: #eef2f6; color: #334155; }
+    ol.steps, ul.clean { padding-left: 18px; }
+    ol.steps li, ul.clean li { margin: 6px 0; }
+    .shot { background: #fbf6ee; border: 1px solid var(--line); }
+    .shot .n {
+      display: inline-block;
+      background: var(--nav); color: #fff;
+      border-radius: 999px; padding: 2px 8px;
+      font-size: 12px; margin-bottom: 6px;
+    }
+    footer {
+      color: var(--muted); font-size: 13px; text-align: center; margin-top: 24px;
+    }
+    .progress {
+      display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap;
+      margin-top: 14px;
+    }
+    .progress span {
+      flex: 1; min-width: 80px; text-align: center;
+      background: #3b332e; border-radius: 12px; padding: 8px 6px; font-size: 12px;
+    }
+    .kbd {
+      font-family: ui-monospace, monospace;
+      background: #efe8dc; border-radius: 6px; padding: 1px 6px;
+    }
+    .toast {
+      position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%);
+      background: var(--nav); color: #fff;
+      padding: 10px 16px; border-radius: 999px;
+      opacity: 0; pointer-events: none; transition: .2s;
+      z-index: 50;
+    }
+    .toast.show { opacity: 1; }
+    .flow {
+      display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+      margin: 12px 0;
+    }
+    .flow b {
+      background: var(--nav); color: #fff;
+      border-radius: 12px; padding: 8px 12px; font-size: 13px;
+    }
+    .flow span { color: var(--muted); }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="hero">
+      <div class="eyebrow">양천구 평생학습관 · 4차산업 · 그록 AI 영상 제작</div>
+      <h1>2회차 실습지<br>먼저 방을 확인하고, 3컷을 한 바퀴 돈다</h1>
+      <p>오늘은 기능 구경이 아닙니다. <b>프로젝트가 지금 통합 중</b>이라 화면이 사람마다 다릅니다. 방을 연 다음, 기획부터 캡컷 내보내기까지 한 편을 닫습니다.</p>
+      <div class="meta">
+        <span class="chip">100분 실습</span>
+        <span class="chip">0–12분: 프로젝트 화면 확인</span>
+        <span class="chip">견본: 동네 카페 15–20초</span>
+        <span class="chip">필수: SuperGrok · 크롬 · 캡컷</span>
+      </div>
+      <div class="progress">
+        <span>0 방 확인</span>
+        <span>1 지침</span>
+        <span>2 3컷</span>
+        <span>3 목소리</span>
+        <span>4 캡컷</span>
+        <span>5 내 소재</span>
+      </div>
+    </header>
+
+    <nav class="toc" aria-label="실습 목차">
+      <button type="button" data-sec="yc-unify">프로젝트부터</button>
+      <button type="button" data-sec="yc-pass">합격선</button>
+      <button type="button" data-sec="yc-time">시간표</button>
+      <button type="button" data-sec="yc-login">시작 점검</button>
+      <button type="button" data-sec="yc-room">작업실 열기</button>
+      <button type="button" data-sec="yc-story">견본</button>
+      <button type="button" data-sec="yc-image">이미지</button>
+      <button type="button" data-sec="yc-video">영상</button>
+      <button type="button" data-sec="yc-voice">음성</button>
+      <button type="button" data-sec="yc-capcut">캡컷</button>
+      <button type="button" data-sec="yc-mine">내 소재</button>
+      <button type="button" data-sec="yc-fix">막힐 때</button>
+      <button type="button" data-sec="yc-home">숙제</button>
+    </nav>
+
+    <section class="card" id="yc-unify">
+      <h2>0단계 · 프로젝트부터 본다 (오늘 제일 중요한 설명)</h2>
+      <p class="lead">수강생 화면이 둘로 갈라질 수 있습니다. UI를 맞추려다 100분이 사라지니, <b>내 화면이 A인지 B인지만 확인하고 실습으로 들어갑니다.</b></p>
+
+      <h3>원래는 이원화였다</h3>
+      <div class="split">
+        <div class="path">
+          <strong>채팅 프로젝트</strong>
+          grok.com 왼쪽 방. 지침·파일·대화가 붙는 작업실. “어떻게 일할까”를 적어 두는 곳.
+        </div>
+        <div class="path">
+          <strong>이매진 프로젝트</strong>
+          grok.com/imagine 쪽 방. 이미지·영상 생성물을 묶는 서랍 / 에이전트 캔버스. “만든 것”을 모아 두는 곳.
+        </div>
+      </div>
+
+      <h3>지금은 통합으로 넘어가는 중</h3>
+      <p>2026년 9월 초부터 <span class="kbd">grok.com</span> 새 프로젝트는 <b>하나의 워크스페이스</b>로 열리는 계정가 늘고 있습니다. Chat / Imagine 탭이 없이, 한 방에서 기획도 하고 생성도 하는 방향입니다. 다만 앱·일부 계정은 아직 옛 화면입니다.</p>
+
+      <div class="warn">
+        강사 한 줄: “이제 무조건 하나다”라고 칠판에 쓰지 않는다. <b>형 화면을 기준으로 오늘 버튼만 찍는다.</b>
+      </div>
+
+      <h3>내 화면 판별 — 30초</h3>
+      <div class="split">
+        <div class="ok">
+          <strong>A. 통합 화면 (새것)</strong>
+          프로젝트 하나 열었더니 채팅과 이매진이 한 방에 있다. 설정/구성 탭에 지침 칸이 있다. Chat vs Imagine 탭이 없다.
+        </div>
+        <div class="warn">
+          <strong>B. 이원화 화면 (옛것)</strong>
+          채팅 방과 이매진 방이 따로다. 이매진에는 지침이 안 보이거나, 폴더처럼만 보인다.
+        </div>
+      </div>
+
+      <h3>그래서 오늘 작업실은 이렇게 연다</h3>
+      <div class="flow">
+        <b>1 새 프로젝트</b><span>→</span>
+        <b>2 지침 붙여넣기</b><span>→</span>
+        <b>3 그 방 안에서만 일하기</b><span>→</span>
+        <b>4 생성은 이매진</b>
+      </div>
+      <table>
+        <thead><tr><th></th><th>A. 통합이면</th><th>B. 아직 나뉘면</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>방 만들기</td>
+            <td>왼쪽 Projects → 새로 만들기 하나</td>
+            <td>채팅 쪽 Projects에서 하나 만든다</td>
+          </tr>
+          <tr>
+            <td>지침</td>
+            <td>프로젝트 설정 / 구성 / Instructions</td>
+            <td>채팅 프로젝트 지침 칸. 이매진에 억지로 찾지 말 것</td>
+          </tr>
+          <tr>
+            <td>기획·프롬프트</td>
+            <td>그 방 채팅</td>
+            <td>그 방 채팅</td>
+          </tr>
+          <tr>
+            <td>이미지·영상</td>
+            <td>같은 방에서 이매진으로 생성</td>
+            <td>프롬프트 복사 → 이매진에 붙여넣기</td>
+          </tr>
+          <tr>
+            <td>파일 모으기</td>
+            <td>그 방 안에 생성물이 쌓이면 그대로</td>
+            <td>다운로드 폴더 + 가능하면 이매진 폴더</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="ok" style="margin-top:12px">
+        공통 규칙 하나: <b>일반 채팅(프로젝트 밖)에서 일하지 않는다.</b> 밖은 손님용 테이블이고, 지침이 안 붙는다.
+      </div>
+    </section>
+
+    <section class="card" id="yc-pass">
+      <h2>오늘 합격선 — 이 3개가 있어야 수업이 끝난다</h2>
+      <p class="lead">예쁜 카페 영상이 목표가 아닙니다. <b>다음 주에도 혼자 같은 방으로 들어와 같은 순서를 돌릴 손</b>이 목표입니다.</p>
+      <div class="goal-grid">
+        <div class="goal">
+          <strong>1. 작업실 1개</strong>
+          프로젝트 이름 + 지침. A든 B든 “내 방”이 보여야 한다.
+        </div>
+        <div class="goal">
+          <strong>2. 같은 목소리 3문장</strong>
+          세 컷이 다른 사람처럼 들리면 실패. 클론까지 깊게 가지 않음.
+        </div>
+        <div class="goal">
+          <strong>3. 파일 1개</strong>
+          캡컷에서보낸 <span class="kbd">2회차_이름_카페3컷</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" id="yc-time">
+      <h2>100분 시간표</h2>
+      <p class="lead">앞 12분을 화면 확인에 씁니다. 여기가 밀리면 연장은 버리고 캡컷으로 갑니다.</p>
+      <table>
+        <thead>
+          <tr><th>분</th><th>블록</th><th>교실에서 하는 일</th><th>끝나야 하는 것</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>0–8</td><td>로그인</td><td>grok.com, SuperGrok, 캡컷, 다운로드 폴더</td><td>화면이 열린 상태</td></tr>
+          <tr><td>8–20</td><td>방 확인 + 개설</td><td>A/B 판별 → 프로젝트 1개 → 지침 붙여넣기</td><td>내 작업실</td></tr>
+          <tr><td>20–45</td><td>견본 3컷</td><td>이미지 3 → 클립 3. 연장은 보너스</td><td>컷 파일 3쌍</td></tr>
+          <tr><td>45–62</td><td>음성 고정</td><td>내레이션 3문장, 같은 보이스</td><td>음성 또는 캡컷 TTS</td></tr>
+          <tr><td>62–85</td><td>캡컷</td><td>버튼 6개만</td><td>완성 파일</td></tr>
+          <tr><td>85–100</td><td>내 소재 · 저장</td><td>가게/물건/장소 한 줄 + 사진 1장</td><td>다음 주 재료</td></tr>
+        </tbody>
+      </table>
+      <div class="stop" style="margin-top:12px">
+        <b>오늘 금지:</b> UI 논쟁을 길게 하기, 새 장르 창작, 이미지 10장 뽑기, 캡컷 전환·스티커, 내 목소리 클론 깊게 파기.
+      </div>
+    </section>
+
+    <section class="card" id="yc-login">
+      <h2>0–8분 · 시작 점검</h2>
+      <p class="lead">웹이 가장 안전합니다. 주소는 <span class="kbd">grok.com</span>. 모바일 앱은 프로젝트 기능이 늦을 수 있습니다.</p>
+      <label class="check"><input type="checkbox"> 크롬으로 grok.com 로그인, SuperGrok 확인</label>
+      <label class="check"><input type="checkbox"> 왼쪽에서 Projects / 프로젝트가 보이는지 확인</label>
+      <label class="check"><input type="checkbox"> 내 화면이 A(한 방)인지 B(두 방)인지 옆 사람에게 한 마디</label>
+      <label class="check"><input type="checkbox"> 캡컷 로그인, 다운로드 폴더 열어 두기</label>
+      <div class="warn" style="margin-top:10px">로그인·결제가 안 되면 강사 견본 클립으로 캡컷만이라도 완성합니다.</div>
+    </section>
+
+    <section class="card" id="yc-room">
+      <h2>8–20분 · 작업실 열기</h2>
+      <ol class="steps">
+        <li>왼쪽 <b>Projects</b> → 새로 만들기</li>
+        <li>이름을 아래와 똑같이</li>
+        <li>지침 칸을 찾는다. A면 설정/구성 탭, B면 채팅 프로젝트 Instructions</li>
+        <li>아래 지침 전체를 붙여넣고 저장</li>
+        <li><b>그 프로젝트 안에서</b> 새 채팅을 연다</li>
+      </ol>
+
+      <h3>프로젝트 이름</h3>
+      <div class="prompt" id="p-name"><pre>양천_내이름_영상작업실</pre></div>
+      <div class="row-btns"><button class="copy" data-target="p-name">이름 복사</button></div>
+
+      <h3>작업실 지침 — 그대로 붙여넣기</h3>
+      <p class="lead">이매진 갤러리에 붙이는 글이 아닙니다. <b>프로젝트 지침 칸</b>에 넣습니다.</p>
+      <div class="prompt" id="p-instr"><pre>너는 내 영상 작업 파트너다. 이 프로젝트는 양천구 수업용 작업실이다.
+
+출력은 항상 이 순서로:
+1) 한 줄 콘셉트
+2) 3컷 구성 (후킹 / 혜택·전개 / 행동유도)
+3) 컷별 이미지 프롬프트 (세로 9:16, 같은 공간·같은 조명)
+4) 컷별 영상 프롬프트 (카메라 움직임 한 가지, 6초 내)
+5) 내레이션 3문장 (구어체, 한 문장 8~12자 호흡)
+
+규칙:
+- 내가 올린 레퍼런스 이미지의 공간·제품·인물 일관성을 최우선으로 지켜라.
+- 한국어로 답하고, 프롬프트는 한/영 병기해도 된다.
+- 한 번에 너무 많이 만들지 말고, 내가 고른 1안을 다듬어라.
+- 수업용 연습이므로 과장 광고 금지, 실제 없는 할인가·의료 효과 넣지 마라.
+- 기본 견본 소재는 '비 오는 아침의 동네 카페'다.
+- 이미지·영상 생성 버튼을 이 채팅에서 바로 쓸 수 있으면 여기서 만들고, 안 되면 프롬프트만 짧게 줘라.</pre></div>
+      <div class="row-btns"><button class="copy" data-target="p-instr">지침 전체 복사</button></div>
+
+      <h3>작업실에 처음 하는 말</h3>
+      <div class="prompt" id="p-hello"><pre>안녕. 여기는 내 영상 작업실이야.
+오늘은 수업 견본으로 '비 오는 아침 동네 카페' 15~20초 3컷 영상을 만들자.
+아직 레퍼런스 사진이 없으면 네가 공간·조명·소품을 하나로 고정해서
+후킹 / 혜택 / 행동유도 3컷만 제안해 줘.
+이미지 프롬프트는 아직 뽑지 말고, 구성만 짧게 확인하자.</pre></div>
+      <div class="row-btns"><button class="copy" data-target="p-hello">첫 말 복사</button></div>
+
+      <div class="note">
+        지침 칸을 못 찾으면: 채팅에 지침 전체를 한 번 붙여넣고 “이 규칙을 이 방에서 기억해”라고 한 뒤 실습을 진행한다. 완벽한 설정 UI보다 한 바퀴가 우선이다.
+      </div>
+    </section>
+
+    <section class="card" id="yc-story">
+      <h2>견본 이야기 — 전원 같은 카페</h2>
+      <p class="lead">소재를 나누면 교실이 멈춥니다. 3회차 광고 공식(후킹→혜택→행동유도)의 예고편입니다.</p>
+      <div class="shot-grid">
+        <div class="shot">
+          <div class="n">1컷 · 후킹</div>
+          <b>창가, 김 오르는 잔</b>
+          <div>비가 창을 흐르고, 손이 잔을 감싼다. 첫 1초에 따뜻함이 보여야 한다.</div>
+        </div>
+        <div class="shot">
+          <div class="n">2컷 · 혜택</div>
+          <b>첫 모금, 느려지는 아침</b>
+          <div>입술이 컵에 닿고 어깨가 내려간다.</div>
+        </div>
+        <div class="shot">
+          <div class="n">3컷 · 행동유도</div>
+          <b>간판 + 창가 자리</b>
+          <div>가게 바깥과 빈 창가. 자막으로만 초대. 가짜 할인가 금지.</div>
+        </div>
+      </div>
+      <h3>내레이션 3문장 (고정)</h3>
+      <div class="prompt" id="p-narra"><pre>1. 비 오는 아침, 손끝이 먼저 녹아요.
+2. 첫 모금이면 하루가 조금 느려집니다.
+3. 창가 자리, 오늘 하나만 비워 둘게요.</pre></div>
+      <div class="row-btns"><button class="copy" data-target="p-narra">내레이션 복사</button></div>
+    </section>
+
+    <section class="card" id="yc-image">
+      <h2>20–45분 · 이미지 3장</h2>
+      <p class="lead">컷당 최대 3장만 뽑고 1장 고릅니다. 2·3컷은 새 세상을 만들지 말고 <b>1컷 이미지를 레퍼런스로 고정</b>합니다.</p>
+      <div class="warn">A 화면이면 작업실 안에서 바로 생성. B 화면이면 아래 프롬프트를 복사해 이매진에 붙인다. 실패하면 문장을 늘리지 말고 장소·조명·카메라 중 하나만 바꾼다.</div>
+
+      <h3>이미지 생성해 달라는 말 (작업실 채팅용)</h3>
+      <div class="prompt" id="p-img-ask"><pre>구성 그대로 가자.
+1컷 이미지 프롬프트를 한 개만 주고, 내가 고를 수 있게
+같은 공간·같은 조명으로 세로 9:16 이미지 4장만 만들어 줘.
+사람 얼굴은 옆모습 또는 손만. 상호는 '창가커피'로 단순하게.</pre></div>
+      <div class="row-btns"><button class="copy" data-target="p-img-ask">이미지 요청문 복사</button></div>
+
+      <h3>1컷 이미지 프롬프트 (이매진에 직접 넣을 때)</h3>
+      <div class="prompt" id="p-img1"><pre>세로 9:16, 비 오는 아침 동네 카페 창가.
+창에 빗방울, 따뜻한 텅스텐 조명, 나무 테이블, 김이 오르는 세라믹 커피잔,
+손이 잔을 감싼 클로즈업. 아늑하고 영화같은 사진, 과한 텍스트 없음.
+photoreal cinematic still, rain on window, steaming coffee cup, cozy cafe, 9:16</pre></div>
+      <div class="row-btns"><button class="copy" data-target="p-img1">1컷 이미지 복사</button></div>
+
+      <h3>2컷 이미지 프롬프트</h3>
+      <div class="prompt" id="p-img2"><pre>같은 카페, 같은 조명, 같은 잔.
+손님이 창가에서 커피를 한 모금 마시는 옆모습, 어깨가 내려간 편안한 표정.
+빗방울 창이 배경. 세로 9:16, 텍스트 없음.
+same cafe and lighting as reference, sipping coffee by rainy window, 9:16</pre></div>
+      <div class="row-btns"><button class="copy" data-target="p-img2">2컷 이미지 복사</button></div>
+
+      <h3>3컷 이미지 프롬프트</h3>
+      <div class="prompt" id="p-img3"><pre>같은 카페의 바깥 간판과 창가 자리.
+작은 간판에 '창가커피', 비에 젖은 거리, 창가에 빈자리 하나와 켜진 램프.
+세로 9:16, 과한 네온 금지, 텍스트는 간판만.
+same cafe exterior at rainy morning, warm window seat empty, modest signboard, 9:16</pre></div>
+      <div class="row-btns"><button class="copy" data-target="p-img3">3컷 이미지 복사</button></div>
+      <div class="ok">일관성 검사: 세 장이 같은 시간대·같은 나무색·같은 잔인가? 아니면 1컷을 레퍼런스로 다시.</div>
+    </section>
+
+    <section class="card" id="yc-video">
+      <h2>이미지를 영상으로 — 컷당 1~2개만</h2>
+      <p class="lead">고른 이미지 1장 → 짧은 클립 1개가 기본입니다. 연장은 시간 남을 때만.</p>
+
+      <h3>1컷 영상</h3>
+      <div class="prompt" id="p-v1"><pre>이 이미지를 6초 영상으로.
+카메라 아주 천천히 잔 쪽으로 다가간다.
+빗방울이 창을 흐르고, 김이 천천히 오른다.
+대사 없이 환경음만. 흔들림 과하게 하지 마.</pre></div>
+      <div class="row-btns"><button class="copy" data-target="p-v1">1컷 영상 복사</button></div>
+
+      <h3>2컷 영상</h3>
+      <div class="prompt" id="p-v2"><pre>이 이미지를 6초 영상으로.
+한 모금 마시는 작은 동작, 어깨가 살짝 내려간다.
+창 밖 비가 천천히 흐른다.
+대사 없이 환경음만. 같은 카페 분위기 유지.</pre></div>
+      <div class="row-btns"><button class="copy" data-target="p-v2">2컷 영상 복사</button></div>
+
+      <h3>3컷 영상</h3>
+      <div class="prompt" id="p-v3"><pre>이 이미지를 6초 영상으로.
+카메라가 간판에서 창가 빈자리로 천천히 이동한다.
+빗소리가 들리고 창 램프가 따뜻하다.
+대사 없이 환경음만.</pre></div>
+      <div class="row-btns"><button class="copy" data-target="p-v3">3컷 영상 복사</button></div>
+      <div class="note">파일 이름: <span class="kbd">컷1_창가잔</span> <span class="kbd">컷2_첫모금</span> <span class="kbd">컷3_간판</span></div>
+    </section>
+
+    <section class="card" id="yc-voice">
+      <h2>45–62분 · 음성, 두 층만 구분한다</h2>
+      <p class="lead">교실에서 보이스 고정은 성대모사가 아닙니다. <b>세 문장이 같은 사람으로 들리게 하는 것</b>입니다.</p>
+      <div class="goal-grid">
+        <div class="goal"><strong>A. 영상 속 소리</strong>클립이 만든 빗소리·잔 소리. 시끄러우면 캡컷에서 줄인다.</div>
+        <div class="goal"><strong>B. 내레이션</strong>3문장을 같은 보이스로. 그록 보이스 또는 캡컷 TTS.</div>
+        <div class="goal"><strong>C. 최후 수단</strong>휴대폰 녹음 20초. 클론은 숙제.</div>
+      </div>
+      <h3>그록에게 내레이션을 부탁할 때</h3>
+      <div class="prompt" id="p-voice"><pre>아래 3문장을 같은 목소리, 같은 속도로 읽어 줘.
+따뜻하고 낮은 톤, 광고처럼 빠르지 않게, 한국어.
+문장 사이에 0.4초 쉼.
+파일로 받을 수 있으면 문장별 3개 또는 이어 붙인 1개로 줘.
+
+1. 비 오는 아침, 손끝이 먼저 녹아요.
+2. 첫 모금이면 하루가 조금 느려집니다.
+3. 창가 자리, 오늘 하나만 비워 둘게요.</pre></div>
+      <div class="row-btns"><button class="copy" data-target="p-voice">음성 요청문 복사</button></div>
+      <div class="warn" style="margin-top:8px">보이스가 안 나오면 캡컷 텍스트 음성으로 세 문장 모두 같은 목소리를 고르면 오늘 합격입니다.</div>
+    </section>
+
+    <section class="card" id="yc-capcut">
+      <h2>62–85분 · 캡컷 버튼은 6개만</h2>
+      <ol class="steps">
+        <li>새 프로젝트 → 비율 <b>9:16</b></li>
+        <li>컷1·컷2·컷3 순서대로 올리기</li>
+        <li>각 클립 앞뒤 0.3초만 자르기 (전환 금지)</li>
+        <li>텍스트 3개, 화면 아래. 문장은 내레이션과 동일</li>
+        <li>내레이션 올리고 원본 클립 소리는 낮추기</li>
+        <li>내보내기 1080p, 이름 <span class="kbd">2회차_이름_카페3컷</span></li>
+      </ol>
+      <label class="check"><input type="checkbox"> 비율 9:16</label>
+      <label class="check"><input type="checkbox"> 클립 3개 순서 맞음</label>
+      <label class="check"><input type="checkbox"> 자막 3개, 잘리지 않음</label>
+      <label class="check"><input type="checkbox"> 목소리가 BGM보다 큼</label>
+      <label class="check"><input type="checkbox"> 총 길이 15–20초 근처</label>
+      <label class="check"><input type="checkbox"> 파일 저장 위치 확인</label>
+      <div class="stop" style="margin-top:10px">금지: 전환, 스티커, 자동 캡션 디자인, 흔들기, 필터 과다.</div>
+    </section>
+
+    <section class="card" id="yc-mine">
+      <h2>85–100분 · 내 소재는 시동만</h2>
+      <p class="lead">견본 파일을 보냈으면 오늘 본게임은 끝났습니다. 자기 소재는 다음 주 제품 광고의 재료입니다.</p>
+      <div class="prompt" id="p-mine"><pre>이 사진이 주인공이다.
+후킹 → 혜택 → 행동유도 3컷으로 짜 줘.
+과장 광고와 없는 할인가 넣지 마.
+구성만 먼저 보여주고, 내가 오케이 하면 이미지 프롬프트를 한 컷씩 주자.
+한 줄 콘셉트도 같이.</pre></div>
+      <div class="row-btns"><button class="copy" data-target="p-mine">내 소재 첫 말 복사</button></div>
+      <div class="note">오늘 이미지 1장만 나와도 합격. 나머지 2컷과 캡컷은 숙제.</div>
+    </section>
+
+    <section class="card" id="yc-fix">
+      <h2>막힐 때</h2>
+      <table>
+        <thead><tr><th>증상</th><th>바로 할 일</th></tr></thead>
+        <tbody>
+          <tr><td>프로젝트 밖에서 채팅 중</td><td>작업실 문 다시 열고 들어와. 밖은 기억 안 함.</td></tr>
+          <tr><td>지침 칸이 안 보임</td><td>채팅에 지침을 한 번 붙여넣고 실습 진행.</td></tr>
+          <tr><td>이매진만 따로 열림</td><td>정상(B화면). 프롬프트 복사해서 이매진에 붙인다.</td></tr>
+          <tr><td>컷마다 다른 가게</td><td>1컷 이미지를 레퍼런스로 고정.</td></tr>
+          <tr><td>영상 생성이 김</td><td>기다리는 동안 내레이션부터.</td></tr>
+          <tr><td>그록 보이스가 안 됨</td><td>캡컷 TTS, 같은 목소리 3번.</td></tr>
+          <tr><td>캡컷에 소리 없음</td><td>클립 음소거·내레이션 트랙 확인.</td></tr>
+          <tr><td>한도·결제 막힘</td><td>강사 견본으로 캡컷만이라도 완성.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="card" id="yc-home">
+      <h2>수업이 끝나면</h2>
+      <label class="check"><input type="checkbox"> 내 화면이 A였는지 B였는지 메모했다</label>
+      <label class="check"><input type="checkbox"> 프로젝트 방이 다음에도 열려 있다</label>
+      <label class="check"><input type="checkbox"> 견본 영상 파일이 내 폴더에 있다</label>
+      <label class="check"><input type="checkbox"> 내 소재 한 줄 + 사진 1장을 작업실에 올려 두었다</label>
+      <div class="ok" style="margin-top:12px">
+        <b>숙제:</b> 자기 소재 3컷 이미지까지. 캡컷 초안이면 더 좋음. 3회차는 제품 광고 30초, 오늘 손이 그대로 쓰입니다.
+      </div>
+    </section>
+
+    <footer>
+      양천구 평생학습관 · 스마트창의인재센터 3층 디지털배움실 · 2회차 실습지 개정<br>
+      프로젝트 통합 롤아웃을 반영한 교실용 자료. 화면이 달라도 한 바퀴는 같게.
+    </footer>
+  </div>
+
+  <div class="toast" id="toast">복사했습니다</div>
+  <script>
+    function textOf(id) {
+      const el = document.getElementById(id);
+      return el ? el.innerText.trim() : "";
+    }
+    function toast(msg) {
+      const t = document.getElementById("toast");
+      t.textContent = msg;
+      t.classList.add("show");
+      setTimeout(() => t.classList.remove("show"), 1400);
+    }
+    async function copyText(text) {
+      try {
+        await navigator.clipboard.writeText(text);
+        return true;
+      } catch (e) {
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        const ok = document.execCommand("copy");
+        document.body.removeChild(ta);
+        return ok;
+      }
+    }
+    document.querySelectorAll("button.copy").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        const ok = await copyText(textOf(btn.dataset.target));
+        if (ok) {
+          const old = btn.textContent;
+          btn.textContent = "복사됨";
+          btn.classList.add("done");
+          toast("클립보드에 복사했습니다");
+          setTimeout(() => {
+            btn.textContent = old;
+            btn.classList.remove("done");
+          }, 1600);
+        } else {
+          toast("복사가 막혔습니다. 상자를 드래그해 복사하세요");
+        }
+      });
+    });
+
+    const navLinks = [...document.querySelectorAll("nav.toc button[data-sec]")];
+    const sections = navLinks
+      .map((btn) => document.getElementById(btn.dataset.sec))
+      .filter(Boolean);
+
+    function navOffset() {
+      const nav = document.querySelector("nav.toc");
+      return (nav ? nav.getBoundingClientRect().height : 64) + 12;
+    }
+
+    function goTo(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const top = window.scrollY + el.getBoundingClientRect().top - navOffset();
+      window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
+      navLinks.forEach((btn) => btn.classList.toggle("active", btn.dataset.sec === id));
+    }
+
+    navLinks.forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        goTo(btn.dataset.sec);
+      });
+    });
+
+    const markActive = () => {
+      const line = navOffset() + 8;
+      let current = sections[0];
+      sections.forEach((sec) => {
+        if (sec.getBoundingClientRect().top <= line) current = sec;
+      });
+      if (current) {
+        navLinks.forEach((btn) =>
+          btn.classList.toggle("active", btn.dataset.sec === current.id)
+        );
+      }
+    };
+    window.addEventListener("scroll", markActive, { passive: true });
+    markActive();
+  </script>
+</body>
+</html>

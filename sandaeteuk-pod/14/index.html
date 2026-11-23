@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>지침 하나로 동화책 한 권 만들기 — 그리고 내 지침을 스킬로</title>
+<style>
+:root{--bg:#FBFAF7;--card:#FFFFFF;--line:#E4E1DA;--ink:#22231F;--muted:#62645E;--accent:#1E5D57;--accent-soft:#E6F0EE;
+  --note:#F6F2E9;--note-b:#E6DCC6;--check:#F1F3F5;--check-b:#D5DAE0;--help:#FBEFEC;--help-b:#EBCBC2;--more:#EDF5EC;--more-b:#C6DDC2;--fs:20px}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Pretendard,"Noto Sans KR","Malgun Gothic","Apple SD Gothic Neo",sans-serif;font-size:var(--fs);line-height:1.7;word-break:keep-all}
+h1{font-size:1.5em;margin:0 0 .3em;font-weight:700;line-height:1.35}
+h2{font-size:1.3em;margin:0 0 .6em;font-weight:700;color:var(--accent)}
+h3{font-size:1em;margin:0 0 .5em;font-weight:700}
+p{margin:.3em 0 .6em}
+.top{position:sticky;top:0;z-index:20;background:rgba(251,250,247,.97);border-bottom:1px solid var(--line)}
+.top-in{max-width:1280px;margin:0 auto;padding:10px 18px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.brand{font-weight:700;color:var(--accent);font-size:18px;white-space:nowrap;margin-right:4px}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;flex:1}
+.tabs button{font:inherit;font-size:17px;padding:6px 13px;border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--ink);cursor:pointer}
+.tabs button .n{font-weight:700;color:var(--accent);margin-right:4px}
+.tabs button.done{background:var(--accent-soft)}
+.tabs button.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.tabs button.on .n{color:#fff}
+.fsb{display:flex;gap:4px}
+.fsb button{font:inherit;font-size:16px;padding:4px 11px;border:1px solid var(--line);background:var(--card);border-radius:8px;cursor:pointer}
+.wrap{max-width:1280px;margin:0 auto;padding:22px 18px 10px;display:grid;grid-template-columns:minmax(0,1fr) 220px;gap:26px}
+@media(max-width:920px){.wrap{grid-template-columns:1fr}.side{display:none}}
+.panel{display:none}.panel.on{display:block}
+.side{position:sticky;top:78px;align-self:start;font-size:17px}
+.side .h{color:var(--muted);font-size:15px;margin-bottom:6px}
+.side a{display:block;padding:7px 10px;border-left:3px solid var(--line);color:var(--ink);text-decoration:none;margin-bottom:2px}
+.side a.cur{border-left-color:var(--accent);color:var(--accent);font-weight:700}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin-bottom:16px;scroll-margin-top:90px}
+.card.check{background:var(--check);border-color:var(--check-b)}
+.card.help{background:var(--help);border-color:var(--help-b);margin-bottom:0}
+.card.more{background:var(--more);border-color:var(--more-b);margin-bottom:0}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+@media(max-width:760px){.pair{grid-template-columns:1fr}}
+.tag{display:inline-block;font-size:15px;font-weight:700;padding:2px 12px;border-radius:999px;background:var(--accent-soft);color:var(--accent);margin-bottom:8px}
+.check .tag{background:#E1E6EC;color:#3A4A5C}.help .tag{background:#F3D9D1;color:#8A3B25}.more .tag{background:#D6E9D2;color:#2F5C28}
+ol,ul{margin:.2em 0 .4em;padding-left:1.3em}li{margin:.25em 0}
+.t{color:var(--muted);font-size:.86em}
+.note{background:var(--note);border:1px solid var(--note-b);border-radius:10px;padding:10px 14px;margin-top:12px;font-size:.92em}
+.note b{color:#6B5528}
+.checks{list-style:none;padding:0;margin:0}
+.checks{display:grid;grid-template-columns:1fr 1fr;gap:2px 20px}
+@media(max-width:760px){.checks{grid-template-columns:1fr}}
+.checks li{padding:4px 0}
+.checks label{display:flex;gap:10px;align-items:flex-start;cursor:pointer}
+.checks input{width:22px;height:22px;margin-top:5px;accent-color:var(--accent);flex:none}
+.copybox{position:relative;background:#F3F2EE;border:1px solid var(--line);border-radius:10px;padding:12px 90px 12px 14px;margin:.5em 0;font-size:.95em}
+.copybox button{position:absolute;top:8px;right:8px;font:inherit;font-size:15px;padding:4px 12px;border:1px solid var(--accent);background:#fff;color:var(--accent);border-radius:8px;cursor:pointer}
+.copybox button.ok{background:var(--accent);color:#fff}
+code{background:#F0EEE8;padding:1px 7px;border-radius:6px;font-size:.92em}
+.ui{display:inline-block;padding:0 8px;border:1px solid #C9CED4;border-radius:6px;background:#fff;font-size:.9em;font-weight:600}
+.bottom{position:sticky;bottom:0;z-index:15;background:rgba(251,250,247,.97);border-top:1px solid var(--line)}
+.bottom-in{max-width:1280px;margin:0 auto;padding:10px 18px;display:flex;justify-content:space-between;gap:10px;align-items:center}
+.bottom button{font:inherit;font-size:17px;padding:8px 18px;border:1px solid var(--accent);background:#fff;color:var(--accent);border-radius:10px;cursor:pointer}
+.bottom button:disabled{opacity:.35;cursor:default}
+.bottom .where{color:var(--muted);font-size:16px}
+.scene{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;margin:6px 0 16px}
+.scene canvas{display:block;width:100%;height:300px}
+.ctrl{display:flex;gap:6px;flex-wrap:wrap;align-items:center;padding:10px 14px;border-top:1px solid var(--line)}
+.ctrl button{font:inherit;font-size:15px;padding:5px 11px;border:1px solid var(--line);background:#fff;border-radius:8px;cursor:pointer}
+.ctrl button.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.cap{width:100%;padding:8px 2px 2px;font-size:17px;color:var(--ink);min-height:2.2em}
+@media(max-width:760px){.top-in{flex-wrap:nowrap;padding:8px 10px}.brand{display:none}.tabs{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}.tabs::-webkit-scrollbar{display:none}.tabs button{white-space:nowrap;font-size:16px;padding:5px 11px}.fsb button{padding:4px 8px}.scene canvas{height:220px}}
+.fallback{padding:40px 20px;text-align:center;color:var(--muted)}
+.terms{display:flex;flex-wrap:wrap;gap:8px}
+.terms span{background:#F3F2EE;border:1px solid var(--line);border-radius:8px;padding:4px 10px;font-size:.88em}
+
+details{border:1px solid var(--line);border-radius:10px;background:#fff;margin:8px 0;padding:6px 14px}
+details summary{cursor:pointer;padding:6px 0;font-size:.95em}
+details[open]{background:#FDFCF9}
+ul.meta{margin:4px 0 6px;padding-left:1.2em;font-size:.9em}
+.copybox.sm{font-size:.82em;line-height:1.55}
+.lab{margin:14px 0 2px;font-weight:700;font-size:.92em}
+table.mini,table.atable{width:100%;border-collapse:collapse;font-size:.85em;margin:6px 0}
+table.mini td,table.mini th,table.atable td,table.atable th{border:1px solid var(--line);padding:6px 9px;text-align:left;vertical-align:top}
+table.mini th,table.atable th{background:#F3F2EE}
+table.atable td,table.atable th{text-align:center}table.atable td:first-child{text-align:left}
+.dot{color:var(--accent)}
+.card.ex{background:#FFFDF7;border-color:#E6DCC6}
+.ex .tag{background:#F1E6CC;color:#6B5528}
+.flowsteps{font-size:.95em}
+.tabs button{font-size:16px;padding:5px 10px}
+@media(max-width:1400px){.brand{display:none}}
+</style>
+</head>
+<body>
+<div class="top"><div class="top-in">
+  <span class="brand">동화책 한 권 + 스킬</span>
+  <nav class="tabs" id="tabs"></nav>
+  <div class="fsb"><button type="button" onclick="fs(-2)" aria-label="글자 작게">가−</button><button type="button" onclick="fs(2)" aria-label="글자 크게">가+</button></div>
+</div></div>
+<div class="wrap">
+<main id="main">
+<section class="panel" data-tab="전체 그림" data-short="전체">
+  <div class="card" id="c0-1" data-name="오늘 할 일">
+    <h1>지침 하나로 동화책 한 권 만들기 — 그리고 내 지침을 스킬로</h1>
+    <p>지난번에는 그림을 한 장씩 직접 만들어 책을 엮었습니다. 이번에는 <b>지침</b><span class="t">(AI에게 미리 적어 둔 작업 순서표)</span> 하나로 이야기부터 부크크 등록까지 갑니다. AI는 단계마다 결과를 보여주고 "이대로 진행할까요?"라고 묻습니다 — <b>내가 확인해야 다음으로 갑니다.</b> 마지막에는 그 지침을 <b>스킬</b><span class="t">(저장해 둔 지침 — 명령어 한 줄로 부르는 것)</span>로 바꿉니다.</p>
+  </div>
+  <div class="scene" id="c0-2" data-name="책이 가는 길"></div>
+  <div class="card" id="c0-3" data-name="오늘 만들 책">
+    <span class="tag">오늘 만들 책</span>
+    <ul>
+      <li><b>12쪽</b>: 1 앞표지 · 2 등장인물 소개 · 3~11 이야기 9쪽 · 12 뒷표지</li>
+      <li>그림은 구글 플로우(장면 3:4), 글은 캔바에서 넣고, 책은 캔바 2:3(1600×2400)으로 엮습니다</li>
+      <li>기준 그림(앵커)은 세 종류: <b>인물 · 배경 · 소품</b></li>
+      <li><b>두 번에 나눠 만듭니다</b> — 첫 번째 수업: STEP 1~6 (그림까지) / 두 번째 수업: STEP 7~9 (부크크 · 종이책 · 스킬). 두 번째 수업에서는 <b>같은 제미나이 대화</b>를 다시 열어 이어 갑니다</li>
+      <li>STEP마다 <b>예시 · 해님과 바람의 내기</b> 카드가 있습니다 — 이솝 우화를 다시 쓴 12쪽 예시 책이 실제로 어떻게 만들어졌는지 보여 줍니다</li>
+    </ul>
+    <div class="note"><b>나눠 받은 파일</b> — 지침 v4.3 · 예시본(해님과 바람의 내기) · 실습재료_복사용.txt · storybook-maker.zip. 화면에서 복사가 안 되면 실습재료 파일에서 복사하세요.</div>
+  </div>
+</section>
+<section class="panel" data-tab="책 정하기" data-short="책 정하기">
+  <h2>STEP 1 · 책 정하기</h2>
+  <div class="card" id="c1-1" data-name="할 일"><span class="tag">할 일</span><ol><li>로그인: 제미나이(개인 구글 계정) · 구글 플로우 · 캔바 또는 미리캔버스 · 부크크</li><li>제미나이 <b>새 대화</b>를 열고 <span class="ui">＋</span>로 <b>예시본 파일(해님과 바람의 내기)</b>을 첨부 → 지침 v4.3 전체를 복사해 같은 메시지에 붙여넣고 보내기<br><span class="t">예시본을 같이 넣으면 AI가 그 수준으로 자세하게 만들어 줍니다</span></li><li>내 책을 한 줄로 말하기 — 아래 예시를 내 이야기로 바꿔서</li><li><b>요약표</b><span class="t">(책 정보를 한눈에 정리한 표)</span>를 읽고 "이대로 진행"</li></ol><div class="note"><b>알아두기</b> — AI는 단계마다 결과를 보여주고 "이대로 진행할까요?"라고 묻습니다. 내가 확인해야 다음으로 갑니다.</div></div>
+  <div class="card ex" id="c1-2" data-name="예시 · 해님과 바람"><span class="tag">예시 · 해님과 바람의 내기</span><p>내가 쓴 한 줄</p><div class="copybox"><span>화면으로 보는 연습용 책. 이솝 우화 「해와 바람」 다시 쓰기, 5~7세, 수채화에 파스텔 느낌, 12쪽, 그림만 뽑고 글은 캔바에서 넣을게.</span><button type="button">복사</button></div><p>AI 요약표</p><table class="mini"><tr><td>어디서 볼 책</td><td>화면으로 보는 책(전자책)</td><td>용도</td><td>연습용</td></tr><tr><td>이야기 종류</td><td>옛날이야기 다시 쓰기</td><td>읽는 나이</td><td>5~7세</td></tr><tr><td>그림 느낌</td><td>수채화 + 파스텔</td><td>쪽수</td><td>12쪽 (이야기 9쪽)</td></tr><tr><td>한 쪽 모양</td><td>그림만 (글은 캔바)</td><td>비율</td><td>장면 3:4 · 인물·배경 앵커 16:9 · 소품 1:1 · 책 2:3</td></tr></table></div>
+  <div class="card check" id="c1-3" data-name="확인 도장"><span class="tag">확인 도장</span><ul class="checks"><li><label><input type="checkbox">쪽수가 12쪽(이야기 9쪽)인가</label></li><li><label><input type="checkbox">"그림만(글은 캔바)"으로 되어 있나</label></li><li><label><input type="checkbox">화면으로 보는 책 · 연습용인가</label></li></ul></div>
+  <div class="pair">
+    <div class="card help" id="c1-4" data-name="막힐 때"><span class="tag">막힐 때</span><p>AI가 되물으면 그 질문에만 짧게 답하세요. 아무 반응이 없으면 "지침대로 시작해줘" 한 줄. 회사 계정이면 개인 계정으로.</p></div>
+    <div class="card more" id="c1-5" data-name="한 걸음 더"><span class="tag">한 걸음 더</span><p>옛날이야기 대신 내 이야기(새로 짓기)로. 우리 아이 이름을 주인공으로 하면 "아이 맞춤" 책이 됩니다.</p></div>
+  </div>
+</section>
+<section class="panel" data-tab="이야기 뼈대" data-short="이야기">
+  <h2>STEP 2 · 이야기 뼈대</h2>
+  <div class="card" id="c2-1" data-name="할 일"><span class="tag">할 일</span><ol><li>AI가 주는 뼈대 읽기: 주제 한 줄 · 등장인물 · 장소 · 중요한 소품 · <b>쪽별 줄거리표</b><span class="t">(기승전결)</span></li><li>고칠 것은 바로: "7쪽을 더 긴장되게", "조연을 하나 줄여줘"</li><li>마음에 들면 "이대로 진행"</li></ol></div>
+  <div class="card ex" id="c2-2" data-name="예시 · 해님과 바람"><span class="tag">예시 · 해님과 바람의 내기</span><p><b>주제</b> 억지 힘보다 따뜻한 마음이 더 세다 · <b>인물</b> 나그네(주인공) · 해님 · 바람 · <b>장소</b> 떡갈나무 있는 언덕길 · <b>소품</b> 붉은 망토</p><table class="mini"><tr><th>쪽</th><th>단계</th><th>소제목</th><th>줄거리</th></tr><tr><td>3</td><td>기</td><td>하늘 위의 말다툼</td><td>해님과 바람이 누가 더 센지 다툰다</td></tr><tr><td>4</td><td>기</td><td>망토를 두른 나그네</td><td>언덕길로 나그네가 걸어오고, 망토 벗기기 내기를 한다</td></tr><tr><td>5</td><td>승</td><td>휘잉, 바람의 차례</td><td>바람이 세게 불기 시작한다. 떡갈나무가 흔들린다</td></tr><tr><td>6</td><td>승</td><td>더 세게, 더 세게</td><td>망토가 펄럭이자 나그네가 망토를 꽉 여민다</td></tr><tr><td>7</td><td>전</td><td>포기한 바람</td><td>폭풍처럼 불어도 나그네는 돌담 뒤에 웅크려 망토를 감싼다. 바람이 지친다</td></tr><tr><td>8</td><td>전</td><td>해님의 차례</td><td>해님이 언덕 너머에서 떠올라 따뜻하게 웃는다</td></tr><tr><td>9</td><td>전</td><td>따뜻해진 언덕</td><td>햇살이 퍼지고 나그네가 망토 걸쇠를 푼다</td></tr><tr><td>10</td><td>결</td><td>망토를 벗은 나그네</td><td>더워진 나그네가 망토를 벗어 팔에 걸고 떡갈나무 그늘에서 쉰다</td></tr><tr><td>11</td><td>결</td><td>따뜻함이 이겼어요</td><td>바람이 고개를 숙이고, 해님과 바람이 함께 웃는다</td></tr></table><p class="t">1쪽 앞표지 · 2쪽 등장인물 소개 · 3~11쪽 이야기 · 12쪽 뒷표지</p></div>
+  <div class="card check" id="c2-3" data-name="확인 도장"><span class="tag">확인 도장</span><ul class="checks"><li><label><input type="checkbox">기승전결이 다 있나</label></li><li><label><input type="checkbox">이야기 9쪽이 빠짐없이 있나</label></li><li><label><input type="checkbox">열쇠 소품(망토)이 이야기에서 실제로 쓰이나</label></li></ul></div>
+  <div class="pair">
+    <div class="card help" id="c2-4" data-name="막힐 때"><span class="tag">막힐 때</span><p>줄거리가 마음에 안 들면 통째로 다시 말고 "5~7쪽만 다시"처럼 범위를 정해 부탁하세요.</p></div>
+    <div class="card more" id="c2-5" data-name="한 걸음 더"><span class="tag">한 걸음 더</span><p>쪽마다 "아이에게 던질 질문" 한 줄을 붙여 달라고 하기 — 읽어 주기용 책이 됩니다.</p></div>
+  </div>
+</section>
+<section class="panel" data-tab="화풍 정하기" data-short="화풍">
+  <h2>STEP 3 · 화풍 정하기</h2>
+  <div class="card" id="c3-1" data-name="할 일"><span class="tag">할 일</span><ol><li>AI가 <b>같은 장면</b>을 세 가지 그림 느낌으로 쓴 프롬프트<span class="t">(그림 주문서 — 그림을 시키는 영어 문장)</span> 3개를 줍니다</li><li>플로우 입력창 오른쪽 <span class="ui">Nano Banana 2.1 ▯ x2</span> → 비율 <b>3:4</b> → 세 개를 각각 생성 → 나란히 비교</li><li>하나를 고르면 AI가 <b>화풍 고정 문장</b><span class="t">(영어 한 줄)</span>을 줍니다 — 이후 모든 그림 끝에 그대로 붙습니다. 메모장에 저장!</li></ol><div class="note"><b>알아두기</b> — 화풍 문장에 "어린이 그림책 일러스트" 같은 말을 넣으면 세 화풍이 비슷해집니다. 재료 · 선 · 색 · 종이 · 빛으로만 씁니다.</div></div>
+  <div class="card ex" id="c3-2" data-name="예시 · 해님과 바람"><span class="tag">예시 · 해님과 바람의 내기</span><p>비교 장면: 나그네가 언덕길을 걷는 모습</p><p class="lab">① 수채화 + 파스텔</p><div class="copybox sm"><span>A young traveler in a long burgundy hooded cloak walking along a winding dirt path over gentle green hills, a large old oak tree beside the path, centered composition, soft watercolor illustration, gentle pastel palette, thin warm-brown ink outlines, light cotton paper texture, soft diffused light</span><button type="button">복사</button></div><p class="lab">② 색연필</p><div class="copybox sm"><span>A young traveler in a long burgundy hooded cloak walking along a winding dirt path over gentle green hills, a large old oak tree beside the path, centered composition, colored pencil illustration, visible pencil strokes, warm muted colors, light paper texture</span><button type="button">복사</button></div><p class="lab">③ 3D 클레이</p><div class="copybox sm"><span>A young traveler in a long burgundy hooded cloak walking along a winding dirt path over gentle green hills, a large old oak tree beside the path, centered composition, soft 3D clay-like characters and scenery, rounded shapes, matte pastel colors, soft studio lighting</span><button type="button">복사</button></div><p class="lab">① 선택 → 화풍 고정 문장</p><div class="copybox sm"><span>soft watercolor illustration, gentle pastel palette, thin warm-brown ink outlines, light cotton paper texture, soft diffused light</span><button type="button">복사</button></div></div>
+  <div class="card check" id="c3-3" data-name="확인 도장"><span class="tag">확인 도장</span><ul class="checks"><li><label><input type="checkbox">세 장의 차이가 눈에 보이나</label></li><li><label><input type="checkbox">화풍 고정 문장을 메모장에 저장했나</label></li></ul></div>
+  <div class="pair">
+    <div class="card help" id="c3-4" data-name="막힐 때"><span class="tag">막힐 때</span><p>세 장이 다 비슷하면 "재료와 선이 확실히 다른 세 가지로 다시"라고 하세요.</p></div>
+    <div class="card more" id="c3-5" data-name="한 걸음 더"><span class="tag">한 걸음 더</span><p>색 재료 하나 + 선 재료 하나 섞기 (예: 과슈 + 굵은 먹선) — 서로 보완되는 조합으로.</p></div>
+  </div>
+</section>
+<section class="panel" data-tab="앵커 만들기 (기준 그림)" data-short="앵커">
+  <h2>STEP 4 · 앵커 만들기 (기준 그림)</h2>
+  <div class="card" id="c4-1" data-name="할 일"><span class="tag">할 일</span><table class="mini"><tr><th>종류</th><th>무엇</th><th>플로우 비율</th></tr><tr><td>인물 앵커</td><td>사람: 앞·옆·뒤 + 표정 3개<br>사람 아닌 캐릭터(해·바람·동물·사물): 표정 4개</td><td>16:9</td></tr><tr><td>배경 앵커</td><td>주요 장소, <b>사람 없이</b></td><td>16:9</td></tr><tr><td>소품 앵커</td><td>이야기의 열쇠 물건 하나, 흰 배경</td><td>1:1</td></tr></table><ol><li>AI가 준 앵커 프롬프트를 하나씩 플로우에서 생성 — 비율을 그때그때 바꾸기</li><li>마음에 드는 것에 ♡</li><li>만든 순서대로 ①②③④ 번호가 붙습니다 — 이 번호로 장면마다 무엇을 붙일지 알려 줍니다</li><li>다 만들면 "앵커 다 만들었어, 다음"</li></ol><div class="note"><b>알아두기</b> — 앵커<span class="t">(기준 그림)</span> = 장면마다 붙여서 "이 모습 그대로 그려줘" 하는 그림. 인물만 있으면 배경과 소품이 쪽마다 달라집니다.</div></div>
+  <div class="card ex" id="c4-2" data-name="예시 · 해님과 바람"><span class="tag">예시 · 해님과 바람의 내기</span><p>이 책의 앵커는 4장입니다.</p><p class="lab">① 나그네 [인물] <span class="t">비율 16:9</span></p><div class="copybox sm"><span>A character sheet of a kind young traveler, a round-faced young man with short chestnut hair and rosy cheeks, wearing a long burgundy hooded cloak made of wool with a round brass clasp at the neck, a cream linen shirt, brown trousers, worn leather boots, carrying a wooden walking stick and a small canvas satchel, featuring a front view, side view, and back view full body shot, along with three facial expressions: cheerful, surprised, and relieved. One single image with a split layout, plain white background, soft watercolor illustration, gentle pastel palette, thin warm-brown ink outlines, light cotton paper texture, soft diffused light</span><button type="button">복사</button></div><p class="lab">② 해님·바람 표정 시트 [인물] <span class="t">비율 16:9</span></p><div class="copybox sm"><span>An expression sheet of two personified sky characters on a plain white background. Left: a friendly sun with a round warm-yellow face, soft orange cheeks, gentle smiling eyes, and short wavy golden rays around the face. Right: a playful North Wind shaped like a pale blue-gray cloud with puffed cheeks, a swirling cloud tail, and small curly wisps. The sun shown with four expressions in a row: proud, shining brightly, calm, and smiling kindly. The North Wind shown with four expressions in a row: proud, blowing hard, tired, and smiling shyly. One single image with a split layout, soft watercolor illustration, gentle pastel palette, thin warm-brown ink outlines, light cotton paper texture, soft diffused light</span><button type="button">복사</button></div><p class="lab">③ 언덕길 [배경] <span class="t">비율 16:9</span></p><div class="copybox sm"><span>An empty landscape with no people: a winding dirt path over gentle green hills, a large old oak tree beside the path, a low gray stone wall, small wildflowers along the path, a wide open clear pastel sky, early spring, wide establishing shot, soft watercolor illustration, gentle pastel palette, thin warm-brown ink outlines, light cotton paper texture, soft diffused light</span><button type="button">복사</button></div><p class="lab">④ 붉은 망토 [소품] <span class="t">비율 1:1</span></p><div class="copybox sm"><span>A product-style reference of a single cloak on a plain white background, no person: a long burgundy wool cloak with a deep hood, a round brass clasp at the neck, and cream stitching along the hem, shown from the front and from the back side by side, with a close-up of the brass clasp, soft watercolor illustration, gentle pastel palette, thin warm-brown ink outlines, light cotton paper texture, soft diffused light</span><button type="button">복사</button></div></div>
+  <div class="card check" id="c4-3" data-name="확인 도장"><span class="tag">확인 도장</span><ul class="checks"><li><label><input type="checkbox">시트의 앞·옆·뒤가 같은 인물인가</label></li><li><label><input type="checkbox">배경 앵커에 사람이 없나</label></li><li><label><input type="checkbox">소품이 시트 속 소품과 같은 색·모양인가</label></li></ul></div>
+  <div class="pair">
+    <div class="card help" id="c4-4" data-name="막힐 때"><span class="tag">막힐 때</span><p>해·바람처럼 사람이 아닌 캐릭터를 앞·옆·뒤로 그리면 이상해집니다 → 표정 시트로. 배경에 사람이 자꾸 생기면 "no people"을 맨 앞에.</p></div>
+    <div class="card more" id="c4-5" data-name="한 걸음 더"><span class="tag">한 걸음 더</span><p>장소가 둘이면 배경 앵커도 두 장 (예: 마을 · 숲).</p></div>
+  </div>
+</section>
+<section class="panel" data-tab="장면 주문서 받기" data-short="장면 주문서">
+  <h2>STEP 5 · 장면 주문서 받기</h2>
+  <div class="card" id="c5-1" data-name="할 일"><span class="tag">할 일</span><ol><li>AI가 12쪽 전체를 쪽마다 씁니다: <b>글</b>(캔바에 넣을 것) · <b>카메라</b><span class="t">(Wide 멀리서 · Full 전신 · Close-up 가까이 · High angle 위에서 · Low angle 아래에서 · Over-the-shoulder 어깨 너머로)</span> · <b>붙일 앵커</b> · 프롬프트</li><li>길면 6쪽씩 두 번에 나와요 — "계속"</li><li>마지막에 <b>앵커 붙이기 표</b>와 <b>부크크 등록용 글</b>(책 소개 · 목차 · 판권<span class="t">(책의 신분증 페이지)</span>)이 나옵니다 → 메모장에 저장</li></ol><div class="note"><b>알아두기</b> — 그 쪽에 <b>나오는 것만</b> 붙입니다. 안 나오는 앵커를 붙이면 엉뚱하게 끼어듭니다.</div></div>
+  <div class="card ex" id="c5-2" data-name="예시 · 해님과 바람"><span class="tag">예시 · 해님과 바람의 내기</span><p>쪽마다 아래처럼 나옵니다. 눌러서 펼쳐 보세요.</p><details><summary><b>1쪽</b> · 앞표지</summary><ul class="meta"><li>캔바에 넣을 글: 제목 「해님과 바람의 내기」 / 지은이</li><li>붙일 앵커: ① 나그네 · ② 해님·바람 · ③ 언덕길</li><li>위쪽에 제목 자리를 비워 둡니다</li></ul><div class="copybox sm"><span>A picture book front cover with generous empty space at the top for a title. Below, the friendly sun and the playful North Wind face each other in the sky with competitive smiles, and far below them the young traveler in his long burgundy hooded cloak walks along the winding dirt path past the large old oak tree. Use the attached reference images to keep their appearance exactly the same. Centered composition, main subject in the center, generous empty background on the left and right sides, no text, no letters, soft watercolor illustration, gentle pastel palette, thin warm-brown ink outlines, light cotton paper texture, soft diffused light</span><button type="button">복사</button></div></details>
+<details><summary><b>2쪽</b> · 등장인물 소개</summary><ul class="meta"><li>캔바에 넣을 글: &quot;나그네 — 붉은 망토를 아끼는 다정한 길손이에요. / 해님 — 느긋하고 따뜻한 하늘의 친구예요. / 바람 — 힘자랑을 좋아하는 장난꾸러기예요.&quot;</li><li>붙일 앵커: ① · ②</li></ul><div class="copybox sm"><span>A friendly character introduction page: the young traveler in his long burgundy hooded cloak stands on the ground waving hello, the friendly sun floats at the upper left, and the playful North Wind floats at the upper right, all three facing the viewer with welcoming smiles, plain soft cream background with a light hill line at the bottom. Use the attached reference images to keep their appearance exactly the same. Centered composition, main subject in the center, generous empty background on the left and right sides, no text, no letters, soft watercolor illustration, gentle pastel palette, thin warm-brown ink outlines, light cotton paper texture, soft diffused light</span><button type="button">복사</button></div></details>
+<details><summary><b>3쪽</b> · 하늘 위의 말다툼 (기)</summary><ul class="meta"><li>글: &quot;맑은 하늘 위에서 해님과 바람이 말다툼을 했어요. &quot;내가 세상에서 제일 세!&quot; 바람이 볼을 부풀리며 소리쳤어요. 해님은 빙그레 웃기만 했지요.&quot;</li><li>카메라: Wide shot — 하늘 전체에서 둘이 마주 보는 상황 설명</li><li>붙일 앵커: ② · ③</li></ul><div class="copybox sm"><span>Wide shot of the open sky above the green hills: the playful North Wind puffs out its cheeks proudly while the friendly sun smiles calmly across from it, the winding dirt path and the large old oak tree small below. Use the attached reference images to keep their appearance exactly the same. Centered composition, main subject in the center, generous empty background on the left and right sides, no text, no letters, soft watercolor illustration, gentle pastel palette, thin warm-brown ink outlines, light cotton paper texture, soft diffused light</span><button type="button">복사</button></div></details>
+<details><summary><b>4쪽</b> · 망토를 두른 나그네 (기)</summary><ul class="meta"><li>글: &quot;그때 언덕길로 붉은 망토를 두른 나그네가 걸어왔어요. &quot;저 나그네의 망토를 먼저 벗기는 쪽이 이기는 거야!&quot; 바람이 말했어요.&quot;</li><li>카메라: High angle — 하늘에서 내려다본 작은 나그네</li><li>붙일 앵커: ① · ② · ③</li></ul><div class="copybox sm"><span>High angle view from the sky looking down: the young traveler in his long burgundy hooded cloak walks along the winding dirt path past the large old oak tree, while the playful North Wind points down at him and the friendly sun watches with interest. Use the attached reference images to keep their appearance exactly the same. Centered composition, main subject in the center, generous empty background on the left and right sides, no text, no letters, soft watercolor illustration, gentle pastel palette, thin warm-brown ink outlines, light cotton paper texture, soft diffused light</span><button type="button">복사</button></div></details>
+<details><summary><b>5쪽</b> · 휘잉, 바람의 차례 (승)</summary><ul class="meta"><li>글: &quot;바람이 먼저 나섰어요. 휘잉— 휘이잉— 떡갈나무 가지가 크게 흔들렸어요.&quot;</li><li>카메라: Full shot — 바람과 흔들리는 나무가 함께 보이게</li><li>붙일 앵커: ② · ③</li></ul><div class="copybox sm"><span>Full shot of the hillside: the playful North Wind blows hard with puffed cheeks, swirling gusts sweep across the hill, the large old oak tree bends and leaves fly through the air, the winding dirt path below. Use the attached reference images to keep their appearance exactly the same. Centered composition, main subject in the center, generous empty background on the left and right sides, no text, no letters, soft watercolor illustration, gentle pastel palette, thin warm-brown ink outlines, light cotton paper texture, soft diffused light</span><button type="button">복사</button></div></details>
+<details open><summary><b>6쪽</b> · 더 세게, 더 세게 (승)</summary><ul class="meta"><li>글: &quot;망토 자락이 펄럭펄럭 날렸어요. &quot;아이, 추워!&quot; 나그네는 망토를 더 꽉 여몄어요.&quot;</li><li>카메라: Close-up — 망토를 움켜쥔 손과 놀란 얼굴</li><li>붙일 앵커: ① · ④</li></ul><div class="copybox sm"><span>Close-up shot of the young traveler on the windy path, his long burgundy hooded cloak flapping wildly, both hands gripping the round brass clasp tightly, eyes squeezed in surprise, leaves blowing past. Use the attached reference images to keep their appearance exactly the same. Centered composition, main subject in the center, generous empty background on the left and right sides, no text, no letters, soft watercolor illustration, gentle pastel palette, thin warm-brown ink outlines, light cotton paper texture, soft diffused light</span><button type="button">복사</button></div></details>
+<details><summary><b>7쪽</b> · 포기한 바람 (전)</summary><ul class="meta"><li>글: &quot;바람이 폭풍처럼 불어도 나그네는 돌담 뒤에 웅크려 망토를 꼭 감쌌어요. 결국 바람은 지쳐서 숨을 헐떡였어요.&quot;</li><li>카메라: High angle — 위에서 내려다봐 웅크린 나그네와 지친 바람이 둘 다 작아 보이게</li><li>붙일 앵커: ① · ② · ③ · ④</li></ul><div class="copybox sm"><span>High angle shot: the young traveler crouches behind the low gray stone wall wrapped tightly in his long burgundy hooded cloak, while above him the playful North Wind looks tired and out of breath with drooping wisps. Use the attached reference images to keep their appearance exactly the same. Centered composition, main subject in the center, generous empty background on the left and right sides, no text, no letters, soft watercolor illustration, gentle pastel palette, thin warm-brown ink outlines, light cotton paper texture, soft diffused light</span><button type="button">복사</button></div></details>
+<details><summary><b>8쪽</b> · 해님의 차례 (전)</summary><ul class="meta"><li>글: &quot;이번엔 해님 차례였어요. 해님은 언덕 너머에서 살며시 떠올라 따뜻하게 웃었어요.&quot;</li><li>카메라: Close-up — 해님의 따뜻한 얼굴</li><li>붙일 앵커: ②</li></ul><div class="copybox sm"><span>Close-up of the friendly sun gently rising from behind the green hills, smiling warmly, golden light beginning to spread across the pastel sky. Use the attached reference images to keep their appearance exactly the same. Centered composition, main subject in the center, generous empty background on the left and right sides, no text, no letters, soft watercolor illustration, gentle pastel palette, thin warm-brown ink outlines, light cotton paper texture, soft diffused light</span><button type="button">복사</button></div></details>
+<details><summary><b>9쪽</b> · 따뜻해진 언덕 (전)</summary><ul class="meta"><li>글: &quot;햇살이 언덕 가득 퍼졌어요. &quot;어, 따뜻하네.&quot; 나그네는 망토 걸쇠를 톡 풀었어요.&quot;</li><li>카메라: Full shot — 햇살 속 나그네 전신</li><li>붙일 앵커: ① · ③ · ④</li></ul><div class="copybox sm"><span>Full shot of the young traveler standing on the sunny dirt path near the large old oak tree, smiling as he unfastens the round brass clasp of his long burgundy hooded cloak, warm golden sunlight filling the green hills. Use the attached reference images to keep their appearance exactly the same. Centered composition, main subject in the center, generous empty background on the left and right sides, no text, no letters, soft watercolor illustration, gentle pastel palette, thin warm-brown ink outlines, light cotton paper texture, soft diffused light</span><button type="button">복사</button></div></details>
+<details><summary><b>10쪽</b> · 망토를 벗은 나그네 (결)</summary><ul class="meta"><li>글: &quot;더워진 나그네는 망토를 벗어 팔에 걸었어요. 그러고는 떡갈나무 그늘에 앉아 시원한 바람을 기다렸지요.&quot;</li><li>카메라: Wide shot — 나무 그늘 아래 쉬는 장면 전체</li><li>붙일 앵커: ① · ③ · ④</li></ul><div class="copybox sm"><span>Wide shot of the young traveler sitting happily in the cool shade of the large old oak tree, his long burgundy hooded cloak folded over his arm, the winding dirt path and sunny green hills around him. Use the attached reference images to keep their appearance exactly the same. Centered composition, main subject in the center, generous empty background on the left and right sides, no text, no letters, soft watercolor illustration, gentle pastel palette, thin warm-brown ink outlines, light cotton paper texture, soft diffused light</span><button type="button">복사</button></div></details>
+<details><summary><b>11쪽</b> · 따뜻함이 이겼어요 (결)</summary><ul class="meta"><li>글: &quot;바람이 고개를 숙이며 말했어요. &quot;해님, 네가 이겼어.&quot; 그러자 해님이 빙그레 웃었어요. &quot;억지로 하는 힘보다 따뜻한 마음이 더 세단다.&quot;&quot;</li><li>카메라: Over-the-shoulder — 바람 어깨 너머로 해님을 바라봄 (화해)</li><li>붙일 앵커: ②</li></ul><div class="copybox sm"><span>Over-the-shoulder shot from behind the playful North Wind looking toward the friendly sun, the wind bowing its head shyly while the sun smiles kindly, both glowing in a soft pastel sky. Use the attached reference images to keep their appearance exactly the same. Centered composition, main subject in the center, generous empty background on the left and right sides, no text, no letters, soft watercolor illustration, gentle pastel palette, thin warm-brown ink outlines, light cotton paper texture, soft diffused light</span><button type="button">복사</button></div></details>
+<details><summary><b>12쪽</b> · 뒷표지</summary><ul class="meta"><li>캔바에 넣을 글: &quot;힘보다 따뜻함이 더 큰 힘을 가졌대요.&quot;</li><li>붙일 앵커: ① · ② · ③</li></ul><div class="copybox sm"><span>A picture book back cover with generous empty space at the bottom for a short message: the young traveler waves goodbye as he walks down the winding dirt path with his long burgundy hooded cloak over his arm, the friendly sun and the playful North Wind smile gently together in the sky above the large old oak tree. Use the attached reference images to keep their appearance exactly the same. Centered composition, main subject in the center, generous empty background on the left and right sides, no text, no letters, soft watercolor illustration, gentle pastel palette, thin warm-brown ink outlines, light cotton paper texture, soft diffused light</span><button type="button">복사</button></div></details><p class="lab">모든 장면 끝에 붙는 공통 꼬리</p><div class="copybox sm"><span>Use the attached reference images to keep their appearance exactly the same. Centered composition, main subject in the center, generous empty background on the left and right sides, no text, no letters, soft watercolor illustration, gentle pastel palette, thin warm-brown ink outlines, light cotton paper texture, soft diffused light</span><button type="button">복사</button></div><p class="lab">앵커 붙이기 표</p><table class="atable"><tr><th>쪽</th><th>① 나그네</th><th>② 해님·바람</th><th>③ 언덕길</th><th>④ 망토</th></tr><tr><td>1 앞표지</td><td><span class="dot">●</span></td><td><span class="dot">●</span></td><td><span class="dot">●</span></td><td></td></tr><tr><td>2 소개</td><td><span class="dot">●</span></td><td><span class="dot">●</span></td><td></td><td></td></tr><tr><td>3</td><td></td><td><span class="dot">●</span></td><td><span class="dot">●</span></td><td></td></tr><tr><td>4</td><td><span class="dot">●</span></td><td><span class="dot">●</span></td><td><span class="dot">●</span></td><td></td></tr><tr><td>5</td><td></td><td><span class="dot">●</span></td><td><span class="dot">●</span></td><td></td></tr><tr><td>6</td><td><span class="dot">●</span></td><td></td><td></td><td><span class="dot">●</span></td></tr><tr><td>7</td><td><span class="dot">●</span></td><td><span class="dot">●</span></td><td><span class="dot">●</span></td><td><span class="dot">●</span></td></tr><tr><td>8</td><td></td><td><span class="dot">●</span></td><td></td><td></td></tr><tr><td>9</td><td><span class="dot">●</span></td><td></td><td><span class="dot">●</span></td><td><span class="dot">●</span></td></tr><tr><td>10</td><td><span class="dot">●</span></td><td></td><td><span class="dot">●</span></td><td><span class="dot">●</span></td></tr><tr><td>11</td><td></td><td><span class="dot">●</span></td><td></td><td></td></tr><tr><td>12 뒷표지</td><td><span class="dot">●</span></td><td><span class="dot">●</span></td><td><span class="dot">●</span></td><td></td></tr></table></div>
+  <div class="card check" id="c5-3" data-name="확인 도장"><span class="tag">확인 도장</span><ul class="checks"><li><label><input type="checkbox">12쪽이 다 있나</label></li><li><label><input type="checkbox">쪽마다 붙일 앵커가 적혀 있나</label></li><li><label><input type="checkbox">같은 카메라가 3쪽 넘게 이어지지 않나</label></li><li><label><input type="checkbox">판권의 지은이·날짜는 내가 채웠나</label></li></ul></div>
+  <div class="pair">
+    <div class="card help" id="c5-4" data-name="막힐 때"><span class="tag">막힐 때</span><p>중간에 끊기면 "계속". 화풍 고정 문장이 빠진 쪽이 있으면 "○쪽에 화풍 문장 붙여줘".</p></div>
+    <div class="card more" id="c5-5" data-name="한 걸음 더"><span class="tag">한 걸음 더</span><p>카메라를 내가 바꿔 보고 이유 적기. 레이아웃 B(그림 + 글 한 장)로 한 쪽만 시험해 보기.</p></div>
+  </div>
+</section>
+<section class="panel" data-tab="그림 뽑기" data-short="그림 뽑기">
+  <h2>STEP 6 · 그림 뽑기</h2>
+  <div class="card" id="c6-1" data-name="할 일"><span class="tag">할 일</span><ol><li>플로우 비율 <b>3:4</b></li><li>입력창 왼쪽 아래 <span class="ui">＋</span> → 애셋 창<span class="t">(내가 만든 그림 보관함)</span> 왼쪽 <span class="ui">이미지</span> → 그 쪽의 앵커 클릭 → 흰 버튼 <span class="ui">프롬프트에 추가</span> — 앵커 표대로 하나씩</li><li>그 쪽 프롬프트 붙여넣기 → 생성 (x2<span class="t">(한 번에 두 장)</span> → 더 나은 것에 ♡)</li><li>12쪽 반복</li></ol><div class="note"><b>알아두기</b> — 책 페이지는 2:3인데 플로우에는 2:3이 없어 3:4로 뽑습니다. 캔바에 넣으면 <b>양옆 배경이 조금 잘립니다 — 정상</b>입니다.</div></div>
+  <div class="card ex" id="c6-2" data-name="예시 · 해님과 바람"><span class="tag">예시 · 해님과 바람의 내기</span><p>6쪽 「더 세게, 더 세게」</p><ol class="flowsteps"><li><span class="ui">＋</span> → 나그네 시트 → <span class="ui">프롬프트에 추가</span></li><li><span class="ui">＋</span> → 붉은 망토 → <span class="ui">프롬프트에 추가</span></li><li>6쪽 프롬프트 붙여넣기 → 생성</li><li>얼굴 · 망토 걸쇠 · 가운데 구도 확인 → ♡</li></ol></div>
+  <div class="card check" id="c6-3" data-name="확인 도장"><span class="tag">확인 도장</span><ul class="checks"><li><label><input type="checkbox">얼굴 · 옷 · 망토가 쪽마다 같은가</label></li><li><label><input type="checkbox">손가락 · 팔다리가 이상하지 않은가</label></li><li><label><input type="checkbox">그림 안에 글자가 생기지 않았나</label></li><li><label><input type="checkbox">주인공이 가운데인가</label></li></ul></div>
+  <div class="pair">
+    <div class="card help" id="c6-4" data-name="막힐 때"><span class="tag">막힐 때</span><p>얼굴이 달라지면 인물 앵커를 안 붙인 것. 앵커가 시트 모양 그대로 복사돼 나오면 프롬프트 앞부분 장면 설명을 더 길게. 컴퓨터에 있는 그림은 애셋 창 왼쪽 아래 「미디어 업로드」로 먼저 올리기.</p></div>
+    <div class="card more" id="c6-5" data-name="한 걸음 더"><span class="tag">한 걸음 더</span><p>2:3 그대로 뽑고 싶으면 2:3을 고를 수 있는 다른 서비스로 같은 프롬프트를 비교해 보기.<br><b>첫 번째 수업은 여기까지</b> — 뽑은 그림 12장을 컴퓨터에 내려받아 두고, 제미나이 대화 이름을 내 책 제목으로 바꿔 두세요.</p></div>
+  </div>
+</section>
+<section class="panel" data-tab="엮어서 부크크에 올리기" data-short="부크크">
+  <h2>STEP 7 · 엮어서 부크크에 올리기</h2>
+  <div class="card" id="c7-1" data-name="할 일"><span class="tag">할 일</span><p class="t">두 번째 수업 시작: 제미나이 왼쪽 목록에서 지난 대화(내 책 제목)를 열고, 메모장에 저장한 부크크 등록용 글을 준비하세요.</p><ol><li>캔바: 새 디자인 → 사용자 지정 크기 <b>1600 × 2400 px</b><span class="t">(px — 화면 점 개수)</span>, 12쪽</li><li>그림을 쪽마다 <b>꽉 채우기</b> → STEP 5의 "글"을 글상자로</li><li>1쪽에 제목, 12쪽에 맺음말. 맨 뒤에 <b>판권 페이지</b> 추가</li><li>내보내기: 본문 <b>PDF</b>, 표지는 <b>1쪽만 JPG</b></li><li>부크크 → 책 만들기 → <b>전자책</b> → 표지 JPG · 본문 PDF → 책 소개 · 목차 · 작가 소개 붙여넣기 → 제출</li></ol><div class="note"><b>알아두기</b> — 진짜 출판용(ISBN<span class="t">(책의 주민등록번호)</span>)은 20쪽 이상 — 오늘은 연습용 12쪽. 판매·유통 범위는 부크크 등록 화면 안내를 확인하세요.</div></div>
+  <div class="card ex" id="c7-2" data-name="예시 · 해님과 바람"><span class="tag">예시 · 해님과 바람의 내기</span><p>제목 「해님과 바람의 내기」 · 목차 9줄(STEP 2 소제목)</p><p class="lab">판권 초안</p><div class="copybox sm"><span>해님과 바람의 내기
+지은이  [이름]
+그림    [이름] (생성형 AI 구글 플로우를 활용해 제작)
+발행일  2026년 [ ]월 [ ]일
+펴낸곳  부크크
+원작    이솝 우화 「해와 바람」
+이 책의 글과 편집 구성의 저작권은 지은이에게 있습니다.</span><button type="button">복사</button></div></div>
+  <div class="card check" id="c7-3" data-name="확인 도장"><span class="tag">확인 도장</span><ul class="checks"><li><label><input type="checkbox">제목이 표지 · 판권 · 입력칸 세 곳에서 똑같은가</label></li><li><label><input type="checkbox">판권 페이지가 있나</label></li><li><label><input type="checkbox">입력한 쪽수 = PDF 쪽수</label></li><li><label><input type="checkbox">글자가 얼굴 같은 중요한 곳을 가리지 않나</label></li></ul></div>
+  <div class="pair">
+    <div class="card help" id="c7-4" data-name="막힐 때"><span class="tag">막힐 때</span><p>부크크가 돌려보내는 이유는 거의 넷: 판권 없음 / 제목 다름 / 쪽수 잘못 / 그림 흐림. 글씨가 작으면 36pt 이상. PDF가 크면 내보내기에서 '파일 압축'.</p></div>
+    <div class="card more" id="c7-5" data-name="한 걸음 더"><span class="tag">한 걸음 더</span><p>눈누<span class="t">(무료 한글 글꼴 사이트)</span>에서 상업용 무료 글꼴로 제목 꾸미기. 이야기를 늘려 20쪽 이상으로 ISBN 신청까지.</p></div>
+  </div>
+</section>
+<section class="panel" data-tab="종이책으로 바꿔 보기 (선생님 시연 + 한 줄 실습)" data-short="종이책">
+  <h2>STEP 8 · 종이책으로 바꿔 보기 <span class="t">(선생님 시연 + 한 줄 실습)</span></h2>
+  <div class="card" id="c8-1" data-name="할 일"><span class="tag">할 일</span><ol><li>같은 대화에 입력<div class="copybox"><span>이 책을 종이책으로 바꿔줘, 46판. 그림은 그대로 두고 종이책 안내만.</span><button type="button">복사</button></div></li><li>AI가 그림 주문서를 다시 쓰지 않고 <b>종이책 안내만</b> 주는지 보기</li><li>"가장자리 3mm가 잘린다"<span class="t">(재단 — 인쇄 후 책 가장자리를 자르는 것)</span> — 내 그림에서 얼굴 · 제목이 가장자리에 붙은 쪽 찾기</li><li>선생님 화면: 부크크 종이책에 올려 보면 <b>"50쪽 이상"</b>에서 막히는 것 보기</li></ol><div class="note"><b>알아두기</b> — 종이책은 POD<span class="t">(주문할 때마다 한 권씩 찍는 책)</span> 방식이고, 제본<span class="t">(책 묶기)</span> 때문에 50쪽 이상이어야 합니다.</div></div>
+  <div class="card ex" id="c8-2" data-name="예시 · 해님과 바람"><span class="tag">예시 · 해님과 바람의 내기</span><p>해님과 바람: 46판<span class="t">(127×188mm, 손에 잡히는 작은 책)</span> 추천 · 하늘 장면(3·8·11쪽)은 해님·바람이 위쪽 끝에 붙기 쉬워 재단 확인 · 12쪽이라 종이책 출판은 이야기를 늘려야 함</p></div>
+  <div class="card check" id="c8-3" data-name="확인 도장"><span class="tag">확인 도장</span><ul class="checks"><li><label><input type="checkbox">AI가 그림을 다시 쓰지 않았나</label></li><li><label><input type="checkbox">가장자리에 붙은 쪽을 찾았나</label></li></ul></div>
+  <div class="pair">
+    <div class="card help" id="c8-4" data-name="막힐 때"><span class="tag">막힐 때</span><p>오늘은 "3mm"와 "50쪽" 두 가지만 기억하면 됩니다.</p></div>
+    <div class="card more" id="c8-5" data-name="한 걸음 더"><span class="tag">한 걸음 더</span><p>캔바에서 앞표지 + 책등<span class="t">(책을 꽂았을 때 보이는 옆면)</span> + 뒷표지를 한 장으로. 책등 너비는 부크크 '표지 규격 체크'에서 쪽수로.</p></div>
+  </div>
+</section>
+<section class="panel" data-tab="내 지침을 스킬로" data-short="스킬">
+  <h2>STEP 9 · 내 지침을 스킬로</h2>
+  <div class="card" id="c9-1" data-name="할 일"><span class="tag">할 일</span><ol><li>선생님이 준 <b>storybook-maker.zip</b><span class="t">(zip — 여러 파일을 하나로 묶은 압축 파일)</span> 받기 — 풀지 않아도 됨</li><li>제미나이 왼쪽 메뉴 <span class="ui">맞춤설정</span> → <span class="ui">스킬</span> → <span class="ui">만들기</span> → <span class="ui">업로드</span> → zip 고르기 → 내용 확인 → 만들기<br><span class="t">만 18세 이상 개인 구글 계정, 활동 기록이 켜져 있어야 보입니다</span></li><li>새 대화 입력창에 <code>/</code> → 목록에서 <b>storybook-maker</b> <span class="t">(목록이 안 뜨면 <code>@</code> — 구글이 바꾸는 중)</span></li><li>STEP 1의 한 줄을 다른 이야기로 바꿔 넣기 → 요약표가 나오면 성공</li></ol><div class="note"><b>알아두기</b> — 지침은 매번 붙여넣지만, 스킬은 한 번 올리면 어느 대화에서든 명령어로 부릅니다. 스킬 안에 오늘 본 「해님과 바람의 내기」 예시도 들어 있어서 AI가 그 수준으로 만들어 줍니다. 이름은 영어 소문자와 - 만 가능.</div></div>
+  <div class="card ex" id="c9-2" data-name="예시 · 해님과 바람"><span class="tag">예시 · 해님과 바람의 내기</span><p><code>/storybook-maker</code> 고르고 이어서</p><div class="copybox"><span>화면으로 보는 연습용 책. 전래동화 「해와 달이 된 오누이」 다시 쓰기, 6~8세, 색연필 느낌, 12쪽, 그림만 뽑고 글은 캔바에서 넣을게.</span><button type="button">복사</button></div></div>
+  <div class="card check" id="c9-3" data-name="확인 도장"><span class="tag">확인 도장</span><ul class="checks"><li><label><input type="checkbox">목록에 storybook-maker가 나오나</label></li><li><label><input type="checkbox">지침을 붙여넣지 않았는데 요약표가 나오나</label></li></ul></div>
+  <div class="pair">
+    <div class="card help" id="c9-4" data-name="막힐 때"><span class="tag">막힐 때</span><p>올리기가 안 되면 압축을 풀었다 다시 묶으면서 폴더가 한 겹 더 생기지 않았는지 확인(SKILL.md가 zip 맨 위에 있어야 함). 선생님 zip을 그대로 올리면 대부분 해결됩니다.</p></div>
+    <div class="card more" id="c9-5" data-name="한 걸음 더"><span class="tag">한 걸음 더</span><p>SKILL.md<span class="t">(스킬의 본문 파일)</span>를 메모장으로 열어 규칙 하나를 바꾸고(예: 기본 쪽수 20쪽) 다시 올려 비교. 맨 위 name 줄은 그대로.</p></div>
+  </div>
+
+  <div class="card" id="c9-6" data-name="패들렛에 올릴 것">
+    <span class="tag">끝내기 — 패들렛에 올릴 것</span>
+    <ol><li>전자책 PDF + 부크크 등록 화면 캡처</li><li>화풍 비교 세 장 + 고른 이유 한 줄</li><li>앵커 세 종류 (인물 · 배경 · 소품)</li><li>다시 뽑은 쪽 하나: 고치기 전 / 고친 후 + 고친 이유</li><li><code>/storybook-maker</code> 불러온 화면 캡처</li></ol>
+    <div class="terms" style="margin-top:12px"><span>지침</span><span>스킬</span><span>프롬프트 = 그림 주문서</span><span>앵커 = 기준 그림</span><span>캐릭터 시트 = 인물 설정 그림</span><span>표정 시트</span><span>배경 앵커</span><span>소품 앵커</span><span>화풍 고정 문장</span><span>16:9 · 3:4 · 2:3 · 1:1 = 가로:세로</span><span>px = 화면 점 개수</span><span>판권 = 책의 신분증 페이지</span><span>ISBN = 책의 주민등록번호</span><span>46판 = 127×188mm</span><span>재단 = 가장자리 자르기</span><span>책등 = 책 옆면</span><span>제본 = 책 묶기</span><span>POD = 주문할 때마다 찍는 책</span><span>zip = 압축 파일</span><span>눈누 = 무료 글꼴 사이트</span></div>
+  </div>
+</section>
+</main>
+<aside class="side"><div class="h">이 화면</div><div id="side"></div></aside>
+</div>
+<div class="bottom"><div class="bottom-in">
+  <button type="button" id="prev">◀ 이전</button>
+  <span class="where" id="where"></span>
+  <button type="button" id="next">다음 ▶</button>
+</div></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+  var store={get:function(k){try{return localStorage.getItem(k)}catch(e){return null}},set:function(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+  window.fs=function(d){var r=document.documentElement,c=parseFloat(getComputedStyle(r).getPropertyValue('--fs'))||20;r.style.setProperty('--fs',Math.max(16,Math.min(30,c+d))+'px')};
+
+  // 복사 버튼
+  document.querySelectorAll('.copybox button').forEach(function(b){b.onclick=function(){var t=b.parentNode.querySelector('span').textContent;
+    var ok=function(){b.textContent='복사됨';b.classList.add('ok');setTimeout(function(){b.textContent='복사';b.classList.remove('ok')},1500)};
+    var fb=function(){var a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();try{document.execCommand('copy')}catch(e){}a.remove();ok()};
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(ok,fb)}else fb()}});
+
+  // 탭 · 화면 전환
+  var panels=[].slice.call(document.querySelectorAll('.panel')),tabs=document.getElementById('tabs'),side=document.getElementById('side'),cur=0,seen={};
+  panels.forEach(function(p,i){var b=document.createElement('button');b.type='button';
+    b.innerHTML=i===0?'전체 그림':'<span class="n">'+i+'</span>'+p.dataset.short;b.title=p.dataset.tab;b.onclick=function(){show(i,true)};tabs.appendChild(b)});
+  function cards(){return [].slice.call(panels[cur].querySelectorAll('[data-name]'))}
+  function buildSide(){side.innerHTML='';cards().forEach(function(c){var a=document.createElement('a');a.href='#'+c.id;a.textContent=c.dataset.name;a.dataset.id=c.id;
+    a.onclick=function(e){e.preventDefault();c.scrollIntoView({behavior:'smooth',block:'start'})};side.appendChild(a)});mark()}
+  function show(i,scroll){cur=i;seen[i]=1;
+    panels.forEach(function(p,j){p.classList.toggle('on',j===i)});
+    [].slice.call(tabs.children).forEach(function(b,j){b.classList.toggle('on',j===i);b.classList.toggle('done',!!seen[j]&&j!==i)});
+    document.getElementById('prev').disabled=i===0;document.getElementById('next').disabled=i===panels.length-1;
+    document.getElementById('where').textContent=i===0?'전체 그림':('STEP '+i+' / 9 · '+panels[i].dataset.tab);
+    buildSide();store.set('sb-step',i);
+    if(scroll){var y=document.getElementById('main').getBoundingClientRect().top+window.pageYOffset-80;window.scrollTo({top:Math.max(0,y),behavior:'smooth'})}
+    if(i===0)initScene();
+  }
+  document.getElementById('prev').onclick=function(){if(cur>0)show(cur-1,true)};
+  document.getElementById('next').onclick=function(){if(cur<panels.length-1)show(cur+1,true)};
+  function mark(){var best=null;cards().forEach(function(c){if(c.getBoundingClientRect().top<window.innerHeight*0.45)best=c});if(!best)best=cards()[0];
+    [].slice.call(side.children).forEach(function(a){a.classList.toggle('cur',!!best&&a.dataset.id===best.id)})}
+  var tick=false;window.addEventListener('scroll',function(){if(tick)return;tick=true;requestAnimationFrame(function(){tick=false;mark()})},{passive:true});
+
+  // ===== three.js: 소품 7개 사이를 책이 건너감 =====
+  var STATIONS=[
+    {shape:'memo',label:'책 정하기',sub:'요약표',cap:'① 책 정하기: 한 줄로 말하면 AI가 요약표를 보여줘요. 읽고 "이대로 진행"!',stamp:true},
+    {shape:'outline',label:'이야기',sub:'쪽별 줄거리',cap:'② 이야기 뼈대: 주제 · 인물 · 장소 · 소품과 9쪽 줄거리표가 나와요.',stamp:true},
+    {shape:'palette',label:'화풍',sub:'세 가지 비교',cap:'③ 화풍: 같은 장면을 세 느낌으로 뽑아 비교하고, 고른 화풍을 문장 하나로 고정해요.',stamp:true},
+    {shape:'anchors',label:'앵커',sub:'인물·배경·소품',cap:'④ 앵커: 인물 · 배경 · 소품 기준 그림을 만들어요. 장면마다 붙일 그림이에요.',stamp:true},
+    {shape:'orders',label:'장면 주문서',sub:'12쪽',cap:'⑤ 장면 주문서: 쪽마다 글 · 카메라 · 붙일 앵커 · 프롬프트가 나와요.',stamp:true},
+    {shape:'gallery',label:'그림 뽑기',sub:'3:4',cap:'⑥ 그림 뽑기: 앵커를 붙이고 쪽마다 뽑아요. 얼굴 · 옷 · 소품이 같은지 확인!',stamp:true},
+    {shape:'tablet',label:'부크크',sub:'전자책',cap:'⑦ 부크크: 캔바에서 글을 넣어 엮고 전자책으로 올려요. 제목은 세 곳 똑같이!',stamp:true},
+    {shape:'paper',label:'종이책',sub:'같은 그림',cap:'⑧ 종이책: 그림은 그대로, "종이책으로 바꿔줘" 한 줄. 3mm와 50쪽!',stamp:false},
+    {shape:'skill',label:'스킬',sub:'storybook-maker',cap:'⑨ 스킬: 지침을 스킬로 올리면 다음부터는 명령어 한 줄로 시작해요.',stamp:false}
+  ];
+  var ACC=0x1E5D57,WOOD=0xB08A5A,WOOD2=0x8C6B43,PAPER=0xFFFFFF,CREAM=0xF3EBDD,BOOKC=[0x1E5D57,0xB4523A,0x3F5D8A,0xC9A24A,0x6B4E8C,0x2F7A5B,0xD08A5B];
+  function sprite(text,sub,color,w){var c=document.createElement('canvas');c.width=512;c.height=sub?200:120;var g=c.getContext('2d');g.textAlign='center';
+    g.fillStyle=color||'#22231F';g.font='700 72px Pretendard,"Noto Sans KR","Malgun Gothic",sans-serif';g.fillText(text,256,82);
+    if(sub){g.fillStyle='#62645E';g.font='500 42px Pretendard,"Noto Sans KR","Malgun Gothic",sans-serif';g.fillText(sub,256,160)}
+    var t=new THREE.CanvasTexture(c);t.minFilter=THREE.LinearFilter;var s=new THREE.Sprite(new THREE.SpriteMaterial({map:t,transparent:true,depthTest:false}));var W=w||2.1;s.scale.set(W,W*c.height/512,1);return s}
+  function stampSprite(){var c=document.createElement('canvas');c.width=c.height=256;var g=c.getContext('2d');g.strokeStyle='#B4523A';g.lineWidth=14;g.beginPath();g.arc(128,128,100,0,Math.PI*2);g.stroke();
+    g.fillStyle='#B4523A';g.font='800 78px Pretendard,"Noto Sans KR",sans-serif';g.textAlign='center';g.textBaseline='middle';g.fillText('확인',128,134);
+    var t=new THREE.CanvasTexture(c);var s=new THREE.Sprite(new THREE.SpriteMaterial({map:t,transparent:true,depthTest:false}));s.scale.set(0.75,0.75,1);return s}
+  var ready=false;
+  function initScene(){if(ready)return;ready=true;build(document.getElementById('c0-2'))}
+  function build(el){
+    var canvas=document.createElement('canvas');el.appendChild(canvas);
+    var ctrl=document.createElement('div');ctrl.className='ctrl';el.appendChild(ctrl);
+    var gl=null;try{gl=window.THREE&&(canvas.getContext('webgl')||canvas.getContext('experimental-webgl'))}catch(e){}
+    if(!gl){canvas.remove();var f=document.createElement('div');f.className='fallback';f.textContent=STATIONS.map(function(s,i){return (i+1)+' '+s.label}).join('  ▶  ');el.insertBefore(f,ctrl);return}
+    var renderer=new THREE.WebGLRenderer({canvas:canvas,antialias:true,alpha:true});renderer.setPixelRatio(Math.min(2,window.devicePixelRatio||1));
+    var scene=new THREE.Scene(),cam=new THREE.PerspectiveCamera(34,1,0.1,100);
+    scene.add(new THREE.HemisphereLight(0xffffff,0xE8E2D6,0.95));var dl=new THREE.DirectionalLight(0xffffff,0.6);dl.position.set(3,7,6);scene.add(dl);
+    var floor=new THREE.Mesh(new THREE.CircleGeometry(12,64),new THREE.MeshLambertMaterial({color:0xF2EEE6}));floor.rotation.x=-Math.PI/2;floor.position.y=-0.01;floor.scale.set(1,0.42,1);scene.add(floor);
+    var mats;function L(c){var m=new THREE.MeshLambertMaterial({color:c});mats.push(m);return m}
+    function B(w,h,d,c,x,y,z,g){var m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),L(c));m.position.set(x,y,z);g.add(m);return m}
+    function shape(kind,g){
+      if(kind==='memo'){ // 집게 메모판 + 체크 줄
+        var bd=new THREE.Group();B(1.0,1.3,0.06,WOOD,0,0,0,bd);B(0.86,1.1,0.02,PAPER,0,-0.05,0.04,bd);B(0.34,0.12,0.08,0x9AA0A6,0,0.62,0.05,bd);
+        for(var k=0;k<4;k++){B(0.09,0.09,0.02,k<3?ACC:0xCCCCCC,-0.3,0.3-k*0.24,0.06,bd);B(0.48,0.04,0.02,0xC9C4BA,0.08,0.3-k*0.24,0.06,bd)}
+        bd.position.set(0,0.78,0);bd.rotation.x=-0.18;g.add(bd);B(0.5,0.08,0.4,WOOD2,0,0.04,0.05,g)}
+      else if(kind==='easel'){ // 이젤 + 주인공 세 모습
+        [-0.42,0.42].forEach(function(x){var l=B(0.06,1.6,0.06,WOOD2,x,0.8,0.1,g);l.rotation.z=x<0?0.1:-0.1});var bl=B(0.06,1.5,0.06,WOOD2,0,0.72,-0.32,g);bl.rotation.x=-0.3;
+        var cv=new THREE.Group();B(1.42,0.92,0.04,WOOD,0,0,-0.02,cv);B(1.3,0.8,0.04,0xFDFBF6,0,0,0,cv);
+        [-0.38,0,0.38].forEach(function(x,i){var bo=new THREE.Mesh(new THREE.CylinderGeometry(0.08,0.11,0.32,12),L(i===1?0x3F5D8A:0xB4523A));bo.position.set(x,-0.12,0.05);cv.add(bo);var hd=new THREE.Mesh(new THREE.SphereGeometry(0.1,16,12),L(0xF0C9A5));hd.position.set(x,0.12,0.05);cv.add(hd)});
+        cv.position.set(0,1.2,0.16);cv.rotation.x=-0.1;g.add(cv);B(1.0,0.05,0.12,WOOD2,0,0.78,0.18,g)}
+      else if(kind==='outline'){ // 펼친 책 + 줄거리 줄
+        var lp=B(0.72,0.04,0.95,PAPER,-0.37,0.5,0,g);lp.rotation.z=0.12;var rp=B(0.72,0.04,0.95,PAPER,0.37,0.5,0,g);rp.rotation.z=-0.12;
+        B(1.5,0.06,1.0,0x3F5D8A,0,0.44,0,g);
+        for(var r=0;r<4;r++){var a1=B(0.5,0.02,0.05,0xB8B1A4,-0.38,0.53+0.0,-0.3+r*0.18,g);a1.rotation.z=0.12;var a2=B(0.5,0.02,0.05,r===1?ACC:0xB8B1A4,0.38,0.53,-0.3+r*0.18,g);a2.rotation.z=-0.12}
+        B(0.5,0.42,0.5,WOOD2,0,0.21,0,g)}
+      else if(kind==='palette'){ // 팔레트 + 물감 세 칸 + 붓
+        var pl=new THREE.Mesh(new THREE.CylinderGeometry(0.75,0.75,0.06,32),L(0xE8D9BC));pl.scale.z=0.75;pl.position.set(0,0.5,0);g.add(pl);
+        [[0x7FB3D5,-0.35,-0.2],[0xC9A24A,0,-0.32],[0xB4523A,0.35,-0.2],[0x2F7A5B,-0.2,0.18]].forEach(function(c){var d=new THREE.Mesh(new THREE.CylinderGeometry(0.13,0.13,0.06,20),L(c[0]));d.position.set(c[1],0.55,c[2]);g.add(d)});
+        var br=new THREE.Mesh(new THREE.CylinderGeometry(0.03,0.03,0.9,10),L(WOOD2));br.rotation.z=1.1;br.position.set(0.35,0.62,0.25);g.add(br);
+        B(0.5,0.42,0.5,WOOD2,0,0.21,0,g)}
+      else if(kind==='anchors'){ // 기준 그림 세 장: 인물 · 배경 · 소품
+        B(1.8,0.06,0.5,WOOD2,0,0.03,0,g);
+        [[-0.6,'p'],[0,'l'],[0.6,'c']].forEach(function(a){var f=new THREE.Group();B(0.52,0.66,0.04,0xFFFFFF,0,0,0,f);B(0.46,0.6,0.03,0xF7F2E8,0,0,0.02,f);
+          if(a[1]==='p'){var bo=new THREE.Mesh(new THREE.CylinderGeometry(0.07,0.1,0.26,12),L(0x8E2F3A));bo.position.set(0,-0.08,0.05);f.add(bo);var hd=new THREE.Mesh(new THREE.SphereGeometry(0.08,14,10),L(0xF0C9A5));hd.position.set(0,0.11,0.05);f.add(hd)}
+          if(a[1]==='l'){var h=new THREE.Mesh(new THREE.ConeGeometry(0.22,0.2,3),L(0x8FB573));h.position.set(-0.05,-0.15,0.05);f.add(h);var tr=new THREE.Mesh(new THREE.SphereGeometry(0.09,12,10),L(0x2F7A5B));tr.position.set(0.12,0.05,0.05);f.add(tr);B(0.02,0.14,0.02,WOOD2,0.12,-0.07,0.05,f)}
+          if(a[1]==='c'){var cl=new THREE.Mesh(new THREE.ConeGeometry(0.16,0.4,16),L(0x8E2F3A));cl.position.set(0,-0.02,0.05);f.add(cl);var cs=new THREE.Mesh(new THREE.SphereGeometry(0.035,10,8),L(0xC9A24A));cs.position.set(0,0.15,0.17);f.add(cs)}
+          f.position.set(a[0],0.42,0);f.rotation.x=-0.08;g.add(f)})}
+      else if(kind==='orders'){ // 주문서 묶음
+        B(1.2,0.08,0.6,WOOD2,0,0.04,0,g);
+        for(var k=0;k<7;k++){var sh=new THREE.Group();B(0.62,0.86,0.02,k%2?PAPER:CREAM,0,0,0,sh);B(0.44,0.05,0.025,ACC,0,0.3,0.01,sh);
+          for(var r=0;r<4;r++)B(0.46-(r%2)*0.1,0.03,0.025,0xB8B1A4,-0.02,0.15-r*0.13,0.01,sh);
+          sh.position.set((k-3)*0.1,0.52+Math.abs(k-3)*-0.02,-0.15+k*0.04);sh.rotation.z=(k-3)*-0.12;sh.rotation.x=-0.12;g.add(sh)}}
+      else if(kind==='gallery'){ // 3:4 액자 7장
+        B(1.8,0.06,0.5,WOOD2,0,0.03,0,g);
+        for(var k=0;k<7;k++){var fr=new THREE.Group();B(0.36,0.48,0.04,0xFFFFFF,0,0,0,fr);B(0.3,0.4,0.03,BOOKC[k],0,0,0.02,fr);B(0.12,0.12,0.03,0xF0C9A5,0,0.03,0.04,fr);
+          var row=k<4?0:1,idx=row?k-4:k,n=row?3:4;fr.position.set((idx-(n-1)/2)*0.42,row?0.95:0.38,row?-0.12:0.05);fr.rotation.x=-0.08;g.add(fr)}}
+      else if(kind==='tablet'){ // 태블릿 속 책 표지
+        var tb=new THREE.Group();B(1.0,1.36,0.07,0x2A2D31,0,0,0,tb);B(0.88,1.22,0.02,0xF7F4EE,0,0,0.045,tb);B(0.62,0.86,0.02,ACC,0,0.07,0.06,tb);B(0.4,0.07,0.02,0xFFFFFF,0,0.3,0.075,tb);B(0.22,0.22,0.02,0xF0C9A5,0,0.0,0.075,tb);
+        B(0.5,0.07,0.02,0xB4523A,0,-0.48,0.06,tb);
+        tb.position.set(0,0.82,0);tb.rotation.x=-0.16;g.add(tb);B(0.6,0.08,0.45,0x9AA0A6,0,0.04,0.1,g)}
+      else if(kind==='paper'){ // 세워 둔 종이책 (두께·책등)
+        var bk=new THREE.Group();B(0.95,1.3,0.32,0xB4523A,0,0,0,bk);B(0.9,1.24,0.29,CREAM,0.04,0,0,bk);B(0.06,1.3,0.33,0x8E3C2A,-0.47,0,0,bk);
+        B(0.5,0.08,0.01,0xFFFFFF,0.05,0.36,0.17,bk);bk.position.set(0,0.7,0);bk.rotation.y=-0.45;g.add(bk);
+        var b2=new THREE.Group();B(0.9,0.12,1.2,0x3F5D8A,0,0,0,b2);B(0.85,0.1,1.14,CREAM,0.03,0,0,b2);b2.position.set(0.15,0.06,0.25);b2.rotation.y=0.3;g.add(b2)}
+      else if(kind==='skill'){ // 스킬 카드
+        var cd=new THREE.Group();B(1.25,0.82,0.05,ACC,0,0,0,cd);B(1.13,0.7,0.02,0xF7F4EE,0,0,0.035,cd);var sl=sprite('/','',"#1E5D57",0.9);sl.position.set(-0.32,0.02,0.06);cd.add(sl);
+        for(var r=0;r<3;r++)B(0.5-r*0.1,0.05,0.02,0xB8B1A4,0.15,0.16-r*0.16,0.05,cd);
+        cd.position.set(0,0.95,0);cd.rotation.x=-0.12;cd.rotation.y=0.12;g.add(cd);B(0.5,0.08,0.3,0x9AA0A6,0,0.04,0,g);B(0.06,0.5,0.06,0x9AA0A6,0,0.32,0,g)}
+    }
+    var n=STATIONS.length,gap=2.0,x0=-(n-1)*gap/2,props=[];
+    STATIONS.forEach(function(st,i){mats=[];var grp=new THREE.Group();grp.position.x=x0+i*gap;var obj=new THREE.Group();shape(st.shape,obj);grp.add(obj);
+      var lab=sprite((i+1)+' '+st.label,null,null,1.9);lab.position.set(0,1.9,0);grp.add(lab);
+      var stp=null;if(st.stamp){stp=stampSprite();stp.position.set(0.66,1.25,0.3);stp.material.opacity=0;grp.add(stp)}
+      scene.add(grp);props.push({grp:grp,obj:obj,mats:mats,stamp:stp});
+      if(i<n-1){var a=new THREE.Mesh(new THREE.CylinderGeometry(0.02,0.02,gap-1.5,8),new THREE.MeshBasicMaterial({color:0xC9C1B2}));a.rotation.z=Math.PI/2;a.position.set(x0+i*gap+gap/2,0.12,0.75);scene.add(a);
+        var cone=new THREE.Mesh(new THREE.ConeGeometry(0.06,0.16,12),new THREE.MeshBasicMaterial({color:0xC9C1B2}));cone.rotation.z=-Math.PI/2;cone.position.set(x0+i*gap+gap-0.72,0.12,0.75);scene.add(cone)}
+    });
+    // 이동하는 책
+    var item=new THREE.Group(),cover=new THREE.Mesh(new THREE.BoxGeometry(0.42,0.07,0.56),new THREE.MeshLambertMaterial({color:ACC}));item.add(cover);
+    var pages=new THREE.Mesh(new THREE.BoxGeometry(0.38,0.08,0.52),new THREE.MeshLambertMaterial({color:0xFFFFFF}));pages.position.x=0.03;item.add(pages);
+    scene.add(item);
+
+    var playing=!(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches),t=0,target=null,stage=0;
+    var bp=document.createElement('button');bp.type='button';function setBp(){bp.textContent=playing?'멈춤':'재생';bp.classList.toggle('on',playing)}
+    bp.onclick=function(){playing=!playing;target=null;setBp()};setBp();ctrl.appendChild(bp);
+    var sb=[];STATIONS.forEach(function(st,i){var b=document.createElement('button');b.type='button';b.textContent=(i+1)+' '+st.label;b.onclick=function(){playing=false;setBp();target=i};ctrl.appendChild(b);sb.push(b)});
+    var br=document.createElement('button');br.type='button';br.textContent='처음부터';br.onclick=function(){t=0;target=null;playing=true;setBp()};ctrl.appendChild(br);
+    var cap=document.createElement('div');cap.className='cap';ctrl.appendChild(cap);
+    function size(){var w=canvas.clientWidth||900,h=canvas.clientHeight||300;renderer.setSize(w,h,false);cam.aspect=w/h;cam.updateProjectionMatrix();
+      var span=(n-1)*gap+2.0,dist=span/2/Math.tan(cam.fov*Math.PI/360)/cam.aspect*1.02;dist=Math.max(7,dist);cam.position.set(0,dist*0.34,dist);cam.lookAt(0,1.0,0)}
+    size();window.addEventListener('resize',size);
+    var per=1.8,total=n*per+0.8,last=performance.now();
+    function frame(now){requestAnimationFrame(frame);if(!el.offsetParent){last=now;return}
+      if(canvas.clientWidth&&Math.abs(canvas.width/renderer.getPixelRatio()-canvas.clientWidth)>2)size();
+      var dt=Math.min(0.05,(now-last)/1000);last=now;
+      if(target!==null){var goal=target*per+per*0.3;t+=(goal-t)*Math.min(1,dt*4)}else if(playing){t=(t+dt)%total}
+      var pos=Math.min(t/per,n-1+0.3),i=Math.min(n-1,Math.floor(pos)),f=pos-i;
+      var hop=f<0.6?0:(f-0.6)/0.4;hop=hop*hop*(3-2*hop);var xa=x0+i*gap,xb=i<n-1?x0+(i+1)*gap:xa;
+      item.position.x=xa+(xb-xa)*(i<n-1?hop:0);item.position.z=0.75;item.position.y=0.35+Math.sin(hop*Math.PI)*0.7;item.rotation.y=Math.sin(now/1400)*0.2;
+      var thick=stage>=5?2.4:1;cover.scale.y+=(thick-cover.scale.y)*0.1;pages.scale.y=cover.scale.y;
+      stage=i<n-1&&hop>0.5?i+1:i;
+      props.forEach(function(p,j){var on=j===stage,k=p.obj.scale.x+((on?1.12:0.92)-p.obj.scale.x)*0.15;p.obj.scale.set(k,k,k);
+        p.mats.forEach(function(m){m.emissive.setHex(on?0x221E14:0x000000)});
+        if(p.stamp){var want=(on&&f>0.25&&f<0.62)||(j<stage)?1:0;p.stamp.material.opacity+=(want-p.stamp.material.opacity)*0.15;p.stamp.material.rotation=-0.2}});
+      sb.forEach(function(b,j){b.classList.toggle('on',j===stage)});cap.textContent=STATIONS[stage].cap;
+      renderer.render(scene,cam)}
+    requestAnimationFrame(frame);
+  }
+
+  var start=parseInt(store.get('sb-step')||'0',10);if(!(start>=0&&start<panels.length))start=0;
+  show(start,false);
+})();
+</script>
+</body>
+</html>
