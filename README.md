@@ -123,6 +123,7 @@ https://jaycobbnate.github.io/kimedukr-lessons/<과정 폴더>/<차시>/
 - [sandaeteuk-pod/19](sandaeteuk-pod/19/) — 😊 수업 > (산대특) POD/디지털 출판 > 미드저니 A–Z
 - [sandaeteuk-pod/20](sandaeteuk-pod/20/) — 😊 수업 > (산대특) POD/디지털 출판 > 내 캐릭터로 그림책 — 미드저니 캐릭터부터 플로우 장면, 책까지
 - [sandaeteuk-pod/21](sandaeteuk-pod/21/) — 😊 수업 > (산대특) POD/디지털 출판 > 전자책을 종이책으로 보강할까, 새로 만들까
+- [sandaeteuk-pod/22](sandaeteuk-pod/22/) — 😊 수업 > (산대특) POD/디지털 출판 > 종이책 표지·내지·판권 만들기 — 교보·부크크
 
 ### hangidae-miricanvas
 - [hangidae-miricanvas/01](hangidae-miricanvas/01/) — 한기대교직과정 > 미리캔버스 교안 제작 > 교재 요약
