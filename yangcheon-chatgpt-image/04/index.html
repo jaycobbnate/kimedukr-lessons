@@ -237,7 +237,7 @@ svg text{font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-ser
 <div class="card" id="s2-pick"><h2>굿즈에 좋은 포즈 고르는 기준</h2>
 <ul>
 <li><b>실루엣이 단순</b>할 것 — 스티커 칼선(오리는 선)이 깔끔해집니다.</li>
-<li><b>귀·꼬리·뿔이 잘리지 않을 것</b> — 잘리면 인쇄할 때 고칠 수 없습니다.</li>
+<li><b>머리부터 발끝까지 잘리지 않을 것</b> — 귀·뿔·꼬리·모자처럼 몸 밖으로 튀어나온 부분이 있다면 그것까지. 잘리면 인쇄할 때 고칠 수 없습니다.</li>
 <li><b>정면이나 반측면</b>일 것 — 뒷모습은 캐릭터인지 알아보기 어렵습니다.</li>
 </ul>
 <table><tr><th>굿즈</th><th>잘 맞는 포즈</th></tr>
@@ -255,13 +255,13 @@ svg text{font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-ser
 <div class="grid">
 <div class="card full" id="s2-do"><h2>① 3×3 포즈 뽑기</h2>
 <p>프로젝트 안 새 채팅에 그대로 붙여 넣습니다.</p>
-<div class="prompt"><div class="ph">공용 프롬프트 · 포즈 9칸<button onclick="cp(this)">복사</button></div><pre>소스의 {N}(앵커·캐릭터 시트)로 굿즈용 포즈 9개를 3×3 그리드 한 장(정사각형)으로 그려 줘. 흰 배경, 칸마다 같은 크기, 귀·꼬리까지 칸 안에 다 들어오게.
+<div class="prompt"><div class="ph">공용 프롬프트 · 포즈 9칸<button onclick="cp(this)">복사</button></div><pre>소스의 {N}(앵커·캐릭터 시트)로 굿즈용 포즈 9개를 3×3 그리드 한 장(정사각형)으로 그려 줘. 흰 배경, 칸마다 같은 크기, 머리부터 발끝까지(튀어나온 부분 포함) 칸 안에 다 들어오게. 소스에 없는 귀·꼬리·장식은 새로 붙이지 마.
 포즈: ① 정면 앉기 ② 한 손 흔들기 ③ 엎드려 졸기 ④ 기지개 ⑤ 점프 ⑥ 옆으로 길게 눕기 ⑦ 뒤돌아보기 ⑧ 얼굴 클로즈업 ⑨ 두 손 모아 인사.
 생김새·색·질감은 소스 그대로. (이번 요청은 지침 예외: 칸 왼쪽 위에 작은 번호만 허용)</pre></div>
 <div class="prompt x"><div class="ph">확장 프롬프트 · 한 칸만 다시<button onclick="cp(this)">복사</button></div><pre>⑦번 칸만 다시 그려 줘. 등이 화면을 향하고 고개만 살짝 돌려 어깨 너머로 보는 모습. 나머지 8칸은 그대로 두고, 같은 3×3 한 장으로.</pre></div>
 <div class="prompt x"><div class="ph">확장 프롬프트 · 친구 캐릭터도 9칸<button onclick="cp(this)">복사</button></div><pre>같은 방법으로 소스의 {Y}도 굿즈용 포즈 9칸(3×3, 흰 배경, 정사각형)을 그려 줘. 포즈 번호와 순서는 위와 같게, 생김새·색·질감은 {Y} 기준 그대로.</pre></div>
 <div class="box warn"><div class="t">막힐 때</div>
-<ul><li><b>칸마다 캐릭터가 조금씩 다르다</b> → "9칸 모두 같은 캐릭터, 눈·코·귀 위치와 색을 소스와 똑같이"를 덧붙여 다시.</li>
+<ul><li><b>칸마다 캐릭터가 조금씩 다르다</b> → "9칸 모두 같은 캐릭터, 얼굴 생김새·색·몸 비율을 소스와 똑같이, 소스에 없는 부분은 더하지 마"를 덧붙여 다시.</li>
 <li><b>칸 크기가 제각각</b> → "칸 사이에 얇은 흰 선, 칸 크기 모두 같게".</li>
 <li><b>번호 대신 긴 글자가 들어간다</b> → "번호 숫자 하나만, 다른 글자 없음".</li></ul></div></div>
 </div>
