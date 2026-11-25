@@ -78,6 +78,7 @@ table.nums td,table.nums th{text-align:center}
 .check li::before{content:"☐ ";color:var(--ac);font-weight:800}
 @media (max-width:1000px){.layout{grid-template-columns:1fr}.side{display:none}.grid{grid-template-columns:1fr}.dl{grid-template-columns:1fr}}
 @media (max-width:600px){:root{--fs:18px}.card{padding:18px 16px}.bar{padding:10px 16px}#tabs{padding:0 16px 10px}main{padding:18px 16px 36px}}
+.shots{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:12px 0}.shots.one{grid-template-columns:1fr}.shots.three{grid-template-columns:repeat(3,minmax(0,1fr))}.shots figure{margin:0}.shots img{width:100%;display:block;border:1px solid var(--line);border-radius:10px;cursor:zoom-in}.shots figcaption{font-size:.78rem;color:var(--sub);margin-top:6px}@media (max-width:600px){.shots,.shots.three{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -381,7 +382,8 @@ table.nums td,table.nums th{text-align:center}
           <text x="690" y="232" font-size="13" fill="#5b6476">흰 점선(분할선)이 사람 등 바로 뒤를 따라가며, 선 왼쪽에만 글자가 보입니다</text>
         </g>
       </svg></div>
-    </div>
+    <div class="shots "><figure><img src="img01.jpg" alt="사람이 지나가는 중: 등 뒤까지만 글자가 보임" loading="lazy"><figcaption>사람이 지나가는 중: 등 뒤까지만 글자가 보임</figcaption></figure><figure><img src="img03.jpg" alt="사람이 나간 뒤: 글자 전체가 보임" loading="lazy"><figcaption>사람이 나간 뒤: 글자 전체가 보임</figcaption></figure></div>
+</div>
 
     <div class="card wide" id="w-flow">
       <h3><span class="n">2</span>플로우로 걷는 영상 만들기 (시작·끝 사진) <span class="kind do">실행</span> <span class="tag opt">선택</span></h3>
@@ -423,7 +425,8 @@ table.nums td,table.nums th{text-align:center}
         <li><b>위 복사본</b>만 선택 → 오른쪽 <b>동영상 → 배경 제거 → 자동 삭제</b> 체크 → 사람만 남아요. <span class="tag pro">💎</span></li>
       </ol>
       <div class="box set"><b class="t">💎 자동 삭제</b>프로 기능입니다. 프로가 없으면 이 단계를 건너뛰어도 효과는 돼요(팔·다리가 글자 앞으로 지나가지 않을 뿐).</div>
-    </div>
+    <div class="shots one"><figure><img src="img05.jpg" alt="자동 삭제: 옆 보라색 💎 = 프로 기능" loading="lazy"><figcaption>자동 삭제: 옆 보라색 💎 = 프로 기능</figcaption></figure></div>
+</div>
 
     <div class="card" id="w-do2">
       <h3><span class="n">4</span>따라 하기 ② 글자 넣고 줄 순서 맞추기 <span class="kind do">실행</span> <span class="tag must">필수</span></h3>
@@ -435,7 +438,8 @@ table.nums td,table.nums th{text-align:center}
         <li>글자 클립 <b>오른쪽 클릭 → 복합 클립(하위 프로젝트) 만들기</b> (단축키 <span class="kbd">Alt</span>+<span class="kbd">G</span>)</li>
       </ol>
       <div class="box set"><b class="t">왜 복합 클립으로 바꾸나요?</b>캡컷은 글자 클립에 마스크를 바로 걸 수 없어요. 복합 클립으로 묶으면 글자가 「영상 클립」처럼 취급돼서 마스크 메뉴가 열려요.</div>
-    </div>
+    <div class="shots "><figure><img src="img04.jpg" alt="줄 순서: 맨 위 사람 복사본 · 가운데 「복합 클립1」(글자) · 맨 아래 원본" loading="lazy"><figcaption>줄 순서: 맨 위 사람 복사본 · 가운데 「복합 클립1」(글자) · 맨 아래 원본</figcaption></figure><figure><img src="img06.jpg" alt="오른쪽 클릭 메뉴 가운데쯤의 「복합 클립 만들기」" loading="lazy"><figcaption>오른쪽 클릭 메뉴 가운데쯤의 「복합 클립 만들기」</figcaption></figure></div>
+</div>
 
     <div class="card" id="w-text">
       <h3><span class="n">5</span>문구 카드 <span class="kind do">실행</span></h3>
@@ -462,7 +466,8 @@ table.nums td,table.nums th{text-align:center}
         </g>
       </svg></div>
       <p class="cap">화면에 세로 흰 선이 보이면 성공. 이 선의 <b>왼쪽</b>에만 글자가 보여요. 셔터 앞 영상처럼 오른쪽에서 왼쪽으로 걸으면 <b>90°</b>.</p>
-    </div>
+    <div class="shots one"><figure><img src="img07.jpg" alt="분할: 화면을 직선 하나로 나눠요" loading="lazy"><figcaption>분할: 화면을 직선 하나로 나눠요</figcaption></figure><figure><img src="img08.jpg" alt="위치 X = 경계선 좌우 값 · 회전 270° · ◇ 키프레임" loading="lazy"><figcaption>위치 X = 경계선 좌우 값 · 회전 270° · ◇ 키프레임</figcaption></figure><figure><img src="img09.jpg" alt="화면에 세로 흰 선이 보이면 성공" loading="lazy"><figcaption>화면에 세로 흰 선이 보이면 성공</figcaption></figure></div>
+</div>
 
     <div class="card wide" id="w-do4">
       <h3><span class="n">7</span>따라 하기 ④ 키프레임으로 사람 따라가기 <span class="kind do">실행</span> <span class="tag must">필수</span></h3>
@@ -537,7 +542,8 @@ table.nums td,table.nums th{text-align:center}
           <text x="500" y="244" font-size="13" fill="#5b6476">두 실습 모두 마스크는 위 클립에 · 창은 손가락 끝의 안쪽에 맞춥니다</text>
         </g>
       </svg></div>
-    </div>
+    <div class="shots three"><figure><img src="img02.jpg" alt="창이 넓을 때" loading="lazy"><figcaption>창이 넓을 때</figcaption></figure><figure><img src="img10.jpg" alt="손가락이 모이면 창도 좁게" loading="lazy"><figcaption>손가락이 모이면 창도 좁게</figcaption></figure><figure><img src="img11.jpg" alt="손 모양이 바뀌어도 따라감" loading="lazy"><figcaption>손 모양이 바뀌어도 따라감</figcaption></figure></div>
+</div>
 
     <div class="card" id="s2-film">
       <h3><span class="n">2</span>내 손을 직접 찍는다면 <span class="kind learn">설명</span> <span class="tag opt">선택</span></h3>
@@ -560,7 +566,8 @@ table.nums td,table.nums th{text-align:center}
         <li>재생 헤드 <b>13초</b>에 두고 <span class="kbd">Q</span>(왼쪽 삭제) → 다시 <b>6초쯤</b>에 두고 <span class="kbd">W</span>(오른쪽 삭제)</li>
       </ol>
       <p class="cap">강사 손 영상은 13초부터 손가락 창이 또렷하게 움직입니다. 아래 숫자 표도 이 자리 기준입니다.</p>
-    </div>
+    <div class="shots one"><figure><img src="img12.jpg" alt="가로 세로 비율 목록: 세로로 찍었으면 9:16, 강사 영상은 1:1" loading="lazy"><figcaption>가로 세로 비율 목록: 세로로 찍었으면 9:16, 강사 영상은 1:1</figcaption></figure></div>
+</div>
 
     <div class="card wide" id="s2-a">
       <h3><span class="n">4</span>실습 A · 창 안에만 효과 넣기 <span class="kind do">실행</span> <span class="tag must">필수</span></h3>
@@ -596,7 +603,8 @@ table.nums td,table.nums th{text-align:center}
         <tr><td>4초</td><td>-10</td><td>187</td><td>316</td><td>368</td></tr>
       </table>
       <p class="cap">끌어서 맞추기가 기본이에요. 숫자는 막힐 때 넣어 보는 출발점이라, 넣은 뒤 화면을 보며 손가락 끝에 맞게 조금씩 고치세요. 위 클립에 흰 ◇가 줄지어 생기면 키프레임이 잘 들어간 거예요.</p>
-    </div>
+    <div class="shots "><figure><img src="img13.jpg" alt="마스크 추가 · 직사각형 · 펜 💎(프로)" loading="lazy"><figcaption>마스크 추가 · 직사각형 · 펜 💎(프로)</figcaption></figure><figure><img src="img14.jpg" alt="흰 점선 네모: 모서리 점 = 크기, 안쪽 = 위치, 아래 ↻ = 회전" loading="lazy"><figcaption>흰 점선 네모: 모서리 점 = 크기, 안쪽 = 위치, 아래 ↻ = 회전</figcaption></figure><figure><img src="img15.jpg" alt="마스크 설정 ◇ → ◆ · 위치 X·Y · 크기 가로·세로" loading="lazy"><figcaption>마스크 설정 ◇ → ◆ · 위치 X·Y · 크기 가로·세로</figcaption></figure><figure><img src="img16.jpg" alt="위 클립에 흰 ◇가 줄지어 생기면 키프레임이 잘 들어간 것" loading="lazy"><figcaption>위 클립에 흰 ◇가 줄지어 생기면 키프레임이 잘 들어간 것</figcaption></figure></div>
+</div>
 
     <div class="card wide" id="s2-multi">
       <h3><span class="n">5</span>효과 여러 개를 바꿔 가며 움직이기 <span class="kind do">실행</span> <span class="tag opt">선택</span></h3>
@@ -643,7 +651,8 @@ table.nums td,table.nums th{text-align:center}
         <li>마스크 설정 ◇로 키프레임 → 재생 헤드를 옮기고 <b>점 위치를 다시 맞추기</b>를 몇 프레임마다 반복</li>
       </ol>
       <div class="box warn"><b class="t">미리 한 번 해 보세요</b>펜 마스크 점을 옮길 때 키프레임이 자동으로 찍히는지는 캡컷 버전에 따라 다를 수 있습니다. 점을 옮긴 뒤 타임라인에 ◆가 생기는지 확인하고, 안 생기면 마스크 설정의 ◇를 직접 눌러 주세요.</div>
-    </div>
+    <div class="shots one"><figure><img src="img18.jpg" alt="펜 아이콘 왼쪽 위 보라색 💎 = 프로" loading="lazy"><figcaption>펜 아이콘 왼쪽 위 보라색 💎 = 프로</figcaption></figure></div>
+</div>
 
     <div class="card" id="s2-b">
       <h3><span class="n">7</span>실습 B · 창 안에 다른 영상 + 창 밖 흑백 <span class="kind do">실행</span> <span class="tag must">필수</span></h3>
@@ -655,7 +664,8 @@ table.nums td,table.nums th{text-align:center}
         <li><b>아래 손 영상</b> 선택 → <b>조정 → 기본</b> → <b>채도</b> 막대를 끝까지 왼쪽 (-50)</li>
       </ol>
       <div class="box warn"><b class="t">채도는 아래 손 영상만!</b>위 클립까지 바꾸면 창 안도 흑백이 돼요.</div>
-    </div>
+    <div class="shots "><figure><img src="img17.jpg" alt="채도 -50 = 흑백 (무료)" loading="lazy"><figcaption>채도 -50 = 흑백 (무료)</figcaption></figure><figure><img src="img02.jpg" alt="창 밖 손과 천은 흑백, 창 안 영상은 컬러" loading="lazy"><figcaption>창 밖 손과 천은 흑백, 창 안 영상은 컬러</figcaption></figure></div>
+</div>
 
     <div class="card wide" id="s2-more">
       <h3><span class="n">8</span>한 걸음 더 <span class="tag opt">선택</span></h3>
@@ -707,7 +717,8 @@ table.nums td,table.nums th{text-align:center}
           <text x="830" y="188" font-size="14" fill="#1d2433" font-weight="700">화면 가득 = 다음 장면</text>
         </g>
       </svg></div>
-    </div>
+    <div class="shots three"><figure><img src="img11.jpg" alt="손가락 창" loading="lazy"><figcaption>손가락 창</figcaption></figure><figure><img src="img19.jpg" alt="펼쳐지는 중" loading="lazy"><figcaption>펼쳐지는 중</figcaption></figure><figure><img src="img20.jpg" alt="화면 가득 = 다음 장면" loading="lazy"><figcaption>화면 가득 = 다음 장면</figcaption></figure></div>
+</div>
 
     <div class="card" id="s3-do1">
       <h3><span class="n">2</span>따라 하기 ① 화면 가득 펼치기 <span class="kind do">실행</span> <span class="tag must">필수</span></h3>
@@ -718,7 +729,8 @@ table.nums td,table.nums th{text-align:center}
         <li>손 영상은 여기서 끝나고, 그 뒤로는 <b>창 안 영상만</b> 이어져요</li>
       </ol>
       <div class="box stuck"><b class="t">막힐 때: 가장자리가 남아요</b>크기를 더 크게 넣으세요. 화면보다 넉넉히 커야 테두리가 안 남습니다.</div>
-    </div>
+    <div class="shots one"><figure><img src="img21.jpg" alt="위치 0, 0 · 크기 1100 × 1100 (화면보다 조금 크게)" loading="lazy"><figcaption>위치 0, 0 · 크기 1100 × 1100 (화면보다 조금 크게)</figcaption></figure></div>
+</div>
 
     <div class="card" id="s3-do2">
       <h3><span class="n">3</span>따라 하기 ② 자막·음악·내보내기 <span class="kind do">실행</span> <span class="tag must">필수</span></h3>
@@ -759,5 +771,6 @@ table.nums td,table.nums th{text-align:center}
   show(0,false);
 })();
 </script>
+<script>document.addEventListener("click",function(e){var t=e.target;if(t.tagName==="IMG"&&t.closest(".shots")){window.open(t.src,"_blank")}});</script>
 </body>
 </html>
