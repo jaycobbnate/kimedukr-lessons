@@ -87,6 +87,7 @@ https://jaycobbnate.github.io/kimedukr-lessons/<과정 폴더>/<차시>/
 - [yangcheon-capcut/01](yangcheon-capcut/01/) — 😊 수업 > [양천]캡컷 프로(CapCut Pro) 200% 활용 > 1차시 프로 첫날
 - [yangcheon-capcut/02](yangcheon-capcut/02/) — 😊 수업 > [양천]캡컷 프로(CapCut Pro) 200% 활용 > 2회차비트 사진 릴 + 글자 뒤로 지나가는 사람
 - [yangcheon-capcut/03](yangcheon-capcut/03/) — 😊 수업 > [양천]캡컷 프로(CapCut Pro) 200% 활용 > 3회차 말이 글이 되는 날 + 글자 뒤 인물
+- [yangcheon-capcut/04](yangcheon-capcut/04/) — 😊 수업 > [양천]캡컷 프로(CapCut Pro) 200% 활용 > 4회차 마스크·키프레임: 사람 뒤 자막 · 손가락 창 · 펼치기
 
 ### ilwon-ai-video
 - [ilwon-ai-video/01](ilwon-ai-video/01/) — 😊 수업 > [일원]AI 영상 만들기 > 1차시 수업
@@ -101,6 +102,7 @@ https://jaycobbnate.github.io/kimedukr-lessons/<과정 폴더>/<차시>/
 - [ilwon-ai-video/10](ilwon-ai-video/10/) — 😊 수업 > [일원]AI 영상 만들기 > AI로 만드는 식품 광고
 - [ilwon-ai-video/11](ilwon-ai-video/11/) — 😊 수업 > [일원]AI 영상 만들기 > 목소리로 광고 완성 · 옴니 1.2 · 사람 뒤에서 나타나는 자막
 - [ilwon-ai-video/12](ilwon-ai-video/12/) — 😊 수업 > [일원]AI 영상 만들기 > 마스크로 만드는 SNS 유행 영상
+- [ilwon-ai-video/13](ilwon-ai-video/13/) — 😊 수업 > [일원]AI 영상 만들기 > 마스크·키프레임 & 소리·자막 다듬기
 
 ### sandaeteuk-pod
 - [sandaeteuk-pod/01](sandaeteuk-pod/01/) — 😊 수업 > (산대특) POD/디지털 출판 > AI 화풍평탄화
