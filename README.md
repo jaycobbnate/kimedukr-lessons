@@ -102,7 +102,7 @@ https://jaycobbnate.github.io/kimedukr-lessons/<과정 폴더>/<차시>/
 - [ilwon-ai-video/10](ilwon-ai-video/10/) — 😊 수업 > [일원]AI 영상 만들기 > AI로 만드는 식품 광고
 - [ilwon-ai-video/11](ilwon-ai-video/11/) — 😊 수업 > [일원]AI 영상 만들기 > 목소리로 광고 완성 · 옴니 1.2 · 사람 뒤에서 나타나는 자막
 - [ilwon-ai-video/12](ilwon-ai-video/12/) — 😊 수업 > [일원]AI 영상 만들기 > 마스크로 만드는 SNS 유행 영상
-- [ilwon-ai-video/13](ilwon-ai-video/13/) — 😊 수업 > [일원]AI 영상 만들기 > 마스크·키프레임 & 소리·자막 다듬기
+- [ilwon-ai-video/13](ilwon-ai-video/13/) — 😊 수업 > [일원]AI 영상 만들기 > 마스크·키프레임 & 소리·자막 다듬기 (사람 뒤 자막 · 손가락 창 · 소리 · 자막)
 
 ### sandaeteuk-pod
 - [sandaeteuk-pod/01](sandaeteuk-pod/01/) — 😊 수업 > (산대특) POD/디지털 출판 > AI 화풍평탄화
