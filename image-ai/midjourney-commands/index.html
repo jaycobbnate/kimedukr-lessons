@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>미드저니 명령어</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--band:#1f6b8a;--ink:#2b2b2b;--line:#d6dde2;--link:#1f6b8a;--soft:#f2f5f7}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Noto Sans KR",sans-serif;color:var(--ink);background:#fff;font-size:18px;line-height:1.7;overflow-x:hidden}
+section{padding:22px 16px}
+section.band{background:var(--band);color:#fff}
+section.band a{color:#fff}
+section.band summary{color:#fff}
+section.band summary::after{color:#fff}
+section.soft{background:var(--soft)}
+.row{max-width:1100px;margin:0 auto;display:flex;gap:24px;align-items:flex-start}
+.col{min-width:0}
+.txt h2{font-size:clamp(28px,4vw,44px);font-weight:900;margin:.2em 0;line-height:1.3}
+.txt h3{font-size:clamp(22px,2.6vw,30px);font-weight:700;margin:.3em 0;line-height:1.4}
+.txt h4{font-size:20px;font-weight:700;margin:.3em 0;line-height:1.5}
+.txt p{margin:.25em 0}
+.txt ul,.txt ol{margin:.3em 0;padding-left:1.4em}
+.c{text-align:center}
+section.band .txt{text-align:center}
+a{color:var(--link);word-break:break-word}
+figure{margin:8px 0}
+figure img{display:block;width:100%;height:auto;border-radius:6px}
+.btn{display:block;text-align:center;background:var(--band);color:#fff!important;text-decoration:none;padding:12px 10px;border-radius:6px;font-weight:500;margin:8px 0}
+section.band .btn{background:#fff;color:var(--band)!important}
+.emb{position:relative;width:100%;margin:8px 0;background:#f4f4f4;border-radius:6px;overflow:hidden}
+.emb iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.open{display:inline-block;font-size:15px;margin:2px 0 10px}
+.card{display:flex;gap:14px;align-items:center;border:1px solid var(--line);border-radius:8px;padding:10px;text-decoration:none;color:var(--ink);margin:8px 0;background:#fff}
+.card img{width:120px;height:80px;object-fit:cover;border-radius:4px}
+.card b{display:block;color:var(--link)} .card small{color:#777}
+.sp{height:24px}
+details{border-bottom:1px solid #9aa5ad;margin:4px 0}
+summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;padding:16px 4px 12px;font-size:21px;color:var(--link);font-weight:500}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"⌄";font-size:24px;color:#555;transition:transform .2s;margin-left:12px}
+details[open] summary::after{transform:rotate(180deg)}
+.dbody{padding:2px 4px 16px}
+@media (max-width:720px){.row{flex-direction:column;gap:8px}.col{width:100%;flex:none!important}.col.empty{display:none}}
+</style>
+</head>
+<body>
+<section class="band"><div class="row"><div class="col" style="flex:12 1 0"><div class="txt"><h2 class="c"><strong>미드저니</strong></h2></div></div></div></section>
+<section class=""><div class="row"><div class="col" style="flex:4 1 0"><div class="txt"><p class="c"><strong>김충효 강사 유튜브</strong></p></div>
+<figure><a href="https://www.youtube.com/@%EA%B9%80%EC%97%90%EB%93%80" target="_blank" rel="noopener"><img src="img/01.webp" alt="" loading="lazy"></a></figure>
+<a class="btn" href="https://www.youtube.com/@%EA%B9%80%EC%97%90%EB%93%80" target="_blank" rel="noopener">유튜브 바로 가기</a></div><div class="col" style="flex:4 1 0"><div class="txt"><p class="c"><strong>미드저니 입문 가이드</strong></p></div>
+<figure><a href="https://www.youtube.com/@kimedukim" target="_blank" rel="noopener"><img src="img/02.webp" alt="" loading="lazy"></a></figure>
+<a class="btn" href="https://drive.google.com/file/d/1mMVaeXvhcXk62e4OTTdZa7dQ85k4yMg0/view?usp=sharing" target="_blank" rel="noopener">바로 가기</a></div><div class="col" style="flex:4 1 0"><div class="txt"><p class="c"><strong>미드저니 사용법</strong></p></div>
+<figure><a href="https://www.youtube.com/@kimedukim" target="_blank" rel="noopener"><img src="img/03.webp" alt="" loading="lazy"></a></figure>
+<a class="btn" href="https://drive.google.com/file/d/1a55MDpCTNaOvD2VaSUvwFSI1XOgSpdDl/view?usp=sharing" target="_blank" rel="noopener">바로 가기</a></div></div></section>
+<section class=""><div class="row"><div class="col" style="flex:12 1 0"><a class="btn" href="https://drive.google.com/file/d/1qTaqYNsthOwAoAMf1HJdbxU5H9qPjQBz/view?usp=sharing" target="_blank" rel="noopener">설명서 받기</a></div></div></section>
+<section class=""><div class="row"><div class="col" style="flex:12 1 0"><div class="txt"><h2><strong>Midjourney 명령어 및 파라미터 완전 가이드 (2024년 11월 기준)</strong></h2>
+<h3><strong>기본 이미지 첨부 방법</strong></h3>
+<ol><li>디스코드 웹버전에서 이미지 첨부:채팅창의 + 버튼 클릭&#x27;파일 업로드&#x27; 선택로컬 파일에서 이미지 선택</li><li>드래그 앤 드롭:브라우저 창으로 직접 드래그채팅창 영역에 드롭</li><li>복사/붙여넣기:이미지 복사(Ctrl+C 또는 우클릭 복사)채팅창에 붙여넣기(Ctrl+V)</li></ol>
+<h3><strong>이미지 URL 관리</strong></h3>
+<h4><strong>1. 디스코드에서 이미지 URL 얻기</strong></h4>
+<ul><li>생성된 이미지 우클릭 → &#x27;링크 복사&#x27;</li><li>이미지 URL 형식: https://cdn.discordapp.com/attachments/...</li></ul>
+<h4><strong>URL 사용 예시</strong></h4>
+<p><strong>1. 원본 URL 형식</strong></p>
+<p>https://cdn.discordapp.com/attachments/1186324921961369622/1186324999657439332/AnthropicLlama_Create_a_photorealistic_image_of_a_modern_skyscr_96fd6e16-6b84-4af9-8a23-a4f210c0a89f.png</p>
+<p><strong>2. 축약된 URL 형식</strong></p>
+<p>&lt;1186324921961369622-1186324999657439332&gt;</p>
+<p><strong>3. 실제 사용 예시</strong></p>
+<p>/imagine prompt: modern architecture, inspired by: &lt;1186324921961369622-1186324999657439332&gt;</p>
+<p>/blend &lt;1186324921961369622-1186324999657439332&gt; &lt;1186324921961369622-1186325012387639396&gt;</p>
+<p>/describe &lt;1186324921961369622-1186324999657439332&gt;</p>
+<h4><strong>2. URL 축약 방법</strong></h4>
+<ol><li>디스코드 자체 축약:이미지 번호만 복사 (예: 1234567890)명령어에 번호만 입력 가능</li><li>외부 URL 단축 서비스 사용:bit.lyTinyURL</li></ol>
+<p>Rebrandly</p>
+<ol><li>참고: 일부 단축 URL은 작동하지 않을 수 있음</li></ol>
+<h4><strong>3. 이미지 URL 저장 및 관리</strong></h4>
+<ol><li>디스코드 채널 메시지 고정:중요 이미지 우클릭&#x27;메시지 고정&#x27; 선택고정된 메시지에서 빠르게 접근</li><li>디스코드 즐겨찾기 기능:메시지에 ⭐ 반응 추가&#x27;고정된 메시지&#x27; 탭에서 확인</li><li>개인 노트 작성:채널명/이미지번호 기록프로젝트별 URL 목록 작성</li></ol>
+<h3><strong>파일 제한사항</strong></h3>
+<p>지원 형식:</p>
+<p>• JPG/JPEG</p>
+<p>• PNG</p>
+<p>• GIF (정지 이미지만 사용)</p>
+<ul><li>• WEBP</li><li>최대 파일 크기: 단일 파일 당 5MB</li><li>해상도 제한: 없음 (자동 리사이징)</li></ul>
+<h3><strong>주의사항</strong></h3>
+<ul><li>웹버전 특성상 클립보드 접근 권한 필요</li><li>브라우저 설정에서 이미지 접근 허용 필요</li><li>첨부 후 이미지 미리보기 확인 가능</li><li>한 번에 최대 2개 이미지까지만 첨부 가능 (/blend 명령어 사용시)</li><li>URL은 디스코드 서버에 이미지가 존재하는 동안만 유효</li><li>개인 채널에서 생성된 이미지는 해당 채널에서만 URL 접근 가능</li></ul>
+<h3><strong>1. 기본 명령어</strong></h3>
+<p><span style="color:#188038">/imagine</span></p>
+<p>이미지 생성 기본 명령어</p>
+<p><span style="color:#188038">/imagine prompt: a beautiful sunset</span></p>
+<p><span style="color:#188038">/blend</span></p>
+<p>여러 이미지 혼합</p>
+<p><span style="color:#188038">/blend [이미지1] [이미지2]</span></p>
+<p><span style="color:#188038">/describe</span></p>
+<p>이미지 설명 생성</p>
+<p><span style="color:#188038">/describe [이미지]</span></p>
+<p><span style="color:#188038">/settings</span></p>
+<p>설정 메뉴 열기</p>
+<p><span style="color:#188038">/settings</span></p>
+<p><span style="color:#188038">/info</span></p>
+<p>계정 정보 확인</p>
+<p><span style="color:#188038">/info</span></p>
+<h4><strong>각 명령어 상세 예시:</strong></h4>
+<p><strong>1. /imagine</strong></p>
+<p>프롬프트 예시:</p>
+<p>/imagine prompt: hyperrealistic portrait of an elderly Asian fisherman, environmental portrait, weathered face, candid moment, natural lighting, Sony A7R4, 85mm f/1.4 lens --ar 4:5 --v 6 --q 2</p>
+<p>​</p>
+<p>결과물 설명:</p>
+<p>- 깊은 주름과 풍파에 시달린 표정이 실감나게 표현</p>
+<p>- 자연광의 부드러운 표현으로 인물의 감성 강조</p>
+<p>- 85mm 렌즈 효과로 인한 자연스러운 배경 흐림</p>
+<p>- 어부의 일상적 환경과 소품들이 자연스럽게 배치</p>
+<p><strong>2. /blend</strong></p>
+<p>프롬프트 예시:</p>
+<p>/blend [도시 야경 사진] [안개 낀 숲 사진] --v 6</p>
+<p>​</p>
+<p>결과물 설명:</p>
+<p>- 도시의 네온불빛과 자연의 신비로운 조화</p>
+<p>- 건물 실루엣과 나무들의 자연스러운 혼합</p>
+<p>- 안개 효과를 통한 몽환적 분위기</p>
+<p>- 도시와 자연의 경계가 모호한 초현실적 장면</p>
+<p><strong>3. /describe</strong></p>
+<p>프롬프트 예시:</p>
+<p>/describe [복잡한 도시 야경 사진]</p>
+<p>​</p>
+<p>결과물 설명:</p>
+<p>- AI가 생성한 상세 설명문:</p>
+<p>&quot;A vibrant cityscape at night with towering skyscrapers illuminated by countless windows and neon signs. Heavy traffic creates light trails on the streets below, while the sky shows hints of deep blue twilight.&quot;</p>
+<p>- 이 설명을 바탕으로 새로운 이미지 생성 가능</p>
+<p><strong>4. /settings</strong></p>
+<p>프롬프트 예시:</p>
+<p>/settings</p>
+<p>​</p>
+<p>결과물 설명:</p>
+<p>- 기본 설정 메뉴 표시:</p>
+<p>• Version: 6</p>
+<p>• Style: RAW</p>
+<p>• Quality: 2</p>
+<p>• Aspect Ratio: 1:1</p>
+<p>- 각 설정 변경 옵션 제공</p>
+<p><strong>5. /info</strong></p>
+<p>프롬프트 예시:</p>
+<p>/info</p>
+<p>​</p>
+<p>결과물 설명:</p>
+<p>- 계정 상태 정보:</p>
+<p>• 구독 유형 표시 (Pro/Standard/Basic)</p>
+<p>• 빠른 모드 잔여 횟수</p>
+<p>• 이번 달 사용량</p>
+<p>• 현재 대기열 상태</p>
+<h3><strong>2. 이미지 파라미터</strong></h3>
+<h4><strong>2.1 기본 파라미터</strong></h4>
+<p><span style="color:#188038">--v</span></p>
+<p>모델 버전 선택</p>
+<p>5, 5.1, 5.2, 6</p>
+<p><span style="color:#188038">--v 6</span></p>
+<p><span style="color:#188038">--ar</span></p>
+<p>화면 비율</p>
+<p>1:1, 16:9, 9:16 등</p>
+<p><span style="color:#188038">--ar 16:9</span></p>
+<p><span style="color:#188038">--q</span></p>
+<p>이미지 품질</p>
+<p>.25, .5, 1, 2</p>
+<p><span style="color:#188038">--q 2</span></p>
+<p><span style="color:#188038">--style</span></p>
+<p>스타일 설정</p>
+<p>raw, expressive</p>
+<p><span style="color:#188038">--style raw</span></p>
+<p><span style="color:#188038">--chaos</span></p>
+<p>무작위성 정도</p>
+<p>0-100</p>
+<p><span style="color:#188038">--chaos 50</span></p>
+<p><strong>각 파라미터 상세 예시:</strong></p>
+<p><strong>1. 버전(--v) 예시</strong></p>
+<p>프롬프트 예시:</p>
+<p>/imagine prompt: detailed portrait of a young woman with freckles, natural beauty --v 6 --ar 2:3</p>
+<p>​</p>
+<p>결과물 설명:</p>
+<p>- V6의 향상된 얼굴 디테일 표현</p>
+<p>- 자연스러운 피부 질감과 주근깨 표현</p>
+<p>- 더욱 사실적인 눈동자와 속눈썹 표현</p>
+<p>- 전반적으로 향상된 인물 묘사</p>
+<p><strong>2. 화면비율(--ar) 예시</strong></p>
+<p>프롬프트 예시:</p>
+<p>/imagine prompt: epic fantasy landscape, floating islands, waterfalls --ar 16:9 --v 6</p>
+<p>​</p>
+<p>결과물 설명:</p>
+<p>- 시네마틱한 와이드스크린 구도</p>
+<p>- 넓은 화면을 활용한 장대한 풍경 묘사</p>
+<p>- 공중에 떠 있는 섬들의 웅장한 배치</p>
+<p>- 폭포수와 구름의 역동적인 표현</p>
+<p><strong>3. 품질(--q) 예시</strong></p>
+<p>프롬프트 예시:</p>
+<p>/imagine prompt: macro photograph of a butterfly wing, morning dew drops --q 2 --v 6</p>
+<p>​</p>
+<p>결과물 설명:</p>
+<p>- 최고 품질(q2)로 인한 극도로 섬세한 디테일</p>
+<p>- 나비 날개의 미세한 비늘 패턴까지 표현</p>
+<p>- 이슬방울의 투명감과 굴절 효과 정교하게 표현</p>
+<p>- 날개 표면의 섬세한 질감과 색상 그라데이션</p>
+<p><strong>4. 스타일(--style) 예시</strong></p>
+<p>프롬프트 예시:</p>
+<p>/imagine prompt: modern minimalist interior design, scandinavian style --style raw --v 6</p>
+<p>​</p>
+<p>결과물 설명:</p>
+<p>- RAW 스타일로 인한 사실적이고 깔끔한 표현</p>
+<p>- 자연광의 자연스러운 표현</p>
+<p>- 재질감의 정확한 묘사</p>
+<p>- 공간감과 원근감의 정확한 표현</p>
+<p><strong>5. 카오스(--chaos) 예시</strong></p>
+<p>프롬프트 예시:</p>
+<p>/imagine prompt: abstract fluid art, vibrant colors --chaos 100 --v 6</p>
+<p>​</p>
+<p>결과물 설명:</p>
+<p>- 높은 카오스 값으로 인한 예측불가능한 패턴</p>
+<p>- 강렬한 색상의 독특한 조합</p>
+<p>- 유기적이고 자유로운 형태</p>
+<p>- 매번 완전히 다른 결과물 생성</p>
+<h4><strong>2.2 고급 파라미터</strong></h4>
+<p><span style="color:#188038">--tile</span></p>
+<p>타일 패턴 생성</p>
+<p>-</p>
+<p><span style="color:#188038">--tile</span></p>
+<p><span style="color:#188038">--stylize</span></p>
+<p>스타일화 강도</p>
+<p>0-1000</p>
+<p><span style="color:#188038">--stylize 100</span></p>
+<p><span style="color:#188038">--weird</span></p>
+<p>독특한 결과물</p>
+<p>0-3000</p>
+<p><span style="color:#188038">--weird 1000</span></p>
+<p><span style="color:#188038">--stop</span></p>
+<p>중간 단계에서 생성 중단</p>
+<p>10-100</p>
+<p><span style="color:#188038">--stop 80</span></p>
+<p><span style="color:#188038">--no</span></p>
+<p>특정 요소 제외</p>
+<p>-</p>
+<p><span style="color:#188038">--no trees</span></p>
+<p><span style="color:#188038">--repeat</span></p>
+<p>반복 생성 횟수</p>
+<p>1-40</p>
+<p><span style="color:#188038">--repeat 4</span></p>
+<p><strong>각 파라미터 상세 예시:</strong></p>
+<p><strong>1. 타일(--tile) 예시</strong></p>
+<p>프롬프트 예시:</p>
+<p>/imagine prompt: seamless pattern of autumn leaves and branches --tile --v 6</p>
+<p>​</p>
+<p>결과물 설명:</p>
+<p>- 완벽하게 이어지는 반복 패턴</p>
+<p>- 자연스러운 요소 배치</p>
+<p>- 텍스타일 디자인에 적합한 구조</p>
+<p>- 패턴의 시작과 끝이 매끄럽게 연결</p>
+<p><strong>2. 스타일라이즈(--stylize) 예시</strong></p>
+<p>프롬프트 예시:</p>
+<p>/imagine prompt: cyberpunk street market, neon lights --stylize 1000 --v 6</p>
+<p>​</p>
+<p>결과물 설명:</p>
+<p>- 극도로 양식화된 미래적 분위기</p>
+<p>- 과장된 네온 효과와 색상</p>
+<p>- 현실과 판타지의 과감한 믹스</p>
+<p>- 강한 예술적 해석이 적용된 결과물</p>
+<p><strong>3. 위어드(--weird) 예시</strong></p>
+<p>프롬프트 예시:</p>
+<p>/imagine prompt: surreal floating islands with impossible architecture --weird 2000 --v 6</p>
+<p>​</p>
+<p>결과물 설명:</p>
+<p>- 물리법칙을 무시하는 기이한 구조물</p>
+<p>- 예상치 못한 요소들의 조합</p>
+<p>- 초현실적인 공간 구성</p>
+<p>- 독특한 원근감과 구도</p>
+<p><strong>4. 스톱(--stop) 예시</strong></p>
+<p>프롬프트 예시:</p>
+<p>/imagine prompt: oil painting process of a landscape --stop 50 --v 6</p>
+<p>​</p>
+<p>결과물 설명:</p>
+<p>- 중간 단계에서 중단된 스케치같은 느낌</p>
+<p>- 미완성의 예술적인 효과</p>
+<p>- 작업 과정이 드러나는 독특한 표현</p>
+<p>- 러프한 텍스처와 붓터치</p>
+<p><strong>5. 노(--no) 예시</strong></p>
+<p>프롬프트 예시:</p>
+<p>/imagine prompt: fantasy forest landscape --no trees --v 6</p>
+<p>​</p>
+<p>결과물 설명:</p>
+<p>- 나무가 없는 독특한 숲 풍경</p>
+<p>- 대체 요소(바위, 꽃 등)로 구성된 환경</p>
+<p>- 지정된 요소가 제외된 창의적 해석</p>
+<p>- 새로운 관점의 풍경 표현</p>
+<p><strong>6. 리피트(--repeat) 예시</strong></p>
+<p>프롬프트 예시:</p>
+<p>/imagine prompt: abstract geometric pattern --repeat 4 --v 6</p>
+<p>​</p>
+<p>결과물 설명:</p>
+<p>- 동일한 프롬프트로 4개의 변형 이미지 생성</p>
+<p>- 각각 다른 해석의 결과물</p>
+<p>- 다양한 색상과 구성 탐색</p>
+<p>- 여러 옵션 중 선택 가능</p>
+<h4><strong>2.3 V6 전용 파라미터</strong></h4>
+<p><span style="color:#188038">--c</span></p>
+<p>이미지 선명도</p>
+<p>0-100</p>
+<p><span style="color:#188038">--c 50</span></p>
+<p><span style="color:#188038">--cw</span></p>
+<p>내용 경고 필터</p>
+<p>0-100</p>
+<p><span style="color:#188038">--cw 50</span></p>
+<p><span style="color:#188038">--niji</span></p>
+<p>애니메이션 스타일</p>
+<p>-</p>
+<p><span style="color:#188038">--niji</span></p>
+<p><strong>각 파라미터 상세 예시:</strong></p>
+<p><strong>1. 선명도(--c) 예시</strong></p>
+<p>프롬프트 예시:</p>
+<p>/imagine prompt: detailed cityscape, architectural photography --c 80 --v 6</p>
+<p>​</p>
+<p>결과물 설명:</p>
+<p>- 선명한 건물 외관 디테일</p>
+<p>- 깔끔한 선과 경계</p>
+<p>- 또렷한 텍스처 표현</p>
+<p>- 전문 건축 사진 수준의 선명도</p>
+<p><strong>2. 내용 경고 필터(--cw) 예시</strong></p>
+<p>프롬프트 예시:</p>
+<p>/imagine prompt: medieval battle scene, dramatic lighting --cw 70 --v 6</p>
+<p>​</p>
+<p>결과물 설명:</p>
+<p>- 적절하게 필터링된 전투 장면</p>
+<p>- 극적인 분위기는 유지</p>
+<p>- 부적절한 요소 자동 제거</p>
+<p>- 안전한 수준의 표현</p>
+<p><strong>3. 니지(--niji) 예시</strong></p>
+<p>프롬프트 예시:</p>
+<p>/imagine prompt: anime style character, magical girl, sparkles --niji --v 6</p>
+<p>​</p>
+<p>결과물 설명:</p>
+<p>- 일본 애니메이션 스타일</p>
+<p>- 깔끔한 선화와 채색</p>
+<p>- 특유의 캐릭터 비율</p>
+<p>- 애니메이션적 효과 표현</p>
+<h3><strong>3. 이미지 비율 프리셋</strong></h3>
+<p><span style="color:#188038">--ar 1:1</span></p>
+<p>1024x1024</p>
+<p>정사각형 이미지</p>
+<p><span style="color:#188038">--ar 16:9</span></p>
+<p>1824x1024</p>
+<p>가로 방향</p>
+<p><span style="color:#188038">--ar 9:16</span></p>
+<p>1024x1824</p>
+<p>세로 방향</p>
+<p><span style="color:#188038">--ar 2:3</span></p>
+<p>1024x1536</p>
+<p>포트레이트</p>
+<p><span style="color:#188038">--ar 3:2</span></p>
+<p>1536x1024</p>
+<p>랜드스케이프</p>
+<p><strong>각 비율 상세 예시:</strong></p>
+<p><strong>1. 정사각형(1:1) 예시</strong></p>
+<p>프롬프트 예시:</p>
+<p>/imagine prompt: professional food photography, gourmet dessert plating --ar 1:1 --v 6</p>
+<p>​</p>
+<p>결과물 설명:</p>
+<p>- 인스타그램에 최적화된 구도</p>
+<p>- 디저트의 완벽한 중앙 배치</p>
+<p>- 균형 잡힌 구성</p>
+<p>- 소셜 미디어용 최적화</p>
+<p>[이어서 계속]</p>
+<p><strong>2. 와이드스크린(16:9) 예시</strong></p>
+<p>프롬프트 예시:</p>
+<p>/imagine prompt: epic sci-fi cityscape, flying vehicles, futuristic architecture --ar 16:9 --v 6</p>
+<p>​</p>
+<p>결과물 설명:</p>
+<p>- 영화같은 와이드 화면 구성</p>
+<p>- 미래도시의 파노라마적 전경</p>
+<p>- 공중 교통수단의 동적인 움직임</p>
+<p>- 건축물의 수직성과 원근감 강조</p>
+<p><strong>3. 세로형(9:16) 예시</strong></p>
+<p>프롬프트 예시:</p>
+<p>/imagine prompt: high fashion editorial, avant-garde costume --ar 9:16 --v 6</p>
+<p>​</p>
+<p>결과물 설명:</p>
+<p>- 모바일 최적화 세로 구도</p>
+<p>- 의상의 전체적인 실루엣 강조</p>
+<p>- 수직적 구도의 드라마틱한 효과</p>
+<p>- 패션 매거진 스타일의 구성</p>
+<p><strong>4. 포트레이트(2:3) 예시</strong></p>
+<p>프롬프트 예시:</p>
+<p>/imagine prompt: professional headshot, corporate style, clean background --ar 2:3 --v 6</p>
+<p>​</p>
+<p>결과물 설명:</p>
+<p>- 전문적인 인물 사진 비율</p>
+<p>- 상체와 얼굴의 이상적인 구도</p>
+<p>- 프로필 사진에 적합한 구성</p>
+<p>- 배경과 인물의 조화로운 배치</p>
+<p><strong>5. 랜드스케이프(3:2) 예시</strong></p>
+<p>프롬프트 예시:</p>
+<p>/imagine prompt: natural landscape photography, golden hour light --ar 3:2 --v 6</p>
+<p>​</p>
+<p>결과물 설명:</p>
+<p>- 전통적인 풍경 사진 비율</p>
+<p>- 자연의 수평적 구도 강조</p>
+<p>- 풍경의 깊이감 표현</p>
+<p>- 프로페셔널한 사진 느낌</p>
+<h3><strong>4. 이미지 후처리 명령어</strong></h3>
+<p>U1-U4</p>
+<p>업스케일 선택</p>
+<p>🔄</p>
+<p>V1-V4</p>
+<p>변형 생성</p>
+<p>🔄</p>
+<p>Make Variations</p>
+<p>새로운 변형 생성</p>
+<p>🎲</p>
+<p>Upscale (2x/4x)</p>
+<p>해상도 증가</p>
+<p>⬆️</p>
+<p>Pan</p>
+<p>이미지 확장</p>
+<p>➡️⬅️⬆️⬇️</p>
+<p>Zoom Out</p>
+<p>이미지 축소</p>
+<p>🔍</p>
+<p><strong>각 후처리 명령어 상세 예시:</strong></p>
+<p><strong>1. 업스케일(U1-U4) 예시</strong></p>
+<p>작업 순서:</p>
+<p>1. 기본 이미지 생성 후 U4 선택</p>
+<p>2. 최고 품질 업스케일 적용</p>
+<p>​</p>
+<p>결과물 설명:</p>
+<p>- 4배 향상된 해상도</p>
+<p>- 더욱 선명해진 디테일</p>
+<p>- 부드러워진 경계선</p>
+<p>- 텍스처의 섬세한 표현</p>
+<p><strong>2. 변형(V1-V4) 예시</strong></p>
+<p>작업 순서:</p>
+<p>1. 기본 이미지 생성 후 V 버튼 선택</p>
+<p>2. 4가지 변형 버전 생성</p>
+<p>​</p>
+<p>결과물 설명:</p>
+<p>- 원본의 특성을 유지하면서 새로운 해석</p>
+<p>- 다양한 구도와 색감 변형</p>
+<p>- 같은 주제의 다른 표현</p>
+<p>- 선택의 폭을 넓히는 옵션</p>
+<p><strong>3. Make Variations 예시</strong></p>
+<p>작업 순서:</p>
+<p>1. 마음에 드는 이미지 선택</p>
+<p>2. Make Variations 버튼 클릭</p>
+<p>​</p>
+<p>결과물 설명:</p>
+<p>- 선택한 이미지와 유사한 새로운 버전들</p>
+<p>- 미세한 차이의 다양한 변형</p>
+<p>- 콘셉트는 유지하며 새로운 시도</p>
+<p>- 더 많은 창의적 옵션 제공</p>
+<p><strong>4. Upscale 예시</strong></p>
+<p>작업 순서:</p>
+<p>1. 이미지 선택 후 Upscale 버튼</p>
+<p>2. 2x 또는 4x 배율 선택</p>
+<p>​</p>
+<p>결과물 설명:</p>
+<p>- 원본 대비 2~4배 향상된 해상도</p>
+<p>- 디테일의 선명한 보존</p>
+<p>- 대형 출력에 적합한 품질</p>
+<p>- 전문적인 용도로 활용 가능</p>
+<p><strong>5. Pan 예시</strong></p>
+<p>작업 순서:</p>
+<p>1. 업스케일된 이미지에서 Pan 선택</p>
+<p>2. 원하는 방향으로 확장</p>
+<p>​</p>
+<p>결과물 설명:</p>
+<p>- 선택 방향으로 자연스러운 확장</p>
+<p>- 기존 이미지 스타일 유지</p>
+<p>- 새로운 요소의 자연스러운 추가</p>
+<p>- 이음새 없는 확장 결과</p>
+<p><strong>6. Zoom Out 예시</strong></p>
+<p>작업 순서:</p>
+<p>1. 이미지 선택 후 Zoom Out</p>
+<p>2. 축소 범위 선택</p>
+<p>​</p>
+<p>결과물 설명:</p>
+<p>- 더 넓은 장면 포함</p>
+<p>- 기존 구도의 자연스러운 확장</p>
+<p>- 새로운 컨텍스트 추가</p>
+<p>- 원본의 분위기 유지</p>
+<h3><strong>5. 프롬프트 작성 팁</strong></h3>
+<h4><strong>5.1 기본 구조</strong></h4>
+<p>/imagine prompt: [주제], [스타일], [분위기], [기술적 세부사항] --[파라미터]</p>
+<h4><strong>5.2 권장 프롬프트 구성요소</strong></h4>
+<ul><li>주제 (Subject)</li><li>스타일 (Style)</li><li>조명 (Lighting)</li><li>구도 (Composition)</li><li>컬러 팔레트 (Color Palette)</li><li>카메라 앵글 (Camera Angle)</li><li>렌즈 정보 (Lens Type)</li><li>이미지 품질 표현 (Quality Descriptors)</li></ul>
+<p><strong>완성된 프롬프트 예시:</strong></p>
+<p>프롬프트 예시:</p>
+<p>/imagine prompt: professional portrait of a young entrepreneur [주제] in a modern corporate environment [배경], dramatic studio lighting [조명], shot on Phase One [카메라], 80mm prime lens [렌즈], shallow depth of field [효과], muted color palette [색감], ultra-detailed [품질] --ar 2:3 --v 6 --q 2</p>
+<p>​</p>
+<p>결과물 설명:</p>
+<p>- 전문적인 기업 인물 사진 스타일</p>
+<p>- 깊이감 있는 스튜디오 조명 효과</p>
+<p>- 배경의 자연스러운 흐림 효과</p>
+<p>- 고급스러운 색감과 톤</p>
+<p>- 상업용 포트레이트 수준의 완성도</p></div></div></div></section>
+</body>
+</html>

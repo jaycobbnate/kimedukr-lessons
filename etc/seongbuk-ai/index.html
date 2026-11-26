@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>성북구청AI교육</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--band:#1f6b8a;--ink:#2b2b2b;--line:#d6dde2;--link:#1f6b8a;--soft:#f2f5f7}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Noto Sans KR",sans-serif;color:var(--ink);background:#fff;font-size:18px;line-height:1.7;overflow-x:hidden}
+section{padding:22px 16px}
+section.band{background:var(--band);color:#fff}
+section.band a{color:#fff}
+section.band summary{color:#fff}
+section.band summary::after{color:#fff}
+section.soft{background:var(--soft)}
+.row{max-width:1100px;margin:0 auto;display:flex;gap:24px;align-items:flex-start}
+.col{min-width:0}
+.txt h2{font-size:clamp(28px,4vw,44px);font-weight:900;margin:.2em 0;line-height:1.3}
+.txt h3{font-size:clamp(22px,2.6vw,30px);font-weight:700;margin:.3em 0;line-height:1.4}
+.txt h4{font-size:20px;font-weight:700;margin:.3em 0;line-height:1.5}
+.txt p{margin:.25em 0}
+.txt ul,.txt ol{margin:.3em 0;padding-left:1.4em}
+.c{text-align:center}
+section.band .txt{text-align:center}
+a{color:var(--link);word-break:break-word}
+figure{margin:8px 0}
+figure img{display:block;width:100%;height:auto;border-radius:6px}
+.btn{display:block;text-align:center;background:var(--band);color:#fff!important;text-decoration:none;padding:12px 10px;border-radius:6px;font-weight:500;margin:8px 0}
+section.band .btn{background:#fff;color:var(--band)!important}
+.emb{position:relative;width:100%;margin:8px 0;background:#f4f4f4;border-radius:6px;overflow:hidden}
+.emb iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.open{display:inline-block;font-size:15px;margin:2px 0 10px}
+.card{display:flex;gap:14px;align-items:center;border:1px solid var(--line);border-radius:8px;padding:10px;text-decoration:none;color:var(--ink);margin:8px 0;background:#fff}
+.card img{width:120px;height:80px;object-fit:cover;border-radius:4px}
+.card b{display:block;color:var(--link)} .card small{color:#777}
+.sp{height:24px}
+details{border-bottom:1px solid #9aa5ad;margin:4px 0}
+summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;padding:16px 4px 12px;font-size:21px;color:var(--link);font-weight:500}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"⌄";font-size:24px;color:#555;transition:transform .2s;margin-left:12px}
+details[open] summary::after{transform:rotate(180deg)}
+.dbody{padding:2px 4px 16px}
+@media (max-width:720px){.row{flex-direction:column;gap:8px}.col{width:100%;flex:none!important}.col.empty{display:none}}
+</style>
+</head>
+<body>
+<section class="band"><div class="row"><div class="col" style="flex:12 1 0"><div class="txt"><h2 class="c"><strong>나만 알고 싶은 생성형 AI를 활용한 이미지 만들기</strong><strong> </strong></h2></div></div></div></section>
+<section class=""><div class="row"><div class="col" style="flex:3 1 0"><div class="txt"><p class="c"><strong>김충효 강사 유튜브</strong></p></div>
+<figure><a href="https://www.youtube.com/@%EA%B9%80%EC%97%90%EB%93%80" target="_blank" rel="noopener"><img src="img/01.webp" alt="" loading="lazy"></a></figure>
+<a class="btn" href="https://www.youtube.com/@%EA%B9%80%EC%97%90%EB%93%80" target="_blank" rel="noopener">유튜브 바로 가기</a></div><div class="col" style="flex:4 1 0"><a class="btn" href="https://docs.google.com/forms/d/e/1FAIpQLSdT0vwiuIwCQ_-dCBs9s03zpVPRap-ETJbtK0B7gdUPLn7Uuw/viewform?usp=dialog" target="_blank" rel="noopener">종료 설문</a>
+<figure><img src="img/02.webp" alt="" loading="lazy"></figure></div><div class="col" style="flex:5 1 0"><a class="card" href="https://padlet.com/kimedukr/ai-7v29z5d3q8tu5pk5" target="_blank" rel="noopener"><img src="img/03.webp" alt="" loading="lazy"><span><b>AI 생성 실습</b><small>작품을 게시하세요!</small></span></a></div></div></section>
+<section class=""><div class="row"><div class="col" style="flex:12 1 0"><div class="txt"><p><a href="https://ai.google.dev/gemini-api/docs?hl=ko" target="_blank" rel="noopener"><u>https://ai.google.dev/gemini-api/docs?hl=ko</u></a></p>
+<p>구글 생성형 AI 공식 메뉴얼 문서</p></div></div></div></section>
+<section class="soft"><div class="row"><div class="col" style="flex:12 1 0"><details><summary>ImageFX &amp; Google AI Studio 프롬프트 예시 모음집</summary><div class="dbody"><div class="txt"><h2><strong>ImageFX &amp; Google AI Studio 프롬프트 예시 모음집</strong></h2>
+<h3><strong>사용 지침</strong></h3>
+<h2>이 문서는 ImageFX와 Google AI Studio에서 일관성 있는 캐릭터 생성을 위한 프롬프트 예시를 모아놓은 참고 자료입니다.</h2>
+<p>각 프롬프트를 복사하여 바로 사용하실 수 있으며, 필요에 따라 상황이나 동작 부분만 수정하여 활용하세요.</p>
+<h3><strong>1. 캐릭터 4종 기본 프롬프트</strong></h3>
+<h4><strong>캐릭터 1 (한국 여성)</strong></h4>
+<p>young Korean woman, bob cut dark hair with bangs, vintage round glasses</p>
+<h4><strong>캐릭터 2 (한국 남성)</strong></h4>
+<p>young Korean man, short textured black hair, wire-frame glasses, casual beard, silver watch</p>
+<h4><strong>캐릭터 3 (서양 남성)</strong></h4>
+<p>25-year-old Caucasian man, wavy brown hair, thick-rimmed glasses, stubble, denim jacket</p>
+<h4><strong>캐릭터 4 (서양 여성)</strong></h4>
+<p>25-year-old Caucasian woman, curly red hair in ponytail, cat-eye glasses, dimpled smile, minimalist jewelry</p>
+<h3><strong>2. ImageFX 8컷 시퀀스 프롬프트 (캐릭터 1 기준)</strong></h3>
+<h4><strong>컷 1 - 아침 기상</strong></h4>
+<p>young Korean woman, bob cut dark hair with bangs, vintage round glasses, waking up stretching in bed, photorealistic, studio lighting</p>
+<h4><strong>컷 2 - 아침 세안</strong></h4>
+<p>young Korean woman, bob cut dark hair with bangs, vintage round glasses, brushing teeth at bathroom sink, photorealistic, studio lighting</p>
+<h4><strong>컷 3 - 아침 식사</strong></h4>
+<p>young Korean woman, bob cut dark hair with bangs, vintage round glasses, eating breakfast at kitchen table, photorealistic, studio lighting</p>
+<h4><strong>컷 4 - 낮 공부</strong></h4>
+<p>young Korean woman, bob cut dark hair with bangs, vintage round glasses, studying at desk with laptop, photorealistic, studio lighting</p>
+<h4><strong>컷 5 - 낮 휴식</strong></h4>
+<p>young Korean woman, bob cut dark hair with bangs, vintage round glasses, relaxing with coffee, photorealistic, studio lighting</p>
+<h4><strong>컷 6 - 저녁 요리</strong></h4>
+<p>young Korean woman, bob cut dark hair with bangs, vintage round glasses, cooking dinner in kitchen, photorealistic, studio lighting</p>
+<h4><strong>컷 7 - 저녁 독서</strong></h4>
+<p>young Korean woman, bob cut dark hair with bangs, vintage round glasses, reading book in comfortable chair, photorealistic, studio lighting</p>
+<h4><strong>컷 8 - 밤 취침</strong></h4>
+<p>young Korean woman, bob cut dark hair with bangs, vintage round glasses, sleeping peacefully in bed, photorealistic, studio lighting</p>
+<h3><strong>3. Google AI Studio 의상 변경 프롬프트</strong></h3>
+<h4><strong>실사 스타일 초기 생성</strong></h4>
+<p>Generate a photorealistic young Korean woman with bob cut dark hair with bangs, vintage round glasses, casual sweater, friendly smile, clean background.</p>
+<h4><strong>실사 스타일 의상 변경 명령</strong></h4>
+<p>Keep the same woman, but swap the sweater for a red blazer and add a silk scarf.</p>
+<h4><strong>만화 스타일 초기 생성</strong></h4>
+<p>Generate an anime-style young adult woman with shoulder-length wavy hair, round glasses, cozy cardigan, bright smile, simple background, cartoon illustration.</p>
+<h4><strong>만화 스타일 의상 변경 명령</strong></h4>
+<p>Keep the same character, but change the cardigan to a denim jacket and add a beanie hat.</p>
+<h3><strong>4. 영화적 구도 활용 8컷 프롬프트 (캐릭터 1 기준)</strong></h3>
+<h4><strong>컷 1 - 기상 (Low Angle, Close-up)</strong></h4>
+<p>young Korean woman, bob cut dark hair with bangs, vintage round glasses, low angle, close-up shot, determined expression waking up, dramatic morning light, photorealistic</p>
+<h4><strong>컷 2 - 세안 (Front View, Medium Close-up)</strong></h4>
+<p>young Korean woman, bob cut dark hair with bangs, vintage round glasses, front view, medium close-up, looking at mirror with resolve, bathroom reflection, photorealistic</p>
+<h4><strong>컷 3 - 식사 (High Angle, Medium Shot)</strong></h4>
+<p>young Korean woman, bob cut dark hair with bangs, vintage round glasses, high angle, medium shot, hurriedly eating breakfast, kitchen table, photorealistic</p>
+<h4><strong>컷 4 - 공부 (Side View, Close-up)</strong></h4>
+<p>young Korean woman, bob cut dark hair with bangs, vintage round glasses, side view, close-up shot, intensely focused studying, desk lamp lighting, photorealistic</p>
+<h4><strong>컷 5 - 휴식 (Eye-level, Full Shot)</strong></h4>
+<p>young Korean woman, bob cut dark hair with bangs, vintage round glasses, eye-level, full shot, relaxed coffee break, comfortable living room, photorealistic</p>
+<h4><strong>컷 6 - 요리 (Top View, Medium Shot)</strong></h4>
+<p>young Korean woman, bob cut dark hair with bangs, vintage round glasses, top view, medium shot, creative cooking process, kitchen counter, photorealistic</p>
+<h4><strong>컷 7 - 독서 (Close-up, Front View)</strong></h4>
+<p>young Korean woman, bob cut dark hair with bangs, vintage round glasses, close-up, front view, moment of inspiration while reading, warm evening light, photorealistic</p>
+<h4><strong>컷 8 - 취침 (High Angle, Full Shot)</strong></h4>
+<p>young Korean woman, bob cut dark hair with bangs, vintage round glasses, high angle, full shot, peaceful sleep, cozy bedroom, soft lighting, photorealistic</p>
+<h3><strong>5. 구도 변화 실습 프롬프트 (커피 마시는 장면)</strong></h3>
+<h4><strong>일상적 느낌 (Eye-level, Medium Shot)</strong></h4>
+<p>young Korean woman, bob cut dark hair with bangs, vintage round glasses, eye-level, medium shot, drinking coffee casually, photorealistic</p>
+<h4><strong>여유로운 느낌 (Low Angle, Close-up)</strong></h4>
+<p>young Korean woman, bob cut dark hair with bangs, vintage round glasses, low angle, close-up, enjoying coffee moment, photorealistic</p>
+<h4><strong>쓸쓸한 느낌 (High Angle, Full Shot)</strong></h4>
+<p>young Korean woman, bob cut dark hair with bangs, vintage round glasses, high angle, full shot, alone with coffee, photorealistic</p>
+<h3><strong>6. 프롬프트 작성 공식</strong></h3>
+<h4><strong>기본 구조</strong></h4>
+<p>[캐릭터 묘사] + [구도 지정] + [상황/감정] + [스타일]</p>
+<h4><strong>변환 예시</strong></h4>
+<p><strong>기존</strong></p>
+<p>young Korean woman, bob cut dark hair with bangs, studying at desk</p>
+<p><strong>영화적 개선</strong></p>
+<p>young Korean woman, bob cut dark hair with bangs, vintage round glasses, side view, close-up shot, intensely studying, dramatic lighting, photorealistic</p>
+<h3><strong>7. 상황별 동작 키워드</strong></h3>
+<h4><strong>일상 동작</strong></h4>
+<ul><li>waking up, stretching in bed</li><li>brushing teeth at bathroom sink</li><li>eating breakfast at kitchen table</li><li>studying at desk with laptop</li><li>relaxing with coffee</li><li>cooking dinner in kitchen</li><li>reading book in comfortable chair</li><li>sleeping peacefully in bed</li></ul>
+<h4><strong>감정 표현</strong></h4>
+<ul><li>determined expression</li><li>looking with resolve</li><li>hurriedly</li><li>intensely focused</li><li>relaxed</li><li>creative</li><li>moment of inspiration</li><li>peaceful</li></ul>
+<h4><strong>구도 키워드</strong></h4>
+<ul><li>front view, side view, top view</li><li>close-up, medium shot, full shot</li><li>low angle, high angle, eye-level</li></ul>
+<h4><strong>조명 및 스타일</strong></h4>
+<ul><li>photorealistic, studio lighting</li><li>dramatic morning light</li><li>desk lamp lighting</li><li>warm evening light</li><li>soft lighting</li></ul>
+<h3><strong>8. 활용 팁</strong></h3>
+<ol><li><strong>캐릭터 일관성</strong>: 선택한 캐릭터의 특징을 모든 프롬프트에서 동일하게 유지</li><li><strong>Seed 잠금</strong>: ImageFX에서 첫 이미지 생성 후 Seed를 잠그고 동작 부분만 변경</li><li><strong>구도 효과</strong>: 감정이나 분위기에 따라 적절한 View·Shot·Angle 조합 선택</li><li><strong>스타일 통일</strong>: 모든 프롬프트 끝에 동일한 스타일 태그 사용</li><li><strong>점진적 변경</strong>: Google AI Studio에서는 &quot;Keep the same character&quot; 구문으로 일관성 유지</li></ol>
+<p>이 프롬프트들을 기반으로 자신만의 창의적인 변형을 만들어보세요!</p></div></div></details></div></div></section>
+<section class=""><div class="row"><div class="col" style="flex:7 1 0"><details><summary>나노바나나로 피규어 만드는 프롬프트 1</summary><div class="dbody"><div class="txt"><p>Create a 1/7 scale commercialized figurine of the characters in the picture, in a realistic style, in a real environment. The figurine is placed on a computer desk. The figurine has a round transparent acrylic base, with no text on the base. The content on the computer screen is a 3D modeling process of this figurine. Next to the computer screen is a toy packaging box, designed in a style reminiscent of high-quality collectible figures, printed with original artwork. The packaging features two-dimensional flat illustrations.</p></div></div></details></div><div class="col" style="flex:5 1 0"><figure><img src="img/04.webp" alt="" loading="lazy"></figure></div></div></section>
+<section class=""><div class="row"><div class="col" style="flex:7 1 0"><details><summary>나노바나나로 피규어 만드는 프롬프트 2</summary><div class="dbody"><div class="txt"><p>Create a 1/7 scale commercialized figurine of the characters in the picture, in a realistic style, in a real environment. The figurine is placed on a wooden artist&#x27;s desk, scattered with sketchbooks and paintbrushes. The figurine has a round transparent acrylic base, with no text on the base. The content on the computer tablet screen is a digital illustration painting process of the figurine, showing layers and brush strokes. Next to the tablet is a toy packaging box styled like an artbook, decorated with colorful concept sketches.</p></div></div></details></div><div class="col" style="flex:5 1 0"><figure><img src="img/05.webp" alt="" loading="lazy"></figure></div></div></section>
+<section class=""><div class="row"><div class="col" style="flex:7 1 0"><details><summary>나노바나나로 피규어 만드는 프롬프트 3</summary><div class="dbody"><div class="txt"><p>Create a 1/7 scale commercialized figurine of (the character in the picture), realistic style, in a real environment. Figurine placed on a computer desk. has a round transparent acrylic base. Next to the desk is the real person in the picture, in the real life size with the same attire as in the picture and the figurine, cleaning the figurine carefully with a fine brush. in a modern styled studio room, brightly lit. With some collection of toys and action figures in the background.</p></div></div></details></div><div class="col" style="flex:5 1 0"><figure><img src="img/06.webp" alt="" loading="lazy"></figure></div></div></section>
+<section class=""><div class="row"><div class="col" style="flex:7 1 0"><details><summary>나노바나나로 피규어 만드는 프롬프트 4</summary><div class="dbody"><div class="txt"><p>Ultra-realistic product photography, soft studio lighting with a glossy sheen. A collectible miniature keychain, with the character&#x27;s face and pose based on the illustration provided. Not a photo of a real person, but a premium action-figure style toy. Designed with stylized proportions and sculpted details, made from 3D printed plastic or PVC vinyl. The surface is smoothly painted, there are visible molding seam lines, sculpted hair, simplified facial features, and clothing folds that look like they came from a factory. The figure has a glossy and matte paint finish, resembling a high-quality collectible figure. Keep the face same. The keychain strap is color-coordinated with the figure&#x27;s theme, adorned with simple motifs and bold text like a brand name or a cool phrase. A real human hand gently pinches the keychain, captured in sharp focus. The background is a softly blurred interior of a mall with cinematic bokeh, highlighting the charm of this miniature collectible toy. The name &quot;Arnab&quot; is on the keychain.</p></div></div></details></div><div class="col" style="flex:5 1 0"><figure><img src="img/07.webp" alt="" loading="lazy"></figure></div></div></section>
+<section class=""><div class="row"><div class="col" style="flex:7 1 0"><details><summary>인물사진 - 강렬한 시선</summary><div class="dbody"><div class="txt"><p>Hyper-realistic, cinematic close-up portrait of a person with the same hair style and color as the reference photo, wet skin glistening with water droplets, strands of hair naturally falling across the face. The eyes appear illuminated and striking, reflecting a subtle glow of light, but preserve the natural color from the reference photo. Expression is fierce and determined. Background is a radial red gradient fading into dark tones, resembling a professional studio backdrop. Dramatic, soft lighting highlights the face with depth and contrast, creating a powerful, cinematic atmosphere.</p></div></div></details></div><div class="col" style="flex:5 1 0"><figure><img src="img/08.webp" alt="" loading="lazy"></figure></div></div></section>
+<section class=""><div class="row"><div class="col" style="flex:7 1 0"><details><summary>인물사진 -네온의 밤</summary><div class="dbody"><div class="txt"><p>A cinematic vertical night portrait using the subject&#x27;s selfie as reference for facial features and hairstyle, keeping the exact same hair, natural and realistic. The subject stands outdoors, body slightly turned at an angle, with the head subtly tilted back and to the left, gazing calmly away from the camera with parted lips, exuding quiet confidence and mystery. The background shows a tall apartment building, its windows softly glowing with warm yellow-orange bokeh light, surrounded by deep, atmospheric shadows. From the front-left, an intense, deep red neon light washes over the subject, casting rich crimson tones across the face, hair and leather jacket, while the right side fades into heavy, dramatic shadows for a bold, cinematic contrast. Subtle reflections of red light appear on nearby walls and the wet ground, creating a vivid urban mood. The subject wears a black leather blazer jacket, perfectly fitted, with visible texture that catches the red neon glow. Underneath, a simple dark shirt adds layering, without distracting from the jacket&#x27;s rugged, stylish look. The overall outfit feels edgy, urban, and timeless, evoking a sense of rebellion and strength. The color palette is dominated by deep blacks, dark grays and layered crimson reds, with golden accents from the glowing windows in the distance. Soft film grain, a subtle vignette, and natural textures give the portrait a premium editorial, cinematic aesthetic. Aspect ratio 4:5 or 3:4 vertical, perfect for a striking urban night scene.</p></div></div></details></div><div class="col" style="flex:5 1 0"><figure><img src="img/09.webp" alt="" loading="lazy"></figure></div></div></section>
+<section class=""><div class="row"><div class="col" style="flex:12 1 0"><div class="emb" style="padding-top:52.89%"><iframe src="https://drive.google.com/file/d/1dyc0ptbK0ARgsGngKAOZmBrlS7bjGCLs/preview?authuser=0" loading="lazy" allow="autoplay; fullscreen; clipboard-write" allowfullscreen></iframe></div><a class="open" href="https://drive.google.com/open?authuser=0&amp;id=1dyc0ptbK0ARgsGngKAOZmBrlS7bjGCLs" target="_blank" rel="noopener">↗ 참고자료 _ 외부자료 _ 엑셀LIVE166회 - 초보자를 위한 Ai 이미지 생성 - 키워드 모음집PDF.pdf의 사본.pdf</a></div></div></section>
+<section class=""><div class="row"><div class="col" style="flex:12 1 0"><div class="txt"><p><strong>무료 사용 가능 생성형 이미지 AI 웹사이트 </strong></p>
+<p><strong>1</strong><strong>. 구글 IMAGEFX (베타 기간 무제한) </strong></p>
+<p><a href="https://labs.google/fx/tools/image-fx" target="_blank" rel="noopener"><u><strong>https://labs.google/fx/tools/image-fx</strong></u></a></p>
+<p><strong>2</strong><strong>. 구글 AI 스튜디오 (이미지 생성)</strong></p>
+<p><a href="https://aistudio.google.com/" target="_blank" rel="noopener"><u><strong>https://aistudio.google.com/</strong></u></a></p>
+<p><strong>3</strong><strong>. 드리미아 AI </strong></p>
+<p><strong> </strong><a href="https://dreamina.capcut.com" target="_blank" rel="noopener"><u><strong>https://dreamina.capcut.com</strong></u></a></p>
+<p><strong>4</strong><strong>. </strong><strong>LMarena</strong></p>
+<p><strong> </strong><a href="https://lmarena.ai/" target="_blank" rel="noopener"><u><strong>https://lmarena.ai/</strong></u></a></p>
+<p><strong>5</strong><strong>. 이디오그램 </strong></p>
+<p><a href="https://ideogram.ai" target="_blank" rel="noopener"><u><strong>https://ideogram.ai</strong></u></a></p>
+<p><strong>6</strong><strong>. 플레이그라운드 AI </strong></p>
+<p><a href="https://playground.com" target="_blank" rel="noopener"><u><strong>https://playground.com</strong></u></a></p>
+<p><strong>7</strong><strong>. 레오나르도 AI </strong></p>
+<p><a href="https://leonardo.ai" target="_blank" rel="noopener"><u><strong>https://leonardo.ai</strong></u></a></p>
+<p><strong>8</strong><strong>. Recraft</strong></p>
+<p><a href="https://www.recraft.ai/" target="_blank" rel="noopener"><u><strong>https://www.recraft.ai/</strong></u></a></p>
+<p><strong>9</strong><strong>. </strong><strong>dream ai</strong></p>
+<p><a href="https://dream.ai/create" target="_blank" rel="noopener"><u><strong>https://dream.ai/create</strong></u></a></p></div></div></div></section>
+<section class=""><div class="row"><div class="col" style="flex:12 1 0"><div class="txt"><p><strong>무료 사용 가능한 이미지 편집 도구 (웹)</strong></p>
+<ul><li><strong>포토피아/포토피 :  </strong><a href="https://www.photopea.com/" target="_blank" rel="noopener"><u><strong>https://www.photopea.com/</strong></u></a></li><li><strong>픽슬러 : </strong><a href="https://pixlr.com/kr/" target="_blank" rel="noopener"><u><strong>https://pixlr.com/kr/</strong></u></a></li><li><strong>리무브비지 : </strong><a href="https://www.remove.bg/ko" target="_blank" rel="noopener"><u><strong>https://www.remove.bg/ko</strong></u></a></li><li><strong>마이크로소프트 디자이너 : </strong><a href="https://designer.microsoft.com/" target="_blank" rel="noopener"><u><strong>https://designer.microsoft.com/</strong></u></a></li><li><strong>어도비 익스프레스 : </strong><a href="https://www.adobe.com/kr/express/" target="_blank" rel="noopener"><u><strong>https://www.adobe.com/kr/express/</strong></u></a></li><li><strong>목업 제너레이터 : </strong><a href="https://mockupgenerator.co/" target="_blank" rel="noopener"><u><strong>https://mockupgenerator.co/</strong></u></a></li><li><strong>클립드롭(대부분 유료) : </strong><a href="https://clipdrop.co/" target="_blank" rel="noopener"><u><strong>https://clipdrop.co/</strong></u></a></li></ul></div></div></div></section>
+<section class=""><div class="row"><div class="col" style="flex:4 1 0"><a class="btn" href="https://app.sli.do/event/o9wKqD7fkroTkisi8m13B5" target="_blank" rel="noopener">사전 설문 버튼</a>
+<figure><a href="https://app.sli.do/event/o9wKqD7fkroTkisi8m13B5" target="_blank" rel="noopener"><img src="img/10.webp" alt="" loading="lazy"></a></figure></div><div class="col empty" style="flex:8 1 0"></div></div></section>
+</body>
+</html>

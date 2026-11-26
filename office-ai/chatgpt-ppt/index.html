@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>챗GPT&amp;PPT 작성(기본)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--band:#1f6b8a;--ink:#2b2b2b;--line:#d6dde2;--link:#1f6b8a;--soft:#f2f5f7}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Noto Sans KR",sans-serif;color:var(--ink);background:#fff;font-size:18px;line-height:1.7;overflow-x:hidden}
+section{padding:22px 16px}
+section.band{background:var(--band);color:#fff}
+section.band a{color:#fff}
+section.band summary{color:#fff}
+section.band summary::after{color:#fff}
+section.soft{background:var(--soft)}
+.row{max-width:1100px;margin:0 auto;display:flex;gap:24px;align-items:flex-start}
+.col{min-width:0}
+.txt h2{font-size:clamp(28px,4vw,44px);font-weight:900;margin:.2em 0;line-height:1.3}
+.txt h3{font-size:clamp(22px,2.6vw,30px);font-weight:700;margin:.3em 0;line-height:1.4}
+.txt h4{font-size:20px;font-weight:700;margin:.3em 0;line-height:1.5}
+.txt p{margin:.25em 0}
+.txt ul,.txt ol{margin:.3em 0;padding-left:1.4em}
+.c{text-align:center}
+section.band .txt{text-align:center}
+a{color:var(--link);word-break:break-word}
+figure{margin:8px 0}
+figure img{display:block;width:100%;height:auto;border-radius:6px}
+.btn{display:block;text-align:center;background:var(--band);color:#fff!important;text-decoration:none;padding:12px 10px;border-radius:6px;font-weight:500;margin:8px 0}
+section.band .btn{background:#fff;color:var(--band)!important}
+.emb{position:relative;width:100%;margin:8px 0;background:#f4f4f4;border-radius:6px;overflow:hidden}
+.emb iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.open{display:inline-block;font-size:15px;margin:2px 0 10px}
+.card{display:flex;gap:14px;align-items:center;border:1px solid var(--line);border-radius:8px;padding:10px;text-decoration:none;color:var(--ink);margin:8px 0;background:#fff}
+.card img{width:120px;height:80px;object-fit:cover;border-radius:4px}
+.card b{display:block;color:var(--link)} .card small{color:#777}
+.sp{height:24px}
+details{border-bottom:1px solid #9aa5ad;margin:4px 0}
+summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;padding:16px 4px 12px;font-size:21px;color:var(--link);font-weight:500}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"⌄";font-size:24px;color:#555;transition:transform .2s;margin-left:12px}
+details[open] summary::after{transform:rotate(180deg)}
+.dbody{padding:2px 4px 16px}
+@media (max-width:720px){.row{flex-direction:column;gap:8px}.col{width:100%;flex:none!important}.col.empty{display:none}}
+</style>
+</head>
+<body>
+<section class="band"><div class="row"><div class="col" style="flex:12 1 0"><div class="txt"><h2 class="c"><strong>챗지피티 &amp; </strong><strong>PPT 제작 기초</strong></h2></div></div></div></section>
+<section class=""><div class="row"><div class="col" style="flex:4 1 0"><div class="txt"><p class="c"><strong>김충효 강사 유튜브</strong></p></div>
+<figure><a href="https://www.youtube.com/@%EA%B9%80%EC%97%90%EB%93%80" target="_blank" rel="noopener"><img src="img/01.webp" alt="" loading="lazy"></a></figure>
+<a class="btn" href="https://www.youtube.com/@%EA%B9%80%EC%97%90%EB%93%80" target="_blank" rel="noopener">유튜브 바로 가기</a></div><div class="col" style="flex:4 1 0"><div class="txt"><p class="c"><strong>챗GPT </strong><strong> PPT 예시 파일 </strong></p></div>
+<figure><img src="img/02.webp" alt="" loading="lazy"></figure>
+<a class="btn" href="https://docs.google.com/presentation/d/1-R4Ha4XNQWlI6nnyGgHFttv3MvPPfu8Z/edit?usp=sharing&amp;ouid=109970348539659357884&amp;rtpof=true&amp;sd=true" target="_blank" rel="noopener">파일 내려받기</a></div><div class="col" style="flex:4 1 0"><div class="txt"><p class="c"><strong>챗GPT</strong><strong> PPT 제작</strong><strong> 가이드</strong></p></div>
+<figure><img src="img/03.webp" alt="" loading="lazy"></figure>
+<a class="btn" href="https://drive.google.com/file/d/1-2-NDsRXzlAd3bA8vkSMh1AkC9i9JZFq/view?usp=sharing" target="_blank" rel="noopener">자료집 내려받기</a></div></div></section>
+<section class=""><div class="row"><div class="col" style="flex:12 1 0"><div class="txt"><h3><strong>파워포인트 슬라이드 내용을 만드는 절차 및 ChatGPT에 대한 질문 예시</strong></h3></div></div></div></section>
+<section class=""><div class="row"><div class="col" style="flex:12 1 0"><div class="txt"><h3>절차별 상세 설명 및 ChatGPT에게 질문하는 법</h3>
+<h4>1. <strong>주제 브레인스토밍</strong></h4>
+<p>파워포인트 작업의 첫 단계는 주제를 정하는 것입니다. 브레인스토밍을 통해 가능한 주제를 떠올려보고, 발표할 수 있는 다양한 주제를 적어봅니다. 이 과정에서 주제를 자유롭게 생각하고, 여러 가지 아이디어를 수집하는 것이 중요합니다.</p>
+<p>ChatGPT에게 물어볼 질문 예시:</p>
+<ol><li>&quot;인공지능 관련 주제 5개 추천해줘.&quot;</li><li>&quot;기후 변화에 관한 독특한 발표 주제 추천해줘.&quot;</li><li>&quot;내 발표를 위한 흥미로운 주제 리스트를 만들어줘.&quot;</li></ol>
+<p>팁: 주제를 선택할 때는 너무 한정된 주제가 아닌, 충분한 자료가 있을 만한 주제를 고르세요. ChatGPT에게 다양한 아이디어를 요청하면 브레인스토밍이 수월해집니다.</p>
+<h4>2. <strong>주제 선택</strong></h4>
+<p>브레인스토밍한 주제들 중에서 최종 주제를 선택하는 단계입니다. ChatGPT에게 주제 간 비교나 분석을 요청하면, 주제 선택이 더 쉬워집니다.</p>
+<p>ChatGPT에게 물어볼 질문 예시:</p>
+<ol><li>&quot;기후 변화와 인공지능 중 어느 주제가 더 매력적인지 분석해줘.&quot;</li><li>&quot;이 주제들의 장단점을 비교해줘: AI와 기후 변화.&quot;</li><li>&quot;내 발표 청중에게 가장 적합한 주제를 추천해줘.&quot;</li></ol>
+<p>팁: 발표할 청중의 특성을 설명하면, 더 적절한 주제를 추천받을 수 있습니다.</p>
+<h4>3. <strong>중요 내용 목차 작성</strong></h4>
+<p>주제를 선택한 후에는 발표할 주요 내용을 목차로 정리하는 단계입니다. ChatGPT는 주제와 관련된 주요 항목을 신속하게 제안해줄 수 있습니다.</p>
+<p>ChatGPT에게 물어볼 질문 예시:</p>
+<ol><li>&quot;인공지능의 미래에 대한 발표 목차를 만들어줘.&quot;</li><li>&quot;기후 변화 주제로 5개의 주요 항목을 목차로 만들어줘.&quot;</li><li>&quot;AI 기술과 관련된 발표 목차 6개 작성해줘.&quot;</li></ol>
+<p>팁: 발표 시간을 고려하여 목차 항목의 개수를 조절하는 것도 중요합니다.</p>
+<h4>4. <strong>목차별 세부 내용 요약</strong></h4>
+<p>각 목차에 해당하는 세부 내용을 간단히 요약하는 단계입니다. 이때 ChatGPT에게 간단한 설명을 요청하면 시간을 절약할 수 있습니다.</p>
+<p>ChatGPT에게 물어볼 질문 예시:</p>
+<ol><li>&quot;인공지능의 정의를 간단히 설명해줘.&quot;</li><li>&quot;기후 변화의 주요 원인을 요약해줘.&quot;</li><li>&quot;AI 기술의 현재 발전 상황을 짧게 설명해줘.&quot;</li></ol>
+<p>팁: ChatGPT에게 간결한 설명을 요청하면, 발표에 알맞은 짧고 핵심적인 내용을 얻을 수 있습니다.</p>
+<h4>5. <strong>슬라이드별로 나누기</strong></h4>
+<p>작성한 세부 내용을 각 슬라이드에 적절히 배분하는 단계입니다. ChatGPT는 목차를 기반으로 슬라이드 구성을 도와줄 수 있습니다.</p>
+<p>ChatGPT에게 물어볼 질문 예시:</p>
+<ol><li>&quot;이 목차들을 슬라이드별로 어떻게 나눌지 추천해줘.&quot;</li><li>&quot;5개의 슬라이드로 요약할 수 있는 방법을 알려줘.&quot;</li><li>&quot;AI 기술을 주제로 슬라이드를 어떻게 구성할 수 있을지 제안해줘.&quot;</li></ol>
+<p>팁: 각 슬라이드에는 너무 많은 정보를 담지 않도록 주의하세요.</p>
+<h4>6. <strong>각 슬라이드별 내용 작성</strong></h4>
+<p>슬라이드별로 구체적인 내용을 작성하는 단계입니다. ChatGPT에게 각 슬라이드에 들어갈 내용을 요청하면 슬라이드 작성을 더 빠르고 쉽게 할 수 있습니다.</p>
+<p>ChatGPT에게 물어볼 질문 예시:</p>
+<ol><li>&quot;첫 번째 슬라이드의 내용을 어떻게 시작하면 좋을지 알려줘.&quot;</li><li>&quot;AI 역사에 대해 간단한 설명을 슬라이드로 작성해줘.&quot;</li><li>&quot;미래의 AI 기술에 대한 슬라이드 내용을 작성해줘.&quot;</li></ol>
+<p>팁: 너무 긴 문장 대신 키워드 중심으로 작성하고, 각 슬라이드의 핵심 메시지를 강조하세요.</p>
+<h4>7. <strong>디자인 및 시각적 요소 추가</strong></h4>
+<p>슬라이드에 시각적 요소를 추가하는 단계입니다. ChatGPT는 적절한 이미지, 도표, 색상 조합 등을 추천해 줄 수 있습니다.</p>
+<p>ChatGPT에게 물어볼 질문 예시:</p>
+<ol><li>&quot;슬라이드에 넣을 적절한 이미지를 추천해줘.&quot;</li><li>&quot;이 슬라이드에 어울리는 색상 조합을 제안해줘.&quot;</li><li>&quot;AI 기술 관련 도표 예시를 보여줘.&quot;</li></ol>
+<p>팁: 디자인이 지나치게 화려하지 않게, 내용이 잘 돋보이도록 해야 합니다.</p>
+<h4>8. <strong>슬라이드 검토 및 수정</strong></h4>
+<p>마지막으로, 완성된 슬라이드를 검토하고 수정하는 단계입니다. ChatGPT에게 발표 흐름을 체크하는 팁을 요청하거나, 슬라이드를 더 매끄럽게 다듬는 방법을 물어볼 수 있습니다.</p>
+<p>ChatGPT에게 물어볼 질문 예시:</p>
+<ol><li>&quot;전체 슬라이드를 검토하는 팁을 알려줘.&quot;</li><li>&quot;슬라이드 발표 시 주의할 점을 알려줘.&quot;</li><li>&quot;슬라이드 디자인을 더 개선할 방법이 있을까?&quot;</li></ol>
+<p>팁: 검토할 때는 전체 흐름을 확인하고, 각 슬라이드가 논리적으로 연결되는지 주의하세요.</p>
+<h4>9. <strong>최종 문서 작성 및 표로 정리</strong></h4>
+<p>마지막으로, 지금까지 작성된 문서를 모두 포함해 최종 완성본을 만들고 표로 정리하는 단계입니다. ChatGPT에게 지금까지의 절차를 한꺼번에 요약하고 최종 문서를 작성하도록 요청할 수 있습니다.</p>
+<p>ChatGPT에게 물어볼 질문 예시:</p>
+<ol><li>&quot;지금까지 작성한 모든 절차를 표로 요약해서 보여줘.&quot;</li><li>&quot;작성된 문서에 빠진 내용이 없는지 확인해줘.&quot;</li><li>&quot;지금까지의 내용을 표로 정리한 후 최종 완성본을 만들어줘.&quot;</li></ol>
+<p>팁: 최종적으로 표와 문서를 검토하여 빠진 부분이 없는지 확인하고, 발표 준비를 마무리하세요.</p>
+<p>이제 ChatGPT를 활용하여 파워포인트 슬라이드를 체계적으로 작성하고 발표 준비를 완성할 수 있습니다.</p></div></div></div></section>
+</body>
+</html>

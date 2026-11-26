@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>챗GPT엑셀(VBA 자동화)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--band:#1f6b8a;--ink:#2b2b2b;--line:#d6dde2;--link:#1f6b8a;--soft:#f2f5f7}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Noto Sans KR",sans-serif;color:var(--ink);background:#fff;font-size:18px;line-height:1.7;overflow-x:hidden}
+section{padding:22px 16px}
+section.band{background:var(--band);color:#fff}
+section.band a{color:#fff}
+section.band summary{color:#fff}
+section.band summary::after{color:#fff}
+section.soft{background:var(--soft)}
+.row{max-width:1100px;margin:0 auto;display:flex;gap:24px;align-items:flex-start}
+.col{min-width:0}
+.txt h2{font-size:clamp(28px,4vw,44px);font-weight:900;margin:.2em 0;line-height:1.3}
+.txt h3{font-size:clamp(22px,2.6vw,30px);font-weight:700;margin:.3em 0;line-height:1.4}
+.txt h4{font-size:20px;font-weight:700;margin:.3em 0;line-height:1.5}
+.txt p{margin:.25em 0}
+.txt ul,.txt ol{margin:.3em 0;padding-left:1.4em}
+.c{text-align:center}
+section.band .txt{text-align:center}
+a{color:var(--link);word-break:break-word}
+figure{margin:8px 0}
+figure img{display:block;width:100%;height:auto;border-radius:6px}
+.btn{display:block;text-align:center;background:var(--band);color:#fff!important;text-decoration:none;padding:12px 10px;border-radius:6px;font-weight:500;margin:8px 0}
+section.band .btn{background:#fff;color:var(--band)!important}
+.emb{position:relative;width:100%;margin:8px 0;background:#f4f4f4;border-radius:6px;overflow:hidden}
+.emb iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.open{display:inline-block;font-size:15px;margin:2px 0 10px}
+.card{display:flex;gap:14px;align-items:center;border:1px solid var(--line);border-radius:8px;padding:10px;text-decoration:none;color:var(--ink);margin:8px 0;background:#fff}
+.card img{width:120px;height:80px;object-fit:cover;border-radius:4px}
+.card b{display:block;color:var(--link)} .card small{color:#777}
+.sp{height:24px}
+details{border-bottom:1px solid #9aa5ad;margin:4px 0}
+summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;padding:16px 4px 12px;font-size:21px;color:var(--link);font-weight:500}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"⌄";font-size:24px;color:#555;transition:transform .2s;margin-left:12px}
+details[open] summary::after{transform:rotate(180deg)}
+.dbody{padding:2px 4px 16px}
+@media (max-width:720px){.row{flex-direction:column;gap:8px}.col{width:100%;flex:none!important}.col.empty{display:none}}
+</style>
+</head>
+<body>
+<section class="band"><div class="row"><div class="col" style="flex:12 1 0"><div class="txt"><h2 class="c"><strong>ChatGPT·VBA 엑셀 자동화</strong><strong> </strong></h2></div></div></div></section>
+<section class="soft"><div class="row"><div class="col" style="flex:12 1 0"><a class="btn" href="https://drive.google.com/file/d/1B2yR5kTmOT6rzC-bAxYW7dXLATdXU1Pa/view?usp=sharing" target="_blank" rel="noopener">vba 샘플 자료</a></div></div></section>
+<section class=""><div class="row"><div class="col" style="flex:4 1 0"><div class="txt"><p class="c"><strong>김충효 강사 유튜브</strong></p></div>
+<figure><a href="https://www.youtube.com/@%EA%B9%80%EC%97%90%EB%93%80" target="_blank" rel="noopener"><img src="img/01.webp" alt="" loading="lazy"></a></figure>
+<a class="btn" href="https://www.youtube.com/@%EA%B9%80%EC%97%90%EB%93%80" target="_blank" rel="noopener">유튜브 바로 가기</a></div><div class="col" style="flex:4 1 0"><div class="txt"><p class="c"><strong>챗GPT 엑셀VBA (예제 파일)</strong></p></div>
+<figure><img src="img/02.webp" alt="" loading="lazy"></figure>
+<a class="btn" href="https://drive.google.com/file/d/1aNyFgcfmiulouGRd4lc2iPJti8qYf2QW/view?usp=sharing" target="_blank" rel="noopener">파일 내려받기</a></div><div class="col" style="flex:4 1 0"><div class="txt"><p class="c"><strong>챗GPT 엑셀 (</strong><strong>VBA) 가이드</strong></p></div>
+<figure><img src="img/03.webp" alt="" loading="lazy"></figure>
+<a class="btn" href="https://drive.google.com/file/d/1-2-NDsRXzlAd3bA8vkSMh1AkC9i9JZFq/view?usp=sharing" target="_blank" rel="noopener">자료집 내려받기</a></div></div></section>
+<section class=""><div class="row"><div class="col" style="flex:12 1 0"><div class="emb" style="padding-top:58.15%"><iframe src="https://www.youtube.com/embed/eR_Gf1FPowI" loading="lazy" allow="autoplay; fullscreen; clipboard-write" allowfullscreen></iframe></div></div></div></section>
+<section class=""><div class="row"><div class="col" style="flex:12 1 0"><details><summary>엑셀 매크로 (VBA) 사용 하여 특정 폴더에 파일 내용을 합친다.</summary><div class="dbody"><div class="txt"><p>d:\edata에 엑셀 파일이 여러개 있다.  이 파일을 하니씩 열어서 첫 번째 시트에 있는 내용을 복사해서 하나의 파일로 합치고 파일명은 &quot;합1&quot;로 만드는 VBA 코드를 만들어줘. 매크로명은 &quot;합1&quot;로 해줘. 인덱스는 한번만 복사해줘</p></div></div></details></div></div></section>
+<section class=""><div class="row"><div class="col" style="flex:12 1 0"><div class="txt"><h3><strong>엑셀 매크로 (VBA) 사용 가이드 </strong></h3></div></div></div></section>
+<section class=""><div class="row"><div class="col" style="flex:12 1 0"><div class="txt"><p>엑셀에서 매크로를 사용하면 반복적인 작업을 자동화할 수 있습니다. 이번 가이드에서는 매크로를 사용하여 작업을 자동으로 기록하고 단축키를 설정해 빠르게 실행하는 방법을 단계별로 설명하겠습니다.</p>
+<h4>1. <strong>엑셀에서 매크로 사용 준비하기 (개발 도구 탭 활성화)</strong></h4>
+<p>엑셀에서 매크로를 사용하려면 개발 도구 탭을 먼저 활성화해야 합니다. 이 탭은 기본적으로 숨겨져 있기 때문에 다음 과정을 통해 활성화해야 합니다.</p>
+<ol><li>엑셀 창 상단에서 파일 메뉴를 클릭합니다.</li><li>좌측 하단에 있는 옵션을 클릭합니다.</li><li>나타난 창에서 리본 사용자 지정을 클릭합니다.</li><li>오른쪽 창의 주 탭 목록에서 개발 도구 항목을 찾아 체크합니다.</li><li>확인 버튼을 클릭하면 엑셀 상단에 개발 도구 탭이 표시됩니다.</li></ol>
+<p>이제 매크로를 기록하고 관리할 수 있는 개발 도구 탭이 활성화되었습니다.</p>
+<h4>2. <strong>매크로 기록하기 (단순한 작업 기록 예시)</strong></h4>
+<p>이제 매크로를 기록하는 방법을 알아보겠습니다. 예를 들어, A1 셀에 &quot;안녕하세요&quot;라는 텍스트를 입력하는 작업을 매크로로 기록해 보겠습니다.</p>
+<ol><li>엑셀 상단의 개발 도구 탭을 클릭합니다.</li><li>코드 그룹에서 매크로 기록 버튼을 클릭합니다.</li><li>나타난 창에서 매크로 이름을 지정합니다 (예: 안녕하세요_입력).단축키 설정: 만약 매크로를 빠르게 실행하고 싶다면 단축키를 지정할 수 있습니다. Ctrl과 함께 사용할 키를 입력합니다. 예를 들어, M을 입력하면 Ctrl + M을 누르면 매크로가 실행됩니다.</li><li>매크로를 저장할 위치를 선택합니다:이 통합 문서: 매크로가 현재 파일에만 저장됩니다.개인용 통합 문서: 엑셀을 열 때마다 사용 가능하며 모든 파일에서 사용할 수 있습니다.새 통합 문서: 새로운 파일에서 매크로를 사용하게 됩니다.</li><li>매크로 설명을 추가할 수 있지만, 생략해도 됩니다. 이후 확인 버튼을 누르면 매크로 기록이 시작됩니다.</li></ol>
+<p><strong>매크로 작업 수행</strong></p>
+<p>매크로 기록이 시작된 상태에서 엑셀에서 다음 작업을 진행합니다:</p>
+<ol><li>A1 셀을 클릭합니다.</li><li>&quot;안녕하세요&quot;라는 텍스트를 입력하고 엔터를 누릅니다.</li><li>상단의 개발 도구 탭으로 돌아가서 기록 중지 버튼을 클릭합니다.</li></ol>
+<p>이제 방금 수행한 작업(A1 셀에 &quot;안녕하세요&quot; 입력)이 매크로로 기록되었습니다.</p>
+<h4>3. <strong>매크로 실행하기</strong></h4>
+<p>매크로가 기록되면 언제든지 해당 작업을 다시 자동으로 실행할 수 있습니다. 매크로를 실행하는 방법은 두 가지가 있습니다: 단축키 또는 매크로 목록에서 직접 실행하는 방법입니다.</p>
+<p><strong>1) 매크로 목록에서 실행하기</strong></p>
+<ol><li>상단의 개발 도구 탭을 클릭합니다.</li><li>매크로 버튼을 클릭하여 매크로 목록을 엽니다.</li><li>방금 기록한 매크로(예: 안녕하세요_입력)를 선택하고 실행 버튼을 클릭합니다.</li></ol>
+<p><strong>2) 단축키로 실행하기</strong></p>
+<p>매크로 기록 시 설정한 단축키(Ctrl + M)를 누르면, 바로 매크로가 실행됩니다. 예를 들어, 매크로가 기록된 상태에서 다른 셀을 선택한 후 Ctrl + M을 누르면, 그 셀에 &quot;안녕하세요&quot;라는 텍스트가 자동으로 입력됩니다.</p>
+<h4>4. <strong>매크로 편집하기 (기록된 매크로 수정)</strong></h4>
+<p>기록된 매크로는 VBA(Visual Basic for Applications) 언어로 작성됩니다. 매크로를 조금 더 복잡하게 수정하거나 추가적인 작업을 넣으려면, VBA 편집기를 통해 코드를 수정할 수 있습니다.</p>
+<ol><li>개발 도구 탭에서 매크로 버튼을 클릭합니다.</li><li>편집할 매크로를 선택한 후 편집 버튼을 누르면 VBA 편집기가 열립니다.</li><li>VBA 코드가 나타나면, 원하는 작업을 추가하거나 수정할 수 있습니다.예를 들어, &quot;안녕하세요&quot; 대신 &quot;Hello&quot;로 텍스트를 변경하려면, 코드에서 해당 부분을 찾아 수정하면 됩니다.</li><li>편집이 완료되면 저장 버튼을 눌러 변경 사항을 적용합니다.</li></ol>
+<h4>5. <strong>매크로 보안 설정 (안전한 매크로 사용)</strong></h4>
+<p>매크로는 엑셀 파일에 악성 코드를 포함할 수 있으므로 보안 설정이 중요합니다. 매크로 실행 전에 보안 설정을 확인하는 것이 좋습니다.</p>
+<ol><li>개발 도구 탭에서 매크로 보안을 클릭합니다.</li><li>나타난 창에서 매크로 설정을 선택할 수 있습니다:모든 매크로 사용 안 함: 매크로 실행이 금지됩니다.서명된 매크로만 사용: 신뢰할 수 있는 서명이 있는 매크로만 실행됩니다.모든 매크로 사용: 모든 매크로를 실행할 수 있습니다 (주의 필요).</li><li>매크로 설정을 적절히 선택한 후 확인 버튼을 누릅니다.</li></ol>
+<h4>6. <strong>매크로 저장하기 (매크로가 포함된 파일 저장)</strong></h4>
+<p>매크로가 포함된 엑셀 파일은 매크로 사용 통합 문서 형식으로 저장해야 합니다. 일반 .xlsx 파일 형식으로 저장하면 매크로가 삭제됩니다.</p>
+<ol><li>상단 메뉴에서 파일 &gt; 다른 이름으로 저장을 클릭합니다.</li><li>파일 형식 목록에서 **Excel 매크로 사용 통합 문서 (*.xlsm)**를 선택한 후 저장합니다.</li></ol>
+<p>이제 매크로가 포함된 파일로 저장되어 언제든지 매크로를 다시 사용할 수 있습니다.</p>
+<h4>7. <strong>매크로 삭제하기</strong></h4>
+<p>필요 없어진 매크로는 삭제할 수 있습니다.</p>
+<ol><li>상단의 개발 도구 탭에서 매크로 버튼을 클릭합니다.</li><li>삭제할 매크로를 선택한 후 삭제 버튼을 클릭합니다.</li></ol>
+<h4>8. <strong>매크로 활용 예시</strong></h4>
+<p><strong>자동화 예시</strong></p>
+<p>반복적으로 동일한 작업을 매번 손으로 입력하는 대신 매크로를 사용하면 작업이 간단해집니다. 예를 들어, 매일 엑셀에 새로운 날짜를 입력해야 한다면, 매크로를 사용해 자동으로 오늘 날짜를 입력하도록 설정할 수 있습니다.</p>
+<ol><li>매크로를 기록할 때 Ctrl + ; (현재 날짜 입력) 명령을 사용해 기록한 후, 단축키를 설정합니다.</li><li>이후, 단축키만 누르면 자동으로 날짜가 입력됩니다.</li></ol></div></div></div></section>
+</body>
+</html>

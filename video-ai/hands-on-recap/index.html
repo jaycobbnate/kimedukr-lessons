@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI 비디오 핸즈온 · 리캡 클래스</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--band:#1f6b8a;--ink:#2b2b2b;--line:#d6dde2;--link:#1f6b8a;--soft:#f2f5f7}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Noto Sans KR",sans-serif;color:var(--ink);background:#fff;font-size:18px;line-height:1.7;overflow-x:hidden}
+section{padding:22px 16px}
+section.band{background:var(--band);color:#fff}
+section.band a{color:#fff}
+section.band summary{color:#fff}
+section.band summary::after{color:#fff}
+section.soft{background:var(--soft)}
+.row{max-width:1100px;margin:0 auto;display:flex;gap:24px;align-items:flex-start}
+.col{min-width:0}
+.txt h2{font-size:clamp(28px,4vw,44px);font-weight:900;margin:.2em 0;line-height:1.3}
+.txt h3{font-size:clamp(22px,2.6vw,30px);font-weight:700;margin:.3em 0;line-height:1.4}
+.txt h4{font-size:20px;font-weight:700;margin:.3em 0;line-height:1.5}
+.txt p{margin:.25em 0}
+.txt ul,.txt ol{margin:.3em 0;padding-left:1.4em}
+.c{text-align:center}
+section.band .txt{text-align:center}
+a{color:var(--link);word-break:break-word}
+figure{margin:8px 0}
+figure img{display:block;width:100%;height:auto;border-radius:6px}
+.btn{display:block;text-align:center;background:var(--band);color:#fff!important;text-decoration:none;padding:12px 10px;border-radius:6px;font-weight:500;margin:8px 0}
+section.band .btn{background:#fff;color:var(--band)!important}
+.emb{position:relative;width:100%;margin:8px 0;background:#f4f4f4;border-radius:6px;overflow:hidden}
+.emb iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.open{display:inline-block;font-size:15px;margin:2px 0 10px}
+.card{display:flex;gap:14px;align-items:center;border:1px solid var(--line);border-radius:8px;padding:10px;text-decoration:none;color:var(--ink);margin:8px 0;background:#fff}
+.card img{width:120px;height:80px;object-fit:cover;border-radius:4px}
+.card b{display:block;color:var(--link)} .card small{color:#777}
+.sp{height:24px}
+details{border-bottom:1px solid #9aa5ad;margin:4px 0}
+summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;padding:16px 4px 12px;font-size:21px;color:var(--link);font-weight:500}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"⌄";font-size:24px;color:#555;transition:transform .2s;margin-left:12px}
+details[open] summary::after{transform:rotate(180deg)}
+.dbody{padding:2px 4px 16px}
+@media (max-width:720px){.row{flex-direction:column;gap:8px}.col{width:100%;flex:none!important}.col.empty{display:none}}
+</style>
+</head>
+<body>
+<section class="band"><div class="row"><div class="col" style="flex:12 1 0"><div class="txt"><h2 class="c"><strong>AI 비디오 핸즈온 · 리캡 클래스 </strong></h2></div></div></div></section>
+<section class=""><div class="row"><div class="col" style="flex:4 1 0"><div class="txt"><p class="c"><strong>김충효 강사 유튜브</strong></p></div>
+<figure><a href="https://www.youtube.com/@%EA%B9%80%EC%97%90%EB%93%80" target="_blank" rel="noopener"><img src="img/01.webp" alt="" loading="lazy"></a></figure>
+<a class="btn" href="https://www.youtube.com/@%EA%B9%80%EC%97%90%EB%93%80" target="_blank" rel="noopener">유튜브 바로 가기</a></div><div class="col" style="flex:4 1 0"><div class="txt"><p class="c"><strong>카카오톡 AI 공부방</strong></p></div>
+<figure><img src="img/02.webp" alt="" loading="lazy"></figure>
+<a class="btn" href="https://open.kakao.com/o/gINf0jph" target="_blank" rel="noopener">바로가기</a></div><div class="col" style="flex:4 1 0"><div class="txt"><p class="c"><strong>AI 비디오 (수업자료)</strong></p></div>
+<figure><img src="img/03.webp" alt="" loading="lazy"></figure>
+<a class="btn" href="https://drive.google.com/file/d/1ijiJFdEcIlnRywFqZEXkMg9_fZIyprXF/view?usp=sharing" target="_blank" rel="noopener">자료 바로가기</a></div></div></section>
+<section class="soft"><div class="row"><div class="col" style="flex:6 1 0"><div class="txt"><p class="c"><strong>브류(VREW) 사이트</strong></p></div>
+<a class="btn" href="https://vrew.ai/ko/" target="_blank" rel="noopener">바로 가기</a></div><div class="col" style="flex:6 1 0"><div class="txt"><p class="c"><strong>구글 AI 스튜디오</strong></p></div>
+<a class="btn" href="https://aistudio.google.com/prompts/new_chat" target="_blank" rel="noopener">바로 가기</a></div></div></section>
+<section class="soft"><div class="row"><div class="col" style="flex:6 1 0"><div class="txt"><p class="c"><strong>구글 이미지FX</strong></p></div>
+<a class="btn" href="https://labs.google/fx/tools/image-fx/unsupported-country" target="_blank" rel="noopener">바로 가기</a></div><div class="col" style="flex:6 1 0"><div class="txt"><p class="c"><strong>어도비 익스프레스</strong></p></div>
+<a class="btn" href="https://www.adobe.com/kr/express/" target="_blank" rel="noopener">바로 가기</a></div></div></section>
+<section class="soft"><div class="row"><div class="col" style="flex:12 1 0"><div class="txt"><p class="c"><strong>픽사베이 종합 미디어 자료실 (www.pixabay.com)</strong></p></div>
+<a class="btn" href="https://pixabay.com/ko/" target="_blank" rel="noopener">바로 가기</a></div></div></section>
+<section class="soft"><div class="row"><div class="col" style="flex:12 1 0"><div class="txt"><p class="c"><strong>픽셀스 사진/영상 자료실 (www.pexels.com)</strong></p></div>
+<a class="btn" href="https://www.pexels.com/ko-kr/" target="_blank" rel="noopener">바로 가기</a></div></div></section>
+<section class=""><div class="row"><div class="col" style="flex:12 1 0"><details><summary>AI 영상 생성 수업용 - 프롬프트 예시</summary><div class="dbody"><div class="txt"><h2><strong>AI 영상 생성 수업용 🧠『프롬프트 예시』</strong></h2>
+<p>교재에서 <strong>프롬프트 예시만</strong> 뽑아 정리했습니다. (영/한 병기)</p>
+<h3><strong>1) 텍스트 → 비디오 (Google AI Studio / ChatGPT / Gemini)</strong></h3>
+<p><strong>영어</strong></p>
+<ul><li>&quot;A cute cat is happily playing in the garden, chasing butterflies.&quot;<br><br></li><li>&quot;A robot is making and drinking coffee in the kitchen on a peaceful morning.&quot;<br><br></li><li>&quot;A child is happily blowing soap bubbles and laughing in the park.&quot;<br><br></li></ul>
+<p><strong>한글</strong></p>
+<ul><li>&quot;귀여운 고양이가 정원에서 나비를 쫓아다니며 즐겁게 놀고 있습니다.&quot;<br><br></li><li>&quot;로봇이 부엌에서 커피를 만들어 마시는 평온한 아침 풍경입니다.&quot;<br><br></li><li>&quot;아이가 공원에서 비누방울을 불며 웃고 있는 행복한 순간입니다.&quot;<br><br></li></ul>
+<p><strong>패턴 템플릿</strong></p>
+<ul><li>EN: <strong>&quot;Create a video of [장면/행동/분위기]&quot;</strong><strong><br><br></strong></li><li>KO: <strong>&quot;[장면/행동/분위기] 영상 만들어줘&quot;</strong><strong><br><br></strong></li></ul>
+<h3><strong>2) 이미지 → 비디오: ImageFX 6컷 예시 프롬프트</strong></h3>
+<p><strong>영어</strong></p>
+<ol><li>&quot;cute puppy playing in garden&quot;<br><br></li><li>&quot;puppy chasing butterfly&quot;<br><br></li><li>&quot;puppy drinking water&quot;<br><br></li><li>&quot;puppy resting under tree&quot;<br><br></li><li>&quot;puppy playing with ball&quot;<br><br></li><li>&quot;puppy sleeping peacefully&quot;<br><br></li></ol>
+<p><strong>한글</strong></p>
+<ol><li>&quot;정원에서 노는 귀여운 강아지&quot;<br><br></li><li>&quot;나비를 쫓는 강아지&quot;<br><br></li><li>&quot;물을 마시는 강아지&quot;<br><br></li><li>&quot;나무 아래 쉬는 강아지&quot;<br><br></li><li>&quot;공 가지고 노는 강아지&quot;<br><br></li><li>&quot;평화롭게 잠자는 강아지&quot;<br><br></li></ol>
+<h3><strong>3) 캐릭터 설정 프롬프트 (4종)</strong></h3>
+<h4><strong>캐릭터 1 (한국 여성)</strong></h4>
+<ul><li>EN: &quot;young Korean woman, bob cut dark hair with bangs, vintage round glasses&quot;<br><br></li><li>KO: &quot;젊은 한국 여성, 앞머리가 있는 단발머리, 빈티지 둥근 안경&quot;<br><br></li></ul>
+<h4><strong>캐릭터 2 (한국 남성)</strong></h4>
+<ul><li>EN: &quot;young Korean man, short textured black hair, wire-frame glasses, casual beard, silver watch&quot;<br><br></li><li>KO: &quot;젊은 한국 남성, 짧은 텍스처 검은 머리, 금속테 안경, 자연스러운 수염, 은색 시계&quot;<br><br></li></ul>
+<h4><strong>캐릭터 3 (서양 남성)</strong></h4>
+<ul><li>EN: &quot;25-year-old Caucasian man, wavy brown hair, thick-rimmed glasses, stubble, denim jacket&quot;<br><br></li><li>KO: &quot;25세 서양 남성, 웨이브 갈색 머리, 두꺼운 테 안경, 무정수염, 데님 재킷&quot;<br><br></li></ul>
+<h4><strong>캐릭터 4 (서양 여성)</strong></h4>
+<ul><li>EN: &quot;25-year-old Caucasian woman, curly red hair in ponytail, cat-eye glasses, dimpled smile, minimalist jewelry&quot;<br><br></li><li>KO: &quot;25세 서양 여성, 포니테일로 묶은 곱슬 빨간 머리, 캣아이 안경, 보조개 미소, 미니멀 액세서리&quot;<br><br></li></ul>
+<h3><strong>4) 캐릭터 일관성 유지 8컷 프롬프트 (캐릭터 1 예시)</strong></h3>
+<p><strong>공통 접두부(반드시 반복):</strong><strong><br></strong> EN: <strong>&quot;young Korean woman, bob cut dark hair with bangs, vintage round glasses&quot;</strong><strong><br></strong> KO: <strong>&quot;앞머리 단발머리, 빈티지 둥근 안경, 젊은 한국 여성&quot;</strong></p>
+<p class="c"><strong>컷</strong></p>
+<p class="c"><strong>영어 프롬프트</strong></p>
+<p class="c"><strong>한글 프롬프트</strong></p>
+<p>1 기상</p>
+<p>&quot;young Korean woman, bob cut dark hair with bangs, vintage round glasses, <strong>waking up stretching</strong>, realistic style&quot;</p>
+<p>&quot;앞머리 단발머리, 빈티지 둥근 안경, 젊은 한국 여성, <strong>기지개 켜며 일어나기</strong>, 사실적 스타일&quot;</p>
+<p>2 세안</p>
+<p>&quot;... <strong>brushing teeth</strong>, realistic style&quot;</p>
+<p>&quot;... <strong>양치질하기</strong>, 사실적 스타일&quot;</p>
+<p>3 아침식사</p>
+<p>&quot;... <strong>eating breakfast</strong>, realistic style&quot;</p>
+<p>&quot;... <strong>아침식사 먹기</strong>, 사실적 스타일&quot;</p>
+<p>4 공부/일</p>
+<p>&quot;... <strong>working at desk</strong>, realistic style&quot;</p>
+<p>&quot;... <strong>책상에서 일하기</strong>, 사실적 스타일&quot;</p>
+<p>5 휴식</p>
+<p>&quot;... <strong>drinking coffee</strong>, realistic style&quot;</p>
+<p>&quot;... <strong>커피 마시기</strong>, 사실적 스타일&quot;</p>
+<p>6 요리</p>
+<p>&quot;... <strong>cooking dinner</strong>, realistic style&quot;</p>
+<p>&quot;... <strong>저녁 요리하기</strong>, 사실적 스타일&quot;</p>
+<p>7 독서</p>
+<p>&quot;... <strong>reading book</strong>, realistic style&quot;</p>
+<p>&quot;... <strong>책 읽기</strong>, 사실적 스타일&quot;</p>
+<p>8 취침</p>
+<p>&quot;... <strong>sleeping peacefully</strong>, realistic style&quot;</p>
+<p>&quot;... <strong>평화롭게 잠자기</strong>, 사실적 스타일&quot;</p>
+<h3><strong>5) 주제별 프롬프트 모음표</strong></h3>
+<h4><strong>5-1. 일상 생활</strong></h4>
+<ul><li>EN: &quot;young woman cooking breakfast in kitchen, warm morning light&quot;<br><br></li><li>KO: &quot;부엌에서 아침식사 준비하는 젊은 여성, 따뜻한 아침 햇살&quot;<br><br></li><li>EN: &quot;young man reading book in living room, soft lighting&quot;<br><br></li><li>KO: &quot;거실에서 책 읽는 젊은 남성, 부드러운 조명&quot;<br><br></li><li>EN: &quot;person working at desk, focused atmosphere&quot;<br><br></li><li>KO: &quot;책상에서 일하는 사람, 집중된 분위기&quot;<br><br></li></ul>
+<h4><strong>5-2. 자연 / 동물</strong></h4>
+<ul><li>EN: &quot;butterfly flying among flowers, spring garden, soft focus&quot;<br><br></li><li>KO: &quot;꽃들 사이를 날아다니는 나비, 봄 정원, 부드러운 포커스&quot;<br><br></li><li>EN: &quot;dog running on beach, sunset, joyful mood&quot;<br><br></li><li>KO: &quot;해변에서 뛰어다니는 강아지, 일몰, 즐거운 분위기&quot;<br><br></li><li>EN: &quot;birds singing on tree branch, early morning&quot;<br><br></li><li>KO: &quot;나뭇가지에서 노래하는 새들, 이른 아침&quot;<br><br></li></ul>
+<h4><strong>5-3. 판타지 / 창작</strong></h4>
+<ul><li>EN: &quot;magical forest with glowing trees, mystical atmosphere&quot;<br><br></li><li>KO: &quot;빛나는 나무들이 있는 마법의 숲, 신비로운 분위기&quot;<br><br></li><li>EN: &quot;robot helper cleaning house, futuristic style&quot;<br><br></li><li>KO: &quot;집안 청소하는 로봇 도우미, 미래적 스타일&quot;<br><br></li><li>EN: &quot;dragon flying over mountain peaks, epic cinematic&quot;<br><br></li><li>KO: &quot;산봉우리 위를 날아가는 드래곤, 웅장한 영화적 장면&quot;<br><br></li></ul>
+<h4><strong>5-4. 추상 / 예술</strong></h4>
+<ul><li>EN: &quot;colorful paint mixing in water, abstract art style&quot;<br><br></li><li>KO: &quot;물 속에서 섞이는 다채로운 물감, 추상 미술 스타일&quot;<br><br></li><li>EN: &quot;geometric shapes dancing, minimalist design&quot;<br><br></li><li>KO: &quot;춤추는 기하학적 도형들, 미니멀 디자인&quot;<br><br></li><li>EN: &quot;light patterns moving through space, ambient mood&quot;<br><br></li><li>KO: &quot;공간을 통과하는 빛의 패턴들, 앰비언트 분위기&quot;<br><br></li></ul>
+<h3><strong>6) View · Shot · Angle이 포함된 구조적 프롬프트 예시</strong></h3>
+<ul><li>&quot;jazz guitarist, <strong>side view</strong>, <strong>medium shot</strong>, <strong>low angle</strong>, watercolor&quot;<br><br></li><li>&quot;close-up interview, <strong>front view</strong>&quot;<br><br></li><li>&quot;medium shot lecturer, <strong>front view</strong>&quot;<br><br></li><li>&quot;full shot runway model, <strong>front view</strong>&quot;<br><br></li><li>&quot;beauty product, <strong>close-up</strong>, <strong>side view</strong>&quot;<br><br></li><li>&quot;pianist, <strong>medium shot</strong>, <strong>side view</strong>&quot;<br><br></li><li>&quot;runner, <strong>full shot</strong>, <strong>side view</strong>, motion blur&quot;<br><br></li><li>&quot;top view of latte with heart art&quot;<br><br></li><li>&quot;top view yoga pose&quot;<br><br></li><li>&quot;bottom view of dancer on glass floor&quot;<br><br></li><li>&quot;medium shot legs climbing stairs, bottom view&quot;<br><br></li><li>&quot;full shot person on glass floor, bottom view&quot;<br><br></li><li>&quot;rear view backpack ad, full shot&quot;<br><br></li></ul>
+<h3><strong>7) AI 프롬프트 예시 세트 (광고/룩북/브이로그)</strong></h3>
+<ul><li><strong>뷰티 광고</strong><strong><br><br></strong>EN: &quot;extreme close-up portrait of glossy red lips, studio lighting&quot;<br><br>KO: &quot;반짝이는 빨간 립글로스 초근접 샷, 스튜디오 조명&quot;<br><br></li><li><strong>패션 룩북</strong><strong><br><br></strong>EN: &quot;full shot of a model in trench coat, side view, urban night street&quot;<br><br>KO: &quot;야경 도시 배경, 모델 전신 트렌치코트, 옆모습 전신 샷&quot;<br><br></li><li><strong>브이로그 오프닝</strong><strong><br><br></strong>EN: &quot;medium shot, eye-level, front view of traveler holding coffee&quot;<br><br>KO: &quot;카페에서 커피 들고 있는 여행자 허리샷, 정면, 아이레벨&quot;<br><br></li></ul>
+<h3><strong>8) 프롬프트 기본 템플릿 (재활용용)</strong></h3>
+<p>[주제/캐릭터] + [행동/상황] + [View] + [Shot size] + [Angle] + [스타일] + [조명/분위기]</p>
+<p><strong>예시</strong></p>
+<ul><li>EN: &quot;young Korean woman, cooking breakfast, front view, medium shot, eye-level, realistic style, warm morning light&quot;<br><br></li><li>KO: &quot;젊은 한국 여성, 아침식사 준비, 정면, 미디엄 샷, 아이레벨, 사실적 스타일, 따뜻한 아침 햇살&quot;<br><br></li></ul>
+<p>끝.</p></div></div></details></div></div></section>
+</body>
+</html>

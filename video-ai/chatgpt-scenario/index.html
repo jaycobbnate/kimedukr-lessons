@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>챗GPT로 영상 시나리오 작성</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--band:#1f6b8a;--ink:#2b2b2b;--line:#d6dde2;--link:#1f6b8a;--soft:#f2f5f7}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Noto Sans KR",sans-serif;color:var(--ink);background:#fff;font-size:18px;line-height:1.7;overflow-x:hidden}
+section{padding:22px 16px}
+section.band{background:var(--band);color:#fff}
+section.band a{color:#fff}
+section.band summary{color:#fff}
+section.band summary::after{color:#fff}
+section.soft{background:var(--soft)}
+.row{max-width:1100px;margin:0 auto;display:flex;gap:24px;align-items:flex-start}
+.col{min-width:0}
+.txt h2{font-size:clamp(28px,4vw,44px);font-weight:900;margin:.2em 0;line-height:1.3}
+.txt h3{font-size:clamp(22px,2.6vw,30px);font-weight:700;margin:.3em 0;line-height:1.4}
+.txt h4{font-size:20px;font-weight:700;margin:.3em 0;line-height:1.5}
+.txt p{margin:.25em 0}
+.txt ul,.txt ol{margin:.3em 0;padding-left:1.4em}
+.c{text-align:center}
+section.band .txt{text-align:center}
+a{color:var(--link);word-break:break-word}
+figure{margin:8px 0}
+figure img{display:block;width:100%;height:auto;border-radius:6px}
+.btn{display:block;text-align:center;background:var(--band);color:#fff!important;text-decoration:none;padding:12px 10px;border-radius:6px;font-weight:500;margin:8px 0}
+section.band .btn{background:#fff;color:var(--band)!important}
+.emb{position:relative;width:100%;margin:8px 0;background:#f4f4f4;border-radius:6px;overflow:hidden}
+.emb iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.open{display:inline-block;font-size:15px;margin:2px 0 10px}
+.card{display:flex;gap:14px;align-items:center;border:1px solid var(--line);border-radius:8px;padding:10px;text-decoration:none;color:var(--ink);margin:8px 0;background:#fff}
+.card img{width:120px;height:80px;object-fit:cover;border-radius:4px}
+.card b{display:block;color:var(--link)} .card small{color:#777}
+.sp{height:24px}
+details{border-bottom:1px solid #9aa5ad;margin:4px 0}
+summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;padding:16px 4px 12px;font-size:21px;color:var(--link);font-weight:500}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"⌄";font-size:24px;color:#555;transition:transform .2s;margin-left:12px}
+details[open] summary::after{transform:rotate(180deg)}
+.dbody{padding:2px 4px 16px}
+@media (max-width:720px){.row{flex-direction:column;gap:8px}.col{width:100%;flex:none!important}.col.empty{display:none}}
+</style>
+</head>
+<body>
+<section class="band"><div class="row"><div class="col" style="flex:12 1 0"><div class="txt"><h2 class="c"><strong>챗GPT로 시나리오 작성</strong></h2></div></div></div></section>
+<section class=""><div class="row"><div class="col" style="flex:4 1 0"><div class="txt"><p class="c"><strong>김충효 강사 유튜브</strong></p></div>
+<figure><a href="https://www.youtube.com/@%EA%B9%80%EC%97%90%EB%93%80" target="_blank" rel="noopener"><img src="img/01.webp" alt="" loading="lazy"></a></figure>
+<a class="btn" href="https://www.youtube.com/@%EA%B9%80%EC%97%90%EB%93%80" target="_blank" rel="noopener">유튜브 바로 가기</a></div><div class="col" style="flex:4 1 0"><div class="txt"><p class="c"><strong>유튜브 영상 시나리오 작성 방법</strong></p></div>
+<figure><img src="img/02.webp" alt="" loading="lazy"></figure>
+<a class="btn" href="https://drive.google.com/file/d/1KZX9LS8oiFe68_YfSwzaGNh5xICgrGls/view?usp=sharing" target="_blank" rel="noopener">자료 바로 가기</a></div><div class="col empty" style="flex:4 1 0"></div></div></section>
+<section class=""><div class="row"><div class="col" style="flex:12 1 0"><div class="txt"><p><strong>유튜브 채널 소개 영상 제작 프로세스 (4개의 채널 예시)</strong></p>
+<p><strong>1. &quot;채널 소개 영상을 위한 주제를 추천해줘.&quot;  -  영상 주제 선정</strong></p>
+<p><strong>2. &quot;선정된 주제를 바탕으로 시나리오와 나레이션 원고를 작성해줘.&quot; - 시나리오 및 나레이션 작성</strong></p>
+<p><strong>3. &quot;해당 시나리오에 맞는 배경 음악을 추천해줘.&quot; -  배경음악 선정</strong></p>
+<p><strong>4. &quot;영상에 사용할 배경 영상이나 이미지를 추천해줘.&quot; - 영상 및 이미지 소스 추천</strong></p>
+<p><strong>5. &quot;영상에서 중요한 자막 포인트를 추천해줘.&quot; - 자막 포인트 선정</strong></p>
+<p><strong>6. 결과물을 VREW로 제작 - AI 앱을 사용한 영상 제작</strong></p>
+<p><strong>1. 채널 소개 주제 도출</strong></p>
+<p><strong>일상 생활 브이로그 채널 질문 예시</strong>:</p>
+<ul><li>&quot;일상 생활 브이로그 채널을 소개하는 영상을 만들고 싶은데, 적절한 주제를 추천해줘.&quot;</li><li><strong>답변 1</strong>: &quot;내 하루의 소소한 즐거움과 행복을 나누는 공간&quot;</li><li><strong>답변 2</strong>: &quot;일상 속 작은 기쁨을 기록하는 나만의 공간&quot;</li></ul>
+<p><strong>영어 교육 채널 질문 예시</strong>:</p>
+<ul><li>&quot;영어 교육 채널 소개 영상을 위한 주제를 추천해줘.&quot;</li><li><strong>답변 1</strong>: &quot;쉽고 재미있게 배우는 영어 꿀팁 채널!&quot;</li><li><strong>답변 2</strong>: &quot;초보자를 위한 영어 학습의 첫걸음, 함께 시작해요!&quot;</li></ul>
+<p><strong>좋은 말 및 명언 알림 채널 질문 예시</strong>:</p>
+<ul><li>&quot;좋은 말과 명언을 알리는 채널 소개 영상을 위한 주제를 추천해줘.&quot;</li><li><strong>답변 1</strong>: &quot;하루를 바꾸는 명언의 힘&quot;</li><li><strong>답변 2</strong>: &quot;긍정적인 변화를 이끄는 명언과 좋은 말들&quot;</li></ul>
+<p><strong>여행 이야기 채널 질문 예시</strong>:</p>
+<ul><li>&quot;여행 이야기를 담은 채널 소개 영상을 위한 주제를 추천해줘.&quot;</li><li><strong>답변 1</strong>: &quot;전 세계 곳곳에서 찾은 특별한 순간들&quot;</li><li><strong>답변 2</strong>: &quot;여행의 설렘과 추억을 나누는 공간&quot;</li></ul>
+<p><strong>2. 시나리오 및 나레이션 원고 작성</strong></p>
+<p><strong>일상 생활 브이로그 채널 질문 예시</strong>:</p>
+<ul><li>&quot;‘내 하루의 소소한 즐거움’을 주제로 나레이션 원고를 작성해줘.&quot;</li><li><strong>답변 1</strong>:&quot;안녕하세요, 저는 [이름]입니다. 이 채널은 제 일상 속 작은 기쁨들을 공유하는 공간이에요. 아침 커피 한 잔, 저녁 산책, 그리고 친구들과의 소소한 대화를 담아낼 예정입니다. 함께 제 일상 속 행복을 찾아보아요!&quot;</li><li><strong>답변 2</strong>:&quot;여러분, 안녕하세요! 이 채널은 매일 매일의 일상에서 느낀 작은 즐거움과 소중한 순간들을 기록하는 공간이에요. 저와 함께 일상 속 특별한 순간들을 나눠봐요!&quot;</li></ul>
+<p><strong>영어 교육 채널 질문 예시</strong>:</p>
+<ul><li>&quot;‘쉽고 재미있게 배우는 영어 꿀팁’을 주제로 나레이션 원고를 작성해줘.&quot;</li><li><strong>답변 1</strong>:&quot;영어는 어렵지 않아요! 이 채널에서는 여러분이 일상에서 쉽게 활용할 수 있는 영어 표현과 꿀팁들을 알려드릴게요. 지금 바로 함께 시작해보세요!&quot;</li><li><strong>답변 2</strong>:&quot;안녕하세요, [채널명]입니다! 초보자도 쉽게 따라할 수 있는 영어 학습법과 일상 속에서 유용한 영어 표현을 알려드립니다. 함께 영어 공부를 시작해볼까요?&quot;</li></ul>
+<p><strong>좋은 말 및 명언 알림 채널 질문 예시</strong>:</p>
+<ul><li>&quot;‘하루를 바꾸는 명언의 힘’을 주제로 나레이션 원고를 작성해줘.&quot;</li><li><strong>답변 1</strong>:&quot;안녕하세요, [채널명]입니다. 매일 아침, 힘을 주는 명언과 좋은 말들을 통해 여러분의 하루를 더 긍정적으로 만들어 드리겠습니다. 함께 명언의 힘을 느껴보세요!&quot;</li><li><strong>답변 2</strong>:&quot;긍정의 힘을 믿으시나요? 이 채널에서는 여러분의 마음을 움직이는 명언과 좋은 말들을 매일 공유할 예정입니다. 함께 더 나은 하루를 시작해요!&quot;</li></ul>
+<p><strong>여행 이야기 채널 질문 예시</strong>:</p>
+<ul><li>&quot;‘전 세계 곳곳에서 찾은 특별한 순간들’을 주제로 나레이션 원고를 작성해줘.&quot;</li><li><strong>답변 1</strong>:&quot;여러분 안녕하세요! 저는 전 세계를 여행하며 특별한 순간들을 기록해왔습니다. 이 채널에서 그 순간들을 함께 나눌 수 있으면 좋겠어요. 저와 함께 떠나보실래요?&quot;</li><li><strong>답변 2</strong>:&quot;여행을 좋아하시나요? 이 채널에서는 제가 경험한 다양한 여행지에서의 감동적인 순간들과 유용한 꿀팁을 공유할 예정입니다. 함께 여행의 설렘을 느껴봐요!&quot;</li></ul>
+<p><strong>3. 배경음악 선정</strong></p>
+<p><strong>일상 생활 브이로그 채널 질문 예시</strong>:</p>
+<ul><li>&quot;‘내 하루의 소소한 즐거움’에 어울리는 배경음악을 추천해줘.&quot;</li><li><strong>답변 1</strong>: &quot;잔잔한 피아노 연주곡&quot;</li><li><strong>답변 2</strong>: &quot;밝고 경쾌한 어쿠스틱 기타 연주&quot;</li></ul>
+<p><strong>영어 교육 채널 질문 예시</strong>:</p>
+<ul><li>&quot;‘쉽고 재미있게 배우는 영어 꿀팁’에 어울리는 배경음악을 추천해줘.&quot;</li><li><strong>답변 1</strong>: &quot;경쾌하고 활기찬 리듬의 배경음악&quot;</li><li><strong>답변 2</strong>: &quot;산뜻한 어쿠스틱 기타 배경음악&quot;</li></ul>
+<p><strong>좋은 말 및 명언 알림 채널 질문 예시</strong>:</p>
+<ul><li>&quot;‘하루를 바꾸는 명언의 힘’에 어울리는 배경음악을 추천해줘.&quot;</li><li><strong>답변 1</strong>: &quot;부드럽고 감성적인 피아노 연주&quot;</li><li><strong>답변 2</strong>: &quot;편안하고 차분한 오케스트라 배경음악&quot;</li></ul>
+<p><strong>여행 이야기 채널 질문 예시</strong>:</p>
+<ul><li>&quot;‘전 세계 곳곳에서 찾은 특별한 순간들’에 어울리는 배경음악을 추천해줘.&quot;</li><li><strong>답변 1</strong>: &quot;여행의 설렘을 담은 에픽 스타일 배경음악&quot;</li><li><strong>답변 2</strong>: &quot;리드미컬하고 모험적인 느낌의 어쿠스틱 음악&quot;</li></ul>
+<p><strong>4. 영상 및 이미지 소스 추천</strong></p>
+<p><strong>일상 생활 브이로그 채널 질문 예시</strong>:</p>
+<ul><li>&quot;‘내 하루의 소소한 즐거움’에 어울리는 영상과 이미지를 추천해줘.&quot;</li><li><strong>답변 1</strong>: 아침 커피를 마시는 장면, 따뜻한 햇살이 비치는 창문</li><li><strong>답변 2</strong>: 저녁 산책길, 푸른 나무 사이로 비치는 햇빛</li></ul>
+<p><strong>영어 교육 채널 질문 예시</strong>:</p>
+<ul><li>&quot;‘쉽고 재미있게 배우는 영어 꿀팁’에 어울리는 영상과 이미지를 추천해줘.&quot;</li><li><strong>답변 1</strong>: 교실 장면, 영어 단어 카드 이미지</li><li><strong>답변 2</strong>: 학생들이 웃으며 공부하는 장면</li></ul>
+<p><strong>좋은 말 및 명언 알림 채널 질문 예시</strong>:</p>
+<ul><li>&quot;‘하루를 바꾸는 명언의 힘’에 어울리는 영상과 이미지를 추천해줘.&quot;</li><li><strong>답변 1</strong>: 고요한 아침 풍경, 노트에 명언이 적힌 이미지</li><li><strong>답변 2</strong>: 책을 읽는 장면, 서재에서 책을 펼치는 손</li></ul>
+<p><strong>여행 이야기 채널 질문 예시</strong>:</p>
+<ul><li>&quot;‘전 세계 곳곳에서 찾은 특별한 순간들’에 어울리는 영상과 이미지를 추천해줘.&quot;</li><li><strong>답변 1</strong>: 파리 에펠탑 전경, 산악 트레킹 장면</li><li><strong>답변 2</strong>: 바다를 바라보는 풍경, 사막에서의 일출</li></ul>
+<p><strong>5. 자막 포인트 선정</strong></p>
+<p><strong>일상 생활 브이로그 채널 질문 예시</strong>:</p>
+<ul><li>&quot;영상에서 중요한 자막 포인트를 추천해줘.&quot;</li><li><strong>답변 1</strong>: &quot;소소한 일상 속 특별한 순간들&quot; (도입부)</li><li><strong>답변 2</strong>: &quot;함께하는 일상의 소소한 기쁨&quot; (결론부)</li></ul>
+<p><strong>영어 교육 채널 질문 예시</strong>:</p>
+<ul><li>&quot;영상에서 중요한 자막 포인트를 추천해줘.&quot;</li><li><strong>답변 1</strong>: &quot;쉽고 재미있는 영어 공부 꿀팁!&quot;</li><li><strong>답변 2</strong>: &quot;지금부터 시작하세요, 영어 공부 첫걸음!&quot;</li></ul>
+<p><strong>좋은 말 및 명언 알림 채널 질문 예시</strong>:</p>
+<ul><li>&quot;영상에서 중요한 자막 포인트를 추천해줘.&quot;</li><li><strong>답변 1</strong>: &quot;하루를 바꾸는 명언 한 마디&quot;</li><li><strong>답변 2</strong>: &quot;명언의 힘, 당신도 느껴보세요&quot;</li></ul>
+<p><strong>여행 이야기 채널 질문 예시</strong>:</p>
+<ul><li>&quot;영상에서 중요한 자막 포인트를 추천해줘.&quot;</li><li><strong>답변 1</strong>: &quot;전 세계에서 찾은 나만의 특별한 순간들&quot;</li><li><strong>답변 2</strong>: &quot;여행의 설렘과 함께 떠나요!&quot;</li></ul>
+<p><strong>6. VREW를 사용한 영상 제작</strong></p>
+<p>마지막 단계에서는 VREW를 사용해 자동으로 자막을 생성하고, 선택한 배경 음악과 이미지, 영상 소스를 넣어 편집하면 완성됩니다.</p>
+<p><strong>여행 채널 소개 영상 예시 (결과물)</strong></p>
+<p><strong>1. 주제 선정</strong></p>
+<ul><li><strong>주제</strong>: &quot;전 세계 곳곳에서 찾은 특별한 순간들&quot;이 주제는 여행 채널의 감동적인 순간과 다양한 여행 경험을 강조합니다.</li></ul>
+<p><strong>2. 시나리오 및 나레이션 원고</strong></p>
+<ul><li><strong>도입부</strong>:&quot;안녕하세요, 저는 [이름]입니다. 이 채널은 제가 전 세계를 여행하며 만난 특별한 순간들을 여러분과 나누는 공간이에요. 멋진 풍경과 감동적인 여행 스토리를 이곳에서 함께 느껴보세요!&quot;</li><li><strong>본론</strong>:&quot;제가 방문했던 도시들과 자연의 아름다움을 담은 영상들, 그리고 그곳에서 겪은 소중한 경험들을 여러분과 공유하고 싶어요. 세계 곳곳에서 발견한 새로운 풍경과 모험을 함께 즐겨요!&quot;</li><li><strong>결론</strong>:&quot;앞으로 이 채널을 통해 더 많은 여행 이야기를 나누고, 여러분과 함께 떠나고 싶은 곳들을 계획해볼까 해요. 구독과 좋아요로 저와 함께하는 여행을 응원해주세요!&quot;</li></ul>
+<p><strong>3. 배경음악 추천</strong></p>
+<ul><li><strong>음악 1</strong>: &quot;여행의 설렘을 담은 에픽 스타일 배경음악&quot; – 장면의 흥미와 감동을 극대화할 수 있는 음악</li><li><strong>음악 2</strong>: &quot;리드미컬하고 모험적인 느낌의 어쿠스틱 음악&quot; – 가볍고 긍정적인 분위기를 전달하는 음악</li></ul>
+<p><strong>4. 영상 및 이미지 소스</strong></p>
+<ul><li><strong>영상 1</strong>: 파리의 에펠탑과 그 아래를 걷는 장면</li><li><strong>영상 2</strong>: 높은 산에서 일출을 바라보는 여행자의 뒷모습</li><li><strong>영상 3</strong>: 바다를 배경으로 한 고요한 섬의 풍경</li></ul>
+<p><strong>5. 자막 포인트</strong></p>
+<ul><li><strong>도입부</strong>: &quot;전 세계에서 찾은 나만의 특별한 순간들&quot;</li><li><strong>본론</strong>: &quot;여행의 설렘을 함께 느껴봐요!&quot;</li><li><strong>결론</strong>: &quot;구독과 좋아요로 저와 함께 떠나요!&quot;</li></ul>
+<p>이러한 결과물을 바탕으로, VREW를 통해 자동 자막 생성 및 배경음악, 영상 클립을 추가하면 완성된 여행 채널 소개 영상을 쉽게 제작할 수 있습니다.</p></div></div></div></section>
+</body>
+</html>

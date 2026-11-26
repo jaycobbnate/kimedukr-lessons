@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>챗GPT엑셀(기초)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--band:#1f6b8a;--ink:#2b2b2b;--line:#d6dde2;--link:#1f6b8a;--soft:#f2f5f7}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Noto Sans KR",sans-serif;color:var(--ink);background:#fff;font-size:18px;line-height:1.7;overflow-x:hidden}
+section{padding:22px 16px}
+section.band{background:var(--band);color:#fff}
+section.band a{color:#fff}
+section.band summary{color:#fff}
+section.band summary::after{color:#fff}
+section.soft{background:var(--soft)}
+.row{max-width:1100px;margin:0 auto;display:flex;gap:24px;align-items:flex-start}
+.col{min-width:0}
+.txt h2{font-size:clamp(28px,4vw,44px);font-weight:900;margin:.2em 0;line-height:1.3}
+.txt h3{font-size:clamp(22px,2.6vw,30px);font-weight:700;margin:.3em 0;line-height:1.4}
+.txt h4{font-size:20px;font-weight:700;margin:.3em 0;line-height:1.5}
+.txt p{margin:.25em 0}
+.txt ul,.txt ol{margin:.3em 0;padding-left:1.4em}
+.c{text-align:center}
+section.band .txt{text-align:center}
+a{color:var(--link);word-break:break-word}
+figure{margin:8px 0}
+figure img{display:block;width:100%;height:auto;border-radius:6px}
+.btn{display:block;text-align:center;background:var(--band);color:#fff!important;text-decoration:none;padding:12px 10px;border-radius:6px;font-weight:500;margin:8px 0}
+section.band .btn{background:#fff;color:var(--band)!important}
+.emb{position:relative;width:100%;margin:8px 0;background:#f4f4f4;border-radius:6px;overflow:hidden}
+.emb iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.open{display:inline-block;font-size:15px;margin:2px 0 10px}
+.card{display:flex;gap:14px;align-items:center;border:1px solid var(--line);border-radius:8px;padding:10px;text-decoration:none;color:var(--ink);margin:8px 0;background:#fff}
+.card img{width:120px;height:80px;object-fit:cover;border-radius:4px}
+.card b{display:block;color:var(--link)} .card small{color:#777}
+.sp{height:24px}
+details{border-bottom:1px solid #9aa5ad;margin:4px 0}
+summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;padding:16px 4px 12px;font-size:21px;color:var(--link);font-weight:500}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"⌄";font-size:24px;color:#555;transition:transform .2s;margin-left:12px}
+details[open] summary::after{transform:rotate(180deg)}
+.dbody{padding:2px 4px 16px}
+@media (max-width:720px){.row{flex-direction:column;gap:8px}.col{width:100%;flex:none!important}.col.empty{display:none}}
+</style>
+</head>
+<body>
+<section class="band"><div class="row"><div class="col" style="flex:12 1 0"><div class="txt"><h2 class="c"><strong>챗지피티 &amp; 엑셀</strong></h2></div></div></div></section>
+<section class=""><div class="row"><div class="col" style="flex:4 1 0"><div class="txt"><p class="c"><strong>김충효 강사 유튜브</strong></p></div>
+<figure><a href="https://www.youtube.com/@%EA%B9%80%EC%97%90%EB%93%80" target="_blank" rel="noopener"><img src="img/01.webp" alt="" loading="lazy"></a></figure>
+<a class="btn" href="https://www.youtube.com/@%EA%B9%80%EC%97%90%EB%93%80" target="_blank" rel="noopener">유튜브 바로 가기</a></div><div class="col" style="flex:4 1 0"><div class="txt"><p class="c"><strong>챗GPT 엑셀 </strong><strong>(예제 파일)</strong></p></div>
+<figure><img src="img/02.webp" alt="" loading="lazy"></figure>
+<a class="btn" href="https://drive.google.com/drive/folders/1nbecagFTaaGZXAezrO9ABe9_2uqYlUBW?usp=sharing" target="_blank" rel="noopener">파일 내려받기</a></div><div class="col" style="flex:4 1 0"><div class="txt"><p class="c"><strong>챗GPT 엑셀 (기초) 자료집</strong></p></div>
+<figure><img src="img/03.webp" alt="" loading="lazy"></figure>
+<a class="btn" href="https://drive.google.com/file/d/1ni9jyD2N4--X6Xsr9wwaJlofT-4BIhrC/view?usp=sharing" target="_blank" rel="noopener">자료집 내려받기</a></div></div></section>
+<section class="band"><div class="row"><div class="col" style="flex:9 1 0"><div class="txt"><h2 class="c"><strong>챗GPT + 엑셀 </strong></h2>
+<h2 class="c"><strong>편하게 사용하는 방법</strong></h2></div></div><div class="col" style="flex:3 1 0"><figure><a href="https://drive.google.com/file/d/1mLycie6LlM8j9OoLEdM4P-Bcca8LYhsV/view?usp=sharing" target="_blank" rel="noopener"><img src="img/04.webp" alt="" loading="lazy"></a></figure></div></div></section>
+<section class=""><div class="row"><div class="col" style="flex:10 1 0"><details><summary>조건부 서식의 설정 방법을 배운다.</summary><div class="dbody"><div class="txt"><h4>엑셀에서 표를 만들어서 ‘이런 것을 하고 싶은데 어떻게 하면 좋을까?’라고 생 각한다면，현재의 상황과 함께 하고 싶은 것을 챗GPT에 물어봅니다. 상세한 순 서를 알기 쉽게 설명해줄 것입니다.</h4>
+<h4><strong>예) </strong><strong>엑셀의 표에서 어떤 행 B 열의 값이 수원인 경우，그 행의 A 열에서 C 열까지 의 셀을 핑크색으로 하기 위한 조건부 서식의 설정 방법을 가르쳐주세요 </strong></h4></div></div></details></div><div class="col" style="flex:2 1 0"><a class="btn" href="https://docs.google.com/spreadsheets/d/1kumLM6ZmRCigegTu_mdJJq3vMEdn0qSH/edit?usp=sharing&amp;ouid=109970348539659357884&amp;rtpof=true&amp;sd=true" target="_blank" rel="noopener">예제파일</a></div></div></section>
+<section class=""><div class="row"><div class="col" style="flex:5 1 0"><div class="emb" style="padding-top:66.59%"><iframe src="https://drive.google.com/file/d/1kumLM6ZmRCigegTu_mdJJq3vMEdn0qSH/preview?authuser=0" loading="lazy" allow="autoplay; fullscreen; clipboard-write" allowfullscreen></iframe></div><a class="open" href="https://drive.google.com/open?authuser=0&amp;id=1kumLM6ZmRCigegTu_mdJJq3vMEdn0qSH" target="_blank" rel="noopener">↗ korean_company_data (1).xlsx</a></div><div class="col empty" style="flex:7 1 0"></div></div></section>
+<section class="soft"><div class="row"><div class="col" style="flex:10 1 0"><details><summary>사용자 지정의 서식을 작성한다.</summary><div class="dbody"><div class="txt"><h4>엑셀에서 셀 값에 따른 서식을 자동으로 설정하고 싶은 경우，•셀 서식’의 ‘표시 형식’을 이용합니다. 미리 다채로운 표시 형식이 준비되어 있는데 기존의 것으로 만족할 수 없는 경우는 ‘사용자 지정’으로 서식을 직접 작성해봅시다. 다만 지정 에서 서식을 설정하는 것은 쉽지만은 않기에 챗GPT에 질문하여 최적의 서식을 제안하게 하는 편이 좋습니다.</h4>
+<h4><strong>예) </strong><strong>아래와 같은 엑셀의 사용자 지정 서식을 만들어주세요. 수치가 마이너스라면 글자색은 빨간색으로 표시한다. 제로라면 글자를 표시하지 않는다. 플러스라면 검정색 글자로 표시한다. </strong></h4></div></div></details></div><div class="col" style="flex:2 1 0"><a class="btn" href="https://docs.google.com/spreadsheets/d/1kumLM6ZmRCigegTu_mdJJq3vMEdn0qSH/edit?usp=sharing&amp;ouid=109970348539659357884&amp;rtpof=true&amp;sd=true" target="_blank" rel="noopener">예제파일</a></div></div></section>
+<section class="soft"><div class="row"><div class="col" style="flex:5 1 0"><div class="emb" style="padding-top:44.07%"><iframe src="https://drive.google.com/file/d/1Vp3fukX1Ul5QHUkMg4Gi15D4kR37ZeJQ/preview?authuser=0" loading="lazy" allow="autoplay; fullscreen; clipboard-write" allowfullscreen></iframe></div><a class="open" href="https://drive.google.com/open?authuser=0&amp;id=1Vp3fukX1Ul5QHUkMg4Gi15D4kR37ZeJQ" target="_blank" rel="noopener">↗ sales_data.xlsx</a></div><div class="col empty" style="flex:7 1 0"></div></div></section>
+<section class=""><div class="row"><div class="col" style="flex:12 1 0"><details><summary>엑셀에서 사용할 연습용 표를 만들고 싶다면 다음과 같이</summary><div class="dbody"><div class="txt"><h4><strong>예) </strong><strong>엑셀에서 사용할 연습용 표를 만들어줘. 표의 필드(열)은 사번, 이름, 부서, 직위, 입사일자로 하고 행 수는 30개로 작성해줘</strong></h4>
+<p>&gt;&gt; 마우스를 이용해서 드래그 후에 컨트롤 +C  복사 후 엑셀에 컨트롤 +V로 붙여넣기 합니다.</p>
+<p>&gt;&gt; 만약 유료 혹은 무료 사용자이지만 유료 시간이 있는 경우에는 엑셀 파일로 만들어서 다운로드 할 수 있도록 해줘라고 합니다.</p></div></div></details></div></div></section>
+<section class="soft"><div class="row"><div class="col" style="flex:10 1 0"><details><summary>고급 필터 사용하기</summary><div class="dbody"><div class="txt"><h4>직원명부에서 직위가 대리에 해당하는 자료만 추출하여 특정한 위치(L11)에 표시하고자 합니다.</h4>
+<h4><strong>예1) </strong><strong>엑셀 워크시트 A:E열에 데이터가 있다. D열에는 직위 정보가 있는데, 직위가 대리인 데이터만 i11셀부터 표시하고 싶다.  어떻게 하면 원본데이터를 그대로 둔채로 조건을 충족하는 데이터를  i11셀부터 표시할 수있는지 알려줘? </strong></h4>
+<h4><strong>예2) </strong><strong>엑셀 워크시트 A:E열에 데이터가 있다. D열에는 직위 정보가 있는데, 직위가 대리인 데이터만 </strong><strong>i</strong><strong>11셀부터 표시하고 싶다. </strong><strong>고급필터를 사용하여 원본데이터를 그대로 둔 채, 조건을 충족하는 데이터를 i11셀부터 표시하고 싶다면? </strong></h4></div></div></details></div><div class="col" style="flex:2 1 0"><a class="btn" href="https://docs.google.com/spreadsheets/d/1mIRIv5U8TtIChrTeu2Ftk5MWw6bTxNch/edit?usp=sharing&amp;ouid=109970348539659357884&amp;rtpof=true&amp;sd=true" target="_blank" rel="noopener">예제파일</a></div></div></section>
+<section class="soft"><div class="row"><div class="col" style="flex:10 1 0"><div class="emb" style="padding-top:85.58%"><iframe src="https://drive.google.com/file/d/1mIRIv5U8TtIChrTeu2Ftk5MWw6bTxNch/preview?authuser=0" loading="lazy" allow="autoplay; fullscreen; clipboard-write" allowfullscreen></iframe></div><a class="open" href="https://drive.google.com/open?authuser=0&amp;id=1mIRIv5U8TtIChrTeu2Ftk5MWw6bTxNch" target="_blank" rel="noopener">↗ 직원명부.xlsx</a></div><div class="col empty" style="flex:2 1 0"></div></div></section>
+<section class=""><div class="row"><div class="col" style="flex:10 1 0"><details><summary>여러 줄로 입력된 데이터를 한 줄로 만들기</summary><div class="dbody"><div class="txt"><p>셀에 데이터를 입력할 때 알트+엔터를 이용하면 강제 줄 바꿈 처리가 됩니다. 이것을 한 줄로 변경하려면 어떻게 처리 해야 할까요?</p>
+<h4><strong>예) </strong><strong>엑셀에서 여러줄로 작성된 데이터 알트+엔터를 사용하여 강제로 줄바꿈된 엑셀 데이터를 한줄로 만들려면?</strong></h4>
+<p>&gt;&gt; 컨트롤 + J</p></div></div></details></div><div class="col" style="flex:2 1 0"><a class="btn" href="https://docs.google.com/spreadsheets/d/1mJEQ45PLuk71DGXupEFVQ25mJkjaRrek/edit?usp=sharing&amp;ouid=109970348539659357884&amp;rtpof=true&amp;sd=true" target="_blank" rel="noopener">예제파일</a></div></div></section>
+<section class=""><div class="row"><div class="col" style="flex:10 1 0"><div class="emb" style="padding-top:43.48%"><iframe src="https://drive.google.com/file/d/1mJEQ45PLuk71DGXupEFVQ25mJkjaRrek/preview?authuser=0" loading="lazy" allow="autoplay; fullscreen; clipboard-write" allowfullscreen></iframe></div><a class="open" href="https://drive.google.com/open?authuser=0&amp;id=1mJEQ45PLuk71DGXupEFVQ25mJkjaRrek" target="_blank" rel="noopener">↗ 강제 줄 바꿈.xlsx</a></div><div class="col empty" style="flex:2 1 0"></div></div></section>
+<section class="soft"><div class="row"><div class="col" style="flex:12 1 0"><details><summary>여러 줄로 입력된 데이터를 한 줄로 만들기  (함수)</summary><div class="dbody"><div class="txt"><p>셀에 데이터를 입력할 때 알트+엔터를 이용하면 강제 줄 바꿈 처리가 됩니다. 이것을 한 줄로 변경하려면 어떻게 처리 해야 할까요?</p>
+<h4><strong>예) 엑셀에서 여러줄로 작성된 데이터 알트+엔터를 사용하여 강제로 줄바꿈된 엑셀 데이터를 함수를 사용하여 한줄로 만들려면? 엑셀 버전 기입 (2016</strong><strong> 등)</strong></h4></div></div></details></div></div></section>
+<section class=""><div class="row"><div class="col" style="flex:10 1 0"><details><summary>두 개의 표에서 중복 데이터를 쉽게 찾아내는 방법</summary><div class="dbody"><div class="txt"><p>2개의 일자별 출고 리스트가 있습니다. 각 출고리스트를 비교하여 출지번호가 중복된 데이터에 표시를 하려고 합니다.</p>
+<h4><strong>예) 엑셀</strong><strong> 워크스티에 있는 2개 열을 비교하여 중복된는 값에는 특정한 서식으로 표시하려면?</strong></h4></div></div></details></div><div class="col" style="flex:2 1 0"><a class="btn" href="https://docs.google.com/spreadsheets/d/1mJEQ45PLuk71DGXupEFVQ25mJkjaRrek/edit?usp=sharing&amp;ouid=109970348539659357884&amp;rtpof=true&amp;sd=true" target="_blank" rel="noopener">예제파일</a></div></div></section>
+<section class=""><div class="row"><div class="col" style="flex:12 1 0"><div class="emb" style="padding-top:62.68%"><iframe src="https://drive.google.com/file/d/1mIlm-ACXOwAyx73xgKJ4MBYSnSDhbX1f/preview?authuser=0" loading="lazy" allow="autoplay; fullscreen; clipboard-write" allowfullscreen></iframe></div><a class="open" href="https://drive.google.com/open?authuser=0&amp;id=1mIlm-ACXOwAyx73xgKJ4MBYSnSDhbX1f" target="_blank" rel="noopener">↗ 중복 데이터 찾기.xlsx</a></div></div></section>
+<section class="soft"><div class="row"><div class="col" style="flex:10 1 0"><details><summary>나만의 기준으로 데이터 정렬하기</summary><div class="dbody"><div class="txt"><h4>데이터를 정렬한다고 하면 대개 가나다(오름차순) 또는 그 역순(내림차순)을 떠올립니다. 내가 원하는 순서로 정렬을 하려면?</h4>
+<h4><strong>예) </strong><strong>엑셀에서 자료를 정렬하려고 한다. 오름차순이나 내림차순이 아닌 나만의 기준으로 정렬하려면? 예를 들어 동부 서부 남부 북부 경상 충정 호남 제주 순으로 정리하려면?</strong></h4></div></div></details></div><div class="col" style="flex:2 1 0"><a class="btn" href="https://docs.google.com/spreadsheets/d/1mKFhngjBbdDXofWCq14vBCskJHBjsoHN/edit?usp=sharing&amp;ouid=109970348539659357884&amp;rtpof=true&amp;sd=true" target="_blank" rel="noopener">예제파일</a></div></div></section>
+<section class="soft"><div class="row"><div class="col" style="flex:8 1 0"><div class="emb" style="padding-top:54.77%"><iframe src="https://drive.google.com/file/d/1mKFhngjBbdDXofWCq14vBCskJHBjsoHN/preview?authuser=0" loading="lazy" allow="autoplay; fullscreen; clipboard-write" allowfullscreen></iframe></div><a class="open" href="https://drive.google.com/open?authuser=0&amp;id=1mKFhngjBbdDXofWCq14vBCskJHBjsoHN" target="_blank" rel="noopener">↗ 사용자 지정 정렬.xlsx</a></div><div class="col empty" style="flex:4 1 0"></div></div></section>
+<section class=""><div class="row"><div class="col" style="flex:10 1 0"><details><summary>데이터 맨 앞이나 뒤에 특정문자 일괄 추가하기 1</summary><div class="dbody"><div class="txt"><h4><strong>예1) </strong><strong>a1셀에 부품번호가 있다. 부품번호 앞에 SC라는 글자를 붙이려면 어떻게 해야하나? </strong><strong>부품번호는 001, 002와 같은 형식으로 되어 있으나 숫자가 아닌 문자열이다.</strong><strong>여러가지 방법을 알려줘 </strong></h4>
+<h4><strong>예2)</strong><strong>a1셀에 부품번호가 있다. 부품번호 앞에 SC라는 글자를 붙이려면 어떻게 해야하나? </strong><strong>셀 서식을 이용해서 해결하는 방법을 알려줘. 부품번호는 001, 002와 같은 형식으로 되어 있으나 숫자가 아닌 문자열이다.</strong></h4></div></div></details></div><div class="col" style="flex:2 1 0"><a class="btn" href="https://docs.google.com/spreadsheets/d/1mLdbED_v8__6OOEpdU2hShvW28YZBzk0/edit?usp=sharing&amp;ouid=109970348539659357884&amp;rtpof=true&amp;sd=true" target="_blank" rel="noopener">예제파일</a></div></div></section>
+<section class=""><div class="row"><div class="col" style="flex:10 1 0"><details><summary>데이터 맨 앞이나 뒤에 특정문자 일괄 추가하기 2</summary><div class="dbody"><div class="txt"><h4><strong>예</strong><strong>) 워크시트 F열에는 이름이 입력되어 있다. 이름뒤에 님을 붙이려면 어떻게 하지</strong><strong>. 여러가지 방법을 알려주고, 셀서식으로 해결하는 방법도 알려줘</strong></h4></div></div></details></div><div class="col" style="flex:2 1 0"><a class="btn" href="https://docs.google.com/spreadsheets/d/1mLdbED_v8__6OOEpdU2hShvW28YZBzk0/edit?usp=sharing&amp;ouid=109970348539659357884&amp;rtpof=true&amp;sd=true" target="_blank" rel="noopener">예제파일</a></div></div></section>
+<section class=""><div class="row"><div class="col" style="flex:6 1 0"><div class="emb" style="padding-top:104.22%"><iframe src="https://drive.google.com/file/d/1mLdbED_v8__6OOEpdU2hShvW28YZBzk0/preview?authuser=0" loading="lazy" allow="autoplay; fullscreen; clipboard-write" allowfullscreen></iframe></div><a class="open" href="https://drive.google.com/open?authuser=0&amp;id=1mLdbED_v8__6OOEpdU2hShvW28YZBzk0" target="_blank" rel="noopener">↗ 부품단가표.xlsx</a></div><div class="col empty" style="flex:6 1 0"></div></div></section>
+<section class="soft"><div class="row"><div class="col" style="flex:10 1 0"><details><summary>사용자 지정 서식 이해</summary><div class="dbody"><div class="txt"><h4><strong>엑셀의 사용자 지정 서식(User-Defined Format)은 셀의 데이터를 원하는 형식으로 표시하는 방법을 설정하는 기능입니다. 이 기능을 사용하면 숫자, 텍스트, 날짜 등을 다양한 방식으로 표시할 수 있습니다. </strong></h4>
+<h4><strong>### 사용자 지정 서식의 기본 구조</strong></h4>
+<h4><strong>사용자 지정 서식은 최대 4개의 섹션으로 구성되며, 각 섹션은 세미콜론(;)으로 구분됩니다. 각 섹션은 다음과 같이 사용됩니다:</strong></h4>
+<h4><strong>1. **양수 서식**: 첫 번째 섹션</strong></h4>
+<h4><strong>2. **음수 서식**: 두 번째 섹션</strong></h4>
+<h4><strong>3. **0의 서식**: 세 번째 섹션</strong></h4>
+<h4><strong>4. **텍스트 서식**: 네 번째 섹션</strong></h4>
+<h4><strong>예를 들어, 다음과 같은 사용자 지정 서식이 있다고 가정합니다:</strong></h4>
+<h4><strong>```</strong></h4>
+<h4><strong>#,##0.00_);[Red](#,##0.00);&quot;Zero&quot;;&quot;Text:&quot;@</strong></h4>
+<h4><strong>```</strong></h4>
+<h4><strong>이 서식은 다음과 같이 동작합니다:</strong></h4>
+<h4><strong>1. **양수**: `#,##0.00_` — 숫자를 소수점 두 자리까지 표시하고, 천 단위마다 쉼표를 추가합니다. 양수는 기본적으로 표시됩니다.</strong></h4>
+<h4><strong>2. **음수**: `[Red](#,##0.00)` — 숫자를 소수점 두 자리까지 표시하고, 음수는 빨간색으로 표시하며 괄호로 감쌉니다.</strong></h4>
+<h4><strong>3. **0**: `&quot;Zero&quot;` — 셀 값이 0일 경우 &quot;Zero&quot;라는 텍스트를 표시합니다.</strong></h4>
+<h4><strong>4. **텍스트**: `&quot;Text:&quot;@` — 텍스트 데이터 앞에 &quot;Text:&quot;를 추가합니다.</strong></h4>
+<h4><strong>### 사용자 지정 서식의 예시</strong></h4>
+<h4><strong>1. **숫자 서식**:</strong></h4>
+<h4><strong>   - **천 단위 쉼표 추가**: `#,##0` — 1000을 &quot;1,000&quot;으로 표시합니다.</strong></h4>
+<h4><strong>   - **소수점 두 자리 표시**: `0.00` — 123.456을 &quot;123.46&quot;으로 표시합니다.</strong></h4>
+<h4><strong>   - **음수에 빨간색 적용**: `0;[Red]-0` — 음수를 빨간색으로 표시합니다.</strong></h4>
+<h4><strong>   - **백분율 표시**: `0%` — 0.85를 &quot;85%&quot;로 표시합니다.</strong></h4>
+<h4><strong>2. **날짜 서식**:</strong></h4>
+<h4><strong>   - **간단한 날짜**: `yyyy-mm-dd` — 날짜를 &quot;2024-08-23&quot; 형식으로 표시합니다.</strong></h4>
+<h4><strong>   - **달과 연도**: `mmmm yyyy` — 날짜를 &quot;August 2024&quot; 형식으로 표시합니다.</strong></h4>
+<h4><strong>   - **요일 포함**: `dddd, mmmm dd, yyyy` — &quot;Friday, August 23, 2024&quot; 형식으로 표시합니다.</strong></h4>
+<h4><strong>3. **텍스트 서식**:</strong></h4>
+<h4><strong>   - **텍스트 앞에 접두어 추가**: `&quot;Order No. &quot; 0000` — &quot;123&quot;을 &quot;Order No. 0123&quot;으로 표시합니다.</strong></h4>
+<h4><strong>   - **특정 텍스트 표시**: `&quot;Result: &quot;@` — 셀 내용 앞에 &quot;Result: &quot;를 추가합니다.</strong></h4>
+<h4><strong>### 사용자 지정 서식의 기호들</strong></h4>
+<h4><strong>- **`0`**: 숫자가 없는 경우 0을 표시합니다.</strong></h4>
+<h4><strong>- **`#`**: 숫자가 없으면 표시하지 않습니다.</strong></h4>
+<h4><strong>- **`,`**: 천 단위 구분자.</strong></h4>
+<h4><strong>- **`.`**: 소수점 구분자.</strong></h4>
+<h4><strong>- **`@`**: 텍스트 자리에 데이터를 표시합니다.</strong></h4>
+<h4><strong>- **`&quot;`**: 따옴표로 묶인 텍스트는 그대로 표시됩니다.</strong></h4>
+<h4><strong>- **`_`**: 다음 문자의 너비만큼 공백을 추가합니다.</strong></h4>
+<h4><strong>- **`*`**: 다음 문자가 셀의 너비를 채울 때까지 반복됩니다.</strong></h4>
+<h4><strong>- **`[색상]`**: 지정된 색상으로 텍스트를 표시합니다(예: `[Red]`).</strong></h4>
+<h4><strong>### 사용자 지정 서식 적용 방법</strong></h4>
+<h4><strong>1. 서식을 적용할 셀을 선택합니다.</strong></h4>
+<h4><strong>2. **홈** 탭의 **셀 서식**에서 **셀 서식**을 클릭하거나 셀을 마우스 오른쪽 버튼으로 클릭하고 **셀 서식**을 선택합니다.</strong></h4>
+<h4><strong>3. **표시 형식** 탭에서 **사용자 지정**을 선택합니다.</strong></h4>
+<h4><strong>4. 필요한 서식을 입력하고 **확인**을 클릭합니다.</strong></h4>
+<h4><strong>이와 같이 사용자 지정 서식을 사용하면 엑셀에서 데이터를 원하는 형식으로 효율적으로 표시할 수 있습니다.</strong></h4></div></div></details></div><div class="col" style="flex:2 1 0"><a class="btn" href="https://docs.google.com/spreadsheets/d/1mLtWGJJ43Vs8ITKYmkcRs25NjztM3ZKD/edit?usp=sharing&amp;ouid=109970348539659357884&amp;rtpof=true&amp;sd=true" target="_blank" rel="noopener">예제파일</a></div></div></section>
+<section class="soft"><div class="row"><div class="col" style="flex:10 1 0"><details><summary>원단위를 천단위 또는 백만 단위로 바꾸기</summary><div class="dbody"><div class="txt"><h4><strong>예</strong><strong>) 엑셀 시트에 숫자가 원 단위로 입력되어 있다. 이것을 천 또는 백만 단위로 변경하고 싶다. 여러가지 방법을 이야기 해주고, 셀서식 으로 해결 하는 방법도 알려줘</strong></h4></div></div></details></div><div class="col" style="flex:2 1 0"><a class="btn" href="https://docs.google.com/spreadsheets/d/1mLtWGJJ43Vs8ITKYmkcRs25NjztM3ZKD/edit?usp=sharing&amp;ouid=109970348539659357884&amp;rtpof=true&amp;sd=true" target="_blank" rel="noopener">예제파일</a></div></div></section>
+<section class="soft"><div class="row"><div class="col" style="flex:10 1 0"><details><summary>16자리 카드번호 입력하는 방법</summary><div class="dbody"><div class="txt"><h4>엑셀에서 입력할 수 있는 숫자는 최대 15자리까지 입니다. 15자리는 999조이기 때문에 작은 숫자가 아닙니다만, 특정 일련번호 (사원번호, 카드번호 등)와 같이 4자리 숫자가 반볻되는 형태를 입력해야 하는 경우가 있습니다. 만약 워크시트에 이렇게 입력한다면 지수형태로 변경되어 표시 됩니다. 만약 쉼표 스타일을 적용하면 마지막 숫자가 정상적으로 표기가 안되며고 0으로 표기 됩니다.</h4>
+<h4><strong>예) </strong><strong>16자리로 된 카드번호가 있다. 엑셀 워크시트에 입력하면 오류가 발생되는데 어떻게 대처해야 하는 방법을 알려줘</strong></h4></div></div></details></div><div class="col" style="flex:2 1 0"><a class="btn" href="https://docs.google.com/spreadsheets/d/1mLtWGJJ43Vs8ITKYmkcRs25NjztM3ZKD/edit?usp=sharing&amp;ouid=109970348539659357884&amp;rtpof=true&amp;sd=true" target="_blank" rel="noopener">예제파일</a></div></div></section>
+<section class="soft"><div class="row"><div class="col" style="flex:6 1 0"><div class="emb" style="padding-top:74.07%"><iframe src="https://drive.google.com/file/d/1mLtWGJJ43Vs8ITKYmkcRs25NjztM3ZKD/preview?authuser=0" loading="lazy" allow="autoplay; fullscreen; clipboard-write" allowfullscreen></iframe></div><a class="open" href="https://drive.google.com/open?authuser=0&amp;id=1mLtWGJJ43Vs8ITKYmkcRs25NjztM3ZKD" target="_blank" rel="noopener">↗ 사용자 지정 서식.xlsx</a></div><div class="col empty" style="flex:6 1 0"></div></div></section>
+<section class=""><div class="row"><div class="col" style="flex:10 1 0"><details><summary>잘 모르는 함수 사용하는 방법</summary><div class="dbody"><div class="txt"><h4>잘모르는 함수 등을 인터넷 보다는 비교적 챗봇에서 직관적으로 찾아서 적용 할 수 있습니다.</h4>
+<h4><strong>예)</strong><strong>C5:C14 영역에 숫자가 있다. 분산과 표준편차를 구하는 엑셀 함수식은?</strong></h4></div></div></details></div><div class="col" style="flex:2 1 0"><a class="btn" href="https://docs.google.com/spreadsheets/d/1AU63YOHhad3sJXYe1G20HRbEdcToUr-x/edit?usp=sharing&amp;ouid=109970348539659357884&amp;rtpof=true&amp;sd=true" target="_blank" rel="noopener">예제파일</a></div></div></section>
+<section class=""><div class="row"><div class="col" style="flex:5 1 0"><div class="emb" style="padding-top:89.74%"><iframe src="https://drive.google.com/file/d/1AU63YOHhad3sJXYe1G20HRbEdcToUr-x/preview?authuser=0" loading="lazy" allow="autoplay; fullscreen; clipboard-write" allowfullscreen></iframe></div><a class="open" href="https://drive.google.com/open?authuser=0&amp;id=1AU63YOHhad3sJXYe1G20HRbEdcToUr-x" target="_blank" rel="noopener">↗ 모르는 함수 사용.xlsx</a></div><div class="col empty" style="flex:7 1 0"></div></div></section>
+<section class="soft"><div class="row"><div class="col" style="flex:10 1 0"><details><summary>처음 보는 데이터 특성 파악하는 법</summary><div class="dbody"><div class="txt"><h4>타인이 작성한 데이터에 대해서는 분석이 어렵다. 이를 챗봇에게 물어서 쉽게 해결 할 수 있다.</h4>
+<p><strong>&gt;&gt; 데이터를 그대로 긁어서 붙인 후에 분석을 요청 할 수 있다. 이때는 혹여나 파이썬 등 자체 분석을 할 수 있기에 우선 아무것도 하지말고 위에 데이터만 기억해. 이런식으로 한후에 다음 질문에서 본 데이터의 가공 등을 물어 볼 수 있다. </strong></p>
+<h4><strong>예)C</strong><strong>3</strong><strong>:C</strong><strong>22</strong><strong> 영역에 숫자가 있다. </strong><strong>기술통계량 분석을 하려면 어떻게 엑셀로 할 수 있지? 함수식으로 표현해줘</strong></h4></div></div></details></div><div class="col" style="flex:2 1 0"><a class="btn" href="https://docs.google.com/spreadsheets/d/1-Q4wZM_wNSQD_8ZX6kG6fa4zWRO1-ohl/edit?usp=sharing&amp;ouid=109970348539659357884&amp;rtpof=true&amp;sd=true" target="_blank" rel="noopener">예제파일</a></div></div></section>
+<section class="soft"><div class="row"><div class="col" style="flex:5 1 0"><div class="emb" style="padding-top:90.00%"><iframe src="https://drive.google.com/file/d/1-Q4wZM_wNSQD_8ZX6kG6fa4zWRO1-ohl/preview?authuser=0" loading="lazy" allow="autoplay; fullscreen; clipboard-write" allowfullscreen></iframe></div><a class="open" href="https://drive.google.com/open?authuser=0&amp;id=1-Q4wZM_wNSQD_8ZX6kG6fa4zWRO1-ohl" target="_blank" rel="noopener">↗ 기술통계량 분석.xlsx</a></div><div class="col empty" style="flex:7 1 0"></div></div></section>
+<section class=""><div class="row"><div class="col" style="flex:10 1 0"><details><summary>큰 표에서 원하는 정보 찾기</summary><div class="dbody"><div class="txt"><h4>어느 카페 프랜차이즈의 실적과 단가 테이블이 있다. 오른쪽에 단가 테이블에서 각 품목의 단가 정보를 가져와 매출 실적 테이블에 추가하는 수식을 작성해보자</h4>
+<h4><strong>예)</strong><strong>i4:J13영역에 가격테이블이 있다. i열에는 품목, j열에는 단가 정보가 있을때 C4 셀의 &#x27;품목&#x27;에 해당 하는 단가 정보를 구하는 엑셀 수식은? </strong></h4>
+<h4><strong>예) 다른 방법이 있는가?</strong></h4></div></div></details></div><div class="col" style="flex:2 1 0"><a class="btn" href="https://docs.google.com/spreadsheets/d/1jh5fqGuLvAN5ApazYyyH5OWe7rPY9Bro/edit?usp=sharing&amp;ouid=109970348539659357884&amp;rtpof=true&amp;sd=true" target="_blank" rel="noopener">예제파일</a></div></div></section>
+<section class=""><div class="row"><div class="col" style="flex:10 1 0"><div class="emb" style="padding-top:49.22%"><iframe src="https://drive.google.com/file/d/1jh5fqGuLvAN5ApazYyyH5OWe7rPY9Bro/preview?authuser=0" loading="lazy" allow="autoplay; fullscreen; clipboard-write" allowfullscreen></iframe></div><a class="open" href="https://drive.google.com/open?authuser=0&amp;id=1jh5fqGuLvAN5ApazYyyH5OWe7rPY9Bro" target="_blank" rel="noopener">↗ 큰 표에서 정보 찾기.xlsx</a></div><div class="col empty" style="flex:2 1 0"></div></div></section>
+<section class="soft"><div class="row"><div class="col" style="flex:10 1 0"><details><summary>긴 문자열에서 필요한 부분만 추출하는 법</summary><div class="dbody"><div class="txt"><h4>가령 이메일 이름 부분이 아이디 인 경우에 @앞에 부분만 추출하려고 한다. 어떻게 하면 좋은가?</h4>
+<h4><strong>예</strong><strong>) d3셀에는 </strong><a href="mailto:abc@gmail.com" target="_blank" rel="noopener"><u><strong>abc@gmail.com</strong></u></a><strong>과 같이 문자@도메인주소로 이루어진 이메일 주소가 있다. @앞에 있는 글자를 추출하기 위한 엑셀 수식은?</strong></h4>
+<p><strong>※  빠른 채우기 (flash fill)</strong></p></div></div></details></div><div class="col" style="flex:2 1 0"><a class="btn" href="https://docs.google.com/spreadsheets/d/1GZKSx6IaqLItOYaIdo0LO1pThZ-ksN9G/edit?usp=sharing&amp;ouid=109970348539659357884&amp;rtpof=true&amp;sd=true" target="_blank" rel="noopener">예제파일</a></div></div></section>
+<section class="soft"><div class="row"><div class="col" style="flex:9 1 0"><div class="emb" style="padding-top:36.71%"><iframe src="https://drive.google.com/file/d/1GZKSx6IaqLItOYaIdo0LO1pThZ-ksN9G/preview?authuser=0" loading="lazy" allow="autoplay; fullscreen; clipboard-write" allowfullscreen></iframe></div><a class="open" href="https://drive.google.com/open?authuser=0&amp;id=1GZKSx6IaqLItOYaIdo0LO1pThZ-ksN9G" target="_blank" rel="noopener">↗ 필요한 단어 추출.xlsx</a></div><div class="col empty" style="flex:3 1 0"></div></div></section>
+<section class=""><div class="row"><div class="col" style="flex:10 1 0"><details><summary>다양한 조건을 충족하는 합계 구하기</summary><div class="dbody"><div class="txt"><h4>특정한 조건을 충족하는 데이터의 합계를 구하는 것은 실무에서 자주 하게 되는 작업이다. 담당별 실적 데이터에서 다양한 조건을 충족하는 데이터의 합계를 구하는 수식을 구해보자</h4>
+<h4><strong>예) </strong><strong>C열 값이 남부이면 이에 해당하는 F열 값을 더하는 엑셀 수식은? </strong></h4>
+<h4><strong>예) D열 값이 대리이면서 E열 값이 여자이면 이에 해당되는 G열 값을 더하는 엑셀 수식은?</strong></h4></div></div></details></div><div class="col" style="flex:2 1 0"><a class="btn" href="https://docs.google.com/spreadsheets/d/1cv-5GHXn5VLYgs6he_BqmLO_0hs7sJ9y/edit?usp=sharing&amp;ouid=109970348539659357884&amp;rtpof=true&amp;sd=true" target="_blank" rel="noopener">예제파일</a></div></div></section>
+<section class=""><div class="row"><div class="col" style="flex:9 1 0"><div class="emb" style="padding-top:70.98%"><iframe src="https://drive.google.com/file/d/1cv-5GHXn5VLYgs6he_BqmLO_0hs7sJ9y/preview?authuser=0" loading="lazy" allow="autoplay; fullscreen; clipboard-write" allowfullscreen></iframe></div><a class="open" href="https://drive.google.com/open?authuser=0&amp;id=1cv-5GHXn5VLYgs6he_BqmLO_0hs7sJ9y" target="_blank" rel="noopener">↗ 다양한 조건 합계.xlsx</a></div><div class="col empty" style="flex:3 1 0"></div></div></section>
+<section class="soft"><div class="row"><div class="col" style="flex:10 1 0"><details><summary>복잡한 다중 IF 수식을 간편하게 작성하는 방법</summary><div class="dbody"><div class="txt"><h4>엑셀 함수 중 IF 문을 접하면 처음에는 간단하나 복잡합니다.  어느 회사  평가 결과표에 다중 IF 문이 필요한 경우 한번 만들어 보도록 할까요?</h4>
+<h4><strong>예) i</strong><strong>4에  숫자가 있다. 80 이상이면 우수, 60 이상이면 보통, 60미만이면 재시험이라고 표시하는 엑셀 수식을 작성해주세요.</strong></h4>
+<h4><strong>예) i4에  숫자가 있다. </strong><strong>90 이상이면 S, 80이상이면 A, 70이상이면 B, 60이상이면 C, 50이상이면 D, 50미만이면 F라고 표시하는 엑셀 수식은?</strong></h4></div></div></details></div><div class="col" style="flex:2 1 0"><a class="btn" href="https://docs.google.com/spreadsheets/d/1qwETWtqj5Dv-TjBSBW2QBK-DiRp-jBLY/edit?usp=sharing&amp;ouid=109970348539659357884&amp;rtpof=true&amp;sd=true" target="_blank" rel="noopener">예제파일</a></div></div></section>
+<section class="soft"><div class="row"><div class="col" style="flex:8 1 0"><div class="emb" style="padding-top:143.28%"><iframe src="https://drive.google.com/file/d/1qwETWtqj5Dv-TjBSBW2QBK-DiRp-jBLY/preview?authuser=0" loading="lazy" allow="autoplay; fullscreen; clipboard-write" allowfullscreen></iframe></div><a class="open" href="https://drive.google.com/open?authuser=0&amp;id=1qwETWtqj5Dv-TjBSBW2QBK-DiRp-jBLY" target="_blank" rel="noopener">↗ 다중 IF 수식.xlsx</a></div><div class="col empty" style="flex:4 1 0"></div></div></section>
+<section class=""><div class="row"><div class="col" style="flex:10 1 0"><details><summary>특수한 평균식 계산하기</summary><div class="dbody"><div class="txt"><h4>편차를 줄이기 위한 최고/최저 점수를 제외하고 평균을 구하는 경우?</h4>
+<h4><strong>예)</strong><strong> C4:L4 영역에 숫자가 있다. 최대값과 최소값을 제외한평균을 구하는 엑셀 함수식은?</strong></h4></div></div></details></div><div class="col" style="flex:2 1 0"><a class="btn" href="https://docs.google.com/spreadsheets/d/1m1NRafAyDINK-yxg3f-bxE3uGSZcnEo_/edit?usp=sharing&amp;ouid=109970348539659357884&amp;rtpof=true&amp;sd=true" target="_blank" rel="noopener">예제파일</a></div></div></section>
+<section class=""><div class="row"><div class="col" style="flex:10 1 0"><div class="emb" style="padding-top:43.48%"><iframe src="https://drive.google.com/file/d/1m1NRafAyDINK-yxg3f-bxE3uGSZcnEo_/preview?authuser=0" loading="lazy" allow="autoplay; fullscreen; clipboard-write" allowfullscreen></iframe></div><a class="open" href="https://drive.google.com/open?authuser=0&amp;id=1m1NRafAyDINK-yxg3f-bxE3uGSZcnEo_" target="_blank" rel="noopener">↗ 특수한 평균 계산.xlsx</a></div><div class="col empty" style="flex:2 1 0"></div></div></section>
+<section class="soft"><div class="row"><div class="col" style="flex:10 1 0"><details><summary>주민번호 뒷자리에 보안처리 하기</summary><div class="dbody"><div class="txt"><h4><strong>예) </strong><strong>B4 셀에 입력된 내용중에서 오른쪽 6글자를 ******로 표시하려면?</strong></h4></div></div></details></div><div class="col" style="flex:2 1 0"><a class="btn" href="https://docs.google.com/spreadsheets/d/13O0O5-66g4xC2CGlGy236JqCtKvC3dgo/edit?usp=sharing&amp;ouid=109970348539659357884&amp;rtpof=true&amp;sd=true" target="_blank" rel="noopener">예제파일</a></div></div></section>
+<section class="soft"><div class="row"><div class="col" style="flex:8 1 0"><div class="emb" style="padding-top:77.04%"><iframe src="https://drive.google.com/file/d/13O0O5-66g4xC2CGlGy236JqCtKvC3dgo/preview?authuser=0" loading="lazy" allow="autoplay; fullscreen; clipboard-write" allowfullscreen></iframe></div><a class="open" href="https://drive.google.com/open?authuser=0&amp;id=13O0O5-66g4xC2CGlGy236JqCtKvC3dgo" target="_blank" rel="noopener">↗ 주민등록번호 숨기기.xlsx</a></div><div class="col empty" style="flex:4 1 0"></div></div></section>
+</body>
+</html>

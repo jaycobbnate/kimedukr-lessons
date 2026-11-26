@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>생성형 AI 업무 생산성 향상 — 14차시 실습 도구</title>
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Pretendard',-apple-system,sans-serif;background:#f1f5f9;color:#1e293b;display:flex;height:100vh;overflow:hidden;overflow-x:hidden;font-size:16px;max-width:100vw;}
+
+/* ── Sidebar ── */
+aside{width:280px;background:#0f172a;color:#e2e8f0;display:flex;flex-direction:column;flex-shrink:0;overflow:hidden;transition:width 0.25s;}
+aside.collapsed{width:0;}
+.sb-head{padding:20px;border-bottom:1px solid #1e293b;background:#020617;flex-shrink:0;}
+.sb-head h1{font-size:15px;font-weight:800;color:#f8fafc;letter-spacing:-0.3px;}
+.sb-head p{font-size:12px;color:#475569;margin-top:4px;}
+.sb-nav{flex:1;overflow-y:auto;padding:10px;}
+.sb-nav::-webkit-scrollbar{width:4px;}
+.sb-nav::-webkit-scrollbar-thumb{background:#334155;border-radius:2px;}
+.day-lbl{font-size:11px;font-weight:800;color:#334155;letter-spacing:0.12em;padding:14px 10px 5px;text-transform:uppercase;}
+.nav-btn{width:100%;text-align:left;padding:10px 12px;border-radius:8px;border:none;background:transparent;color:#94a3b8;font-size:13px;font-family:inherit;cursor:pointer;transition:all 0.15s;margin-bottom:2px;line-height:1.4;}
+.nav-btn:hover{background:#1e293b;color:#e2e8f0;}
+.nav-btn.active{background:#2563eb;color:#fff;font-weight:700;}
+
+/* ── Main ── */
+main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;}
+.mh{background:#fff;border-bottom:1.5px solid #e2e8f0;padding:18px 28px 0;flex-shrink:0;}
+.mh-top{display:flex;align-items:center;gap:12px;margin-bottom:8px;}
+.hamburger{width:36px;height:36px;border:1px solid #e2e8f0;border-radius:8px;background:#fff;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;flex-shrink:0;}
+.hamburger span{width:16px;height:2px;background:#64748b;border-radius:1px;}
+.mh-badge{display:inline-flex;align-items:center;gap:6px;background:#eff6ff;color:#1d4ed8;font-size:12px;font-weight:800;padding:4px 12px;border-radius:20px;}
+.method-dot{width:8px;height:8px;border-radius:50%;}
+.mh-title{font-size:22px;font-weight:900;color:#0f172a;margin-bottom:14px;letter-spacing:-0.5px;line-height:1.3;}
+.tab-bar{display:flex;gap:2px;}
+.tab-btn{padding:10px 20px;border:none;background:transparent;font-family:inherit;font-size:14px;color:#64748b;cursor:pointer;border-bottom:3px solid transparent;transition:all 0.15s;font-weight:600;white-space:nowrap;}
+.tab-btn.active{color:#2563eb;border-bottom-color:#2563eb;}
+.tab-btn:hover:not(.active){color:#334155;background:#f8fafc;}
+
+/* ── Content ── */
+.ca{flex:1;overflow-y:auto;padding:28px;background:#f1f5f9;}
+.ca::-webkit-scrollbar{width:6px;}
+.ca::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px;}
+.ci{max-width:960px;margin:0 auto;}
+
+/* ── Session Nav ── */
+.session-nav{display:flex;justify-content:space-between;align-items:center;margin-top:24px;padding-top:20px;border-top:1px solid #e2e8f0;}
+.snav-btn{padding:10px 20px;border:1px solid #e2e8f0;border-radius:10px;background:#fff;font-family:inherit;font-size:14px;font-weight:700;color:#475569;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:6px;}
+.snav-btn:hover{background:#f1f5f9;border-color:#cbd5e1;}
+.snav-btn:disabled{opacity:0.3;cursor:not-allowed;}
+.snav-btn.primary{background:#2563eb;color:#fff;border-color:#2563eb;}
+.snav-btn.primary:hover{background:#1d4ed8;}
+.snav-info{font-size:13px;color:#94a3b8;font-weight:600;}
+
+/* ── Overview ── */
+.ov-layout{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;}
+.ov-desc{background:#fff;border:1px solid #bfdbfe;border-left:4px solid #2563eb;border-radius:12px;padding:20px;font-size:15px;line-height:1.8;color:#1e3a5f;grid-column:1/-1;}
+.ov-chart-wrap{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:20px;display:flex;flex-direction:column;}
+.ov-chart-title{font-size:14px;font-weight:800;color:#475569;text-align:center;margin-bottom:12px;}
+.ov-chart-inner{position:relative;height:280px;width:100%;}
+.ov-effects-wrap{display:flex;flex-direction:column;gap:10px;}
+.ov-effect-card{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:14px;display:flex;align-items:flex-start;gap:12px;transition:transform 0.15s,box-shadow 0.15s;}
+.ov-effect-card:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(37,99,235,0.1);}
+.ov-effect-num{width:28px;height:28px;border-radius:50%;background:#eff6ff;color:#1d4ed8;font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.ov-effect-name{font-size:14px;font-weight:800;color:#0f172a;margin-bottom:3px;}
+.ov-effect-desc{font-size:13px;color:#64748b;line-height:1.5;}
+.ov-tip{background:#fffbeb;border:1px solid #fde68a;border-radius:12px;padding:16px 18px;font-size:14px;color:#92400e;white-space:pre-line;line-height:1.7;grid-column:1/-1;}
+.ov-tip-lbl{font-weight:800;margin-bottom:5px;font-size:13px;}
+
+/* ── Practice Header ── */
+.ph{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:20px;margin-bottom:18px;}
+.ph-title{font-size:17px;font-weight:800;color:#0f172a;margin-bottom:6px;}
+.ph-obj{font-size:14px;color:#64748b;line-height:1.6;}
+.ph-guide{font-size:13px;color:#0369a1;background:#f0f9ff;border:1px solid #bae6fd;border-radius:8px;padding:10px 14px;margin-top:10px;line-height:1.6;}
+
+/* ── Method A ── */
+.ab-wrap{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.ab-panel{border-radius:12px;overflow:hidden;border:2px solid;}
+.ab-panel.good{border-color:#86efac;}
+.ab-panel.bad{border-color:#fca5a5;}
+.ab-head{padding:13px 18px;display:flex;align-items:center;gap:8px;font-weight:800;font-size:14px;}
+.good .ab-head{background:#f0fdf4;color:#166534;}
+.bad .ab-head{background:#fef2f2;color:#991b1b;}
+.ab-indicator{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.good .ab-indicator{background:#22c55e;}
+.bad .ab-indicator{background:#ef4444;}
+.ab-section-lbl{font-size:11px;font-weight:800;color:#94a3b8;letter-spacing:0.08em;padding:12px 16px 5px;background:#fff;}
+.ab-prompt-inner{padding:0 14px 12px;background:#fff;}
+.ab-prompt-box{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:14px;font-size:14px;font-family:'Pretendard',monospace;line-height:1.8;color:#334155;white-space:pre-wrap;}
+.ab-result-lbl{font-size:11px;font-weight:800;letter-spacing:0.08em;padding:10px 16px 5px;}
+.good .ab-result-lbl{background:#f0fdf4;color:#15803d;}
+.bad .ab-result-lbl{background:#fef2f2;color:#b91c1c;}
+.ab-result-inner{padding:0 14px 16px;font-size:14px;line-height:1.8;white-space:pre-wrap;}
+.good .ab-result-inner{background:#f0fdf4;color:#166534;}
+.bad .ab-result-inner{background:#fef2f2;color:#991b1b;}
+
+/* ── Method B ── */
+.md-ws{display:grid;grid-template-columns:1fr 1fr;gap:16px;height:440px;}
+.md-pane{display:flex;flex-direction:column;background:#fff;border:1px solid #e2e8f0;border-radius:12px;overflow:hidden;}
+.md-ph{padding:12px 16px;background:#f8fafc;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.md-ph-title{font-size:13px;font-weight:800;color:#475569;}
+.md-load-btn{font-size:12px;padding:5px 12px;border:1px solid #e2e8f0;border-radius:6px;background:#fff;color:#475569;cursor:pointer;font-family:inherit;font-weight:700;}
+.md-load-btn:hover{background:#f1f5f9;}
+.md-hint-box{padding:10px 16px;background:#fff7ed;border-bottom:1px solid #fed7aa;font-size:13px;color:#9a3412;line-height:1.6;flex-shrink:0;}
+.md-editor-ta{flex:1;padding:16px;font-family:'Pretendard',monospace;font-size:14px;border:none;outline:none;resize:none;color:#1e293b;background:#fff;line-height:1.8;}
+.md-preview-box{flex:1;padding:16px;overflow-y:auto;font-size:14px;line-height:1.8;}
+.md-preview-box::-webkit-scrollbar{width:4px;}
+.md-preview-box::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:2px;}
+.md-placeholder{color:#94a3b8;font-size:14px;display:flex;align-items:center;justify-content:center;height:100%;text-align:center;}
+.md-preview-box h1{font-size:20px;font-weight:900;color:#0f172a;border-bottom:2px solid #e2e8f0;padding-bottom:6px;margin:12px 0 8px;}
+.md-preview-box h2{font-size:17px;font-weight:800;color:#0369a1;margin:10px 0 6px;}
+.md-preview-box h3{font-size:15px;font-weight:700;color:#475569;margin:8px 0 4px;}
+.md-preview-box ul{margin-left:20px;margin-bottom:8px;}
+.md-preview-box ol{margin-left:20px;margin-bottom:8px;}
+.md-preview-box li{margin-bottom:4px;font-size:14px;}
+.md-preview-box strong{color:#be123c;font-weight:800;}
+.md-preview-box p{margin-bottom:6px;font-size:14px;}
+.md-preview-box hr{border:none;border-top:1.5px solid #e2e8f0;margin:10px 0;}
+.md-preview-box blockquote{border-left:3px solid #0369a1;padding-left:12px;color:#475569;margin:8px 0;font-size:14px;}
+.md-preview-box code{background:#f1f5f9;padding:2px 6px;border-radius:4px;font-size:13px;}
+.md-preview-box pre{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:12px;font-size:13px;white-space:pre-wrap;margin:8px 0;}
+
+/* ── Method C ── */
+.step-indicator{display:flex;align-items:center;margin-bottom:24px;}
+.step-dot-btn{width:38px;height:38px;border-radius:50%;border:2px solid #e2e8f0;background:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#94a3b8;flex-shrink:0;cursor:pointer;transition:all 0.2s;font-family:inherit;}
+.step-dot-btn.active{background:#2563eb;border-color:#2563eb;color:#fff;transform:scale(1.1);}
+.step-dot-btn.done{background:#22c55e;border-color:#22c55e;color:#fff;}
+.step-line{flex:1;height:2px;background:#e2e8f0;transition:background 0.3s;}
+.step-line.done{background:#22c55e;}
+.step-content-box{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:24px;margin-bottom:20px;}
+.step-content-title{font-size:17px;font-weight:800;color:#0f172a;margin-bottom:8px;}
+.step-content-obj{font-size:14px;color:#64748b;margin-bottom:16px;line-height:1.6;}
+.step-prompt-box{background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:16px;font-size:14px;font-family:'Pretendard',monospace;line-height:1.9;color:#334155;white-space:pre-wrap;}
+.step-hint{font-size:13px;color:#0369a1;background:#f0f9ff;border:1px solid #bae6fd;border-radius:8px;padding:10px 14px;margin-top:12px;line-height:1.6;}
+.step-nav-row{display:flex;justify-content:space-between;align-items:center;}
+.step-nav-btn{padding:10px 24px;border-radius:10px;border:1px solid #e2e8f0;background:#fff;font-family:inherit;font-size:14px;font-weight:700;color:#475569;cursor:pointer;transition:all 0.15s;}
+.step-nav-btn:hover{background:#f1f5f9;}
+.step-nav-btn.primary{background:#2563eb;color:#fff;border-color:#2563eb;}
+.step-nav-btn.primary:hover{background:#1d4ed8;}
+.step-nav-btn:disabled{opacity:0.3;cursor:not-allowed;}
+.step-counter{font-size:14px;color:#94a3b8;font-weight:700;}
+
+/* ── Mobile ── */
+.sb-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:199;backdrop-filter:blur(2px);}
+.sb-overlay.show{display:block;}
+
+@media(max-width:768px){
+  /* ── 기본 가로 넘침 방지 ── */
+  html,body{overflow-x:hidden;max-width:100vw;}
+  *{max-width:100%;word-break:break-word;}
+
+  /* ── 사이드바 ── */
+  aside{position:fixed;left:0;top:0;height:100vh;z-index:200;width:0 !important;overflow:hidden;transition:width 0.25s;}
+  aside.open{width:82vw !important;max-width:300px !important;}
+  aside.collapsed{width:0 !important;}
+
+  /* ── 메인 레이아웃 ── */
+  main{width:100vw;max-width:100vw;min-width:0;overflow-x:hidden;}
+  .ca{padding:12px;overflow-x:hidden;}
+  .ci{max-width:100%;width:100%;overflow-x:hidden;}
+
+  /* ── 헤더 ── */
+  .mh{padding:12px 14px 0;overflow:hidden;}
+  .mh-top{gap:8px;flex-wrap:nowrap;}
+  .mh-title{font-size:16px;margin-bottom:8px;line-height:1.4;}
+  .mh-badge{font-size:11px;padding:3px 10px;white-space:nowrap;}
+
+  /* ── 탭바 ── */
+  .tab-bar{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;flex-wrap:nowrap;padding-bottom:1px;}
+  .tab-bar::-webkit-scrollbar{display:none;}
+  .tab-btn{padding:8px 12px;font-size:13px;white-space:nowrap;flex-shrink:0;}
+
+  /* ── 개요 레이아웃 ── */
+  .ov-layout{grid-template-columns:1fr;gap:12px;}
+  .ov-chart-inner{height:220px;}
+  .ov-desc{font-size:14px;padding:14px;}
+  .ov-tip{padding:12px 14px;font-size:13px;}
+  .ov-effect-card{padding:10px 12px;gap:10px;}
+
+  /* ── AB 패널 ── */
+  .ab-wrap{grid-template-columns:1fr;gap:12px;}
+  .ab-panel{overflow:hidden;}
+  .ab-prompt-box{font-size:13px;padding:10px;margin:0 10px 10px;white-space:pre-wrap;word-break:break-all;}
+  .ab-result-inner{font-size:13px;padding:10px 12px;white-space:pre-wrap;word-break:break-word;}
+
+  /* ── 케이스 탭 ── */
+  .case-block-head{flex-direction:column;align-items:flex-start;gap:8px;}
+  .case-tabs{flex-wrap:wrap;gap:5px;}
+  .case-tab-btn{font-size:11px;padding:4px 10px;}
+  .case-prompt-box{font-size:13px;padding:10px;margin:0 10px 10px;white-space:pre-wrap;word-break:break-all;}
+  .case-result-box{font-size:13px;padding:10px 12px;white-space:pre-wrap;word-break:break-word;}
+
+  /* ── 마크다운 에디터 ── */
+  .md-ws{grid-template-columns:1fr;height:auto;gap:10px;}
+  .md-pane{min-height:0;}
+  .md-editor-ta{height:200px;font-size:13px;}
+  .md-preview-box{height:200px;}
+  .md-hint-box{font-size:13px;padding:8px 12px;}
+
+  /* ── Step ── */
+  .c-step-section{border-radius:8px;}
+  .step-indicator{gap:4px;flex-wrap:wrap;}
+  .step-dot-btn{width:28px;height:28px;font-size:12px;}
+  .step-line{flex:1;min-width:8px;}
+  .step-content-title{font-size:14px;}
+  .step-content-obj{font-size:13px;}
+  .step-prompt-box{font-size:13px;padding:10px;white-space:pre-wrap;word-break:break-all;}
+  .step-hint{font-size:13px;}
+  .c-step-nav{padding:12px 14px;}
+  .step-nav-btn{padding:8px 14px;font-size:13px;}
+  .step-counter{font-size:13px;}
+
+  /* ── 하단 네비 ── */
+  .session-nav{gap:8px;padding-top:16px;}
+  .snav-btn{padding:8px 14px;font-size:13px;}
+  .snav-info{font-size:13px;}
+
+  /* ── 실습 헤더 ── */
+  .ph{padding:14px;border-radius:10px;}
+  .ph-title{font-size:15px;}
+  .ph-obj{font-size:13px;}
+  .ph-guide{font-size:13px;padding:8px 12px;}
+}
+
+/* ── Case Tab (Bad/Good 여러 케이스) ── */
+.case-wrap{display:flex;flex-direction:column;gap:16px;}
+.case-block{border-radius:12px;overflow:hidden;border:2px solid;}
+.case-block.bad-block{border-color:#fca5a5;}
+.case-block.good-block{border-color:#86efac;}
+.case-block-head{padding:11px 18px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+.bad-block .case-block-head{background:#fef2f2;}
+.good-block .case-block-head{background:#f0fdf4;}
+.case-block-title{font-size:15px;font-weight:800;display:flex;align-items:center;gap:8px;}
+.bad-block .case-block-title{color:#991b1b;}
+.good-block .case-block-title{color:#166534;}
+.case-tabs{display:flex;gap:6px;flex-wrap:wrap;}
+.case-tab-btn{padding:5px 12px;border-radius:20px;border:1.5px solid;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.15s;}
+.bad-block .case-tab-btn{border-color:#fca5a5;background:#fff;color:#991b1b;}
+.bad-block .case-tab-btn.active{background:#ef4444;color:#fff;border-color:#ef4444;}
+.good-block .case-tab-btn{border-color:#86efac;background:#fff;color:#166534;}
+.good-block .case-tab-btn.active{background:#22c55e;color:#fff;border-color:#22c55e;}
+.case-content{background:#fff;}
+.case-prompt-lbl{font-size:12px;font-weight:800;color:#94a3b8;letter-spacing:0.08em;padding:12px 16px 5px;}
+.case-prompt-box{margin:0 14px 12px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:14px;font-size:14px;font-family:'Pretendard',monospace;line-height:1.8;color:#334155;white-space:pre-wrap;}
+.case-result-lbl{font-size:12px;font-weight:800;letter-spacing:0.08em;padding:10px 16px 5px;}
+.bad-block .case-result-lbl{background:#fef2f2;color:#b91c1c;}
+.good-block .case-result-lbl{background:#f0fdf4;color:#15803d;}
+.case-result-box{padding:12px 16px 16px;font-size:14px;line-height:1.8;white-space:pre-wrap;}
+.bad-block .case-result-box{background:#fef2f2;color:#991b1b;}
+.good-block .case-result-box{background:#f0fdf4;color:#166534;}
+</style>
+</head>
+<body>
+<div class="sb-overlay" id="sb-overlay" onclick="closeSidebar()"></div>
+<aside id="sidebar">
+  <div class="sb-head">
+    <h1>🚀 AI 프롬프트 실습장</h1>
+    <p>14차시 마스터 커리큘럼</p>
+  </div>
+  <nav class="sb-nav" id="sb-nav"></nav>
+</aside>
+
+<main>
+  <div class="mh">
+    <div class="mh-top">
+      <button class="hamburger" onclick="toggleSidebar()"><span></span><span></span><span></span></button>
+      <div id="mh-badge" class="mh-badge">Session</div>
+    </div>
+    <h2 id="mh-title" class="mh-title">제목</h2>
+    <div class="tab-bar" id="tab-bar"></div>
+  </div>
+  <div class="ca">
+    <div class="ci" id="ci"></div>
+  </div>
+</main>
+
+<script>
+const sessions=[
+{id:"1-1",title:"1-1교시: 생성형 AI & LLM, 제대로 알고 쓰자",type:"A",
+overview:"생성형 AI는 확률 기반으로 답변을 만들기 때문에, 맥락이 없으면 그럴듯하게 틀리는 환각(Hallucination)이 발생합니다. AI의 한계를 정확히 이해하고, 안전하게 쓸 수 있는 범위를 직접 체감합니다.",
+effects:[{"name":"환각 인지","score":9.5,"desc":"AI가 그럴듯하게 거짓말하는 현상을 이해하고 걸러내는 눈 키우기"},{"name":"정확도 향상","score":9.0,"desc":"맥락 있는 질문으로 AI 답변 신뢰도를 높이는 방법 체득"},{"name":"리스크 감소","score":9.0,"desc":"검수 없이 쓰면 위험한 상황을 사전에 인지하여 사고 예방"},{"name":"안전한 활용","score":8.5,"desc":"업무별 AI 사용 가능 여부를 스스로 판단하는 기준 수립"},{"name":"검수 습관","score":9.0,"desc":"숫자·날짜·고유명사는 반드시 사람이 확인해야 함을 체득"},{"name":"AI 한계 이해","score":9.5,"desc":"AI가 잘하는 것과 못하는 것을 구분해 효율적으로 활용"}],
+tip:"• AI는 '정답'을 아는 게 아니라 확률적으로 다음 단어를 선택합니다.\n• 결과물의 숫자·날짜·고유명사는 반드시 사람이 검수해야 합니다.",
+practices:[
+{"title":"실습 1: 맥락 없는 질문 vs 맥락 있는 질문","objective":"배경 설명 없이 질문하면 AI가 그럴듯한 거짓 정보를 생성함을 직접 확인합니다.","guide":"아래 나쁜 예시를 실제로 AI에 입력해보고, 어떤 답이 나오는지 확인해보세요.","bads":[{"dept":"경영지원팀","prompt":"우리 회사 이번 분기 매출 알려줘.","result":"⚠️ AI 답변 (완전히 지어낸 수치):\n\"이번 분기 귀사 매출은 약 47억 원으로\n전 분기 대비 11.2% 성장한 것으로 추정됩니다.\n주력 제품 판매 호조와 신규 거래처 확보 영향으로...\"\n\n→ 이 수치, 전혀 근거 없음!\n→ 이걸 그대로 임원 보고서에 넣었다가\n   '이 수치 출처가 뭐예요?' 한 마디에\n   보고서 전면 재작성 + 야근 확정"},{"dept":"품질관리팀","prompt":"우리 라인 이번 달 불량률 알려줘.","result":"⚠️ AI 답변 (현장 데이터 없이 지어냄):\n\"이번 달 라인 불량률은 약 1.8%로 집계되며\n주요 원인은 원자재 품질 편차로 분석됩니다.\n단기 대책으로는 입고 검사 강화를...\"\n\n→ AI가 우리 공장 MES 시스템을 본 적이 없어요\n→ 이 수치로 품질보고서 제출했다가\n   실제 데이터와 다르면 대형 품질 사고"},{"dept":"영업팀","prompt":"주요 고객사 A사 납품 현황 알려줘.","result":"⚠️ AI 답변 (계약 정보 날조):\n\"A사 납품 현황은 월 평균 2,300개, 연간 계약\n규모 약 3억 2천만 원 수준으로 파악됩니다.\n재계약 논의는 3분기 예정인 것으로...\"\n\n→ AI가 우리 CRM을 본 적이 없어요\n→ 이 내용으로 영업 미팅 준비했다가\n   실제와 달라서 고객 앞에서 망신"}],"goods":[{"dept":"경영지원팀","prompt":"나는 삼성전기 협력사 경영지원팀 소속이야.\n우리 내부 매출 데이터는 네가 알 수 없어.\n대신, 2026년 국내 전자부품 중소기업\n평균 영업이익률을 공개 통계 기준으로만 알려줘.\n없으면 '정보 없음'으로 답해줘.","result":"✓ AI 답변 (신뢰할 수 있음):\n\"2026년 공식 집계 통계는 미발표 상태입니다.\n참고로 2025년 KEA 기준 전자부품 업종\n평균 영업이익률은 약 4.2% 수준이었습니다.\n최신 수치는 한국전자정보통신산업진흥회\n또는 한국은행 기업경영분석 보고서를\n참고하시기 바랍니다.\"\n\n→ 모른다고 솔직하게 + 대안 출처 제시\n→ 이 답변은 검증 후 안심하고 활용 가능"},{"dept":"품질관리팀","prompt":"나는 삼성전기 협력사 품질관리팀 소속이야.\n우리 공장 데이터는 알 수 없어.\n대신, 전자부품 제조업 일반적인 PPM 관리 기준을\nISO 또는 업계 공개 표준으로만 알려줘.\n없으면 없다고 해줘.","result":"✓ AI 답변 (표준 기반 신뢰 가능):\n\"전자부품 제조업 PPM 관리 공개 기준:\n• IPC-A-610: 전자조립품 허용 기준 Class 2/3\n• IATF 16949: 자동차 전장부품 500ppm 이하 목표\n• 일반 전자부품: 거래처별 별도 스펙 적용\n\n내부 기준은 고객사 계약서 또는 SEM 스펙 참조.\n공개 표준과 내부 기준을 반드시 대조 후 사용.\"\n\n→ 표준 기반 근거 있는 답변\n→ 내부 기준 비교 자료로 안전하게 활용"},{"dept":"기획팀","prompt":"나는 삼성전기 협력사 기획팀 소속이야.\n우리 회사 내부 정보는 알 수 없어.\n대신, 2026년 국내 전자부품 업계 주요 트렌드 3가지를\n공개 보고서 기준으로 알려줘.\n추측이면 반드시 '추정'이라고 표시해줘.","result":"✓ AI 답변 (출처·불확실성 명시):\n\"2026년 전자부품 업계 트렌드 (공개 자료 기반):\n\n1. AI 반도체 수요 급증\n   HBM·온디바이스 AI 칩셋 수요 전년比 40%↑\n   (출처: SEMI 2025 보고서)\n\n2. 전장 전자부품 확대\n   전기차 전환으로 MLCC·파워모듈 수요↑\n   (출처: MarketsandMarkets 예측)\n\n3. 탄소중립 규제 강화 (추정)\n   CBAM 확대로 친환경 부품 선호 증가\n   → 확인 필요\n\n→ 기획보고서 초안 자료로 활용 후 반드시 검증"}]},
+{"title":"실습 2: 환각 방지 명령 없음 vs 있음","objective":"'모르면 모른다고 해줘' 한 문장이 AI 답변을 얼마나 바꾸는지 직접 체감합니다.","guide":"같은 질문에 아래 문장 하나만 추가해보고 어떻게 달라지는지 비교해보세요.","bads":[{"dept":"생산기술팀","prompt":"2026년 하반기 반도체 소재 공급망 전망 알려줘.","result":"⚠️ AI 답변 (자신감 넘치는 허구):\n\"2026년 하반기 반도체 소재 공급은 안정화될\n전망입니다. 포토레지스트 공급 30% 증가,\n가격 8% 하락, 일본 소재 수출 규제 완전 해제\n예상으로 국내 업계에 호재로 작용할 것입니다.\"\n\n→ 구체적 수치까지 자신 있게 말하지만\n→ 전부 AI가 지어낸 것!\n→ 생산계획에 반영했다가 수급 문제 발생 시 낭패"},{"dept":"연구소","prompt":"최신 배터리 양극재 특허 출원 현황 알려줘.","result":"⚠️ AI 답변 (그럴듯한 허구 수치):\n\"2026년 배터리 양극재 특허 출원:\n• LG에너지솔루션: 하이니켈 NCM 특허 47건\n• 삼성SDI: 전고체용 황화물계 특허 23건\n• CATL: 리튬인산철 개량 특허 89건\n\n글로벌 출원 증가율은 전년 대비 31%...\"\n\n→ 이 특허 건수 전부 AI가 지어낸 숫자!\n→ R&D 전략 보고서에 넣으면 신뢰성 문제"},{"dept":"경영지원팀","prompt":"우리 업종 평균 복리후생비 비율 알려줘.","result":"⚠️ AI 답변 (출처 없는 수치):\n\"전자부품 제조업 복리후생비는 인건비의\n약 18~22% 수준이 일반적입니다. 귀사의 복리후생\n경쟁력 강화를 위해 20% 이상을 목표로\n설정하시는 것을 권장합니다.\"\n\n→ '일반적'이라는 표현, 출처 불명\n→ 임원 보고에 넣었다가\n   '이 비율 어디서 나온 거예요?' 질문에 할 말 없음"}],"goods":[{"dept":"생산기술팀","prompt":"2026년 하반기 반도체 소재 공급망 전망 알려줘.\n\n[중요] 확실하지 않은 내용은\n반드시 '추정' 또는 '불확실'로 표시해줘.\n데이터 없으면 '정보 없음'으로 답해줘.","result":"✓ AI 답변 (불확실성 명시):\n\"2026년 하반기 반도체 소재 공급 전망:\n\n【확인 가능한 정보】\n• 일본 수출 규제 완화 추세 지속 (공개 정책)\n• 국내 소재 자립화 투자 확대 (정부 발표)\n\n【추정 / 불확실】\n• 가격 변동폭: 공급망 불안으로 예측 어려움\n• 구체적 수급량: 실시간 데이터 접근 불가\n\n정확한 전망은 SEMI, 산업통상자원부\n최신 보고서 참조를 권장합니다.\"\n\n→ 아는 것/모르는 것 명확히 구분\n→ 생산계획 초안 자료로 안전하게 활용"},{"dept":"연구소","prompt":"최신 배터리 양극재 특허 출원 현황 알려줘.\n\n특허 건수 등 구체적 수치는 확인 불가하면\n수치 없이 트렌드만 설명해줘.\n추측이면 반드시 명시해줘.","result":"✓ AI 답변 (트렌드 중심 안전한 답변):\n\"배터리 양극재 특허 트렌드 (공개 자료 기반):\n\n【확인된 트렌드】\n• 하이니켈 NCM: 에너지밀도 향상 목적 출원 증가\n  주요 출원인: 국내 대형 배터리 3사 중심\n• 전고체 배터리 소재: 황화물계 집중 출원\n• LFP 개량: 중국 업체 출원 급증\n\n【구체적 건수】정확한 수치 확인 불가\n→ 정확한 특허 건수는 KIPRIS, USPTO에서 직접 검색\"\n\n→ 방향성은 제시 + 수치는 검증 요청\n→ R&D 방향 보고서용으로 안전하게 활용"},{"dept":"경영지원팀","prompt":"전자부품 제조업 복리후생비 비율 알려줘.\n출처 없는 수치는 절대 제시하지 말고\n'공개 통계 없음'으로 표시해줘.","result":"✓ AI 답변 (출처 명확, 한계 솔직히):\n\"전자부품 제조업 복리후생비 비율:\n\n【공개 통계 있음】\n• 고용노동부 기업체 노동비용 조사 (매년 발표)\n  제조업 전체 평균: 인건비의 약 15~20%\n  (2024년 기준, 업종 세분화 한계 있음)\n\n【공개 통계 없음】\n• 전자부품 업종 세부 수치: 미집계\n• 중소기업 협력사 규모별: 파악 불가\n\n정확한 수치는 고용노동부 통계포털 참조\"\n\n→ 있는 정보는 출처와 함께\n→ 없는 정보는 명확히 '없음'"}]},
+{"title":"실습 3: 안전한 업무 vs 위험한 업무 직접 구분","objective":"내 업무 중 AI를 바로 써도 되는 것과 검수가 꼭 필요한 것을 직접 구분해봅니다.","guide":"본인 부서 업무를 떠올리며 어떤 것이 안전하고 위험한지 직접 판단해보세요.","bads":[{"dept":"품질관리팀","prompt":"불량 원인 분석 보고서 작성해줘.\n불량률 3.2%, 크랙 발생, 거래처 OO전자\n납기 이번 주 금요일, 위약금 조항 있음","result":"⚠️ 매우 위험한 활용:\n\n문제 1: 계약 정보 AI에 직접 노출\n→ 무료 AI는 입력 내용이 학습에 활용될 수 있음\n→ 위약금 조항·거래처명은 대외비!\n\n문제 2: AI 추측 원인 → 공식 보고서 제출\n→ 실제 현장 데이터 없이 AI가 원인 추정\n→ 법적 분쟁 시 잘못된 원인 분석 = 책임 문제\n→ 잘못된 대책 수립 → 재발\n\n→ 계약 조건·거래처명 절대 AI에 입력 금지\n→ 원인 분석은 현장 데이터 + 전문가가 해야 함"},{"dept":"경영지원팀","prompt":"직원 이번 달 급여명세서 만들어줘.\n홍길동 대리: 기본급 280만, 식대 10만,\n교통비 5만, 성과급 50만원","result":"⚠️ 매우 위험한 활용:\n\n문제 1: 개인정보 AI에 직접 입력\n→ 직원 이름·급여는 개인정보보호법 보호 대상\n→ 무료 AI 입력 시 학습 데이터로 활용될 수 있음\n\n문제 2: 급여 계산 오류\n→ 세금·4대보험 계산은 AI가 정확히 못함\n→ 오류로 직원 신뢰 손상 + 법적 문제\n\n→ 급여·인사 정보는 절대 AI에 입력 금지\n→ 공식 급여관리 시스템(ERP) 사용"},{"dept":"영업팀","prompt":"A고객사 납품 제안서 작성해줘.\n단가 1만5천원, 최소발주 1,000개,\n독점 공급 2년, 계약금 20% 선불","result":"⚠️ 위험한 활용:\n\n문제 1: 계약 조건 대외비 노출\n→ 단가·독점 조건은 기밀 정보\n→ 무료 AI 입력 시 보안 위험\n\n문제 2: AI 작성 계약서 무검수 제출\n→ 법적 표현 오류로 불리한 조항 포함 가능\n→ 독점 조건·선불 조항은 법무 검토 필수\n→ 검수 없이 제출하면 회사 손해 발생\n\n→ 계약 단가·조건은 절대 AI에 입력 금지\n→ 제안서 구조만 AI, 조건은 직접 입력 + 법무 검토"}],"goods":[{"dept":"품질관리팀","prompt":"품질 이슈 현황 보고 초안 작성해줘.\n[일반 정보만 — 기밀 제외]\n- 이슈 유형: 외관 불량 (크랙 계열)\n- 발생 시점: 이번 주\n- 보고 대상: 팀장님\n- 형식: 현황/추정원인/조치계획 3단 구조\n- 분량: A4 반 페이지","result":"✓ 안전한 활용 — AI 초안:\n\n# 품질 이슈 현황 보고\n**작성일:** 2026.04.08 | **보고:** 팀장\n---\n## 현황\n이번 주 외관 불량(크랙) 이슈 발생 확인\n\n## 추정 원인 (현장 확인 필요)\n- 원자재 품질 편차 가능성\n- 공정 조건 이상 가능성\n\n## 조치계획\n- [ ] 현장 실사 및 샘플 수거 [담당: ___]\n- [ ] 원인 분석 후 시정조치 수립\n- [ ] 거래처 보고 (원인 확인 후)\n\n⚠️ 불량률·거래처명·원인은 현장 확인 후 직접 입력\n\n→ AI는 구조만 / 수치·원인은 사람이 채워야 함"},{"dept":"경영지원팀","prompt":"전 직원 연차 사용 촉진 공지문 초안 써줘.\n[일반 정보만]\n- 대상: 전 임직원\n- 핵심 메시지: 이번 달 안에 연차 소진 권고\n- 신청 방법: 사내 포털\n- 톤: 정중하고 친근하게\n- 분량: 짧게 3단락","result":"✓ 안전한 활용 — AI 초안:\n\n# 공지\n**수신:** 전 임직원 | **일:** 2026.04.08\n\n## 연차 사용 촉진 안내\n\n안녕하세요. 경영지원팀입니다.\n이번 달 말까지 잔여 연차를 소진해 주시기 바랍니다.\n업무 계획에 맞춰 팀장님과 협의 후 신청해 주세요.\n\n**신청:** 사내 포털 → 근태관리 → 연차신청\n**문의:** 경영지원팀 (내선 ____)\n\n→ 개인정보 없이 안전하게 작성\n→ 내선번호·마감일만 직접 수정 후 사용 가능"},{"dept":"영업팀","prompt":"신규 거래처 미팅 준비용 업계 동향 자료 작성해줘.\n[공개 정보만 — 계약 조건 제외]\n- 업종: 전자부품 제조\n- 미팅 목적: 신규 파트너십 제안\n- 필요 내용: 업계 트렌드 + 협력 포인트 3가지\n- 분량: A4 1장 이내","result":"✓ 안전한 활용 — AI 초안:\n\n# 전자부품 업계 동향 브리핑\n**기준:** 2026년 공개 자료\n\n## 트렌드 1: AI 기기용 소형 부품 수요 급증\n온디바이스 AI 확산 → 소형·고성능 부품 니즈 증가\n→ 미팅 포인트: AI 기기 대응 부품 공급 역량 어필\n\n## 트렌드 2: 전기차 전장부품 수요 확대\nMLCC·파워모듈 등 차량용 전장부품 급성장\n→ 미팅 포인트: 자동차 인증 보유 현황 공유\n\n## 트렌드 3: 공급망 안정성 선호 증가\n지정학 리스크로 국내 파트너 선호 트렌드\n→ 미팅 포인트: 납기 이력·대응 속도 강조\n\n⚠️ 수치는 미팅 전 최신 자료로 반드시 검증"}]}
+]},
+{id:"1-2",title:"1-2교시: AI와 대화하는 법 — 말이 곧 결과다",type:"A",
+overview:"역할·목표·상황·형식이라는 4요소를 갖추면 AI 답변 품질이 완전히 달라집니다. 막연하게 시키면 막연한 결과, 구체적으로 시키면 바로 쓸 수 있는 결과가 나옵니다.",
+effects:[{"name":"지시 명확성","score":9.5,"desc":"모호한 요청을 구체적 4요소로 변환하는 습관 형성"},{"name":"결과 예측","score":9.0,"desc":"원하는 결과물이 나올 확률을 높이는 질문법 체득"},{"name":"재사용성","score":8.5,"desc":"한번 만든 좋은 프롬프트를 템플릿으로 재활용"},{"name":"시간 단축","score":9.0,"desc":"재질문·수정 횟수를 줄여 업무 속도 향상"},{"name":"표준화","score":8.0,"desc":"팀원 누구나 같은 품질의 결과물 작성 가능"},{"name":"소통 오류 감소","score":8.5,"desc":"AI와의 소통 실패로 발생하는 낭비 제거"}],
+tip:"• [역할] [목표] [상황] [형식] 4요소를 습관화하세요.\n• 이심전심은 없습니다. 말하지 않으면 AI는 모릅니다.",
+practices:[
+{"title":"실습 1: 역할·목표 없음 vs 4요소 완성","objective":"역할과 목표를 명시하는 것만으로 답변 품질이 얼마나 달라지는지 체감합니다.","guide":"나쁜 예시를 먼저 AI에 입력해보고, 좋은 예시로 다시 입력해서 비교해보세요.","bads":[{"dept":"경영지원팀","prompt":"보고서 써줘.","result":"⚠️ AI 답변 (아무 내용 없는 껍데기):\n\n제목: 보고서\n\n1. 개요\n본 보고서는...\n\n2. 현황 분석\n(내용)\n\n3. 결론 및 제언\n(내용)\n\n→ AI가 '어떤' 보고서인지 몰라서\n   빈칸투성이 껍데기만 만들었습니다.\n→ 이걸 팀장한테 내밀 수 있을까요?\n→ 다시 하라고 돌아올 게 뻔합니다"},{"dept":"품질관리팀","prompt":"품질 보고서 작성해줘.","result":"⚠️ AI 답변 (어디서나 볼 수 있는 일반론):\n\n품질 보고서\n\n1. 품질 현황\n   - 불량률 현황 분석 필요\n   - 주요 불량 유형 파악 필요\n\n2. 원인 분석\n   - 5M1E 분석 방법론 적용\n   - 특성요인도 작성 권장\n\n3. 개선 방향\n   - 지속적 개선 활동 추진\n\n→ 아무 정보도 없으니\n   교과서 수준의 빈 양식만 나옴\n→ 우리 팀 이슈가 하나도 반영 안 됨"},{"dept":"기획팀","prompt":"기획안 써줘.","result":"⚠️ AI 답변 (제목만 있는 빈 문서):\n\n기획안\n\n1. 배경 및 목적\n   [작성 예정]\n\n2. 추진 방향\n   [작성 예정]\n\n3. 기대 효과\n   [작성 예정]\n\n→ 어떤 기획인지, 누구를 위한 것인지\n   AI가 전혀 모름\n→ [작성 예정] 채우는 건 결국 내가 다 해야 함\n→ AI 쓴 의미가 없음"}],"goods":[{"dept":"경영지원팀","prompt":"[역할] 10년차 경영지원팀 전문가\n[목표] 2분기 비용 절감 현황 경영진 보고용 요약 보고서\n[상황] 비용 절감 목표 5%, 현재 달성률 3.2%\n        부서별 절감 격차 심함, 긍정적 프레이밍 필요\n[형식] 핵심 3줄 요약 + 부서별 현황표 + 개선 방향\n        A4 1장, 임원 보고 수준으로","result":"✓ AI 답변 (바로 보고 가능한 완성본):\n\n# 2분기 비용 절감 현황 보고\n**기준일:** 2026.04.08 | **보고:** 경영진\n\n## 핵심 요약\n- 2분기 비용 절감 달성률 **3.2%** (목표 5%)\n- 일부 부서 우수 사례 확인, 전사 공유 필요\n- 잔여 분기 집중 관리로 목표 달성 추진 가능\n\n## 부서별 현황\n| 부서 | 목표 | 달성 | 비고 |\n| A팀  |  5% |  6.1% | 초과 달성 |\n| B팀  |  5% |  2.8% | 관리 필요 |\n\n## 개선 방향\n- A팀 우수 사례 3분기 전사 적용\n- B팀 집중 지원 및 주간 점검 강화\n\n⚠️ 실제 수치는 직접 입력 후 제출"},{"dept":"품질관리팀","prompt":"[역할] 품질관리팀 전문가\n[목표] B라인 크랙 불량 원인 분석 보고서 (팀장 보고용)\n[상황] 이번 주 크랙 불량 다수 발생, 원인은 입고 원자재 의심\n        거래처 보고 전 내부 검토 단계\n[형식] 현황/원인/조치 3단, 객관적 톤, A4 반 페이지","result":"✓ AI 답변 (즉시 활용 가능한 초안):\n\n# B라인 크랙 불량 원인 분석 보고\n**작성:** 품질관리팀 | **일자:** 2026.04.08\n\n## 현황\n이번 주 B라인 크랙 계열 불량 다수 발생 확인\n(정확한 불량률·수량은 현장 집계 후 기입)\n\n## 추정 원인\n입고 원자재 품질 편차 의심\n→ 해당 Lot 원자재 샘플 추가 검사 진행 중\n\n## 조치계획\n- [ ] 입고 Lot 전수 검사 실시 [금주 내]\n- [ ] 원자재 공급사 원인 확인 요청\n- [ ] 거래처 보고 (원인 확정 후)\n\n⚠️ 불량률·Lot 번호는 실측 후 직접 입력"},{"dept":"기획팀","prompt":"[역할] 기획팀 전략 기획 담당자\n[목표] AI 업무 도입 타당성 검토 기획안 (임원 결재용)\n[상황] 사내 AI 도구 도입 검토 초기 단계\n        비용 절감·효율화 효과 근거 필요\n[형식] 배경/목적/기대효과/실행계획/예산\n        5단 구조, A4 2장 이내","result":"✓ AI 답변 (결재 가능한 기획안 초안):\n\n# AI 업무 도입 타당성 검토\n**작성자:** 기획팀 | **버전:** v1.0 | **일:** 2026.04\n\n## 1. 배경 및 목적\n생성형 AI 기술 확산으로 업무 자동화 기회 증가.\n반복 문서 작업 자동화를 통한 업무 효율 20~40% 향상 기대.\n\n## 2. 기대 효과\n- 보고서·회의록 작성 시간 70% 단축\n- 직원 1인당 월 3~5시간 절감 추정\n- 문서 품질 표준화 및 오류 감소\n\n## 3. 실행 계획\n1단계: 파일럿 (1개월) — 기획팀 시범 운영\n2단계: 확대 (3개월) — 전사 교육 및 도입\n\n## 4. 예산 (추정)\n교육비 ___, 도구 구독료 ___\n(정확한 견적은 별도 검토 필요)\n\n**결재:** 담당 | 팀장 | 임원\n\n⚠️ 수치·예산은 실제 검토 후 입력"}]},
+{"title":"실습 2: 상황(맥락) 없음 vs 맥락 충분히","objective":"상황 정보가 추가되면 AI가 얼마나 더 맞춤형 답변을 만드는지 확인합니다.","guide":"실제 내가 처한 상황을 AI에게 설명하는 연습을 해보세요.","bads":[{"dept":"영업팀","prompt":"메일 써줘.","result":"⚠️ AI 답변 (누구에게 보내는지도 모름):\n\n안녕하세요.\n\n저는 [회사명]의 [이름]입니다.\n귀사와의 협력에 항상 감사드립니다.\n\n이번에 문의드리고자 하는 사항은\n[내용을 입력해주세요]...\n\n감사합니다.\n[이름] 드림\n\n→ AI가 아무것도 몰라서\n   [빈칸]투성이 메일을 만들었습니다.\n→ 이걸 보내려면 전부 내가 채워야 함\n→ 직접 쓰는 것과 다를 바 없음"},{"dept":"생산기술팀","prompt":"공정 개선 요청 메일 작성해줘.","result":"⚠️ AI 답변 (상황 모름):\n\n수신: [담당자]\n\n안녕하세요.\n\n당사 생산 공정 개선과 관련하여\n문의드립니다.\n\n[개선 요청 내용]\n\n검토 후 회신 부탁드립니다.\n감사합니다.\n\n→ [개선 요청 내용] 채우는 건 내 몫\n→ AI가 상황을 모르니\n   결국 직접 쓰는 것과 동일"},{"dept":"구매팀","prompt":"납기 연장 요청 메일 작성해줘.","result":"⚠️ AI 답변 (맥락 없음):\n\n수신: [담당자명]\n\n안녕하세요. [회사명] 구매팀입니다.\n\n납기 연장을 요청드리고자 연락드렸습니다.\n사유는 [사유 입력] 때문입니다.\n연장 희망 기간은 [기간]입니다.\n\n검토 부탁드립니다.\n\n→ [빈칸]을 전부 내가 채워야 함\n→ AI가 왜 연장해야 하는지,\n   누구에게 보내는지 전혀 모름"}],"goods":[{"dept":"영업팀","prompt":"[역할] 영업팀 담당자\n[목표] 신규 거래처 A사 첫 미팅 후 감사 + 다음 단계 제안 메일\n[상황] 어제 미팅에서 제품 샘플 요청받음\n        상대방: A사 구매팀 이과장님, 3년 경력\n        관계: 첫 만남, 적당히 격식 있게\n[형식] 200자 이내, 감사→샘플 발송 일정→다음 미팅 제안 순서","result":"✓ AI 답변 (바로 전송 가능):\n\n이과장님, 어제 미팅 자리 내주셔서 감사합니다.\n\n말씀 주신 샘플은 이번 주 목요일(04.10)까지\n발송해 드리겠습니다. 제품 검토 후 궁금한 점\n있으시면 편하게 연락 주세요.\n\n다음 주 중 다시 한번 미팅 자리 잡을 수 있을지요?\n일정 조율 부탁드립니다.\n\n감사합니다.\n[이름] 드림\n\n→ 발송일·미팅 일정만 조정하면 바로 전송 가능"},{"dept":"생산기술팀","prompt":"[역할] 생산기술팀 담당자\n[목표] B설비 이상으로 C협력사에 납기 지연 양해 요청 메일\n[상황] B설비 갑작스러운 고장, 복구 예상 3일\n        C협력사는 5년 거래처, 관계 좋음\n        납기 3일 연장 필요, 사과 + 대안 제시 필요\n[형식] 공식적이되 친근하게, 3단락 이내","result":"✓ AI 답변 (관계 고려한 메일):\n\n홍팀장님, 안녕하세요. 생산기술팀 [이름]입니다.\n\n다름이 아니라 당사 B설비 긴급 고장 발생으로\n납기 3일 연장을 요청드리게 되었습니다.\n오늘 오전 발생하여 현재 긴급 복구 중이며,\n04.11(금) 납품으로 조정 가능한지 검토 부탁드립니다.\n\n5년간 신뢰해주신 만큼 최대한 빠르게 복구하여\n차질 없도록 하겠습니다. 죄송합니다.\n\n[이름] 드림\n\n→ 관계·상황 반영된 톤\n→ 날짜만 수정하면 바로 전송 가능"},{"dept":"구매팀","prompt":"[역할] 구매팀 대리\n[목표] 원자재 납기 2주 연장 요청 메일\n[상황] B부품 수급 차질, OO협력사 김대리님\n        2년 거래, 서로 편한 관계\n        사정 설명 + 대체 납품 일정 협의 요청\n[형식] 친근하되 정중하게, 150자 이내","result":"✓ AI 답변 (실제 보낼 수 있는 메일):\n\n김대리님, 안녕하세요. 구매팀 [이름]입니다.\n\n다름이 아니라 B부품 수급 일정 변동으로\n납기 2주 연장 요청드립니다.\n검토 후 조정 가능한 일정 알려주시면\n감사하겠습니다.\n\n항상 협조해주셔서 감사합니다.\n[이름] 드림\n\n→ 관계에 맞는 친근한 톤\n→ 이름·날짜만 수정하면 바로 전송 가능"}]},
+{"title":"실습 3: 4요소 완성형 직접 조립 실습","objective":"역할·목표·상황·형식 4요소를 모두 조립하여 완성도 높은 지시문을 만듭니다.","guide":"내가 지금 당장 필요한 업무 문서를 골라서 4요소를 직접 채워보세요.","bads":[{"dept":"연구소","prompt":"회의 내용 정리해줘.\n오늘 개발 미팅에서 일정 얘기했어.","result":"⚠️ AI 답변 (정보 없이 불가능):\n\n## 회의 내용 정리\n\n일시: [미기재]\n참석자: [미기재]\n\n논의 내용:\n- 일정 관련 사항 논의\n\n결정사항: [미기재]\n담당자: [미기재]\n\n→ AI가 미팅 내용을 들은 적이 없어요\n→ [미기재] 채우는 건 전부 내 몫\n→ 이럴 거면 처음부터 내가 그냥 쓰는 게 나음"},{"dept":"생산기술팀","prompt":"공정 개선 제안서 써줘.","result":"⚠️ AI 답변 (방향을 모름):\n\n# 공정 개선 제안서\n\n1. 현황\n   - 현재 공정 상태 [분석 필요]\n\n2. 문제점\n   - 주요 문제점 [파악 필요]\n\n3. 개선안\n   - 개선 방향 [검토 필요]\n\n→ 어떤 공정인지, 무슨 문제인지 전혀 모름\n→ 빈칸투성이 양식만 나왔음\n→ 이걸 제출하면 '이게 뭐예요?' 소리 들음"},{"dept":"기획팀","prompt":"시장 조사 요약본 만들어줘.","result":"⚠️ AI 답변 (주제를 모름):\n\n시장 조사 요약\n\n1. 시장 규모\n   [조사 필요]\n\n2. 주요 트렌드\n   [분석 필요]\n\n3. 경쟁 환경\n   [파악 필요]\n\n→ 어떤 시장인지, 목적이 무엇인지 모름\n→ 아무것도 채워지지 않은 목차만 만들어줌\n→ 4요소를 넣어주지 않으면 이 이상 못 만들어줌"}],"goods":[{"dept":"연구소","prompt":"[역할] R&D팀 선임 연구원\n[목표] 오늘 개발 일정 조율 회의 결과 정리\n        → 팀 전체 공유용 회의록\n[상황] 참석 4명, 신제품 A 출시일 논의\n        결론: 출시 2주 연기 확정\n        홍연구원이 기존 스펙 재검토 담당\n[형식] 결론/액션아이템/다음회의 3단 마크다운","result":"✓ AI 답변 (팀 공유 가능한 회의록):\n\n# 개발 일정 조율 회의록\n**일시:** 2026.04.08 | **참석:** 4명\n---\n## 핵심 결론\n- 신제품 A 출시일 **2주 연기 확정**\n- 사유: 스펙 재검토 필요\n\n## 액션아이템\n- [ ] 홍연구원 | 기존 스펙 전면 재검토 | 04.15\n- [ ] 전체 | 변경된 일정 관련 부서 공유 | 04.09\n\n## 다음 회의\n**일정:** 04.15 | **안건:** 스펙 검토 결과 공유\n\n→ 완성본 수준, 바로 팀 공유 가능"},{"dept":"생산기술팀","prompt":"[역할] 생산기술팀 주임\n[목표] C라인 사이클 타임 단축 공정 개선 제안서\n        → 팀장 보고 후 경영진 검토\n[상황] 현재 사이클 타임 45초, 목표 38초\n        병목구간: 3공정 (수작업 비중 높음)\n        개선 방법: 반자동화 도입 검토 중\n[형식] 현황/문제/개선안/기대효과 4단, A4 1장","result":"✓ AI 답변 (즉시 보고 가능한 초안):\n\n# C라인 사이클 타임 단축 공정 개선 제안\n**작성:** 생산기술팀 [이름] | 2026.04.08\n---\n## 현황\n현재 사이클 타임: **45초** (목표 대비 18.4% 초과)\n\n## 문제점\n3공정 수작업 비중 과다 → 병목 발생\n\n## 개선안\n3공정 반자동화 도입 검토\n→ 수작업 단계 2단계 제거 가능 (추정)\n\n## 기대 효과\n- 사이클 타임 목표 **38초** 달성 가능성\n- 작업자 부담 경감, 품질 편차 감소 기대\n\n**결재:** 담당 | 팀장 | 경영진\n\n⚠️ 투자 비용·정확한 시간은 현장 측정 후 입력"},{"dept":"기획팀","prompt":"[역할] 기획팀 전략 기획 담당자\n[목표] 2026년 하반기 전자부품 시장 동향 요약본\n        → 경영진 월간 브리핑용\n[상황] 공개 보고서 기반, 추측은 추측이라고 표시\n        AI 반도체·전기차·규제 3가지 트렌드 중심\n[형식] 트렌드별 한 문단 + 시사점 1줄, A4 1장","result":"✓ AI 답변 (브리핑용 완성본):\n\n# 2026년 하반기 전자부품 시장 동향\n**기준:** 공개 자료 | **보고:** 경영진 브리핑\n---\n## 트렌드 1: AI 반도체 수요 급증\n온디바이스 AI 기기 확산으로 소형·고집적\n전자부품 수요가 전년 대비 30~40% 성장 추정.\n→ **시사점:** AI 기기 대응 부품 포트폴리오 점검 필요\n\n## 트렌드 2: 전기차 전장부품 확대\n전기차 전환 가속으로 MLCC·파워모듈 등\n차량용 전장부품 시장 두 자릿수 성장 지속.\n→ **시사점:** 차량용 인증 보유 협력사 발굴 검토\n\n## 트렌드 3: 탄소국경세(CBAM) 영향 (추정)\n유럽 수출 협력사 원가 상승 압력 예상.\n→ **시사점:** 협력사 탄소 데이터 사전 파악 권장\n\n⚠️ 정확한 수치는 SEMI·KEA 최신 보고서 확인 후 사용"}]}
+]},
+{id:"1-3",title:"1-3교시: 원하는 답을 뽑아내는 프롬프팅 기법",type:"A",
+overview:"기본 지시문에 예시·제약·출력 구조를 추가하면 후속 수정 요청이 사라집니다. 퓨샷·CoT·네거티브 프롬프팅 등 핵심 기법을 익혀 한 번에 원하는 결과를 뽑아내는 능력을 키웁니다.",
+effects:[{"name":"수정 최소화","score":9.5,"desc":"한 번의 입력으로 바로 쓸 수 있는 결과물을 받는 기법"},{"name":"결과물 통제","score":9.0,"desc":"형식·분량·톤을 내가 원하는 대로 지정하는 방법"},{"name":"답변 구조화","score":8.5,"desc":"체크리스트·비교표·단계별 등 원하는 구조로 답변 유도"},{"name":"조건부 제약","score":9.0,"desc":"원하지 않는 것을 명시해서 불필요한 내용을 없애는 기술"},{"name":"템플릿화","score":8.5,"desc":"자주 쓰는 프롬프트 패턴을 고정해서 매번 입력 생략"},{"name":"효율 극대화","score":9.0,"desc":"AI와의 소통 횟수를 줄여 업무 속도를 획기적으로 높임"}],
+tip:"• '~하지 말 것'보다 '~로 할 것' 긍정 지시가 더 잘 먹힙니다.\n• 조건이 10개 넘으면 AI도 다 못 지킵니다. 3~5개가 최적입니다.",
+practices:[
+{"title":"실습 1: 제로샷 vs 퓨샷 (예시 먼저 보여주기)","objective":"예시를 보여주는 것만으로 AI의 답변 정확도가 얼마나 올라가는지 체감합니다.","guide":"나쁜 예시를 먼저 AI에 입력해보고, 좋은 예시로 다시 입력해서 비교해보세요.","bads":[{"dept":"경영지원팀","prompt":"주간업무보고 써줘.","result":"⚠️ AI 답변 (자기 마음대로 형식):\n\n주간업무보고\n\n안녕하세요. 이번 주 업무 결과를 보고드립니다.\n이번 주에는 다양한 업무를 수행하였습니다.\n주요 업무로는...\n\n→ AI가 우리 회사 양식을 모름\n→ 자기 마음대로 형식을 만들었음\n→ 이 양식, 팀장님이 원하는 형식 아님\n→ '우리 양식대로 해줘'라고 해도\n   양식을 보여주지 않으면 AI는 모름"},{"dept":"품질관리팀","prompt":"품질 현황 보고서 써줘.","result":"⚠️ AI 답변 (예시 없이 엉뚱한 형식):\n\n## 품질 현황 보고서\n\n**작성일:** [날짜]\n\n### 1. 전반적 품질 현황\n- 품질 지표 안정적\n- 개선 여지 있음\n\n### 2. 불량률 현황\n- 데이터 수집 필요\n\n→ 우리 팀이 쓰는 양식이랑 전혀 다름\n→ 매번 형식을 처음부터 다시 설명해야 함\n→ 예시 한 번만 보여줬으면 이런 일 없음"},{"dept":"생산기술팀","prompt":"공정 일일 점검 보고서 써줘.","result":"⚠️ AI 답변 (맞지 않는 형식):\n\n공정 일일 점검 보고서\n\n1. 점검 일자: \n2. 점검자:\n3. 점검 항목:\n   가. 설비 상태\n   나. 안전 상태\n4. 특이사항:\n\n→ 우리 팀 점검 양식이랑 다름\n→ 항목 순서도 다르고\n   우리가 쓰는 필드도 빠졌음\n→ 매번 처음부터 양식 설명 반복"}],"goods":[{"dept":"경영지원팀","prompt":"아래 양식과 똑같은 형식으로 이번 주 주간업무보고를 작성해줘.\n\n```\n# 주간업무보고\n**작성자:** | **부서:** 경영지원 | **기간:**\n---\n## ✅ 이번주 완료\n-\n## 📌 다음주 예정\n-\n## ⚠️ 이슈사항\n>\n```\n\n[이번주 업무]\n- 2분기 예산 집행 현황 정리 완료\n- 신규 협력업체 계약서 검토\n- 사내 교육 일정 조율\n- 이슈: B동 에어컨 수리 지연","result":"✓ AI 답변 (양식 그대로 작성):\n\n# 주간업무보고\n**작성자:** [이름] | **부서:** 경영지원 | **기간:** 04.07~04.11\n---\n## ✅ 이번주 완료\n- 2분기 예산 집행 현황 정리 완료\n- 신규 협력업체 계약서 검토 완료\n- 사내 교육 일정 조율 완료\n\n## 📌 다음주 예정\n- B동 에어컨 수리 후속 조치\n- 2분기 결산 준비\n\n## ⚠️ 이슈사항\n> 🔴 B동 에어컨 수리 지연\n> 담당: [이름] | 업체 재접촉 예정\n\n→ 양식을 보여주니 우리 형식 그대로!\n→ 이름·날짜만 수정하면 바로 제출 가능"},{"dept":"품질관리팀","prompt":"아래 양식과 똑같이 이번 주 품질 현황 보고서를 작성해줘.\n\n```\n# 품질 현황 보고\n**기간:** | **작성:** |\n---\n## 불량 현황\n| 라인 | 불량유형 | 발생수량 | 처리현황 |\n\n## 긴급 이슈\n> 🔴 긴급 / 🟡 주의 / 🟢 정상\n\n## 이번 주 조치 완료\n-\n```\n\n[이번주 내용]\n- A라인 크랙 불량 3건, 원인 조사 중\n- B라인 정상\n- 긴급: A라인 이슈 거래처 보고 필요","result":"✓ AI 답변 (양식 그대로 완성):\n\n# 품질 현황 보고\n**기간:** 04.07~04.11 | **작성:** 품질관리팀\n---\n## 불량 현황\n| 라인 | 불량유형 | 발생수량 | 처리현황 |\n|------|---------|---------|--------|\n| A라인 | 크랙 | 3건 | 원인 조사 중 |\n| B라인 | - | 0건 | 정상 |\n\n## 긴급 이슈\n> 🔴 A라인 크랙 불량 — 거래처 보고 필요\n\n## 이번 주 조치 완료\n- B라인 정기 점검 완료\n\n→ 양식을 보여주니 우리 형식 그대로!\n→ 실제 수치만 확인 후 바로 제출 가능"},{"dept":"생산기술팀","prompt":"아래 양식으로 오늘 일일 점검 보고서를 작성해줘.\n\n```\n# 일일 점검 보고\n**일자:** | **점검자:**\n---\n## 설비 상태\n| 설비 | 상태 | 특이사항 |\n\n## 공정 이슈\n> 이슈 없으면 '이상 없음'\n\n## 조치 필요 사항\n- [ ] 항목 | 담당 | 기한\n```\n\n[오늘 점검 결과]\n- A설비 정상\n- B설비 진동 소음 발생, 정비 필요\n- C설비 정상\n- 조치: B설비 오늘 중 정비팀 요청","result":"✓ AI 답변 (양식 그대로 완성):\n\n# 일일 점검 보고\n**일자:** 2026.04.08 | **점검자:** [이름]\n---\n## 설비 상태\n| 설비 | 상태 | 특이사항 |\n|------|------|--------|\n| A설비 | 🟢 정상 | - |\n| B설비 | 🔴 이상 | 진동 소음 발생 |\n| C설비 | 🟢 정상 | - |\n\n## 공정 이슈\n> 🔴 B설비 진동 소음 — 즉시 점검 필요\n\n## 조치 필요 사항\n- [ ] B설비 긴급 점검 | 정비팀 | 오늘 중\n\n→ 양식을 보여주니 우리 형식 그대로!\n→ 실제 설비명·이름만 수정하면 제출 가능"}]},
+{"title":"실습 2: 조건 없음 vs 네거티브 프롬프팅","objective":"원하지 않는 것을 명시하면(네거티브 프롬프팅) 결과 정확도가 얼마나 올라가는지 확인합니다.","guide":"여러분이 AI에게서 자주 받는 불필요한 내용을 직접 빼달라고 해보세요.","bads":[{"dept":"영업팀","prompt":"거래처 클레임 대응 메일 작성해줘.","result":"⚠️ AI 답변 (길고 장황한 인사말):\n\n안녕하세요. 저는 [회사명] 영업팀 담당자입니다.\n평소 귀사와의 돈독한 협력 관계에 진심으로\n감사드립니다. 항상 최선을 다해 지원해드리고자\n하는 마음으로 이번에 연락을 드리게 되었습니다.\n\n먼저 이번 사안에 대해 깊은 유감의 말씀을\n전하고 싶습니다. 귀사가 겪으신 불편함에...\n\n→ 본론이 나오기까지 5줄이 인사말\n→ '빠르게 처리해 드리겠다'는 메시지가 묻힘\n→ 받는 사람은 핵심만 빨리 보고 싶어함"},{"dept":"경영지원팀","prompt":"신입사원 교육 안내 공지문 써줘.","result":"⚠️ AI 답변 (전문용어 범벅):\n\n본 공지는 당사 신규 입사자의 온보딩 프로세스\n최적화를 위한 오리엔테이션 세션 일정 안내입니다.\n신규 구성원의 조직 문화 동화 및 직무 역량\n강화를 위한 체계적 인덕션 프로그램으로...\n\n→ 신입사원한테 어려운 말 왜 쓰나요?\n→ '온보딩', '인덕션'은 처음 보는 신입에겐 낯설음\n→ 쉬운 말로 써달라고 했어야 함"},{"dept":"품질관리팀","prompt":"불량 발생 경위 보고서 써줘.","result":"⚠️ AI 답변 (불필요한 내용 가득):\n\n안녕하세요. 품질관리팀입니다.\n\n먼저 이번 불량 발생에 대해 진심으로 사과드립니다.\n당사는 항상 최고의 품질을 제공하기 위해\n노력해왔으나 이번에 미흡한 점이 있었습니다.\n저희 팀 전체가 이 사안을 매우 엄중하게 받아들이고...\n\n→ 보고서에 사과문이 웬 말?\n→ 경위·원인·대책이 핵심인데\n   핵심은 뒤로 밀리고 서론만 넘침"}],"goods":[{"dept":"영업팀","prompt":"거래처 클레임 대응 메일 작성해줘.\n\n[빼줘야 할 것]\n- 긴 인사말·서론 없이\n- '~하고자 합니다' 완곡어법 없이\n- 과도한 사과 표현 없이\n\n[넣어야 할 것]\n- 사과(1줄) → 원인(1줄) → 조치계획(2줄) 순서로\n- 다음 액션 명확히\n- 전체 200자 이내","result":"✓ AI 답변 (핵심만 간결하게):\n\n이번 납품 불량으로 불편을 드려 죄송합니다.\n\n원인 파악 결과 입고 검사 단계 누락이 확인되었습니다.\n즉각 재발 방지 조치를 시행하였으며,\n대체 납품은 04.14(월)까지 완료하겠습니다.\n\n추가 문의 있으시면 언제든지 연락 주세요.\n[이름] 드림\n\n→ 불필요한 서론 0줄\n→ 사과→원인→조치 명확하게\n→ 받는 사람이 3초 만에 핵심 파악"},{"dept":"경영지원팀","prompt":"신입사원 오리엔테이션 안내 공지문 써줘.\n\n[빼줘야 할 것]\n- 전문용어·영어 약어 없이\n- 딱딱한 공문 말투 없이\n- 불필요한 서론 없이\n\n[넣어야 할 것]\n- 일시, 장소, 준비물 명확히\n- 친근하고 따뜻한 톤\n- 전체 150자 이내","result":"✓ AI 답변 (신입이 읽기 편한 공지):\n\n# 신입사원 첫날 오리엔테이션 안내 👋\n\n새로 오신 분들 모두 환영합니다!\n\n**일시:** 2026.04.14(월) 오전 9시\n**장소:** 본관 2층 교육실\n**준비물:** 신분증, 필기도구\n\n첫날부터 편하게 오세요 😊\n\n→ 신입사원도 한눈에 이해\n→ 친근한 톤으로 심리적 부담 감소"},{"dept":"품질관리팀","prompt":"불량 발생 경위 보고서 써줘.\n\n[빼줘야 할 것]\n- 사과문·인사말 없이\n- 추측성 원인 없이\n- 감성적 표현 없이\n\n[넣어야 할 것]\n- 경위/원인/대책 3단 구조\n- 객관적 사실만\n- 날짜·수량 표시 칸 포함\n- A4 반 페이지 이내","result":"✓ AI 답변 (객관적 보고서):\n\n# 불량 발생 경위 보고\n**발생일:** ___ | **보고자:** 품질관리팀\n---\n## 경위\n___ 일 ___ 라인에서 ___ 유형 불량 ___ 건 발생\n\n## 원인 (확인 사항만)\n- 입고 검사 기록 확인 필요\n- 공정 조건 데이터 분석 중\n(추측 원인은 확인 후 별도 보고)\n\n## 대책\n- [ ] 해당 Lot 전수 검사 실시\n- [ ] 원인 분석 완료 후 시정조치 보고\n\n→ 사실만 간결하게\n→ 빈칸은 현장 데이터로 직접 채울 것"}]},
+{"title":"실습 3: 기본 질문 vs CoT 단계별 추론","objective":"복잡한 판단이 필요한 업무에서 단계별로 생각하게 시키면 논리적인 답변이 나옴을 확인합니다.","guide":"납기 결정, 업체 선정 등 판단이 필요한 업무에 CoT를 직접 적용해보세요.","bads":[{"dept":"구매팀","prompt":"A업체 단가 2,100원 납기 30일\nB업체 단가 2,350원 납기 15일\n어디가 나아?","result":"⚠️ AI 답변 (근거 없는 결론):\n\nA업체를 추천합니다.\n가격이 더 저렴하기 때문입니다.\n\n→ 왜 A업체인지 논리적 근거가 없음\n→ 납기 차이가 재고·생산에 미치는 영향은?\n→ 이 답변으로 팀장에게 보고할 수 없음\n→ 결국 내가 분석해야 함"},{"dept":"생산기술팀","prompt":"C설비 vs D설비 중 뭐가 나아?\nC: 1억5천만원, 생산속도 100개/시\nD: 2억원, 생산속도 140개/시","result":"⚠️ AI 답변 (단순 비교):\n\nD설비가 더 좋습니다.\n생산속도가 40% 빠르기 때문입니다.\n\n→ 투자 회수 기간 계산은?\n→ 현재 생산 목표와 맞는지?\n→ 유지보수 비용 차이는?\n→ 이것만으론 구매 결정을 내릴 수 없음"},{"dept":"기획팀","prompt":"신규 사업 A안 vs B안 뭐가 나아?\nA안: 투자 5억, 예상수익 8억, 기간 2년\nB안: 투자 2억, 예상수익 4억, 기간 1년","result":"⚠️ AI 답변 (일차원적 비교):\n\nA안이 더 유리합니다.\n수익이 더 크기 때문입니다.\n\n→ ROI 계산은 했나요?\n→ 리스크 분석은?\n→ 자금 조달 가능성은?\n→ 이 답변, 경영진 보고에 올릴 수 없음"}],"goods":[{"dept":"구매팀","prompt":"아래 두 협력사를 비교 분석해줘.\nA업체: 단가 2,100원, 납기 30일\nB업체: 단가 2,350원, 납기 15일\n\n[분석 방법 — 단계별로 생각해줘]\n1단계: 단가 차이 금액 계산 (월 1,000개 기준)\n2단계: 납기 차이가 재고·생산에 미치는 영향\n3단계: 각 업체 장단점 정리\n4단계: 상황별 추천 (비용 우선 vs 납기 우선)","result":"✓ AI 답변 (단계별 논리적 분석):\n\n**1단계: 단가 차이**\n月 1,000개 기준 250,000원 차이 → 연 3,000,000원\n\n**2단계: 납기 영향**\nA업체(30일): 재고 2주치 추가 보유 필요\n→ 재고 비용·현금흐름 부담\nB업체(15일): 적시 납품으로 재고 최소화 가능\n\n**3단계: 장단점**\nA업체: 원가↓, 재고비용↑, 현금흐름 부담\nB업체: 원가↑, 재고↓, 생산 유연성↑\n\n**4단계: 상황별 추천**\n비용 우선 → A업체\n납기·재고 민감 → B업체\n\n→ 단계별 근거 완비\n→ 팀장 보고 자료로 바로 활용 가능"},{"dept":"생산기술팀","prompt":"C설비와 D설비를 비교 분석해줘.\nC설비: 1억5천만원, 생산속도 100개/시간\nD설비: 2억원, 생산속도 140개/시간\n\n[분석 방법 — 단계별로]\n1단계: 시간당 생산량 차이와 금액 환산\n2단계: 투자 회수 기간 비교 (현재 생산 목표 하루 800개 기준)\n3단계: 각 설비 장단점\n4단계: 현재 상황 기준 추천","result":"✓ AI 답변 (투자 의사결정 분석):\n\n**1단계: 생산량 차이**\nC설비: 100개/시 | D설비: 140개/시\n→ D설비가 40% 빠름\n\n**2단계: 투자 회수 분석**\n하루 목표 800개 기준:\n• C설비: 8시간 가동 → 목표 달성 가능\n• D설비: 5.7시간으로 목표 달성, 여유 있음\n추가 투자 5천만원 대비 효율 향상 14% 증가\n\n**3단계: 장단점**\nC설비: 초기 비용↓, 현재 목표 달성 가능\nD설비: 비용↑, 미래 증산 여력·생산성↑\n\n**4단계: 추천**\n현재 목표만 보면 C설비 충분\n향후 2년 내 증산 계획 있다면 D설비 권장\n\n→ 논리적 분석 완비\n→ 경영진 보고용으로 활용 가능"},{"dept":"기획팀","prompt":"신규 사업 A안과 B안을 비교 분석해줘.\nA안: 투자 5억, 예상수익 8억, 기간 2년\nB안: 투자 2억, 예상수익 4억, 기간 1년\n\n[분석 방법 — 단계별로]\n1단계: 각 안의 ROI 계산\n2단계: 연간 수익률 비교\n3단계: 리스크 요인 분석\n4단계: 자금 여력에 따른 추천","result":"✓ AI 답변 (전략적 의사결정 분석):\n\n**1단계: ROI 계산**\nA안: (8억-5억)/5억 = 60%\nB안: (4억-2억)/2억 = 100%\n\n**2단계: 연간 수익률**\nA안: 60% ÷ 2년 = 연 30%\nB안: 100% ÷ 1년 = 연 100%\n\n**3단계: 리스크**\nA안: 2년 장기 — 시장 변화 리스크 높음\nB안: 1년 단기 — 리스크 낮음, 빠른 회수\n\n**4단계: 추천**\n자금 여력 부족 → B안 (빠른 회수 후 재투자)\n자금 여력 충분 → A안 고려 (절대 수익 큼)\n\n→ 단계별 논리 완비\n→ 경영진 의사결정 자료로 바로 활용 가능"}]}
+]},
+{id:"1-4",title:"1-4교시: AI가 바로 알아듣는 문서 형식 (마크다운)",type:"B",
+overview:"마크다운 기호(#, -, **, ---, ` ` `)는 AI가 문서를 구조적으로 이해하는 최고의 뼈대입니다. 정형화된 보고서·메일·공지 양식을 마크다운으로 만들면 AI가 형식을 그대로 지켜 내용을 채워줍니다.",
+effects:[{"name":"AI 이해도 향상","score":9.5,"desc":"마크다운으로 작성된 문서는 AI가 구조를 정확히 인식"},{"name":"양식 고정","score":9.0,"desc":"코드블록으로 양식을 감싸면 AI가 형식을 변경 못함"},{"name":"즉시 복붙","score":8.5,"desc":"AI가 마크다운으로 출력하면 복붙 후 바로 사용 가능"},{"name":"구조화","score":8.0,"desc":"# ## ### 으로 문서 계층을 명확히 만들어 가독성 향상"},{"name":"플랫폼 호환","score":8.5,"desc":"Notion·Slack·GitHub 등 마크다운 지원 플랫폼과 호환"},{"name":"시간 절약","score":9.0,"desc":"매번 양식 설명 없이 마크다운 양식만 붙여넣으면 OK"}],
+tip:"• # 기호 뒤에는 반드시 공백(스페이스) 1칸이 필요합니다.\n• 표는 직접 쓰려 하지 말고 AI한테 말로 시키세요.",
+practices:[
+{"title":"실습 1: 주간업무보고 마크다운 양식","objective":"# ## --- ** - [ ] 기호를 사용해서 주간업무보고 마크다운 양식을 만들어봅니다.","guide":"👉 예시를 불러온 뒤, 본인 부서에 맞게 섹션을 수정해보세요.","example":"# 📊 주간업무보고\n**작성자:** | **부서:** | **기간:**\n---\n## ✅ 이번주 완료\n- \n- \n\n## 📌 다음주 예정\n- \n- \n\n## ⚠️ 이슈사항\n> 긴급도: 🔴상 / 🟡중 / 🟢하\n> 담당: | 요청:\n\n## 💬 건의사항\n-\n\n---\n> **보고 기준:** 팀장 보고용 / 수치 검수 후 제출","hint":"이모지(✅📌⚠️)로 섹션을 구분해보고, 본인 부서에 필요한 항목을 추가해보세요. > 기호로 조건이나 주의사항을 표시해보세요."},
+{"title":"실습 2: 회의록 마크다운 양식","objective":"액션아이템 체크리스트와 보안 등급 표시가 포함된 회의록 양식을 마크다운으로 만듭니다.","guide":"👉 다음 회의를 상상하며 실제로 쓸 회의록 양식을 완성해보세요.","example":"# 📋 회의록\n**일시:** | **장소:** | **참석자:**\n---\n## 🎯 핵심결론\n### 결정사항\n-\n### 보류사항\n-\n\n## ✅ 액션아이템\n- [ ] 담당자: | 내용: | 기한:\n- [ ] 담당자: | 내용: | 기한:\n- [ ] 담당자: | 내용: | 기한:\n\n## ⚠️ 주의사항\n> 공유범위: 팀 내부 / 외부 공유 금지\n> 보안등급: 일반 / 대외비\n\n---\n## 📅 다음회의\n**일시:** | **안건:**","hint":"- [ ] 체크박스는 액션아이템 관리에 필수입니다. 담당자·기한까지 넣어야 실제로 쓸 수 있어요. > 기호로 보안등급과 공유범위를 명시해보세요."},
+{"title":"실습 3: 공지문 & 기획안 마크다운 양식","objective":"전 직원 공지문과 기획안 양식을 마크다운으로 만들어 AI에 넘겨줄 준비를 합니다.","guide":"👉 실제로 가장 자주 쓰는 문서 유형을 선택해서 양식을 완성해보세요.","example":"# 📢 공지문\n**수신:** 전 임직원 | **공지일:** 2026.04.08\n---\n## 공지내용\n\n> **중요:** 필수 확인 사항 강조\n\n## 요청사항\n- [ ] 항목1 | 기한:\n- [ ] 항목2 | 기한:\n\n**문의:** 담당팀 | 담당자:\n\n---\n\n# 📁 기획안\n**작성자:** | **작성일:** | **버전:** v1.0\n---\n## 1. 배경 및 목적\n-\n\n## 2. 추진방향\n> 핵심전략 한 줄:\n\n## 3. 기대효과\n-\n\n**결재:** 담당 | 팀장 | 임원","hint":"공지문의 > 기호와 - [ ] 체크리스트를 활용해보세요. 기획안은 ## 섹션 번호로 구조를 잡아보세요."}
+]},
+{id:"1-5",title:"1-5교시: 나만의 챗봇 만들기 (개인설정·메모리·트리거)",type:"A",
+overview:"매번 내 소속과 업무 배경을 설명하는 시간을 없앱니다. 커스텀 인스트럭션에 나의 맥락을 고정하고, ;; 트리거 키워드로 원하는 양식을 한 줄에 불러오는 나만의 AI 비서를 완성합니다.",
+effects:[{"name":"반복 입력 제거","score":9.5,"desc":"매번 배경 설명하는 시간을 완전히 없앰"},{"name":"나만의 비서","score":9.0,"desc":"내 직무에 최적화된 전용 AI 비서 완성"},{"name":"일관된 말투","score":8.5,"desc":"결과물의 톤·형식이 항상 내가 원하는 스타일로 고정"},{"name":"트리거 자동화","score":9.0,"desc":";; 키워드로 복잡한 양식을 한 줄에 자동 호출"},{"name":"시간 절약","score":9.5,"desc":";;보고 두 글자로 완성 — 분 단위 업무가 초 단위로"},{"name":"업무 피로 감소","score":8.0,"desc":"반복 입력 스트레스가 사라져 창의 업무에 집중 가능"}],
+tip:"• 절대 넣으면 안 되는 것: 거래처 단가, 계약조건, 개인정보, 사내 기밀\n• 트리거는 ;;보고처럼 일상 대화에서 절대 안 나오는 기호로 설정하세요.",
+practices:[
+{"title":"실습 1: 매번 설명 vs 커스텀 인스트럭션","objective":"커스텀 인스트럭션 설정 전·후 차이를 직접 체감합니다.","guide":"여러분의 직무와 업무 스타일로 커스텀 인스트럭션을 직접 작성해보세요.","bads":[{"dept":"경영지원팀","prompt":"나는 삼성전기 협력사 경영지원팀 과장이야.\n예산·인사·총무 업무가 주 업무야.\n결론을 먼저 말해줘. 표나 목록 형식 좋아해.\n인사말 빼고 바로 핵심으로. 이거 기억해줘.\n\n⬇︎ 이걸 매번 새 대화마다 입력함","result":"⚠️ 문제 상황:\n\n하루 ChatGPT 10번 사용 시\n→ 매번 같은 소개 문구 입력\n→ 소개 문구 약 60자 × 10번 = 매일 600자 낭비\n→ 한 달이면 18,000자...\n→ 이걸 1년이면 216,000자\n\n그리고 더 큰 문제:\n→ 매번 설명해도 AI는 전 대화를 기억 못함\n→ 새 대화 열면 처음부터 다시 설명\n→ '아 맞다 또 설명해야 하네...' 매일 반복"},{"dept":"품질관리팀","prompt":"나는 품질관리팀 주임이야.\n불량 분석, 품질보고서, 거래처 대응이 주 업무.\n숫자·데이터 중심으로 답해줘.\n가능하면 표로 정리해줘. 이거 기억해.\n\n⬇︎ 이걸 매번 새 대화마다 입력함","result":"⚠️ 문제 상황:\n\n• 매번 같은 배경 설명 반복\n• 어제 말해도 오늘 새 대화에선 모름\n• 품질보고서 부탁할 때마다\n  '표로 해줘', '숫자 중심으로' 반복\n\n실제로 걸리는 시간:\n→ 설명 입력: 30초\n→ 하루 10번: 5분 낭비\n→ 한 달: 약 2시간 낭비\n\n→ 이 2시간을 커스텀 인스트럭션이 없애줌"},{"dept":"생산기술팀","prompt":"나는 생산기술팀 대리야.\n공정 개선, 설비 관리, 생산성 향상이 주 업무야.\n결론 먼저, 기술적 설명은 간결하게.\n보고서는 항상 현황/원인/대책 3단 구조로.\n이거 기억해줘.\n\n⬇︎ 이걸 매번 새 대화마다 입력함","result":"⚠️ 문제 상황:\n\n• 매일 반복되는 배경 설명의 고통\n• '현황/원인/대책 3단 구조로'를\n  매번 입력해야 함\n\n• 커스텀 인스트럭션이 없으면:\n  → 새 대화 열 때마다 리셋\n  → 내가 원하는 형식이 매번 달라짐\n  → 결국 수정 작업 반복\n\n→ 한번 설정하면 열 때마다 바로 업무 시작"}],"goods":[{"dept":"경영지원팀","prompt":"[커스텀 인스트럭션 설정]\n\n[나에 대해]\n삼성전기 협력사 경영지원팀 과장\n주 업무: 예산 관리, 인사 행정, 총무, 시설 관리\n보고 라인: 팀장 → 대표\n\n[답변 방식]\n• 결론 먼저, 이유는 간략하게\n• 표·목록 형식 선호\n• 인사말·서론 없이 바로 핵심\n• 숫자 포함 시 반드시 출처 명시\n• 문서는 마크다운 양식으로\n\n↓ 이후 모든 대화에서 이렇게만 입력:\n\"2분기 예산 집행 현황 정리해줘\"","result":"✓ 결과:\n\n설정 후에는 단 한 줄만 입력해도 됩니다:\n\"2분기 예산 집행 현황 정리해줘\"\n\nAI가 이미 알고 있는 것:\n✓ 경영지원팀 과장 맥락\n✓ 표·목록 선호\n✓ 결론 먼저\n✓ 인사말 필요 없음\n✓ 마크다운 양식\n\n→ 열면 바로 업무 시작\n→ 배경 설명 시간 0초\n→ 결과물 품질 일관성↑"},{"dept":"품질관리팀","prompt":"[커스텀 인스트럭션 설정]\n\n[나에 대해]\n삼성전기 협력사 품질관리팀 주임\n주 업무: 불량 분석, 품질보고서, 거래처 대응\n\n[답변 방식]\n• 숫자·데이터 중심으로\n• 가능하면 표로 정리\n• 원인 분석은 5M1E 관점으로\n• 보고서는 현황/원인/대책 3단\n• 추측은 '추정'으로 표시\n\n↓ 이후에는 이렇게만:\n\"A라인 크랙 불량 보고서 초안 써줘\"","result":"✓ 결과:\n\n설정 후에는 이렇게만:\n\"A라인 크랙 불량 보고서 초안 써줘\"\n\nAI가 자동으로:\n✓ 현황/원인/대책 3단 구조 적용\n✓ 숫자·표 중심 작성\n✓ 추측 부분에 '추정' 표시\n✓ 품질관리팀 맥락 반영\n\n→ '표로 해줘', '3단 구조로' 반복 입력 사라짐\n→ 매번 원하는 형식의 결과물\n→ 월 2시간 절약"},{"dept":"생산기술팀","prompt":"[커스텀 인스트럭션 설정]\n\n[나에 대해]\n삼성전기 협력사 생산기술팀 대리\n주 업무: 공정 개선, 설비 관리, 생산성 향상 제안\n\n[답변 방식]\n• 결론 먼저, 기술 설명은 간결하게\n• 보고서: 현황/원인/대책 3단 구조\n• 비교 분석은 표로\n• 투자 관련은 ROI 포함\n• 추정치는 반드시 '추정' 표시\n\n↓ 이후에는 이렇게만:\n\"C라인 병목 개선 제안서 초안 써줘\"","result":"✓ 결과:\n\n설정 후에는 이렇게만:\n\"C라인 병목 개선 제안서 초안 써줘\"\n\nAI가 자동으로:\n✓ 현황/원인/대책 3단 구조\n✓ ROI 분석 포함\n✓ 비교 분석은 표로\n✓ 결론 먼저\n\n→ '3단 구조로 해줘' 반복 사라짐\n→ 바로 팀장 보고용 초안 완성\n→ 나만의 전용 AI 비서 완성"}]},
+{"title":"실습 2: 트리거 없음 vs ;; 트리거 설정","objective":"특정 키워드(트리거)를 설정하면 복잡한 양식이 한 줄로 자동 호출됨을 체감합니다.","guide":"본인이 자주 쓰는 업무 문서 유형에 맞는 트리거를 직접 설계해보세요.","bads":[{"dept":"경영지원팀","prompt":"주간보고 써줘.\n양식은 작성자·부서·기간 상단에 넣고\n이번주완료·다음주예정·이슈사항 섹션으로\n나눠줘. 이슈에는 긴급도 표시해줘.\n마크다운으로 해줘.\n\n⬇︎ 이걸 매주 금요일마다 입력","result":"⚠️ 문제 상황:\n\n이 지시문만 약 80자\n→ 매주 금요일 입력\n→ 1년이면 52번 × 80자 = 4,160자 낭비\n\n더 큰 문제:\n→ 조금씩 다르게 기억해서 양식이 매번 달라짐\n→ '아 이번엔 이모지 안 넣었네' 반복\n→ ;;보고 두 글자면 끝낼 수 있는데..."},{"dept":"품질관리팀","prompt":"품질 현황 보고서 써줘.\n불량 현황 표, 긴급 이슈 인용구,\n이번주 조치 완료 목록 형식으로 해줘.\n마크다운 양식으로.\n\n⬇︎ 매주 작성할 때마다 입력","result":"⚠️ 문제 상황:\n\n• 매번 '표 형식', '인용구', '마크다운'\n  설명을 반복해야 함\n• 60자짜리 설명을 매주 2~3번\n→ 1년이면 150번 입력 = 9,000자 낭비\n\n→ ;;품질 두 글자면 해결 가능한데\n   아직 트리거를 설정하지 않았음"},{"dept":"생산기술팀","prompt":"공정 일일 점검 보고서 써줘.\n설비 상태 표, 공정 이슈 인용구,\n조치 필요 체크리스트 구조로.\n마크다운으로.\n\n⬇︎ 매일 퇴근 전 입력","result":"⚠️ 문제 상황:\n\n• 매일 퇴근 전 같은 설명 입력\n• '표, 인용구, 체크리스트, 마크다운'\n  기억해서 매번 입력해야 함\n→ 실수로 빠뜨리면 형식이 달라짐\n→ 하루 일과 마지막에 이게 반복\n\n→ ;;점검 두 글자면 자동으로 해결 가능"}],"goods":[{"dept":"경영지원팀","prompt":"[커스텀 인스트럭션에 트리거 추가]\n\n;;보고 → 아래 마크다운 양식으로 주간업무보고:\n\n# 📊 주간업무보고\n**작성자:** | **부서:** | **기간:**\n---\n## ✅ 이번주 완료\n-\n## 📌 다음주 예정\n-\n## ⚠️ 이슈사항\n> 긴급도: 🔴상 / 🟡중 / 🟢하\n\n↓ 이후 사용법:\n;;보고\n이번주 완료: 예산 집행 현황 정리, 계약서 검토\n이슈: B동 에어컨 수리 지연","result":"✓ 결과 (;;보고 한 줄 + 업무 내용만):\n\n# 📊 주간업무보고\n**작성자:** [이름] | **부서:** 경영지원 | **기간:** 04.07~04.11\n---\n## ✅ 이번주 완료\n- 2분기 예산 집행 현황 정리 완료\n- 신규 협력업체 계약서 검토 완료\n\n## 📌 다음주 예정\n- B동 에어컨 수리 후속 조치\n\n## ⚠️ 이슈사항\n> 🔴 B동 에어컨 수리 지연 | 업체 재접촉 예정\n\n→ ;;보고 두 글자로 완성!\n→ 이름·날짜만 수정하면 바로 제출"},{"dept":"품질관리팀","prompt":"[커스텀 인스트럭션에 트리거 추가]\n\n;;품질 → 아래 마크다운 양식으로 품질 현황 보고:\n\n# 품질 현황 보고\n**기간:** | **작성:**\n---\n## 불량 현황\n| 라인 | 불량유형 | 수량 | 상태 |\n## 긴급 이슈\n> 🔴긴급 / 🟡주의 / 🟢정상\n## 이번주 조치 완료\n-\n\n↓ 이후 사용법:\n;;품질\nA라인 크랙 3건 원인조사중\nB라인 정상\n긴급: A라인 거래처 보고 필요","result":"✓ 결과 (;;품질 + 내용 요약만):\n\n# 품질 현황 보고\n**기간:** 04.07~04.11 | **작성:** 품질관리팀\n---\n## 불량 현황\n| 라인 | 불량유형 | 수량 | 상태 |\n|------|---------|------|------|\n| A라인 | 크랙 | 3건 | 원인조사중 |\n| B라인 | - | 0 | 정상 |\n\n## 긴급 이슈\n> 🔴 A라인 크랙 불량 — 거래처 보고 필요\n\n## 이번주 조치 완료\n- B라인 정기점검 완료\n\n→ ;;품질 두 글자로 양식 자동 완성!"},{"dept":"생산기술팀","prompt":"[커스텀 인스트럭션에 트리거 추가]\n\n;;점검 → 아래 마크다운 양식으로 일일 점검 보고:\n\n# 일일 점검 보고\n**일자:** | **점검자:**\n---\n## 설비 상태\n| 설비 | 상태 | 특이사항 |\n## 공정 이슈\n> 이슈 없으면 이상 없음\n## 조치 필요\n- [ ] 항목 | 담당 | 기한\n\n↓ 이후 사용법:\n;;점검\nA설비 정상 B설비 진동소음 C설비 정상\n조치: B설비 정비팀 오늘 중","result":"✓ 결과 (;;점검 + 요약만):\n\n# 일일 점검 보고\n**일자:** 2026.04.08 | **점검자:** [이름]\n---\n## 설비 상태\n| 설비 | 상태 | 특이사항 |\n|------|------|--------|\n| A설비 | 🟢정상 | - |\n| B설비 | 🔴이상 | 진동소음 발생 |\n| C설비 | 🟢정상 | - |\n\n## 공정 이슈\n> 🔴 B설비 진동소음 — 긴급 점검 필요\n\n## 조치 필요\n- [ ] B설비 점검 | 정비팀 | 오늘 중\n\n→ ;;점검 두 글자로 매일 완성!"}]},
+{"title":"실습 3: 복합 트리거 설계","objective":"여러 트리거를 조합하거나 옵션을 추가해 더 유연하게 활용하는 방법을 익힙니다.","guide":";;메일+영문, ;;보고+임원용처럼 복합 트리거를 직접 설계해보세요.","bads":[{"dept":"영업팀","prompt":"업무 메일 영어로 써줘.\n영국식 영어로, 격식체로,\n서론 없이 바로 본문으로,\n서명란 포함해줘.\n\n⬇︎ 영어 메일 쓸 때마다 이 조건 설명 반복","result":"⚠️ 문제:\n\n• '영국식', '격식체', '서론 없이', '서명 포함'\n  네 가지 조건을 매번 기억해서 입력\n• 하나라도 빠뜨리면 원하는 형식 안 나옴\n• ;;메일+영문 다섯 글자면 해결 가능한데\n  트리거를 설정하지 않았음\n\n→ 반복 조건 설명의 피로"},{"dept":"기획팀","prompt":"임원 보고용 기획안 써줘.\n격식체로, 2페이지 이내로,\n핵심만 간결하게, 결재란 포함해줘.\n\n⬇︎ 임원 보고 때마다 이 조건 반복 입력","result":"⚠️ 문제:\n\n• '격식체', '2페이지 이내', '결재란' 조건\n  매번 임원 보고 기획안 작성 시 입력\n• 조건 하나 빠지면 형식이 달라짐\n• 팀장 보고용 vs 임원 보고용\n  조건이 다른데 매번 설명해야 함\n\n→ ;;기획+임원, ;;기획+팀장 으로\n   자동 전환되면 얼마나 편할까"},{"dept":"경영지원팀","prompt":"회의록 3줄로 요약해줘.\n핵심결론 1줄, 액션아이템 1줄, 다음 일정 1줄.\n카톡으로 바로 보낼 수 있는 형식으로.\n\n⬇︎ 회의 후 팀장에게 보고할 때마다","result":"⚠️ 문제:\n\n• '3줄', '핵심결론·액션·다음일정' 구조\n• '카톡 형식' 조건 매번 입력\n• 회의 후 바쁜 시간에 이걸 기억해서 쓰는 게 힘듦\n• 회의록 완성형 vs 3줄 요약\n  둘 다 자주 쓰는데 매번 설명 반복\n\n→ ;;회의 vs ;;회의+3줄 으로\n   자동 전환되면 해결"}],"goods":[{"dept":"영업팀","prompt":"[커스텀 인스트럭션 — 트리거 세트]\n\n;;메일 → 한국어 업무메일 기본 양식\n;;메일+영문 → 영어 격식체 메일 (영국식)\n;;보고 → 주간업무보고 마크다운\n;;보고+임원 → 임원 보고용 (격식체, 핵심만)\n;;회의 → 회의록 완성형\n;;회의+3줄 → 3줄 카톡 보고 형식\n\n↓ 영문 메일 사용 예시:\n;;메일+영문\n수신: Mr. James Kim\n내용: 샘플 발송 일정 안내","result":"✓ 결과 (;;메일+영문 다섯 글자로 완성):\n\n# Business Email\n**To:** Mr. James Kim | **From:** [Name]\n---\n## Subject\nUpdate on Sample Shipment Schedule\n\n## Body\nDear Mr. Kim,\n\nI hope this message finds you well.\n\nI am writing to inform you that the requested\nsamples will be dispatched by 10 April 2026.\nPlease do not hesitate to contact me should\nyou require any further information.\n\nYours sincerely,\n[Name] | Sales Team\n[Company]\n\n→ ;;메일+영문 다섯 글자로 완성!\n→ 이름·날짜만 수정하면 바로 전송"},{"dept":"기획팀","prompt":"[커스텀 인스트럭션 — 트리거 세트]\n\n;;기획 → 기본 기획안 양식\n;;기획+임원 → 임원 결재용 (격식체, 2P 이내, 결재란)\n;;기획+팀장 → 팀장 보고용 (간결체, 핵심만)\n;;브리핑 → 경영진 월간 브리핑 양식\n;;보고 → 주간업무보고\n\n↓ 임원용 기획안 예시:\n;;기획+임원\n제목: AI 업무 도입 타당성 검토\n배경: 생산성 향상 필요\n기대효과: 보고서 작성 70% 단축","result":"✓ 결과 (;;기획+임원으로 자동 완성):\n\n# AI 업무 도입 타당성 검토\n**작성:** 기획팀 | **버전:** v1.0\n\n## 1. 추진 배경\n업무 효율화 요구 증대 및 AI 기술 성숙\n\n## 2. 기대 효과\n- 보고서 작성 시간 70% 단축\n- 직원 1인당 월 5시간 절감 추정\n\n## 3. 추진 일정\n1단계 파일럿 → 2단계 전사 확대\n\n## 4. 소요 예산\n[검토 후 기재]\n\n**결재:** 담당 | 팀장 | 임원\n\n→ ;;기획+임원 으로 결재용 기획안 즉시 완성!"},{"dept":"경영지원팀","prompt":"[커스텀 인스트럭션 — 트리거 세트]\n\n;;회의 → 완성형 회의록 (핵심결론/액션/다음회의)\n;;회의+3줄 → 3줄 카톡 보고 형식\n;;공지 → 전 직원 공지문 양식\n;;보고 → 주간업무보고\n;;보고+임원 → 임원 보고용 요약\n\n↓ 회의 후 팀장 카톡 보고:\n;;회의+3줄\n회의 내용: 연차 사용 촉진 방안 논의\n결론: 이번달 말까지 전 직원 연차 소진 권고\n담당: 경영지원팀, 4월 말까지","result":"✓ 결과 (;;회의+3줄 으로 즉시 완성):\n\n📋 04.08 경영지원팀 회의 결과 보고\n\n✅ 결론: 이번달 말까지 전 직원 연차 소진 권고 확정\n📌 액션: 경영지원팀이 공지 발송 (이번 주 내)\n📅 다음: 04.15 이행 현황 점검\n\n→ ;;회의+3줄 으로 카톡 바로 전송!\n→ 팀장님도 3초 만에 핵심 파악"}]}
+]},
+{id:"1-6",title:"1-6교시: 마크다운 풀패키지로 실제 결과물까지",type:"B",
+overview:"트리거와 마크다운을 결합해서 한 줄 지시문으로 완성 문서 초안이 나오는 루틴을 완성합니다. 이모지·체크리스트·조건 블록을 활용한 고도화 양식을 만들어 봅니다.",
+effects:[{"name":"원클릭 자동화","score":9.5,"desc":";;트리거 한 줄로 완성 문서 초안이 자동 완성"},{"name":"초안 10초","score":9.0,"desc":"기존 30분 걸리던 초안이 10초로 단축"},{"name":"품질 표준화","score":8.5,"desc":"누가 써도 같은 품질의 문서가 나오는 구조"},{"name":"오류 최소화","score":9.0,"desc":"AI가 양식 벗어나지 못하게 코드블록으로 고정"},{"name":"복붙 즉시 활용","score":8.5,"desc":"AI 출력물을 그대로 복붙하면 바로 보고 가능"},{"name":"프로세스 혁신","score":9.0,"desc":"문서 작성 프로세스 자체를 자동화하는 첫 단계"}],
+tip:"• 이모지로 섹션을 직관적으로 구분하세요 (📌✅⚠️💬)\n• > 블록으로 조건과 주의사항을 명시하면 AI가 정확히 인식합니다.",
+practices:[
+{"title":"실습 1: ;;보고 고도화 양식","objective":"기본 주간보고 양식에 체크리스트·이모지·조건 블록을 추가해 고도화합니다.","guide":"👉 예시를 불러온 뒤 본인 부서에 맞게 섹션을 추가·수정해 보세요.","example":"# 📊 주간업무보고\n**작성자:** | **부서:** | **기간:**\n---\n## ✅ 이번주 완료\n- \n- \n\n## 📌 다음주 예정\n- \n- \n\n## ⚠️ 이슈사항\n> 긴급도: 🔴상 / 🟡중 / 🟢하\n> 담당자: | 요청사항:\n\n## 💬 건의사항\n-\n\n---\n> **제출 전 체크:** 수치·날짜·이름 검수 완료 / 팀장 사전 공유 완료","hint":"섹션별 이모지를 바꿔보고, 본인 부서에 필요한 항목을 추가해 보세요. ⚠️ 이슈 섹션에 우선순위 표시가 특히 유용합니다."},
+{"title":"실습 2: ;;회의 고도화 양식","objective":"액션아이템 체크리스트와 보안 등급이 포함된 완성형 회의록 양식을 만듭니다.","guide":"👉 다음 회의를 상상하며 실제로 쓸 양식을 완성해 보세요.","example":"# 📋 회의록\n**일시:** | **장소:** | **참석자:**\n---\n## 🎯 핵심결론\n### 결정사항\n-\n### 보류사항\n-\n\n## ✅ 액션아이템\n- [ ] 담당: | 내용: | 기한:\n- [ ] 담당: | 내용: | 기한:\n- [ ] 담당: | 내용: | 기한:\n\n## ⚠️ 주의사항\n> 공유범위: 팀 내부 / 외부 공유 금지 여부\n> 보안등급: 일반 / 대외비\n\n---\n## 📅 다음회의\n**일시:** | **안건:**","hint":"실제 곧 있을 회의를 상상하며 작성해 보세요. 액션아이템의 담당자·기한을 구체적으로 쓰는 연습이 중요합니다."},
+{"title":"실습 3: ;;공지 & ;;기획 완성형 양식","objective":"결재란까지 포함된 공지문·기획안 마크다운 양식을 완성합니다.","guide":"👉 지금 진행 중이거나 생각 중인 개선 아이디어로 기획안을 작성해 보세요.","example":"# 📢 공지문\n**수신:** 전 임직원 | **공지일:**\n---\n## 공지내용\n\n> **중요:** 필수 확인 사항\n\n## 요청사항\n- [ ] 항목1 | 기한:\n- [ ] 항목2 | 기한:\n\n**문의:** 담당팀 | 담당자:\n\n---\n---\n\n# 📁 기획안\n**작성자:** | **작성일:** | **버전:** v1.0\n---\n## 1. 배경 및 목적\n### 현황 및 문제점\n-\n\n### 개선 필요성\n> 핵심 이유 한 줄:\n\n## 2. 추진방향\n-\n\n## 3. 기대효과\n-\n\n---\n**결재:** 담당 | 팀장 | 본부장\n\n> **제출 전 체크:** 수치 검수 완료 / 팀장 사전 확인 완료","hint":"내가 회사에서 개선하고 싶은 업무 프로세스를 생각해보고 이 양식에 맞춰 작성해 보세요."}
+]},
+{id:"1-7",title:"1-7교시: 회의록 자동화 완성",type:"B",
+overview:"클로바노트·다글로로 음성을 텍스트로 변환한 뒤, AI에게 구조화를 맡겨 5분 만에 완성 회의록을 만듭니다. 핵심결론·액션아이템을 자동 분리하고 상사 보고 메시지까지 한 번에 만드는 루틴을 완성합니다.",
+effects:[{"name":"회의록 5분 완성","score":9.5,"desc":"30분~1시간 걸리던 수동 작성이 5분으로"},{"name":"액션아이템 자동분리","score":9.0,"desc":"담당자·기한을 포함한 액션아이템 자동 추출"},{"name":"누락 방지","score":8.5,"desc":"음성 기반이라 기억에 의존하지 않아 누락 없음"},{"name":"보고 자동화","score":9.0,"desc":"카톡·메일 보고 문구까지 한번에 자동 생성"},{"name":"파이프라인 완성","score":8.5,"desc":"녹음→텍스트→AI정리→공유 4단계 루틴 완성"},{"name":"협업 효율","score":8.0,"desc":"팀원 모두 같은 회의록을 받아 오해·혼선 제거"}],
+tip:"• 음성 녹취는 클로바노트(한국어 특화)를 추천합니다.\n• 액션아이템은 '- [ ] 담당자 | 내용 | 기한' 형식으로 뽑으라고 지시하세요.",
+practices:[
+{"title":"실습 1: 날것의 회의 내용 → 완성 회의록","objective":"클로바노트 등에서 추출한 날것의 텍스트를 AI에게 주면 어떤 회의록이 나오는지 확인합니다.","guide":"👉 ;;회의 트리거를 먼저 입력하고, 아래 날것의 내용을 붙여넣은 뒤 결과를 확인해보세요.","example":";;회의\n\n[날것의 회의 내용 — 아래를 붙여넣거나 직접 입력]\n오늘 구매팀 주간 회의했어요. B부품 납기가 2주 지연 확정됐고요,\n홍대리가 이번 주 금요일까지 대체 업체 3곳에 견적 요청하기로 했어요.\n예산 추가 집행은 팀장 결재가 필요하고,\n다음 주 월요일에 다시 모여서 진행 상황 공유하기로 했어요.\n참석자는 팀장, 홍대리, 박주임, 이대리였어요.\n\n[AI에게 요청 — 이렇게 지시하세요]\n위 내용을 ;;회의 양식으로 정리해줘.\n불확실한 내용은 [확인 필요]로 표시해줘.","hint":"실제 오늘 있었던 회의 내용을 간단히 메모한 것을 붙여넣어 보세요. 완성된 문장이 아니어도 됩니다. 핵심은 담당자·기한·결정사항이에요."},
+{"title":"실습 2: 회의록 + 카톡 보고 + 요약 한번에","objective":"회의록과 팀장 보고용 카톡 메시지를 동시에 생성하는 방법을 익힙니다.","guide":"👉 실습 1에서 만든 회의록에 이어서 아래 지시를 추가해보세요.","example":"[실습 1에서 만든 회의록에 이어서]\n\n추가로 아래 두 가지도 만들어줘:\n\n1. 팀장님께 카톡으로 바로 보낼 3줄 보고 메시지\n   형식: '팀장님, [날짜] [팀명] 회의 결과 보고드립니다.\n          [핵심 1줄]. 액션아이템 [N]건 진행 예정입니다.'\n\n2. 전체 참석자 공유용 2줄 요약\n   형식: '오늘 [주요 결정 1줄] / 다음 액션: [핵심 액션 1줄]'\n\n[예상 결과]\n팀장님, 04.08 구매팀 주간 회의 결과 보고드립니다.\nB부품 납기 2주 지연 확정, 대체업체 발굴 병행 추진 예정입니다.\n액션아이템 2건 진행 예정입니다.\n\n오늘 B부품 납기 2주 지연 확정 / 다음 액션: 홍대리 대체업체 3곳 견적 04.11까지","hint":"캔버스 기능을 써보세요. 회의록은 캔버스에, 카톡 메시지는 대화창 하단에 따로 나누면 더 편합니다."},
+{"title":"실습 3: 클로바노트 → AI 회의록 전체 파이프라인","objective":"클로바노트로 녹음 → 텍스트 추출 → AI 정리까지 전체 흐름을 실습합니다.","guide":"👉 30초 녹음 후 클로바노트로 텍스트를 추출해서 아래 양식에 붙여넣어 보세요.","example":"[STEP 1] 클로바노트 또는 다글로로 회의 녹음\n→ 한국어 자동 인식 + 텍스트 추출\n\n[STEP 2] 추출된 텍스트를 아래에 붙여넣기\n[클로바노트에서 추출한 텍스트]\n\n---\n[STEP 3] AI에게 아래 지시사항으로 정리 요청]\n위 내용을 다음 기준으로 회의록으로 정리해줘:\n\n1. 핵심 결론 3줄 이내\n2. 액션아이템: - [ ] 담당자 | 할 일 | 기한 형식\n3. 불확실한 내용은 [확인 필요] 표시\n4. 전체 A4 1장 이내\n5. ;;회의 마크다운 양식 적용\n\n[예상 결과 샘플]\n# 📋 회의록\n**일시:** 2026.04.08 | **참석:** 팀장 외 3명\n---\n## 🎯 핵심결론\n- B부품 납기 2주 지연 확정\n- 대체업체 발굴 병행 추진 결정\n## ✅ 액션아이템\n- [ ] 홍대리 | 대체업체 3곳 견적 | 04.11(금)\n- [ ] 팀장 | 예산 추가 결재 검토 | 04.14(월)\n## 📅 다음회의\n**일정:** 04.15(월) | **안건:** 대체업체 결과 공유","hint":"녹음 파일이 없다면 강사 제공 샘플을 사용하거나, 지금 옆 사람과 30초 대화를 녹음해서 써보세요. 핵심은 파이프라인 전체를 한번 경험하는 것입니다."}
+]},
+{id:"2-1",title:"2-1교시: 우리 회사 문서를 아는 AI — RAG와 NotebookLM",type:"A",
+overview:"일반 AI는 우리 회사 규정·절차를 모릅니다. 내가 제공한 문서 안에서만 근거를 찾아 답하도록 강제하는 RAG 방식으로, 환각 없는 신뢰할 수 있는 답변을 받는 방법을 익힙니다.",
+effects:[{"name":"환각 원천차단","score":9.5,"desc":"문서 범위 밖 내용은 절대 답하지 않도록 강제"},{"name":"사내 보안 유지","score":9.0,"desc":"내가 올린 문서만 참고 — 외부 정보 혼입 방지"},{"name":"출처 확인","score":9.0,"desc":"모든 답변에 문서 출처 페이지가 자동 표시"},{"name":"신뢰도 향상","score":8.5,"desc":"출처 있는 답변은 팀원·임원 모두 신뢰"},{"name":"내부 지식 활용","score":9.0,"desc":"팀 매뉴얼·절차서를 AI가 직접 참고해서 답변"},{"name":"책임 소재 명확","score":8.0,"desc":"출처가 있으면 AI 답변 오류도 검증 가능"}],
+tip:"• 대외비 문서는 반드시 기업용 유료 환경에서 업로드하세요.\n• NotebookLM 출처 클릭 습관 — 실제 문서 내용과 대조하는 것이 핵심입니다.",
+practices:[
+{"title":"실습 1: 일반 AI 질문 vs 문서 지정 질문","objective":"문서를 지정하지 않았을 때와 NotebookLM에서 지정했을 때의 답변 차이를 체감합니다.","guide":"같은 질문을 일반 ChatGPT와 NotebookLM에 동시에 입력해서 비교해보세요.","bads":[{"dept":"경영지원팀","prompt":"우리 회사 연차 발생 기준이 어떻게 돼?","result":"⚠️ 일반 AI 답변 (법 기준 일반론):\n\n\"근로기준법에 따라 1년 이상 근속 시\n연간 15일의 유급 연차가 발생하며,\n1년 미만의 경우 1개월 개근 시 1일씩...\"\n\n→ 이건 근로기준법 내용이에요\n→ 우리 회사 자체 규정은 다를 수 있음\n(예: 추가 연차, 선택 근무, 특별 휴가 등)\n→ 이대로 직원에게 안내했다가 오류 생기면?\n→ 실제 취업규칙 확인 없이는 위험"},{"dept":"품질관리팀","prompt":"납기 클레임 처리 절차가 뭐야?","result":"⚠️ 일반 AI 답변 (일반론):\n\n\"납기 클레임은 일반적으로:\n1. 클레임 접수 및 내용 확인\n2. 원인 조사 (제조·물류·품질 분석)\n3. 보상 방안 협의\n4. 재발 방지 대책 수립...\"\n\n→ 이건 어디서나 볼 수 있는 교과서 내용\n→ 우리 팀 실제 절차는 다를 수 있음\n   (예: 24시간 보고 의무, 특정 양식 사용)\n→ 이대로 신입에게 알려줬다가\n   실제와 달라서 혼선 발생"},{"dept":"생산기술팀","prompt":"설비 고장 발생 시 보고 프로세스가 어떻게 돼?","result":"⚠️ 일반 AI 답변 (일반론):\n\n\"설비 고장 발생 시 일반적인 보고 프로세스:\n1. 즉시 가동 중단 및 안전 조치\n2. 직속 상관 즉시 보고\n3. 원인 파악 및 수리 요청\n4. 재발 방지 대책 수립...\"\n\n→ 이건 어느 공장이나 비슷한 일반론\n→ 우리 팀 실제 규정과 다를 수 있음\n   (예: 보고 양식, 에스컬레이션 기준)\n→ 이걸 따랐다가 내부 규정 위반이면?"}],"goods":[{"dept":"경영지원팀","prompt":"[NotebookLM 소스: 취업규칙_2026.pdf]\n\n업로드된 취업규칙 기준으로\n연차 발생 기준을 알려줘.\n출처 조항도 함께 표시해줘.\n문서에 없으면 '문서에서 확인 불가'로 답해줘.","result":"✓ NotebookLM 답변 (문서 기반 정확한 답변):\n\n취업규칙 기준 연차 발생 기준:\n\n【입사 1년 미만】\n매월 개근 시 1일 발생 (제12조 1항)\n\n【입사 1년 이상】\n15일 기본 + 근속 2년마다 1일 가산 (제12조 2항)\n최대 25일 상한 (제12조 3항)\n\n【회사 특별 연차】\n결혼, 출산 등 경조사 연차 별도 (제13조)\n→ 출처: 취업규칙 p.23\n\n→ 우리 회사 문서 기반 정확한 답변\n→ 직원 안내에 바로 활용 가능"},{"dept":"품질관리팀","prompt":"[NotebookLM 소스: 구매팀_업무매뉴얼_2026.pdf]\n\n업로드된 매뉴얼 기준으로\n납기 클레임 발생 시 처리 절차를\n단계별로 알려줘.\n출처 페이지도 표시해줘.\n문서에 없으면 '확인 불가'로 표시.","result":"✓ NotebookLM 답변 (절차 기반 답변):\n\n납기 클레임 처리 절차 (업무매뉴얼 기준):\n\n1단계: 접수 24시간 내 팀장 즉시 보고\n       → 보고 양식: 클레임접수보고서 사용 (p.23)\n\n2단계: 협력사 현장 실사 또는 샘플 수거 (p.24)\n       → 48시간 이내 완료\n\n3단계: 원인 분석 보고서 72시간 내 제출 (p.25)\n\n4단계: 보상 방안 협의\n       → 재납품 또는 단가 조정 (p.26)\n\n→ 문서 기반 정확한 절차\n→ 신입 교육 자료로 바로 활용 가능"},{"dept":"생산기술팀","prompt":"[NotebookLM 소스: 생산팀_설비운영_매뉴얼.pdf]\n\n업로드된 매뉴얼 기준으로\n설비 고장 발생 시 보고 프로세스를\n단계별로 알려줘. 출처 포함.\n없으면 '확인 불가' 표시.","result":"✓ NotebookLM 답변 (문서 기반 답변):\n\n설비 고장 보고 프로세스 (매뉴얼 기준):\n\n1단계: 즉시 가동 중단 + 안전 조치 (p.15)\n\n2단계: 30분 이내 팀장 구두 보고\n       → 설비번호·고장 증상·발생 시각 포함 (p.15)\n\n3단계: 2시간 이내 '설비이상보고서' 작성 제출\n       → 양식: 사내 포털 > 생산팀 > 보고양식 (p.16)\n\n4단계: 정비팀 요청 + 복구 예상 시간 파악 (p.16)\n\n→ 문서 기반 정확한 절차\n→ 신입사원 온보딩 자료로 바로 사용 가능"}]},
+{"title":"실습 2: 환각 방지 규칙 없음 vs 출처 강제 표기","objective":"모든 답변에 출처를 요구하면 AI 답변의 검증이 가능해짐을 직접 확인합니다.","guide":"중요한 규정이나 절차를 확인할 때 반드시 출처를 요구하는 습관을 들여보세요.","bads":[{"dept":"경영지원팀","prompt":"협력사 평가 기준이 어떻게 돼?","result":"⚠️ 일반 AI 답변 (지어낸 배점):\n\n\"협력사 평가 기준은 일반적으로:\n• 품질: 40점\n• 납기준수율: 30점\n• 가격경쟁력: 20점\n• 서비스: 10점\n\n이 배점으로 연 1~2회 평가 실시...\"\n\n→ 이 배점, AI가 완전히 지어낸 것!\n→ 우리 회사 실제 기준이 아님\n→ 이걸 협력사에 알려줬다가 혼선"},{"dept":"품질관리팀","prompt":"신입사원 입사 후 필수 교육이 뭐야?","result":"⚠️ 일반 AI 답변 (출처 없는 일반론):\n\n\"신입사원 필수 교육은 일반적으로:\n• 회사 소개 및 비전 교육\n• 개인정보보호 교육\n• 산업안전보건 교육\n• 직무 기초 OJT\n• 성희롱 예방 교육\"\n\n→ '일반적으로'라는 표현\n→ 우리 회사 법정 의무 교육 시간과 다를 수 있음\n→ 출처가 없어서 검증 불가"},{"dept":"연구소","prompt":"외부에 발송 가능한 기술 문서 기준이 뭐야?","result":"⚠️ 일반 AI 답변 (일반론):\n\n\"기술 문서 외부 발송 기준은 일반적으로:\n• 기밀등급 1~3급 분류 후 결재\n• 보안 서약서 체결 상대방에게만\n• 법무팀 검토 후 발송 원칙...\"\n\n→ 우리 회사 실제 기준과 다를 수 있음\n→ 이대로 외부 발송했다가 보안 사고?\n→ 반드시 우리 사내 규정 문서로 확인 필요"}],"goods":[{"dept":"경영지원팀","prompt":"[NotebookLM 소스: 협력사_평가_매뉴얼_2026.pdf]\n\n업로드된 매뉴얼 기준으로\n협력사 연간 평가 기준과 배점을 알려줘.\n\n[출처 표기 규칙]\n• 모든 항목에 반드시 출처(조항 또는 페이지) 표기\n• 문서에 없으면 [미확인 — 담당자 문의] 표시","result":"✓ NotebookLM 답변 (출처 포함 정확한 답변):\n\n협력사 연간 평가 기준 (2026 평가 매뉴얼 기준):\n\n• 품질: 35점 (제2.1조 / p.8)\n• 납기준수율: 30점 (제2.2조 / p.9)\n• 원가 경쟁력: 20점 (제2.3조 / p.10)\n• CS 대응: 15점 (제2.4조 / p.11)\n\n평가 주기: 연 1회 (12월 기준) [미확인 — p.8 참조 필요]\n\n→ 출처가 있으니 실제 문서에서 직접 확인 가능\n→ 협력사에 정확한 기준 안내 가능"},{"dept":"품질관리팀","prompt":"[NotebookLM 소스: 신입사원_온보딩_가이드.pdf]\n\n입사 1개월 내 필수 교육 목록을\n출처 포함해서 알려줘.\n\n[규칙]\n• 교육명·시간·의무 여부 포함\n• 모든 항목에 출처 페이지 표기\n• 없으면 [미확인] 표시","result":"✓ NotebookLM 답변 (법정교육 포함 정확한 안내):\n\n입사 1개월 내 필수 교육 (온보딩 가이드 기준):\n\n1. 개인정보보호 교육 (4시간, 의무) [p.5]\n2. 산업안전보건 교육 (8시간, 의무) [p.6]\n3. 성희롱 예방 교육 (2시간, 의무) [p.6]\n4. 정보보안 기초 (2시간, 권장) [p.7]\n5. 직무 OJT [미확인 — 팀장·HR 문의 필요]\n\n→ 출처 있으니 실제 문서에서 검증 가능\n→ 신입사원 교육 체크리스트로 바로 활용"},{"dept":"연구소","prompt":"[NotebookLM 소스: 정보보안_규정_2026.pdf]\n\n업로드된 규정 기준으로\n외부 발송 가능한 기술 문서 기준을 알려줘.\n\n[출처 규칙]\n• 반드시 조항·페이지 표기\n• 규정에 없으면 [규정에서 확인 불가] 표시\n• 불명확한 내용은 '보안팀 확인 필요'로","result":"✓ NotebookLM 답변 (규정 기반 명확한 기준):\n\n외부 발송 가능 기술 문서 기준 (정보보안 규정):\n\n【발송 가능】\n• 일반 공개용 자료 (등급: 공개) [제3조 / p.12]\n• 상대방과 NDA 체결 후 제한 공개 자료 [제4조]\n\n【발송 불가 — 사전 승인 필수】\n• 제한·대외비·기밀 등급 문서 [제5조 / p.14]\n• 승인 절차: 팀장 → 보안담당 → 대표 결재\n\n【규정에서 확인 불가】\n• 특허 출원 전 기술자료 기준\n→ 보안팀 또는 법무팀 직접 문의 필요\n\n→ 규정 기반 명확한 기준\n→ 발송 전 반드시 등급 확인 후 진행"}]},
+{"title":"실습 3: NotebookLM 팀 활용 — 부서 Q&A 비서","objective":"팀 전체가 NotebookLM을 활용해 일관된 답변을 받을 수 있는 구조를 만들어봅니다.","guide":"우리 팀에서 가장 자주 묻는 질문 3가지를 NotebookLM에 직접 테스트해보세요.","bads":[{"dept":"경영지원팀","prompt":"(팀원이 각자 구두로 물어보거나 각자 인터넷 검색으로 확인)","result":"⚠️ 현재 문제 상황:\n\n• 신입사원이 같은 질문을 여러 사람에게 반복\n  '연차가 며칠이에요?' → 선배마다 다른 답변\n  '식대 규정이 어떻게 돼요?' → 기억에 의존\n\n• 선임 직원마다 알고 있는 규정이 달라\n  → 잘못된 정보 전달 위험\n  → 새로운 규정 개정 시 구버전 정보 계속 사용\n\n→ 하나의 공식 문서 기반 AI 비서가 있다면?"},{"dept":"품질관리팀","prompt":"(팀원이 매번 팀장에게 직접 물어보거나 두꺼운 매뉴얼 뒤적임)","result":"⚠️ 현재 문제 상황:\n\n• 두꺼운 매뉴얼 (100페이지+)에서 원하는 내용 찾기\n  → 평균 10~20분 소요\n  → 급할 때 팀장에게 질문 → 팀장 업무 방해\n\n• 신입사원이 잘못된 절차 따르는 경우 발생\n  → 규정을 정확히 모르고 업무 처리\n  → 사후에 수정 작업 필요\n\n→ NotebookLM에 매뉴얼 넣으면\n   누구나 30초 안에 정확한 답변 가능"},{"dept":"생산기술팀","prompt":"(인수인계 문서가 없어서 퇴직자 연락처 찾아서 물어봄)","result":"⚠️ 현재 문제 상황:\n\n• 베테랑 직원 퇴직 → 암묵지 사라짐\n  '이 설비는 왜 이렇게 세팅했지?' 아무도 모름\n  '이 공정 특이사항이 뭐였지?' 기억 의존\n\n• 인수인계 문서가 있어도\n  → 어디 있는지 모름\n  → 찾아서 읽는 시간 소요\n\n→ NotebookLM에 인수인계 문서를 넣으면\n   '이 설비 세팅 이유가 뭐야?' 바로 답변"}],"goods":[{"dept":"경영지원팀","prompt":"[NotebookLM 세팅]\n소스: 취업규칙.pdf + 복무규정.pdf + 인사규정.pdf\n\n팀 전체 공유 Q&A 비서 구축:\n\n테스트 질문 세트:\n1. '연차는 몇 일 발생해요?'\n2. '식대는 얼마예요?'\n3. '반차는 언제 신청해요?'\n4. '특별 휴가 기준이 어떻게 되나요?'\n\n[운영 방식]\n• 팀원 누구나 NotetbookLM 링크로 접속\n• 위 질문들로 테스트 후 즉시 답변 확인\n• 출처 클릭으로 실제 규정 검증","result":"✓ NotebookLM 팀 비서 구축 효과:\n\n기존 방식:\n→ 신입이 선배한테 물어봄 (선배 업무 방해)\n→ 선배마다 다른 답변 (정보 불일치)\n→ 규정 개정 시 구버전 정보 계속 유포\n\nNotebookLM 도입 후:\n→ 누구나 30초 안에 정확한 답변\n→ 출처(조항) 포함으로 검증 가능\n→ 소스 파일 업데이트 시 즉시 반영\n→ 팀장·선배 업무 방해 0건\n\n→ 팀 FAQ 비서 완성!"},{"dept":"품질관리팀","prompt":"[NotebookLM 세팅]\n소스: 품질관리_매뉴얼.pdf + 불량처리_절차서.pdf\n\n테스트 질문 세트:\n1. '불량 발생 시 24시간 안에 뭘 해야 해?'\n2. '거래처에 클레임 보고할 때 양식은?'\n3. '품질 등급 A/B/C 기준이 뭐야?'\n4. '신규 협력사 품질 승인 절차는?'\n\n[운영 방식]\n• 팀원 NotebookLM 접속 후 직접 테스트\n• 출처 클릭으로 매뉴얼 해당 페이지 확인","result":"✓ NotebookLM 팀 비서 구축 효과:\n\n기존 방식:\n→ 100페이지 매뉴얼에서 찾기 (10~20분)\n→ 급할 때 팀장에게 질문 (팀장 방해)\n→ 신입이 잘못된 절차 따르는 경우 발생\n\nNotebookLM 도입 후:\n→ 질문 입력 후 30초 안에 절차 확인\n→ 출처(페이지) 포함으로 검증 가능\n→ 신입도 혼자 정확한 절차 확인 가능\n→ 팀장 업무 방해 대폭 감소\n\n→ 품질관리팀 전용 지식 비서 완성!"},{"dept":"생산기술팀","prompt":"[NotebookLM 세팅]\n소스: 설비운영_매뉴얼.pdf + 인수인계_문서.pdf + 공정_특이사항.pdf\n\n테스트 질문 세트:\n1. 'B설비 특이한 세팅 포인트가 있어?'\n2. 'C라인 공정 변경 이력이 어떻게 돼?'\n3. '설비 고장 시 긴급 연락처는?'\n4. '신규 입사자가 처음 배워야 할 설비는?'\n\n[운영 방식]\n• 인수인계 문서 + 매뉴얼 통합 업로드\n• 신규 입사자가 궁금한 것 직접 물어보기","result":"✓ NotebookLM 팀 비서 구축 효과:\n\n기존 방식:\n→ 베테랑 퇴직 후 암묵지 소멸\n→ 인수인계 문서 찾는 시간 소요\n→ 퇴직자에게 연락해서 물어보는 상황\n\nNotebookLM 도입 후:\n→ 인수인계 문서가 AI 비서로 전환\n→ 신규 입사자가 24시간 언제든 질문\n→ 퇴직자 의존도 0\n→ 암묵지가 팀 공유 자산으로 보존\n\n→ 팀 지식 영구 보존 & 전수 시스템 완성!"}]}
+]},
+{id:"2-2",title:"2-2교시: Gemini Gems — 개인봇부터 팀봇까지",type:"A",
+overview:"Gems로 특정 업무에 특화된 맞춤형 AI 비서를 설계합니다. 역할·임무·금지사항·출력 구조를 명확히 설정하면 누가 쓰든 일관된 품질의 결과물이 나옵니다.",
+effects:[{"name":"특화 비서","score":9.5,"desc":"반복 Task에 완전히 최적화된 전용 AI 직원"},{"name":"품질 고정","score":9.0,"desc":"누가 써도 같은 품질의 결과물이 나오는 구조"},{"name":"금지사항 제어","score":9.0,"desc":"위험한 답변을 사전에 차단하는 안전장치"},{"name":"팀 공유","score":8.5,"desc":"링크 하나로 팀원 전체가 같은 봇 사용"},{"name":"반복 지시 제거","score":9.0,"desc":"열면 바로 업무 시작 — 설명 없이"},{"name":"전문성 향상","score":8.0,"desc":"역할이 구체적일수록 전문가 수준의 답변"}],
+tip:"• Gems 설정창(Instructions)에 들어갈 프롬프트는 단호하고 구체적으로 적으세요.\n• 금지사항 없이 만든 봇은 예상치 못한 위험한 답변을 할 수 있습니다.",
+practices:[
+{"title":"실습 1: 두루뭉술 봇 vs 명확한 봇","objective":"봇의 역할이 명확하지 않을 때와 명확할 때의 답변 품질 차이를 직접 비교합니다.","guide":"본인 팀에 필요한 전용 봇을 직접 설계해보세요.","bads":[{"dept":"경영지원팀","prompt":"[Gems 설정]\n너는 경영지원팀을 도와주는 AI야.\n잘 도와줘.\n\n[질문]\n직원이 경조사 휴가를 신청했는데\n며칠이나 줘야 해?","result":"⚠️ AI 답변 (일반론 + 모호함):\n\n경조사 휴가는 회사 내규에 따라 다르지만\n일반적으로:\n• 본인 결혼: 5일\n• 자녀 결혼: 1일\n• 부모 사망: 5일\n\n회사 취업규칙을 확인하시기 바랍니다.\n\n→ '회사 내규에 따라'라고 해놓고\n   결국 일반론만 말함\n→ 실제 우리 규정을 모름\n→ 이 답변으로 HR 업무 처리 불가"},{"dept":"품질관리팀","prompt":"[Gems 설정]\n너는 품질팀 CS 대응 봇이야.\n고객 불만에 친절하게 답해줘.\n\n[상황]\n고객: '불량품 때문에 생산 라인이 멈췄어요.\n보상을 요구합니다.'","result":"⚠️ 위험한 봇 답변:\n\n정말 죄송합니다! 생산 라인이 멈추셨군요.\n그로 인한 손해를 당연히 보상해 드려야 합니다.\n구체적인 금액은 검토 후 연락드리겠습니다.\n내일까지 담당자가 연락드릴 예정입니다.\n\n→ 보상을 임의로 약속!\n→ 계약도 안 된 내용을 확답\n→ 이런 답변이 법적 분쟁으로 이어질 수 있음"},{"dept":"영업팀","prompt":"[Gems 설정]\n너는 영업팀 제안서 작성 도우미야.\n\n[요청]\nA고객사 납품 제안서 작성해줘.\n단가 1만5천원, 독점공급 조건","result":"⚠️ 위험한 봇 답변:\n\n# 납품 제안서\n\n당사는 A고객사에 아래 조건으로 납품을 제안합니다.\n\n• 단가: 15,000원/개\n• 공급 조건: 독점 공급 (타사 납품 불가)\n• 계약 기간: 2년\n\n→ 계약 조건을 그대로 문서에 기재!\n→ 대외비 단가·독점 조건 노출\n→ 법무 검토 없이 계약서 수준 문서 작성\n→ 실제 보내면 큰 문제"}],"goods":[{"dept":"경영지원팀","prompt":"[Gems 설정 — 인사규정 Q&A 봇]\n\n[역할]\n삼성전기 협력사 경영지원팀 전용\n인사·복무 규정 안내 봇\n\n[임무]\n직원 질문 → 취업규칙·복무규정 기준으로 정확히 안내\n답변 형식: 규정 내용 + 조항 번호\n\n[금지사항]\n1. 규정에 없는 내용 임의로 답하지 말 것\n2. 법적 판단이나 조언을 하지 말 것\n3. 규정 밖 사례는 HR팀 문의 안내\n\n[답변에 항상 포함]\n해당 조항 번호 + '정확한 내용은 HR팀 확인 권장'\n\n[질문]\n직원이 경조사 휴가를 신청했는데 며칠이나 줘야 해?","result":"✓ 명확한 봇 답변:\n\n경조사 휴가 기준 (취업규칙 제15조 기준):\n\n• 본인 결혼: 5일 (유급)\n• 자녀 결혼: 1일 (유급)\n• 배우자 출산: 10일 (유급)\n• 부모/배우자 사망: 5일 (유급)\n• 형제자매 사망: 3일 (유급)\n\n⚠️ 위 기준은 취업규칙 제15조 기준이며,\n특별 상황의 경우 HR팀에 확인을 권장합니다.\n\n→ 규정 기반 정확한 답변\n→ 조항 번호 포함으로 검증 가능"},{"dept":"품질관리팀","prompt":"[Gems 설정 — 품질 CS 대응 봇]\n\n[역할]\n품질관리팀 거래처 클레임 초기 대응 전문 봇\n\n[임무]\n클레임 내용 → 사과+원인조사착수+다음액션 순서로 대응 메일 초안\n\n[금지사항]\n1. 보상 금액·비율 임의 약속 금지\n2. 원인을 단정 짓거나 과실 인정 금지\n3. '담당자 연락' 시간 구체적으로 약속 금지\n4. 계약 조건 변경 암시 금지\n\n[톤] 정중하고 책임감 있는 비즈니스 톤\n\n[상황]\n고객: '불량품으로 생산 라인 멈췄어요. 보상 요구합니다.'","result":"✓ 안전한 봇 답변:\n\n이번 품질 이슈로 생산에 차질을 드려 진심으로 사과드립니다.\n\n즉각 원인 조사에 착수하였으며,\n조사 결과를 바탕으로 적절한 방안을 안내드리겠습니다.\n\n현재 샘플 수거 및 분석을 진행 중이며,\n진행 상황을 빠른 시일 내 보고드리겠습니다.\n\n추가 문의는 아래 연락처로 부탁드립니다.\n품질관리팀 [담당자] | [연락처]\n\n→ 사과는 하되 섣부른 약속 없음\n→ 법적으로 안전한 대응 초안\n→ 법무 검토 없이 전송 가능한 수준"},{"dept":"영업팀","prompt":"[Gems 설정 — 영업 제안서 봇]\n\n[역할]\n영업팀 제안서 구조·스토리라인 작성 전문 봇\n\n[임무]\n제품·서비스 특장점 → 고객 니즈에 맞는 제안서 스토리 작성\n\n[금지사항]\n1. 단가·계약 조건 절대 문서에 기재 금지\n2. 독점·보증·SLA 등 법적 약속 표현 금지\n3. 경쟁사 비방 표현 금지\n4. 수치 근거 없는 효과 과장 금지\n\n[요청]\n전자부품 납품 제안서 스토리라인 작성.\n강점: 납기 준수율 99.2%, 품질 불량률 500ppm 이하","result":"✓ 안전한 봇 답변 (구조만 작성):\n\n# 납품 파트너 제안\n\n## 1. 귀사의 고민을 압니다\n→ 납기 지연·품질 불량으로 인한 생산 차질\n\n## 2. 당사가 다른 이유\n→ 납기 준수율 99.2% (최근 12개월 기준)\n→ 품질 불량률 500ppm 이하 (자체 측정치)\n\n## 3. 함께 하면 달라지는 것\n→ 안정적 공급으로 생산 계획 차질 최소화\n\n## 4. 다음 단계\n→ 샘플 제공 및 조건 협의 (별도 안내 예정)\n\n⚠️ 단가·계약 조건은 별도 협의 후 직접 기재\n\n→ 법적 리스크 없는 제안서 구조만 완성\n→ 조건은 영업팀이 직접 추가"}]},
+{"title":"실습 2: 팀 공유 봇 설계","objective":"팀원 누구나 사용 가능한 팀 공유 봇을 설계하고 공유 방법을 익힙니다.","guide":"팀에서 가장 반복적으로 하는 Task를 골라서 팀 봇을 직접 설계해보세요.","bads":[{"dept":"경영지원팀","prompt":"(팀원마다 AI를 개인적으로 쓰는데 결과물 형식이 제각각)","result":"⚠️ 팀 봇 없는 현재 상황:\n\n• 팀원 A: ChatGPT로 공지문 작성 → A 스타일\n• 팀원 B: Gemini로 공지문 작성 → B 스타일\n• 팀원 C: 직접 작성 → C 스타일\n\n결과:\n→ 같은 팀인데 나가는 문서 스타일이 제각각\n→ 매번 팀장이 형식 통일 요청\n→ 재작성 요청으로 시간 낭비\n→ 팀 전체가 같은 봇을 쓰면 해결!"},{"dept":"품질관리팀","prompt":"(팀원마다 거래처 대응 메일 스타일이 달라 브랜드 일관성 없음)","result":"⚠️ 팀 봇 없는 현재 상황:\n\n• 신입: 너무 간단한 메일 → 성의 없어 보임\n• 시니어: 너무 긴 메일 → 핵심이 안 보임\n• 중간: 그나마 적당하지만 형식 제각각\n\n결과:\n→ 같은 팀인데 거래처가 받는 메일이 제각각\n→ 거래처 신뢰도 영향\n→ 팀 전체가 같은 봇을 쓰면 일관성 확보!"},{"dept":"생산기술팀","prompt":"(일일 점검 보고서가 팀원마다 다른 형식으로 제출됨)","result":"⚠️ 팀 봇 없는 현재 상황:\n\n• A조 점검표: 엑셀 양식\n• B조 점검표: 워드 양식\n• C조 점검표: 구두 보고\n\n결과:\n→ 취합하는 팀장이 매번 통합 작업\n→ 형식 통일 요청했지만 안 지켜짐\n→ 팀 봇 만들면 누구나 같은 양식 자동 완성!"}],"goods":[{"dept":"경영지원팀","prompt":"[팀 공유 봇 — 경영지원팀 공지문 봇]\n\n[역할] 경영지원팀 전체 임직원 대상 공지문 작성 전문 봇\n\n[임무] 공지 내용 요약 → 공식 공지문 자동 완성\n출력 양식 고정:\n\n# 공지\n**수신:** 전 임직원 | **공지일:** [오늘]\n---\n## 공지내용\n[내용]\n> 중요사항 강조\n## 요청사항\n- [ ] [항목] | 기한:\n**문의:** 경영지원팀\n\n[금지사항]\n• 개인정보·급여 정보 절대 포함 금지\n• 미확정 내용 공지 금지\n• 임의로 내용 추가 금지\n\n[팀 공유 방법]\nGems 설정 완료 → 링크 복사 → 팀 카톡 공유\n\n[테스트 입력]\n이번 달 말까지 전 직원 연차 소진 권고.\n신청은 사내 포털에서.","result":"✓ 팀 봇 결과 (누가 써도 동일한 공지문):\n\n# 공지\n**수신:** 전 임직원 | **공지일:** 2026.04.08\n---\n## 공지내용\n이번 달 말(04.30)까지 잔여 연차를 소진하시기 바랍니다.\n\n> ✅ 팀장님과 일정 조율 후 신청해 주세요.\n\n## 요청사항\n- [ ] 연차 신청 | 사내 포털 > 근태관리 | 04.25까지\n\n**문의:** 경영지원팀\n\n→ 팀원 누가 써도 동일한 공지문 형식\n→ 링크 하나로 팀 전체 공유\n→ 팀장 형식 수정 요청 0건"},{"dept":"품질관리팀","prompt":"[팀 공유 봇 — 품질팀 거래처 대응 봇]\n\n[역할] 품질관리팀 거래처 클레임·문의 대응 메일 전문 봇\n\n[임무] 클레임 상황 → 표준 대응 메일 자동 작성\n\n[출력 구조 고정]\n1. 사과(1줄)\n2. 조사 착수 알림(1줄)\n3. 다음 액션 + 일정(2줄)\n4. 문의처\n전체 200자 이내\n\n[금지사항]\n• 보상 금액·비율 임의 약속 금지\n• 원인 단정 금지\n• 시간 구체적 약속 금지\n\n[팀 공유] 링크로 팀 전체 공유\n\n[테스트]\n납품 불량으로 고객사 라인 정지. 보상 요구.","result":"✓ 팀 봇 결과 (누가 써도 동일한 메일):\n\n이번 품질 이슈로 생산에 차질을 드려 진심으로 사과드립니다.\n\n즉각 원인 파악에 착수하였으며,\n조사 결과에 따라 신속하게 방안을 안내드리겠습니다.\n\n현재 해당 부품 샘플 수거 및 분석 진행 중입니다.\n추가 문의는 아래로 연락 주세요.\n\n품질관리팀 [담당자] | [연락처]\n\n→ 신입도 시니어도 동일한 안전한 메일\n→ 법적 리스크 없는 표준 대응\n→ 팀 브랜드 일관성 확보"},{"dept":"생산기술팀","prompt":"[팀 공유 봇 — 일일 점검 보고 봇]\n\n[역할] 생산기술팀 설비 일일 점검 보고서 작성 전문 봇\n\n[임무] 점검 결과 요약 → 표준 점검 보고서 자동 완성\n\n[출력 양식 고정]\n# 일일 점검 보고\n**일자:** | **점검자:**\n---\n## 설비 상태\n| 설비 | 상태 | 특이사항 |\n## 이슈\n> 없으면 이상 없음\n## 조치 필요\n- [ ] 항목 | 담당 | 기한\n\n[금지사항]\n• 양식 임의 변경 금지\n• 미확인 내용 기재 금지\n\n[테스트]\nA설비 정상 B설비 소음 C설비 정상\nB설비 정비팀 요청 필요","result":"✓ 팀 봇 결과 (모든 팀원 동일한 양식):\n\n# 일일 점검 보고\n**일자:** 2026.04.08 | **점검자:** [이름]\n---\n## 설비 상태\n| 설비 | 상태 | 특이사항 |\n|------|------|--------|\n| A설비 | 🟢정상 | - |\n| B설비 | 🔴이상 | 소음 발생 |\n| C설비 | 🟢정상 | - |\n\n## 이슈\n> 🔴 B설비 소음 발생 — 즉시 점검 필요\n\n## 조치 필요\n- [ ] B설비 점검 | 정비팀 | 오늘 중\n\n→ 모든 조원이 동일한 양식으로 제출\n→ 팀장 취합 작업 대폭 감소"}]},
+{"title":"실습 3: 봇 완성도 높이기 — 금지사항과 출력 구조","objective":"봇에 금지사항과 고정 출력 구조를 추가하면 품질이 얼마나 달라지는지 확인합니다.","guide":"직접 만든 봇에 금지사항을 추가해보고 답변이 어떻게 달라지는지 비교해보세요.","bads":[{"dept":"경영지원팀","prompt":"[미완성 봇 설정]\n너는 주간보고 작성 도우미야.\n주간보고 잘 써줘.\n\n[입력]\n이번주 예산 정리하고 인사 서류 처리했어.","result":"⚠️ 미완성 봇 답변 (형식 제각각):\n\n이번 주 주요 업무를 정리해 드리겠습니다.\n\n**완료 업무:**\n- 예산 정리 업무 수행\n- 인사 관련 서류 처리\n\n**다음 주 예정:**\n- 지속적인 업무 추진\n\n**특이사항:**\n- 없음\n\n→ '지속적인 업무 추진'이 무슨 말?\n→ 이모지도 없고, 섹션 구조도 제각각\n→ 팀원마다 다른 형식으로 제출됨"},{"dept":"품질관리팀","prompt":"[미완성 봇 설정]\n너는 품질 보고서 작성 도우미야.\n\n[입력]\nA라인 불량 발생. 원인은 원자재 문제인 것 같아.","result":"⚠️ 미완성 봇 답변 (추측 포함):\n\n## 품질 이슈 보고\n\nA라인에서 불량이 발생하였습니다.\n\n**원인 분석:**\n원자재 불량이 주요 원인으로 확인됩니다.\n입고 검사 강화와 협력사 품질 관리 강화가 필요합니다.\n공급업체와의 협력을 통해 즉각적인 개선이 필요합니다.\n\n→ '확인됩니다'라고 단정!\n→ 실제 조사도 안 했는데 원인을 단정\n→ 이대로 보고하면 책임 소재 문제"},{"dept":"기획팀","prompt":"[미완성 봇 설정]\n너는 기획안 작성 도우미야.\n\n[입력]\nAI 업무 도입 기획안 써줘.","result":"⚠️ 미완성 봇 답변 (과장된 내용):\n\n# AI 업무 혁신 도입 기획안\n\nAI를 도입하면 업무 효율이 500% 향상되며\n비용이 80% 절감됩니다.\n직원 만족도는 획기적으로 개선될 것입니다.\n업계 최초의 혁신적인 시스템으로...\n\n→ 500% 향상? 근거 없는 과장\n→ '획기적', '최초' 등 검증 안 된 표현\n→ 임원에게 올렸다가 신뢰 잃음"}],"goods":[{"dept":"경영지원팀","prompt":"[완성 봇 설정]\n[역할] 경영지원팀 주간보고 작성 전문 봇\n[임무] 입력된 업무 내용 → 아래 양식으로만 주간보고 작성\n\n[출력 양식 고정]\n# 📊 주간업무보고\n**작성자:** | **부서:** 경영지원 | **기간:**\n---\n## ✅ 이번주 완료\n-\n## 📌 다음주 예정\n-\n## ⚠️ 이슈사항\n> 긴급도 | 담당 | 요청\n\n[금지사항]\n• 양식 변경 금지\n• '지속적 추진' 같은 의미없는 문구 금지\n• 입력에 없는 내용 임의 추가 금지\n\n[입력]\n이번주 예산 정리하고 인사 서류 처리했어.","result":"✓ 완성 봇 답변 (양식 고정 + 의미있는 내용):\n\n# 📊 주간업무보고\n**작성자:** [이름] | **부서:** 경영지원 | **기간:** 04.07~04.11\n---\n## ✅ 이번주 완료\n- 2분기 예산 집행 현황 정리 완료\n- 인사 관련 서류 처리 완료\n\n## 📌 다음주 예정\n- (입력된 내용 없음 — 직접 입력 필요)\n\n## ⚠️ 이슈사항\n> 이번 주 특이 이슈 없음\n\n→ 양식 완벽하게 고정\n→ 없는 내용은 솔직하게 '없음'\n→ 이름·날짜·다음주 예정만 채우면 제출 완료"},{"dept":"품질관리팀","prompt":"[완성 봇 설정]\n[역할] 품질관리팀 이슈 보고서 작성 전문 봇\n[임무] 이슈 내용 → 현황/추정원인/조치계획 3단 보고서\n\n[금지사항]\n• 원인을 '확인됩니다', '것으로 판단됩니다' 등으로 단정 금지\n• 추측은 반드시 '추정' 또는 '조사 중'으로 표시\n• 거래처명·단가·계약 정보 포함 금지\n• 현장 미확인 내용 기재 금지\n\n[입력]\nA라인 불량 발생. 원인은 원자재 문제인 것 같아.","result":"✓ 완성 봇 답변 (추측 명시 + 안전한 보고):\n\n# 품질 이슈 보고\n**작성:** 품질관리팀 | **일자:** 2026.04.08\n---\n## 현황\nA라인 불량 발생 확인 (수량·유형은 현장 집계 후 기입)\n\n## 추정 원인 (현장 조사 중)\n원자재 품질 문제 가능성 있음 [조사 중]\n→ 입고 Lot 샘플 추가 검사 진행 예정\n\n## 조치계획\n- [ ] 입고 Lot 전수 검사 실시\n- [ ] 원인 확정 후 시정조치 보고\n\n→ '확인됩니다' 대신 '조사 중'\n→ 추측을 추측으로 명시\n→ 법적 리스크 없는 안전한 보고서"},{"dept":"기획팀","prompt":"[완성 봇 설정]\n[역할] 기획팀 기획안 작성 전문 봇\n[임무] 기획 내용 → 구조화된 기획안 초안 작성\n\n[금지사항]\n• 수치 근거 없는 효과 과장 금지 ('500% 향상' 등)\n• 출처 없는 숫자 기재 금지\n• '최초', '혁신', '획기적' 등 검증 안 된 표현 금지\n• 예산 확정 전 구체적 금액 기재 금지\n\n[출력] 배경/목적/기대효과/일정 4단, 결재란 포함\n\n[입력]\nAI 업무 도입 기획안 써줘.","result":"✓ 완성 봇 답변 (과장 없는 객관적 기획안):\n\n# AI 업무 도입 타당성 검토\n**작성:** 기획팀 | **버전:** v1.0\n---\n## 배경 및 목적\n반복 문서 작업 자동화를 통한 업무 효율 개선\n\n## 기대 효과 (추정 — 검증 필요)\n- 보고서 초안 작성 시간 단축 (실측 필요)\n- 직원 반복 업무 부담 감소 (설문 확인 필요)\n\n## 추진 일정 (안)\n1단계: 파일럿 운영 (1개월)\n2단계: 결과 분석 후 확대 여부 결정\n\n## 예산\n[파일럿 완료 후 별도 산정]\n\n**결재:** 담당 | 팀장 | 임원\n\n→ 과장 표현 0\n→ 불확실한 수치는 '추정·검증 필요'\n→ 임원 보고에 올려도 신뢰 잃지 않음"}]}
+]},
+{id:"2-3",title:"2-3교시: GPT Projects — 개인/팀 프로젝트 + GPTs 비교",type:"C",
+overview:"팀이 공유하는 워크스페이스에서 누구나 동일한 양식과 규정을 지켜 결과물을 내도록 공통 규칙을 강제합니다. GPT Projects의 파일 업로드와 팀 공유 기능으로 진짜 팀 AI 시스템을 구축합니다.",
+effects:[{"name":"팀 일관성","score":9.0,"desc":"팀원 누구나 같은 양식과 맥락으로 결과물 생성"},{"name":"파일 기반","score":8.5,"desc":"팀 문서를 업로드하면 AI가 그 문서를 바탕으로 답변"},{"name":"맥락 공유","score":9.0,"desc":"한번 설정하면 팀원 모두 같은 맥락에서 시작"},{"name":"협업 효율","score":8.5,"desc":"링크·이메일로 즉시 공유, 권한 설정도 가능"},{"name":"도구 선택","score":8.0,"desc":"Gems vs Projects vs GPTs 상황별 최적 도구 선택"},{"name":"시스템화","score":9.0,"desc":"개인 AI 활용에서 팀 AI 시스템으로 업그레이드"}],
+tip:"• 팀 프로젝트에는 결재 라인·필수 양식을 처음부터 박아두세요.\n• 공유 시 개인 메모리가 자동 비활성화됩니다 — 반드시 인지하세요.",
+practices:[
+{"title":"실습 1: 팀 프로젝트 공통 지식 세팅","objective":"GPT Project의 공통 지시문에 팀 배경과 공유 규칙을 심는 방법을 익힙니다.","guide":"우리 팀의 주요 업무 맥락을 떠올리며 지시문을 직접 작성해보세요.","bads":[{"dept":"경영지원팀","prompt":"(팀원마다 각자 AI를 써서 결과물 형식 제각각)","result":"⚠️ Projects 없는 현재:\n\n• 팀원 A: 보고서에 결재란 없이 제출\n• 팀원 B: 보고서 양식이 구버전\n• 팀원 C: 마크다운으로 썼는데 한글로 열면 깨짐\n\n→ 팀장이 매번 형식 통일 요청\n→ GPT Project에 공통 지시문 박으면 해결!"},{"dept":"품질관리팀","prompt":"(각자 AI 써서 품질보고서 형식 제각각)","result":"⚠️ Projects 없는 현재:\n\n• 신입: 현황/원인/대책 3단 모르고 자기 스타일로\n• 시니어: 본인 스타일 고집\n• 팀장: 매번 수정 요청\n\n→ 공통 지시문에 '보고서는 3단 구조로'\n   박아두면 모두 통일!"}],"goods":[{"dept":"경영지원팀","prompt":"[GPT Project 공통 지시문 세팅]\n\n프로젝트명: '경영지원팀 업무 허브'\n\n[팀 배경]\n삼성전기 협력사 경영지원팀\n주요 업무: 예산 관리, 인사 행정, 총무·시설, 임원 보고\n보고 라인: 팀장 → 대표\n\n[팀 공통 규칙]\n1. 모든 보고서: 마크다운 + 결재란 포함\n2. 숫자·날짜는 담당자가 반드시 검수 후 제출\n3. 급여·개인정보는 절대 AI에 입력 금지\n4. 임원 보고: 2페이지 이내, 핵심만\n\n[소요 시간]\n세팅: 10분 / 팀원 공유: 링크 복사 1분","result":"✓ 세팅 후 팀원 모두에게 적용:\n\n이후 팀원 누가 이 Project 열어도:\n\n✓ 경영지원팀 맥락 자동 인식\n✓ 마크다운 + 결재란 자동 포함\n✓ 임원 보고 시 2페이지 이내 자동 준수\n✓ 급여·개인정보 입력 경고\n\n→ 팀원 5명 × 10번 설명 = 50번 반복이\n   공통 지시문 세팅 1번으로 끝!"},{"dept":"품질관리팀","prompt":"[GPT Project 공통 지시문 세팅]\n\n프로젝트명: '품질관리팀 업무 허브'\n\n[팀 배경]\n삼성전기 협력사 품질관리팀\n주요 업무: 불량 분석, 거래처 대응, 품질보고서\n\n[팀 공통 규칙]\n1. 모든 품질보고서: 현황/원인/대책 3단 구조\n2. 원인 단정 금지 — '추정', '조사 중'으로 표시\n3. 거래처명·단가·계약 내용 입력 금지\n4. 보상 약속·과실 인정 표현 금지","result":"✓ 세팅 후 팀원 모두에게 적용:\n\n이후 팀원 누가 이 Project 열어도:\n\n✓ 품질팀 맥락 자동 인식\n✓ 3단 구조 자동 적용\n✓ '확인됩니다' 대신 '추정' 자동 표시\n✓ 위험 표현 차단\n\n→ 신입도 시니어처럼 안전한 보고서 작성!"}],"steps":[{"title":"ChatGPT에서 Project 생성","objective":"새 Project를 만들고 팀 이름을 설정합니다.","content":"ChatGPT 접속\n→ 좌측 'Projects' 클릭\n→ '+ 새 프로젝트' 클릭\n→ 이름: '우리팀 업무 허브'\n→ 색상·아이콘 선택\n\n※ 무료 사용자도 사용 가능 (2025.9 이후)","hint":"프로젝트 이름은 나중에 팀원이 보기 좋게 구체적으로 적으세요."},{"title":"공통 지시문 입력","objective":"팀 맥락과 공통 규칙을 지시문에 입력합니다.","content":"Project 화면 → 우측 상단 '맞춤 지시문' 클릭\n\n입력 내용:\n[팀 배경] 소속·주요 업무·보고 라인\n[공통 규칙] 양식·보안·결재 규정\n\n저장 후 테스트:\n'주간보고 써줘' → 팀 양식으로 나오는지 확인","hint":"지시문은 짧고 명확하게. 너무 길면 AI가 다 못 지킵니다."},{"title":"파일 업로드 & 팀 공유","objective":"팀 문서를 올리고 링크로 팀원에게 공유합니다.","content":"파일 업로드:\nProject 화면 → '파일 추가'\n→ 팀 매뉴얼·보고 양식·규정집 업로드\n(무료: 5개 / Plus: 25개)\n\n팀 공유:\n'공유' → 이메일 초대 또는 링크 복사\n→ 팀 카톡·메일로 공유\n\n주의: 공유 시 개인 메모리 자동 비활성화!","hint":"대외비 문서는 기업용 유료 환경에서만 업로드하세요."}]},
+{"title":"실습 2: 파일 업로드 & 팀 지식 공유","objective":"팀 문서를 Project에 올려 팀원 모두가 같은 지식 기반으로 일하는 구조를 만듭니다.","guide":"팀에서 가장 자주 참고하는 문서를 골라 업로드해보세요.","bads":[{"dept":"경영지원팀","prompt":"(매뉴얼이 있는데 아무도 안 읽고 팀장한테 물어봄)","result":"⚠️ 현재:\n매뉴얼 PDF는 있지만\n→ 찾는 시간 5~10분\n→ 결국 팀장한테 질문\n→ 팀장 업무 방해 반복\n→ Projects에 올리면 30초 답변!"},{"dept":"품질관리팀","prompt":"(불량 처리 매뉴얼 100페이지, 아무도 안 읽음)","result":"⚠️ 현재:\n100페이지 매뉴얼이 있지만\n→ 급할 때 어디 있는지 모름\n→ 선배한테 물어봄\n→ 선배마다 다른 답변\n→ Projects에 올리면 누구나 30초 답변!"}],"goods":[{"dept":"경영지원팀","prompt":"[파일 업로드 후 테스트 질문]\n\n업로드 파일:\n- 취업규칙_2026.pdf\n- 복무규정_2026.pdf\n- 주요 보고 양식_모음.docx\n\n테스트 질문:\n'육아휴직 복직 후 연차는 어떻게 돼?'\n'출장비 정산 절차가 어떻게 돼?'","result":"✓ 파일 업로드 후 답변:\n\n'육아휴직 복직 후 연차' 질문:\n→ 취업규칙 제14조 기준으로 정확한 답변\n→ 출처 페이지 자동 표시\n\n'출장비 정산 절차' 질문:\n→ 복무규정 제8조 기준 단계별 안내\n→ 정산 양식 위치도 안내\n\n→ 팀원 누구나 30초 안에 정확한 답변\n→ 팀장에게 물어보는 횟수 대폭 감소"},{"dept":"품질관리팀","prompt":"[파일 업로드 후 테스트 질문]\n\n업로드 파일:\n- 품질관리_매뉴얼_2026.pdf\n- 불량_처리_절차서.pdf\n- 거래처_대응_기준.docx\n\n테스트 질문:\n'신규 협력사 품질 승인 절차가 뭐야?'\n'크랙 불량 발생 시 즉시 해야 할 것은?'","result":"✓ 파일 업로드 후 답변:\n\n'신규 협력사 품질 승인' 질문:\n→ 매뉴얼 p.15 기준 5단계 절차 안내\n→ 필요 서류 목록까지 자동 추출\n\n'크랙 불량 즉시 조치' 질문:\n→ 불량처리 절차서 기준 우선순위 안내\n→ 보고 양식 위치 안내\n\n→ 100페이지 매뉴얼을 30초 답변으로"}],"steps":[{"title":"팀 문서 파일 업로드","objective":"자주 참고하는 팀 문서를 Project에 추가합니다.","content":"Project 화면 → '파일 추가'\n\n추천 업로드 파일:\n• 팀 업무 매뉴얼 (PDF)\n• 주요 보고 양식 (Word)\n• 규정·절차서 (PDF)\n• FAQ 문서 (텍스트)\n\n업로드 한도:\n• 무료: 5개 / Plus: 25개 / Pro: 40개","hint":"가장 자주 질문받는 내용이 담긴 문서를 우선 업로드하세요."},{"title":"파일 기반 Q&A 테스트","objective":"업로드한 문서를 바탕으로 실제 업무 질문을 테스트합니다.","content":"테스트 질문 예시:\n'매뉴얼 기준으로 [질문] 알려줘'\n\n확인 포인트:\n→ 파일 내용을 실제로 참고했는지\n→ 없는 내용은 없다고 하는지\n→ 출처 표시가 되는지\n\n일반 ChatGPT vs Projects 비교:\n같은 질문을 두 곳에 입력해서 비교!","hint":"업로드 직후에는 처리 시간이 필요합니다. 1~2분 후 질문하세요."},{"title":"팀원 초대 & 공동 사용","objective":"팀원을 초대하고 모두가 같은 Project를 사용하도록 설정합니다.","content":"팀원 초대 방법:\n① 이메일 초대: 팀원 이메일 직접 입력\n② 링크 공유: 링크 복사 후 단체 카톡\n\n권한 설정:\n• 채팅만: 사용만 가능\n• 편집: 파일·지시문 수정 가능\n\n기존 대화 이동:\n기존 개인 대화 → 우클릭 → 'Move to project'","hint":"팀장이 만들고 팀원은 링크로 접속하는 구조가 관리가 편합니다."}]},
+{"title":"실습 3: Gems vs GPT Projects vs GPTs 상황별 선택","objective":"세 도구의 차이를 이해하고 상황에 맞는 도구를 선택하는 판단 기준을 세웁니다.","guide":"우리 팀 업무 상황을 대입해서 어떤 도구가 가장 적합한지 직접 결정해보세요.","bads":[{"dept":"모든 부서","prompt":"(Gems, Projects, GPTs를 구분 없이 그때그때 아무거나 사용)","result":"⚠️ 도구 구분 없는 현재:\n\n• 팀 공유가 필요한데 개인 Gems만 씀\n• 파일 기반 답변이 필요한데 일반 채팅 사용\n• 팀원마다 다른 도구, 다른 결과물\n→ 목적에 맞는 도구 선택이 효율의 핵심!"},{"dept":"모든 부서","prompt":"(세 도구를 모두 써봤는데 어떻게 다른지 헷갈림)","result":"⚠️ 혼란 상황:\n\n• Gems: Gemini에서만 됨\n• Projects: ChatGPT에서만 됨\n• GPTs: 유료만 가능\n→ 언제 뭘 써야 하는지 판단 어려움\n→ 명확한 선택 기준이 필요!"}],"goods":[{"dept":"모든 부서","prompt":"[도구 선택 기준 정리]\n\n상황 → 최적 도구\n\n혼자 반복 Task 자동화\n→ Gems (Gemini)\n   이유: 역할·양식 고정, 열면 바로 시작\n\n팀 5명이 같은 맥락으로 작업\n→ GPT Projects\n   이유: 파일 공유, 팀 공통 지시문, 무료\n\n외부 공개 또는 다른 팀 배포\n→ GPTs\n   이유: 앱스토어처럼 공개 링크 배포 가능\n   (단: ChatGPT Plus 이상 필요)\n\n내부 문서 기반 Q&A 비서\n→ NotebookLM + Gems 연동\n   이유: RAG 기반 환각 최소화","result":"✓ 오늘 바로 만들 것:\n\n① Gems (Gemini) — 지금 바로 무료\n   → 주간보고 봇, 점검 보고 봇\n\n② GPT Projects — 지금 바로 무료\n   → 팀 업무 허브, 파일 공유\n\n③ GPTs — 유료 필요 (Plus 이상)\n   → 강사 시연으로 확인\n\n④ NotebookLM — 지금 바로 무료\n   → 팀 매뉴얼 기반 Q&A 비서\n\n→ 목적별로 골라서 쓰면 시너지 최대화!"},{"dept":"모든 부서","prompt":"[팀별 도구 활용 시나리오]\n\n경영지원팀:\n→ Gems: 공지문 봇\n→ Projects: 인사 규정 파일 업로드\n→ NotebookLM: 취업규칙 Q&A 비서\n\n품질관리팀:\n→ Gems: 클레임 대응 봇\n→ Projects: 품질 매뉴얼 공유\n→ NotebookLM: 불량 처리 절차 Q&A\n\n생산기술팀:\n→ Gems: 일일 점검 보고 봇\n→ Projects: 설비 매뉴얼 공유\n→ NotebookLM: 공정 특이사항 Q&A","result":"✓ 팀별 AI 시스템 완성:\n\n3개 도구를 목적별로 조합하면:\n\nNotebookLM (지식 저장소)\n  ↓\nGems (작성 전문가 봇)\n  ↓\nGPT Projects (팀 공유 허브)\n  ↓\n팀 전체가 AI로 일하는 조직!\n\n→ 하나씩 만들어가다 보면\n   완전한 팀 AI 시스템 완성\n→ 오늘 Gems 하나만 만들어도 충분한 시작!"}],"steps":[{"title":"세 도구 핵심 차이 이해","objective":"Gems vs GPT Projects vs GPTs의 결정적 차이를 파악합니다.","content":"Gems (Gemini)\n• 목적: 특정 Task 전용 봇\n• 특징: 역할·양식·금지사항 고정\n• 비용: 무료\n• 추천: 반복 작업 자동화\n\nGPT Projects (ChatGPT)\n• 목적: 팀 워크스페이스\n• 특징: 파일 공유·팀 공통 맥락\n• 비용: 무료\n• 추천: 팀 협업·파일 기반 작업\n\nGPTs (ChatGPT)\n• 목적: 독립 챗봇 배포\n• 특징: 앱스토어처럼 공개 가능\n• 비용: Plus 이상\n• 추천: 외부 공개·전사 배포","hint":"오늘 Gems와 GPT Projects는 무료로 직접 만들 수 있습니다!"},{"title":"내 상황에 맞는 도구 선택","objective":"실제 업무 상황을 대입해서 최적 도구를 선택합니다.","content":"체크리스트:\n\n□ 혼자 매주 같은 보고서를 씀\n  → Gems 만들기\n\n□ 팀원 3명 이상이 같은 양식을 써야 함\n  → GPT Projects 만들기\n\n□ 팀 매뉴얼 기반 Q&A 비서가 필요함\n  → NotebookLM + Gems 연동\n\n□ 다른 팀이나 외부에 배포하고 싶음\n  → GPTs (유료 필요)","hint":"한번에 다 만들 필요 없어요. 오늘 필요한 것 하나만 만들어도 큰 변화입니다."},{"title":"오늘 Gems 또는 Projects 하나 완성","objective":"배운 내용으로 실제 Gems 또는 GPT Projects를 지금 바로 만들어봅니다.","content":"[선택 A] Gems 만들기\nGemini → 우측 상단 'Gems 만들기'\n→ 이름·역할·임무·금지사항 입력\n→ 테스트 후 팀 공유\n\n[선택 B] GPT Projects 만들기\nChatGPT → Projects → 새 프로젝트\n→ 공통 지시문 입력\n→ 팀 파일 업로드\n→ 링크 공유\n\n목표: 오늘 퇴근 전에 하나 완성!","hint":"10분이면 만들 수 있습니다. 완벽하지 않아도 OK — 쓰면서 개선하면 됩니다!"}]}
+]},
+{id:"2-4",title:"2-4교시: NotebookLM 완전 정복 — 기능 + 스튜디오",type:"C",
+overview:"사내 문서 수십 개를 NotebookLM에 넣고 FAQ·브리핑·팟캐스트·슬라이드 등 8가지 콘텐츠를 자동 생성합니다. Data Tables로 비교표를 만들어 Google Sheets로 직접 내보내는 실습을 합니다.",
+effects:[{"name":"문서 AI화","score":9.5,"desc":"PDF·Word·URL 등 다양한 소스를 AI가 직접 읽고 답변"},{"name":"스튜디오 활용","score":9.0,"desc":"한 번의 클릭으로 FAQ·슬라이드·팟캐스트 자동 생성"},{"name":"환각 최소화","score":9.5,"desc":"출처 표시로 모든 답변의 근거를 즉시 확인 가능"},{"name":"데이터 변환","score":8.5,"desc":"텍스트 문서를 구조화된 비교표로 자동 변환"},{"name":"콘텐츠 다양화","score":8.5,"desc":"같은 소스로 8가지 다른 형태의 콘텐츠 즉시 생성"},{"name":"지식 자산화","score":9.0,"desc":"흩어진 팀 문서를 검색 가능한 지식 베이스로 통합"}],
+tip:"• 소스 업로드 후 스튜디오는 처음엔 느릴 수 있습니다. 1~2분 기다려보세요.\n• 팟캐스트의 AI 진행자 발언은 재미 요소 — 실제 내용은 반드시 원본 확인하세요.",
+practices:[
+{"title":"실습 1: 소스 업로드 & Q&A 테스트","objective":"다양한 형식의 소스를 NotebookLM에 넣고 문서 기반 Q&A를 실제로 테스트합니다.","guide":"팀 문서 또는 강사 제공 샘플 파일을 업로드하고 아래 질문들로 테스트해보세요.","bads":[{"dept":"경영지원팀","prompt":"(일반 ChatGPT에서 취업규칙 관련 질문)","result":"⚠️ 일반 AI 한계:\n'우리 회사 경조사 휴가는 며칠이야?'\n→ 근로기준법 일반론만 답변\n→ 우리 회사 규정이 아님\n→ 잘못된 정보로 직원 안내 위험\n\n→ NotebookLM에 취업규칙 PDF를\n   업로드하면 해결!"},{"dept":"품질관리팀","prompt":"(일반 ChatGPT에서 불량처리 절차 질문)","result":"⚠️ 일반 AI 한계:\n'불량 발생 시 보고 타임라인이 어떻게 돼?'\n→ 일반적인 절차만 답변\n→ 우리 팀 24시간 보고 의무 모름\n→ 신입이 잘못된 절차 따르는 위험\n\n→ NotebookLM에 품질 매뉴얼 올리면\n   정확한 타임라인 안내!"}],"goods":[{"dept":"경영지원팀","prompt":"[NotebookLM 소스 업로드]\n✓ 취업규칙_2026.pdf (업로드)\n✓ 복무규정_2026.pdf (업로드)\n✓ 경영지원팀_FAQ.docx (업로드)\n\n[Q&A 테스트]\nQ1: 육아휴직 복직 후 연차는?\nQ2: 결혼 경조사 휴가 기준은?\nQ3: 출장비 정산 절차는?\nQ4: 외부 발송 전 결재 절차는?","result":"✓ NotebookLM 답변 (문서 기반):\n\nQ1: 육아휴직 복직 후 연차\n→ 취업규칙 제14조: 육아휴직 기간은\n   연차 산정 기간에 포함됩니다. (p.24)\n\nQ2: 결혼 경조사 휴가\n→ 복무규정 제15조: 본인 결혼 5일,\n   배우자 부모 사망 3일 등 (p.31)\n\nQ3: 출장비 정산\n→ 복무규정 제8조: 출장 후 5일 이내\n   포털 제출 (출장비 정산 양식 p.19)\n\nQ4: 외부 발송 결재\n→ FAQ 기준: 팀장 사전 승인 필수 (FAQ p.3)\n\n→ 모든 답변에 출처 포함\n→ 직원 안내용으로 바로 활용 가능"},{"dept":"품질관리팀","prompt":"[NotebookLM 소스 업로드]\n✓ 품질관리_매뉴얼_2026.pdf (업로드)\n✓ 불량처리_절차서.pdf (업로드)\n✓ 거래처대응_가이드.docx (업로드)\n\n[Q&A 테스트]\nQ1: 불량 발생 후 보고 타임라인은?\nQ2: 크랙 불량 원인 분석 절차는?\nQ3: 거래처 클레임 초기 대응 원칙은?\nQ4: 신규 협력사 품질 승인 단계는?","result":"✓ NotebookLM 답변 (절차 기반 정확한 안내):\n\nQ1: 불량 보고 타임라인\n→ 절차서 p.5: 발생 즉시 → 팀장 30분 이내\n보고 → 2시간 이내 이상보고서 제출\n\nQ2: 크랙 불량 원인 분석\n→ 매뉴얼 p.23: 4M 분석 → 특성요인도\n작성 → 72시간 이내 원인 보고\n\nQ3: 거래처 클레임 초기 대응\n→ 가이드 p.8: 사과 + 원인조사착수 안내\n보상 약속 금지 (가이드 강조사항)\n\nQ4: 신규 협력사 품질 승인\n→ 매뉴얼 p.15: 서류심사 → 현장심사\n→ 품질시험 → 승인 5단계\n\n→ 신입도 매뉴얼 없이 30초 답변 가능"}],"steps":[{"title":"노트북 생성 & 소스 업로드","objective":"NotebookLM 새 노트북을 만들고 팀 문서를 업로드합니다.","content":"notebooklm.google.com 접속\n→ '새 노트북' 클릭\n→ '소스 추가' 클릭\n\n업로드 가능 형식:\n• PDF / Word / 텍스트 파일 / PPTX\n• 구글 Docs / Slides\n• 웹페이지 URL\n• 유튜브 링크 (자막 자동 인식)\n• 이미지 (OCR 자동 인식)\n\n⚠️ 대외비 문서는 기업용 환경에서만!","hint":"소스는 3~5개로 시작하세요. 너무 많으면 처리 시간이 오래 걸립니다."},{"title":"Q&A 실전 테스트","objective":"업로드된 소스를 바탕으로 실제 업무 질문을 테스트합니다.","content":"질문 입력 후 확인할 것:\n\n1. 출처 클릭\n   → 실제 문서의 해당 부분 확인\n   → AI 답변과 원본 대조\n\n2. 없는 내용 테스트\n   → '직원 급여가 얼마야?' 입력\n   → '소스에서 찾을 수 없습니다' 나오면 정상\n\n3. 답변 정확도 확인\n   → 원본 문서와 대조 필수!","hint":"출처 클릭 습관이 가장 중요합니다. 이게 NotebookLM의 핵심!"},{"title":"노트 저장 & 재활용","objective":"자주 쓰는 답변을 노트로 저장해두고 재활용합니다.","content":"답변 저장 방법:\n→ 답변 옆 '저장' 아이콘 클릭\n→ 노트에 자동 추가됨\n\n노트 활용:\n→ 자주 묻는 Q&A 모음 구축\n→ 신입사원 온보딩 자료로 활용\n→ 스튜디오에서 FAQ 자동 생성 재료로 활용\n\n공유:\n→ 노트 내보내기 → Google Docs 저장","hint":"나중에 스튜디오에서 FAQ 자동 생성할 때 노트가 재료가 됩니다."}]},
+{"title":"실습 2: 스튜디오 8가지 콘텐츠 자동 생성","objective":"같은 소스로 FAQ·브리핑·슬라이드·팟캐스트 등 8가지 콘텐츠를 자동으로 만들어봅니다.","guide":"실습 1에서 만든 노트북의 스튜디오 탭을 열어서 직접 생성해보세요.","bads":[{"dept":"경영지원팀","prompt":"(취업규칙 PDF가 있는데 신입 교육 자료 만드는 데 하루 종일 걸림)","result":"⚠️ 현재 방식:\n취업규칙 PDF → 직접 읽고 → 요약 정리\n→ PPT 만들기 → 신입 교육\n\n소요 시간: 반나절~하루\n\nNotebookLM 스튜디오 사용 시:\n→ FAQ 자동 추출 → 즉시 완성\n→ 브리핑 문서 → 자동 생성\n→ 슬라이드 → 자동 생성\n→ 소요 시간: 5분!"},{"dept":"품질관리팀","prompt":"(품질 매뉴얼로 신입 교육 자료 만드는 데 일주일 걸림)","result":"⚠️ 현재 방식:\n품질 매뉴얼 → 핵심 내용 추출\n→ 교육 자료 제작 → 신입 교육\n\n소요 시간: 3일~1주일\n\nNotebookLM 스튜디오 사용 시:\n→ 학습 가이드 자동 생성\n→ FAQ 문서 자동 추출\n→ 팟캐스트로 이동 중 청취\n→ 소요 시간: 10분!"}],"goods":[{"dept":"경영지원팀","prompt":"[스튜디오 8가지 콘텐츠 생성 실습]\n\n소스: 취업규칙 + 복무규정\n\n생성할 콘텐츠:\n① FAQ → '신입사원 연차·휴가 FAQ'\n② 브리핑 → '경영지원팀 복무규정 요약'\n③ 학습 가이드 → '신입사원 필수 규정 가이드'\n④ 슬라이드 → '오리엔테이션 PPT 초안'\n⑤ 팟캐스트 → '취업규칙 핵심 10분 요약'\n⑥ 인포그래픽 → '연차 발생 기준 시각화'","result":"✓ 스튜디오 생성 결과 (예시):\n\n① FAQ 자동 추출 결과:\nQ. 신입 연차는 언제부터?\nA. 입사 1개월 개근 시 1일 발생 (제12조)\nQ. 경조사 휴가 종류는?\nA. 본인 결혼 5일, 배우자 출산 10일...\n→ 총 15개 FAQ 자동 추출!\n\n② 브리핑 문서:\n→ 5개 핵심 내용 요약 자동 완성\n→ 신입 배포용 1페이지 안내문\n\n③ 슬라이드:\n→ 10장 오리엔테이션 PPT 초안\n→ PPTX로 내보내기 가능\n\n→ 기존 반나절 작업이 5분으로!"},{"dept":"품질관리팀","prompt":"[스튜디오 8가지 콘텐츠 생성 실습]\n\n소스: 품질관리 매뉴얼 + 불량처리 절차서\n\n생성할 콘텐츠:\n① FAQ → '불량 처리 자주 묻는 질문'\n② 브리핑 → '품질관리팀 핵심 절차 요약'\n③ 학습 가이드 → '신입 품질담당자 필수 지식'\n④ Data Tables → '협력사 품질 기준 비교표'\n⑤ 팟캐스트 → '품질 매뉴얼 핵심 10분'\n⑥ 인포그래픽 → '불량 처리 프로세스 시각화'","result":"✓ 스튜디오 생성 결과 (예시):\n\n① FAQ 자동 추출:\nQ. 불량 발생 후 즉시 해야 할 것은?\nA. 30분 이내 팀장 보고 (절차서 p.5)\nQ. 원인 단정 전 금지 사항은?\nA. 보상 약속·과실 인정 표현 금지\n→ 총 12개 FAQ 자동 추출!\n\n④ Data Tables 예시:\n| 협력사 | 품질등급 | 납기 | 불량률 기준 |\n→ Google Sheets로 바로 내보내기!\n\n⑥ 인포그래픽:\n→ 불량 처리 5단계 플로우 시각화\n→ 이미지로 저장 후 교육 자료 활용\n\n→ 신입 교육 자료 제작 일주일 → 10분!"}],"steps":[{"title":"스튜디오 탭 열기","objective":"NotebookLM 스튜디오의 8가지 콘텐츠 메뉴를 확인합니다.","content":"노트북 화면 → 우측 '스튜디오' 탭 클릭\n\n8가지 콘텐츠:\n🎙️ 팟캐스트 (AI 대화형 오디오)\n🔊 음성 안내 (단일 음성)\n📊 슬라이드 프레젠테이션\n📖 학습 가이드\n❓ FAQ 문서\n📋 브리핑 문서\n🖼️ 인포그래픽\n📈 Data Tables\n\n추천 시작: FAQ → 브리핑 → 슬라이드 순서","hint":"처음에는 FAQ가 가장 빠르고 실용적입니다. 여기서 시작하세요!"},{"title":"FAQ & 브리핑 자동 생성","objective":"소스 문서에서 FAQ와 브리핑 문서를 자동으로 생성합니다.","content":"FAQ 생성:\n스튜디오 → 'FAQ 문서' 클릭\n→ 자동 생성 시작 (1~2분)\n→ 주요 Q&A 자동 추출\n→ 'Google Docs 내보내기' 클릭\n\n브리핑 생성:\n스튜디오 → '브리핑 문서' 클릭\n→ 핵심 요약 자동 생성\n→ 노트로 저장 후 편집\n\n확인 포인트:\n→ 내용이 소스와 맞는지 출처 대조!","hint":"자동 생성된 FAQ는 그대로 쓰면 안 됩니다. 반드시 원본과 대조 후 사용!"},{"title":"Data Tables → Google Sheets","objective":"소스 내 비교·분석 데이터를 구조화된 표로 변환하고 Google Sheets로 내보냅니다.","content":"Data Tables 생성:\n스튜디오 → 'Data Tables' 클릭\n→ 소스에서 표 구조 자동 감지\n→ 비교표 자동 생성\n\nGoogle Sheets 내보내기:\n→ 'Google Sheets로 내보내기' 클릭\n→ 내 Google Drive에 자동 저장\n\n활용 예시:\n• 협력사 스펙 비교표\n• 불량 유형별 발생 현황\n• 교육 이수 현황\n\n⚠️ 숫자·날짜는 원본 대조 필수!","hint":"Data Tables는 소스 내 비교 데이터가 명확할 때 효과가 좋습니다."}]},
+{"title":"실습 3: 무료 vs Plus 비교 & 팀 공유 설계","objective":"무료와 Plus의 차이를 파악하고 우리 팀에 최적화된 NotebookLM 활용 구조를 설계합니다.","guide":"팀 전체가 NotebookLM을 활용하는 구조를 지금 바로 설계해보세요.","bads":[{"dept":"모든 부서","prompt":"(NotebookLM이 뭔지는 알겠는데 어디서부터 시작해야 할지 모름)","result":"⚠️ 시작 장벽:\n\n• 소스를 뭘 넣어야 하나?\n• 팀원이랑 어떻게 공유하나?\n• 유료로 해야 하나?\n\n→ 명확한 시작 가이드 필요!"},{"dept":"모든 부서","prompt":"(유료 Plus가 필요한지 모르겠음)","result":"⚠️ 비용 결정 어려움:\n\n무료:\n• 소스 50개\n• 노트북 100개\n• 팟캐스트 기본\n\nPlus (유료):\n• 소스 300개\n• 노트북 무제한\n• 팀 공유 강화\n\n→ 어떤 걸 선택해야 하는지 판단 어려움"}],"goods":[{"dept":"모든 부서","prompt":"[우리 팀 NotebookLM 시작 가이드]\n\n[STEP 1] 오늘 만들 노트북 설계\n• 노트북명: '경영지원팀 지식 비서'\n• 소스 3개만 우선 업로드\n  → 취업규칙 / 복무규정 / FAQ\n\n[STEP 2] Q&A 테스트\n• 자주 묻는 질문 5개로 테스트\n• 출처 클릭 확인\n\n[STEP 3] 스튜디오 활용\n• FAQ 자동 생성\n• 신입 온보딩 자료로 배포\n\n[STEP 4] 팀 공유\n• 공유 링크 생성 → 팀 카톡","result":"✓ 무료로 오늘 바로 시작:\n\n노트북 1개 (무료):\n→ 팀 FAQ 비서\n→ 자주 묻는 질문 30초 답변\n→ 소스 50개 (충분함)\n\n스튜디오 결과:\n→ FAQ 문서 자동 생성\n→ 신입 온보딩 가이드 자동 생성\n→ 인포그래픽 자동 생성\n\n공유:\n→ 링크로 팀원 전체 공유\n→ 팀원이 언제든 질문 가능\n\n→ 무료로 충분히 시작 가능!"},{"dept":"모든 부서","prompt":"[무료 vs Plus — 우리 팀에 맞는 선택]\n\n무료로 충분한 경우:\n• 소스 10~20개\n• 팀원 5명 이하 공유\n• 개인 업무 중심\n→ 무료 시작 권장!\n\nPlus 고려 시점:\n• 소스 50개 초과 (대규모 문서)\n• 팀원 10명 이상 동시 사용\n• 고급 팟캐스트·공유 필요\n→ 무료 3개월 써본 후 판단\n\n[지금 당장 시작할 것]\n무료로 노트북 1개 만들기 → 오늘!","result":"✓ 권장 시작 로드맵:\n\n1주차: 무료로 노트북 1개 만들기\n→ 팀 FAQ 비서 구축\n\n2주차: 스튜디오로 콘텐츠 생성\n→ 신입 온보딩 자료 자동 완성\n\n3주차: 팀원 공유 & 피드백\n→ 자주 묻는 질문 추가\n\n4주차: Gems 연동\n→ NotebookLM + Gems = 완성형 비서\n\n→ 한달이면 팀 AI 비서 완성!\n→ 오늘 노트북 하나만 만들면 시작!"}],"steps":[{"title":"내 첫 노트북 설계","objective":"오늘 만들 노트북의 목적과 소스를 결정합니다.","content":"노트북 설계 체크리스트:\n\n□ 노트북 목적 결정\n  → 팀 FAQ / 신입 교육 / 업무 매뉴얼\n\n□ 업로드할 소스 3개 선정\n  → 가장 자주 참고하는 문서\n\n□ 테스트할 질문 5개 준비\n  → 팀원이 자주 하는 질문\n\n□ 공유 대상 결정\n  → 팀 전체 / 특정 멤버\n\n→ 10분 안에 설계 완료!","hint":"소스는 많을수록 좋지 않습니다. 핵심 3~5개로 시작하고 나중에 추가하세요."},{"title":"Gems 연동 예고","objective":"NotebookLM과 Gems를 연동하면 어떻게 되는지 미리 파악합니다.","content":"내일 배울 연동 방법 미리보기:\n\nGemini 채팅창\n→ 첨부 아이콘 클릭\n→ 'NotebookLM' 선택\n→ 노트북 선택\n→ 연동 완료!\n\n연동 효과:\n• NotebookLM 지식 + Gems 봇 역할 결합\n• 파일 10개 한계 완전 극복 (최대 300개)\n• 열 때마다 최신 소스 자동 반영\n\n→ 내일 실습에서 직접 체험합니다!","hint":"오늘 NotebookLM을 잘 만들어두면 내일 연동 실습이 훨씬 효과적입니다."},{"title":"팀 노트북 공유 실습","objective":"만든 노트북을 팀원과 공유하고 함께 사용하는 구조를 완성합니다.","content":"공유 방법:\n노트북 우측 상단 '공유' 클릭\n→ 이메일 초대 또는 링크 생성\n\n공유 범위 설정:\n• 조회자: 읽기만\n• 편집자: 소스 추가 가능\n\n공유 후 팀원 테스트:\n→ 팀원이 직접 질문 테스트\n→ 출처 클릭 습관 전파\n\n주의사항:\n→ 소스 업데이트는 관리자만\n→ 주기적 소스 갱신 담당자 지정","hint":"공유 후 팀원이 처음 접속할 때 '출처 클릭하는 법'을 꼭 알려주세요."}]}
+]},
+{id:"2-5",title:"2-5교시: NotebookLM 실전 실습 + Gems 연동",type:"C",
+overview:"NotebookLM에서 추출한 정확한 지식을 Gems의 역할·규칙과 결합하면 환각 없는 완성형 AI 비서가 완성됩니다. Gemini 첨부 기능으로 두 도구를 연동하는 핵심 파이프라인을 직접 구축합니다.",
+effects:[{"name":"파이프라인 완성","score":9.5,"desc":"지식(NotebookLM) + 봇 역할(Gems) = 완성형 AI 비서"},{"name":"파일 한계 극복","score":9.0,"desc":"Gems 10개 한계 → NotebookLM 연동으로 소스 300개까지"},{"name":"환각 제로","score":9.5,"desc":"문서 기반 답변 + 출처 인용으로 거의 완벽한 신뢰도"},{"name":"업무 특화","score":9.0,"desc":"역할+지식이 결합된 부서 전용 AI 비서 완성"},{"name":"자동 갱신","score":8.5,"desc":"소스 업데이트 시 매번 업로드 없이 자동 반영"},{"name":"조직 자산화","score":9.0,"desc":"개인 AI에서 팀 공유 지식 시스템으로 진화"}],
+tip:"• NotebookLM 연동 후 Gems에서 직접 소스 파일을 볼 수는 없습니다. Q&A 형식으로만 활용하세요.\n• 소스가 오래되면 답변도 오래됩니다. 주기적으로 소스를 업데이트하세요.",
+practices:[
+{"title":"실습 1: NotebookLM → Gemini/Gems 연동","objective":"Gemini 첨부 메뉴에서 NotebookLM을 선택해 두 도구를 연동하는 핵심 스텝을 실습합니다.","guide":"어제 만든 NotebookLM 노트북을 Gemini에 연동해보세요.","bads":[{"dept":"경영지원팀","prompt":"(Gems에 파일 직접 올려서 10개 꽉 참)","result":"⚠️ 연동 없는 현재:\n\nGems 파일 한도: 10개\n→ 취업규칙 / 복무규정 / 매뉴얼...\n→금방 10개 꽉 참\n→ 더 올리면 기존 파일 삭제해야 함\n\nNotebookLM 연동 시:\n→ 소스 최대 300개\n→ 파일 개수 걱정 없음\n→ Gems는 역할만 담당!"},{"dept":"품질관리팀","prompt":"(NotebookLM이랑 Gems를 따로 따로 씀)","result":"⚠️ 분리 사용의 비효율:\n\n현재:\n1. NotebookLM에서 매뉴얼 내용 확인\n2. 복사\n3. Gems에 붙여넣기\n4. Gems가 정리\n\n→ 3단계 수작업!\n\n연동 후:\n1. Gems에서 바로 질문\n→ NotebookLM 자동 참조\n→ 1단계로 끝!"}],"goods":[{"dept":"경영지원팀","prompt":"[연동 방법]\n\nGemini 채팅창 열기\n→ 첨부 아이콘(📎) 클릭\n→ 'NotebookLM' 선택\n→ 어제 만든 노트북 선택\n→ 연동 완료!\n\n[연동 테스트]\n'취업규칙 기준으로 출산휴가 절차 알려줘'\n→ Gems 역할 + NotebookLM 지식 동시 활용\n→ 출처 자동 포함","result":"✓ 연동 후 답변:\n\n출산휴가 절차 (취업규칙+NotebookLM 연동):\n\n[NotebookLM 소스 참조]\n1. 출산 예정일 30일 전 팀장에게 서면 신청\n   (취업규칙 제17조 / p.28)\n2. HR팀에 출산휴가 신청서 제출\n   (복무규정 제9조 / p.22)\n3. 출산 후 급여 처리:\n   → 첫 90일: 통상임금 100%\n   → 이후: 고용보험 지원\n\n[Gems 역할 적용]\n→ 경영지원팀 맥락으로 정리\n→ HR 안내용 말투로 자동 변환\n\n→ 지식 + 역할 = 완성형 답변!"},{"dept":"품질관리팀","prompt":"[연동 방법]\n\nGemini 채팅창 열기\n→ 첨부 아이콘(📎) 클릭\n→ 'NotebookLM' 선택\n→ '품질관리팀 지식 비서' 노트북 선택\n→ 연동!\n\n[연동 테스트]\n'매뉴얼 기준으로 불량 보고서 초안 써줘'\n→ NotebookLM: 매뉴얼 내용 참조\n→ Gems: 3단 구조·안전 표현 적용","result":"✓ 연동 후 답변:\n\n불량 보고서 초안 (매뉴얼+Gems 연동):\n\n[NotebookLM 참조]\n매뉴얼 기준 보고서 구조 (p.23):\n\n# 불량 현황 보고\n**작성:** 품질관리팀 | **일:** 2026.04.08\n---\n## 현황\n[라인명] [불량유형] 발생 확인 (수량 기입 필요)\n\n## 추정 원인 (조사 중)\n[현장 조사 결과 기입]\n→ 확정 전 단정 금지 (매뉴얼 p.24)\n\n## 조치계획\n- [ ] 전수 검사 실시\n- [ ] 원인 확정 후 보고\n\n[Gems 안전 규칙 적용]\n→ '확인됩니다' → '조사 중'으로 자동 변환\n→ 보상 약속 표현 자동 차단"}],"steps":[{"title":"Gemini에서 NotebookLM 연동","objective":"Gemini 채팅창에서 NotebookLM 노트북을 첨부하는 방법을 실습합니다.","content":"연동 단계:\n1. gemini.google.com 접속\n2. 채팅창 하단 📎 클릭\n3. 'NotebookLM' 선택\n4. 연동할 노트북 선택\n5. 질문 입력!\n\n확인 사항:\n→ 채팅창에 노트북 아이콘이 보이면 연동 성공\n→ 답변에 출처가 포함되는지 확인\n\n테스트 질문:\n'[문서 기준으로] [질문] 알려줘'","hint":"연동 후에도 출처 클릭 습관! NotebookLM의 핵심 강점입니다."},{"title":"Gems + NotebookLM 조합 실습","objective":"Gems의 역할 설정과 NotebookLM의 지식이 결합되는 파이프라인을 체험합니다.","content":"조합 방법:\n1. Gems 설정 (역할·규칙만)\n2. Gemini에서 해당 Gems 열기\n3. 📎 → NotebookLM 연동\n4. 질문!\n\nGems가 담당: 역할·말투·금지사항\nNotebookLM이 담당: 실제 지식·출처\n\n효과:\n→ 역할에 맞는 말투로\n→ 정확한 문서 내용을 인용해서\n→ 안전한 표현으로 자동 완성","hint":"Gems는 '어떻게 말할까'를 담당하고 NotebookLM은 '무엇을 말할까'를 담당합니다."},{"title":"부서 지식 비서 완성","objective":"연동 구조를 완성하여 부서 전용 AI 비서를 최종 완성합니다.","content":"완성된 구조:\n\nNotebookLM (소스 최대 300개)\n↓ Gemini 연동\nGems (역할·규칙·출력형식)\n↓\n부서 전용 AI 비서\n\n활용 시나리오:\n• 신입: '절차가 어떻게 돼?' → 30초 답변\n• 팀원: '보고서 써줘' → 즉시 초안\n• 팀장: '이슈 요약해줘' → 브리핑 완성\n\n→ 오늘 이 구조 완성!\n→ 내일부터 바로 사용 가능!","hint":"소스가 업데이트되면 Gems 재설정 없이 NotebookLM만 수정하면 됩니다."}]},
+{"title":"실습 2: 팩트 추출 → Gems 활용 파이프라인","objective":"NotebookLM에서 팩트를 추출하고 Gems로 완성 문서를 만드는 2단계 파이프라인을 완성합니다.","guide":"팀 문서에서 팩트를 추출해서 완성 문서로 만드는 흐름을 직접 체험해보세요.","bads":[{"dept":"경영지원팀","prompt":"[현재 2도구 분리 사용]\n1. NotebookLM에서 규정 내용 확인\n2. 복사\n3. 일반 ChatGPT에 붙여넣기\n4. 정리 요청\n→ 3단계 수작업, 시간 낭비","result":"⚠️ 비효율 상황:\n\n• 도구를 왔다갔다 3번\n• 복사·붙여넣기 2번\n• ChatGPT는 문서 맥락 없음\n→ 결과물 품질 일관성 없음\n\n연동 파이프라인 사용 시:\n→ 1단계로 완성\n→ 문서 맥락 유지\n→ 일관된 품질"},{"dept":"품질관리팀","prompt":"[현재 비효율 흐름]\n1. 매뉴얼 PDF 직접 읽기 (10분)\n2. 핵심 내용 메모\n3. AI에 메모 붙여넣기\n4. 보고서 요청\n→ 매번 20~30분 소요","result":"⚠️ 매번 반복되는 비효율:\n\n• 100페이지 PDF 직접 읽기\n• 핵심 추출 수작업\n• AI에 다시 입력\n→ 이 과정이 매번 반복\n\n연동 파이프라인 사용 시:\n→ '매뉴얼 기준으로 보고서 써줘'\n→ 즉시 완성\n→ 매번 30분 → 1분으로!"}],"goods":[{"dept":"경영지원팀","prompt":"[2단계 파이프라인]\n\n[STEP 1] NotebookLM에서 팩트 추출\n'취업규칙 기준으로 외국인 직원\n비자 관련 휴가 규정 알려줘. 출처 포함.'\n\n[STEP 2] Gems로 공지문 변환\n(위 답변을 컨텍스트로)\n'위 내용을 전 직원 공지문 양식으로\n변환해줘. ;;공지 트리거 적용.'","result":"✓ 파이프라인 결과:\n\nSTEP 1 NotebookLM 팩트:\n→ 비자 갱신 관련 특별 휴가\n   취업규칙 제16조 2항 (p.27)\n→ 연간 2일 유급 처리\n\nSTEP 2 Gems 공지문 변환:\n\n# 공지\n**수신:** 전 임직원 | **공지일:** 2026.04\n---\n## 외국인 직원 비자 갱신 휴가 안내\n취업규칙 제16조에 따라 비자 갱신 목적의\n휴가 연간 2일을 유급으로 지원합니다.\n\n> 신청: HR팀 사전 승인 후 사용\n**문의:** 경영지원팀\n\n→ 팩트 → 공지문 2단계 완성!"},{"dept":"품질관리팀","prompt":"[2단계 파이프라인]\n\n[STEP 1] NotebookLM에서 절차 추출\n'매뉴얼 기준으로 신규 협력사\n품질 승인 단계와 필요 서류 알려줘.'\n\n[STEP 2] Gems로 체크리스트 변환\n'위 내용을 신규 협력사 담당자가\n쓸 수 있는 체크리스트로 변환해줘.\n;;보고 양식 적용.'","result":"✓ 파이프라인 결과:\n\nSTEP 1 NotebookLM 팩트:\n→ 5단계 승인 절차 + 서류 목록\n   (품질 매뉴얼 p.15 기준)\n\nSTEP 2 Gems 체크리스트:\n\n# 신규 협력사 품질 승인 체크리스트\n**담당:** | **협력사명:**\n---\n## 1단계: 서류 심사\n- [ ] 사업자등록증\n- [ ] 품질경영시스템 인증서 (ISO 등)\n- [ ] 최근 품질 실적 자료\n\n## 2단계: 현장 심사\n- [ ] 방문 일정 조율\n- [ ] 현장 점검표 작성\n\n→ 매뉴얼 → 체크리스트 2단계 완성!"}],"steps":[{"title":"파이프라인 구조 이해","objective":"NotebookLM과 Gems의 역할 분담을 명확히 이해합니다.","content":"역할 분담:\n\nNotebookLM → 팩트 담당\n• '우리 문서에 이 내용이 있나?'\n• '정확한 절차가 뭐야?'\n• '근거 조항이 어디야?'\n\nGems → 형식·역할 담당\n• '이걸 보고서로 만들어줘'\n• '공지문 양식으로 바꿔줘'\n• '팀장 보고용 말투로'\n\n조합 공식:\nNotebookLM 팩트 + Gems 형식\n= 출처 있는 완성 문서","hint":"NotebookLM이 '뭘 말할까', Gems가 '어떻게 말할까'입니다. 둘은 역할이 달라요."},{"title":"실제 파이프라인 테스트","objective":"두 도구를 연결해서 실제 업무 문서를 만드는 파이프라인을 테스트합니다.","content":"테스트 시나리오:\n\n[시나리오 A] 팀 규정 → 공지문\n1. NotebookLM: '규정 내용 알려줘'\n2. Gems: '공지문으로 변환해줘'\n\n[시나리오 B] 매뉴얼 → 체크리스트\n1. NotebookLM: '절차와 서류 목록'\n2. Gems: '체크리스트로 변환'\n\n[시나리오 C] FAQ → 신입 가이드\n1. NotebookLM: FAQ 자동 추출\n2. Gems: '신입 교육 자료로 재구성'","hint":"한 번에 완벽한 결과가 안 나와도 됩니다. 한 단계씩 수정하면서 완성도를 높이세요."},{"title":"부서 맞춤 파이프라인 완성","objective":"우리 부서 실제 업무에 최적화된 파이프라인을 설계하고 완성합니다.","content":"[부서별 파이프라인 설계]\n\n경영지원팀:\n규정 문서 → 직원 공지문/안내문\n\n품질관리팀:\n매뉴얼 → 보고서/체크리스트\n\n생산기술팀:\n설비 매뉴얼 → 점검 가이드\n\n영업팀:\n제품 스펙 → 제안서 스토리라인\n\n기획팀:\n시장 조사 → 기획안 초안\n\n→ 내 부서 파이프라인 하나 완성!\n→ 오늘 퇴근 전에!","hint":"완성된 파이프라인을 팀장에게 설명할 수 있어야 팀 도입이 됩니다. 2줄로 설명해보세요."}]},
+{"title":"실습 3: 부서 표준 안내 패키지 — 인수인계용","objective":"NotebookLM + Gems로 신입·후임에게 줄 부서 표준 안내 패키지를 자동 완성합니다.","guide":"여러분의 현재 업무 중에서 인수인계가 가장 어려운 내용 1가지를 골라서 적용해보세요.","bads":[{"dept":"경영지원팀","prompt":"(인수인계 문서 없이 1:1 설명만으로 전달)","result":"⚠️ 현재 인수인계 방식:\n\n• 퇴직·이직 2주 전 급하게 정리\n• 기억에 의존한 인수인계\n• 핵심 노하우 누락 빈번\n• 후임자 계속 질문\n→ 선임자 없어지면 팀에 혼란\n\nNotebookLM+Gems로:\n→ 24시간 언제든 답하는\n   인수인계 AI 비서 완성!"},{"dept":"품질관리팀","prompt":"(인수인계 문서는 있지만 핵심 노하우가 빠짐)","result":"⚠️ 현재 인수인계 문서의 한계:\n\n• 절차서는 있지만\n  '왜 이렇게 하는가'가 없음\n• '이 케이스에서는 이렇게'\n  같은 예외 케이스 미기록\n• 선임자 퇴직 후 예외 케이스\n  발생 시 아무도 모름\n\nNotebookLM+Gems로:\n→ 예외 케이스까지 문서화\n→ AI가 24시간 답변"}],"goods":[{"dept":"경영지원팀","prompt":"[인수인계 패키지 설계]\n\nNotebookLM 소스:\n• 취업규칙.pdf\n• 복무규정.pdf\n• 업무매뉴얼.pdf\n• 인수인계 메모.txt (직접 작성)\n\nGems 설정:\n[역할] 경영지원팀 신입 가이드 봇\n[임무] 신입 질문 → 문서 기준 답변\n[금지] 규정 밖 내용 임의 답변 금지\n\n[스튜디오 자동 생성]\n→ FAQ: '신입이 처음 알아야 할 것 20가지'\n→ 브리핑: '경영지원팀 업무 한눈에 보기'\n→ 학습 가이드: '첫 달 필수 체크리스트'","result":"✓ 인수인계 패키지 완성:\n\n[자동 생성 결과]\n\n① 신입 FAQ 20가지\n→ '연차는 언제부터?'\n→ '결재는 어떻게?'\n→ '출장비는 어떻게 청구?'\n각 답변에 출처 포함\n\n② 브리핑 문서\n→ 경영지원팀 핵심 업무 1페이지\n\n③ 첫 달 체크리스트\n→ - [ ] 취업규칙 열람\n→ - [ ] HR팀 소개\n→ - [ ] 시스템 권한 신청\n\n→ 선임자 없이도\n   신입이 혼자 90% 해결!"},{"dept":"품질관리팀","prompt":"[인수인계 패키지 설계]\n\nNotebookLM 소스:\n• 품질매뉴얼.pdf\n• 불량처리절차서.pdf\n• 거래처대응가이드.pdf\n• 예외케이스메모.txt (직접 작성)\n\nGems 설정:\n[역할] 품질팀 신입 담당자 가이드 봇\n[임무] 업무 질문 → 매뉴얼 기준 답변\n[금지] 원인 단정, 보상 약속 표현 금지\n\n[스튜디오 자동 생성]\n→ FAQ: '품질담당자 자주 묻는 질문 15가지'\n→ 학습 가이드: '입사 1개월 품질 필수 지식'","result":"✓ 인수인계 패키지 완성:\n\n[자동 생성 결과]\n\n① 품질 FAQ 15가지\n→ '불량 발생 첫 30분 내 해야 할 것'\n→ '거래처 클레임 초기 대응 원칙'\n→ '원인 분석 방법론은?'\n각 답변에 매뉴얼 출처 포함\n\n② 신입 1개월 학습 가이드\n→ 1주차: 불량 처리 절차 숙지\n→ 2주차: 거래처 대응 가이드 숙지\n→ 3주차: 실전 케이스 스터디\n→ 4주차: 독립 업무 시작\n\n→ 1주일 걸리던 신입 교육\n   자료 제작이 1시간으로!"}],"steps":[{"title":"인수인계 소스 준비","objective":"NotebookLM에 올릴 인수인계 관련 소스를 준비합니다.","content":"소스 준비 체크리스트:\n\n□ 공식 문서 (PDF/Word)\n  → 매뉴얼, 절차서, 규정집\n\n□ 내가 아는 노하우 메모\n  → 텍스트로 직접 작성해서 업로드\n  예: '이 상황에서는 이렇게 해야 함'\n      '이 케이스는 주의 필요'\n\n□ FAQ 직접 작성\n  → 가장 자주 받는 질문 10개\n  → 나의 답변 기록\n\n→ 공식 문서 + 나의 노하우 = 완성!","hint":"공식 문서에 없는 노하우를 텍스트로 써서 올리는 게 핵심입니다. 이게 암묵지를 자산화하는 방법!"},{"title":"스튜디오로 인수인계 자료 자동 생성","objective":"NotebookLM 스튜디오로 신입 교육 자료를 자동으로 만듭니다.","content":"생성 순서:\n1. FAQ 문서 → 자주 묻는 질문 추출\n2. 브리핑 문서 → 핵심 업무 요약\n3. 학습 가이드 → 단계별 학습 순서\n\n편집:\n→ Google Docs로 내보내기\n→ 우리 팀 스타일로 수정\n→ 팀장 검토 후 공식 자료로 승인\n\n공유:\n→ 신입사원 입사 전 미리 전달\n→ NotebookLM 링크도 함께 전달","hint":"AI가 만든 인수인계 자료는 반드시 시니어가 검토 후 승인해야 합니다. AI는 초안만!"},{"title":"영구 업데이트 시스템 완성","objective":"인수인계 자료를 지속적으로 업데이트하는 시스템을 만듭니다.","content":"업데이트 시스템:\n\n정기 업데이트 (분기별):\n→ 새 규정·절차 변경 시 소스 갱신\n→ 새 FAQ 발생 시 메모에 추가\n\n담당자 지정:\n→ 소스 관리: 팀장 또는 시니어 1명\n→ 분기별 검토: 팀 전체\n\n알림 설정:\n→ 규정 개정 시 소스 즉시 교체\n→ 팀원에게 업데이트 공지\n\n→ 살아있는 지식 시스템 완성!","hint":"소스가 오래되면 답변도 오래됩니다. 담당자를 정하고 분기별 업데이트를 약속하세요."}]}
+]},
+{id:"2-6",title:"2-6교시: Deep Research 비서 ① — 외부 동향·규제·경쟁사 조사",type:"A",
+overview:"단순 요약이 아닌 '우리 부서에 미칠 위협과 기회'라는 관점을 강제하면 실무에 바로 쓸 수 있는 브리핑이 만들어집니다. Gemini·ChatGPT·Perplexity 딥리서치 활용법을 익힙니다.",
+effects:[{"name":"조사 자동화","score":9.5,"desc":"수십 개 소스를 AI가 탐색해서 종합 보고서 자동 생성"},{"name":"관점 통제","score":9.0,"desc":"위협/기회/리스크 관점으로 조사 결과를 바로 실무화"},{"name":"시간 절약","score":9.5,"desc":"하루 걸리던 시장 조사가 30분으로"},{"name":"최신 정보","score":8.5,"desc":"실시간 웹 탐색으로 가장 최신 트렌드 반영"},{"name":"구조화","score":9.0,"desc":"마크다운 브리핑 양식으로 팀 공유 즉시 가능"},{"name":"의사결정","score":8.5,"desc":"데이터 기반 의사결정 자료로 임원 보고 품질 향상"}],
+tip:"• 딥리서치 출처는 반드시 클릭해서 원본 확인하세요.\n• 수치·통계는 원본 기사나 보고서에서 직접 재확인 후 사용하세요.",
+practices:[
+{"title":"실습 1: 막연한 조사 vs 관점 지정 조사","objective":"'위협/기회' 관점을 지정하는 것만으로 딥리서치 결과가 얼마나 실무적이 되는지 확인합니다.","guide":"Gemini 딥리서치에서 나쁜 예시와 좋은 예시를 직접 입력해서 비교해보세요.","bads":[{"dept":"생산기술팀","prompt":"전자부품 시장 동향 알려줘.","result":"⚠️ 결과: 방대하지만 쓸 수 없는 일반 보고서\n\n전자부품 시장 2026년 현황:\n• 글로벌 시장 규모 XXX억 달러\n• 주요 플레이어: A사, B사, C사\n• 반도체 수요 증가 추세\n• AI 관련 부품 수요 증가\n• 전기차 확대로 전장부품 성장...\n\n→ 이 내용, 어디에 쓸 수 있나요?\n→ 우리 팀과의 연관성이 없음\n→ 읽는 데만 30분, 결론은 없음\n→ 임원 보고에 올릴 수 없음"},{"dept":"경영지원팀","prompt":"2026년 노동법 개정사항 알려줘.","result":"⚠️ 결과: 방대하지만 우리와 무관한 내용\n\n2026년 노동법 주요 개정:\n• 최저임금 인상 (X원)\n• 주 52시간 적용 확대\n• 육아휴직 제도 개편\n• 산업안전보건법 강화...\n\n→ 정보는 있지만 우리 회사에\n   어떤 영향인지 모름\n→ 인사팀이 뭘 해야 하는지 없음\n→ 실무에 바로 쓸 수 없음"},{"dept":"연구소","prompt":"전고체 배터리 기술 동향 알려줘.","result":"⚠️ 결과: 기술 정보만 나열, 시사점 없음\n\n전고체 배터리 기술 동향:\n• 황화물계 전해질 연구 활발\n• 산화물계 안전성 높음\n• 에너지밀도 향상 경쟁\n• 주요 특허 출원 증가...\n\n→ 기술 정보는 있지만\n→ 우리 연구에 미치는 영향?\n→ 우리가 어떻게 대응해야?\n→ R&D 방향 설정에 도움 안 됨"}],"goods":[{"dept":"생산기술팀","prompt":"딥리서치로 조사해줘:\n\n[주제]\n2026년 하반기 전자부품 업계\n생산 자동화 규제·기술 변화\n\n[관점]\n삼성전기 협력사 생산기술팀 입장에서\n위협 요인 3가지 + 기회 요인 3가지만\n\n[형식]\n각 요인: 내용(2줄) + 우리 팀 시사점(1줄)","result":"✓ 딥리서치 결과 (바로 쓸 수 있는 보고서):\n\n**생산자동화 동향 — 우리 팀 관점**\n\n⚠️ 위협 요인 3가지:\n1. 자동화 기준 강화 (안전규정 개정)\n   → 기존 설비 인증 재검토 필요\n   → **시사점:** 설비 점검 일정 앞당기기\n\n2. 숙련 인력 AI 대체 압력\n   → 단순 공정 자동화 가속\n   → **시사점:** 고부가 스킬 전환 필요\n\n3. 탄소 배출 설비 규제 강화\n   → 에너지 효율 설비 전환 요구\n   → **시사점:** 노후 설비 교체 계획 검토\n\n✓ 기회 요인 3가지:\n1. 공정 AI 최적화 기술 보급\n2. 스마트 유지보수 시스템 확산\n3. 협력사 자동화 지원 정책\n\n→ 팀장 보고용으로 바로 활용 가능!"},{"dept":"경영지원팀","prompt":"딥리서치로 조사해줘:\n\n[주제]\n2026년 중소 제조업 인사·노무\n주요 법령 변경사항\n\n[관점]\n삼성전기 협력사 경영지원팀 입장에서\n즉시 대응 필요 사항 Top 3\n위험도: 🔴높음 / 🟡중간 / 🟢낮음\n\n[형식]\n각 항목: 변경내용(1줄) + 우리 회사 해야 할 일(1줄)","result":"✓ 딥리서치 결과 (실무 대응 중심):\n\n**2026년 인사·노무 법령 변경 대응 요약**\n\n🔴 즉시 대응 필요:\n1. 육아지원금 지급 의무화 확대\n   → 변경: 직원 100인 미만까지 확대 적용\n   → 할 일: 급여 규정 개정 + 예산 반영\n\n2. 직장 내 괴롭힘 처리 기간 단축\n   → 변경: 처리 기한 14일로 단축\n   → 할 일: 사내 처리 절차 업데이트\n\n🟡 3분기까지 준비:\n3. 근로시간 기록 전자화 권고\n   → 변경: 전자 출퇴근 기록 강화 권고\n   → 할 일: 포털 출퇴근 기록 정확도 점검\n\n→ 우선순위가 명확해서 팀장에게 바로 보고 가능"},{"dept":"연구소","prompt":"딥리서치로 조사해줘:\n\n[주제]\n2026년 전고체 배터리 소재 기술\n글로벌 특허 및 연구 트렌드\n\n[관점]\n삼성전기 협력사 연구소 입장에서\nR&D 방향에 영향을 미치는\n기술 위협 + 기회 각 3가지\n\n[형식] 각 3줄 이내 + 문헌 출처","result":"✓ 딥리서치 결과 (R&D 방향 설정용):\n\n**전고체 배터리 소재 트렌드 — R&D 관점**\n\n⚠️ R&D 위협:\n1. 중국 LFP 특허 출원 급증\n   → 황화물계 소재 선점 경쟁 심화\n   → 출처: KIPRIS 2026.Q1 통계\n\n2. CATL 고체전해질 표준화 추진\n   → 우리 소재 호환성 검증 필요\n\n3. 일본 소재 기업 특허 장벽\n   → 황화물 합성 방법론 특허 밀도 높음\n\n✓ R&D 기회:\n1. LFP → NCM 전환 국내 연구 공백\n2. 산화물계 안전 소재 틈새\n3. 정부 차세대 배터리 R&D 지원 확대\n\n→ 연구 방향 논의 자료로 바로 활용"}]},
+{"title":"실습 2: 단순 요약 vs 위협·기회 분석","objective":"조사 결과를 단순 요약하는 것과 위협·기회로 분석하는 것의 차이를 직접 비교합니다.","guide":"딥리서치 결과를 받은 뒤 위협·기회 관점으로 재분석을 시켜보세요.","bads":[{"dept":"기획팀","prompt":"방금 조사한 내용 요약해줘.","result":"⚠️ 단순 요약 결과:\n\n조사 결과 요약:\n• 전자부품 시장 성장 중\n• AI 반도체 수요 증가\n• 전기차 부품 시장 확대\n• 공급망 불안 지속\n• 탄소중립 규제 강화...\n\n→ 이미 다 아는 내용\n→ 우리 회사/팀과의 연관성 없음\n→ '그래서 우리가 뭘 해야 하나?'가 없음\n→ 임원한테 가져가면 '그래서?'라는 말 들음"},{"dept":"구매팀","prompt":"공급망 리스크 요약해줘.","result":"⚠️ 단순 요약 결과:\n\n공급망 리스크 현황:\n• 지정학적 리스크 지속\n• 원자재 가격 변동\n• 물류 비용 증가\n• 반도체 수급 불안...\n\n→ 이것도 이미 알고 있는 내용\n→ 우리 구매팀이 어떤 리스크를 받나?\n→ 지금 당장 뭘 해야 하나?\n→ 없음 → 회의에서 활용 불가"},{"dept":"영업팀","prompt":"경쟁사 동향 요약해줘.","result":"⚠️ 단순 요약 결과:\n\n경쟁사 최근 동향:\n• A사: 신제품 출시 예정\n• B사: 가격 인하 단행\n• C사: 신규 공장 증설\n• D사: 해외 진출 확대...\n\n→ 정보는 있지만\n→ 우리 영업에 어떤 영향인지?\n→ 어떤 고객에게 어떻게 대응해야 하는지?\n→ 없음 → 영업 전략에 활용 불가"}],"goods":[{"dept":"기획팀","prompt":"위 조사 결과를 바탕으로,\n삼성전기 협력사 기획팀 입장에서:\n\n[위협 요인] 3가지\n: 즉시 대응 안 하면 생기는 문제\n\n[기회 요인] 3가지\n: 지금 움직이면 잡을 수 있는 것\n\n[우선 대응안] 1가지\n: 이번 주 팀장에게 보고할 내용\n\n각 항목 3줄 이내로.","result":"✓ 위협·기회 분석 결과:\n\n⚠️ 위협 요인:\n1. AI 기기 부품 표준 변화\n   → 현재 공급 부품 스펙 재검토 필요\n2. 탄소중립 규제 납품 기준 강화\n   → 2027년부터 탄소 데이터 제출 의무화\n3. 경쟁사 가격 인하 압력\n   → 마진 감소로 수익성 악화 우려\n\n✓ 기회 요인:\n1. AI 기기용 신규 부품 수요 선점 가능\n2. 친환경 인증 취득 시 프리미엄 가격 유지\n3. 공급망 안정화 니즈로 국내 파트너 선호\n\n📌 이번 주 보고:\n탄소중립 규제 대응 로드맵 수립 제안\n→ 2027년 의무화 전 선제 준비 필요\n\n→ '그래서 우리가 뭘 해야 하나'에 답함!"},{"dept":"구매팀","prompt":"위 공급망 리스크 조사 결과를,\n삼성전기 협력사 구매팀 관점에서:\n\n[즉시 리스크] 1개\n: 이번 달 안에 대응 안 하면 납기 문제\n\n[중기 리스크] 2개\n: 3~6개월 내 대비 필요\n\n[선제 조치] 각 1가지씩\n: 지금 당장 해야 할 것","result":"✓ 구매팀 맞춤 리스크 분석:\n\n🔴 즉시 리스크:\nB부품 원자재 가격 급등 (이번 달)\n→ 현재 발주 단가 재협상 or 대체재 탐색\n→ **선제 조치:** 이번 주 협력사 3곳에\n   4분기 가격 사전 협의 요청\n\n🟡 중기 리스크:\n1. 물류 비용 15~20% 상승 예상 (3개월)\n   → **조치:** 국내 물류사 복수 계약 검토\n\n2. 일본 소재 수급 불안 (6개월)\n   → **조치:** 국내 대체 소재 검증 리스트 작성\n\n→ 납기 리스크 예방에 바로 활용 가능!\n→ 팀장 보고: 즉시 리스크 1건 대응 제안"},{"dept":"영업팀","prompt":"경쟁사 동향 조사 결과를,\n삼성전기 협력사 영업팀 관점에서:\n\n[위협이 되는 경쟁사 움직임] 2가지\n: 우리 기존 고객을 뺏길 수 있는 것\n\n[기회가 되는 경쟁사 움직임] 2가지\n: 경쟁사 약점으로 우리가 들어갈 수 있는 것\n\n[즉시 영업 포인트] 1가지","result":"✓ 영업 전략으로 전환된 분석:\n\n⚠️ 위협:\n1. B사 가격 15% 인하 → 기존 고객 이탈 위험\n   → 가격 민감 고객 Top 3 즉시 관계 강화\n2. C사 납기 단축 공언 → 납기 민감 고객 이탈\n   → 우리 납기 실적 데이터 재무장 필요\n\n✓ 기회:\n1. A사 신제품 출시 지연 → 공백 기간 공략\n   → A사 거래 고객에게 샘플 선제 제안\n2. D사 해외 집중으로 국내 영업 약화\n   → D사 국내 고객사 영업 강화\n\n📌 즉시 영업 포인트:\nA사 거래 고객 5곳에 이번 주 내\n대체 샘플 제안 연락 → 기회의 창!"}]},
+{"title":"실습 3: 주간 브리핑 템플릿으로 구조화","objective":"딥리서치 결과를 주간 브리핑 마크다운 양식으로 정리하면 팀 공유가 가능해집니다.","guide":";;브리핑 트리거와 마크다운 양식을 결합해서 주간 브리핑을 완성해보세요.","bads":[{"dept":"기획팀","prompt":"(딥리서치 결과 4,000자 그대로 카톡으로 복붙)","result":"⚠️ 현재 방식:\n\n딥리서치 결과물 그대로 팀에 공유\n→ 4,000자 장문 텍스트\n→ 읽는 사람이 없음\n→ 팀장: '3줄 요약해줘'\n→ 다시 요약 작업\n\n→ 처음부터 브리핑 양식으로 만들었으면 됐는데!"},{"dept":"경영지원팀","prompt":"(조사 내용 있는데 팀장에게 어떻게 보고해야 할지 모름)","result":"⚠️ 현재 방식:\n\n좋은 조사 내용이 있는데\n→ 어떤 형식으로 보고하지?\n→ 너무 길면 안 읽음\n→ 너무 짧으면 신뢰도 낮음\n→ 표준 브리핑 양식이 없음\n→ 매번 형식이 달라지는 혼란"},{"dept":"품질관리팀","prompt":"(딥리서치 결과 보고서만 제출하고 종료)","result":"⚠️ 현재 방식:\n\n딥리서치 보고서 → 출력해서 팀장 책상에\n→ 팀장이 안 읽음 (너무 김)\n→ 결국 '3줄 요약해' 요청\n→ 다시 요약 작업\n\n→ 처음부터 3줄 핵심 + 상세 구조로 만들면 됐음!"}],"goods":[{"dept":"기획팀","prompt":"조사·분석 내용을 아래 주간 브리핑 양식으로 정리해줘:\n\n```\n# 📊 주간 동향 브리핑\n**작성일:** | **담당:** | **보고:** 팀장\n---\n## 🔍 핵심 동향 (3가지)\n1.\n2.\n3.\n## ⚠️ 리스크 (2가지)\n> 🔴 즉시: \n> 🟡 중기: \n## ✅ 기회 (2가지)\n-\n## 📌 우선 대응안\n> 이번 주 팀장에게 제안할 1가지:\n## 📎 출처\n-\n```\n\n위 양식으로 이번 주 전자부품 업계 동향 정리해줘.","result":"✓ 완성된 주간 브리핑:\n\n# 📊 주간 동향 브리핑\n**작성일:** 2026.04.08 | **담당:** 기획팀 | **보고:** 팀장\n---\n## 🔍 핵심 동향\n1. AI 기기 소형 부품 수요 전년比 35%↑\n2. 탄소국경세 2027년 전자부품 확대 적용\n3. 일본 소재 업체 국내 증설 투자 확대\n\n## ⚠️ 리스크\n> 🔴 즉시: 탄소 데이터 미준비 시 수출 제한\n> 🟡 중기: AI 기기 스펙 변화로 기존 부품 재검토\n\n## ✅ 기회\n- AI 기기용 소형 고집적 부품 선점 가능\n- 친환경 인증 취득 시 프리미엄 유지\n\n## 📌 우선 대응안\n> 탄소 데이터 수집 체계 수립 — 이번 분기 내 착수 제안\n\n## 📎 출처\n- SEMI 2026 Q1 보고서 | 산업통상자원부 고시\n\n→ 이 양식으로 매주 금요일 브리핑!"},{"dept":"경영지원팀","prompt":"조사한 노무 법령 변경사항을 아래 브리핑 양식으로 정리해줘:\n\n```\n# 📋 인사·노무 이슈 브리핑\n**기준일:** | **담당:** 경영지원팀\n---\n## 🔴 즉시 대응 필요\n- 변경사항:\n- 우리 회사 해야 할 것:\n- 기한:\n## 🟡 준비 중\n-\n## 🟢 모니터링\n-\n## 📎 출처·참고 법령\n-\n```","result":"✓ 완성된 인사·노무 브리핑:\n\n# 📋 인사·노무 이슈 브리핑\n**기준일:** 2026.04.08 | **담당:** 경영지원팀\n---\n## 🔴 즉시 대응 필요\n- **변경사항:** 육아지원금 지급 의무화 100인 미만 확대\n- **우리 회사 할 것:** 급여 규정 개정 + 예산 반영\n- **기한:** 2026.07.01 시행 전\n\n## 🟡 준비 중\n- 직장 내 괴롭힘 처리 기한 14일로 단축\n  → 사내 처리 절차 업데이트 (2분기 내)\n\n## 🟢 모니터링\n- 근로시간 전자 기록 강화 권고\n  → 포털 시스템 확인 필요\n\n## 📎 출처\n- 고용노동부 2026년 시행령 개정 고시\n\n→ 팀장에게 즉시 공유 가능한 브리핑!"},{"dept":"품질관리팀","prompt":"딥리서치로 조사한 협력사 품질 이슈 동향을\n아래 브리핑 양식으로 정리해줘:\n\n```\n# 🔍 협력사 품질 동향 브리핑\n**기준:** | **담당:** 품질관리팀\n---\n## ⚠️ 주요 리스크\n> 🔴\n> 🟡\n## ✅ 개선 기회\n-\n## 📌 이번 주 대응\n-\n## 📎 출처\n-\n```\n\n최근 전자부품 품질 이슈 트렌드로 작성해줘.","result":"✓ 완성된 품질 동향 브리핑:\n\n# 🔍 협력사 품질 동향 브리핑\n**기준:** 2026.04.08 | **담당:** 품질관리팀\n---\n## ⚠️ 주요 리스크\n> 🔴 하이니켈 양극재 열폭주 이슈 — 업계 전반 사례 증가\n   → 당사 관련 부품 현황 즉시 점검 필요\n> 🟡 PCB 미세회로 불량률 증가 추세\n   → 입고 검사 강화 검토 필요\n\n## ✅ 개선 기회\n- AI 기반 품질 검사 도입 사례 증가\n  → 파일럿 도입 제안 가능\n\n## 📌 이번 주 대응\n- 하이니켈 관련 부품 재고 현황 확인\n- 입고 검사 강화 여부 팀장 논의\n\n## 📎 출처\n- 한국전자정보통신산업진흥회 2026 Q1 보고서\n\n→ 바로 팀장에게 보고 가능한 브리핑!"}]}
+]},
+{id:"2-7",title:"2-7교시: Deep Research 비서 ② — NotebookLM 딥리서치 + 에이전트",type:"C",
+overview:"외부 딥리서치 결과를 버리지 않고 NotebookLM에 편입시켜 부서 지식으로 자산화합니다. 인포그래픽으로 시각화하고, AI 에이전트가 어디까지 왔는지 직접 체험합니다.",
+effects:[{"name":"지식 자산화","score":9.5,"desc":"외부 조사 결과를 버리지 않고 팀 지식베이스에 통합"},{"name":"소스 자동 편입","score":9.0,"desc":"Discover Sources로 관련 소스를 자동 수집·편입"},{"name":"인포그래픽","score":8.5,"desc":"복잡한 데이터를 시각화해서 팀 공유용 이미지로"},{"name":"에이전트 이해","score":8.0,"desc":"AI 에이전트의 현재 수준과 한계를 실제로 체험"},{"name":"파이프라인 완성","score":9.0,"desc":"수집→분석→편입→시각화→공유 전체 루틴 완성"},{"name":"업무 혁신","score":9.0,"desc":"AI로 일하는 방식 자체를 바꾸는 마지막 단계"}],
+tip:"• Discover Sources의 Deep Research(소스 33개+)는 시간이 걸립니다. 미리 실행해두세요.\n• 인포그래픽도 출처를 반드시 확인하세요. 시각화가 예뻐도 내용이 틀릴 수 있습니다.",
+practices:[
+{"title":"실습 1: Discover Sources로 소스 자동 편입","objective":"딥리서치 결과를 NotebookLM에 소스로 자동 편입시켜 외부 지식과 내부 지식을 통합합니다.","guide":"어제 딥리서치 결과를 NotebookLM에 소스로 추가해보세요.","bads":[{"dept":"기획팀","prompt":"(딥리서치 결과 읽고 채팅창 닫기)","result":"⚠️ 현재 방식:\n\n1. 딥리서치 결과 조사\n2. 읽음\n3. 채팅창 닫음\n→ 결과물이 사라짐!\n\n다음에 다시 필요하면:\n→ 또 딥리서치\n→ 또 같은 작업 반복\n\n→ 이 자료, NotebookLM에 넣어두면\n   언제든 재활용 가능!"},{"dept":"품질관리팀","prompt":"(조사 결과 따로 저장하지 않고 매번 새로 조사)","result":"⚠️ 현재 방식:\n\n• 3주 전 조사한 품질 트렌드\n  → 어디 갔는지 모름\n• 또 조사 → 비슷한 결과\n• 또 읽고 또 닫음\n→ 누적이 안 됨!\n\n→ NotebookLM에 쌓으면\n   지식이 자산으로 누적됨"}],"goods":[{"dept":"기획팀","prompt":"[Discover Sources 사용법]\n\nNotebookLM 노트북 열기\n→ 상단 '소스 발견' 클릭\n→ 검색어 입력:\n  '2026 전자부품 업계 AI 자동화 동향'\n→ Fast Research: 소스 7개 (빠름)\n→ Deep Research: 소스 33개+ (깊음)\n→ 원하는 소스 선택 → '추가' 클릭\n\n[어제 딥리서치 결과 추가]\n→ 딥리서치 결과 텍스트 복사\n→ '소스 추가' → '텍스트 붙여넣기'\n→ 내부 문서 + 외부 조사 통합 완성!","result":"✓ 통합 지식베이스 구축 효과:\n\n내부 문서:\n• 취업규칙.pdf\n• 업무매뉴얼.pdf\n\n외부 소스 (Discover Sources):\n• SEMI 2026 Q1 보고서 (자동 편입)\n• 산업통상자원부 규제 변화 (자동 편입)\n• 경쟁사 동향 뉴스 7건 (자동 편입)\n\n→ 통합 후 Q&A:\n'우리 회사 입장에서 AI 자동화 규제 대응 어떻게 해?'\n→ 내부 절차 + 외부 규제 동시 참조\n→ 출처 모두 표시!\n\n→ 외부 지식 + 내부 지식 = 완성 지식베이스!"},{"dept":"품질관리팀","prompt":"[Discover Sources 사용법]\n\nNotebookLM 노트북 열기\n→ '소스 발견' 클릭\n→ 검색어:\n  '전자부품 불량률 관리 최신 동향 2026'\n→ Fast Research로 소스 7개 수집\n→ 관련 소스만 선택해서 추가\n\n[어제 딥리서치 결과도 추가]\n→ 딥리서치 결과 복사\n→ 노트북에 텍스트 소스로 추가\n→ 기존 매뉴얼 + 최신 트렌드 통합!","result":"✓ 지식 누적 효과:\n\n기존 소스:\n• 품질매뉴얼.pdf\n• 불량처리절차서.pdf\n\n새로 추가:\n• 2026 Q1 불량률 동향 보고서 (자동)\n• 하이니켈 열폭주 이슈 기사 (자동)\n• 딥리서치 결과 (직접 추가)\n\n→ 이제 이렇게 물어볼 수 있음:\n'최신 업계 트렌드 vs 우리 매뉴얼\n비교해줘. 업데이트 필요한 부분은?'\n\n→ 내부 매뉴얼 + 최신 외부 동향\n   동시 비교 분석 가능!"}],"steps":[{"title":"딥리서치 결과 → NotebookLM 소스 편입","objective":"어제 딥리서치 결과를 NotebookLM 소스로 저장합니다.","content":"방법 1: 텍스트 복사 붙여넣기\n→ 딥리서치 결과 전체 복사\n→ NotebookLM 소스 추가\n→ '텍스트 붙여넣기' 선택\n→ 소스 제목 지정 후 저장\n\n방법 2: URL 소스로 추가\n→ 딥리서치에서 참조한 기사 URL\n→ NotebookLM 소스 추가 → URL 입력\n\n방법 3: PDF 다운로드 후 업로드\n→ 보고서 PDF 저장\n→ NotebookLM 파일 업로드","hint":"딥리서치 결과 전체를 하나의 텍스트 소스로 저장하는 것이 가장 간단합니다."},{"title":"Discover Sources로 추가 소스 수집","objective":"NotebookLM의 Discover Sources 기능으로 관련 소스를 자동 수집합니다.","content":"Discover Sources 사용:\n노트북 상단 '소스 발견' 클릭\n\nFast Research (권장):\n→ 빠른 소스 7개 수집\n→ 5분 이내 완료\n→ 시작은 여기서!\n\nDeep Research:\n→ 고품질 소스 33개+\n→ 10~20분 소요\n→ 중요 주제에만 사용\n\n수집 후:\n→ 관련성 높은 소스만 선택\n→ '노트북에 추가' 클릭","hint":"모든 소스를 다 추가하지 마세요. 관련성 높은 것만 선택해야 Q&A 품질이 올라갑니다."},{"title":"내부+외부 통합 Q&A 테스트","objective":"내부 문서와 외부 소스가 통합된 노트북으로 고급 질문을 테스트합니다.","content":"고급 질문 예시:\n\n'우리 현재 매뉴얼 vs 최신 업계 기준,\n업데이트가 필요한 부분은?'\n\n'외부 딥리서치에서 나온 리스크 중\n우리 팀 절차에 반영이 안 된 것은?'\n\n'최신 규제 변화 중 우리 취업규칙에\n영향을 미치는 것은?'\n\n→ 이런 질문이 가능한 이유:\n내부 문서 + 외부 소스 동시 참조!","hint":"통합 후에는 '우리 팀 입장에서'라는 관점을 질문에 항상 포함하세요."}]},
+{"title":"실습 2: 인포그래픽 생성 & 배포","objective":"딥리서치 결과를 스튜디오 인포그래픽으로 시각화해서 팀 공유용 이미지로 만듭니다.","guide":"어제 만든 주간 브리핑 내용을 인포그래픽으로 만들어보세요.","bads":[{"dept":"기획팀","prompt":"(딥리서치 결과 4,000자 그대로 카톡에 복붙)","result":"⚠️ 현재 공유 방식:\n\n조사 결과 → 텍스트 그대로 카톡 전송\n\n받는 사람 반응:\n→ 팀원: '이걸 다 읽으라고?'\n→ 팀장: '핵심만 요약해줘'\n→ 임원: '그래픽으로 만들어줘'\n\n→ 시각화하면\n   한 눈에 파악 가능!"},{"dept":"경영지원팀","prompt":"(보고서는 잘 만들었는데 임원이 '그림으로 보여줘'라고 함)","result":"⚠️ 현재 시각화 방식:\n\n보고서 완성\n→ PPT로 재작업 (30분~1시간)\n→ 디자인 고민\n→ 이미지 저장\n→ 메일 전송\n\nNotebookLM 스튜디오 사용 시:\n→ 인포그래픽 자동 생성 (5분)\n→ 이미지 저장 후 바로 공유!"}],"goods":[{"dept":"기획팀","prompt":"[인포그래픽 생성 방법]\n\nNotebookLM 스튜디오\n→ '인포그래픽' 클릭\n→ 소스 기반 자동 생성\n\n[프롬프트로 스타일 제어]\n'핵심 동향 3가지를 아이콘과 함께\n세로형 인포그래픽으로 만들어줘.\n색상: 네이비·화이트 계열.\n수치는 크게 강조.\n하단에 출처 표시.'\n\n생성 후:\n→ 이미지로 저장\n→ 팀 카톡·이메일에 첨부\n→ 슬라이드에 삽입","result":"✓ 인포그래픽 활용 예시:\n\n[주간 브리핑 인포그래픽]\n📊 2026 전자부품 업계 동향\n\n🔑 핵심 3가지:\n① AI 기기 부품 수요 35%↑\n② 탄소국경세 2027 확대\n③ 공급망 안정화 선호\n\n⚠️ 우리 팀 리스크:\n• 탄소 데이터 미준비\n\n✅ 우선 대응:\n• 탄소 데이터 체계 수립\n\n출처: SEMI 2026 Q1\n\n→ 텍스트 4,000자 → 1장 이미지!\n→ 임원 보고·팀 공유 즉시 활용"},{"dept":"경영지원팀","prompt":"[인포그래픽 활용 시나리오]\n\n[시나리오 1] 전 직원 공지\n→ 연차·복무규정 개정 내용\n→ 인포그래픽으로 시각화\n→ 사내 포털·카톡 배포\n\n[시나리오 2] 경영진 브리핑\n→ 인사·노무 이슈 브리핑\n→ 인포그래픽 첫 슬라이드\n→ 상세 내용은 본문\n\n[시나리오 3] 신입 교육\n→ 연차 발생 기준 시각화\n→ 경조사 휴가 한눈에\n→ 프린트 후 배포","result":"✓ 경영지원팀 인포그래픽 예시:\n\n[연차 발생 기준 인포그래픽]\n\n📅 연차 발생 기준 (취업규칙 기준)\n\n[ 입사 1년 미만 ]\n매월 개근 → 1일 발생 (최대 11일)\n\n[ 입사 1년 이상 ]\n15일 기본 + 2년마다 +1일\n최대 25일 상한\n\n[ 경조사 휴가 ]\n본인 결혼: 5일\n배우자 출산: 10일\n부모 사망: 5일\n\n출처: 취업규칙 제12~15조\n\n→ 신입이 질문할 필요 없이\n   이 이미지 하나로 해결!"}],"steps":[{"title":"인포그래픽 스타일 제어","objective":"NotebookLM 스튜디오에서 인포그래픽 스타일을 프롬프트로 제어합니다.","content":"인포그래픽 프롬프트 예시:\n\n스타일 지정:\n'세로형 / 가로형 / 카드형'\n\n색상 지정:\n'네이비-화이트 / 그린-화이트 / 회사 색상'\n\n강조 요소:\n'수치는 크게 / 아이콘 추가 / 화살표로 흐름'\n\n용도 지정:\n'임원 보고용 / 팀 공유용 / 신입 교육용'\n\n출처 표시:\n'하단에 출처 반드시 포함'","hint":"인포그래픽도 시각화가 예쁘다고 내용을 믿으면 안 됩니다. 출처 확인 필수!"},{"title":"배포 채널별 최적화","objective":"용도에 맞게 인포그래픽을 최적화하고 적합한 채널로 배포합니다.","content":"채널별 활용:\n\n카톡·슬랙:\n→ 세로형 1장 이미지\n→ 핵심 3가지만\n\n이메일:\n→ 인포그래픽 첨부\n→ 본문에 상세 내용\n\n슬라이드:\n→ 첫 슬라이드: 인포그래픽\n→ 나머지: 상세 내용\n\n사내 포털:\n→ 인포그래픽 + 원본 PDF\n→ 공지사항 등록","hint":"인포그래픽은 '주목을 끄는 도구'입니다. 상세 내용은 반드시 원본과 함께 제공하세요."},{"title":"AI 에이전트 브라우저 체험","objective":"AI 에이전트가 실제로 무엇을 할 수 있는지 Comet 등을 통해 직접 체험합니다.","content":"AI 에이전트란:\n'사람 대신 웹을 탐색하고 일을 처리하는 AI'\n\n현재 가능한 것:\n• 웹 탐색 + 요약\n• 폼 작성 + 클릭\n• 반복 업무 자동화\n\n현재 한계:\n• 완벽하지 않음 (오류 발생)\n• 사람 검수 필수\n• 기밀 입력 주의\n\n체험 시나리오:\n'내일 회의 준비 자료를 웹에서 찾아서\n요약해줘' → 에이전트 작동 확인\n\n→ 지금은 보조 도구\n→ 2~3년 후 주요 업무 도구","hint":"에이전트가 만든 결과물도 반드시 사람이 검수해야 합니다. 아직 완전히 신뢰할 수 없습니다."}]},
+{"title":"실습 3: 2일차 종합 — 부서 지식 비서 완성","objective":"2일간 배운 모든 도구를 조합해서 우리 부서만의 AI 비서 시스템을 완성합니다.","guide":"오늘 배운 것을 복습하며 우리 팀 AI 시스템의 청사진을 직접 그려보세요.","bads":[{"dept":"모든 부서","prompt":"(각 도구를 따로따로 배웠는데 어떻게 연결해야 할지 모름)","result":"⚠️ 파편화된 활용:\n\n• ChatGPT: 가끔 보고서 초안\n• Gemini: 가끔 검색\n• NotebookLM: 오늘 처음\n• Gems: 오늘 만들었는데 잊어버릴듯\n\n→ 각각 따로 쓰면 시너지 없음\n→ 연결하면 완전히 달라짐"},{"dept":"모든 부서","prompt":"(2일간 많이 배웠는데 퇴근 후에 다 잊어버릴 것 같음)","result":"⚠️ 학습 후 망각 우려:\n\n• 1일차: 프롬프팅 / 마크다운 / 트리거\n• 2일차: Gems / Projects / NotebookLM\n\n→ 오늘 안 쓰면 내일 잊어버림\n→ 이번 주 하나만 실제로 사용해보는 것이 핵심"}],"goods":[{"dept":"모든 부서","prompt":"[내일부터 사용할 AI 시스템 청사진]\n\n1단계 (이번 주): 기초 1개\n→ 커스텀 인스트럭션 세팅\n→ ;;보고 트리거 1개 설정\n\n2단계 (다음 주): Gems 1개\n→ 내 반복 업무 전용 봇 1개 완성\n→ 팀 공유 여부 결정\n\n3단계 (이번 달): NotebookLM\n→ 팀 매뉴얼 1개 업로드\n→ FAQ 자동 생성\n\n4단계 (다음 달): 통합\n→ NotebookLM + Gems 연동\n→ 팀 전체 공유","result":"✓ 단계별 효과:\n\n1단계 완료:\n→ 매일 3~5분 절약\n→ 배경 설명 0번\n\n2단계 완료:\n→ 주 30분~1시간 절약\n→ 보고서 초안 10초 완성\n\n3단계 완료:\n→ 팀원 질문 70% 자동 해결\n→ 신입 온보딩 자료 자동화\n\n4단계 완료:\n→ 팀 전용 AI 비서 완성!\n→ 암묵지 → 팀 자산 전환\n\n→ 오늘 단 1단계만 시작해도\n   1개월 후 완전히 달라진 업무 환경!"},{"dept":"모든 부서","prompt":"[오늘 바로 할 것 체크리스트]\n\n□ 커스텀 인스트럭션 세팅 (5분)\n  → 이름/소속/업무/말투 입력\n\n□ ;;보고 트리거 1개 설정 (5분)\n  → 내 주간보고 양식 입력\n\n□ Gems 1개 만들기 (10분)\n  → 내 가장 반복적인 Task 선정\n\n□ NotebookLM 노트북 1개 (10분)\n  → 팀 매뉴얼 or 규정 1개 업로드\n\n총 30분 → 내일부터 달라지는 업무!","result":"✓ 30분 투자 vs 얻는 것:\n\n커스텀 인스트럭션 (5분 투자):\n→ 매일 2~3분 절약\n→ 연간 12시간 절약\n\n;;보고 트리거 (5분 투자):\n→ 주간보고 30분 → 5분\n→ 연간 40시간 절약\n\nGems 1개 (10분 투자):\n→ 반복 Task 자동화\n→ 월 5~10시간 절약\n\nNotebookLM (10분 투자):\n→ 팀 질문 70% 자동 해결\n→ 팀장 방해 횟수 대폭 감소\n\n→ 오늘 30분이 평생 수백 시간을 만듭니다!\n→ 지금 바로 시작하세요! 💪"}],"steps":[{"title":"오늘 배운 것 전체 연결 복습","objective":"1일차부터 2일차까지 배운 도구들의 연결 구조를 정리합니다.","content":"전체 연결 구조:\n\n[기반]\nChatGPT / Gemini\n→ 프롬프팅 + 4요소 + 트리거\n\n[개인화]\n커스텀 인스트럭션 + ;;트리거\n→ 나만의 빠른 작업 환경\n\n[전용 봇]\nGems (Gemini) / GPT Projects\n→ 역할 고정 + 팀 공유\n\n[지식 비서]\nNotebookLM\n→ 문서 기반 Q&A + FAQ 생성\n\n[통합]\nNotebookLM + Gems 연동\n→ 완성형 부서 AI 비서\n\n[심화]\nDeep Research + 에이전트\n→ 외부 조사 자동화","hint":"모든 도구를 다 써야 하는 건 아닙니다. 내 업무에서 가장 효과적인 1~2개부터 시작하세요."},{"title":"내 AI 로드맵 작성","objective":"내 업무에 맞는 AI 도입 우선순위와 타임라인을 직접 작성합니다.","content":"로드맵 작성:\n\n나의 가장 반복적인 업무:\n→ ___________________\n\n가장 먼저 자동화할 것:\n→ ___________________\n\n이번 주 만들 것:\n→ ___________________\n\n이번 달 목표:\n→ ___________________\n\n팀에 공유할 것:\n→ ___________________\n\n→ 작성 후 옆 사람과 공유해보세요!","hint":"로드맵을 글로 쓰면 실제로 할 확률이 3배 높아집니다. 꼭 써보세요!"},{"title":"오늘 당장 시작 — 30분 챌린지","objective":"교육 종료 후 30분 안에 AI 도구 1개를 실제로 만들어봅니다.","content":"30분 챌린지:\n\n[선택 A] 커스텀 인스트럭션 (5분)\nChatGPT 설정 → 커스텀 인스트럭션\n→ 내 역할·업무·말투 입력\n→ 테스트: '주간보고 써줘'\n\n[선택 B] Gems 만들기 (10분)\nGemini → Gems 만들기\n→ 내 반복 업무 전용 봇 완성\n\n[선택 C] NotebookLM (10분)\nNotebookLM → 새 노트북\n→ 팀 문서 1개 업로드\n→ 질문 테스트\n\n→ 지금 바로 시작!\n→ 내일 출근해서 써보는 것이 진짜 목표","hint":"완벽하게 만들려 하지 마세요. 일단 만들고 쓰면서 개선하는 것이 가장 빠른 방법입니다!"}]}
+]}
+];
+
+
+let cur=0,tab=0,step=0;
+
+function init(){
+  const nav=document.getElementById('sb-nav');
+  let dayTrack='';
+  sessions.forEach((s,i)=>{
+    const day=s.id.split('-')[0];
+    if(day!==dayTrack){
+      dayTrack=day;
+      const d=document.createElement('div');
+      d.className='day-lbl';
+      d.textContent='DAY '+day;
+      nav.appendChild(d);
+    }
+    const b=document.createElement('button');
+    b.className='nav-btn'+(i===0?' active':'');
+    b.textContent=s.title;
+    b.onclick=()=>go(i);
+    nav.appendChild(b);
+  });
+  go(0);
+}
+
+function go(i){
+  cur=i;tab=0;step=0;
+  document.querySelectorAll('.nav-btn').forEach((b,idx)=>b.classList.toggle('active',idx===i));
+  renderSession(i);
+  // 모바일: 차시 선택 시 사이드바 자동 닫힘
+  if(window.innerWidth<=768) closeSidebar();
+}
+
+function toggleSidebar(){
+  const aside = document.getElementById('sidebar');
+  const overlay = document.getElementById('sb-overlay');
+  if(window.innerWidth <= 768){
+    const isOpen = aside.classList.contains('open');
+    if(isOpen){ closeSidebar(); }
+    else{ aside.classList.add('open'); overlay.classList.add('show'); }
+  } else {
+    aside.classList.toggle('collapsed');
+  }
+}
+function closeSidebar(){
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sb-overlay').classList.remove('show');
+}
+
+function renderSession(i){
+  const s=sessions[i];
+  const badge=document.getElementById('mh-badge');
+  const dot=s.type==='A'?'#f97316':s.type==='B'?'#22c55e':'#a78bfa';
+  badge.innerHTML=`Session ${s.id} <span class="method-dot" style="background:${dot}"></span>방식 ${s.type}`;
+  document.getElementById('mh-title').textContent=s.title;
+  const tb=document.getElementById('tab-bar');
+  let tabs=`<button class="tab-btn active" onclick="switchTab(0)">🎯 개요</button>`;
+  s.practices.forEach((_,p)=>{
+    tabs+=`<button class="tab-btn" onclick="switchTab(${p+1})">💻 실습 ${p+1}</button>`;
+  });
+  tb.innerHTML=tabs;
+  renderTab(0);
+}
+
+function switchTab(t){
+  tab=t;step=0;
+  document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',i===t));
+  renderTab(t);
+  document.querySelector('.ca').scrollTop=0;
+}
+
+function renderTab(t){
+  const s=sessions[cur];
+  const ci=document.getElementById('ci');
+  if(t===0) renderOv(s,ci);
+  else renderPrac(s,s.practices[t-1],ci);
+}
+
+function renderOv(s,ci){
+  const scores=s.effects.map(e=>e.score);
+  const labels=s.effects.map(e=>e.name);
+  ci.innerHTML=`
+    <div class="ov-desc">${s.overview}</div>
+    <div class="ov-layout">
+      <div class="ov-chart-wrap">
+        <div class="ov-chart-title">도입 효과 지표 (종합)</div>
+        <div class="ov-chart-inner"><canvas id="radar-chart"></canvas></div>
+      </div>
+      <div class="ov-effects-wrap">
+        ${s.effects.map((e,i)=>`
+          <div class="ov-effect-card">
+            <div class="ov-effect-num">${i+1}</div>
+            <div>
+              <div class="ov-effect-name">${e.name}</div>
+              <div class="ov-effect-desc">${e.desc}</div>
+            </div>
+          </div>`).join('')}
+      </div>
+    </div>
+    <div class="ov-tip"><div class="ov-tip-lbl">💡 강사 핵심 팁</div>${s.tip}</div>
+    ${navButtons()}
+  `;
+  setTimeout(()=>{
+    const ctx=document.getElementById('radar-chart');
+    if(!ctx) return;
+    if(window._chart) window._chart.destroy();
+    window._chart=new Chart(ctx,{
+      type:'radar',
+      data:{labels,datasets:[{label:'효과 지표',data:scores,
+        backgroundColor:'rgba(37,99,235,0.15)',
+        borderColor:'rgba(37,99,235,1)',
+        pointBackgroundColor:'rgba(220,38,38,1)',
+        pointBorderColor:'#fff',borderWidth:2}]},
+      options:{responsive:true,maintainAspectRatio:false,
+        scales:{r:{angleLines:{color:'rgba(0,0,0,0.08)'},
+          grid:{color:'rgba(0,0,0,0.05)'},
+          pointLabels:{font:{size:13,weight:'600'},color:'#475569'},
+          ticks:{display:false},min:7,max:10}},
+        plugins:{legend:{display:false},
+          tooltip:{backgroundColor:'rgba(15,23,42,0.9)',
+            titleFont:{size:13},bodyFont:{size:12},padding:10}}}
+    });
+  },300);
+}
+
+function renderPrac(s,p,ci){
+  let html=`<div class="ph">
+    <div class="ph-title">${p.title}</div>
+    <div class="ph-obj">${p.objective}</div>
+    ${p.guide?`<div class="ph-guide">${p.guide}</div>`:''}
+  </div>`;
+  if(s.type==='A') html+=renderA(p);
+  else if(s.type==='B') html+=renderB(p,s);
+  else if(s.type==='C') html+=renderC(p);
+  html+=navButtons();
+  ci.innerHTML=html;
+  if(s.type==='C') renderStep();
+}
+
+function renderA(p){
+  const bads = p.bads || (p.bad ? [p.bad] : []);
+  const goods = p.goods || (p.good ? [p.good] : []);
+  const pid = 'p'+cur+'_'+tab;
+
+  const badTabs = bads.map((b,i)=>
+    `<button class="case-tab-btn${i===0?' active':''}" onclick="selCase('bad','${pid}',${i})">${b.dept||('케이스'+(i+1))}</button>`
+  ).join('');
+  const goodTabs = goods.map((g,i)=>
+    `<button class="case-tab-btn${i===0?' active':''}" onclick="selCase('good','${pid}',${i})">${g.dept||('케이스'+(i+1))}</button>`
+  ).join('');
+
+  window['_bads_'+pid] = bads;
+  window['_goods_'+pid] = goods;
+
+  return `<div class="case-wrap">
+    <div class="case-block bad-block">
+      <div class="case-block-head">
+        <div class="case-block-title">⚠️ 나쁜 예시 — 이렇게 하면?</div>
+        <div class="case-tabs">${badTabs}</div>
+      </div>
+      <div class="case-content" id="bad-${pid}">
+        ${renderCaseContent(bads[0])}
+      </div>
+    </div>
+    <div class="case-block good-block">
+      <div class="case-block-head">
+        <div class="case-block-title">✓ 좋은 예시 — 이렇게 하면!</div>
+        <div class="case-tabs">${goodTabs}</div>
+      </div>
+      <div class="case-content" id="good-${pid}">
+        ${renderCaseContent(goods[0])}
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderCaseContent(c){
+  if(!c) return '';
+  return `<div class="case-prompt-lbl">입력한 프롬프트</div>
+    <div class="case-prompt-box">${esc(c.prompt)}</div>
+    <div class="case-result-lbl">AI 예상 결과</div>
+    <div class="case-result-box">${esc(c.result)}</div>`;
+}
+
+function selCase(type, pid, idx){
+  const arr = window['_'+type+'s_'+pid] || [];
+  const c = arr[idx];
+  if(!c) return;
+  document.getElementById(type+'-'+pid).innerHTML = renderCaseContent(c);
+  // 탭 활성화
+  const block = document.getElementById(type+'-'+pid).closest('.case-block');
+  block.querySelectorAll('.case-tab-btn').forEach((b,i)=>b.classList.toggle('active',i===idx));
+}
+
+function renderB(p,s){
+  const idx=s.practices.indexOf(p);
+  return `<div class="md-ws">
+    <div class="md-pane">
+      <div class="md-ph">
+        <span class="md-ph-title">⌨️ 입력 창 (Markdown)</span>
+        <button class="md-load-btn" onclick="loadEx(${idx})">예시 불러오기</button>
+      </div>
+      <div class="md-hint-box">👉 ${p.hint}</div>
+      <textarea class="md-editor-ta" id="md-ta" placeholder="여기에 마크다운 문법을 입력해 보세요..." oninput="var pv=document.getElementById('md-pv');pv.innerHTML=this.value.trim()?parseMD(this.value):'<div class=\'md-placeholder\'>왼쪽에 입력하면 결과가 나타납니다.</div>'"></textarea>
+    </div>
+    <div class="md-pane">
+      <div class="md-ph" style="background:#1e293b;">
+        <span class="md-ph-title" style="color:#f1f5f9;">👁️ 실시간 미리보기 (Result)</span>
+      </div>
+      <div class="md-preview-box" id="md-pv">
+        <div class="md-placeholder">왼쪽에 입력하면 결과가 나타납니다.</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function loadEx(idx){
+  const p=sessions[cur].practices[idx];
+  const ta=document.getElementById('md-ta');
+  const pv=document.getElementById('md-pv');
+  if(ta&&p.example){
+    ta.value=p.example;
+    pv.innerHTML=parseMD(p.example);
+  }
+}
+
+function renderC(p){
+  const steps=p.steps||[];
+  const total=steps.length;
+  // ── 상단: Good/Bad (케이스탭) ──
+  let abHtml='';
+  const cbads = p.bads || (p.bad ? [p.bad] : []);
+  const cgoods = p.goods || (p.good ? [p.good] : []);
+  if(cbads.length||cgoods.length){
+    const cpid='cp'+cur+'_'+tab;
+    window['_bads_'+cpid]=cbads; window['_goods_'+cpid]=cgoods;
+    const cbt=cbads.map((b,i)=>`<button class="case-tab-btn${i===0?' active':''}" onclick="selCase('bad','${cpid}',${i})">${b.dept||('케이스'+(i+1))}</button>`).join('');
+    const cgt=cgoods.map((g,i)=>`<button class="case-tab-btn${i===0?' active':''}" onclick="selCase('good','${cpid}',${i})">${g.dept||('케이스'+(i+1))}</button>`).join('');
+    abHtml=`<div class="case-wrap" style="margin-bottom:0;">
+      <div class="case-block bad-block">
+        <div class="case-block-head"><div class="case-block-title">⚠️ 나쁜 예시</div><div class="case-tabs">${cbt}</div></div>
+        <div class="case-content" id="bad-${cpid}">${renderCaseContent(cbads[0])}</div>
+      </div>
+      <div class="case-block good-block">
+        <div class="case-block-head"><div class="case-block-title">✓ 좋은 예시</div><div class="case-tabs">${cgt}</div></div>
+        <div class="case-content" id="good-${cpid}">${renderCaseContent(cgoods[0])}</div>
+      </div>
+    </div>`;
+  }
+  // ── 하단: Step ──
+  let dots='';
+  steps.forEach((_,i)=>{
+    dots+=`<button class="step-dot-btn" id="sd-${i}" onclick="goStep(${i})">${i+1}</button>`;
+    if(i<total-1) dots+=`<div class="step-line" id="sl-${i}"></div>`;
+  });
+  return `<div class="c-wrap">
+    ${abHtml}
+    <div class="c-step-section">
+      <div class="c-step-header">
+        <span style="font-size:16px">📋</span>
+        <span class="c-step-header-title">실습 단계별 따라하기</span>
+      </div>
+      <div style="padding:16px 20px 0;">
+        <div class="step-indicator" style="margin-bottom:0;">${dots}</div>
+      </div>
+      <div id="sca"></div>
+      <div class="c-step-nav">
+        <button class="step-nav-btn" id="prev-b" onclick="prevStep()" disabled>← 이전</button>
+        <span class="step-counter" id="sc">1 / ${total}</span>
+        <button class="step-nav-btn primary" id="next-b" onclick="nextStep()">다음 →</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function goStep(i){step=i;renderStep();}
+
+function renderStep(){
+  const p=sessions[cur].practices[tab-1];
+  const steps=p.steps||[];
+  const total=steps.length;
+  const st=steps[step];
+  steps.forEach((_,i)=>{
+    const d=document.getElementById('sd-'+i);
+    if(d) d.className='step-dot-btn'+(i===step?' active':i<step?' done':'');
+    if(i<total-1){
+      const l=document.getElementById('sl-'+i);
+      if(l) l.className='step-line'+(i<step?' done':'');
+    }
+  });
+  const sca=document.getElementById('sca');
+  if(sca&&st) sca.innerHTML=`
+    <div style="padding:16px 20px;">
+      <div class="step-content-title">Step ${step+1}: ${st.title}</div>
+      <div class="step-content-obj">${st.objective}</div>
+      <div class="step-prompt-box">${esc(st.content)}</div>
+      ${st.hint?`<div class="step-hint">💡 ${st.hint}</div>`:''}
+    </div>`;
+  const sc=document.getElementById('sc');
+  if(sc) sc.textContent=`${step+1} / ${total}`;
+  const pb=document.getElementById('prev-b');
+  const nb=document.getElementById('next-b');
+  if(pb) pb.disabled=step===0;
+  if(nb){
+    if(step===total-1){nb.textContent='완료 ✓';nb.onclick=()=>{};}
+    else{nb.textContent='다음 →';nb.onclick=nextStep;}
+  }
+}
+
+function prevStep(){if(step>0){step--;renderStep();}}
+function nextStep(){
+  const p=sessions[cur].practices[tab-1];
+  const total=(p.steps||[]).length;
+  if(step<total-1){step++;renderStep();}
+}
+
+function navButtons(){
+  const prev=cur>0
+    ?`<button class="snav-btn" onclick="go(${cur-1})">← ${sessions[cur-1].id}교시</button>`
+    :`<button class="snav-btn" disabled>← 이전</button>`;
+  const next=cur<sessions.length-1
+    ?`<button class="snav-btn primary" onclick="go(${cur+1})">${sessions[cur+1].id}교시 →</button>`
+    :`<button class="snav-btn primary" disabled>완료 ✓</button>`;
+  return `<div class="session-nav">${prev}<span class="snav-info">${cur+1} / ${sessions.length}</span>${next}</div>`;
+}
+
+function esc(t){
+  return(t||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function parseMD(t){
+  let h=t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/^### (.*$)/gim,'<h3>$1</h3>')
+    .replace(/^## (.*$)/gim,'<h2>$1</h2>')
+    .replace(/^# (.*$)/gim,'<h1>$1</h1>')
+    .replace(/\*\*(.*?)\*\*/gim,'<strong>$1</strong>')
+    .replace(/^> (.*$)/gim,'<blockquote>$1</blockquote>')
+    .replace(/^---$/gim,'<hr/>')
+    .replace(/^- \[ \] (.*$)/gim,'<p><input type="checkbox"> $1</p>')
+    .replace(/^- (.*$)/gim,'<ul><li>$1</li></ul>')
+    .replace(/^\d+\. (.*$)/gim,'<ol><li>$1</li></ol>')
+    .replace(/```([\s\S]*?)```/gim,'<pre><code>$1</code></pre>');
+  h=h.replace(/<\/ul>\n<ul>/gim,'\n').replace(/<\/ol>\n<ol>/gim,'\n');
+  return h.split('\n').map(l=>{
+    if(l.match(/^(<h|<ul|<ol|<li|<hr|<pre|<blockquote|<p>)/)) return l;
+    if(l.trim()==='') return '<br/>';
+    return `<p>${l}</p>`;
+  }).join('');
+}
+
+init();
+
+</script>
+</body>
+</html>
