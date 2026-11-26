@@ -133,6 +133,7 @@ https://jaycobbnate.github.io/kimedukr-lessons/<과정 폴더>/<차시>/
 - [hangidae-miricanvas/02](hangidae-miricanvas/02/) — 한기대교직과정 > 미리캔버스 교안 제작 > 미리캔버스 실습
 - [hangidae-miricanvas/03](hangidae-miricanvas/03/) — 한기대교직과정 > 미리캔버스 교안 제작 > 핵심 정리
 - [hangidae-miricanvas/04](hangidae-miricanvas/04/) — 한기대교직과정 > 미리캔버스 교안 제작 > AI 프레젠테이션 · 제미나이 노트북 × 미리캔버스
+- [hangidae-miricanvas/05](hangidae-miricanvas/05/) — 한기대교직과정 > 미리캔버스 교안 제작 > 신기능 · 내용 시각화
 - [hangidae-miricanvas/textbook](hangidae-miricanvas/textbook/) — 한기대교직과정 > 미리캔버스 교안 제작 > 교안 제작 온라인 교재
 - [hangidae-miricanvas/textbook/01](hangidae-miricanvas/textbook/01/) — 한기대교직과정 > 미리캔버스 교안 제작 > 교안 제작 온라인 교재 > 01 본 수업의 이해
 - [hangidae-miricanvas/textbook/02](hangidae-miricanvas/textbook/02/) — 한기대교직과정 > 미리캔버스 교안 제작 > 교안 제작 온라인 교재 > 02 교안작성툴기능
